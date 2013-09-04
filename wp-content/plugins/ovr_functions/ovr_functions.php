@@ -14,38 +14,12 @@
 // Remove WordPress version meta generator from head
 remove_action('wp_head', 'wp_generator');
 
+
 // Remove Windows Live Writer meta from head
 remove_action('wp_head', 'wlwmanifest_link');
 
-// Changes the Howdy to Whats up, in the Admin Toolbar
-add_action( 'admin_bar_menu', 'wp_admin_bar_howdy_go_byebye', 11 );
-
-function wp_admin_bar_howdy_go_byebye( $wp_admin_bar ) {
-$user_id = get_current_user_id();
-$current_user = wp_get_current_user();
-$profile_url = get_edit_profile_url( $user_id );
-
-if ( 0 != $user_id ) {
-/* Add the "My Account" menu */
-$avatar = get_avatar( $user_id, 28 );
-$howdy = sprintf( __('What up, %1$s'), $current_user->display_name );
-$class = empty( $avatar ) ? '' : 'with-avatar';
-
-$wp_admin_bar->add_menu( array(
-'id' => 'my-account',
-'parent' => 'top-secondary',
-'title' => $howdy . $avatar,
-'href' => $profile_url,
-'meta' => array(
-'class' => $class,
-),
-) );
-
-}
-}
 
 // Adds Google Analytics to the footer
-// Edit the _setAccount and _setDomainName
 add_action('wp_footer', 'add_google_analytics');
   function add_google_analytics() { ?>
 <!-- Google Analytics: -->
@@ -53,6 +27,7 @@ add_action('wp_footer', 'add_google_analytics');
 
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-11964448-1']);
+  _gaq.push(['_setDomainName', 'ovrride.com']);
   _gaq.push(['_trackPageview']);
 
   (function() {
@@ -64,6 +39,18 @@ add_action('wp_footer', 'add_google_analytics');
 </script>
 
 <?php }
+
+
+// Replace Howdy to Whats up, in the Admin Toolbar
+function replace_howdy( $wp_admin_bar ) {
+    $my_account=$wp_admin_bar->get_node('my-account');
+    $newtitle = str_replace( 'Howdy,', 'What up,', $my_account->title );
+    $wp_admin_bar->add_node( array(
+        'id' => 'my-account',
+        'title' => $newtitle,
+    ) );
+}
+add_filter( 'admin_bar_menu', 'replace_howdy',25 );
 
 
 // Adds the Manning avatar to Settings > Discussion
