@@ -41,7 +41,7 @@ add_action('wp_footer', 'add_google_analytics');
 <?php }
 
 
-// Replace Howdy to Whats up, in the Admin Toolbar
+// Replace Howdy with Whats up, in the Admin Toolbar
 function replace_howdy( $wp_admin_bar ) {
     $my_account=$wp_admin_bar->get_node('my-account');
     $newtitle = str_replace( 'Howdy,', 'What up,', $my_account->title );

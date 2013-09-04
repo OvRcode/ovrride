@@ -1,7 +1,7 @@
 # Ignore everything
 *
 
-# Ignore everything except 
+# Ignore everything except
 !.gitignore
 !README.md
 !/wp-content/
@@ -16,3 +16,4 @@
 !/wp-content/themes/quark/*/*/*/*
 !/wp-content/themes/quark/*/*/*/*/*
 
+.DS_Store
