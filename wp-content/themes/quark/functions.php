@@ -777,7 +777,7 @@ add_filter( 'widget_text', 'do_shortcode' );
  */
 if ( ! function_exists( 'quark_failed_login' ) ) {
 	function quark_failed_login() {
-		return '<strong>ERROR:</strong> The login information you have entered is incorrect.';
+		return '<strong>ERROR:</strong> There was an error registering your account, please check the username and/or email address and try again.';
 	}
 	add_filter( 'login_errors', 'quark_failed_login' );
 }
