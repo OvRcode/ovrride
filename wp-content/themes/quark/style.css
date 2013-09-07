@@ -892,6 +892,81 @@ payment_methods methods {
 
    
    
+.trip-btn  a:hover {
+	font-size: 27px;
+	font-size: 1.7rem;
+	line-height: 1.25;
+	color: #333;
+	text-decoration:none;
+	text-align: center;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	cursor: pointer;
+}
+.trip-btn {
+	display: inline-block;
+	padding: 8px 14px;
+	padding: 0.5rem 0.875rem;
+	margin-bottom: 0;
+	font-size: 27px;
+	font-size: 1.7rem;
+	line-height: 1.25;
+	color: #333;
+	text-align: center;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	vertical-align: middle;
+	cursor: pointer;
+	background-color: whiteSmoke;
+	background-image: -ms-linear-gradient(top, #caff63, #b5fe28);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#caff63), to(#b5fe28));
+	background-image: -webkit-linear-gradient(top, #caff63, #b5fe28);
+	background-image: -o-linear-gradient(top, #caff63, #b5fe28);
+	background-image: linear-gradient(top, #caff63, #b5fe28);
+	background-image: -moz-linear-gradient(top, #caff63, #b5fe28);
+	background-repeat: repeat-x;
+	border: 1px solid #CCC;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	border-color: #9cda23 #9cda23 #92cc21;
+	border-bottom-color: #9cda23;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='white', endColorstr='#E6E6E6');
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	width:100%;
+}
+.trip-btn:hover {
+	color: #333333;
+	text-decoration: none;
+	background-color: #adf424;
+	*background-color: #adf424; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-position: 0 -20px;
+	-webkit-transition: background-position 0.1s linear;
+	-moz-transition: background-position 0.1s linear;
+	-ms-transition: background-position 0.1s linear;
+	-o-transition: background-position 0.1s linear;
+	transition: background-position 0.1s linear;
+}
+.trip-btn:active {
+	background-color: #a6ea22;
+	background-color: #a6ea22 \9;
+	background-image: none;
+	outline: 0;
+	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+	position:relative;
+	top:1px;
+}
+
+
+
+
+
+
+
+
 .book-btn  a:hover {
 	font-size: 27px;
 	font-size: 1.7rem;
@@ -966,6 +1041,7 @@ payment_methods methods {
 .em-calendar {
 	background:#EEE;
 	margin:0px !important;
+	width:100%;
 }
 table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	color:#FFF;
@@ -992,7 +1068,9 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 }
    
 .woocommerce div.product div.images img, .woocommerce #content div.product div.images img, .woocommerce-page div.product div.images img, .woocommerce-page #content div.product div.images img {
-	border:10px solid #EEE;
+	border:3px solid #EEE;
+	width:197px !important;
+	height:72px !important;
 }
 .woocommerce div.product .woocommerce-tabs .panel, .woocommerce #content div.product .woocommerce-tabs .panel, .woocommerce-page div.product .woocommerce-tabs .panel, .woocommerce-page #content div.product .woocommerce-tabs .panel {
 	padding:10px !important;
@@ -1008,7 +1086,9 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	width:20% !important;
 }
 .woocommerce ul.products li.product a img, .woocommerce-page ul.products li.product a img {
-	border:5px solid #EEE;
+	border:3px solid #EEE;
+	width:197px !important;
+	height:72px !important;
 }
 
 #dfcg-thumbnails .dfcg-carouselBtn {
@@ -2243,12 +2323,29 @@ p.srp-widget-excerpt {
 }
 .fb_iframe_widget {
 	background: #C3C3C3;
-	height: 230px;
+	height: 205px;
 	border: none;
 	overflow:hidden;
 }
 .ui-state-default .ui-icon {
 	background-image:none !important;
+}
+.gfield_captcha_container {
+	float:left;
+	width:100%;
+	margin:0px 0px 5px 0px;
+}
+.gform_wrapper .gfield_captcha_container img.gfield_captcha {
+	float: left !important;
+	clear: none !important;
+	width: 35% !important;
+}
+.gform_wrapper .gfield_captcha_input_container {
+	padding-top: 0px !important;
+	float: left !important;
+	clear: none !important;
+	width: 30% !important;
+	margin: 0px 0px 0px 3% !important;
 }
 .gform_wrapper {
 	margin:10px 0px 4px 0px;
@@ -2738,6 +2835,20 @@ article.sticky {
 	border-radius: 3px;
 }
 
+.widget_em_widget ul {
+	padding:0px;
+}
+
+.widget_em_widget li {
+	margin: 0px 0px 10px 0px;
+	font-size: 17px;
+	font-weight: ;
+	background: #CECECE;
+	padding: 6px;
+	border: 1px solid #999;
+	border-radius: 3px;
+}
+
 .products li {
 	margin: 0px 0px 10px 0px;
 	font-size: 17px;
@@ -2754,11 +2865,15 @@ article.sticky {
 	color: white !important;
 }
 #gform_4 {
-	background: #CCC;
+	background: url(http://ovrride.com/wp-content/themes/quark/images/form-bg.jpg) no-repeat;
 	padding: 4px;
 	width: 100%;
 	border-radius: 3px;
-	color: #333;
+	border:1px solid #CCC;
+	color: #FFF;
+}
+.gform_wrapper .simple_captcha_small input {
+	width:90px;
 }
 
 /* Author profiles */

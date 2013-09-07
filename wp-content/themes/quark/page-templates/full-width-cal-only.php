@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Full-width No Title Page Template
+ * Template Name: No-Title + Sidebar + Cal-Only
  *
  * Description: Displays a full-width page, with no sidebar. This template is great for pages
  * containing large amounts of content.
@@ -12,7 +12,19 @@
 get_header(); ?>
 
 	<div id="primary" class="site-content row clearfix" role="main">
-		<div class="col grid_12_of_12">
+    	
+         <div class="col grid_3_of_12">
+            <div class="col grid_12_of_12" style="margin: 0px 0px 45px 0px;">
+            	<?php 
+					$id = 1384;
+					$p = get_page($id);
+					echo apply_filters('the_content', $p->post_content);
+				?>
+                <h1 style="margin-top:5px;" class="book-btn"><a href="http://ovrride.com/calendar/">VIEW FULL CALENDAR</a></h1>
+            </div>
+        </div>
+        
+		<div class="col grid_9_of_12">
 
 			<?php if ( have_posts() ) : ?>
 
@@ -23,7 +35,7 @@ get_header(); ?>
 
 			<?php endif; // end have_posts() check ?>
 
-		</div> <!-- /.col.grid_12_of_12 -->
+		</div> <!-- /.col.grid_9_of_12 -->
 	</div><!-- /#primary.site-content.row -->
 
 <?php get_footer(); ?>
