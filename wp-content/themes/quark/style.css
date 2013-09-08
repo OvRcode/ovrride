@@ -2716,7 +2716,9 @@ article.sticky {
 	color: #333;
 }
 
-.page-links .page-numbers {
+.
+
+-links .page-numbers {
 	background-color: #333;
 	border: 1px solid #333;
 	padding: 2px 4px;
@@ -3997,3 +3999,14 @@ li span.dots {
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+
+/* ==========================================================================
+   Page and Post specific overrides
+   ========================================================================== */
+
+/* Hide the Page title on the OvRride Field Guides Pages */
+
+.page-id-1432 .entry-title {
+	display: none;
+}
+
