@@ -4004,9 +4004,27 @@ li span.dots {
    Page and Post specific overrides
    ========================================================================== */
 
-/* Hide the Page title on the OvRride Field Guides Pages */
-
+/* Hide the page title on the OvR Field Guides Page */
 .page-id-1432 .entry-title {
 	display: none;
 }
 
+/* Hide the page title on the OvR Hunter Field Guide */
+.page-id-1443 .entry-title {
+	display: none;
+}
+
+/* Hide the page title on the OvR Stratton Field Guide */
+.page-id-1458 .entry-title {
+	display: none;
+}
+
+/* Hide the page title on the OvR Windham Field Guide */
+.page-id-1450 .entry-title {
+	display: none;
+}
+
+/* Hide the page title on the OvR Camelback Field Guide */
+.page-id-1461 .entry-title {
+	display: none;
+}

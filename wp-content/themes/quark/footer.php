@@ -56,14 +56,18 @@
                 <a href="http://www.burton.com/default/stores-nyc.html" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="http://ovrride.com/wp-content/themes/quark/images/shops/burton-icon.png" alt="Burton" /></a> 
             </div>
         
-            <div style="text-align:center;" class="col grid_6_of_12">
-                <a href="http://ovrride.com/">Home</a><span> | </span>
-                <a href="http://ovrride.com/blog/">Blog</a><span> | </span>
-                <a href="http://ovrride.com/faq/">FAQ</a><span> | </span>
-                <a href="http://ovrride.com/terms-and-conditions/">Terms &amp; Conditions</a><span> | </span>
-                <a href="http://ovrride.com/contact-us/">Contact Us</a>
-                <br />
-                <span>&copy; COPYRIGHT 2013 - <a href="http://ovrride.com/">OvR ride LLC.</a> - ALL RIGHTS RESERVED</span>
+            <div class="col grid_6_of_12" style="text-align:center;">
+              <a href="http://ovrride.com/">Home</a>
+              <span> | </span>
+              <a href="http://ovrride.com/blog/">Blog</a>
+              <span> | </span>
+              <a href="http://ovrride.com/faq/">FAQ</a>
+              <span> | </span>
+              <a href="http://ovrride.com/contact-us/">Contact Us</a>
+              <br>
+              <span>&copy; COPYRIGHT 2013 - <a href="http://ovrride.com/">OvR ride LLC.</a> - ALL RIGHTS RESERVED</span>
+              <br>
+              <span><a href="http://ovrride.com/terms-and-conditions/">Terms &amp; Conditions</a></span>
             </div>
             
             <div style="text-align:right;" class="col grid_3_of_12">
