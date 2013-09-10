@@ -59,22 +59,35 @@
 				</h1>
 			</div> <!-- /.col.grid_5_of_12 -->
 
-			<div class="col grid_9_of_12">
-				<div class="social-media-icons">
-					<ul id="topnav">
-                    	<li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;"><a href="http://ovrride.com/contact-us/"><img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/email.png" /></a></li>
-                    	<li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;"><a href="https://www.facebook.com/ovrride" target="_blank"><img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/facebook.png" /></a></li>
-                    	<li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;"><a href="http://twitter.com/ovrride" target="_blank"><img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/twitter.png" /></a></li>
-                    	<li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;"><a href="http://instagram.com/ovrride" target="_blank"><img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/instagram.png" /></a></li>
-                    	<li style="margin:0px 8px 0px 0px;padding-top:10px;height:35px;"><a href="http://www.youtube.com/user/ovrrideTV" target="_blank"><img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/youtube.png" /></a></li>
-                        <li><a href="http://ovrride.com/cart">CART</a></li>
-                        <li> | </li>
-                        <li><?php wp_loginout(); ?></li>
-                    </ul>
-                    <div class="top-search">
-                    	<?php echo do_shortcode('[widget id="search-3"]'); ?>
-                    </div>
-				</div>
+      <div class="col grid_9_of_12">
+        <div class="social-media-icons">
+          <ul id="topnav">
+            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+              <a href="http://ovrride.com/contact-us/" title="Contact Us"><i class="icon-envelope icon-large"></i></a>
+            </li>
+            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+              <a href="https://www.facebook.com/ovrride" title="Like Us on Facebook" target="_blank"><i class="icon-facebook-sign icon-large"></i></a>
+            </li>
+            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+              <a href="http://twitter.com/ovrride" title="Follow Us on Twitter" target="_blank"><i class="icon-twitter-sign icon-large"></i></a>
+            </li>
+            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:33px;">
+              <a href="http://instagram.com/ovrride" title="Follow Us on Instagram" target="_blank"><i class="icon-instagram icon-large"></i></a>
+            </li>
+            <li style="margin:0px 12px 0px 0px;padding-top:12px;height:35px;">
+              <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="icon-youtube icon-large"></i></a>
+            </li>
+            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+              <a href="http://ovrride.com/cart">CART</a>
+            </li>
+            <li> |&nbsp;</li>
+            <li><?php wp_loginout(); ?></li>
+          </ul>
+          <div class="top-search">
+            <?php echo do_shortcode('[widget id="search-3"]'); ?>
+          </div>
+        </div>
+
 				<nav id="site-navigation" class="main-navigation" role="navigation">
 					<h3 class="menu-toggle assistive-text"><?php _e( 'Menu', 'quark' ); ?></h3>
 					<div class="assistive-text skip-link"><a href="#content" title="<?php esc_attr_e( 'Skip to content', 'quark' ); ?>"><?php _e( 'Skip to content', 'quark' ); ?></a></div>
