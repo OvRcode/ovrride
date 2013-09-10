@@ -20,7 +20,7 @@ get_header(); ?>
 					$p = get_page($id);
 					echo apply_filters('the_content', $p->post_content);
 				?>
-                <h1 style="margin-top:5px;" class="book-btn"><a href="http://ovrride.com/calendar/">VIEW FULL CALENDAR</a></h1>
+                <h1 style="margin-top:5px;" class="book-btn"><a href="http://ovrride.com/events/">VIEW FULL CALENDAR</a></h1>
             </div>
         </div>
         

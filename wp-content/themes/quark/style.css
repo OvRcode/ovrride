@@ -812,6 +812,19 @@ select {
 }
 payment_methods methods {
 }
+.em-location-map-container {
+	width:100% !important;
+	height:380px !important;
+}
+.eventful-post ul li {
+	background:#363636 !important;
+}
+.eventful ul li {
+	background:#363636 !important;
+}
+.eventful-pre ul li {
+	background:#363636 !important;
+}
 .related {
 	clear:both;
 }
@@ -3572,10 +3585,10 @@ li span.dots {
 	text-align: left;
 	float: right;
 	clear: right;
-	margin: 6px 0 0 0;
-	margin: .4rem 0 0 0;
+	margin: 1px 0 0 0;
+	margin: .1rem 0 0 0;
 	position: relative;
-	bottom: -46px;
+	bottom: -45px;
 }
 
 .main-navigation h1 {
@@ -3591,7 +3604,7 @@ li span.dots {
 	letter-spacing:1px;
 	font-size: 26px;
 	font-size: 1.55rem;
-	line-height: 1.3;
+	line-height: 1.2;
 	color:#FFF;
 }
 
