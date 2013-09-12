@@ -256,21 +256,21 @@ function quark_scripts_styles() {
 	 */
 
 	// Start off with a clean base by using normalise. If you prefer to use a reset stylesheet or something else, simply replace this
-	wp_register_style( 'normalize', trailingslashit( get_template_directory_uri() ) . 'css/normalize.css' , array(), '2.1.0', 'all' );
+	wp_register_style( 'normalize', trailingslashit( get_template_directory_uri() ) . 'css/normalize.css' , array(), '2.1.2', 'all' );
 	wp_enqueue_style( 'normalize' );
 
 	// Register and enqueue our icon fonts
 	// We're using the awesome Font Awesome icon font. http://gregoryloucas.github.com/Font-Awesome-More
-	wp_register_style( 'fontawesome', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome.min.css' , array(), '3.0.2', 'all' );
+	wp_register_style( 'fontawesome', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome.min.css' , array(), '3.2.1', 'all' );
 	wp_enqueue_style( 'fontawesome' );
 	// We want the social icons as well
-	wp_register_style( 'fontawesomesocial', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome-social.css' , array(), '3.0.2', 'all' );
-	wp_enqueue_style( 'fontawesomesocial' );
+	// wp_register_style( 'fontawesomesocial', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome-social.css' , array(), '3.0.2', 'all' );
+	// wp_enqueue_style( 'fontawesomesocial' );
 	// If you want to use the Corp. Extension & More icons as well, uncomment the following 4 lines. I haven't included them by default
-	//wp_register_style( 'fontawesomecorp', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome-corp.css' , array(), '3.0.2', 'all' );
-	//wp_enqueue_style( 'fontawesomecorp' );
-	//wp_register_style( 'fontawesomeext', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome-ext.css' , array(), '3.0.2', 'all' );
-	//wp_enqueue_style( 'fontawesomeext' );
+	// wp_register_style( 'fontawesomecorp', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome-corp.css' , array(), '3.0.2', 'all' );
+	// wp_enqueue_style( 'fontawesomecorp' );
+	// wp_register_style( 'fontawesomeext', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome-ext.css' , array(), '3.0.2', 'all' );
+  // wp_enqueue_style( 'fontawesomeext' );
 
 	// Our styles for setting up the grid.
 	// If you prefer to use a different grid system, simply replace this and perform a find/replace in the php for the relevant styles. I'm nice like that!
