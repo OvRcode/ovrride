@@ -63,7 +63,7 @@
         <div class="social-media-icons">
           <ul id="topnav">
             <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
-              <a href="http://ovrride.com/contact-us/" title="Contact Us"><i class="icon-envelope icon-large"></i></a>
+              <a href="/contact-us/" title="Contact Us"><i class="icon-envelope icon-large"></i></a>
             </li>
             <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
               <a href="https://www.facebook.com/ovrride" title="Like Us on Facebook" target="_blank"><i class="icon-facebook-sign icon-large"></i></a>
@@ -78,7 +78,7 @@
               <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="icon-youtube-sign icon-large"></i></a>
             </li>
             <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
-              <a href="http://ovrride.com/cart">CART</a>
+              <a href="/cart">CART</a>
             </li>
             <li> |&nbsp;</li>
             <li><?php wp_loginout(); ?></li>

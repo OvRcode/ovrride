@@ -2314,25 +2314,25 @@ p.srp-widget-excerpt {
 	margin: 0px 0px 3px 0px;
 }
 .destinations #squelch-taas-header-0 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/newyork.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/newyork.png) 4px 4px no-repeat #cecece;
 }
 .destinations #squelch-taas-header-1 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/penn.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/penn.png) 4px 4px no-repeat #cecece;
 }
 .destinations #squelch-taas-header-2 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/vermont.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/vermont.png) 4px 4px no-repeat #cecece;
 }
 .destinations #squelch-taas-header-3 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/westcoast.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/westcoast.png) 4px 4px no-repeat #cecece;
 }
 .destinations #squelch-taas-header-4 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/samerica.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/samerica.png) 4px 4px no-repeat #cecece;
 }
 .destinations #squelch-taas-header-5 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/canada.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/canada.png) 4px 4px no-repeat #cecece;
 }
 .destinations #squelch-taas-header-6 {
-	background:url(http://ovrride.com/wp-content/themes/quark/images/destination-imgs/japan.png) 4px 4px no-repeat #cecece;
+  background:url(images/destination-imgs/japan.png) 4px 4px no-repeat #cecece;
 }
 .fb_iframe_widget {
 	background: #C3C3C3;
@@ -2880,7 +2880,7 @@ article.sticky {
 	color: white !important;
 }
 #gform_4 {
-	background: url(http://ovrride.com/wp-content/themes/quark/images/form-bg.jpg) no-repeat;
+	background: url(images/form-bg.jpg) no-repeat;
 	padding: 4px;
 	width: 100%;
 	border-radius: 3px;
