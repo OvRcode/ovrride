@@ -32,6 +32,16 @@
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
 
+  <!-- Facebook Open Graph Properties -->
+  <?php if (stristr($_SERVER["HTTP_USER_AGENT"],'facebook') !== false) { ?>
+    <meta property="og:title" content="<?php wp_title(); ?>" />
+    <meta property="og:description" content="<?php bloginfo('description'); ?>" />
+    <meta property="og:url" content="<?php bloginfo('url'); ?>" />
+    <meta property="og:type" content="website" />
+    <meta property="fb:admins" content="123456789" />
+    <meta property="og:image" content="<?php bloginfo('url'); ?>/wp-content/uploads/2013/05/ovr-logo.jpg" />
+  <?php } ?>
+
 	<?php wp_head(); ?>
 </head>
 
