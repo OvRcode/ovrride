@@ -71,9 +71,9 @@
       </div>
 
       <div style="text-align:right;" class="col grid_3_of_12">
-        <a href="http://www.homagebrooklyn.com/site/" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php bloginfo('template_directory');?>/images/shops/homage.jpg" alt="Homage" /></a> 
-        <a href="http://www.rei.com/stores/soho.html" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php bloginfo('template_directory');?>/images/shops/rei.jpg" alt="REI" /></a> 
-        <a href="http://www.shutnyc.com" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php bloginfo('template_directory');?>/images/shops/shut.jpg" alt="SHUT" /></a> 
+        <a href="http://www.homagebrooklyn.com/site/" title="Homage Brooklyn" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php bloginfo('template_directory');?>/images/shops/homage.jpg" /></a>
+        <a href="http://www.rei.com/stores/soho.html" title="REI SoHo NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php bloginfo('template_directory');?>/images/shops/rei.jpg" /></a>
+        <a href="http://www.shutnyc.com" title="SHUT Skateboards NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php bloginfo('template_directory');?>/images/shops/shut.jpg" /></a> 
       </div>
     </footer>
   </div> <!-- /.footercontainer -->
