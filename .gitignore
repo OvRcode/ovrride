@@ -3,6 +3,7 @@
 
 # Ignore everything except
 !.gitignore
+!.htaccess
 !README.md
 !/wp-content/
 !/wp-content/plugins/
