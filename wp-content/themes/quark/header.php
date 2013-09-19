@@ -71,27 +71,29 @@
 
       <div class="col grid_9_of_12">
         <div class="social-media-icons">
-          <ul id="topnav">
-            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+          <ul style="margin-top:5px;" id="topnav">
+            <li class="ovr_soc_icon">
               <a href="/contact-us/" title="Contact Us"><i class="icon-envelope icon-large"></i></a>
             </li>
-            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+            <li class="ovr_soc_icon">
               <a href="https://www.facebook.com/ovrride" title="Like Us on Facebook" target="_blank"><i class="icon-facebook-sign icon-large"></i></a>
             </li>
-            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+            <li class="ovr_soc_icon">
               <a href="http://twitter.com/ovrride" title="Follow Us on Twitter" target="_blank"><i class="icon-twitter-sign icon-large"></i></a>
             </li>
-            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:33px;">
+            <li class="ovr_soc_icon">
               <a href="http://instagram.com/ovrride" title="Follow Us on Instagram" target="_blank"><i class="icon-instagram icon-large"></i></a>
             </li>
-            <li style="margin:0px 12px 0px 0px;padding-top:12px;height:35px;">
+            <li class="ovr_soc_icon_end">
               <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="icon-youtube-sign icon-large"></i></a>
             </li>
-            <li style="margin:0px 3px 0px 0px;padding-top:10px;height:35px;">
+            <li>
               <a href="/cart">CART</a>
             </li>
-            <li> |&nbsp;</li>
-            <li><?php wp_loginout(); ?></li>
+            <li class="ovr_login_split">|</li>
+            <li>
+				<?php wp_loginout(); ?>
+            </li>
           </ul>
           <div class="top-search">
             <?php echo do_shortcode('[widget id="search-3"]'); ?>

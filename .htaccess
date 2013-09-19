@@ -12,6 +12,9 @@ RewriteRule . /index.php [L]
 </IfModule>
 # END WordPress
 
+# Prevent indexting of directories without an index file
+Options -Indexes
+
 # Rewrite ovrride.net to ovrride.com
 RewriteEngine on
 RewriteCond %{HTTP_HOST} ^ovrride\.net$ [OR]

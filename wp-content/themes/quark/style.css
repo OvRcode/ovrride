@@ -812,6 +812,15 @@ select {
 }
 payment_methods methods {
 }
+.ovr_soc_icon {
+	margin:0px 3px 0px 0px !important;
+}
+.ovr_soc_icon_end {
+	margin:0px 17px 0px 0px !important;
+}
+.ovr_login_split {
+	margin:0px 2px !important;
+}
 .em-location-map-container {
 	width:100% !important;
 	height:380px !important;
@@ -861,7 +870,7 @@ payment_methods methods {
 	font-family: inherit;
 	border: 1px solid #CCC;
 	border-radius: 3px;
-	width: 60%;
+	width: 63%;
 	height: 25px;
 }
 .top-search .widgettitle {
