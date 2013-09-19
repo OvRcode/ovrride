@@ -53,6 +53,20 @@ function replace_howdy( $wp_admin_bar ) {
 add_filter( 'admin_bar_menu', 'replace_howdy',25 );
 
 
+/**
+* Adds a custom User Role 'Staff'.
+* With the capability to read_private_posts and read_private_pages.
+* This role allows staff members to ready the Private SOP pages and Field Guides.
+**/
+add_role('staff', 'OvR Staff', array(
+  'read' => true, // Can read posts and pages
+  'read_private_posts' => true,
+  'read_private_pages' => true,
+  'edit_private_pagess' => false,
+  'delete_private_pages' => false,
+));
+
+
 // Adds the Manning avatar to Settings > Discussion
 if ( !function_exists('fb_addgravatar') ) {
 	function fb_addgravatar( $avatar_defaults ) {
