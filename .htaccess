@@ -15,6 +15,9 @@ RewriteRule . /index.php [L]
 # Prevent indexting of directories without an index file
 Options -Indexes
 
+# Protect the .git directory from peeping eyes
+RedirectMatch 404 /\.git
+
 # Rewrite ovrride.net to ovrride.com
 RewriteEngine on
 RewriteCond %{HTTP_HOST} ^ovrride\.net$ [OR]
