@@ -12,6 +12,9 @@ RewriteRule . /index.php [L]
 </IfModule>
 # END WordPress
 
+# Rewrite WordPress /wp-login.php page to /login
+RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
+
 # Prevent indexting of directories without an index file
 Options -Indexes
 
