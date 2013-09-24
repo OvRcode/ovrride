@@ -29,6 +29,7 @@ get_header(); ?>
 
 			</div> <!-- /.col.grid_8_of_12 -->
 			<?php get_sidebar(); ?>
+            
 
 	</div> <!-- /#primary.site-content.row -->
 
