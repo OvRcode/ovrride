@@ -26,7 +26,7 @@
 			$this->WP_Widget( 'instagram-widget', __('Instagram', 'instagram'), $wOptions, $cOptions );
 			
 			// Stylesheets ergänzen
-			add_action('init', array(&$this, 'stylesheet'));
+			add_action('init', array($this, 'stylesheet'));
 		}
 		
 		/**
