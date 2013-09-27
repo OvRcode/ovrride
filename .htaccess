@@ -1,6 +1,14 @@
 # Use PHP5.4 Single php.ini as default
 AddHandler application/x-httpd-php54s .php
 
+# Protect the php.ini file from peeping eyes
+<Files php.ini>
+  Order allow,deny
+  Deny from all
+</Files>
+
+# RewriteEngine on - must be decalted at least once before any Rewrites rules
+
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
 RewriteEngine On
@@ -15,14 +23,13 @@ RewriteRule . /index.php [L]
 # Rewrite WordPress /wp-login.php page to /login
 RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
 
-# Prevent indexting of directories without an index file
+# Prevent indexing of directories without an index file
 Options -Indexes
 
 # Protect the .git directory from peeping eyes
 RedirectMatch 404 /\.git
 
 # Rewrite ovrride.net to ovrride.com
-RewriteEngine on
 RewriteCond %{HTTP_HOST} ^ovrride\.net$ [OR]
 RewriteCond %{HTTP_HOST} ^www\.ovrride\.net$
 RewriteRule ^(.*)$ "http\:\/\/ovrride\.com\/$1" [R=301,L]
