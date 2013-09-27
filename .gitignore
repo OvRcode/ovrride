@@ -7,6 +7,10 @@
 !README.md
 !/wp-content/
 !/wp-content/plugins/
+!/wp-content/plugins/instapress/
+!/wp-content/plugins/instapress/*
+!/wp-content/plugins/instapress/*/*
+!/wp-content/plugins/instapress/*/*/*
 !/wp-content/plugins/ovr_functions/
 !/wp-content/plugins/ovr_functions/*
 !/wp-content/themes/

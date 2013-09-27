@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo
  * Author URI: http://ajacevedo.com
- * Version: 0.1.0
+ * Version: 0.1.2
  * License: MIT License
  */
 
@@ -54,7 +54,7 @@ add_filter( 'admin_bar_menu', 'replace_howdy',25 );
 
 
 /**
-* Adds a custom User Role 'Staff'.
+* Adds a custom User Role 'OvR Staff'.
 * With the capability to read_private_posts and read_private_pages.
 * This role allows staff members to ready the Private SOP pages and Field Guides.
 **/
@@ -78,6 +78,7 @@ if ( !function_exists('fb_addgravatar') ) {
 
 	add_filter( 'avatar_defaults', 'fb_addgravatar' );
 }
+
 
 /* Place custom code above this line. */
 ?>
