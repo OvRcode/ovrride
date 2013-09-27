@@ -1,5 +1,5 @@
-# Use PHP5.3 Single php.ini as default
-AddHandler application/x-httpd-php53s .php
+# Use PHP5.4 Single php.ini as default
+AddHandler application/x-httpd-php54s .php
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
