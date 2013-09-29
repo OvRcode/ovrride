@@ -3910,8 +3910,14 @@ li span.dots {
 	.grid_12_of_12 {
 		width: 100%; 
 	}
+	.site-content {
+		max-width:100%;
+	}
 	.col {
 		margin: 0;
+	}
+	div.srp-widget-singlepost {
+		width:100%;
 	}
 	h4 {
 		font-size: 21px;
@@ -3999,6 +4005,9 @@ li span.dots {
 	.ui-tabs .ui-tabs-nav li a {
 		font-size: 11px;
 	}
+	.phn {
+		display:none !important;
+	}
 }
 
 
@@ -4008,6 +4017,9 @@ li span.dots {
 	.instagram-image {
 		height:65px;
 		width:65px;
+	}
+	.phn {
+		display:none !important;
 	}
 }
 
@@ -4020,6 +4032,9 @@ li span.dots {
 	div.srp-widget-singlepost {
 		width:100%;
 		clear:both;
+	}
+	.phn {
+		display:none !important;
 	}
 }
 
