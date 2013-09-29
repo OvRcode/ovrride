@@ -3911,7 +3911,7 @@ li span.dots {
 		width: 100%; 
 	}
 	.site-content {
-		max-width:100%;
+		max-width:600px;
 	}
 	.col {
 		margin: 0;
