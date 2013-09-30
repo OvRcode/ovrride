@@ -1,13 +1,13 @@
 # Use PHP5.4 Single php.ini as default
 AddHandler application/x-httpd-php54s .php
 
-# Protect the php.ini file from peeping eyes
-<Files php.ini>
+# Protect system files from peeping eyes
+<FilesMatch "php.ini|error_log|README.mdi|readme.html">
   Order allow,deny
   Deny from all
-</Files>
+</FilesMatch>
 
-# RewriteEngine on - must be decalted at least once before any Rewrites rules
+# RewriteEngine on - must be declared at least once before any Rewrites rules
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
@@ -20,7 +20,7 @@ RewriteRule . /index.php [L]
 </IfModule>
 # END WordPress
 
-# Rewrite WordPress /wp-login.php page to /login
+# Rewrite WordPress /login to /wp-login.php
 RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
 
 # Prevent indexing of directories without an index file
