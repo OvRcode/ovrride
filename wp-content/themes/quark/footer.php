@@ -65,7 +65,7 @@
         <span> | </span>
         <a href="/contact-us/">Contact Us</a>
         <br>
-        <span>&copy; COPYRIGHT 2013 - <a href="/">OvR ride LLC.</a> - ALL RIGHTS RESERVED</span>
+        <span>&copy; COPYRIGHT <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a> - ALL RIGHTS RESERVED</span>
         <br>
         <span><a href="/terms-and-conditions/">Terms &amp; Conditions</a></span>
       </div>
