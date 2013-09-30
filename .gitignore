@@ -4,6 +4,7 @@
 # Ignore everything except
 !.gitignore
 !.htaccess
+!list.php
 !README.md
 !/wp-content/
 !/wp-content/plugins/
