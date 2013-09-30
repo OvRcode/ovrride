@@ -30,3 +30,5 @@ The OvRride Theme is based off of the [Quark Starter Theme](http://quarktheme.co
 
     Transfer the directory `public_html` to your home directory  
     `rsync -avz -e ssh ovrridec@ovrride.com:public_html/ ~`  
+
+**NOTE:** The .htaccess file will cause issue with a local install. Comment out every line outside of the BEGIN and END WordPress comments.
