@@ -1,8 +1,18 @@
 <?php
+/**
+ * OvR Lists - Functions and Definitions
+ *
+ * @package OvR Lists
+ * @since Version 0.0.2
+ */
+
+# Include Configurations
+include 'include/config.php';
+
 // Trip List Exporter Functions
 function trip_options($selected){
 	//connect to db
-	$db_connect = new mysqli($host, $user, $pass, $db);
+	$db_connect = new mysqli('***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***');
 
 	if($db_connect->connect_errno > 0){
 	    die('Unable to connect to database [' . $db_connect->connect_error . ']');
@@ -33,7 +43,7 @@ function trip_options($selected){
 }
 function find_orders_by_trip($trip){
 	//connect to db
-	$db_connect = new mysqli($host, $user, $pass, $db);
+	$db_connect = new mysqli('***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***');
 
 	if($db_connect->connect_errno > 0){
 	    die('Unable to connect to database [' . $db_connect->connect_error . ']');
@@ -66,7 +76,7 @@ function find_orders_by_trip($trip){
 }
 function get_order_data($order,$trip){
 	//connect to db
-	$db_connect = new mysqli($host, $user, $pass, $db);
+	$db_connect = new mysqli('***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***');
 
 	if($db_connect->connect_errno > 0){
 	    die('Unable to connect to database [' . $db_connect->connect_error . ']');

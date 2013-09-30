@@ -1,9 +1,20 @@
 <?php
+/**
+ * OvR Lists - The main template file for OvR Lists
+ *
+ *
+ * @package OvR Lists
+ * @since Version 0.0.1
+ */
+
 # Include Functions
 include 'include/functions.php';
 
-# Include Configurations
-include 'include/config.php';
+/* Report all PHP errors on page. */
+/* For Development use only */
+error_reporting(E_ALL|E_STRICT);
+ini_set('display_errors','On');
+
 ?>
 <html>
 <head><title>OvR Test</title></head>
