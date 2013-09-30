@@ -1,3 +1,7 @@
 <?php
-// Placeholder for configuration includes
+# MySQL Database Connection
+$host = '***REMOVED***';
+$user = '***REMOVED***';
+$pass = '***REMOVED***';
+$db = '***REMOVED***';
 ?>
