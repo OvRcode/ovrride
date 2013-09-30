@@ -79,6 +79,26 @@ if ( !function_exists('fb_addgravatar') ) {
 	add_filter( 'avatar_defaults', 'fb_addgravatar' );
 }
 
+///////////////////
+//   SHORTCODE   //
+///////////////////
+// Shortcode to display the current year, dynamically in a Post.
+
+// Use: [year]
+function year_current() {
+    $year = date('Y');
+    return $year;
+}
+
+add_shortcode('year', 'year_current');
+
+
+// Ensures that a shortcode block is not wrapped in <p> ... </p> when on a standalone line
+add_filter( 'widget_text', 'shortcode_unautop');
+
+// Enable shortcode in the text widgets
+add_filter('widget_text', 'do_shortcode');
+
 
 /* Place custom code above this line. */
 ?>
