@@ -151,7 +151,9 @@ function split_name($name,$order_id){
     $result = db_query($sql);
     $names = array();
     while($row = $result->fetch_assoc()){
-        $decimal = end(explode('.',$row['field_number']));
+      $field_number = $row['field_number'];
+        $decimal = explode('.',$field_number);
+        $decimal = end($decimal);
         if($decimal == 3)
             $names[$row['lead_id']]['First'][] = $row['value'];
         elseif($decimal == 6)
@@ -176,7 +178,9 @@ function get_gravity_id($order_id){
     # meta_value returns a ; delimited field
     $row = explode(';', $row['meta_value']);
     # break up field by :, last fragment has form id
-    $form_id = str_replace('"','',end(explode(':',$row[1])));
+    $form_id = explode(':',$row[1]);
+    $form_id = end($form_id);
+    $form_id = str_replace('"','',$form_id);
     return $form_id;
 }
 function reformat_phone($phone){
