@@ -6,19 +6,20 @@
  * @since Version 0.0.2
  */
 
-# Include Configurations
-include 'include/config.php';
-
 # Trip List Exporter Functions
+function db_connect(){
+	# Include Configurations
+	include 'include/config.php';
+	global $db_connect;
+	$db_connect = new mysqli($host,$user,$pass,$db); 
+  if($db_connect->connect_errno > 0){
+      die('Unable to connect to database [' . $db_connect->connect_error . ']');
+  }
+}
 function trip_options($selected){
-    # connect to db
-    $db_connect = new mysqli('***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***');
-
-    if($db_connect->connect_errno > 0){
-        die('Unable to connect to database [' . $db_connect->connect_error . ']');
-    }
-
-    # find trips
+		global $db_connect;
+    
+		# find trips
     $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
     if(!$result = $db_connect->query($sql)){
         die('There was an error running the query [' . $db_connect->error . ']');
@@ -37,18 +38,12 @@ function trip_options($selected){
     }
     # clean up
     $result->free();
-    $db_connect->close();
 
     return $options;
 }
 function find_orders_by_trip($trip){
-    # connect to db
-    $db_connect = new mysqli('***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***');
-
-    if($db_connect->connect_errno > 0){
-        die('Unable to connect to database [' . $db_connect->connect_error . ']');
-    }
-
+		global $db_connect;
+    
     $sql = "SELECT `wp_posts`.`ID`
         FROM `wp_posts`
         INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
@@ -68,7 +63,7 @@ function find_orders_by_trip($trip){
     }
 
     $result->free();
-    $db_connect->close();
+
     if(count($orders) == 0){
         return FALSE;
     }
@@ -78,12 +73,7 @@ function find_orders_by_trip($trip){
 }
 
 function get_order_data($order,$trip){
-    # connect to db
-    $db_connect = new mysqli('***REMOVED***', '***REMOVED***', '***REMOVED***', '***REMOVED***');
-
-    if($db_connect->connect_errno > 0){
-        die('Unable to connect to database [' . $db_connect->connect_error . ']');
-    }
+		global $db_connect;
 
     # get line items from order
     $sql = "select order_item_id from wp_woocommerce_order_items where order_item_type = 'line_item' and order_id = '$order'";
@@ -174,4 +164,5 @@ function table_close(){
     $html .= "</table>";
     return $html;
 }
+db_connect();
 ?>
