@@ -22,15 +22,17 @@ ini_set('display_errors','On');
     <title>OvR Trip Lists</title>
   </head>
   <body>
+    <h1>OvR Trip Lists</h1>
+    <br>
     <form action="index.php" method="post">
-      <label>Select trip</label>
+      <label>Select a Trip:</label>
       <br>
       <select id="trip" name="trip">
       <?php echo trip_options($_POST['trip']); ?>
       </select>
       <input type="submit" value="Generate List" />
       </form>
-
+      <br>
       <?php 
         if(isset($_POST['trip']) && $_POST['trip'] != ""){
             if($orders=find_orders_by_trip($_POST['trip'])){
