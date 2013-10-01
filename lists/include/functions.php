@@ -158,7 +158,12 @@ function table_header(){
 }
 function table_row($data){
     foreach($data['Name'] as $index => $name){
-        $html .= "<tr><td></td><td>".$name."</td><td>".$data['Pickup Location'][$index]."</td><td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
+        $html = "<tr><td></td><td>".$name."</td>";
+				if(isset($data['Pickup Location'][$index]))
+					$html .= "<td>".$data['Pickup Location'][$index]."</td>";
+				else
+					$html .= "<td></td>";
+				$html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
         $html .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
     }
     return $html;
