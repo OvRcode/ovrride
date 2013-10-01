@@ -142,12 +142,13 @@ function table_header(){
     return $html;
 }
 function table_row($data){
+    $html = "";
     foreach($data['Name'] as $index => $name){
-        $html = "<tr><td></td><td>".$name."</td>";
+        $html .= "<tr><td></td><td>".$name."</td>";
         if(isset($data['Pickup Location'][$index]))
-          $html .= "<td>".$data['Pickup Location'][$index]."</td>";
+            $html .= "<td>".$data['Pickup Location'][$index]."</td>";
         else
-          $html .= "<td></td>";
+            $html .= "<td></td>";
         $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
         $html .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
     }
