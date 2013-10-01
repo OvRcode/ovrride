@@ -16,15 +16,20 @@ function db_connect(){
       die('Unable to connect to database [' . $db_connect->connect_error . ']');
     }
 }
+function db_query($sql){
+    global $db_connect;
+    if(!$result = $db_connect->query($sql))
+        die('There was an error running the query [' . $db_connect->error . ']');
+    else
+      return $result;
+}
 function trip_options($selected){
   global $db_connect;
     
     # find trips
     $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
-    if(!$result = $db_connect->query($sql)){
-        die('There was an error running the query [' . $db_connect->error . ']');
-    }
-
+    $result = db_query($sql);
+    
     # Construct options for a select field
     $options = "<option value=''";
     if($selected == "")
@@ -52,11 +57,8 @@ function find_orders_by_trip($trip){
         AND `wp_woocommerce_order_items`.`order_item_type` =  'line_item'
         AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
         AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$trip'";
-
-    if(!$result = $db_connect->query($sql)){
-        die('There was an error running the query [' . $db_connect->error . ']');
-    }
-
+    
+    $result = db_query($sql);
     $orders = array();
     while($row = $result->fetch_assoc()){
         $orders[] = $row['ID'];
@@ -77,9 +79,7 @@ function get_order_data($order,$trip){
 
     # get line items from order
     $sql = "select order_item_id from wp_woocommerce_order_items where order_item_type = 'line_item' and order_id = '$order'";
-    if(!$result = $db_connect->query($sql)){
-        die('There was an error running the query [' . $db_connect->error . ']');
-    }
+    $result = db_query($sql);
     $row = $result->fetch_assoc();
     $result->free();
     $order_item_id = $row['order_item_id'];
@@ -89,10 +89,7 @@ function get_order_data($order,$trip){
         where 
     ( meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
         and order_item_id = '$order_item_id'";
-
-    if(!$result2 = $db_connect->query($sql2)){
-        die('There was an error running the query [' . $db_connect->error . ']');
-    }
+    $result2 = db_query($sql2);
 
     while($row = $result2->fetch_assoc()){
         if($row['meta_key'] == 'How many riders are coming?')
@@ -109,10 +106,7 @@ function get_order_data($order,$trip){
             WHERE meta_key =  '_billing_phone'
             AND post_id =  '$order'";
 
-    if(!$result3 = $db_connect->query($sql3)){
-        die('There was an error running the query [' . $db_connect->error . ']');
-    }
-
+    $result3 = db_query($sql3);
     $row = $result3->fetch_assoc();
     $result3->free();
     $meta_data['Phone'] = $row['Phone'];
