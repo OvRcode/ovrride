@@ -8,18 +8,18 @@
 
 # Trip List Exporter Functions
 function db_connect(){
-	# Include Configurations
-	include 'include/config.php';
-	global $db_connect;
-	$db_connect = new mysqli($host,$user,$pass,$db); 
-  if($db_connect->connect_errno > 0){
+    # Include Configurations
+    include 'include/config.php';
+    global $db_connect;
+    $db_connect = new mysqli($host,$user,$pass,$db); 
+    if($db_connect->connect_errno > 0){
       die('Unable to connect to database [' . $db_connect->connect_error . ']');
-  }
+    }
 }
 function trip_options($selected){
-		global $db_connect;
+  global $db_connect;
     
-		# find trips
+    # find trips
     $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
     if(!$result = $db_connect->query($sql)){
         die('There was an error running the query [' . $db_connect->error . ']');
@@ -42,7 +42,7 @@ function trip_options($selected){
     return $options;
 }
 function find_orders_by_trip($trip){
-		global $db_connect;
+    global $db_connect;
     
     $sql = "SELECT `wp_posts`.`ID`
         FROM `wp_posts`
@@ -73,7 +73,7 @@ function find_orders_by_trip($trip){
 }
 
 function get_order_data($order,$trip){
-		global $db_connect;
+    global $db_connect;
 
     # get line items from order
     $sql = "select order_item_id from wp_woocommerce_order_items where order_item_type = 'line_item' and order_id = '$order'";
@@ -131,7 +131,7 @@ function reformat_phone($phone){
     $phone = str_replace(' ','',$phone);
     $phone = str_replace('.','',$phone);
     
-		# add formatting to raw phone num
+    # add formatting to raw phone num
     $phone = substr_replace($phone,'(',0,0);
     $phone = substr_replace($phone,') ',4,0);
     $phone = substr_replace($phone,'-',9,0);
@@ -150,11 +150,11 @@ function table_header(){
 function table_row($data){
     foreach($data['Name'] as $index => $name){
         $html = "<tr><td></td><td>".$name."</td>";
-				if(isset($data['Pickup Location'][$index]))
-					$html .= "<td>".$data['Pickup Location'][$index]."</td>";
-				else
-					$html .= "<td></td>";
-				$html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
+        if(isset($data['Pickup Location'][$index]))
+          $html .= "<td>".$data['Pickup Location'][$index]."</td>";
+        else
+          $html .= "<td></td>";
+        $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
         $html .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
     }
     return $html;
