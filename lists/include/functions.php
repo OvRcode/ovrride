@@ -206,7 +206,7 @@ function table_header(){
 function table_row($data){
     $html = "";
     foreach($data['First'] as $index => $first){
-        $html .= "<tr><td></td><td>".$first."</td><td>$data['Last'][$index]</td>";
+        $html .= "<tr><td></td><td>".$first."</td><td>".$data['Last'][$index]."</td>";
         if(isset($data['Pickup Location'][$index]))
             $html .= "<td>".$data['Pickup Location'][$index]."</td>";
         else
