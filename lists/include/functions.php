@@ -87,12 +87,14 @@ function get_order_data($order,$trip){
     # pull order item meta data
     $sql2 = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
         where 
-    ( meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
+    ( meta_key = '_product_id' or meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
         and order_item_id = '$order_item_id'";
     $result2 = db_query($sql2);
 
     while($row = $result2->fetch_assoc()){
         if($row['meta_key'] == 'How many riders are coming?')
+            $meta_data[$row['meta_key']] = $row['meta_value'];
+        elseif ($row['meta_key'] == '_product_id')
             $meta_data[$row['meta_key']] = $row['meta_value'];
         else
             $meta_data[$row['meta_key']][] = $row['meta_value'];
