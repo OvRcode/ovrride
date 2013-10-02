@@ -78,7 +78,7 @@ function get_order_data($order,$trip){
     global $db_connect;
 
     # get line items from order
-    $sql = "select order_item_id from wp_woocommerce_order_items where order_item_type = 'line_item' and order_id = '$order'";
+    $sql = "select `order_item_id` from `wp_woocommerce_order_items` where `order_item_type` = 'line_item' and `order_id` = '$order'";
     $result = db_query($sql);
     $row = $result->fetch_assoc();
     $result->free();
@@ -87,18 +87,27 @@ function get_order_data($order,$trip){
     # pull order item meta data
     $sql2 = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
         where 
-    ( meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
+    ( meta_key = '_product_id' or meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
         and order_item_id = '$order_item_id'";
     $result2 = db_query($sql2);
 
     while($row = $result2->fetch_assoc()){
         if($row['meta_key'] == 'How many riders are coming?')
             $meta_data[$row['meta_key']] = $row['meta_value'];
+        elseif ($row['meta_key'] == '_product_id')
+            $meta_data[$row['meta_key']] = $row['meta_value'];
         else
             $meta_data[$row['meta_key']][] = $row['meta_value'];
     }
-
     $result2->free();
+
+    # split names
+    foreach($meta_data['Name'] as $index => $name){
+        $name = split_name($name,$meta_data['_product_id']);
+        $meta_data['First'][] = $name['First'];
+        $meta_data['Last'][] = $name['Last'];
+    }
+
 
     # get phone num
     $sql3 = "SELECT  `meta_value` AS  `Phone`
@@ -116,7 +125,64 @@ function get_order_data($order,$trip){
 
     return $meta_data;
 }
+function split_name($name,$order_id){
+  global $db_connect;
 
+  $form_id = get_gravity_id($order_id);
+  # select name fields from gravity form table and match
+  # had to cast field_number to match against a float value, i hate floats
+  # TODO: figure out a way to automate the field_numbers...currently these have been pulled from looking at forms
+  $sql ="SELECT field_number, value, lead_id
+          FROM wp_rg_lead_detail
+          WHERE ( CAST( field_number AS CHAR ) <=> 2.3
+            OR CAST( field_number AS CHAR ) <=> 2.6
+            OR CAST( field_number AS CHAR ) <=> 9.3
+            OR CAST( field_number AS CHAR ) <=> 9.6
+            OR CAST( field_number AS CHAR ) <=> 8.3
+            OR CAST( field_number AS CHAR ) <=> 8.6
+            OR CAST( field_number AS CHAR ) <=> 7.3
+            OR CAST( field_number AS CHAR ) <=> 7.6
+            OR CAST( field_number AS CHAR ) <=> 6.3
+            OR CAST( field_number AS CHAR ) <=> 6.6
+            OR CAST( field_number AS CHAR ) <=> 5.3
+            OR CAST( field_number AS CHAR ) <=> 5.6 )
+          AND form_id = '$form_id'
+          ORDER BY lead_id ASC , field_number ASC ";
+    $result = db_query($sql);
+    $names = array();
+    while($row = $result->fetch_assoc()){
+        $field_number = $row['field_number'];
+        $decimal = explode('.',$field_number);
+        $decimal = end($decimal);
+        if($decimal == 3)
+            $names[$row['lead_id']]['First'][] = $row['value'];
+        elseif($decimal == 6)
+            $names[$row['lead_id']]['Last'][] = $row['value'];
+    }
+    # now that we have complete names loop through array and match against provided name
+    foreach ($names as $lead => $array){
+        foreach($array['First'] as $index => $first){
+            $complete = trim($first) . " " . trim($array['Last'][$index]);
+            if(strcmp(strtolower($name), strtolower($complete)) == 0){
+              return array("First" => $first, "Last" => $array['Last'][$index]);
+            }     
+        }
+    }
+}
+function get_gravity_id($order_id){
+    global $db_connect;
+
+    $sql = "select meta_value from wp_postmeta where meta_key = '_gravity_form_data' and post_id = '$order_id' ";
+    $result = db_query($sql);
+    $row = $result->fetch_assoc();
+    # meta_value returns a ; delimited field
+    $row = explode(';', $row['meta_value']);
+    # break up field by :, last fragment has form id
+    $form_id = explode(':',$row[1]);
+    $form_id = end($form_id);
+    $form_id = str_replace('"','',$form_id);
+    return $form_id;
+}
 function reformat_phone($phone){
     # strip all formatting
     $phone = str_replace('-','',$phone);
@@ -135,7 +201,7 @@ function reformat_phone($phone){
 function table_header(){
     $html = "<table border=1>\n";
     $html .= "<thead><tr>\n";
-    $html .= "<td>AM</td><td>Name</td><td>Pickup</td><td>Phone</td><td>Package</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
+    $html .= "<td>AM</td><td>First</td><td>Last</td><td>Pickup</td><td>Phone</td><td>Package</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
     $html .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
     $html .= "</tr></thead>\n";
     $html .= "<tbody>";
@@ -143,8 +209,8 @@ function table_header(){
 }
 function table_row($data){
     $html = "";
-    foreach($data['Name'] as $index => $name){
-        $html .= "<tr><td></td><td>".$name."</td>";
+    foreach($data['First'] as $index => $first){
+        $html .= "<tr><td></td><td>".$first."</td><td>".$data['Last'][$index]."</td>";
         if(isset($data['Pickup Location'][$index]))
             $html .= "<td>".$data['Pickup Location'][$index]."</td>";
         else
