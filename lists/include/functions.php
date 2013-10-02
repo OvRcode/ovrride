@@ -49,14 +49,31 @@ function trip_options($selected){
 function find_orders_by_trip($trip){
     global $db_connect;
     
+    //conditional SQL for checkboxes on form
+    $sql_conditional = "";
+    $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
+    foreach($checkboxes as $field){
+      if(isset($_POST[$field])){
+        if($sql_conditional == "")
+          $sql_conditional .= "`wp_terms`.`name` = '$field'";
+        else
+          $sql_conditional .= " OR `wp_terms`.`name` = '$field'";
+      }
+    }
+
     $sql = "SELECT `wp_posts`.`ID`
         FROM `wp_posts`
         INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
         INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
+        INNER JOIN `wp_term_relationships` ON `wp_posts`.`id` = `wp_term_relationships`.`object_id`
+        INNER JOIN `wp_terms` on `wp_term_relationships`.`term_taxonomy_id` = `wp_terms`.`term_id` 
         WHERE `wp_posts`.`post_type` =  'shop_order'
         AND `wp_woocommerce_order_items`.`order_item_type` =  'line_item'
         AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
-        AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$trip'";
+        AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$trip'
+        AND ($sql_conditional)";
+    if($sql_conditional === "")
+      $sql = substr($sql, 0, -6);
     
     $result = db_query($sql);
     $orders = array();
@@ -73,7 +90,6 @@ function find_orders_by_trip($trip){
         return $orders;
     }
 }
-
 function get_order_data($order,$trip){
     global $db_connect;
 
