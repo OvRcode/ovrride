@@ -163,9 +163,7 @@ function split_name($name,$order_id){
     foreach ($names as $lead => $array){
         foreach($array['First'] as $index => $first){
             $complete = trim($first) . " " . trim($array['Last'][$index]);
-            #if ($name == $complete){
-              if(strcmp(strtolower($name), strtolower($complete)) == 0){
-              #print "NAME IN: ". $name. " <br /> MATCHED: ".$complete."<br />";
+            if(strcmp(strtolower($name), strtolower($complete)) == 0){
               return array("First" => $first, "Last" => $array['Last'][$index]);
             }     
         }
