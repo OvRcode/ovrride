@@ -151,7 +151,7 @@ function split_name($name,$order_id){
     $result = db_query($sql);
     $names = array();
     while($row = $result->fetch_assoc()){
-      $field_number = $row['field_number'];
+        $field_number = $row['field_number'];
         $decimal = explode('.',$field_number);
         $decimal = end($decimal);
         if($decimal == 3)
@@ -162,8 +162,10 @@ function split_name($name,$order_id){
     # now that we have complete names loop through array and match against provided name
     foreach ($names as $lead => $array){
         foreach($array['First'] as $index => $first){
-            $complete = $first . " " . $array['Last'][$index];
-            if ($name == $complete){
+            $complete = trim($first) . " " . trim($array['Last'][$index]);
+            #if ($name == $complete){
+              if(strcmp(strtolower($name), strtolower($complete)) == 0){
+              #print "NAME IN: ". $name. " <br /> MATCHED: ".$complete."<br />";
               return array("First" => $first, "Last" => $array['Last'][$index]);
             }     
         }
