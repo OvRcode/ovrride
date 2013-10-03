@@ -8,7 +8,7 @@
  */
 
 # Include Functions
-include 'include/functions.php';
+include 'includes/functions.php';
 
 # Report all PHP errors on page
 # For Development use only
@@ -20,6 +20,10 @@ ini_set('display_errors','On');
   <head>
     <meta charset="utf-8">
     <title>OvR Trip Lists</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include compiled and minified stylesheets -->
+    <link rel="stylesheet" href="/assets/stylesheets/all.css">
   </head>
   <body>
     <h1>OvR Trip Lists</h1>
@@ -59,5 +63,7 @@ ini_set('display_errors','On');
             }
         }
       ?>
+      <!-- Include compiled and minified javascripts -->
+      <script src="assets/javascripts/all.js"></script>
   </body>
 </html>

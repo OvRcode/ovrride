@@ -9,7 +9,7 @@
 # Trip List Exporter Functions
 function db_connect(){
     # Include Configurations
-    include 'include/config.php';
+    include 'includes/config.php';
     global $db_connect;
     $db_connect = new mysqli($host,$user,$pass,$db); 
     if($db_connect->connect_errno > 0){
