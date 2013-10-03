@@ -8,6 +8,8 @@
 !/lists/*
 !/lists/*/*
 !/lists/*/*/*
+!/lists/*/*/*/*
+!/lists/*/*/*/*/*
 !README.md
 !/wp-content/
 !/wp-content/plugins/
