@@ -1,6 +1,6 @@
 ## OvRride.com
 
-The OvRride Theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
+OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
 
 
 ### Dependancies:
@@ -15,9 +15,9 @@ The OvRride Theme is based off of the [Quark Starter Theme](http://quarktheme.co
 
 2. Configure MAMP Preferences: ports: PHP = port 80, MySQL = port 3306 and Document Root = /path_to/public_html
 
-3. Export and download a copy of the database in SQL format from cPanel phpMyAdmin.
+3. Export and download a copy of the remote database in SQL format from cPanel phpMyAdmin.
 
-4. Create a database and database user with the values in wp-config.php using [phpMyAdmin](http://***REMOVED***/MAMP/?language=English)
+4. Create a local database and database user with the values in wp-config.php using [phpMyAdmin](http://***REMOVED***/MAMP/?language=English)
 
 5. Run [these](https://gist.github.com/AJ-Acevedo/0b09bedc776895fb6f93) SQL queries on the new local database:
 
@@ -29,6 +29,23 @@ The OvRride Theme is based off of the [Quark Starter Theme](http://quarktheme.co
     or  
 
     Transfer the directory `public_html` to your home directory  
-    `rsync -avz -e ssh ovrridec@ovrride.com:public_html/ ~`  
+    `rsync -avz -e ssh ovrridec@ovrride.com:public_html/ ~`
 
-**NOTE:** The .htaccess file will cause issue with a local install. Comment out every line outside of the BEGIN and END WordPress comments.
+    And there's always the sloooooow way using sftp.
+
+**NOTE:** The .htaccess file will cause issue with a local install. Comment out every line outside of the BEGIN and END WordPress comments. Please DO NOT commit your local version of the .htaccess file to the repo.
+
+### OvR Lists:
+
+OvR Lists can be accessed via http://list.ovrride.com. The files are located in the lists directory found in the root of this repo.
+
+Authentication is currently using .htpasswd, This will have to eventually change.
+
+### OvR Lists Dependancies:
+
+[Color Me Sass v1.3](http://www.richbray.me/cms/)  
+[Bootstrap Sass v3.0.0](https://github.com/jlong/sass-bootstrap)  
+[Grunt JS v0.4.1](http://gruntjs.com)  
+[jQuery 1.10.2](http://jquery.com)  
+
+Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
