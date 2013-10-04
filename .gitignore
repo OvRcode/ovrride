@@ -28,3 +28,4 @@
 !/wp-content/themes/quark/*/*/*/*/*
 
 .DS_Store
+node_modules
