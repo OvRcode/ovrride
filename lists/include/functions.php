@@ -48,7 +48,7 @@ function trip_options($selected){
 }
 function find_orders_by_trip($trip){
     global $db_connect;
-    
+     
     //conditional SQL for checkboxes on form
     $sql_conditional = "";
     $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
@@ -114,7 +114,7 @@ function get_order_data($order_array,$trip){
             $meta_data[$row['meta_key']][] = $row['meta_value'];
     }
     $result2->free();
-
+    
     # split names
     foreach($meta_data['Name'] as $index => $name){
         $name = split_name($name,$meta_data['_product_id']);
@@ -136,7 +136,9 @@ function get_order_data($order_array,$trip){
 
     # fix phone formatting
     $meta_data['Phone'] = reformat_phone($meta_data['Phone']);
-
+    
+    # add order number to data
+    $meta_data['Order'] = $order;
     return $meta_data;
 }
 function split_name($name,$order_id){
@@ -212,10 +214,13 @@ function reformat_phone($phone){
 
     return $phone;
 }
-function table_header(){
+function table_header($data){
     $html = "<table border=1>\n";
     $html .= "<thead><tr>\n";
-    $html .= "<td>AM</td><td>First</td><td>Last</td><td>Pickup</td><td>Phone</td><td>Package</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
+    $html .= "<td>AM</td><td>First</td><td>Last</td>";
+    if(isset($data['Pickup Location']))
+      $html .= "<td>Pickup</td>";
+    $html .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
     $html .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
     $html .= "</tr></thead>\n";
     $html .= "<tbody>";
@@ -227,9 +232,7 @@ function table_row($data){
         $html .= "<tr><td></td><td>".$first."</td><td>".$data['Last'][$index]."</td>";
         if(isset($data['Pickup Location'][$index]))
             $html .= "<td>".$data['Pickup Location'][$index]."</td>";
-        else
-            $html .= "<td></td>";
-        $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
+        $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td><td>".$data['Order']."</td>";
         $html .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
     }
     return $html;

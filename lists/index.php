@@ -48,12 +48,13 @@ ini_set('display_errors','On');
       <?php 
         if(isset($_POST['trip']) && $_POST['trip'] != ""){
             if($orders=find_orders_by_trip($_POST['trip'])){
-                print table_header();
+              $html = "";
                 foreach($orders as $order){
                     $data = get_order_data($order,$_POST['trip']);
-                    print table_row($data);
-                    #print_r(get_order_data($order,$_POST['trip']));
+                    $html .= table_row($data);
                 }
+                print table_header($data);
+                print $html;
                 print table_close();
             }
             else{
