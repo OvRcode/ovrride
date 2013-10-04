@@ -6,7 +6,7 @@ module.exports = function(grunt) {
 
     // JSHint Gruntfile.js and any of the OvR Lists javascripts
     jshint: {
-      files: ['Gruntfile.js', 'lists/assets/javascripts/lists.js'],
+      files: ['Gruntfile.js', 'package.json', 'lists/assets/javascripts/lists.js'],
     },
     
     // Concatenate all OvR Lists javascripts except all.js
@@ -15,12 +15,26 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['lists/assets/javascripts/**/*.js', '!lists/assets/javascripts/all.js'],
+        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/javascripts/lists.js'],
         dest: 'lists/assets/javascripts/all.js',
       },
     },
 
-    // Make the javascript ugly with Uglify
+    // Compile Sass to CSS -  destination : source
+    // TODO: Add a banner with message DO NOT MODIFY css file
+    // TODO: Add task to lint lists.scss
+    sass: {
+      compile: {
+        options: {
+          style: 'compressed',
+        },
+        files: {
+          'lists/assets/stylesheets/all.css': 'lists/assets/stylesheets/lists.scss',
+        },
+      },
+    },
+
+    // Minify javascript with Uglify
     // TODO: Add a banner with message DO NOT MODIFY js file
     uglify: {
       options: {
@@ -29,17 +43,6 @@ module.exports = function(grunt) {
       build: {
         src: 'lists/assets/javascripts/all.js',
         dest: 'lists/assets/javascripts/all.min.js',
-      },
-    },
-
-    // Compile Sass to CSS -  destination : source
-    // TODO: Add a banner with message DO NOT MODIFY css file
-    // TODO: Add task to lint lists.scss
-    sass: {
-      dist: {
-        files: {
-          'lists/assets/stylesheets/all.css': 'lists/assets/stylesheets/lists.scss',
-        },
       },
     },
 
