@@ -112,6 +112,8 @@ function get_order_data($order,$trip){
             $meta_data[$row['meta_key']] = $row['meta_value'];
         elseif ($row['meta_key'] == '_product_id')
             $meta_data[$row['meta_key']] = $row['meta_value'];
+        elseif ($row['meta_key'] == 'Package')
+          $meta_data[$row['meta_key']][] = preg_replace('/\(\$\S*\)/', '', $row['meta_value']);
         else
             $meta_data[$row['meta_key']][] = $row['meta_value'];
     }
