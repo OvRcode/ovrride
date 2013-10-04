@@ -4,10 +4,10 @@
   "description": "OvR Trip and Order List Generator",
   "author": "AJ Acevedo | Mike Barnard | Robert Chapman",
   "license": "MIT",
-	"repository" :
-	  { "type" : "git"
-	  , "url" : "https://github.com/AJ-Acevedo/ovrride.git"
-	  },
+  "repository":
+  { "type": "git",
+    "url": "https://github.com/AJ-Acevedo/ovrride.git"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.4",
