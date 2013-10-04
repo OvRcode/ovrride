@@ -61,7 +61,7 @@ function find_orders_by_trip($trip){
       }
     }
 
-    $sql = "SELECT `wp_posts`.`ID`
+    $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`
         FROM `wp_posts`
         INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
         INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
@@ -78,7 +78,7 @@ function find_orders_by_trip($trip){
     $result = db_query($sql);
     $orders = array();
     while($row = $result->fetch_assoc()){
-        $orders[] = $row['ID'];
+        $orders[] = array($row['ID'],$row['order_item_id']);
     }
 
     $result->free();
@@ -90,15 +90,11 @@ function find_orders_by_trip($trip){
         return $orders;
     }
 }
-function get_order_data($order,$trip){
+function get_order_data($order_array,$trip){
     global $db_connect;
 
-    # get line items from order
-    $sql = "select `order_item_id` from `wp_woocommerce_order_items` where `order_item_type` = 'line_item' and `order_id` = '$order'";
-    $result = db_query($sql);
-    $row = $result->fetch_assoc();
-    $result->free();
-    $order_item_id = $row['order_item_id'];
+    $order = $order_array[0];
+    $order_item_id = $order_array[1];
 
     # pull order item meta data
     $sql2 = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
