@@ -4,12 +4,14 @@
 # Ignore everything except
 !.gitignore
 !.htaccess
+!Gruntfile.js
 !/lists/
 !/lists/*
 !/lists/*/*
 !/lists/*/*/*
 !/lists/*/*/*/*
 !/lists/*/*/*/*/*
+!package.json
 !README.md
 !/wp-content/
 !/wp-content/plugins/
