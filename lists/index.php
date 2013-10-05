@@ -8,13 +8,17 @@
  */
 
 # Include Functions
-include 'include/functions.php';
+include 'include/lists.php';
 
 # Report all PHP errors on page
 # For Development use only
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','On');
 
+if(isset($_POST['trip']))
+  $list = new Trip_List($_POST['trip']);
+else
+  $list = new Trip_List("");
 ?>
 <!DOCTYPE html>
   <head>
@@ -28,7 +32,7 @@ ini_set('display_errors','On');
       <label>Select a Trip:</label>
       <br>
       <select id="trip" name="trip">
-      <?php echo trip_options($_POST['trip']); ?>
+      <?php echo $list->select_options; ?>
       </select>
       <br>
       <label>Order Status: </label>
@@ -45,23 +49,7 @@ ini_set('display_errors','On');
       <input type="submit" value="Generate List" />
       </form>
       <br>
-      <?php 
-        if(isset($_POST['trip']) && $_POST['trip'] != ""){
-            if($orders=find_orders_by_trip($_POST['trip'])){
-              $html = "";
-                foreach($orders as $order){
-                    $data = get_order_data($order,$_POST['trip']);
-                    $html .= table_row($data);
-                }
-                print table_header($data);
-                print $html;
-                print table_close();
-            }
-            else{
-                print "No orders found for this trip";
-            }
-        }
-      ?>
+      <?php if(isset($_POST['trip']) && $_POST['trip'] != "") print $list->html_table; ?>
   </body>
   <script type="text/javascript">
   // TODO: Extrack to external js file
