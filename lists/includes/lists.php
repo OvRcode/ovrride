@@ -24,8 +24,11 @@ class Trip_List{
         $this->trip_options();
         if($selected_trip != ""){
             $this->find_orders();
-            $this->get_order_data();
-            $this->generate_table();
+            if(count($this->orders) > 0){
+                $this->get_order_data();
+                $this->generate_table();
+              }
+              else{ $this->html_table = "Nothing to see here. "; }
           }
         
     }
@@ -137,6 +140,7 @@ class Trip_List{
       }
     }
     function generate_table(){
+      $total_guests = 0;
       $head = "<table border=1>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
       if($this->has_pickup)
         $head .= "<td>Pickup</td>";
@@ -144,8 +148,10 @@ class Trip_List{
       $head .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
       $head .= "</tr></thead>\n";
       $body = "<tbody>\n";
+      
       foreach($this->order_data as $order => $info){
           foreach($info['First'] as $index => $first){
+            $total_guests += 1;
             $body .= "<tr><td></td><td>".$first."</td><td>".$info['Last'][$index]."</td>";
             if($this->has_pickup)
               $body .= "<td>".$info['Pickup Location'][$index]."</td>";
@@ -154,7 +160,7 @@ class Trip_List{
           }
       }
       $body .= "</tbody>\n";
-      $foot = "</table>";
+      $foot = "<tfoot>\n<tr><td colspan=2>Total Guests: </td><td>$total_guests</td></tr></tfoot></table";
       $this->html_table = $head . $body . $foot;
     }
     function get_gravity_id($order_id){
