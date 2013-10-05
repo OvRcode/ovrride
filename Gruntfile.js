@@ -46,7 +46,7 @@ module.exports = function(grunt) {
       },
     },
 
-    // Simple config to run jshint and sass any time a js or sass file is added, modified or deleted
+    // Simple config to run sass, jshint and uglify any time a js or sass file is added, modified or deleted
     watch: {
       sass: {
         files: ['lists/assets/stylesheets/lists.scss'],
@@ -55,6 +55,10 @@ module.exports = function(grunt) {
       jshint: {
         files: ['<%= jshint.files %>'],
         tasks: ['jshint'],
+      },
+      uglify: {
+        files: ['lists/assets/javascripts/lists.js'],
+        tasks: ['uglify'],
       },
     },
   });

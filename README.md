@@ -49,3 +49,9 @@ Authentication is currently using .htpasswd, This will have to eventually change
 [jQuery 1.10.2](http://jquery.com)  
 
 Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
+
+Once you have node, npm and grunt installed. You can run grunt tasks from the projects root.
+
+`grunt` from the CLI with run the default tasks specified in `Gruntfile.js`
+
+`grunt watch` from the CLI will watch the sass and javascript files for changes and automatically update all.min.js and all.css
