@@ -15,7 +15,10 @@ include 'include/lists.php';
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','On');
 
-$list = new Trip_List();
+if(isset($_POST['trip']))
+  $list = new Trip_List($_POST['trip']);
+else
+  $list = new Trip_List("");
 ?>
 <!DOCTYPE html>
   <head>
@@ -29,7 +32,7 @@ $list = new Trip_List();
       <label>Select a Trip:</label>
       <br>
       <select id="trip" name="trip">
-      <?php echo $list->trip_options($_POST['trip']); ?>
+      <?php echo $list->select_options; ?>
       </select>
       <br>
       <label>Order Status: </label>
@@ -46,23 +49,7 @@ $list = new Trip_List();
       <input type="submit" value="Generate List" />
       </form>
       <br>
-      <?php 
-        if(isset($_POST['trip']) && $_POST['trip'] != ""){
-            if($orders=$list->find_orders_by_trip($_POST['trip'])){
-              $html = "";
-                foreach($orders as $order){
-                    $data = $list->get_order_data($order,$_POST['trip']);
-                    $html .= $list->table_row($data);
-                }
-                print $list->table_header($data);
-                print $html;
-                print $list->table_close();
-            }
-            else{
-                print "No orders found for this trip";
-            }
-        }
-      ?>
+      <?php if(isset($_POST['trip']) && $_POST['trip'] != "") print $list->html_table; ?>
   </body>
   <script type="text/javascript">
   // TODO: Extrack to external js file
