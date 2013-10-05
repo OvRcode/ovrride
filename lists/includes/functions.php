@@ -48,7 +48,7 @@ function trip_options($selected){
 }
 function find_orders_by_trip($trip){
     global $db_connect;
-    
+     
     //conditional SQL for checkboxes on form
     $sql_conditional = "";
     $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
@@ -61,7 +61,7 @@ function find_orders_by_trip($trip){
       }
     }
 
-    $sql = "SELECT `wp_posts`.`ID`
+    $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`
         FROM `wp_posts`
         INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
         INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
@@ -78,7 +78,7 @@ function find_orders_by_trip($trip){
     $result = db_query($sql);
     $orders = array();
     while($row = $result->fetch_assoc()){
-        $orders[] = $row['ID'];
+        $orders[] = array($row['ID'],$row['order_item_id']);
     }
 
     $result->free();
@@ -90,15 +90,11 @@ function find_orders_by_trip($trip){
         return $orders;
     }
 }
-function get_order_data($order,$trip){
+function get_order_data($order_array,$trip){
     global $db_connect;
 
-    # get line items from order
-    $sql = "select `order_item_id` from `wp_woocommerce_order_items` where `order_item_type` = 'line_item' and `order_id` = '$order'";
-    $result = db_query($sql);
-    $row = $result->fetch_assoc();
-    $result->free();
-    $order_item_id = $row['order_item_id'];
+    $order = $order_array[0];
+    $order_item_id = $order_array[1];
 
     # pull order item meta data
     $sql2 = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
@@ -112,11 +108,13 @@ function get_order_data($order,$trip){
             $meta_data[$row['meta_key']] = $row['meta_value'];
         elseif ($row['meta_key'] == '_product_id')
             $meta_data[$row['meta_key']] = $row['meta_value'];
+        elseif ($row['meta_key'] == 'Package')
+          $meta_data[$row['meta_key']][] = preg_replace('/\(\$\S*\)/', '', $row['meta_value']);
         else
             $meta_data[$row['meta_key']][] = $row['meta_value'];
     }
     $result2->free();
-
+    
     # split names
     foreach($meta_data['Name'] as $index => $name){
         $name = split_name($name,$meta_data['_product_id']);
@@ -138,7 +136,9 @@ function get_order_data($order,$trip){
 
     # fix phone formatting
     $meta_data['Phone'] = reformat_phone($meta_data['Phone']);
-
+    
+    # add order number to data
+    $meta_data['Order'] = $order;
     return $meta_data;
 }
 function split_name($name,$order_id){
@@ -214,10 +214,13 @@ function reformat_phone($phone){
 
     return $phone;
 }
-function table_header(){
+function table_header($data){
     $html = "<table border=1>\n";
     $html .= "<thead><tr>\n";
-    $html .= "<td>AM</td><td>First</td><td>Last</td><td>Pickup</td><td>Phone</td><td>Package</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
+    $html .= "<td>AM</td><td>First</td><td>Last</td>";
+    if(isset($data['Pickup Location']))
+      $html .= "<td>Pickup</td>";
+    $html .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
     $html .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
     $html .= "</tr></thead>\n";
     $html .= "<tbody>";
@@ -229,9 +232,7 @@ function table_row($data){
         $html .= "<tr><td></td><td>".$first."</td><td>".$data['Last'][$index]."</td>";
         if(isset($data['Pickup Location'][$index]))
             $html .= "<td>".$data['Pickup Location'][$index]."</td>";
-        else
-            $html .= "<td></td>";
-        $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td>";
+        $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td><td>".$data['Order']."</td>";
         $html .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
     }
     return $html;

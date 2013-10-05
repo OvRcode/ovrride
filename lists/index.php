@@ -28,7 +28,7 @@ ini_set('display_errors','On');
   <body>
     <h1>OvR Trip Lists</h1>
     <br>
-    <form action="index.php" method="post">
+    <form action="index.php" method="post" name="trip_list">
       <label>Select a Trip:</label>
       <br>
       <select id="trip" name="trip">
@@ -36,6 +36,8 @@ ini_set('display_errors','On');
       </select>
       <br>
       <label>Order Status: </label>
+      <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();">check all</a> /
+      <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">uncheck all</a><br />
       <input type="checkbox" name="processing" value="processing" <?php if(isset($_POST['processing']) || !isset($_POST['trip'])) echo 'checked';?>>Proccessing</input>
       <input type="checkbox" name="pending" value="pending" <?php if(isset($_POST['pending']) || !isset($_POST['trip'])) echo 'checked'; ?>>Pending</input>
       <input type="checkbox" name="cancelled" value="cancelled" <?php if(isset($_POST['cancelled'])) echo 'checked'; ?>>Cancelled</input>
@@ -50,12 +52,13 @@ ini_set('display_errors','On');
       <?php 
         if(isset($_POST['trip']) && $_POST['trip'] != ""){
             if($orders=find_orders_by_trip($_POST['trip'])){
-                print table_header();
+              $html = "";
                 foreach($orders as $order){
                     $data = get_order_data($order,$_POST['trip']);
-                    print table_row($data);
-                    #print_r(get_order_data($order,$_POST['trip']));
+                    $html .= table_row($data);
                 }
+                print table_header($data);
+                print $html;
                 print table_close();
             }
             else{
@@ -66,4 +69,18 @@ ini_set('display_errors','On');
       <!-- Include compiled and minified javascripts -->
       <script src="assets/javascripts/all.js"></script>
   </body>
+  <script type="text/javascript">
+  // TODO: Extrack to external js file
+  function checkAll(formname, checktoggle)
+  {
+    var checkboxes = new Array(); 
+    checkboxes = document[formname].getElementsByTagName('input');
+ 
+    for (var i=0; i<checkboxes.length; i++)  {
+      if (checkboxes[i].type == 'checkbox')   {
+        checkboxes[i].checked = checktoggle;
+      }
+    }
+  }
+  </script>
 </html>
