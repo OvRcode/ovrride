@@ -38,7 +38,7 @@ class Trip_List{
         else
           return $result;
     }
-    function trip_options(){
+    private function trip_options(){
         # find trips
         $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
         $result = $this->db_query($sql);
@@ -57,7 +57,7 @@ class Trip_List{
         # clean up
         $result->free();
     }
-    function find_orders(){
+    private function find_orders(){
         //conditional SQL for checkboxes on form
         $sql_conditional = "";
         $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
@@ -92,7 +92,7 @@ class Trip_List{
 
         $result->free();
     }
-    function get_order_data(){
+    private function get_order_data(){
         foreach($this->orders as $key => $value){
           $order = $value["id"];
           $order_item_id = $value["order_item_id"];
@@ -106,6 +106,8 @@ class Trip_List{
           while($row = $result->fetch_assoc()){
               if($row['meta_key'] == 'How many riders are coming?' || $row['meta_key'] == '_product_id')
                 $this->order_data[$order][$row['meta_key']] = $row['meta_value'];
+              elseif($row['meta_key'] == 'Package')
+                $this->order_data[$order][$row['meta_key']][] = preg_replace('/\(\$\S*\)/', "", $row['meta_value']);
               else
                 $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
           }
@@ -131,7 +133,7 @@ class Trip_List{
           
           # fix phone formatting
           $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
-          
+
           # is there a pickup location for this trip?
           if(isset($this->order_data[$order]['Pickup Location'][0]))
               $this->has_pickup = TRUE;
@@ -139,7 +141,7 @@ class Trip_List{
               $this->has_pickup = FALSE;
       }
     }
-    function generate_table(){
+    private function generate_table(){
       $total_guests = 0;
       $head = "<table border=1>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
       if($this->has_pickup)
@@ -160,10 +162,10 @@ class Trip_List{
           }
       }
       $body .= "</tbody>\n";
-      $foot = "<tfoot>\n<tr><td colspan=2>Total Guests: </td><td>$total_guests</td></tr></tfoot></table";
+      $foot = "<tfoot>\n<tr><td colspan=2 >Total Guests: </td><td>$total_guests</td></tr></tfoot></table";
       $this->html_table = $head . $body . $foot;
     }
-    function get_gravity_id($order_id){
+    private function get_gravity_id($order_id){
         $sql = "select meta_value from wp_postmeta where meta_key = '_gravity_form_data' and post_id = '$order_id' ";
         $result = $this->db_query($sql);
         $row = $result->fetch_assoc();
@@ -175,7 +177,7 @@ class Trip_List{
         $form_id = str_replace('"','',$form_id);
         return $form_id;
     }
-    function split_name($name,$order_id){
+    private function split_name($name,$order_id){
       $form_id = $this->get_gravity_id($order_id);
       # select name fields from gravity form table and match
       # had to cast field_number to match against a float value, i hate floats
@@ -217,7 +219,7 @@ class Trip_List{
             }
         }
     }
-    function reformat_phone($phone){
+    private function reformat_phone($phone){
         # strip all formatting
         $phone = str_replace('-','',$phone);
         $phone = str_replace('(','',$phone);
