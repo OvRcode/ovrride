@@ -15,7 +15,7 @@ class Trip_List{
     var $html_table;
     function __construct($selected_trip){
         #Connect to db
-        include 'include/config.php';
+        include 'config.php';
         $this->db_connect = new mysqli($host,$user,$pass,$db); 
         if($this->db_connect->connect_errno > 0){
             die('Unable to connect to database [' . $this->db_connect->connect_error . ']');
@@ -137,7 +137,7 @@ class Trip_List{
       }
     }
     function generate_table(){
-      $head = "<table>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
+      $head = "<table border=1>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
       if($this->has_pickup)
         $head .= "<td>Pickup</td>";
       $head .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
