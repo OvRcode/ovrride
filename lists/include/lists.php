@@ -7,13 +7,27 @@
  */
 class Trip_List{
     var $db_connect;
-    function __construct(){
+    var $trip;
+    var $select_options;
+    var $orders;
+    var $order_data;
+    var $has_pickup;
+    var $html_table;
+    function __construct($selected_trip){
         #Connect to db
         include 'include/config.php';
         $this->db_connect = new mysqli($host,$user,$pass,$db); 
         if($this->db_connect->connect_errno > 0){
             die('Unable to connect to database [' . $this->db_connect->connect_error . ']');
         }
+        $this->trip = $selected_trip;
+        $this->trip_options();
+        if($selected_trip != ""){
+            $this->find_orders();
+            $this->get_order_data();
+            $this->generate_table();
+          }
+        
     }
     private function db_query($sql){
         if(!$result = $this->db_connect->query($sql))
@@ -21,28 +35,26 @@ class Trip_List{
         else
           return $result;
     }
-    function trip_options($selected){
+    function trip_options(){
         # find trips
         $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
         $result = $this->db_query($sql);
     
         # Construct options for a select field
-        $options = "<option value=''";
-        if($selected == "")
-            $options .= " selected ";
-        $options .= "> Select trip </option>\n";
+        $this->select_options = "<option value=''";
+        if($this->trip == "")
+            $this->select_options .= " selected ";
+        $this->select_options .= "> Select trip </option>\n";
         while($row = $result->fetch_assoc()){
-            $options .= "<option value='".$row['id']."'";
-            if($selected == $row['id'])
-                $options .= " selected ";
-            $options .= ">".$row['post_title']."</option>\n";
+            $this->select_options .= "<option value='".$row['id']."'";
+            if($this->trip == $row['id'])
+                $this->select_options .= " selected ";
+            $this->select_options .= ">".$row['post_title']."</option>\n";
         }
         # clean up
         $result->free();
-
-        return $options;
     }
-    function find_orders_by_trip($trip){
+    function find_orders(){
         //conditional SQL for checkboxes on form
         $sql_conditional = "";
         $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
@@ -64,75 +76,98 @@ class Trip_List{
             WHERE `wp_posts`.`post_type` =  'shop_order'
             AND `wp_woocommerce_order_items`.`order_item_type` =  'line_item'
             AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
-            AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$trip'
+            AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$this->trip'
             AND ($sql_conditional)";
         if($sql_conditional === "")
           $sql = substr($sql, 0, -6);
     
         $result = $this->db_query($sql);
-        $orders = array();
+        $this->orders = array();
         while($row = $result->fetch_assoc()){
-            $orders[] = array($row['ID'],$row['order_item_id']);
+            $this->orders[] = array("id" => $row['ID'], "order_item_id" => $row['order_item_id']);
         }
 
         $result->free();
-
-        if(count($orders) == 0){
-            return FALSE;
-        }
-        else{
-            return $orders;
-        }
     }
-    function get_order_data($order_array,$trip){
-        $order = $order_array[0];
-        $order_item_id = $order_array[1];
+    function get_order_data(){
+        foreach($this->orders as $key => $value){
+          $order = $value["id"];
+          $order_item_id = $value["order_item_id"];
+          
+          $sql = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
+                    where 
+                    ( meta_key = '_product_id' or meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' 
+                    or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
+                    and order_item_id = '$order_item_id'";
+          $result = $this->db_query($sql);
+          while($row = $result->fetch_assoc()){
+              if($row['meta_key'] == 'How many riders are coming?' || $row['meta_key'] == '_product_id')
+                $this->order_data[$order][$row['meta_key']] = $row['meta_value'];
+              else
+                $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
+          }
+          $result->free();
+          
+          foreach($this->order_data[$order]['Name'] as $index => $name){
+              $name = $this->split_name($name,$this->order_data[$order]['_product_id']);
+              $this->order_data[$order]['First'][] = $name['First'];
+              $this->order_data[$order]['Last'][] = $name['Last'];
 
-        # pull order item meta data
-        $sql2 = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
-            where 
-            ( meta_key = '_product_id' or meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' 
-            or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
-            and order_item_id = '$order_item_id'";
-        $result2 = $this->db_query($sql2);
-
-        while($row = $result2->fetch_assoc()){
-            if($row['meta_key'] == 'How many riders are coming?')
-                $meta_data[$row['meta_key']] = $row['meta_value'];
-            elseif ($row['meta_key'] == '_product_id')
-                $meta_data[$row['meta_key']] = $row['meta_value'];
-            elseif ($row['meta_key'] == 'Package')
-              $meta_data[$row['meta_key']][] = preg_replace('/\(\$\S*\)/', '', $row['meta_value']);
-            else
-                $meta_data[$row['meta_key']][] = $row['meta_value'];
-        }
-        $result2->free();
-    
-        # split names
-        foreach($meta_data['Name'] as $index => $name){
-            $name = $this->split_name($name,$meta_data['_product_id']);
-            $meta_data['First'][] = $name['First'];
-            $meta_data['Last'][] = $name['Last'];
-        }
-
-
-        # get phone num
-        $sql3 = "SELECT  `meta_value` AS  `Phone`
-                FROM wp_postmeta
-                WHERE meta_key =  '_billing_phone'
-                AND post_id =  '$order'";
-
-        $result3 = $this->db_query($sql3);
-        $row = $result3->fetch_assoc();
-        $result3->free();
-        $meta_data['Phone'] = $row['Phone'];
-
-        # fix phone formatting
-        $meta_data['Phone'] = $this->reformat_phone($meta_data['Phone']);
-    
-        # add order number to data
-        $meta_data['Order'] = $order;
-        return $meta_data;
+          }
+          
+          # get phone number
+          $sql2 = "SELECT  `meta_value` AS  `Phone`
+                    FROM wp_postmeta
+                    WHERE meta_key =  '_billing_phone'
+                    AND post_id =  '$order'";
+                    
+          $result2 = $this->db_query($sql2);
+          $row = $result2->fetch_assoc();
+          $result2->free();
+          $this->order_data[$order]['Phone'] = $row['Phone'];
+          
+          # fix phone formatting
+          $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
+          
+          # is there a pickup location for this trip?
+          if(isset($this->order_data[$order]['Pickup Location'][0]))
+              $this->has_pickup = TRUE;
+          elseif($this->has_pickup == "")
+              $this->has_pickup = FALSE;
+      }
+    }
+    function generate_table(){
+      $head = "<table>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
+      if($this->has_pickup)
+        $head .= "<td>Pickup</td>";
+      $head .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
+      $head .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
+      $head .= "</tr></thead>\n";
+      $body = "<tbody>\n";
+      foreach($this->order_data as $order => $info){
+          foreach($info['First'] as $index => $first){
+            $body .= "<tr><td></td><td>".$first."</td><td>".$info['Last'][$index]."</td>";
+            if($this->has_pickup)
+              $body .= "<td>".$info['Pickup Location'][$index]."</td>";
+            $body .= "<td>".$info['Phone']."</td><td>".$info['Package'][$index]."</td><td>".$order."</td>";
+            $body .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
+          }
+      }
+      $body .= "</tbody>\n";
+      $foot = "</table>";
+      $this->html_table = $head . $body . $foot;
+    }
+    function get_gravity_id($order_id){
+        $sql = "select meta_value from wp_postmeta where meta_key = '_gravity_form_data' and post_id = '$order_id' ";
+        $result = $this->db_query($sql);
+        $row = $result->fetch_assoc();
+        # meta_value returns a ; delimited field
+        $row = explode(';', $row['meta_value']);
+        # break up field by :, last fragment has form id
+        $form_id = explode(':',$row[1]);
+        $form_id = end($form_id);
+        $form_id = str_replace('"','',$form_id);
+        return $form_id;
     }
     function split_name($name,$order_id){
       $form_id = $this->get_gravity_id($order_id);
@@ -176,18 +211,6 @@ class Trip_List{
             }
         }
     }
-    function get_gravity_id($order_id){
-        $sql = "select meta_value from wp_postmeta where meta_key = '_gravity_form_data' and post_id = '$order_id' ";
-        $result = $this->db_query($sql);
-        $row = $result->fetch_assoc();
-        # meta_value returns a ; delimited field
-        $row = explode(';', $row['meta_value']);
-        # break up field by :, last fragment has form id
-        $form_id = explode(':',$row[1]);
-        $form_id = end($form_id);
-        $form_id = str_replace('"','',$form_id);
-        return $form_id;
-    }
     function reformat_phone($phone){
         # strip all formatting
         $phone = str_replace('-','',$phone);
@@ -203,33 +226,8 @@ class Trip_List{
 
         return $phone;
     }
-    function table_header($data){
-        $html = "<table border=1>\n";
-        $html .= "<thead><tr>\n";
-        $html .= "<td>AM</td><td>First</td><td>Last</td>";
-        if(isset($data['Pickup Location']))
-          $html .= "<td>Pickup</td>";
-        $html .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
-        $html .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
-        $html .= "</tr></thead>\n";
-        $html .= "<tbody>";
-        return $html;
-    }
-    function table_row($data){
-        $html = "";
-        foreach($data['First'] as $index => $first){
-            $html .= "<tr><td></td><td>".$first."</td><td>".$data['Last'][$index]."</td>";
-            if(isset($data['Pickup Location'][$index]))
-                $html .= "<td>".$data['Pickup Location'][$index]."</td>";
-            $html .= "<td>".$data['Phone']."</td><td>".$data['Package'][$index]."</td><td>".$data['Order']."</td>";
-            $html .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
-        }
-        return $html;
-    }
-    function table_close(){
-        $html = "</tbody>\n";
-        $html .= "</table>";
-        return $html;
-    }
 }
 ?>
+
+
+
