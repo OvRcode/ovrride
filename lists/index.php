@@ -9,7 +9,7 @@
 
 # Include Functions
 
-include 'include/lists.php';
+include 'includes/lists.php';
 
 # Report all PHP errors on page
 # For Development use only
