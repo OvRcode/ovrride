@@ -22,45 +22,13 @@ get_header(); ?>
 				?>
                 <h1 style="margin-top:5px;" class="book-btn"><a href="/events/">VIEW FULL CALENDAR</a></h1>
             </div>
-            <div class="col grid_12_of_12" style="margin:0px;">
-                
-            	<?php 
-
-				/* Upcoming Trips ____________________________________________ */ ?>
-				
-				<h2>Upcoming Trips</h2> <?php
-				
-				$args = array(
-				  'post_type' => 'wpsc-product',
-					'wpsc_product_category' => 'all', // only query products in "All Trips" (slug='all')
-					'meta_key' => '_wpsc_tripdate',
-					'orderby' => 'meta_value_num',
-					'order' => 'ASC',
-					'posts_per_page' => 8
-				);
-				
-				$wp_loop = new WP_Query( $args );
-				
-				while( $wp_loop->have_posts() ) : $wp_loop->the_post();?>
-				
-					<div class="upcoming">
-				
-						<div style="float:left;">
-							<img class="product_image" id="product_image_<?php echo wpsc_the_product_id(); ?>" alt="<?php echo wpsc_the_product_title(); ?>" title="<?php echo wpsc_the_product_title(); ?>" src="<?php echo wpsc_the_product_thumbnail( $image_width, $image_height ); ?>"/>
-						</div>
-				
-						<div style="float:left;">
-							<a class="upcoming_text" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</div>
-				
-						<div style="float:left; margin:20px 0px 0px 0px;">
-							<a class="calendar-button" href="<?php the_permalink(); ?>">BOOK THIS TRIP</a>
-						</div>	
-				
-					</div>
-				
-					<?php 
-				endwhile; ?>
+            <div class="col grid_12_of_12" style="margin:0px;">	
+				<h2>Upcoming Trips</h2>
+               
+                     
+               
+               
+               
             </div>
             <div class="col grid_12_of_12" style="margin:0px;">
             	<h2 class="widgettitle">Destinations</h2>
