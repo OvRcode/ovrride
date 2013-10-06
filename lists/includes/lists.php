@@ -17,7 +17,7 @@ class Trip_List{
     var $has_pickup;
     var $html_table;
     function __construct($selected_trip){
-        #Connect to db
+        # Connect to database
         include 'config.php';
         $this->db_connect = new mysqli($host,$user,$pass,$db); 
         if($this->db_connect->connect_errno > 0){
@@ -31,7 +31,7 @@ class Trip_List{
                 $this->get_order_data();
                 $this->generate_table();
               }
-              else{ $this->html_table = "Nothing to see here. "; }
+              else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
           }
 
     }
@@ -42,7 +42,7 @@ class Trip_List{
           return $result;
     }
     private function trip_options(){
-        # find trips
+        # Find trips
         $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
         $result = $this->db_query($sql);
 
@@ -57,11 +57,11 @@ class Trip_List{
                 $this->select_options .= " selected ";
             $this->select_options .= ">".$row['post_title']."</option>\n";
         }
-        # clean up
+        # Clean up
         $result->free();
     }
     private function find_orders(){
-        //conditional SQL for checkboxes on form
+        # Conditional SQL for checkboxes on form
         $sql_conditional = "";
         $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
         foreach($checkboxes as $field){
@@ -123,7 +123,7 @@ class Trip_List{
 
           }
 
-          # get phone number
+          # Get phone number
           $sql2 = "SELECT  `meta_value` AS  `Phone`
                     FROM wp_postmeta
                     WHERE meta_key =  '_billing_phone'
@@ -134,10 +134,10 @@ class Trip_List{
           $result2->free();
           $this->order_data[$order]['Phone'] = $row['Phone'];
 
-          # fix phone formatting
+          # Fix phone formatting
           $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
 
-          # is there a pickup location for this trip?
+          # Is there a pickup location for this trip?
           if(isset($this->order_data[$order]['Pickup Location'][0]))
               $this->has_pickup = TRUE;
           elseif($this->has_pickup == "")
@@ -212,7 +212,7 @@ class Trip_List{
             elseif($decimal == 6)
                 $names[$row['lead_id']]['Last'][] = $row['value'];
         }
-        # now that we have complete names loop through array and match against provided name
+        # Now that we have complete names, loop through array and match against provided name
         foreach ($names as $lead => $array){
             foreach($array['First'] as $index => $first){
                 $complete = trim($first) . " " . trim($array['Last'][$index]);
@@ -223,14 +223,14 @@ class Trip_List{
         }
     }
     private function reformat_phone($phone){
-        # strip all formatting
+        # Strip all formatting
         $phone = str_replace('-','',$phone);
         $phone = str_replace('(','',$phone);
         $phone = str_replace(')','',$phone);
         $phone = str_replace(' ','',$phone);
         $phone = str_replace('.','',$phone);
 
-        # add formatting to raw phone num
+        # Add formatting to raw phone num
         $phone = substr_replace($phone,'(',0,0);
         $phone = substr_replace($phone,') ',4,0);
         $phone = substr_replace($phone,'-',9,0);
