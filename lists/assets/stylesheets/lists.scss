@@ -16,3 +16,28 @@
 
 // Base styles
 // -------------------------
+
+body {
+  margin: 10px;
+}
+
+.trip-select {
+  margin-bottom: 10px;
+}
+
+.order-status-select {
+  margin-bottom: 10px;
+}
+
+.generate-list {
+  margin-top: 20px;
+}
+
+
+// Footer
+// -------------------------
+
+.footer-center {
+  color: $red;
+  font-weight:bold;
+}

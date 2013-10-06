@@ -5,6 +5,9 @@
  * @package OvR Lists
  * @since Version 0.0.2
  */
+
+$lists_version = "0.1.0";
+
 class Trip_List{
     var $db_connect;
     var $trip;
@@ -30,7 +33,7 @@ class Trip_List{
               }
               else{ $this->html_table = "Nothing to see here. "; }
           }
-        
+
     }
     private function db_query($sql){
         if(!$result = $this->db_connect->query($sql))
@@ -42,7 +45,7 @@ class Trip_List{
         # find trips
         $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
         $result = $this->db_query($sql);
-    
+
         # Construct options for a select field
         $this->select_options = "<option value=''";
         if($this->trip == "")
@@ -83,7 +86,7 @@ class Trip_List{
             AND ($sql_conditional)";
         if($sql_conditional === "")
           $sql = substr($sql, 0, -6);
-    
+
         $result = $this->db_query($sql);
         $this->orders = array();
         while($row = $result->fetch_assoc()){
@@ -112,14 +115,14 @@ class Trip_List{
                 $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
           }
           $result->free();
-          
+
           foreach($this->order_data[$order]['Name'] as $index => $name){
               $name = $this->split_name($name,$this->order_data[$order]['_product_id']);
               $this->order_data[$order]['First'][] = $name['First'];
               $this->order_data[$order]['Last'][] = $name['Last'];
 
           }
-          
+
           # get phone number
           $sql2 = "SELECT  `meta_value` AS  `Phone`
                     FROM wp_postmeta
@@ -130,7 +133,7 @@ class Trip_List{
           $row = $result2->fetch_assoc();
           $result2->free();
           $this->order_data[$order]['Phone'] = $row['Phone'];
-          
+
           # fix phone formatting
           $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
 
@@ -150,7 +153,7 @@ class Trip_List{
       $head .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
       $head .= "</tr></thead>\n";
       $body = "<tbody>\n";
-      
+
       foreach($this->order_data as $order => $info){
           foreach($info['First'] as $index => $first){
             $total_guests += 1;
@@ -215,7 +218,7 @@ class Trip_List{
                 $complete = trim($first) . " " . trim($array['Last'][$index]);
                 if(strcmp(strtolower($name), strtolower($complete)) == 0){
                   return array("First" => $first, "Last" => $array['Last'][$index]);
-                }     
+                }
             }
         }
     }
@@ -226,7 +229,7 @@ class Trip_List{
         $phone = str_replace(')','',$phone);
         $phone = str_replace(' ','',$phone);
         $phone = str_replace('.','',$phone);
-    
+
         # add formatting to raw phone num
         $phone = substr_replace($phone,'(',0,0);
         $phone = substr_replace($phone,') ',4,0);
@@ -236,6 +239,3 @@ class Trip_List{
     }
 }
 ?>
-
-
-
