@@ -146,7 +146,7 @@ class Trip_List{
     }
     private function generate_table(){
       $total_guests = 0;
-      $head = "<table class='table table-bordered table-striped'>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
+      $head = "<table class='table table-bordered table-striped table-condensed'>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
       if($this->has_pickup)
         $head .= "<td>Pickup</td>";
       $head .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
@@ -165,7 +165,7 @@ class Trip_List{
           }
       }
       $body .= "</tbody>\n";
-      $foot = "<tfoot>\n<tr><td colspan=2 >Total Guests: </td><td>$total_guests</td></tr></tfoot></table";
+      $foot = "<tfoot>\n<tr><td colspan=2 >Total Guests: </td><td>$total_guests</td></tr></tfoot></table>";
       $this->html_table = $head . $body . $foot;
     }
     private function get_gravity_id($order_id){
