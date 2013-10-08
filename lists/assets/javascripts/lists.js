@@ -14,3 +14,8 @@ function checkAll(formname, checktoggle) {
     }
   }
 }
+
+// Tell tablesorter to sort the table
+$(function(){
+  $("#Listable").tablesorter();
+});

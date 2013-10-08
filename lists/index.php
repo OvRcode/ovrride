@@ -98,6 +98,7 @@ else
 
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
+      <script src="assets/javascripts/jquery.tablesorter.js"></script>
 
   </body>
 </html>
