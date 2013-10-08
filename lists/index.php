@@ -77,6 +77,7 @@ else
       </form>
       <br>
 
+      <?php # Output of the Trip List Table ?>
       <?php if(isset($_POST['trip']) && $_POST['trip'] != "") print $list->html_table; ?>
 
       <footer>
