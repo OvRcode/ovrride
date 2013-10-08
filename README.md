@@ -47,6 +47,7 @@ Authentication is currently using .htpasswd, This will have to eventually change
 [Bootstrap Sass v3.0.0](https://github.com/jlong/sass-bootstrap)  
 [Grunt JS v0.4.1](http://gruntjs.com)  
 [jQuery 1.10.2](http://jquery.com)  
+[tablesorter v2.10.8](https://github.com/Mottie/tablesorter)
 
 Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
 
@@ -55,3 +56,6 @@ Once you have node, npm and grunt installed. You can run grunt tasks from the pr
 `grunt` from the CLI with run the default tasks specified in `Gruntfile.js`
 
 `grunt watch` from the CLI will watch the sass and javascript files for changes and automatically update all.min.js and all.css
+
+
+**NOTE:** tablesorter v2.10.8 has a [bug](https://github.com/Mottie/tablesorter/issues/379) that where it does not work if minified.

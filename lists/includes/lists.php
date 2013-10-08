@@ -146,7 +146,7 @@ class Trip_List{
     }
     private function generate_table(){
       $total_guests = 0;
-      $head = "<table class='table table-bordered table-striped table-condensed'>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
+      $head = "<table id='Listable' class='table table-bordered table-striped table-condensed tablesorter'>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
       if($this->has_pickup)
         $head .= "<td>Pickup</td>";
       $head .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
