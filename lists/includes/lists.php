@@ -25,7 +25,7 @@ class Trip_List{
         }
         $this->trip = $selected_trip;
         $this->trip_options();
-        if($selected_trip != ""){
+        if($selected_trip != "none"){
             $this->find_orders();
             if(count($this->orders) > 0){
                 $this->get_order_data();
@@ -47,8 +47,8 @@ class Trip_List{
         $result = $this->db_query($sql);
 
         # Construct options for a select field
-        $this->select_options = "<option value=''";
-        if($this->trip == "")
+        $this->select_options = '<option value="none"';
+        if($this->trip == "none")
             $this->select_options .= " selected ";
         $this->select_options .= "> Select trip </option>\n";
         while($row = $result->fetch_assoc()){

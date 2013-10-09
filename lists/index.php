@@ -35,11 +35,11 @@ else
     <h1>OvR Trip Lists</h1>
     <br>
 
-    <form action="index.php" method="post" name="trip_list">
+    <form action="index.php" method="post" name="trip_list" id="trip_list">
       <section class="trip-select">
       <label>Select a Trip:</label>
       <br>
-      <select id="trip" name="trip">
+      <select id="trip" name="trip" id="trip">
       <?php echo $list->select_options; ?>
       </select>
       </section>
@@ -72,7 +72,8 @@ else
         <input type="checkbox" name="refunded" value="refunded" <?php if(isset($_POST['refunded'])) echo 'checked'; ?>>Refunded</input>
       </label>
       <br>
-      <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> <button type="submit" class="btn btn-primary generate-list">Generate CSV</button> <button type="submit" class="btn btn-primary generate-list">Clear Form</button>
+      <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> <button type="submit" class="btn btn-primary generate-list">Generate CSV</button> <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
+      <a onclick="javascript:formReset();" href="javascript:formReset();" >Reset</a>
       </section>
       </form>
       <br>
@@ -99,6 +100,14 @@ else
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
       <script src="assets/javascripts/jquery.tablesorter.js"></script>
+      <script>
+      //TODO: This only seems to work from here, wont work in external JS file, need to figure out why and extract
+      function formReset(){
+        checkAll('trip_list', false);
 
+        var select_element = document.getElementById("trip");
+        select_element.selectedIndex=0;
+      }
+      </script>
   </body>
 </html>
