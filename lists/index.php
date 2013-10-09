@@ -73,7 +73,6 @@ else
       </label>
       <br>
       <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> <button type="submit" class="btn btn-primary generate-list">Generate CSV</button> <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
-      <a onclick="javascript:formReset();" href="javascript:formReset();" >Reset</a>
       </section>
       </form>
       <br>
