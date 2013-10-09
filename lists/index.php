@@ -72,7 +72,7 @@ else
         <input type="checkbox" name="refunded" value="refunded" <?php if(isset($_POST['refunded'])) echo 'checked'; ?>>Refunded</input>
       </label>
       <br>
-      <input type="submit" class="generate-list" value="Generate List" />
+      <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> <button type="submit" class="btn btn-primary generate-list">Generate CSV</button> <button type="submit" class="btn btn-primary generate-list">Clear Form</button>
       </section>
       </form>
       <br>
