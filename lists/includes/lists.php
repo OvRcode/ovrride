@@ -6,7 +6,7 @@
  * @since Version 0.0.2
  */
 
-$lists_version = "0.1.0";
+$lists_version = "0.1.1";
 
 class Trip_List{
     var $db_connect;
