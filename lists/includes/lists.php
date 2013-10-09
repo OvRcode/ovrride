@@ -115,33 +115,34 @@ class Trip_List{
                 $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
           }
           $result->free();
+      }
+      foreach($this->order_data as $order => $info){
+        foreach($info['Name'] as $index => $name){
+            $name = $this->split_name($name,$this->order_data[$order]['_product_id']);
+            $this->order_data[$order]['First'][] = $name['First'];
+            $this->order_data[$order]['Last'][] = $name['Last'];
 
-          foreach($this->order_data[$order]['Name'] as $index => $name){
-              $name = $this->split_name($name,$this->order_data[$order]['_product_id']);
-              $this->order_data[$order]['First'][] = $name['First'];
-              $this->order_data[$order]['Last'][] = $name['Last'];
+        }
 
-          }
+        # Get phone number
+        $sql2 = "SELECT  `meta_value` AS  `Phone`
+                  FROM wp_postmeta
+                  WHERE meta_key =  '_billing_phone'
+                  AND post_id =  '$order'";
+                  
+        $result2 = $this->db_query($sql2);
+        $row = $result2->fetch_assoc();
+        $result2->free();
+        $this->order_data[$order]['Phone'] = $row['Phone'];
 
-          # Get phone number
-          $sql2 = "SELECT  `meta_value` AS  `Phone`
-                    FROM wp_postmeta
-                    WHERE meta_key =  '_billing_phone'
-                    AND post_id =  '$order'";
-                    
-          $result2 = $this->db_query($sql2);
-          $row = $result2->fetch_assoc();
-          $result2->free();
-          $this->order_data[$order]['Phone'] = $row['Phone'];
+        # Fix phone formatting
+        $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
 
-          # Fix phone formatting
-          $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
-
-          # Is there a pickup location for this trip?
-          if(isset($this->order_data[$order]['Pickup Location'][0]))
-              $this->has_pickup = TRUE;
-          elseif($this->has_pickup == "")
-              $this->has_pickup = FALSE;
+        # Is there a pickup location for this trip?
+        if(isset($this->order_data[$order]['Pickup Location'][0]))
+            $this->has_pickup = TRUE;
+        elseif($this->has_pickup == "")
+            $this->has_pickup = FALSE;
       }
     }
     private function generate_table(){
