@@ -11807,6 +11807,7 @@ function formReset(){
 
   var select_element = document.getElementById("trip");
   select_element.selectedIndex=0;
+  document.getElementById("trip_list").submit();
 }
 // Tell tablesorter to sort the table
 $(function(){
