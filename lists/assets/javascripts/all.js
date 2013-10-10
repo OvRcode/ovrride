@@ -11804,10 +11804,12 @@ function checkAll(formname, checktoggle) {
 }
 function formReset(){
   checkAll('trip_list', false);
-
   var select_element = document.getElementById("trip");
   select_element.selectedIndex=0;
-  document.getElementById("trip_list").submit();
+  checkboxes = document['trip_list'].getElementsByTagName('input');
+  checkboxes[0].checked = true;
+  checkboxes[1].checked = true;
+  document['trip_list'].submit();
 }
 // Tell tablesorter to sort the table
 $(function(){
