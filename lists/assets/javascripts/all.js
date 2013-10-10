@@ -11802,7 +11802,12 @@ function checkAll(formname, checktoggle) {
     }
   }
 }
+function formReset(){
+  checkAll('trip_list', false);
 
+  var select_element = document.getElementById("trip");
+  select_element.selectedIndex=0;
+}
 // Tell tablesorter to sort the table
 $(function(){
   $("#Listable").tablesorter();
