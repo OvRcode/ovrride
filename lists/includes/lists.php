@@ -35,6 +35,32 @@ class Trip_List{
           }
 
     }
+    function csv() {
+        if($this->has_pickup)
+            $labels = array("AM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","PM Checkin","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
+        else
+            $labels = array("AM","First","Last","Phone","Package","Order","Waiver","Product REC.","PM Checkin","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
+        header("Content-type: text/csv");  
+        header("Cache-Control: no-store, no-cache");  
+        header('Content-Disposition: attachment; filename="filename.csv"');
+        $f = fopen('php://output', 'w');
+        # start CSV with column labels
+        fputcsv($f,$labels,',');
+        
+        foreach($this->order_data as $order => $info){
+          foreach($info['First'] as $index => $first){
+            if($this->has_pickup)
+                $array = array("",$first, $info['Last'][$index], $info['Pickup Location'][$index], $info['Phone'], $info['Package'][$index], $order);
+            else
+                $array = array("",$first, $info['Last'][$index], $info['Phone'], $info['Package'][$index], $order);
+                
+            fputcsv($f,$array,',');
+          }
+        }
+
+        fclose($f);
+        exit();
+    }
     private function db_query($sql){
         if(!$result = $this->db_connect->query($sql))
             die('There was an error running the query [' . $this->db_connect->error . ']');
