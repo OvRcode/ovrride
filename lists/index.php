@@ -10,16 +10,18 @@
 # Include Functions
 
 include 'includes/lists.php';
+if(isset($_POST['trip']))
+  $list = new Trip_List($_POST['trip']);
+else
+  $list = new Trip_List("None");
 
+if(isset($_POST['trip']) && $_POST['csv'] == "csv") 
+    $list->csv();
+    
 # Report all PHP errors on page
 # For Development use only
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','On');
-
-if(isset($_POST['trip']))
-  $list = new Trip_List($_POST['trip']);
-else
-  $list = new Trip_List("");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,14 +74,17 @@ else
         <input type="checkbox" name="refunded" value="refunded" <?php if(isset($_POST['refunded'])) echo 'checked'; ?>>Refunded</input>
       </label>
       <br>
-      <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> <button type="submit" class="btn btn-primary generate-list">Generate CSV</button> <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
+      <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
+      <form>
+        <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Generate CSV</button> 
+      </form>
+      <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
       </section>
       </form>
       <br>
 
       <?php # Output of the Trip List Table ?>
       <?php if(isset($_POST['trip']) && $_POST['trip'] != "") print $list->html_table; ?>
-
       <footer>
         <div class="container">
           <div class="row">
