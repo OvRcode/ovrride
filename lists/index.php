@@ -99,14 +99,5 @@ else
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
       <script src="assets/javascripts/jquery.tablesorter.js"></script>
-      <script>
-      //TODO: This only seems to work from here, wont work in external JS file, need to figure out why and extract
-      function formReset(){
-        checkAll('trip_list', false);
-
-        var select_element = document.getElementById("trip");
-        select_element.selectedIndex=0;
-      }
-      </script>
   </body>
 </html>
