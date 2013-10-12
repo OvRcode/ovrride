@@ -75,16 +75,18 @@ ini_set('display_errors','On');
       </label>
       <br>
       <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
-      <form>
-        <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Generate CSV</button> 
-      </form>
       <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
       </section>
       </form>
       <br>
 
       <?php # Output of the Trip List Table ?>
-      <?php if(isset($_POST['trip']) && $_POST['trip'] != "") print $list->html_table; ?>
+      <?php if(isset($_POST['trip']) && $_POST['trip'] != ""){ 
+          print $list->html_table; ?>
+      <form>
+        <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Generate CSV</button> 
+      </form>
+      <?php } ?>
       <footer>
         <div class="container">
           <div class="row">
