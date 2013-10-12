@@ -36,13 +36,18 @@ class Trip_List{
 
     }
     function csv() {
+      $sql = "select `post_title` from `wp_posts` where `ID` = '$this->trip' and `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
+      $result = $this->db_query($sql);
+      $name = $result->fetch_assoc();
+      $filename = $name['post_title'];
+
         if($this->has_pickup)
             $labels = array("AM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","PM Checkin","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
         else
             $labels = array("AM","First","Last","Phone","Package","Order","Waiver","Product REC.","PM Checkin","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
         header("Content-type: text/csv");  
         header("Cache-Control: no-store, no-cache");  
-        header('Content-Disposition: attachment; filename="filename.csv"');
+        header("Content-Disposition: attachment; filename={$filename}.csv");
         $f = fopen('php://output', 'w');
         # start CSV with column labels
         fputcsv($f,$labels,',');

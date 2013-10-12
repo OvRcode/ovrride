@@ -15,7 +15,7 @@ if(isset($_POST['trip']))
 else
   $list = new Trip_List("None");
 
-if(isset($_POST['trip']) && $_POST['csv'] == "csv") 
+if(isset($_POST['trip']) && $_POST['csv'] == "csv")
     $list->csv();
     
 # Report all PHP errors on page
@@ -77,7 +77,6 @@ ini_set('display_errors','On');
       <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
       <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
       </section>
-      </form>
       <br>
 
       <?php # Output of the Trip List Table ?>
@@ -85,6 +84,7 @@ ini_set('display_errors','On');
           print $list->html_table; ?>
       <form>
         <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Generate CSV</button> 
+      </form>
       </form>
       <?php } ?>
       <footer>
