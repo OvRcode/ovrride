@@ -28,7 +28,11 @@ ini_set('display_errors','On');
   <head>
     <meta charset="utf-8">
     <title>OvR Trip Lists</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Mobile view properties & enable iOS Web App-->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     
     <!-- Include compiled and minified stylesheets -->
     <link rel="stylesheet" href="assets/stylesheets/all.css">
