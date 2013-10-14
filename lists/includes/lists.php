@@ -8,6 +8,14 @@
 
 $lists_version = "0.1.2";
 
+if(isset($_POST['trip']))
+  $list = new Trip_List($_POST['trip']);
+else
+  $list = new Trip_List("None");
+
+if(isset($_POST['trip']) && $_POST['csv'] == "csv")
+    $list->csv();
+
 class Trip_List{
     var $db_connect;
     var $trip;
@@ -190,26 +198,71 @@ class Trip_List{
     }
     private function generate_table(){
       $total_guests = 0;
-      $head = "<table id='Listable' class='table table-bordered table-striped table-condensed tablesorter'>\n<thead><tr>\n<td>AM</td><td>First</td><td>Last</td>";
+      
+      $head = "<table id='Listable' class='table table-bordered table-striped table-condensed tablesorter'>\n
+                 <thead>
+                   <tr>\n
+                   <td>AM</td>
+                   <td>PM</td>
+                   <td>First</td>
+                   <td>Last</td>";
+                   
       if($this->has_pickup)
         $head .= "<td>Pickup</td>";
-      $head .= "<td>Phone</td><td>Package</td><td>Order</td><td>Waiver</td><td>Product REC.</td><td>PM Checkin</td><td>Bus Only</td>";
-      $head .= "<td>All Area Lift</td><td>Beg. Lift</td><td>BRD Rental</td><td>Ski Rental</td><td>LTS</td><td>LTR</td><td>Prog. Lesson</td>\n";
-      $head .= "</tr></thead>\n";
+        
+      $head .= "<td>Phone</td>
+                <td>Package</td>
+                <td>Order</td>
+                <td>Waiver</td>
+                <td>Product REC.</td>
+                <td>Bus Only</td>";
+                
+      $head .= "<td>All Area Lift</td>
+                <td>Beg. Lift</td>
+                <td>BRD Rental</td>
+                <td>Ski Rental</td>
+                <td>LTS</td>
+                <td>LTR</td>
+                <td>Prog. Lesson</td>\n";
+                
+      $head .= "</tr>
+                </thead>\n";
+                
       $body = "<tbody>\n";
 
       foreach($this->order_data as $order => $info){
           foreach($info['First'] as $index => $first){
             $total_guests += 1;
-            $body .= "<tr><td></td><td>".$first."</td><td>".$info['Last'][$index]."</td>";
+            $body .= "<tr>
+                        <td></td>
+                        <td></td>
+                        <td>".$first."</td>
+                        <td>".$info['Last'][$index]."</td>";
             if($this->has_pickup)
               $body .= "<td>".$info['Pickup Location'][$index]."</td>";
-            $body .= "<td>".$info['Phone']."</td><td>".$info['Package'][$index]."</td><td>".$order."</td>";
-            $body .= "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
+            $body .= "<td>".$info['Phone']."</td>
+                      <td>".$info['Package'][$index]."</td>
+                      <td>".$order."</td>";
+            $body .= "<td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      </tr>\n";
           }
       }
       $body .= "</tbody>\n";
-      $foot = "<tfoot>\n<tr><td colspan=2 >Total Guests: </td><td>$total_guests</td></tr></tfoot></table>";
+      $foot = "<tfoot>\n<tr>
+                 <td colspan=2 >Total Guests: </td>
+                 <td>$total_guests</td>
+                 </tr>
+               </tfoot>
+               </table>";
       $this->html_table = $head . $body . $foot;
     }
     private function get_gravity_id($order_id){
