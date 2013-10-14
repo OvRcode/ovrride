@@ -10,13 +10,6 @@
 # Include Functions
 
 include 'includes/lists.php';
-if(isset($_POST['trip']))
-  $list = new Trip_List($_POST['trip']);
-else
-  $list = new Trip_List("None");
-
-if(isset($_POST['trip']) && $_POST['csv'] == "csv")
-    $list->csv();
     
 # Report all PHP errors on page
 # For Development use only
@@ -33,9 +26,11 @@ ini_set('display_errors','On');
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    
+
     <!-- Include compiled and minified stylesheets -->
     <link rel="stylesheet" href="assets/stylesheets/all.css">
+    <!-- Include tablesorter styles -->
+    <link rel="stylesheet" href="assets/tablesorter/css/theme.bootstrap.css">
   </head>
   <body>
     <h1>OvR Trip Lists</h1>
@@ -87,7 +82,7 @@ ini_set('display_errors','On');
       <?php if(isset($_POST['trip']) && $_POST['trip'] != ""){ 
           print $list->html_table; ?>
       <form>
-        <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Generate CSV</button> 
+        <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Export CSV</button> 
       </form>
       </form>
       <?php } ?>
@@ -109,6 +104,10 @@ ini_set('display_errors','On');
 
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
-      <script src="assets/javascripts/jquery.tablesorter.js"></script>
+
+      <!-- tablesorter plugin -->
+      <script src="assets/tablesorter/js/jquery.tablesorter.js"></script>
+      <!-- tablesorter widget file - loaded after the plugin -->
+      <script src="assets/tablesorter/js/jquery.tablesorter.widgets.js"></script>
   </body>
 </html>

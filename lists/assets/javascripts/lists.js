@@ -20,7 +20,13 @@ function formReset(){
     tbl.removeChild(tbl.firstChild);
   }
 }
-// Tell tablesorter to sort the table
+
+// tablesorter configuration
+// http://mottie.github.io/tablesorter/docs/#Configuration
 $(function(){
-  $("#Listable").tablesorter();
+  $('table').tablesorter({
+    sortForce : [[2,0] ],
+    sortList : [[2,0] ], // This is supposed to sort the 3rd column 'First Name'. But it's not working
+    widgets : [ 'zebra', 'columns' ]
+  });
 });
