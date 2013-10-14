@@ -282,11 +282,10 @@ h6 {
 }
 
 hr {
-	background-color: #ccc;
+	background-color: #AAA;
 	border: 0;
 	height: 1px;
-	margin: 24px;
-	margin: 1.5rem;
+	margin: 12px 8px;
 }
 
 ol, ul {
@@ -425,8 +424,12 @@ blockquote.pull-right p, blockquote.pull-right small {
 
 
 
-
-
+.seats-left p {
+	margin:3px 0px 0px 0px;
+}
+.minitweets iframe {
+	width:100%;
+}
 blockquote cite:before {
 	content: "\2014 ";
 }
@@ -1083,6 +1086,92 @@ payment_methods methods {
 	position:relative;
 	top:1px;
 }
+
+.book-btn-smll {
+	display: inline-block;
+	padding: 2px 5px;
+	margin-bottom: 0;
+	font-size: 14px;
+	line-height: 18px;
+	color: #333;
+	text-align: center;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	vertical-align: middle;
+	cursor: pointer;
+	background-color: whiteSmoke;
+	background-image: -ms-linear-gradient(top, #33D4F9, #00BCE7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#33D4F9), to(#00BCE7));
+	background-image: -webkit-linear-gradient(top, #33D4F9, #00BCE7);
+	background-image: -o-linear-gradient(top, #33D4F9, #00BCE7);
+	background-image: linear-gradient(top, #33D4F9, #00BCE7);
+	background-image: -moz-linear-gradient(top, #33D4F9, #00BCE7);
+	background-repeat: repeat-x;
+	border: 1px solid #CCC;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	border-color: #00A7CD #00A7CD #BFBFBF;
+	border-bottom-color: #B3B3B3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='white', endColorstr='#E6E6E6');
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	margin-top: 3px;
+}
+.book-btn-smll:hover {
+	color: #333333;
+	text-decoration: none;
+	background-color: #0bb8e0;
+	*background-color: #0bb8e0; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-position: 0 -15px;
+	-webkit-transition: background-position 0.1s linear;
+	-moz-transition: background-position 0.1s linear;
+	-ms-transition: background-position 0.1s linear;
+	-o-transition: background-position 0.1s linear;
+	transition: background-position 0.1s linear;
+}
+.book-btn-smll:active {
+	background-color: #00BCE7;
+	background-color: #00BCE7 \9;
+	background-image: none;
+	outline: 0;
+	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+	position:relative;
+	top:1px;
+}
+.upcoming-thumbnail {
+	float: left;
+	margin: 6px 3px 0px 0px;
+	width: 36px;
+}
+.upcoming-thumbnail img {
+	width: 100%;
+}
+.upcoming-info {
+	float: left;
+	width: 100%;
+}
+.upcoming-title {
+	float: left;
+	width:85%;
+}
+.book-this-btn {
+	float: left;
+	width: 40%;
+	margin-right:5px;
+}
+.seats-left {
+	float: left;
+	width: 56%;
+	margin-top:4px;
+}
+
+
+
+
 .eventless-today {
 	background:#CCC !important;
 	border:1px solid #CCC !important;
@@ -2559,7 +2648,7 @@ a.read-more:hover {
 	font-size: 16px;
 	font-size: 1rem;
 	max-width: 1200px;
-	margin: 0 auto;
+	margin: 0px auto 50px auto;
 	padding: 32px 0;
 	padding: 2rem 0;
 	color: #333;

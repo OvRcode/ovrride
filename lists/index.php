@@ -20,6 +20,7 @@ if(isset($_POST['trip']) && $_POST['csv_list'] == "csv_list")
 
 if(isset($_POST['trip']) && $_POST['csv_email'] == "csv_email")
     $list->csv("email_list");
+
 # Report all PHP errors on page
 # For Development use only
 error_reporting(E_ALL|E_STRICT);
@@ -30,10 +31,16 @@ ini_set('display_errors','On');
   <head>
     <meta charset="utf-8">
     <title>OvR Trip Lists</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
+    <!-- Mobile view properties & enable iOS Web App-->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
     <!-- Include compiled and minified stylesheets -->
     <link rel="stylesheet" href="assets/stylesheets/all.css">
+    <!-- Include tablesorter styles -->
+    <link rel="stylesheet" href="assets/tablesorter/css/theme.bootstrap.css">
   </head>
   <body>
     <h1>OvR Trip Lists</h1>
@@ -108,6 +115,10 @@ ini_set('display_errors','On');
 
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
-      <script src="assets/javascripts/jquery.tablesorter.js"></script>
+
+      <!-- tablesorter plugin -->
+      <script src="assets/tablesorter/js/jquery.tablesorter.js"></script>
+      <!-- tablesorter widget file - loaded after the plugin -->
+      <script src="assets/tablesorter/js/jquery.tablesorter.widgets.js"></script>
   </body>
 </html>
