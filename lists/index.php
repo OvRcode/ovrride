@@ -15,9 +15,11 @@ if(isset($_POST['trip']))
 else
   $list = new Trip_List("None");
 
-if(isset($_POST['trip']) && $_POST['csv'] == "csv")
-    $list->csv();
-    
+if(isset($_POST['trip']) && $_POST['csv_list'] == "csv_list")
+    $list->csv("trip_list");
+
+if(isset($_POST['trip']) && $_POST['csv_email'] == "csv_email")
+    $list->csv("email_list");
 # Report all PHP errors on page
 # For Development use only
 error_reporting(E_ALL|E_STRICT);
@@ -83,7 +85,8 @@ ini_set('display_errors','On');
       <?php if(isset($_POST['trip']) && $_POST['trip'] != ""){ 
           print $list->html_table; ?>
       <form>
-        <button type="submit" class="btn btn-primary generate-list" id="csv" name="csv" value="csv">Generate CSV</button> 
+        <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
+        <button type="submit" class="btn btn-primary generate-list" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
       </form>
       </form>
       <?php } ?>
