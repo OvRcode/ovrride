@@ -47,3 +47,14 @@ white-space: nowrap;
   color: $red;
   font-weight:bold;
 }
+
+// TABLE and TABLESORTER
+// -------------------------
+
+table {
+  color: $grayDark;
+}
+
+.tablesorter-header {
+  font-weight:bold;
+}
