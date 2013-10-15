@@ -11794,7 +11794,7 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
 // Order Status: Check All / Uncheck All
 function checkAll(formname, checktoggle) {
   var checkboxes = [];
-  checkboxes = document[formname].getElementsByTagName('input');
+  checkboxes = document.formname.getElementsByTagName('input');
 
   for (var i=0; i<checkboxes.length; i++) {
     if (checkboxes[i].type == 'checkbox') {
@@ -11803,15 +11803,17 @@ function checkAll(formname, checktoggle) {
   }
 }
 function formReset(){
-  checkAll('trip_list', false);
-  var select_element = document.getElementById("trip");
-  select_element.selectedIndex=0;
-  checkboxes = document['trip_list'].getElementsByTagName('input');
-  checkboxes[0].checked = true;
-  checkboxes[1].checked = true;
-  document['trip_list'].submit();
+  var tbl = document.getElementById("Listable");
+  while (tbl.firstChild) {
+    tbl.removeChild(tbl.firstChild);
+  }
 }
-// Tell tablesorter to sort the table
+
+// tablesorter configuration
+// http://mottie.github.io/tablesorter/docs/#Configuration
 $(function(){
-  $("#Listable").tablesorter();
+  $('#Listable').tablesorter({
+    sortList: [[2,0]],
+    widgets : [ 'zebra', 'columns' ]
+  });
 });
