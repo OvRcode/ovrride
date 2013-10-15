@@ -56,6 +56,10 @@ module.exports = function(grunt) {
         files: ['<%= jshint.files %>'],
         tasks: ['jshint'],
       },
+      concat: {
+        files : ['<%= jshint.files %>'],
+        tasks: ['concat'],
+      },
       uglify: {
         files: ['lists/assets/javascripts/lists.js'],
         tasks: ['uglify'],
