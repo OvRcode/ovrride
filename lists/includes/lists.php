@@ -6,7 +6,7 @@
  * @since Version 0.0.2
  */
 
-$lists_version = "0.1.2";
+$lists_version = "0.1.3";
 
 if(isset($_POST['trip']))
   $list = new Trip_List($_POST['trip']);
