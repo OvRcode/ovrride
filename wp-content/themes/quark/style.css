@@ -3999,6 +3999,12 @@ li span.dots {
 	.grid_12_of_12 {
 		width: 100%; 
 	}
+	.feedbar {
+		float:right;
+	}
+	.mainbar {
+		float:left;
+	}
 	.site-content {
 		max-width:600px;
 	}
