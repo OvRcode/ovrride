@@ -24,9 +24,8 @@ function formReset(){
 // tablesorter configuration
 // http://mottie.github.io/tablesorter/docs/#Configuration
 $(function(){
-  $('table').tablesorter({
-    sortForce : [[2,0] ],
-    sortList : [[2,0] ], // This is supposed to sort the 3rd column 'First Name'. But it's not working
+  $('#Listable').tablesorter({
+    sortList: [[2,0]],
     widgets : [ 'zebra', 'columns' ]
   });
 });
