@@ -7,8 +7,8 @@
  */
 
 # MySQL Database Connection
-$host = 'localhost';
-$user = 'ovrridec_ovrride';
-$pass = 'PmInUbYv12BuNiMo';
-$db = 'ovrridec_ovrride';
+define("DB_HOST", "localhost");
+define("DB_USER", "ovrridec_ovrride");
+define("DB_PASS", "PmInUbYv12BuNiMo");
+define("DB_NAME", "ovrridec_ovrride");
 ?>

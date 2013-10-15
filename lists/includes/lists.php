@@ -27,7 +27,7 @@ class Trip_List{
     function __construct($selected_trip){
         # Connect to database
         include 'config.php';
-        $this->db_connect = new mysqli($host,$user,$pass,$db); 
+        $this->db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
         if($this->db_connect->connect_errno > 0){
             die('Unable to connect to database [' . $this->db_connect->connect_error . ']');
         }
