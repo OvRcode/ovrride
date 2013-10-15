@@ -7,8 +7,8 @@
  */
 
 # MySQL Database Connection
-$host = '***REMOVED***';
-$user = '***REMOVED***';
-$pass = '***REMOVED***';
-$db = '***REMOVED***';
+define("DB_HOST", "***REMOVED***");
+define("DB_USER", "***REMOVED***");
+define("DB_PASS", "***REMOVED***");
+define("DB_NAME", "***REMOVED***");
 ?>
