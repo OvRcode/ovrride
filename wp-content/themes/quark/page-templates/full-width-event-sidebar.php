@@ -12,7 +12,7 @@
 get_header(); ?>
 
 	<div id="primary" class="site-content row clearfix" role="main">
-    	<div class="col grid_3_of_12">
+    	<div class="col grid_3_of_12 feedbar">
         	<div class="col grid_12_of_12" style="margin:0px;">
               <h2 class="widgettitle">Destinations</h2>
                 <div class="destinations">
@@ -66,7 +66,7 @@ get_header(); ?>
             </div>
             </div>
         </div>
-		<div class="col grid_9_of_12">
+		<div class="col grid_9_of_12 mainbar">
 
 			<?php if ( have_posts() ) : ?>
 
