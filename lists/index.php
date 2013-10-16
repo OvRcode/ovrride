@@ -104,7 +104,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
       <?php } ?>
 
       <!-- TODO: Temporary location for Logout. This need to go into the navbar -->
-       <a href="login/logout.php"><button type="button" class="btn btn-primary">Logout</button></a>
+       <a href="login/logout.php"><button type="button" class="btn btn-danger">Logout</button></a>
       <br>
 
       <footer>
