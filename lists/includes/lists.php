@@ -11,15 +11,20 @@ $lists_version = "0.2.0";
 
 # Form
 if(isset($_POST['trip']))
-  $list = new Trip_List($_POST['trip']);
+    $list = new Trip_List($_POST['trip']);
 else
-  $list = new Trip_List("None");
+    $list = new Trip_List("None");
 
-if(isset($_POST['trip']) && $_POST['csv_list'] == "csv_list")
-    $list->csv("trip_list");
+if(isset($_POST['trip']) && isset($_POST['csv_list'])){
+    if($_POST['csv_list'] == "csv_list")
+        $list->csv("trip_list");
+}
+    
 
-if(isset($_POST['trip']) && $_POST['csv_email'] == "csv_email")
-    $list->csv("email_list");
+if(isset($_POST['trip']) && isset($_POST['csv_email'])){
+    if($_POST['csv_email'] == "csv_email")
+        $list->csv("email_list");
+}
 
 class Trip_List{
     var $db_connect;
