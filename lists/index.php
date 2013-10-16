@@ -122,7 +122,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
         </div>
       </div>
       </footer>
-
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>

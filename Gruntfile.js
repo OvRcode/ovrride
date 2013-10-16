@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/javascripts/lists.js','lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js'],
+        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/javascripts/lists.js','lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js','lists/assets/tablesorter/js/widgets/widget-editable.js'],
         dest: 'lists/assets/javascripts/all.js',
       },
     },
@@ -40,6 +40,7 @@ module.exports = function(grunt) {
       options: {
         banner: '/*!!!!!!!!!!!!!!DO NOT MAKE CHANGES TO THIS FILE. CHANGES ARE CONCATENATED AND MINIFIED USING GRUNT.JS !!!!!!!!!!!!!!!!!!!\n! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
         footer: '\n/*!!!!!!!!!!!!!!ANY CHANGES MADE TO THIS FILE WILL BE OVER WRITTEN, MAKE CHANGES TO SOURCE JAVASCRIPT FILES AND COMPILE WITH GRUNT JS !!!!!!!!!!!!!!*/',
+        mangle: false,
       },
       build: {
         src: 'lists/assets/javascripts/all.js',
