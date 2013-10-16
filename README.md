@@ -39,7 +39,7 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 
 OvR Lists can be accessed via http://list.ovrride.com. The files are located in the lists directory found in the root of this repo.
 
-Authentication is currently using .htpasswd, This will have to eventually change.
+Authentication is currently using .htpasswd, This will be changed to utilize [php-login.net](http://php-login.net)
 
 ### OvR Lists Dependancies:
 
@@ -48,6 +48,7 @@ Authentication is currently using .htpasswd, This will have to eventually change
 [Grunt JS v0.4.1](http://gruntjs.com)  
 [jQuery 1.10.2](http://jquery.com)  
 [tablesorter v2.11.1](https://github.com/Mottie/tablesorter)
+[We are using a customized version php-login.net - 1-minimal version from September 21st 2013](https://github.com/panique/php-login)
 
 Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
 
