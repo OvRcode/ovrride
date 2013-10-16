@@ -125,10 +125,5 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
 
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
-
-      <!-- tablesorter plugin -->
-      <script src="assets/tablesorter/js/jquery.tablesorter.js"></script>
-      <!-- tablesorter widget file - loaded after the plugin -->
-      <script src="assets/tablesorter/js/jquery.tablesorter.widgets.js"></script>
   </body>
 </html>
