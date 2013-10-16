@@ -7,13 +7,22 @@
  * @since Version 0.0.1
  */
 
-# Include Functions and Login
-include 'includes/lists.php';
-
-# Report all PHP errors on page
+# Report all PHP errors
 # For Development use only
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','On');
+
+# Include Functions
+require_once("includes/lists.php");
+
+# Session Validation - Is User logged in?
+# else redirect to login page
+session_start();
+
+if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) {
+  header ("Location: login/index.php");
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,6 +102,11 @@ ini_set('display_errors','On');
       </form>
       </form>
       <?php } ?>
+
+      <!-- TODO: Temporary location for Logout. This need to go into the navbar -->
+       <a href="login/logout.php"><button type="button" class="btn btn-primary">Logout</button></a>
+      <br>
+
       <footer>
         <div class="container">
           <div class="row">

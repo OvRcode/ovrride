@@ -6,11 +6,10 @@
  * @since Version 0.0.2
  */
 
-# Include the Login Script
-include 'login/index.php';
-
+# OvR Lists Version Number
 $lists_version = "0.2.0";
 
+# Form
 if(isset($_POST['trip']))
   $list = new Trip_List($_POST['trip']);
 else
