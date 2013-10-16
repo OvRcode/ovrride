@@ -112,13 +112,13 @@ class Registration
                 $this->user_password_hash = password_hash($this->user_password, PASSWORD_DEFAULT);
 
                 // check if user already exists
-                $query_check_user_name = $this->db_connection->query("SELECT * FROM users WHERE user_name = '" . $this->user_name . "';");
+                $query_check_user_name = $this->db_connection->query("SELECT * FROM ovr_lists_login WHERE user_name = '" . $this->user_name . "';");
 
                 if ($query_check_user_name->num_rows == 1) {
                     $this->errors[] = "Sorry, that user name is already taken. Please choose another one.";
                 } else {
                     // write new users data into database
-                    $query_new_user_insert = $this->db_connection->query("INSERT INTO users (user_name, user_password_hash, user_email) VALUES('" . $this->user_name . "', '" . $this->user_password_hash . "', '" . $this->user_email . "');");
+                    $query_new_user_insert = $this->db_connection->query("INSERT INTO ovr_lists_login (user_name, user_password_hash, user_email) VALUES('" . $this->user_name . "', '" . $this->user_password_hash . "', '" . $this->user_email . "');");
 
                     if ($query_new_user_insert) {
                         $this->messages[] = "Your account has been created successfully. You can now log in.";
