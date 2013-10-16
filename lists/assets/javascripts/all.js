@@ -11816,6 +11816,19 @@ $(function(){
     sortList: [[4,0],[3,0]],
     widgets : [ 'zebra', 'columns' ]
   });
+  $('#add').click(function(){
+    var rand = Math.floor(Math.random()*90000);
+    var order = 'WO'+ rand;
+     var row = '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td>'+order+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>',
+       $row = $(row),
+       // resort table using the current sort; set to false to prevent resort, otherwise 
+       // any other value in resort will automatically trigger the table resort. 
+       resort = true;
+     $('#Listable')
+       .find('tbody').append($row)
+       .trigger('addRows', [$row, resort]);
+     return false;
+   });
 });
 ;/*!
 * TableSorter 2.11.1 min - Client-side table sorting with ease!
