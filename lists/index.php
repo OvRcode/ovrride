@@ -94,7 +94,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
       <br>
 
       <?php # Output of the Trip List Table ?>
-      <?php if(isset($_POST['trip']) && $_POST['trip'] != ""){ 
+      <?php if(isset($_POST['trip']) && $_POST['trip'] != "none"){ 
           print $list->html_table; ?>
       <form>
         <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
