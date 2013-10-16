@@ -25,7 +25,7 @@ function formReset(){
 // http://mottie.github.io/tablesorter/docs/#Configuration
 $(function(){
   $('#Listable').tablesorter({
-    sortList: [[2,0]],
+    sortList: [[4,0],[3,0]],
     widgets : [ 'zebra', 'columns' ]
   });
 });
