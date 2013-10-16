@@ -7,19 +7,8 @@
  * @since Version 0.0.1
  */
 
-# Include Functions
-
+# Include Functions and Login
 include 'includes/lists.php';
-if(isset($_POST['trip']))
-  $list = new Trip_List($_POST['trip']);
-else
-  $list = new Trip_List("None");
-
-if(isset($_POST['trip']) && $_POST['csv_list'] == "csv_list")
-    $list->csv("trip_list");
-
-if(isset($_POST['trip']) && $_POST['csv_email'] == "csv_email")
-    $list->csv("email_list");
 
 # Report all PHP errors on page
 # For Development use only
