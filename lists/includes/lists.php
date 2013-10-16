@@ -6,15 +6,21 @@
  * @since Version 0.0.2
  */
 
-$lists_version = "0.1.3";
+# Include the Login Script
+include 'login/index.php';
+
+$lists_version = "0.2.0";
 
 if(isset($_POST['trip']))
   $list = new Trip_List($_POST['trip']);
 else
   $list = new Trip_List("None");
 
-if(isset($_POST['trip']) && $_POST['csv'] == "csv")
-    $list->csv();
+if(isset($_POST['trip']) && $_POST['csv_list'] == "csv_list")
+    $list->csv("trip_list");
+
+if(isset($_POST['trip']) && $_POST['csv_email'] == "csv_email")
+    $list->csv("email_list");
 
 class Trip_List{
     var $db_connect;
@@ -26,7 +32,7 @@ class Trip_List{
     var $html_table;
     function __construct($selected_trip){
         # Connect to database
-        include 'config.php';
+        require_once("config.php");
         $this->db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
         if($this->db_connect->connect_errno > 0){
             die('Unable to connect to database [' . $this->db_connect->connect_error . ']');

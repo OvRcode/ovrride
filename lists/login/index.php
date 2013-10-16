@@ -31,7 +31,7 @@ if (version_compare(PHP_VERSION, '5.3.7', '<')) {
 }
 
 // include the configs / constants for the database connection
-require_once("../includes/config.php");
+#require_once("../includes/config.php");
 
 // load the login class
 require_once("classes/Login.php");
