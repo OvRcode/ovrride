@@ -11814,12 +11814,19 @@ function formReset(){
 $(function(){
   $('#Listable').tablesorter({
     sortList: [[4,0],[3,0]],
-    widgets : [ 'zebra', 'columns' ]
+    widgets : [ 'editable','zebra', 'columns' ],
+    widgetOptions: {
+      editable_columns       : [2,3,4,5,6],  // point to the columns to make editable (zero-based index)
+      editable_enterToAccept : true,     // press enter to accept content, or click outside if false
+      editable_autoResort    : false,    // auto resort after the content has changed.
+      editable_noEdit        : 'no-edit' // class name of cell that is no editable
+    }
   });
+  
   $('#add').click(function(){
     var rand = Math.floor(Math.random()*90000);
     var order = 'WO'+ rand;
-     var row = '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td>'+order+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>',
+     var row = '<tr><td></td><td></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>',
        $row = $(row),
        // resort table using the current sort; set to false to prevent resort, otherwise 
        // any other value in resort will automatically trigger the table resort. 
@@ -11850,4 +11857,72 @@ d.addWidget({id:"stickyHeaders",priority:60,options:{stickyHeaders:"",stickyHead
 d.addWidget({id:"resizable",priority:40,options:{resizable:!0,resizable_addLastColumn:!1},format:function(e,c,b){if(!c.$table.hasClass("hasResizable")){c.$table.addClass("hasResizable");var a,f,h,k,l={},q,u,m,n,B=c.$table,v=0,s=null,x=null,r=20>Math.abs(B.parent().width()-B.width()),w=function(){d.storage&&s&&(l[s.index()]=s.width(),l[x.index()]=x.width(),s.width(l[s.index()]),x.width(l[x.index()]),!1!==b.resizable&& d.storage(e,"tablesorter-resizable",l));v=0;s=x=null;g(window).trigger("resize")};if(l=d.storage&&!1!==b.resizable?d.storage(e,"tablesorter-resizable"):{})for(k in l)!isNaN(k)&&k<c.$headers.length&&c.$headers.eq(k).width(l[k]);a=B.children("thead:first").children("tr");a.children().each(function(){f=g(this);h=f.attr("data-column");k="false"===d.getData(f,c.headers[h],"resizable");a.children().filter('[data-column="'+h+'"]').toggleClass("resizable-false",k)});a.each(function(){q=g(this).children(":not(.resizable-false)"); g(this).find(".tablesorter-wrapper").length||q.wrapInner('<div class="tablesorter-wrapper" style="position:relative;height:100%;width:100%"></div>');b.resizable_addLastColumn||(q=q.slice(0,-1));u=u?u.add(q):q});u.each(function(){a=g(this);k=parseInt(a.css("padding-right"),10)+10;f='<div class="tablesorter-resizer" style="cursor:w-resize;position:absolute;z-index:1;right:-'+k+'px;top:0;height:100%;width:20px;"></div>';a.find(".tablesorter-wrapper").append(f)}).bind("mousemove.tsresize",function(a){0!== v&&s&&(m=a.pageX-v,n=s.width(),s.width(n+m),s.width()!==n&&r&&x.width(x.width()-m),v=a.pageX)}).bind("mouseup.tsresize",function(){w()}).find(".tablesorter-resizer,.tablesorter-resizer-grip").bind("mousedown",function(a){s=g(a.target).closest("th");f=c.$headers.filter('[data-column="'+s.attr("data-column")+'"]');1<f.length&&(s=s.add(f));x=a.shiftKey?s.parent().find("th:not(.resizable-false)").filter(":last"):s.nextAll(":not(.resizable-false)").eq(0);v=a.pageX});B.find("thead:first").bind("mouseup.tsresize mouseleave.tsresize", function(){w()}).bind("contextmenu.tsresize",function(){d.resizableReset(e);var a=g.isEmptyObject?g.isEmptyObject(l):l==={};l={};return a})}},remove:function(e,c,b){c.$table.removeClass("hasResizable").find("thead").unbind("mouseup.tsresize mouseleave.tsresize contextmenu.tsresize").find("tr").children().unbind("mousemove.tsresize mouseup.tsresize").find(".tablesorter-resizer,.tablesorter-resizer-grip").remove();
 d.resizableReset(e)}});d.resizableReset=function(e){e.config.$headers.filter(":not(.resizable-false)").css("width", "");d.storage&&d.storage(e,"tablesorter-resizable",{})};
 d.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(d,c,b,a){c.format(d,b,a,!0)},format:function(e,c,b,a){var f,h=c.$table;b=!1!==b.saveSort;var k={sortList:c.sortList};c.debug&&(f=new Date);h.hasClass("hasSaveSort")?b&&e.hasInitialized&&d.storage&&(d.storage(e,"tablesorter-savesort",k),c.debug&&d.benchmark("saveSort widget: Saving last sort: "+c.sortList,f)):(h.addClass("hasSaveSort"),k="",d.storage&&(k=(b=d.storage(e, "tablesorter-savesort"))&&b.hasOwnProperty("sortList")&&g.isArray(b.sortList)?b.sortList:"",c.debug&&d.benchmark('saveSort: Last sort loaded: "'+k+'"',f),h.bind("saveSortReset",function(a){a.stopPropagation();d.storage(e,"tablesorter-savesort","")})),a&&k&&0<k.length?c.sortList=k:e.hasInitialized&&k&&0<k.length&&h.trigger("sorton",[k]))},remove:function(e){d.storage&&d.storage(e,"tablesorter-savesort","")}})
+})(jQuery);
+;/*! tablesorter Editable Content widget - updated 4/12/2013
+ * Requires tablesorter v2.8+ and jQuery 1.7+
+ * by Rob Garrison
+ */
+/*jshint browser:true, jquery:true, unused:false */
+/*global jQuery: false */
+;(function($){
+	"use strict";
+
+	$.tablesorter.addWidget({
+		id: 'editable',
+		options : {
+			editable_columns       : [],
+			editable_enterToAccept : true,
+			editable_autoResort    : false,
+			editable_noEdit        : 'no-edit'
+		},
+		init: function(table, thisWidget, c, wo){
+			if (!wo.editable_columns.length) { return; }
+			var cols = [];
+			$.each(wo.editable_columns, function(i, col){
+				cols.push('td:nth-child(' + (col + 1) + ')');
+			});
+			c.$tbodies.find( cols.join(',') ).not('.' + wo.editable_noEdit).prop('contenteditable', true);
+			c.$tbodies
+				.on('mouseleave.tseditable', function(){
+					if (c.$table.data('contentFocused')) {
+						$(':focus').trigger('blur');
+					}
+				})
+				.on('focus.tseditable', '[contenteditable]', function(){
+					c.$table.data('contentFocused', true);
+					var $this = $(this), v = $this.html();
+					if (wo.editable_enterToAccept) {
+						// prevent enter from adding into the content
+						$this.on('keydown.tseditable', function(e){
+							if (e.which === 13) {
+								e.preventDefault();
+							}
+						});
+					}
+					$this.data({ before : v, original: v });
+				})
+				.on('blur focusout keyup '.split(' ').join('.tseditable '), '[contenteditable]', function(e){
+					if (!c.$table.data('contentFocused')) { return; }
+					var $this = $(e.target), t;
+					if (e.which === 27) {
+						// user cancelled
+						$this.html( $this.data('original') ).trigger('blur.tseditable');
+						c.$table.data('contentFocused', false);
+						return false;
+					}
+					t = e.type !== 'keyup' || (wo.editable_enterToAccept && e.which === 13);
+					// change if new or user hits enter (if option set)
+					if ($this.data('before') !== $this.html() || t) {
+						$this.data('before', $this.html()).trigger('change');
+						if (t) {
+							c.$table
+								.data('contentFocused', false)
+								.trigger('updateCell', [ $this, wo.editable_autoResort ]);
+							$this.trigger('blur.tseditable');
+						}
+					}
+				});
+		}
+	});
+
 })(jQuery);

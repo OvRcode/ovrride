@@ -209,9 +209,9 @@ class Trip_List{
     private function generate_table(){
       $total_guests = 0;
       
-      $head = "<table id='Listable' class='table table-bordered table-striped table-condensed tablesorter'>\n
+      $head = "<table id='Listable' class='tablesorter table table-bordered table-striped table-condensed'>\n
                  <thead>
-                   <tr>\n
+                   <tr class='tablesorter-headerRow'>\n
                    <td>AM</td>
                    <td>PM</td>
                    <td>First</td>
@@ -252,7 +252,7 @@ class Trip_List{
               $body .= "<td>".$info['Pickup Location'][$index]."</td>";
             $body .= "<td>".$info['Phone']."</td>
                       <td>".$info['Package'][$index]."</td>
-                      <td>".$order."</td>";
+                      <td class='no-edit'>".$order."</td>";
             $body .= "<td></td>
                       <td></td>
                       <td></td>
