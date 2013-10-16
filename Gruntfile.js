@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/javascripts/lists.js'],
+        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/javascripts/lists.js','lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js'],
         dest: 'lists/assets/javascripts/all.js',
       },
     },
@@ -27,6 +27,7 @@ module.exports = function(grunt) {
       compile: {
         options: {
           style: 'compressed',
+          banner: '/*!!!!!!!!!!!!!!DO NOT MAKE CHANGES TO THIS FILE. THIS FILE IS COMPILED FROM CSS AND SCSS FILES IN THIS FOLDER, CHANGES WILL BE OVER WRITTEN  !!!!!!!!!!!!!!!!!!!\n! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
         },
         files: {
           'lists/assets/stylesheets/all.css': 'lists/assets/stylesheets/lists.scss',
@@ -35,10 +36,10 @@ module.exports = function(grunt) {
     },
 
     // Minify javascript with Uglify
-    // TODO: Add a banner with message DO NOT MODIFY js file
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+        banner: '/*!!!!!!!!!!!!!!DO NOT MAKE CHANGES TO THIS FILE. CHANGES ARE CONCATENATED AND MINIFIED USING GRUNT.JS !!!!!!!!!!!!!!!!!!!\n! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+        footer: '\n/*!!!!!!!!!!!!!!ANY CHANGES MADE TO THIS FILE WILL BE OVER WRITTEN, MAKE CHANGES TO SOURCE JAVASCRIPT FILES AND COMPILE WITH GRUNT JS !!!!!!!!!!!!!!*/',
       },
       build: {
         src: 'lists/assets/javascripts/all.js',
@@ -57,7 +58,7 @@ module.exports = function(grunt) {
         tasks: ['jshint'],
       },
       concat: {
-        files : ['<%= jshint.files %>'],
+        files : ['<%= concat.files %>'],
         tasks: ['concat'],
       },
       uglify: {
