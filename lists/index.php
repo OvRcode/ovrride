@@ -99,6 +99,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
       <form>
         <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
         <button type="submit" class="btn btn-primary generate-list" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
+        <button type="button" class="btn btn-success generate-list" id="save_form" name="save_form" onclick="javascript:tableToForm();">Save</button>
       </form>
       </form>
       <?php } ?>

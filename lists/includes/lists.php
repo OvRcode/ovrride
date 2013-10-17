@@ -245,8 +245,8 @@ class Trip_List{
           foreach($info['First'] as $index => $first){
             $total_guests += 1;
             $body .= "<tr>
-                        <td><input type='checkbox' name='AM' value='TRUE'></td>
-                        <td><input type='checkbox' name='PM' value='TRUE'></td>
+                        <td><input type='checkbox' name='AM'></td>
+                        <td><input type='checkbox' name='PM'></td>
                         <td>".$first."</td>
                         <td>".$info['Last'][$index]."</td>";
             if($this->has_pickup)
@@ -254,16 +254,16 @@ class Trip_List{
             $body .= "<td>".$info['Phone']."</td>
                       <td>".$info['Package'][$index]."</td>
                       <td class='no-edit'>".$order."<input type='hidden' name='item_id' value='".$info['item_id'][$index]."'></td>";
-            $body .= "<td><input type='checkbox' name='Waiver' value='TRUE'></td>
-                      <td><input type='checkbox' name='Product' value='TRUE'></td>
-                      <td><input type='checkbox' name='Bus' value='TRUE'></td>
-                      <td><input type='checkbox' name='All Area' value='TRUE'></td>
-                      <td><input type='checkbox' name='Beg' value='TRUE'></td>
-                      <td><input type='checkbox' name='BRD' value='TRUE'></td>
-                      <td><input type='checkbox' name='SKI' value='TRUE'></td>
-                      <td><input type='checkbox' name='LTS' value='TRUE'></td>
-                      <td><input type='checkbox' name='LTR' value='TRUE'></td>
-                      <td><input type='checkbox' name='Prog Lesson' value='TRUE'></td>
+            $body .= "<td><input type='checkbox' name='Waiver'></td>
+                      <td><input type='checkbox' name='Product'></td>
+                      <td><input type='checkbox' name='Bus'></td>
+                      <td><input type='checkbox' name='All Area'></td>
+                      <td><input type='checkbox' name='Beg'></td>
+                      <td><input type='checkbox' name='BRD'></td>
+                      <td><input type='checkbox' name='SKI'></td>
+                      <td><input type='checkbox' name='LTS'></td>
+                      <td><input type='checkbox' name='LTR'></td>
+                      <td><input type='checkbox' name='Prog Lesson'></td>
                       </tr>\n";
           }
       }

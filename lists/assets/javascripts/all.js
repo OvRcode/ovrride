@@ -11897,7 +11897,27 @@ function formReset(){
     tbl.removeChild(tbl.firstChild);
   }
 }
-
+function tableToForm(){
+  // Reads through generated table and saves to a php form which is submitted to save values to a mysql table
+  var table = document.getElementById('Listable');
+  // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
+  // TODO: dynamically generate from header row
+  var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All Area","Beg","BRD","SKI","LTS","LTR","Prog Lesson");
+  for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
+    //alert(table.rows[rowCounter].cells.length);
+    for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
+      if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
+        console.log(labels[cellCounter]+":"+table.rows[rowCounter].cells[cellCounter].innerHTML);
+      }
+      else if(labels[cellCounter] == "Order"){}
+      else{
+        console.log(labels[cellCounter]+":"+table.rows[rowCounter].cells[cellCounter].children[0].checked);
+      }
+    }
+    //alert("AM: "+table.rows[rowCounter].cells[0].children[0].checked);
+    //alert("PM: "+table.rows[rowCounter].cells[1].children[0].checked);
+  }
+}
 // tablesorter configuration
 // http://mottie.github.io/tablesorter/docs/#Configuration
 $(function(){
@@ -11921,7 +11941,7 @@ $(function(){
     //Generate Walk On order #
     var rand = Math.floor(Math.random()*90000);
     var order = 'WO'+ rand;
-    var row = '<tr><td><input type="checkbox" name="AM" value="TRUE"></td><td><input type="checkbox" name="PM" value="TRUE"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'<input type="hidden" name="item_id" value="'+order+'"></td><td><input type="checkbox" name="Waiver" value="TRUE"></td><td><input type="checkbox" name="Product" value="TRUE"></td><td><input type="checkbox" name="Bus" value="TRUE"></td><td><input type="checkbox" name="All Area" value="TRUE"></td><td><input type="checkbox" name="Beg" value="TRUE"></td><td><input type="checkbox" name="BRD" value="TRUE"></td><td><input type="checkbox" name="SKI" value="TRUE"></td><td><input type="checkbox" name="LTS" value="TRUE"></td><td><input type="checkbox" name="LTR" value="TRUE"></td><td><input type="checkbox" name="Prog Lesson" value="TRUE"></td></tr>',
+    var row = '<tr><td><input type="checkbox" name="AM"></td><td><input type="checkbox" name="PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'<input type="hidden" name="item_id" value="'+order+'"></td><td><input type="checkbox" name="Waiver"></td><td><input type="checkbox" name="Product"></td><td><input type="checkbox" name="Bus"></td><td><input type="checkbox" name="All Area"></td><td><input type="checkbox" name="Beg"></td><td><input type="checkbox" name="BRD"></td><td><input type="checkbox" name="SKI"></td><td><input type="checkbox" name="LTS"></td><td><input type="checkbox" name="LTR"></td><td><input type="checkbox" name="Prog Lesson"></td></tr>',
     $row = $(row),
     // resort table using the current sort; set to false to prevent resort, otherwise 
     // any other value in resort will automatically trigger the table resort. 
