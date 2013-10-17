@@ -12,13 +12,14 @@
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','On');
 
+# Start Session Validation
+session_start();
+
 # Include Functions
 require_once("includes/lists.php");
 
 # Session Validation - Is User logged in?
 # else redirect to login page
-session_start();
-
 if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) {
   header ("Location: login/index.php");
 }
