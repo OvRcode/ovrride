@@ -11921,7 +11921,7 @@ $(function(){
     //Generate Walk On order #
     var rand = Math.floor(Math.random()*90000);
     var order = 'WO'+ rand;
-    var row = '<tr><td></td><td></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>',
+    var row = '<tr><td><input type="checkbox" name="AM" value="TRUE"></td><td><input type="checkbox" name="PM" value="TRUE"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="Waiver" value="TRUE"></td><td><input type="checkbox" name="Product" value="TRUE"></td><td><input type="checkbox" name="Bus" value="TRUE"></td><td><input type="checkbox" name="All Area" value="TRUE"></td><td><input type="checkbox" name="Beg" value="TRUE"></td><td><input type="checkbox" name="BRD" value="TRUE"></td><td><input type="checkbox" name="SKI" value="TRUE"></td><td><input type="checkbox" name="LTS" value="TRUE"></td><td><input type="checkbox" name="LTR" value="TRUE"></td><td><input type="checkbox" name="Prog Lesson" value="TRUE"></td></tr>',
     $row = $(row),
     // resort table using the current sort; set to false to prevent resort, otherwise 
     // any other value in resort will automatically trigger the table resort. 

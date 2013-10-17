@@ -244,8 +244,8 @@ class Trip_List{
           foreach($info['First'] as $index => $first){
             $total_guests += 1;
             $body .= "<tr>
-                        <td></td>
-                        <td></td>
+                        <td><input type='checkbox' name='AM' value='TRUE'></td>
+                        <td><input type='checkbox' name='PM' value='TRUE'></td>
                         <td>".$first."</td>
                         <td>".$info['Last'][$index]."</td>";
             if($this->has_pickup)
@@ -253,16 +253,16 @@ class Trip_List{
             $body .= "<td>".$info['Phone']."</td>
                       <td>".$info['Package'][$index]."</td>
                       <td class='no-edit'>".$order."</td>";
-            $body .= "<td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+            $body .= "<td><input type='checkbox' name='Waiver' value='TRUE'></td>
+                      <td><input type='checkbox' name='Product' value='TRUE'></td>
+                      <td><input type='checkbox' name='Bus' value='TRUE'></td>
+                      <td><input type='checkbox' name='All Area' value='TRUE'></td>
+                      <td><input type='checkbox' name='Beg' value='TRUE'></td>
+                      <td><input type='checkbox' name='BRD' value='TRUE'></td>
+                      <td><input type='checkbox' name='SKI' value='TRUE'></td>
+                      <td><input type='checkbox' name='LTS' value='TRUE'></td>
+                      <td><input type='checkbox' name='LTR' value='TRUE'></td>
+                      <td><input type='checkbox' name='Prog Lesson' value='TRUE'></td>
                       </tr>\n";
           }
       }
