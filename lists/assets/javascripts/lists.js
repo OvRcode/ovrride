@@ -26,20 +26,26 @@ function tableToForm(){
   // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
   // TODO: dynamically generate from header row
   var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All Area","Beg","BRD","SKI","LTS","LTR","Prog Lesson");
+  var form = "<form name='js_save' id='js_save' action='save.php'>";
   for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
-    //alert(table.rows[rowCounter].cells.length);
+    var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
+    //console.log("ID: "+id);
     for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
+      
       if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
-        console.log(labels[cellCounter]+":"+table.rows[rowCounter].cells[cellCounter].innerHTML);
+        //console.log(labels[cellCounter]+":"+table.rows[rowCounter].cells[cellCounter].innerText);
+        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
       }
-      else if(labels[cellCounter] == "Order"){}
-      else{
-        console.log(labels[cellCounter]+":"+table.rows[rowCounter].cells[cellCounter].children[0].checked);
+      else if(labels[cellCounter] != "Order"){
+        //console.log(labels[cellCounter]+":"+table.rows[rowCounter].cells[cellCounter].children[0].checked);
+        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
       }
     }
-    //alert("AM: "+table.rows[rowCounter].cells[0].children[0].checked);
-    //alert("PM: "+table.rows[rowCounter].cells[1].children[0].checked);
   }
+  form += "</form>";
+  $("body").append(form);
+  document.getElementById("js_save").submit();
+  
 }
 // tablesorter configuration
 // http://mottie.github.io/tablesorter/docs/#Configuration
