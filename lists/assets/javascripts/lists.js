@@ -36,16 +36,22 @@ $(function(){
   });
   
   $('#add').click(function(){
+    // Find total cell and increment
+    var cell = document.getElementById('total_guests');
+    total = Number(cell.innerHTML) + 1;
+    cell.innerHTML = total;
+    
+    //Generate Walk On order #
     var rand = Math.floor(Math.random()*90000);
     var order = 'WO'+ rand;
-     var row = '<tr><td></td><td></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>',
-       $row = $(row),
-       // resort table using the current sort; set to false to prevent resort, otherwise 
-       // any other value in resort will automatically trigger the table resort. 
-       resort = true;
-     $('#Listable')
-       .find('tbody').append($row)
-       .trigger('addRows', [$row, resort]);
-     return false;
+    var row = '<tr><td></td><td></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>',
+    $row = $(row),
+    // resort table using the current sort; set to false to prevent resort, otherwise 
+    // any other value in resort will automatically trigger the table resort. 
+    resort = true;
+    $('#Listable')
+      .find('tbody').append($row)
+      .trigger('addRows', [$row, resort]);
+    return false;
    });
 });

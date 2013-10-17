@@ -15,13 +15,12 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/javascripts/lists.js','lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js','lists/assets/tablesorter/js/widgets/widget-editable.js'],
+        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js','lists/assets/tablesorter/js/widgets/widget-editable.js','lists/assets/javascripts/lists.js'],
         dest: 'lists/assets/javascripts/all.js',
       },
     },
 
     // Compile Sass to CSS -  destination : source
-    // TODO: Add a banner with message DO NOT MODIFY css file
     // TODO: Add task to lint lists.scss
     sass: {
       compile: {
