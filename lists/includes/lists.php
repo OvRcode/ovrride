@@ -269,7 +269,7 @@ class Trip_List{
       $body .= "</tbody>\n";
       $foot = "<tfoot>\n<tr>
                  <td colspan=2 >Total Guests: </td>
-                 <td>$total_guests</td>
+                 <td id='total_guests'>$total_guests</td>
                  <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>
                  </tr>
                </tfoot>
