@@ -104,8 +104,10 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
       </form>
       <?php } ?>
 
-      <!-- TODO: Temporary location for Logout. This need to go into the navbar -->
+      <!-- TODO: Temporary location for Logout and Register User. These need to go into the navbar -->
+      <br>
        <a href="login/logout.php"><button type="button" class="btn btn-danger">Logout</button></a>
+       <a href="login/register.php"><button type="button" class="btn btn-danger">Create New User</button></a>
       <br>
 
       <footer>

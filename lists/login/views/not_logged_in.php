@@ -18,6 +18,10 @@ if ($login->messages) {
 ?>
 <!-- errors & messages --->
 
+    <!-- TODO: This page needs styling. Ideally extracting the header and footer into partials and including here. --->
+    <h1>OvR Trip Lists</h1>
+    <br>
+
 <!-- login form box -->
 <form method="post" action="index.php" name="loginform">
 
@@ -30,5 +34,3 @@ if ($login->messages) {
     <input type="submit"  name="login" value="Log in" />
 
 </form>
-
-<a href="register.php">Register new account</a>
