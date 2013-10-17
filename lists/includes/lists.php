@@ -167,6 +167,7 @@ class Trip_List{
                     or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
                     and order_item_id = '$order_item_id'";
           $result = $this->db_query($sql);
+          $this->order_data[$order]['item_id'][] = $order_item_id;
           while($row = $result->fetch_assoc()){
               if($row['meta_key'] == 'How many riders are coming?' || $row['meta_key'] == '_product_id')
                 $this->order_data[$order][$row['meta_key']] = $row['meta_value'];
@@ -252,7 +253,7 @@ class Trip_List{
               $body .= "<td>".$info['Pickup Location'][$index]."</td>";
             $body .= "<td>".$info['Phone']."</td>
                       <td>".$info['Package'][$index]."</td>
-                      <td class='no-edit'>".$order."</td>";
+                      <td class='no-edit'>".$order."<input type='hidden' name='item_id' value='".$info['item_id'][$index]."'></td>";
             $body .= "<td><input type='checkbox' name='Waiver' value='TRUE'></td>
                       <td><input type='checkbox' name='Product' value='TRUE'></td>
                       <td><input type='checkbox' name='Bus' value='TRUE'></td>
