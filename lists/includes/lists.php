@@ -167,6 +167,7 @@ class Trip_List{
                     or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
                     and order_item_id = '$order_item_id'";
           $result = $this->db_query($sql);
+          $this->order_data[$order]['item_id'][] = $order_item_id;
           while($row = $result->fetch_assoc()){
               if($row['meta_key'] == 'How many riders are coming?' || $row['meta_key'] == '_product_id')
                 $this->order_data[$order][$row['meta_key']] = $row['meta_value'];
@@ -209,9 +210,9 @@ class Trip_List{
     private function generate_table(){
       $total_guests = 0;
       
-      $head = "<table id='Listable' class='table table-bordered table-striped table-condensed tablesorter'>\n
+      $head = "<table id='Listable' class='tablesorter table table-bordered table-striped table-condensed'>\n
                  <thead>
-                   <tr>\n
+                   <tr class='tablesorter-headerRow'>\n
                    <td>AM</td>
                    <td>PM</td>
                    <td>First</td>
@@ -244,32 +245,33 @@ class Trip_List{
           foreach($info['First'] as $index => $first){
             $total_guests += 1;
             $body .= "<tr>
-                        <td></td>
-                        <td></td>
+                        <td><input type='checkbox' name='AM'></td>
+                        <td><input type='checkbox' name='PM'></td>
                         <td>".$first."</td>
                         <td>".$info['Last'][$index]."</td>";
             if($this->has_pickup)
               $body .= "<td>".$info['Pickup Location'][$index]."</td>";
             $body .= "<td>".$info['Phone']."</td>
                       <td>".$info['Package'][$index]."</td>
-                      <td>".$order."</td>";
-            $body .= "<td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                      <td class='no-edit'>".$order."<input type='hidden' name='item_id' value='".$info['item_id'][$index]."'></td>";
+            $body .= "<td><input type='checkbox' name='Waiver'></td>
+                      <td><input type='checkbox' name='Product'></td>
+                      <td><input type='checkbox' name='Bus'></td>
+                      <td><input type='checkbox' name='All Area'></td>
+                      <td><input type='checkbox' name='Beg'></td>
+                      <td><input type='checkbox' name='BRD'></td>
+                      <td><input type='checkbox' name='SKI'></td>
+                      <td><input type='checkbox' name='LTS'></td>
+                      <td><input type='checkbox' name='LTR'></td>
+                      <td><input type='checkbox' name='Prog Lesson'></td>
                       </tr>\n";
           }
       }
       $body .= "</tbody>\n";
       $foot = "<tfoot>\n<tr>
                  <td colspan=2 >Total Guests: </td>
-                 <td>$total_guests</td>
+                 <td id='total_guests'>$total_guests</td>
+                 <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>
                  </tr>
                </tfoot>
                </table>";
