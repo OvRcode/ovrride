@@ -1,0 +1,21 @@
+CREATE TABLE `ovr_lists_table` (
+  `ID` varchar(32) DEFAULT NULL,
+  `AM` tinyint(1) DEFAULT NULL,
+  `PM` tinyint(1) DEFAULT NULL,
+  `First` varchar(32) DEFAULT NULL,
+  `Last` varchar(32) DEFAULT NULL,
+  `Pickup` varchar(64) DEFAULT NULL,
+  `Phone` varchar(12) DEFAULT NULL,
+  `Package` varchar(64) DEFAULT NULL,
+  `Waiver` tinyint(1) DEFAULT NULL,
+  `Product` tinyint(1) DEFAULT NULL,
+  `Bus` tinyint(1) DEFAULT NULL,
+  `All Area` tinyint(1) DEFAULT NULL,
+  `Beg` tinyint(1) DEFAULT NULL,
+  `BRD` tinyint(1) DEFAULT NULL,
+  `SKI` tinyint(1) DEFAULT NULL,
+  `LTS` tinyint(1) DEFAULT NULL,
+  `LTR` tinyint(1) DEFAULT NULL,
+  `Prog Lesson` tinyint(1) DEFAULT NULL,
+  `Trip` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
