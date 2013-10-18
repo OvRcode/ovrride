@@ -25,11 +25,10 @@ function tableToForm(){
   var table = document.getElementById('Listable');
   // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
   // TODO: dynamically generate from header row
-  var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All Area","Beg","BRD","SKI","LTS","LTR","Prog Lesson");
-  var form = "<form name='js_save' id='js_save' action='save.php'>";
+  var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
+  var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
   for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
     var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
-    //console.log("ID: "+id);
     for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
       
       if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
