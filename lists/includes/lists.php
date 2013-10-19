@@ -10,19 +10,24 @@
 $lists_version = "0.2.0";
 
 # Form
-if(isset($_POST['trip']))
-    $list = new Trip_List($_POST['trip']);
+if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
+    unset($_SESSION['saved_table']);
+else
+    $_SESSION['post_data'] = $_POST;
+
+if(isset($_SESSION['post_data']['trip']))
+    $list = new Trip_List($_SESSION['post_data']['trip']);
 else
     $list = new Trip_List("None");
 
-if(isset($_POST['trip']) && isset($_POST['csv_list'])){
-    if($_POST['csv_list'] == "csv_list")
+if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_list'])){
+    if($_SESSION['post_data']['csv_list'] == "csv_list")
         $list->csv("trip_list");
 }
     
 
-if(isset($_POST['trip']) && isset($_POST['csv_email'])){
-    if($_POST['csv_email'] == "csv_email")
+if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_email'])){
+    if($_SESSION['post_data']['csv_email'] == "csv_email")
         $list->csv("email_list");
 }
 
@@ -126,7 +131,7 @@ class Trip_List{
         $sql_conditional = "";
         $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
         foreach($checkboxes as $field){
-          if(isset($_POST[$field])){
+          if(isset($_SESSION['post_data'][$field])){
             if($sql_conditional == "")
               $sql_conditional .= "`wp_terms`.`name` = '$field'";
             else
