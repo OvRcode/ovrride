@@ -1,5 +1,6 @@
 <?php
 require_once('includes/config.php');
+session_start();
 $db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
     if($db_connect->connect_errno > 0){
         die('Unable to connect to database [' . $db_connect->connect_error . ']');
@@ -39,9 +40,13 @@ foreach($table_data as $id => $data){
   `Prog_Lesson` = VALUES(`Prog_Lesson`)
 AAA;
 
-if(!$result = $db_connect->query($sql))
+if(!$result = $db_connect->query($sql)){
+    $_SESSION['saved_table'] = false;
     die('There was an error running the query [' . $db_connect->error . ']');
-else
-header('Location: /');
+}
+else{
+    $_SESSION['saved_table'] = true;
+    header('Location: /');
+}
 }
 ?>
