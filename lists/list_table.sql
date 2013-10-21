@@ -1,5 +1,7 @@
 CREATE TABLE `ovr_lists_table` (
-  `ID` varchar(32) DEFAULT NULL,
+  `trip` varchar(32) DEFAULT NULL,
+  `order` varchar(32) DEFAULT NULL,
+  `item_id` varchar(32) DEFAULT NULL,
   `AM` tinyint(1) DEFAULT NULL,
   `PM` tinyint(1) DEFAULT NULL,
   `First` varchar(32) DEFAULT NULL,
@@ -16,6 +18,5 @@ CREATE TABLE `ovr_lists_table` (
   `SKI` tinyint(1) DEFAULT NULL,
   `LTS` tinyint(1) DEFAULT NULL,
   `LTR` tinyint(1) DEFAULT NULL,
-  `Prog_Lesson` tinyint(1) DEFAULT NULL,
-  UNIQUE KEY `ID` (`ID`)
+  `Prog_Lesson` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

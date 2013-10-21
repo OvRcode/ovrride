@@ -9,17 +9,16 @@ $db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 $table_data = array();
 foreach($_POST as $field => $value){
     $exploded = explode(':',$field);
-    $id = $exploded[0].":".$exploded[1];
     $label = end($exploded);
     $table_data[$id][$label]=$value;
 }
 // add to db
 foreach($table_data as $id => $data){
   $sql = <<<AAA
-  Insert into `ovr_lists_table` (`ID`,`AM`,`PM`,`First`,`Last`,`Pickup`,`Phone`,`Package`,`Waiver`,`Product`,
+  Insert into `ovr_lists_table` (`trip`,`order`,`item_id`,`AM`,`PM`,`First`,`Last`,`Pickup`,`Phone`,`Package`,`Waiver`,`Product`,
     `Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson`)
-  VALUES('$id',$data[AM],$data[PM],'$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]',$data[Waiver],$data[Product],
-    $data[Bus],$data[All_Area],$data[Beg],$data[BRD],$data[SKI],$data[LTS],$data[LTR],$data[Prog_Lesson])
+  VALUES('$data[trip]','$data[Order]','$data[item_id]',$data[AM],$data[PM],'$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]',
+    $data[Waiver],$data[Product],$data[Bus],$data[All_Area],$data[Beg],$data[BRD],$data[SKI],$data[LTS],$data[LTR],$data[Prog_Lesson])
   ON DUPLICATE KEY UPDATE
   `AM` = VALUES(`AM`),
   `PM` = VALUES(`PM`),
@@ -42,6 +41,7 @@ AAA;
 
 if(!$result = $db_connect->query($sql)){
     $_SESSION['saved_table'] = false;
+    //print $sql."<br />";
     die('There was an error running the query [' . $db_connect->error . ']');
 }
 else{
