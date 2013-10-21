@@ -11903,6 +11903,8 @@ function tableToForm(){
   // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
   var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
   var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
+  var trip = document.getElementById("trip").value;
+  form += "<input type='hidden' name='trip' value='"+trip+"'>";
   for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
     var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
     for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
@@ -11910,7 +11912,11 @@ function tableToForm(){
       if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
         form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
       }
-      else if(labels[cellCounter] != "Order"){
+      else if(labels[cellCounter] == "Order"){
+        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
+        form += "<input type='hidden' name='"+id+":item_id' value='"+table.rows[rowCounter].cells[7].children[0].value+"'>";
+      }
+      else{
         form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
       }
     }

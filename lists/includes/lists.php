@@ -101,6 +101,7 @@ class Trip_List{
         fclose($f);
         exit();
     }
+
     private function db_query($sql){
         if(!$result = $this->db_connect->query($sql))
             die('There was an error running the query [' . $this->db_connect->error . ']');
