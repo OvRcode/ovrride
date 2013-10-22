@@ -18,5 +18,7 @@ CREATE TABLE `ovr_lists_table` (
   `SKI` tinyint(1) DEFAULT NULL,
   `LTS` tinyint(1) DEFAULT NULL,
   `LTR` tinyint(1) DEFAULT NULL,
-  `Prog_Lesson` tinyint(1) DEFAULT NULL
+  `Prog_Lesson` tinyint(1) DEFAULT NULL,
+  `ID` varchar(64) NOT NULL,
+  UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
