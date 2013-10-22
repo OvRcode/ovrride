@@ -20,9 +20,10 @@ require_once("includes/lists.php");
 
 # Session Validation - Is User logged in?
 # else redirect to login page
-if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) {
+if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
   header ("Location: login/index.php");
-}
+
+
 
 ?>
 <!DOCTYPE html>
@@ -68,25 +69,25 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
       <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
       <br>
       <label class="checkbox-inline">
-        <input type="checkbox" name="processing" value="processing" <?php if(isset($_POST['processing']) || !isset($_POST['trip'])) echo 'checked';?>>Processing</input>
+        <input type="checkbox" name="processing" value="processing" <?php if(isset($_SESSION['post_data']['processing']) || !isset($_SESSION['post_data']['trip'])) echo 'checked';?>>Processing</input>
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" name="pending" value="pending" <?php if(isset($_POST['pending']) || !isset($_POST['trip'])) echo 'checked'; ?>>Pending</input>
+        <input type="checkbox" name="pending" value="pending" <?php if(isset($_SESSION['post_data']['pending']) || !isset($_SESSION['post_data']['trip'])) echo 'checked'; ?>>Pending</input>
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" name="cancelled" value="cancelled" <?php if(isset($_POST['cancelled'])) echo 'checked'; ?>>Cancelled</input>
+        <input type="checkbox" name="cancelled" value="cancelled" <?php if(isset($_SESSION['post_data']['cancelled'])) echo 'checked'; ?>>Cancelled</input>
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" name="failed" value="failed" <?php if(isset($_POST['failed'])) echo 'checked'; ?>>Failed</input>
+        <input type="checkbox" name="failed" value="failed" <?php if(isset($_SESSION['post_data']['failed'])) echo 'checked'; ?>>Failed</input>
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" name="on-hold" value="on-hold" <?php if(isset($_POST['on-hold'])) echo 'checked'; ?>>On-hold</input>
+        <input type="checkbox" name="on-hold" value="on-hold" <?php if(isset($_SESSION['post_data']['on-hold'])) echo 'checked'; ?>>On-hold</input>
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" name="completed" value="completed" <?php if(isset($_POST['completed'])) echo 'checked'; ?>>Completed</input>
+        <input type="checkbox" name="completed" value="completed" <?php if(isset($_SESSION['post_data']['completed'])) echo 'checked'; ?>>Completed</input>
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" name="refunded" value="refunded" <?php if(isset($_POST['refunded'])) echo 'checked'; ?>>Refunded</input>
+        <input type="checkbox" name="refunded" value="refunded" <?php if(isset($_SESSION['post_data']['refunded'])) echo 'checked'; ?>>Refunded</input>
       </label>
       <br>
       <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
@@ -95,7 +96,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
       <br>
 
       <?php # Output of the Trip List Table ?>
-      <?php if(isset($_POST['trip']) && $_POST['trip'] != "none"){ 
+      <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
           print $list->html_table; ?>
       <form>
         <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
