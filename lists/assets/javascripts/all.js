@@ -11786,37 +11786,6 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
   })
 
 }(window.jQuery);
-;/**
-*  OvR Lists - Custom JavaScript
-*
-*/
-
-// Order Status: Check All / Uncheck All
-function checkAll(formname, checktoggle) {
-  var checkboxes = [];
-  checkboxes = document.formname.getElementsByTagName('input');
-
-  for (var i=0; i<checkboxes.length; i++) {
-    if (checkboxes[i].type == 'checkbox') {
-      checkboxes[i].checked = checktoggle;
-    }
-  }
-}
-function formReset(){
-  var tbl = document.getElementById("Listable");
-  while (tbl.firstChild) {
-    tbl.removeChild(tbl.firstChild);
-  }
-}
-
-// tablesorter configuration
-// http://mottie.github.io/tablesorter/docs/#Configuration
-$(function(){
-  $('#Listable').tablesorter({
-    sortList: [[2,0]],
-    widgets : [ 'zebra', 'columns' ]
-  });
-});
 ;/*!
 * TableSorter 2.11.1 min - Client-side table sorting with ease!
 * Copyright (c) 2007 Christian Bach
@@ -11838,3 +11807,158 @@ d.addWidget({id:"resizable",priority:40,options:{resizable:!0,resizable_addLastC
 d.resizableReset(e)}});d.resizableReset=function(e){e.config.$headers.filter(":not(.resizable-false)").css("width", "");d.storage&&d.storage(e,"tablesorter-resizable",{})};
 d.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(d,c,b,a){c.format(d,b,a,!0)},format:function(e,c,b,a){var f,h=c.$table;b=!1!==b.saveSort;var k={sortList:c.sortList};c.debug&&(f=new Date);h.hasClass("hasSaveSort")?b&&e.hasInitialized&&d.storage&&(d.storage(e,"tablesorter-savesort",k),c.debug&&d.benchmark("saveSort widget: Saving last sort: "+c.sortList,f)):(h.addClass("hasSaveSort"),k="",d.storage&&(k=(b=d.storage(e, "tablesorter-savesort"))&&b.hasOwnProperty("sortList")&&g.isArray(b.sortList)?b.sortList:"",c.debug&&d.benchmark('saveSort: Last sort loaded: "'+k+'"',f),h.bind("saveSortReset",function(a){a.stopPropagation();d.storage(e,"tablesorter-savesort","")})),a&&k&&0<k.length?c.sortList=k:e.hasInitialized&&k&&0<k.length&&h.trigger("sorton",[k]))},remove:function(e){d.storage&&d.storage(e,"tablesorter-savesort","")}})
 })(jQuery);
+;/*! tablesorter Editable Content widget - updated 4/12/2013
+ * Requires tablesorter v2.8+ and jQuery 1.7+
+ * by Rob Garrison
+ */
+/*jshint browser:true, jquery:true, unused:false */
+/*global jQuery: false */
+;(function($){
+	"use strict";
+
+	$.tablesorter.addWidget({
+		id: 'editable',
+		options : {
+			editable_columns       : [],
+			editable_enterToAccept : true,
+			editable_autoResort    : false,
+			editable_noEdit        : 'no-edit'
+		},
+		init: function(table, thisWidget, c, wo){
+			if (!wo.editable_columns.length) { return; }
+			var cols = [];
+			$.each(wo.editable_columns, function(i, col){
+				cols.push('td:nth-child(' + (col + 1) + ')');
+			});
+			c.$tbodies.find( cols.join(',') ).not('.' + wo.editable_noEdit).prop('contenteditable', true);
+			c.$tbodies
+				.on('mouseleave.tseditable', function(){
+					if (c.$table.data('contentFocused')) {
+						$(':focus').trigger('blur');
+					}
+				})
+				.on('focus.tseditable', '[contenteditable]', function(){
+					c.$table.data('contentFocused', true);
+					var $this = $(this), v = $this.html();
+					if (wo.editable_enterToAccept) {
+						// prevent enter from adding into the content
+						$this.on('keydown.tseditable', function(e){
+							if (e.which === 13) {
+								e.preventDefault();
+							}
+						});
+					}
+					$this.data({ before : v, original: v });
+				})
+				.on('blur focusout keyup '.split(' ').join('.tseditable '), '[contenteditable]', function(e){
+					if (!c.$table.data('contentFocused')) { return; }
+					var $this = $(e.target), t;
+					if (e.which === 27) {
+						// user cancelled
+						$this.html( $this.data('original') ).trigger('blur.tseditable');
+						c.$table.data('contentFocused', false);
+						return false;
+					}
+					t = e.type !== 'keyup' || (wo.editable_enterToAccept && e.which === 13);
+					// change if new or user hits enter (if option set)
+					if ($this.data('before') !== $this.html() || t) {
+						$this.data('before', $this.html()).trigger('change');
+						if (t) {
+							c.$table
+								.data('contentFocused', false)
+								.trigger('updateCell', [ $this, wo.editable_autoResort ]);
+							$this.trigger('blur.tseditable');
+						}
+					}
+				});
+		}
+	});
+
+})(jQuery);
+;/**
+*  OvR Lists - Custom JavaScript
+*
+*/
+
+// Order Status: Check All / Uncheck All
+function checkAll(trip_list, checktoggle) {
+  var checkboxes = [];
+  checkboxes = document.forms[trip_list].getElementsByClassName('order_status_checkbox');
+
+  for (var i=0; i<checkboxes.length; i++) {
+    if (checkboxes[i].type == 'checkbox') {
+      checkboxes[i].checked = checktoggle;
+    }
+  }
+}
+
+function formReset(){
+  var tbl = document.getElementById("Listable");
+  while (tbl.firstChild) {
+    tbl.removeChild(tbl.firstChild);
+  }
+}
+
+function tableToForm(){
+  // Reads through generated table and saves to a php form which is submitted to save values to a mysql table
+  var table = document.getElementById('Listable');
+  // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
+  var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
+  var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
+  var trip = document.getElementById("trip").value;
+  for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
+    var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
+    form += "<input type='hidden' name='"+id+":trip' value='"+trip+"'>";
+    for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
+
+      if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
+        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
+      }
+      else if(labels[cellCounter] == "Order"){
+        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
+        form += "<input type='hidden' name='"+id+":item_id' value='"+table.rows[rowCounter].cells[7].children[0].value+"'>";
+      }
+      else{
+        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
+      }
+    }
+  }
+  form += "</form>";
+  $("body").append(form);
+  document.getElementById("js_save").submit();
+}
+
+// tablesorter configuration
+// http://mottie.github.io/tablesorter/docs/#Configuration
+$(function(){
+  $('#Listable').tablesorter({
+    sortList: [[4,0],[3,0]],
+    widgets : [ 'editable','zebra', 'columns' ],
+    widgetOptions: {
+      editable_columns       : [2,3,4,5,6],  // point to the columns to make editable (zero-based index)
+      editable_enterToAccept : true,     // press enter to accept content, or click outside if false
+      editable_autoResort    : false,    // auto resort after the content has changed.
+      editable_noEdit        : 'no-edit' // class name of cell that is no editable
+    }
+  });
+
+  $('#add').click(function(){
+    // Find total cell and increment
+    var cell = document.getElementById('total_guests');
+    total = Number(cell.innerHTML) + 1;
+    cell.innerHTML = total;
+
+    //Generate Walk On order #
+    var rand = Math.floor(Math.random()*90000);
+    var order = 'WO'+ rand;
+    var row = '<tr><td><input type="checkbox" name="AM"></td><td><input type="checkbox" name="PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'<input type="hidden" name="item_id" value="'+order+'"></td><td><input type="checkbox" name="Waiver"></td><td><input type="checkbox" name="Product"></td><td><input type="checkbox" name="Bus"></td><td><input type="checkbox" name="All Area"></td><td><input type="checkbox" name="Beg"></td><td><input type="checkbox" name="BRD"></td><td><input type="checkbox" name="SKI"></td><td><input type="checkbox" name="LTS"></td><td><input type="checkbox" name="LTR"></td><td><input type="checkbox" name="Prog Lesson"></td></tr>',
+    $row = $(row),
+    // resort table using the current sort; set to false to prevent resort, otherwise 
+    // any other value in resort will automatically trigger the table resort. 
+    resort = true;
+    $('#Listable')
+      .find('tbody').append($row)
+      .trigger('addRows', [$row, resort]);
+    return false;
+   });
+});

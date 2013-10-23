@@ -9,8 +9,8 @@
 
 # Report all PHP errors
 # For Development use only
-error_reporting(E_ALL|E_STRICT);
-ini_set('display_errors','On');
+# error_reporting(E_ALL|E_STRICT);
+# ini_set('display_errors','On');
 
 # Start Session Validation
 session_start();
@@ -20,9 +20,8 @@ require_once("includes/lists.php");
 
 # Session Validation - Is User logged in?
 # else redirect to login page
-if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) {
+if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
   header ("Location: login/index.php");
-}
 
 ?>
 <!DOCTYPE html>
@@ -35,7 +34,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    
+
     <!-- favicon and apple-touch-icon -->
     <link rel="apple-touch-icon" href="touch-icon-iphone.png" />
     <link rel="apple-touch-icon" sizes="76x76" href="assets/images/touch-icon-ipad.png" />
@@ -54,52 +53,57 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
 
     <form action="index.php" method="post" name="trip_list" id="trip_list">
       <section class="trip-select">
-      <label>Select a Trip:</label>
-      <br>
-      <select id="trip" name="trip" id="trip">
-      <?php echo $list->select_options; ?>
-      </select>
+        <fieldset>
+          <label>Select a Trip:</label>
+          <br>
+          <select id="trip" name="trip" id="trip">
+          <?php echo $list->select_options; ?>
+          </select>
+        </fieldset>
       </section>
       <br>
 
       <section class="order-status-select">
-      <label>Order Status: </label>
-      <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();">Check All</a> &#47;
-      <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
-      <br>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="processing" value="processing" <?php if(isset($_POST['processing']) || !isset($_POST['trip'])) echo 'checked';?>>Processing</input>
-      </label>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="pending" value="pending" <?php if(isset($_POST['pending']) || !isset($_POST['trip'])) echo 'checked'; ?>>Pending</input>
-      </label>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="cancelled" value="cancelled" <?php if(isset($_POST['cancelled'])) echo 'checked'; ?>>Cancelled</input>
-      </label>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="failed" value="failed" <?php if(isset($_POST['failed'])) echo 'checked'; ?>>Failed</input>
-      </label>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="on-hold" value="on-hold" <?php if(isset($_POST['on-hold'])) echo 'checked'; ?>>On-hold</input>
-      </label>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="completed" value="completed" <?php if(isset($_POST['completed'])) echo 'checked'; ?>>Completed</input>
-      </label>
-      <label class="checkbox-inline">
-        <input type="checkbox" name="refunded" value="refunded" <?php if(isset($_POST['refunded'])) echo 'checked'; ?>>Refunded</input>
-      </label>
-      <br>
-      <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
-      <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
+        <fieldset>
+          <label>Order Status: </label>
+          <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();">Check All</a> &#47;
+          <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
+          <br>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php if(isset($_SESSION['post_data']['processing']) || !isset($_SESSION['post_data']['trip'])) echo 'checked';?>>Processing</input>
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php if(isset($_SESSION['post_data']['pending']) || !isset($_SESSION['post_data']['trip'])) echo 'checked'; ?>>Pending</input>
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php if(isset($_SESSION['post_data']['cancelled'])) echo 'checked'; ?>>Cancelled</input>
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed" <?php if(isset($_SESSION['post_data']['failed'])) echo 'checked'; ?>>Failed</input>
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php if(isset($_SESSION['post_data']['on-hold'])) echo 'checked'; ?>>On-hold</input>
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php if(isset($_SESSION['post_data']['completed'])) echo 'checked'; ?>>Completed</input>
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php if(isset($_SESSION['post_data']['refunded'])) echo 'checked'; ?>>Refunded</input>
+          </label>
+          <br>
+          <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
+          <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
+        </fieldset>
       </section>
       <br>
 
       <?php # Output of the Trip List Table ?>
-      <?php if(isset($_POST['trip']) && $_POST['trip'] != "none"){ 
+      <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
           print $list->html_table; ?>
       <form>
         <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
         <button type="submit" class="btn btn-primary generate-list" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
+        <button type="button" class="btn btn-success generate-list" id="save_form" name="save_form" onclick="javascript:tableToForm();">Save</button>
       </form>
       </form>
       <?php } ?>
@@ -125,7 +129,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != '')) 
         </div>
       </div>
       </footer>
-
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>
