@@ -169,7 +169,8 @@ class Trip_List{
       while($row = $result->fetch_assoc()){
         $order = $row['order'];
         $item_id = $row['item_id'];
-        if($order != $item_id){
+        $order_prefix = substr($order, 0,2);
+        if($order_prefix != "WO"){
             $id = $key = array_search($row['item_id'], $this->order_data[$order]['item_id']);
             $this->order_data[$order]['First'][$id] = $row['First'];
             $this->order_data[$order]['Last'][$id] = $row['Last'];
