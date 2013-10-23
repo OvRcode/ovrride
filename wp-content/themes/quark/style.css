@@ -285,7 +285,7 @@ hr {
 	background-color: #AAA;
 	border: 0;
 	height: 1px;
-	margin: 12px 8px;
+	margin: 6px 2px 2px 2px;
 }
 
 ol, ul {
@@ -416,18 +416,20 @@ blockquote.pull-right p, blockquote.pull-right small {
 	text-align: right;
 }
 
+
 /* ==========================================================================
    Chapmans page styles
    ========================================================================== */
-
-
-
-
-
+   
 .seats-left p {
-	margin:3px 0px 0px 0px;
+	margin: 0px;
+	color: #00BCE7;
+	font-size: 17px;
 }
-.minitweets iframe {
+.seats-left a {
+	color: #01bce7;
+}
+.minitweets {
 	width:100%;
 }
 blockquote cite:before {
