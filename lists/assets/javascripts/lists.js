@@ -4,9 +4,9 @@
 */
 
 // Order Status: Check All / Uncheck All
-function checkAll(formname, checktoggle) {
+function checkAll(trip_list, checktoggle) {
   var checkboxes = [];
-  checkboxes = document.formname.getElementsByTagName('input');
+  checkboxes = document.forms[trip_list].getElementsByClassName('order_status_checkbox');
 
   for (var i=0; i<checkboxes.length; i++) {
     if (checkboxes[i].type == 'checkbox') {
@@ -14,12 +14,14 @@ function checkAll(formname, checktoggle) {
     }
   }
 }
+
 function formReset(){
   var tbl = document.getElementById("Listable");
   while (tbl.firstChild) {
     tbl.removeChild(tbl.firstChild);
   }
 }
+
 function tableToForm(){
   // Reads through generated table and saves to a php form which is submitted to save values to a mysql table
   var table = document.getElementById('Listable');
@@ -31,7 +33,7 @@ function tableToForm(){
     var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
     form += "<input type='hidden' name='"+id+":trip' value='"+trip+"'>";
     for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
-      
+
       if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
         form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
       }
@@ -47,8 +49,8 @@ function tableToForm(){
   form += "</form>";
   $("body").append(form);
   document.getElementById("js_save").submit();
-  
 }
+
 // tablesorter configuration
 // http://mottie.github.io/tablesorter/docs/#Configuration
 $(function(){
@@ -62,13 +64,13 @@ $(function(){
       editable_noEdit        : 'no-edit' // class name of cell that is no editable
     }
   });
-  
+
   $('#add').click(function(){
     // Find total cell and increment
     var cell = document.getElementById('total_guests');
     total = Number(cell.innerHTML) + 1;
     cell.innerHTML = total;
-    
+
     //Generate Walk On order #
     var rand = Math.floor(Math.random()*90000);
     var order = 'WO'+ rand;

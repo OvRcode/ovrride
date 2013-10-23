@@ -21,4 +21,4 @@ CREATE TABLE `ovr_lists_table` (
   `Prog_Lesson` tinyint(1) DEFAULT NULL,
   `ID` varchar(64) NOT NULL,
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
