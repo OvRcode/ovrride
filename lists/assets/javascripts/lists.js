@@ -72,9 +72,9 @@ $(function(){
     cell.innerHTML = total;
 
     //Generate Walk On order #
-    var rand = Math.floor(Math.random()*90000);
-    var order = 'WO'+ rand;
-    var row = '<tr><td><input type="checkbox" name="AM"></td><td><input type="checkbox" name="PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'<input type="hidden" name="item_id" value="'+order+'"></td><td><input type="checkbox" name="Waiver"></td><td><input type="checkbox" name="Product"></td><td><input type="checkbox" name="Bus"></td><td><input type="checkbox" name="All Area"></td><td><input type="checkbox" name="Beg"></td><td><input type="checkbox" name="BRD"></td><td><input type="checkbox" name="SKI"></td><td><input type="checkbox" name="LTS"></td><td><input type="checkbox" name="LTR"></td><td><input type="checkbox" name="Prog Lesson"></td></tr>',
+    var itemNum = Math.floor(Math.random()*90000);
+    var order = 'WO'+ Math.floor(Math.random()*90000);
+    var row = '<tr><td><input type="checkbox" name="AM"></td><td><input type="checkbox" name="PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'<input type="hidden" name="item_id" value="'+itemNum+'"></td><td><input type="checkbox" name="Waiver"></td><td><input type="checkbox" name="Product"></td><td><input type="checkbox" name="Bus"></td><td><input type="checkbox" name="All Area"></td><td><input type="checkbox" name="Beg"></td><td><input type="checkbox" name="BRD"></td><td><input type="checkbox" name="SKI"></td><td><input type="checkbox" name="LTS"></td><td><input type="checkbox" name="LTR"></td><td><input type="checkbox" name="Prog Lesson"></td></tr>',
     $row = $(row),
     // resort table using the current sort; set to false to prevent resort, otherwise 
     // any other value in resort will automatically trigger the table resort. 
