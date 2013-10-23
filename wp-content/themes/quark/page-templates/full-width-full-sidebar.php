@@ -14,7 +14,7 @@ get_header(); ?>
 	<div id="primary" class="site-content row clearfix" role="main">
 
          <div class="col grid_3_of_12 feedbar">
-            <div class="col grid_12_of_12" style="margin: 0px 0px 45px 0px;">
+            <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
             	<?php 
 					$id = 1384;
 					$p = get_page($id);
@@ -22,7 +22,7 @@ get_header(); ?>
 				?>
                 <h1 style="margin-top:5px;" class="book-btn"><a href="/events/">VIEW FULL CALENDAR</a></h1>
             </div>
-            <div class="col grid_12_of_12" style="margin:0px;">
+            <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
             	<?php
 				    
 				/* Upcoming Trips ________________________________________________________________ */ ?>
@@ -84,7 +84,7 @@ get_header(); ?>
                                     </div>
                                     
                                     <div class="seats-left">
-                                       <p><a href="<?php echo $trip_links[$i]; ?>"><?php echo $spots_left[$i]; ?> Seats Left</a></p>
+                                       <p><a href="<?php echo $trip_links[$i]; ?>">Seats Left <?php echo $spots_left[$i]; ?></a></p>
                                     </div>
                                 </div>	
                             </div> 
@@ -99,10 +99,10 @@ get_header(); ?>
             <div class="col grid_12_of_12" style="margin:0px;">
             	<h2 class="widgettitle">Destinations</h2>
                 <div class="destinations">
-                <div id="squelch-taas-accordion-0" class="squelch-taas-accordion squelch-taas-override ui-accordion ui-widget ui-helper-reset" data-active="0" data-disabled="false" data-autoheight="false" data-collapsible="true" role="tablist">
+                <div id="squelch-taas-accordion-0" class="squelch-taas-accordion squelch-taas-override ui-accordion ui-widget ui-helper-reset" data-active="none" data-disabled="false" data-autoheight="false" data-collapsible="true" role="tablist">
 
-                <h3 id="squelch-taas-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-0" aria-selected="true" tabindex="0"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span><a href="#squelch-taas-accordion-shortcode-content-0">New York</a></h3>
-                <div class="squelch-taas-accordion-shortcode-content-0 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; " id="ui-accordion-squelch-taas-accordion-0-panel-0" aria-labelledby="squelch-taas-header-0" role="tabpanel" aria-expanded="true" aria-hidden="false">
+                <h3 id="squelch-taas-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-0" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-0">New York</a></h3>
+                <div class="squelch-taas-accordion-shortcode-content-0 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-0" aria-labelledby="squelch-taas-header-0" role="tabpanel" aria-expanded="false" aria-hidden="true">
                 <a href="/destinations/hunter-mt/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/hunter.png">Hunter MT</a><br>
                 <a href="/destinations/windham-mt/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/windham.png">Windham MT</a>
                 </div>

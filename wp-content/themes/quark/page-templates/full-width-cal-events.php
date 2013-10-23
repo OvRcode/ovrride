@@ -14,7 +14,7 @@ get_header(); ?>
 	<div id="primary" class="site-content row clearfix" role="main">
     	
          <div class="col grid_3_of_12 feedbar">
-            <div class="col grid_12_of_12" style="margin: 0px 0px 45px 0px;">
+            <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
             	<?php 
 					$id = 1384;
 					$p = get_page($id);
@@ -22,7 +22,7 @@ get_header(); ?>
 				?>
                 <h1 style="margin-top:5px;" class="book-btn"><a href="/events/">VIEW FULL CALENDAR</a></h1>
             </div>
-            <div class="col grid_12_of_12" style="margin:0px;">
+            <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
             	<?php
 				    
 				/* Upcoming Trips ________________________________________________________________ */ ?>
@@ -84,7 +84,7 @@ get_header(); ?>
                                     </div>
                                     
                                     <div class="seats-left">
-                                       <p><a href="<?php echo $trip_links[$i]; ?>"><?php echo $spots_left[$i]; ?> Seats Left</a></p>
+                                       <p><a href="<?php echo $trip_links[$i]; ?>">Seats Left <?php echo $spots_left[$i]; ?></a></p>
                                     </div>
                                 </div>	
                             </div> 
