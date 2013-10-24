@@ -36,7 +36,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- favicon and apple-touch-icon -->
-    <link rel="apple-touch-icon" href="touch-icon-iphone.png" />
+    <link rel="apple-touch-icon" href="assets/images/touch-icon-iphone.png" />
     <link rel="apple-touch-icon" sizes="76x76" href="assets/images/touch-icon-ipad.png" />
     <link rel="apple-touch-icon" sizes="120x120" href="assets/images/touch-icon-iphone-retina.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="assets/images/touch-icon-ipad-retina.png" />
@@ -53,18 +53,15 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
     <form action="index.php" method="post" name="trip_list" id="trip_list">
       <section class="trip-select">
-        <fieldset>
           <label>Select a Trip:</label>
           <br>
           <select id="trip" name="trip" id="trip">
           <?php echo $list->select_options; ?>
           </select>
-        </fieldset>
       </section>
       <br>
 
       <section class="order-status-select">
-        <fieldset>
           <label>Order Status: </label>
           <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();">Check All</a> &#47;
           <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
@@ -93,7 +90,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <br>
           <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
           <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
-        </fieldset>
       </section>
       <br>
 
