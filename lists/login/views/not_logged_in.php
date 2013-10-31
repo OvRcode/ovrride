@@ -47,7 +47,7 @@ if ($login->messages) {
     <![endif]-->
   </head>
   <body>
-    <div class="container">
+    <div class="container login-window">
       <div class="row">
         <div class="col-md-4 col-md-offset-4">
           <div class="panel panel-default">
