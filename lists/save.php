@@ -5,7 +5,7 @@ $db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
     if($db_connect->connect_errno > 0){
         die('Unable to connect to database [' . $db_connect->connect_error . ']');
     }
-// assemble data
+# Assemble data
 $table_data = array();
 foreach($_POST as $field => $value){
     $exploded = explode(':',$field);
@@ -13,7 +13,7 @@ foreach($_POST as $field => $value){
     $label = end($exploded);
     $table_data[$id][$label]=$value;
 }
-// add to db
+# Add to db
 foreach($table_data as $id => $data){
 
   $sql = <<<AAA
@@ -43,7 +43,7 @@ AAA;
 
 if(!$result = $db_connect->query($sql)){
     $_SESSION['saved_table'] = false;
-    //print $sql."<br />";
+    # print $sql."<br />";
     die('There was an error running the query [' . $db_connect->error . ']');
 }
 else{

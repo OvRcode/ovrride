@@ -18,12 +18,13 @@
 // -------------------------
 
 body {
-  margin: 10px;
-  padding-top:20px;
+  // margin: 10px;
+ // padding-top:20px;
 }
 
 .trip-select {
   margin-bottom: 10px;
+  width: 75%;
 }
 
 .order-status-select {
@@ -34,6 +35,23 @@ body {
   margin-top: 20px;
   margin-left: 20px;
 }
+
+// BOOTSTRAP NAV
+// -------------------------
+
+// Pull Navbar right for desktop and left for mobile
+ @media (max-width: 767px) {
+  .nav-puller {
+   float: left;
+   }
+ }
+
+  @media (min-width: 768px) {
+  .nav-puller {
+   float: right;
+   }
+ }
+
 
 // FOOTER
 // -------------------------
