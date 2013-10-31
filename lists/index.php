@@ -31,6 +31,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
     <title>OvR Trip Lists</title>
 
     <!-- Mobile view properties & enable iOS Web App-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -46,22 +47,50 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
     <link rel="stylesheet" href="assets/stylesheets/all.css">
     <!-- Include tablesorter styles -->
     <link rel="stylesheet" href="assets/tablesorter/css/theme.bootstrap.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
   </head>
   <body>
-    <h1>OvR Trip Lists</h1>
-    <br>
+
+    <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand logo-nav" href="/">OvR Trip Lists</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav nav-puller">
+            <li><a href="http://ovrride.com" target="_blank">Ovrride.com</a></li>
+            <li><a href="https://ovrride.com/sop/" target="_blank">SOP</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="login/register.php">Create New User</a></li>
+            <li><a href="login/logout.php">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div><!-- /.container -->
+    </nav>
+
+    <div class="container">
 
     <form action="index.php" method="post" name="trip_list" id="trip_list">
       <section class="trip-select">
           <label>Select a Trip:</label>
           <br>
-          <select id="trip" name="trip" id="trip">
+          <select class="form-control input-sm" id="trip" name="trip" id="trip">
           <?php echo $list->select_options; ?>
           </select>
       </section>
       <br>
 
-      <section class="order-status-select">
+      <section class="order-status-select input-group">
           <label>Order Status: </label>
           <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();">Check All</a> &#47;
           <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
@@ -93,9 +122,15 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       </section>
       <br>
 
+      </div><!-- /.container -->
+
+      <!-- The table is not wrapped in the bootstrap container class as it caused some strange behavior -->
       <?php # Output of the Trip List Table ?>
       <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
           print $list->html_table; ?>
+      
+
+      <div class="container">
       <form>
         <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
         <button type="submit" class="btn btn-primary generate-list" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
@@ -104,27 +139,25 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       </form>
       <?php } ?>
 
-      <!-- TODO: Temporary location for Logout and Register User. These need to go into the navbar -->
-      <br>
-       <a href="login/logout.php"><button type="button" class="btn btn-danger">Logout</button></a>
-       <a href="login/register.php"><button type="button" class="btn btn-danger">Create New User</button></a>
-      <br>
+      </div><!-- /.container -->
 
       <footer>
+        <div class="page-header"></div><!-- inserts the line separator -->
         <div class="container">
           <div class="row">
-            <div class="col-md-4 text-left">
+            <div class="col-md-5 text-center">
               <h5><span>&copy; Copyright <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a></span></h5>
             </div>
-          <div class="col-md-4 text-center footer-center">
+          <div class="col-md-5 text-center footer-center">
             <h5>For OvR Staff Use Only</h5>
           </div>
-          <div class="col-md-4 text-right">
+          <div class="col-md-5 text-center">
             <h5>Version <?php echo $lists_version ?></h5>
           </div>
         </div>
       </div>
       </footer>
+
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>
