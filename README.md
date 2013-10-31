@@ -37,7 +37,8 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 
 ### OvR Lists:
 
-OvR Lists can be accessed via http://list.ovrride.com. The files are located in the lists directory found in the root of this repo.
+OvR Lists can be accessed via http://lists.ovrride.com.  
+The files are located in the lists directory found in the root of this repo.
 
 Authentication is currently using .htpasswd, This will be changed to utilize [php-login.net](http://php-login.net)
 
@@ -47,13 +48,13 @@ Authentication is currently using .htpasswd, This will be changed to utilize [ph
 [Bootstrap Sass v3.0.0](https://github.com/jlong/sass-bootstrap)  
 [Grunt JS v0.4.1](http://gruntjs.com)  
 [jQuery 1.10.2](http://jquery.com)  
-[tablesorter v2.11.1](https://github.com/Mottie/tablesorter)
+[tablesorter v2.11.1](https://github.com/Mottie/tablesorter)  
 [We are using a customized version php-login.net - 1-minimal version from September 21st 2013](https://github.com/panique/php-login)
 
 Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
 
 Once you have node, npm and grunt installed. You can run grunt tasks from the projects root.
 
-`grunt` from the CLI with run the default tasks specified in `Gruntfile.js`
+`grunt` from the CLI will run the default tasks specified in `Gruntfile.js`
 
-`grunt watch` from the CLI will watch the sass and javascript files for changes and automatically update all.min.js and all.css
+`grunt watch` from the CLI will watch the Sass and JavaScript files for changes and automatically update all.min.js and all.css

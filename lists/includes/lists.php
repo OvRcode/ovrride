@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.3.1";
+$lists_version = "0.3.2";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -266,7 +266,8 @@ class Trip_List{
     private function generate_table(){
       $total_guests = 0;
 
-      $head = "<table id='Listable' class='tablesorter table table-bordered table-striped table-condensed'>\n
+      $head = "<div class='table-responsive'>\n
+               <table id='Listable' class='tablesorter table table-bordered table-striped table-condensed'>\n
                  <thead>
                    <tr class='tablesorter-headerRow'>\n
                    <td>AM</td>
@@ -335,7 +336,8 @@ EOT2;
                  <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>
                  </tr>
                </tfoot>
-               </table>";
+               </table>
+               </div><!-- /.table-responsive -->";
       $this->html_table = $head . $body . $foot;
     }
     private function is_checkbox_set($order,$item_id,$value){
