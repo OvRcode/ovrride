@@ -181,7 +181,7 @@ class Trip_List{
             $this->order_data[$row['order']]['First'][] = $row['First'];
             $this->order_data[$row['order']]['Last'][] = $row['Last'];
             $this->order_data[$order]['Package'][] = $row['Package'];
-            $this->order_data[$order]['Pickup'][] = $row['Pickup'];
+            $this->order_data[$order]['Pickup Location'][] = $row['Pickup'];
             $this->order_data[$order]['Phone'] = $row['Phone'];
         }
         $this->html_checkboxes[$order][$item_id]['AM'] = $row['AM'];
@@ -308,7 +308,7 @@ class Trip_List{
                 <td>{$info['Last'][$index]}</td>
 EOT;
             if($this->has_pickup)
-                $body .= "<td>".$info['Pickup'][$index]."</td>";
+                $body .= "<td>".$info['Pickup Location'][$index]."</td>";
             $body .= <<< EOT2
                 <td>{$info['Phone']}</td>
                 <td>{$info['Package'][$index]}</td>
