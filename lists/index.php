@@ -70,7 +70,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <ul class="nav navbar-nav nav-puller">
             <li><a href="http://ovrride.com" target="_blank">Ovrride.com</a></li>
             <li><a href="https://ovrride.com/sop/" target="_blank">SOP</a></li>
-            <li><a href="#settings">Settings</a></li>
+            <li class="disabled"><a href="#settings">Settings</a></li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
           </ul>
@@ -84,6 +84,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       <section class="trip-select">
           <label>Select a Trip:</label>
           <br>
+
           <select class="form-control input-sm" id="trip" name="trip" id="trip">
           <?php echo $list->select_options; ?>
           </select>
@@ -92,28 +93,28 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
       <section class="order-status-select input-group">
           <label>Order Status: </label>
-          <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();">Check All</a> &#47;
+          <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();"> Check All</a> &#47;
           <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
           <br>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php if(isset($_SESSION['post_data']['processing']) || !isset($_SESSION['post_data']['trip'])) echo 'checked';?>>Processing</input>
           </label>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php if(isset($_SESSION['post_data']['pending']) || !isset($_SESSION['post_data']['trip'])) echo 'checked'; ?>>Pending</input>
           </label>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php if(isset($_SESSION['post_data']['cancelled'])) echo 'checked'; ?>>Cancelled</input>
           </label>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="failed" value="failed" <?php if(isset($_SESSION['post_data']['failed'])) echo 'checked'; ?>>Failed</input>
           </label>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php if(isset($_SESSION['post_data']['on-hold'])) echo 'checked'; ?>>On-hold</input>
           </label>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php if(isset($_SESSION['post_data']['completed'])) echo 'checked'; ?>>Completed</input>
           </label>
-          <label class="checkbox-inline">
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php if(isset($_SESSION['post_data']['refunded'])) echo 'checked'; ?>>Refunded</input>
           </label>
           <br>
@@ -124,11 +125,10 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
       </div><!-- /.container -->
 
-      <!-- The table is not wrapped in the bootstrap container class as it caused some strange behavior -->
       <?php # Output of the Trip List Table ?>
       <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
           print $list->html_table; ?>
-      
+
 
       <div class="container">
       <form>
@@ -145,13 +145,13 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
         <div class="page-header"></div><!-- inserts the line separator -->
         <div class="container">
           <div class="row">
-            <div class="col-md-5 text-center">
+            <div class="col-md-4 text-center">
               <h5><span>&copy; Copyright <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a></span></h5>
             </div>
-          <div class="col-md-5 text-center footer-center">
+          <div class="col-md-4 text-center footer-center">
             <h5>For OvR Staff Use Only</h5>
           </div>
-          <div class="col-md-5 text-center">
+          <div class="col-md-4 text-center">
             <h5>Version <?php echo $lists_version ?></h5>
           </div>
         </div>
