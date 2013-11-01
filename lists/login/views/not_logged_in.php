@@ -50,7 +50,7 @@ if ($login->messages) {
     <div class="container login-window">
       <div class="row">
         <div class="col-md-4 col-md-offset-4">
-          <div class="panel panel-default">
+          <div class="panel panel-info">
             <div class="panel-heading">
               <h3 class="panel-title">OvR Trip Lists</h3>
             </div>

@@ -36,20 +36,41 @@ body {
   margin-left: 20px;
 }
 
+// Order Status checkbox: Stack on mobile checkbox-incline on desktop
+@media (min-width: 768px) {
+  .order-checkbox {
+    display: inline-block;
+    font-weight: normal;
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .order-checkbox {
+    display: block;
+    font-weight: normal;
+    margin-left: 10px;
+  }
+}
+
+label.checkbox.order-checkbox {
+  vertical-align: bottom;
+}
+
 // BOOTSTRAP NAV
 // -------------------------
 
 // Pull Navbar right for desktop and left for mobile
- @media (max-width: 767px) {
+@media (max-width: 767px) {
   .nav-puller {
-   float: left;
-   }
+  float: left;
+  }
  }
 
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
   .nav-puller {
-   float: right;
-   }
+  float: right;
+  }
  }
 
 
