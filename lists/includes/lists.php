@@ -206,18 +206,18 @@ class Trip_List{
           
           $sql = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
                     where 
-                    ( meta_key = '_product_id' or meta_key ='How many riders are coming?' or meta_key = 'Name' or meta_key = 'Email' 
+                    ( meta_key = '_product_id' or meta_key = 'Name' or meta_key = 'Email' 
                     or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
                     and order_item_id = '$order_item_id'";
           $result = $this->db_query($sql);
           $this->order_data[$order]['item_id'][] = $order_item_id;
           while($row = $result->fetch_assoc()){
-              if($row['meta_key'] == 'How many riders are coming?' || $row['meta_key'] == '_product_id')
-                $this->order_data[$order][$row['meta_key']] = $row['meta_value'];
-              elseif($row['meta_key'] == 'Package')
-                $this->order_data[$order][$row['meta_key']][] = preg_replace('/\(\$\S*\)/', "", $row['meta_value']);
+              if($row['meta_key'] == 'Package')
+                  $this->order_data[$order][$row['meta_key']][] = preg_replace('/\(\$\S*\)/', "", $row['meta_value']);
+              elseif($row['meta_key'] == 'Pickup Location')
+                $this->order_data[$order][$row['meta_key']][] = $this->strip_time($row['meta_value']);
               else
-                $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
+                  $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
           }
           $result->free();
       }
@@ -367,6 +367,11 @@ EOT2;
         $phone = substr_replace($phone,'-',9,0);
 
         return $phone;
+    }
+    private function strip_time($pickup){
+      # Remove dash and time from pickup
+      preg_match("/(.*).-.*/", $pickup, $matched);
+      return $matched[1];
     }
 }
 ?>
