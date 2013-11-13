@@ -236,7 +236,7 @@ class Trip_List{
         $this->html_checkboxes[$order][$order_item_id]['LTR'] = FALSE;
         $this->html_checkboxes[$order][$order_item_id]['Prog_Lesson'] = FALSE;
         foreach($info['Name'] as $index => $name){
-            $name = $this->split_name($name,$this->order_data[$order]['_product_id']);
+            $name = $this->split_name($name);
             $this->order_data[$order]['First'][] = $name['First'];
             $this->order_data[$order]['Last'][] = $name['Last'];
 
@@ -346,59 +346,12 @@ EOT2;
       else
         return " ";
     }
-    private function get_gravity_id($order_id){
-        $sql = "select meta_value from wp_postmeta where meta_key = '_gravity_form_data' and post_id = '$order_id' ";
-        $result = $this->db_query($sql);
-        $row = $result->fetch_assoc();
-        # meta_value returns a ; delimited field
-        $row = explode(';', $row['meta_value']);
-        # break up field by :, last fragment has form id
-        $form_id = explode(':',$row[1]);
-        $form_id = end($form_id);
-        $form_id = str_replace('"','',$form_id);
-        return $form_id;
-    }
-    private function split_name($name,$order_id){
-      $form_id = $this->get_gravity_id($order_id);
-      # select name fields from gravity form table and match
-      # had to cast field_number to match against a float value, i hate floats
-      # TODO: figure out a way to automate the field_numbers...currently these have been pulled from looking at forms
-      $sql ="SELECT field_number, value, lead_id
-              FROM wp_rg_lead_detail
-              WHERE ( CAST( field_number AS CHAR ) <=> 2.3
-                OR CAST( field_number AS CHAR ) <=> 2.6
-                OR CAST( field_number AS CHAR ) <=> 9.3
-                OR CAST( field_number AS CHAR ) <=> 9.6
-                OR CAST( field_number AS CHAR ) <=> 8.3
-                OR CAST( field_number AS CHAR ) <=> 8.6
-                OR CAST( field_number AS CHAR ) <=> 7.3
-                OR CAST( field_number AS CHAR ) <=> 7.6
-                OR CAST( field_number AS CHAR ) <=> 6.3
-                OR CAST( field_number AS CHAR ) <=> 6.6
-                OR CAST( field_number AS CHAR ) <=> 5.3
-                OR CAST( field_number AS CHAR ) <=> 5.6 )
-              AND form_id = '$form_id'
-              ORDER BY lead_id ASC , field_number ASC ";
-        $result = $this->db_query($sql);
-        $names = array();
-        while($row = $result->fetch_assoc()){
-            $field_number = $row['field_number'];
-            $decimal = explode('.',$field_number);
-            $decimal = end($decimal);
-            if($decimal == 3)
-                $names[$row['lead_id']]['First'][] = $row['value'];
-            elseif($decimal == 6)
-                $names[$row['lead_id']]['Last'][] = $row['value'];
-        }
-        # Now that we have complete names, loop through array and match against provided name
-        foreach ($names as $lead => $array){
-            foreach($array['First'] as $index => $first){
-                $complete = trim($first) . " " . trim($array['Last'][$index]);
-                if(strcmp(strtolower($name), strtolower($complete)) == 0){
-                  return array("First" => $first, "Last" => $array['Last'][$index]);
-                }
-            }
-        }
+    private function split_name($name){
+        $parts = explode(" ", $name);
+        $last = array_pop($parts);
+        $first = implode(" ", $parts);
+        
+        return array("First" => $first, "Last" => $last); 
     }
     private function reformat_phone($phone){
         # Strip all formatting
