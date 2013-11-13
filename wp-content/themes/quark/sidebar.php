@@ -24,6 +24,18 @@
 				dynamic_sidebar( 'sidebar-single' );
 			}
 
+			?>
+
+		</div> <!-- /#secondary.widget-area -->
+
+	</div> <!-- /.col.grid_4_of_12 -->
+    
+    <div style="margin-top:-46px;" class="col grid_12_of_12">
+
+		<div role="complementary">
+			<?php
+			do_action( 'before_sidebar' );
+
 			if ( is_page() && is_active_sidebar( 'sidebar-page' ) ) {
 				dynamic_sidebar( 'sidebar-page' );
 			}

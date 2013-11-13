@@ -415,6 +415,67 @@ blockquote p {
 blockquote.pull-right p, blockquote.pull-right small {
 	text-align: right;
 }
+/* ==========================================================================
+   Calendar Plugnin Changes
+   ========================================================================== */
+
+.calendar-date-switcher {
+	background: none !important;
+	border: none !important;
+}
+.calendar-date-switcher select {
+	width:100px !important;
+}
+td.calendar-heading {
+	background: #000;
+	border: none;
+	margin: 0px !important;
+	color:#FFF;
+}
+.calendar-month {
+	font-size:20px;
+}
+.calendar-prev a {
+	color:#FFF;
+	font-size:20px;
+}
+.calendar-next a {
+	color:#FFF;
+	font-size:20px;
+}
+.normal-day-heading {
+	background:#444 !important;
+	color:#FFF ;
+	border: none !important;
+}
+.weekend-heading {
+	background:#444 !important;
+	color:#FFF !important;
+	border: none !important;
+}
+.current-day {
+	background-color:#CFCFCF !important;
+}
+.weekend {
+	color:#000 !important
+}
+.calnk a {
+	padding: 2px 8px 2px 5px;
+	font-size:13px;
+	border-bottom:none !important;
+}
+div.kjo-link p{
+	display:none !important
+}
+.calnk a:hover span {
+	width:auto !important;
+}
+#events_calendar .widget-title {
+	display:none;
+}
+.calnk a:hover span {
+	background:#00BCE7 !important; 
+}
 
 
 /* ==========================================================================
@@ -910,6 +971,7 @@ payment_methods methods {
 }
 
 .top-search .menu-toggle, .btn, input[type="submit"] {
+	white-space:nowrap;
 	display: inline-block;
 	padding: 1px 12px;
 	padding: 0.1rem 0.75rem;
@@ -957,6 +1019,7 @@ payment_methods methods {
 	cursor: pointer;
 }
 .trip-btn {
+	white-space:nowrap;
 	display: inline-block;
 	padding: 8px 14px;
 	padding: 0.5rem 0.875rem;
@@ -1032,6 +1095,7 @@ payment_methods methods {
 	cursor: pointer;
 }
 .book-btn {
+	white-space:nowrap;
 	display: inline-block;
 	padding: 8px 14px;
 	padding: 0.5rem 0.875rem;
@@ -1090,6 +1154,7 @@ payment_methods methods {
 }
 
 .book-btn-smll {
+	white-space:nowrap;
 	display: inline-block;
 	padding: 2px 5px;
 	margin-bottom: 0;
@@ -1282,6 +1347,47 @@ p.srp-widget-excerpt {
 	font-size: 15px;
 	line-height: 20px;
 }
+p.srp-widget-date {
+	font-weight:bold;
+}
+
+
+
+.chap div.srp-widget-singlepost {
+	padding: 0px 0px 10px 0px;
+	margin: 0px 2% 10px 0px;
+	border-bottom: none;
+	clear: none;
+	float: left;
+	width: 49%;
+}
+.chap #wdg_specialrecentpostsfree--1-srp-singlepost-2 {
+	margin:0px 0px 10px 0px;
+}
+.chap #wdg_specialrecentpostsfree--1-srp-singlepost-3 {
+	padding: 0px 0px 10px 0px;
+	margin: 0px 2% 10px 0px;
+}
+.chap #wdg_specialrecentpostsfree--1-srp-singlepost-4 {
+	margin:0px 0px 10px 0px;
+}
+.chap div.srp-thumbnail-box {
+	display: table-cell;
+	vertical-align: top;
+	padding-right: 10px;
+	width: 30%;
+}
+.chap srp-widget-thmb {
+	width:175px !important;
+	height:175px !important;
+}
+.chap p.srp-widget-excerpt {
+	font-size: 15px;
+	line-height: 20px;
+}
+
+
+
 
 .instagram-image {
 	padding: 1px;
@@ -3954,7 +4060,7 @@ li span.dots {
 	.main-navigation li {
 		margin: 0 0 0 15px;
 		margin: 0 0 0 0.95rem;
-		font-size: 20px;
+		font-size: 19px;
 	}
 }
 @media only screen and (max-width: 768px) {
