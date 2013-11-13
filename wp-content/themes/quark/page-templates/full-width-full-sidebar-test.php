@@ -23,7 +23,8 @@ get_header(); ?>
                 <h1 style="margin-top:5px;" class="book-btn"><a href="/events/">VIEW FULL CALENDAR</a></h1>
             </div>
             <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
-				<?php include($DOCUMENT_ROOT . "/content-tripsfeed.php"); ?>   
+				<?php include($DOCUMENT_ROOT . "/content-tripsfeed.php"); ?>
+                <h1 style="margin-top:5px;" class="book-btn"><a href="/shop/">VIEW ALL TRIPS</a></h1>  
             </div>
             <div class="col grid_12_of_12" style="margin:0px;">
             	<h2 class="widgettitle">Destinations</h2>
