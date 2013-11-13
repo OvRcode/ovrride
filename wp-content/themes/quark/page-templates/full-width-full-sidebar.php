@@ -15,11 +15,7 @@ get_header(); ?>
 
          <div class="col grid_3_of_12 feedbar">
             <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
-            	<?php 
-					$id = 1384;
-					$p = get_page($id);
-					echo apply_filters('the_content', $p->post_content);
-				?>
+            	<?php get_sidebar( $page ); ?>
                 <h1 style="margin-top:5px;" class="book-btn"><a href="/events/">VIEW FULL CALENDAR</a></h1>
             </div>
             <div class="col grid_12_of_12" style="margin: 0px 0px 15px 0px;">
@@ -94,6 +90,7 @@ get_header(); ?>
                         <?php 
                     } ?>
                 
+                <h1 style="margin-top:5px;" class="book-btn"><a href="/shop/">VIEW ALL TRIPS</a></h1>
                 </div> <!-- #upcoming-trips -->
             </div>
             <div class="col grid_12_of_12" style="margin:0px;">

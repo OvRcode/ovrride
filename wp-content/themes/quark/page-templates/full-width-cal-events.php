@@ -94,6 +94,7 @@ get_header(); ?>
                         <?php 
                     } ?>
                 
+                <h1 style="margin-top:5px;" class="book-btn"><a href="/shop/">VIEW ALL TRIPS</a></h1>
                 </div> <!-- #upcoming-trips -->
         </div>
         
