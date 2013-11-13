@@ -53,7 +53,7 @@ class Trip_List{
             $this->find_orders();
             if(count($this->orders) > 0){
                 $this->get_order_data();
-                $this->get_saved_data();
+                #$this->get_saved_data();
                 $this->generate_table();
               }
               else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
@@ -141,7 +141,7 @@ class Trip_List{
           }
         }
 
-        $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`
+        $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`, `wp_terms`.`name`
             FROM `wp_posts`
             INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
             INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
@@ -158,7 +158,7 @@ class Trip_List{
         $result = $this->db_query($sql);
         $this->orders = array();
         while($row = $result->fetch_assoc()){
-            $this->orders[] = array("id" => $row['ID'], "order_item_id" => $row['order_item_id']);
+            $this->orders[$row['ID']][$row['order_item_id']] = array("status" => $row['name']);
         }
 
         $result->free();
