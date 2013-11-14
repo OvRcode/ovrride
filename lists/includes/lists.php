@@ -61,6 +61,7 @@ class Trip_List{
 
     }
     function csv($type) {
+        
         $sql = "select `post_title` from `wp_posts` where `ID` = '$this->trip' and `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
         $result = $this->db_query($sql);
         $name = $result->fetch_assoc();
@@ -75,29 +76,27 @@ class Trip_List{
         # start CSV with column labels
         if($type == "trip_list"){
             if($this->has_pickup)
-                $labels = array("AM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","PM Checkin","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
+                $labels = array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
             else
-                $labels = array("AM","First","Last","Phone","Package","Order","Waiver","Product REC.","PM Checkin","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
+                $labels = array("AM","PM","First","Last","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
         }
         elseif($type == "email_list"){
           $labels = array("Email", "First","Last");
         }
         fputcsv($f,$labels,',');
-        
-        foreach($this->order_data as $order => $info){
-          foreach($info['First'] as $index => $first){
-            if($type == "trip_list"){
-                if($this->has_pickup)
-                    $array = array("",$first, $info['Last'][$index], $info['Pickup Location'][$index], $info['Phone'], $info['Package'][$index], $order);
-                else
-                    $array = array("",$first, $info['Last'][$index], $info['Phone'], $info['Package'][$index], $order);
+        foreach($this->order_data as $order => $array){
+            foreach($array as $order_item_id => $field){
+                if($type == "trip_list"){
+                    if($this->has_pickup)
+                        $array = array("","",$field['First'],$field['Last'],$field['Pickup Location'],$field['Phone'],$field['Package'],$order);
+                    else
+                        $array = array("","",$field['First'],$field['Last'],$field['Phone'],$field['Package'],$order);
+                }
+                elseif($type == "email_list"){
+                  $array = array($field['Email'],$field['First'],$field['Last']);
+                }
+                fputcsv($f,$array,','); 
             }
-            elseif($type == "email_list"){
-              $array = array($info['Email'][$index], $first, $info['Last'][$index]);
-            }
-                
-            fputcsv($f,$array,',');
-          }
         }
 
         fclose($f);
