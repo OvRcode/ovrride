@@ -19,14 +19,15 @@ foreach($table_data as $id => $data){
     if($prefix == "WO"){
         # This order has been manually entered into the list, need to save or update: Name and order info
         $sql_manual = <<< EOT
-            INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`, `Last`, `Pickup`, `Phone`, `Package`)
-            VALUES ('$id','$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]')
+            INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`, `Last`, `Pickup`, `Phone`, `Package`, `Trip`)
+            VALUES ('$id','$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]',$data[Trip])
             ON DUPLICATE KEY UPDATE
             `First` = VALUES(`First`),
             `Last` = VALUES(`Last`),
             `Pickup` = VALUES(`Pickup`),
             `Phone` = VALUES(`Phone`),
-            `Package` = VALUES(`Package`)
+            `Package` = VALUES(`Package`),
+            `Trip` = VALUES(`Trip`)
 EOT;
         if(!$result = $db_connect->query($sql_manual)){
             die('There was an error running the query [' . $db_connect->error . ']');

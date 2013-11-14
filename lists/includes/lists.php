@@ -233,40 +233,7 @@ class Trip_List{
         }
     }
     private function get_saved_data(){
-      $sql = "select * from `ovr_lists_table` where `trip` = '$this->trip'";
-      $result = $this->db_query($sql);
-      while($row = $result->fetch_assoc()){
-        $order = $row['order'];
-        $item_id = $row['item_id'];
-        $order_prefix = substr($order, 0,2);
-        if($order_prefix != "WO"){
-            $id = $key = array_search($row['item_id'], $this->order_data[$order]['item_id']);
-            $this->order_data[$order]['First'][$id] = $row['First'];
-            $this->order_data[$order]['Last'][$id] = $row['Last'];
-            $this->order_data[$order]['Package'][$id] = $row['Package'];
-            $this->order_data[$order]['Pickup'][$id] = $row['Pickup'];
-            $this->order_data[$order]['Phone'] = $row['Phone'];
-        }else{
-            $this->order_data[$order]['item_id'][] = $row['item_id'];
-            $this->order_data[$row['order']]['First'][] = $row['First'];
-            $this->order_data[$row['order']]['Last'][] = $row['Last'];
-            $this->order_data[$order]['Package'][] = $row['Package'];
-            $this->order_data[$order]['Pickup Location'][] = $row['Pickup'];
-            $this->order_data[$order]['Phone'] = $row['Phone'];
-        }
-        $this->html_checkboxes[$order][$item_id]['AM'] = $row['AM'];
-        $this->html_checkboxes[$order][$item_id]['PM'] = $row['PM'];
-        $this->html_checkboxes[$order][$item_id]['Waiver'] = $row['Waiver'];
-        $this->html_checkboxes[$order][$item_id]['Product'] = $row['Product'];
-        $this->html_checkboxes[$order][$item_id]['Bus'] = $row['Bus'];
-        $this->html_checkboxes[$order][$item_id]['All_Area'] = $row['All_Area'];
-        $this->html_checkboxes[$order][$item_id]['Beg'] = $row['Beg'];
-        $this->html_checkboxes[$order][$item_id]['BRD'] = $row['BRD'];
-        $this->html_checkboxes[$order][$item_id]['SKI'] = $row['SKI'];
-        $this->html_checkboxes[$order][$item_id]['LTS'] = $row['LTS'];
-        $this->html_checkboxes[$order][$item_id]['LTR'] = $row['LTR'];
-        $this->html_checkboxes[$order][$item_id]['Prog_Lesson'] = $row['Prog_Lesson'];
-      }
+      
     }
     private function generate_table(){
       $total_guests = 0;
