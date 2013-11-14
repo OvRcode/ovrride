@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.4.0";
+$lists_version = "0.4.1";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -61,8 +61,11 @@ class Trip_List{
 
     }
     function csv($type) {
-        
-        $sql = "select `post_title` from `wp_posts` where `ID` = '$this->trip' and `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
+        $sql = "SELECT `post_title` FROM `wp_posts`
+                WHERE `ID` = '$this->trip` 
+                AND `post_status` = 'publish'
+                AND `post_type` = 'product'
+                ORDER BY `post_title`";
         $result = $this->db_query($sql);
         $name = $result->fetch_assoc();
         $filename = $name['post_title'];
@@ -110,7 +113,12 @@ class Trip_List{
     }
     private function trip_options(){
         # Find trips
-        $sql = "select `id`, `post_title` from `wp_posts` where `post_status` = 'publish' and `post_type` = 'product' order by `post_title`";
+        $sql = "SELECT  `id` ,  `post_title` 
+                FROM  `wp_posts` 
+                WHERE  `post_status` =  'publish'
+                AND  `post_type` =  'product'
+                AND  `post_title` NOT LIKE  'High Five%'
+                ORDER BY  `post_title`";
         $result = $this->db_query($sql);
 
         # Construct options for a select field
@@ -176,13 +184,13 @@ class Trip_List{
 
             foreach($data as $order_item_id => $status){
                 $this->order_data[$order][$order_item_id]['Phone'] = $this->reformat_phone($phone);
-                $sql = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
-                        where 
-                        ( meta_key = 'Name' 
-                        or meta_key = 'Email' 
-                        or meta_key = 'Package' 
-                        or meta_key = 'Pickup Location' ) 
-                        and order_item_id = '$order_item_id'";
+                $sql = "SELECT `meta_key`, `meta_value` 
+                        FROM `wp_woocommerce_order_itemmeta` 
+                        WHERE ( `meta_key` = 'Name' 
+                        OR `meta_key` = 'Email' 
+                        OR `meta_key` = 'Package' 
+                        OR `meta_key` = 'Pickup Location' ) 
+                        AND `order_item_id` = '$order_item_id'";
                 $result = $this->db_query($sql);
               
                 while($row = $result->fetch_assoc()){
