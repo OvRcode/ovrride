@@ -30,7 +30,9 @@ function tableToForm(){
   var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
   var trip = document.getElementById("trip").value;
   for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
-    var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
+    var id = table.rows[rowCounter].cells[0].children[0].name;
+    id = id.split(":");
+    id = id[0]+":"+id[1];
     var prefix = id.substring(0,2);
     for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
       if(prefix == "WO"){
