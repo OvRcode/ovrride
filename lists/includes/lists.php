@@ -54,7 +54,7 @@ class Trip_List{
             if(count($this->orders) > 0){
                 $this->get_order_data();
                 #$this->get_saved_data();
-                $this->generate_table();
+                #$this->generate_table();
               }
               else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
           }
@@ -158,10 +158,64 @@ class Trip_List{
         $result = $this->db_query($sql);
         $this->orders = array();
         while($row = $result->fetch_assoc()){
-            $this->orders[$row['ID']][$row['order_item_id']] = array("status" => $row['name']);
+            $this->orders[$row['ID']][$row['order_item_id']] = $row['name'];
         }
 
         $result->free();
+    }
+    function get_order_data(){
+        foreach($this->orders as $order => $data){
+            # Get phone number
+            $sql = "SELECT  `meta_value` AS  `Phone`
+                    FROM wp_postmeta
+                    WHERE meta_key =  '_billing_phone'
+                    AND post_id =  '$order'";
+            $result = $this->db_query($sql);
+            $row = $result->fetch_assoc();
+            $phone = $row['Phone'];
+            $result->free();
+
+            foreach($data as $order_item_id => $status){
+                $this->order_data[$order][$order_item_id]['Phone'] = $this->reformat_phone($phone);
+                $sql = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
+                        where 
+                        ( meta_key = 'Name' 
+                        or meta_key = 'Email' 
+                        or meta_key = 'Package' 
+                        or meta_key = 'Pickup Location' ) 
+                        and order_item_id = '$order_item_id'";
+                $result = $this->db_query($sql);
+              
+                while($row = $result->fetch_assoc()){
+                    if($row['meta_key'] == 'Package')
+                        $this->order_data[$order][$order_item_id]['Package'] = $this->remove_package_price($row['meta_value']);
+                    elseif($row['meta_key'] == 'Pickup Location')
+                        $this->order_data[$order][$order_item_id]['Pickup Location'] = $this->strip_time($row['meta_value']);
+                    else
+                        $this->order_data[$order][$order_item_id][$row['meta_key']] = trim($row['meta_value']);
+                }
+                $result->free();
+                $this->get_checkbox_states($order,$order_item_id);
+                
+                # Is there a pickup location for this trip?
+                if(isset($this->order_data[$order][$order_item_id]['Pickup Location']))
+                    $this->has_pickup = TRUE;
+                elseif($this->has_pickup == "")
+                    $this->has_pickup = FALSE;
+            }
+        }
+    }
+    private function remove_package_price($package){
+        return preg_replace('/\(\$\S*\)/', "", $package);
+    }
+    private function get_checkbox_states($order,$order_item_id){
+        # Attempts to lookup set checkboxes from form in ovr_lists_checkboxes table
+        $ID = $order+":"+$order_item_id;
+        $sql="select `AM`,`PM`,`Waiver`,`Product`,`Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson` from `ovr_lists_checkboxes` where `ID` = '$ID'";
+        $result = $this->db_query($sql);
+        if($row = $result->fetch_assoc())
+            foreach($row as $key => $value)
+                $this->order_data[$order][$order_item_id][$key] = $value;
     }
     private function get_saved_data(){
       $sql = "select * from `ovr_lists_table` where `trip` = '$this->trip'";
@@ -197,70 +251,6 @@ class Trip_List{
         $this->html_checkboxes[$order][$item_id]['LTS'] = $row['LTS'];
         $this->html_checkboxes[$order][$item_id]['LTR'] = $row['LTR'];
         $this->html_checkboxes[$order][$item_id]['Prog_Lesson'] = $row['Prog_Lesson'];
-      }
-    }
-    private function get_order_data(){
-        foreach($this->orders as $key => $value){
-          $order = $value["id"];
-          $order_item_id = $value["order_item_id"];
-          
-          $sql = "select `meta_key`, `meta_value` from `wp_woocommerce_order_itemmeta` 
-                    where 
-                    ( meta_key = '_product_id' or meta_key = 'Name' or meta_key = 'Email' 
-                    or meta_key = 'Package' or meta_key = 'Pickup Location' ) 
-                    and order_item_id = '$order_item_id'";
-          $result = $this->db_query($sql);
-          $this->order_data[$order]['item_id'][] = $order_item_id;
-          while($row = $result->fetch_assoc()){
-              if($row['meta_key'] == 'Package')
-                  $this->order_data[$order][$row['meta_key']][] = preg_replace('/\(\$\S*\)/', "", $row['meta_value']);
-              elseif($row['meta_key'] == 'Pickup Location')
-                $this->order_data[$order][$row['meta_key']][] = $this->strip_time($row['meta_value']);
-              else
-                  $this->order_data[$order][$row['meta_key']][] = $row['meta_value'];
-          }
-          $result->free();
-      }
-      foreach($this->order_data as $order => $info){
-        # Setup checkboxes for order
-        $this->html_checkboxes[$order][$order_item_id]['AM'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['PM'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['Waiver'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['Product'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['Bus'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['All_Area'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['Beg'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['BRD'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['SKI'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['LTS'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['LTR'] = FALSE;
-        $this->html_checkboxes[$order][$order_item_id]['Prog_Lesson'] = FALSE;
-        foreach($info['Name'] as $index => $name){
-            $name = $this->split_name($name);
-            $this->order_data[$order]['First'][] = $name['First'];
-            $this->order_data[$order]['Last'][] = $name['Last'];
-
-        }
-
-        # Get phone number
-        $sql2 = "SELECT  `meta_value` AS  `Phone`
-                  FROM wp_postmeta
-                  WHERE meta_key =  '_billing_phone'
-                  AND post_id =  '$order'";
-                  
-        $result2 = $this->db_query($sql2);
-        $row = $result2->fetch_assoc();
-        $result2->free();
-        $this->order_data[$order]['Phone'] = $row['Phone'];
-
-        # Fix phone formatting
-        $this->order_data[$order]['Phone'] = $this->reformat_phone($this->order_data[$order]['Phone']);
-
-        # Is there a pickup location for this trip?
-        if(isset($this->order_data[$order]['Pickup Location'][0]))
-            $this->has_pickup = TRUE;
-        elseif($this->has_pickup == "")
-            $this->has_pickup = FALSE;
       }
     }
     private function generate_table(){
