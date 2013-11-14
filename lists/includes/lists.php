@@ -53,7 +53,7 @@ class Trip_List{
             $this->find_orders();
             if(count($this->orders) > 0){
                 $this->get_order_data();
-                #$this->get_saved_data();
+                $this->get_saved_data();
                 $this->generate_table();
               }
               else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
@@ -233,7 +233,21 @@ class Trip_List{
         }
     }
     private function get_saved_data(){
-      
+        $sql = "SELECT  `ID` ,  `First` ,  `Last` ,  `Pickup` ,  `Phone` ,  `Package` 
+                FROM  `ovr_lists_manual_orders` 
+                WHERE  `Trip` =  '$this->trip'";
+        $result = $this->db_query($sql);
+        while($row = $result->fetch_assoc()){
+            $exploded_id = explode(":",$row['ID']);
+            $order = $exploded_id[0];
+            $order_item_id = $exploded_id[1];
+            $this->order_data[$order][$order_item_id]['First'] = trim($row['First']);
+            $this->order_data[$order][$order_item_id]['Last'] = trim($row['Last']);
+            $this->order_data[$order][$order_item_id]['Pickup Location'] = trim($row['Pickup']);
+            $this->order_data[$order][$order_item_id]['Phone'] = $this->reformat_phone($row['Phone']);
+            $this->order_data[$order][$order_item_id]['Package'] = trim($row['Package']);
+            $this->get_checkbox_states($order,$order_item_id);
+        }
     }
     private function generate_table(){
       $total_guests = 0;
@@ -270,23 +284,23 @@ class Trip_List{
                 
       $body = "<tbody>\n";
       foreach($this->order_data as $order => $array){
+          $prefix = substr($order,0,2);
           foreach($array as $order_item_id => $field){
-              # Something here
               $total_guests += 1;
               $ID = $order.":".$order_item_id;
-              $body .= <<< EOT
-                <tr>
+              $body .="<tr>
                   <td><input type='checkbox' name='{$ID}:AM' {$field['AM']}></td>
-                  <td><input type='checkbox' name='{$ID}:PM' {$field['PM']}></td>
-                  <td class='no-edit'>{$field['First']}</td>
-                  <td class='no-edit'>{$field['Last']}</td>
-EOT;
+                  <td><input type='checkbox' name='{$ID}:PM' {$field['PM']}></td>";
+                  $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['First']}</td>";
+                  $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Last']}</td>";
+
               if($this->has_pickup)
-                $body .= "<td class='no-edit'>".$field['Pickup Location']."</td>";
+                $body .= "<td".($prefix != "WO" ? " class='no-edit'" : "").">".$field['Pickup Location']."</td>";
+              
+              $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Phone']}</td>";
+              $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Package']}</td>";
               $body .= <<< EOT2
-                <td class='no-edit'>{$field['Phone']}</td>
-                <td class='no-edit'>{$field['Package']}</td>
-                <td class='no-edit'>{$order}</td>
+                <td>$order</td>
                 <td><input type='checkbox' name='{$ID}:Waiver' {$field['Waiver']}></td>
                 <td><input type='checkbox' name='{$ID}:Product' {$field['Product']}</td>
                 <td><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}</td>
