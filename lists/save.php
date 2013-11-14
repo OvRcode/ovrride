@@ -15,7 +15,7 @@ foreach($_POST as $field => $value){
 }
 # Add to db
 foreach($table_data as $id => $data){
-    $prefix = substr($id, 0,1);
+    $prefix = substr($id, 0,2);
     if($prefix == "WO"){
         # This order has been manually entered into the list, need to save or update: Name and order info
         $sql_manual = <<< EOT
@@ -28,16 +28,14 @@ foreach($table_data as $id => $data){
             `Phone` = VALUES(`Phone`),
             `Package` = VALUES(`Package`)
 EOT;
-
         if(!$result = $db_connect->query($sql_manual)){
             die('There was an error running the query [' . $db_connect->error . ']');
-        }
-        $result->free();      
+        }     
     }
     $sql = <<< EOT2
         INSERT INTO `ovr_lists_checkboxes` (`ID`,`AM`,`PM`,`Waiver`,`Product`,`Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson`)
-        VALUES('$id','$data[AM]','$data[PM]','$data[Waiver]','$data[Product]','$data[Bus]','$data[All_Area]','$data[Beg]','$data[BRD]','$data[SKI]',
-          '$data[LTS]','$data[LTR]','$data[Prog_Lesson]')
+        VALUES('$id',$data[AM],$data[PM],$data[Waiver],$data[Product],$data[Bus],$data[All_Area],$data[Beg],$data[BRD],$data[SKI],
+          $data[LTS],$data[LTR],$data[Prog_Lesson])
         ON DUPLICATE KEY UPDATE
         `AM` = VALUES(`AM`),
         `PM` = VALUES(`PM`),
@@ -52,9 +50,10 @@ EOT;
         `LTR` = VALUES(`LTR`),
         `Prog_Lesson` = VALUES(`Prog_Lesson`)
 EOT2;
+
+
 if(!$result = $db_connect->query($sql)){
     $_SESSION['saved_table'] = false;
-    # print $sql."<br />";
     die('There was an error running the query [' . $db_connect->error . ']');
 }
 else{
