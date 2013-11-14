@@ -38,8 +38,7 @@ class Trip_List{
     var $orders;
     var $order_data;
     var $has_pickup;
-    var $html_table;
-    var $html_checkboxes;
+
     function __construct($selected_trip){
         # Connect to database
         require_once("config.php");
