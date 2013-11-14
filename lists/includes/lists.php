@@ -54,7 +54,7 @@ class Trip_List{
             if(count($this->orders) > 0){
                 $this->get_order_data();
                 #$this->get_saved_data();
-                #$this->generate_table();
+                $this->generate_table();
               }
               else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
           }
@@ -163,7 +163,7 @@ class Trip_List{
 
         $result->free();
     }
-    function get_order_data(){
+    private function get_order_data(){
         foreach($this->orders as $order => $data){
             # Get phone number
             $sql = "SELECT  `meta_value` AS  `Phone`
@@ -191,6 +191,11 @@ class Trip_List{
                         $this->order_data[$order][$order_item_id]['Package'] = $this->remove_package_price($row['meta_value']);
                     elseif($row['meta_key'] == 'Pickup Location')
                         $this->order_data[$order][$order_item_id]['Pickup Location'] = $this->strip_time($row['meta_value']);
+                    elseif($row['meta_key'] == 'Name'){
+                        $names = $this->split_name($row['meta_value']);
+                        $this->order_data[$order][$order_item_id]['First'] = $names['First'];
+                        $this->order_data[$order][$order_item_id]['Last'] = $names['Last'];
+                    }  
                     else
                         $this->order_data[$order][$order_item_id][$row['meta_key']] = trim($row['meta_value']);
                 }
@@ -205,9 +210,6 @@ class Trip_List{
             }
         }
     }
-    private function remove_package_price($package){
-        return preg_replace('/\(\$\S*\)/', "", $package);
-    }
     private function get_checkbox_states($order,$order_item_id){
         # Attempts to lookup set checkboxes from form in ovr_lists_checkboxes table
         $ID = $order+":"+$order_item_id;
@@ -215,7 +217,21 @@ class Trip_List{
         $result = $this->db_query($sql);
         if($row = $result->fetch_assoc())
             foreach($row as $key => $value)
-                $this->order_data[$order][$order_item_id][$key] = $value;
+                $this->order_data[$order][$order_item_id][$key] = ($value == 1 ? "checked" : "");
+        elseif(isset($this->order_data[$order][$order_item_id])){
+            $this->order_data[$order][$order_item_id]['AM'] = "";
+            $this->order_data[$order][$order_item_id]['PM'] = "";
+            $this->order_data[$order][$order_item_id]['Waiver'] = "";
+            $this->order_data[$order][$order_item_id]['Product'] = "";
+            $this->order_data[$order][$order_item_id]['Bus'] = "";
+            $this->order_data[$order][$order_item_id]['All_Area'] = "";
+            $this->order_data[$order][$order_item_id]['Beg'] = "";
+            $this->order_data[$order][$order_item_id]['BRD'] = "";
+            $this->order_data[$order][$order_item_id]['SKI'] = "";
+            $this->order_data[$order][$order_item_id]['LTS'] = "";
+            $this->order_data[$order][$order_item_id]['LTR'] = "";
+            $this->order_data[$order][$order_item_id]['Prog_Lesson'] = "";
+        }
     }
     private function get_saved_data(){
       $sql = "select * from `ovr_lists_table` where `trip` = '$this->trip'";
@@ -287,38 +303,39 @@ class Trip_List{
                 </thead>\n";
                 
       $body = "<tbody>\n";
-
-      foreach($this->order_data as $order => $info){
-          foreach($info['First'] as $index => $first){
-            $total_guests += 1;
-            $id = $order .":".$info['item_id'][$index];
-            $body .= <<< EOT
-              <tr>
-                <td><input type='checkbox' name='{$id}:AM' {$this->is_checkbox_set($order,$info['item_id'][$index],"AM")}></td>
-                <td><input type='checkbox' name='{$id}:PM' {$this->is_checkbox_set($order,$info['item_id'][$index],"PM")}></td>
-                <td>{$first}</td>
-                <td>{$info['Last'][$index]}</td>
+      foreach($this->order_data as $order => $array){
+          foreach($array as $order_item_id => $field){
+              # Something here
+              $total_guests += 1;
+              $ID = $order.":".$order_item_id;
+              $body .= <<< EOT
+                <tr>
+                  <td><input type='checkbox' name='{$ID}:AM' {$field['AM']}></td>
+                  <td><input type='checkbox' name='{$ID}:PM' {$field['PM']}></td>
+                  <td class='no-edit'>{$field['First']}</td>
+                  <td class='no-edit'>{$field['Last']}</td>
 EOT;
-            if($this->has_pickup)
-                $body .= "<td>".$info['Pickup Location'][$index]."</td>";
-            $body .= <<< EOT2
-                <td>{$info['Phone']}</td>
-                <td>{$info['Package'][$index]}</td>
-                <td class='no-edit'>{$order}<input type='hidden' name='{$id}:item_id' value='{$info['item_id'][$index]}'></td>
-                <td><input type='checkbox' name='{$id}:Waiver' {$this->is_checkbox_set($order,$info['item_id'][$index],"Waiver")}></td>
-                <td><input type='checkbox' name='{$id}:Product' {$this->is_checkbox_set($order,$info['item_id'][$index],"Product")}></td>
-                <td><input type='checkbox' name='{$id}:Bus' {$this->is_checkbox_set($order,$info['item_id'][$index],"Bus")}></td>
-                <td><input type='checkbox' name='{$id}:All_Area' {$this->is_checkbox_set($order,$info['item_id'][$index],"All_Area")}></td>
-                <td><input type='checkbox' name='{$id}:Beg' {$this->is_checkbox_set($order,$info['item_id'][$index],"Beg")}></td>
-                <td><input type='checkbox' name='{$id}:BRD' {$this->is_checkbox_set($order,$info['item_id'][$index],"BRD")}></td>
-                <td><input type='checkbox' name='{$id}:SKI' {$this->is_checkbox_set($order,$info['item_id'][$index],"SKI")}></td>
-                <td><input type='checkbox' name='{$id}:LTS' {$this->is_checkbox_set($order,$info['item_id'][$index],"LTS")}></td>
-                <td><input type='checkbox' name='{$id}:LTR' {$this->is_checkbox_set($order,$info['item_id'][$index],"LTR")}></td>
-                <td><input type='checkbox' name='{$id}:Prog_Lesson' {$this->is_checkbox_set($order,$info['item_id'][$index],"Prog_Lesson")}></td>
+              if($this->has_pickup)
+                $body .= "<td class='no-edit'>".$field['Pickup Location']."</td>";
+              $body .= <<< EOT2
+                <td class='no-edit'>{$field['Phone']}</td>
+                <td class='no-edit'>{$field['Package']}</td>
+                <td class='no-edit'>{$order}</td>
+                <td><input type='checkbox' name='{$ID}:Waiver' {$field['Waiver']}></td>
+                <td><input type='checkbox' name='{$ID}:Product' {$field['Product']}</td>
+                <td><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}</td>
+                <td><input type='checkbox' name='{$ID}:All_Area' {$field['All_Area']}</td>
+                <td><input type='checkbox' name='{$ID}:Beg' {$field['Beg']}</td>
+                <td><input type='checkbox' name='{$ID}:BRD' {$field['BRD']}</td>
+                <td><input type='checkbox' name='{$ID}:SKI' {$field['SKI']}</td>
+                <td><input type='checkbox' name='{$ID}:LTS' {$field['LTS']}</td>
+                <td><input type='checkbox' name='{$ID}:LTR' {$field['LTR']}</td>
+                <td><input type='checkbox' name='{$ID}:Prog_Lesson' {$field['Prog_Lesson']}</td>
               </tr>
 EOT2;
           }
       }
+     
       $body .= "</tbody>\n";
       $foot = "<tfoot>\n<tr>
                  <td colspan=2 >Total Guests: </td>
@@ -329,12 +346,6 @@ EOT2;
                </table>
                </div><!-- /.table-responsive -->";
       $this->html_table = $head . $body . $foot;
-    }
-    private function is_checkbox_set($order,$item_id,$value){
-      if(isset($this->html_checkboxes[$order][$item_id][$value]) && $this->html_checkboxes[$order][$item_id][$value] == TRUE )
-        return " checked ";
-      else
-        return " ";
     }
     private function split_name($name){
         $parts = explode(" ", $name);
@@ -362,6 +373,9 @@ EOT2;
       # Remove dash and time from pickup
       preg_match("/(.*).-.*/", $pickup, $matched);
       return $matched[1];
+    }
+    private function remove_package_price($package){
+        return preg_replace('/\(\$\S*\)/', "", $package);
     }
 }
 ?>
