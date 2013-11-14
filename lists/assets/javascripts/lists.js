@@ -30,19 +30,29 @@ function tableToForm(){
   var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
   var trip = document.getElementById("trip").value;
   for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
-    var id = table.rows[rowCounter].cells[7].innerText + ":" + table.rows[rowCounter].cells[7].children[0].value;
-    form += "<input type='hidden' name='"+id+":trip' value='"+trip+"'>";
+    var id = table.rows[rowCounter].cells[0].children[0].name;
+    id = id.split(":");
+    id = id[0]+":"+id[1];
+    var prefix = id.substring(0,2);
     for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
-
-      if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
-        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
-      }
-      else if(labels[cellCounter] == "Order"){
-        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
-        form += "<input type='hidden' name='"+id+":item_id' value='"+table.rows[rowCounter].cells[7].children[0].value+"'>";
+      if(prefix == "WO"){
+        if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
+          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
+        }
+        else if(labels[cellCounter] == "Order"){
+          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
+          var select = document.getElementById("trip");
+          form += "<input type='hidden' name='"+id+":Trip' value='"+select.options[select.selectedIndex].value+"'>";
+        }
+        else{
+          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
+        }
       }
       else{
-        form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
+        // Only capture checkboxes for woocommerce orders
+        if(labels[cellCounter] != "First" && labels[cellCounter] != "Last" && labels[cellCounter] != "Pickup" && labels[cellCounter] != "Phone" && labels[cellCounter] != "Package" && labels[cellCounter] != "Order"){
+          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
+        }
       }
     }
   }
@@ -74,7 +84,8 @@ $(function(){
     //Generate Walk On order #
     var itemNum = Math.floor(Math.random()*90000);
     var order = 'WO'+ Math.floor(Math.random()*90000);
-    var row = '<tr><td><input type="checkbox" name="AM"></td><td><input type="checkbox" name="PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'<input type="hidden" name="item_id" value="'+itemNum+'"></td><td><input type="checkbox" name="Waiver"></td><td><input type="checkbox" name="Product"></td><td><input type="checkbox" name="Bus"></td><td><input type="checkbox" name="All Area"></td><td><input type="checkbox" name="Beg"></td><td><input type="checkbox" name="BRD"></td><td><input type="checkbox" name="SKI"></td><td><input type="checkbox" name="LTS"></td><td><input type="checkbox" name="LTR"></td><td><input type="checkbox" name="Prog Lesson"></td></tr>',
+    var id = order+":"+itemNum;
+    var row = '<tr><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
     $row = $(row),
     // resort table using the current sort; set to false to prevent resort, otherwise 
     // any other value in resort will automatically trigger the table resort. 
