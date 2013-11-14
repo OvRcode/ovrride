@@ -53,9 +53,9 @@ class Trip_List{
             $this->find_orders();
             if(count($this->orders) > 0){
                 $this->get_order_data();
-                $this->get_saved_data();
+                if(isset($_SESSION['post_data']['processing']))
+                  $this->get_saved_data();
                 $this->generate_table();
-                #print_r($this->order_data);
               }
               else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
           }
