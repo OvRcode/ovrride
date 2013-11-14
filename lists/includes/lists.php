@@ -55,6 +55,7 @@ class Trip_List{
                 $this->get_order_data();
                 $this->get_saved_data();
                 $this->generate_table();
+                #print_r($this->order_data);
               }
               else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
           }
@@ -211,10 +212,13 @@ class Trip_List{
     }
     private function get_checkbox_states($order,$order_item_id){
         # Attempts to lookup set checkboxes from form in ovr_lists_checkboxes table
-        $ID = $order+":"+$order_item_id;
-        $sql="select `AM`,`PM`,`Waiver`,`Product`,`Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson` from `ovr_lists_checkboxes` where `ID` = '$ID'";
+        $ID = $order.":".$order_item_id;
+        $sql="SELECT  `AM` ,  `PM` ,  `Waiver` ,  `Product` ,  `Bus` ,  `All_Area` ,  `Beg` ,  `BRD` ,  `SKI` ,  `LTS` ,  `LTR` ,  `Prog_Lesson` 
+              FROM  `ovr_lists_checkboxes` 
+              WHERE  `ID` =  '$ID'";
         $result = $this->db_query($sql);
-        if($row = $result->fetch_assoc())
+        $row = $result->fetch_assoc();
+        if($result->num_rows > 0)
             foreach($row as $key => $value)
                 $this->order_data[$order][$order_item_id][$key] = ($value == 1 ? "checked" : "");
         elseif(isset($this->order_data[$order][$order_item_id])){
@@ -302,15 +306,15 @@ class Trip_List{
               $body .= <<< EOT2
                 <td>$order</td>
                 <td><input type='checkbox' name='{$ID}:Waiver' {$field['Waiver']}></td>
-                <td><input type='checkbox' name='{$ID}:Product' {$field['Product']}</td>
-                <td><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}</td>
+                <td><input type='checkbox' name='{$ID}:Product' {$field['Product']}></td>
+                <td><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}></td>
                 <td><input type='checkbox' name='{$ID}:All_Area' {$field['All_Area']}</td>
-                <td><input type='checkbox' name='{$ID}:Beg' {$field['Beg']}</td>
-                <td><input type='checkbox' name='{$ID}:BRD' {$field['BRD']}</td>
-                <td><input type='checkbox' name='{$ID}:SKI' {$field['SKI']}</td>
-                <td><input type='checkbox' name='{$ID}:LTS' {$field['LTS']}</td>
-                <td><input type='checkbox' name='{$ID}:LTR' {$field['LTR']}</td>
-                <td><input type='checkbox' name='{$ID}:Prog_Lesson' {$field['Prog_Lesson']}</td>
+                <td><input type='checkbox' name='{$ID}:Beg' {$field['Beg']}></td>
+                <td><input type='checkbox' name='{$ID}:BRD' {$field['BRD']}></td>
+                <td><input type='checkbox' name='{$ID}:SKI' {$field['SKI']}></td>
+                <td><input type='checkbox' name='{$ID}:LTS' {$field['LTS']}></td>
+                <td><input type='checkbox' name='{$ID}:LTR' {$field['LTR']}></td>
+                <td><input type='checkbox' name='{$ID}:Prog_Lesson' {$field['Prog_Lesson']}></td>
               </tr>
 EOT2;
           }
