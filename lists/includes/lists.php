@@ -280,8 +280,8 @@ class Trip_List{
                <table id='Listable' class='tablesorter table table-bordered table-striped table-condensed'>\n
                  <thead>
                    <tr class='tablesorter-headerRow'>\n
-                   <td>AM</td>
-                   <td>PM</td>
+                   <td class='filter-false'>AM</td>
+                   <td class='filter-false'>PM</td>
                    <td>First</td>
                    <td>Last</td>";
                    
@@ -291,17 +291,17 @@ class Trip_List{
       $head .= "<td>Phone</td>
                 <td>Package</td>
                 <td>Order</td>
-                <td>Waiver</td>
-                <td>Product REC.</td>
-                <td>Bus Only</td>";
+                <td class='filter-false'>Waiver</td>
+                <td class='filter-false'>Product REC.</td>
+                <td class='filter-false'>Bus Only</td>";
                 
-      $head .= "<td>All Area Lift</td>
-                <td>Beg. Lift</td>
-                <td>BRD Rental</td>
-                <td>Ski Rental</td>
-                <td>LTS</td>
-                <td>LTR</td>
-                <td>Prog. Lesson</td>\n";
+      $head .= "<td class='filter-false'>All Area Lift</td>
+                <td class='filter-false'>Beg. Lift</td>
+                <td class='filter-false'>BRD Rental</td>
+                <td class='filter-false'>Ski Rental</td>
+                <td class='filter-false'>LTS</td>
+                <td class='filter-false'>LTR</td>
+                <td class='filter-false'>Prog. Lesson</td>\n";
                 
       $head .= "</tr>
                 </thead>\n";
