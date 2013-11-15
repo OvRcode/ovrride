@@ -56,13 +56,17 @@ class Trip_List{
                   $this->get_saved_data();
                 $this->generate_table();
               }
-              else{ $this->html_table = "There are no orders for the selected Trip and Order Status."; }
+              else{ $this->html_table = "<div class='container'>
+                  <p>
+                  There are no orders for the selected Trip and Order Status.
+                  </p>
+                </div>"; }
           }
 
     }
     function csv($type) {
         $sql = "SELECT `post_title` FROM `wp_posts`
-                WHERE `ID` = '$this->trip` 
+                WHERE `ID` = '$this->trip'
                 AND `post_status` = 'publish'
                 AND `post_type` = 'product'
                 ORDER BY `post_title`";
@@ -112,12 +116,13 @@ class Trip_List{
           return $result;
     }
     private function trip_options(){
-        # Find trips
+        # Find trips for the Select a Trip drop down
         $sql = "SELECT  `id` ,  `post_title` 
                 FROM  `wp_posts` 
                 WHERE  `post_status` =  'publish'
                 AND  `post_type` =  'product'
                 AND  `post_title` NOT LIKE  'High Five%'
+                AND  `post_title` NOT LIKE  'Gift%'
                 ORDER BY  `post_title`";
         $result = $this->db_query($sql);
 

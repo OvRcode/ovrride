@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS `ovr_lists_checkboxes` (
   `LTR` tinyint(1) DEFAULT NULL,
   `Prog_Lesson` tinyint(1) DEFAULT NULL,
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
