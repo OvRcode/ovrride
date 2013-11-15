@@ -93,7 +93,9 @@ table {
   font-weight:bold;
   background:white;
 }
-
+.tablesorter-filter-row td {
+  background:white;
+}
 // Do not wrap table cells
 td {
 white-space: nowrap;
