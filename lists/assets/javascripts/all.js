@@ -11943,7 +11943,7 @@ function tableToForm(){
 $(function(){
   $('#Listable').tablesorter({
     sortList: [[4,0],[3,0]],
-    widgets : [ 'editable','zebra', 'columns' ],
+    widgets : [ 'editable','zebra', 'columns','stickyHeaders' ],
     widgetOptions: {
       editable_columns       : [2,3,4,5,6],  // point to the columns to make editable (zero-based index)
       editable_enterToAccept : true,     // press enter to accept content, or click outside if false
