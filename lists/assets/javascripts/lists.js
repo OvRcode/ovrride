@@ -77,7 +77,12 @@ $(function(){
       filter_columnFilters : true,
       filter_hideFilters : true,
       filter_ignoreCase : true,
-      filter_searchDelay : 100
+      filter_reset : '.reset',
+      filter_searchDelay : 100,
+      filter_functions : {
+        4 : true,
+        6 : true
+      }
     }
   });
 

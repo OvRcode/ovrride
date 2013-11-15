@@ -286,10 +286,10 @@ class Trip_List{
                    <td>Last</td>";
                    
       if($this->has_pickup)
-        $head .= "<td>Pickup</td>";
+        $head .= "<td data-placeholder='Choose a Location'>Pickup</td>";
         
       $head .= "<td>Phone</td>
-                <td>Package</td>
+                <td data-placeholder='Choose a Package'>Package</td>
                 <td>Order</td>
                 <td class='filter-false'>Waiver</td>
                 <td class='filter-false'>Product REC.</td>

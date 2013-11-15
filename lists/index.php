@@ -120,6 +120,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <br>
           <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
           <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
+          <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters</button>
       </section>
       <br>
 
