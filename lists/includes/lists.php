@@ -329,8 +329,11 @@ class Trip_List{
               
               $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Phone']}</td>";
               $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Package']}</td>";
+              if($prefix != "WO")
+                  $body .= "<td><a href='".$this->link($order)."' target='_blank'>$order</a></td>";
+              else
+                  $body .= "<td>$order</td>";
               $body .= <<< EOT2
-                <td>$order</td>
                 <td><input type='checkbox' name='{$ID}:Waiver' {$field['Waiver']}></td>
                 <td><input type='checkbox' name='{$ID}:Product' {$field['Product']}></td>
                 <td><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}></td>
@@ -393,6 +396,9 @@ EOT2;
     }
     private function remove_package_price($package){
         return preg_replace('/\(\$\S*\)/', "", $package);
+    }
+    private function link($order){
+      return "https://ovrride.com/wp-admin/post.php?post=".$order."&action=edit";
     }
 }
 ?>
