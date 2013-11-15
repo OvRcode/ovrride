@@ -1,11 +1,11 @@
 # Use PHP5.4 Single php.ini as default
-AddHandler application/x-httpd-php54s .php
+#AddHandler application/x-httpd-php54s .php
 
 # Protect system files from peeping eyes
-<FilesMatch "php.ini|error_log|README.mdi|readme.html">
-  Order allow,deny
-  Deny from all
-</FilesMatch>
+#<FilesMatch "php.ini|error_log|README.mdi|readme.html">
+#  Order allow,deny
+#  Deny from all
+#</FilesMatch>
 
 # RewriteEngine on - must be declared at least once before any Rewrites rules
 
@@ -21,19 +21,19 @@ RewriteRule . /index.php [L]
 # END WordPress
 
 # Rewrite WordPress /login to /wp-login.php
-RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
+#RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
 
 # Prevent indexing of directories without an index file
-Options -Indexes
+#Options -Indexes
 
 # Protect the .git directory from peeping eyes
-RedirectMatch 404 /\.git
+#RedirectMatch 404 /\.git
 
 # Rewrite ovrride.net to ovrride.com
-RewriteCond %{HTTP_HOST} ^ovrride\.net$ [OR]
-RewriteCond %{HTTP_HOST} ^www\.ovrride\.net$
-RewriteRule ^(.*)$ "http\:\/\/ovrride\.com\/$1" [R=301,L]
+#RewriteCond %{HTTP_HOST} ^ovrride\.net$ [OR]
+#RewriteCond %{HTTP_HOST} ^www\.ovrride\.net$
+#RewriteRule ^(.*)$ "http\:\/\/ovrride\.com\/$1" [R=301,L]
 
 # Redirect calendar.ovrride.com to ovrride.com/events
-RewriteCond %{HTTP_HOST} ^calendar\.ovrride\.com
-RewriteRule ^(.*) http://ovrride.com/events/ [L,R=301]
+#RewriteCond %{HTTP_HOST} ^calendar\.ovrride\.com
+#RewriteRule ^(.*) http://ovrride.com/events/ [L,R=301]
