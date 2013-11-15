@@ -1,14 +1,7 @@
-CREATE TABLE `ovr_lists_table` (
-  `trip` varchar(32) DEFAULT NULL,
-  `order` varchar(32) DEFAULT NULL,
-  `item_id` varchar(32) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `ovr_lists_checkboxes` (
+  `ID` varchar(32) NOT NULL,
   `AM` tinyint(1) DEFAULT NULL,
   `PM` tinyint(1) DEFAULT NULL,
-  `First` varchar(32) DEFAULT NULL,
-  `Last` varchar(32) DEFAULT NULL,
-  `Pickup` varchar(64) DEFAULT NULL,
-  `Phone` varchar(14) DEFAULT NULL,
-  `Package` varchar(64) DEFAULT NULL,
   `Waiver` tinyint(1) DEFAULT NULL,
   `Product` tinyint(1) DEFAULT NULL,
   `Bus` tinyint(1) DEFAULT NULL,
@@ -19,6 +12,5 @@ CREATE TABLE `ovr_lists_table` (
   `LTS` tinyint(1) DEFAULT NULL,
   `LTR` tinyint(1) DEFAULT NULL,
   `Prog_Lesson` tinyint(1) DEFAULT NULL,
-  `ID` varchar(64) NOT NULL,
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

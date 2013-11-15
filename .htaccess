@@ -1,8 +1,5 @@
-# Use PHP5.4 Single php.ini as default
-AddHandler application/x-httpd-php54s .php
-
 # Protect system files from peeping eyes
-<FilesMatch "php.ini|error_log|README.mdi|readme.html">
+<FilesMatch "php.ini|error_log|README.md|readme.html">
   Order allow,deny
   Deny from all
 </FilesMatch>

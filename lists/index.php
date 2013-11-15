@@ -119,7 +119,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           </label>
           <br>
           <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
-          <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
+          <button type="button" onclick="location.href='/';" class="btn btn-primary generate-list">Clear Form</button>
       </section>
       <br>
 
