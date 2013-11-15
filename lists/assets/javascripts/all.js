@@ -11949,6 +11949,7 @@ $(function(){
       editable_enterToAccept : true,     // press enter to accept content, or click outside if false
       editable_autoResort    : false,    // auto resort after the content has changed.
       editable_noEdit        : 'no-edit', // class name of cell that is no editable
+      stickyHeaders_offset: 50,
       filter_childRows : false,
       filter_columnFilters : true,
       filter_hideFilters : true,
