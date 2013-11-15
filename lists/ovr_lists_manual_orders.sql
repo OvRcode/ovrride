@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS `ovr_lists_manual_orders` (
   `Package` varchar(32) NOT NULL,
   `Trip` int(11) NOT NULL,
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
