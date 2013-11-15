@@ -351,7 +351,7 @@ EOT2;
      
       $body .= "</tbody>\n";
       $foot = "<tfoot>\n<tr>
-                <td colspan=2 >Total Guests: </td>
+                <td>Total Guests: </td>
                 <td id='total_guests'>$total_guests</td>
                 <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>";
       if($this->has_pickup){
