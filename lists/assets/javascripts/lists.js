@@ -66,7 +66,21 @@ function tableToForm(){
 $(function(){
   $('#Listable').tablesorter({
     sortList: [[4,0],[3,0]],
-    widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter' ],
+    headers: {
+          0: { sorter: 'checkbox' },
+          1: { sorter: 'checkbox' },
+          8: { sorter: 'checkbox' },
+          9: { sorter: 'checkbox' },
+          10: { sorter: 'checkbox' },
+          11: { sorter: 'checkbox' },
+          12: { sorter: 'checkbox' },
+          13: { sorter: 'checkbox' },
+          14: { sorter: 'checkbox' },
+          15: { sorter: 'checkbox' },
+          16: { sorter: 'checkbox' },
+          17: { sorter: 'checkbox' }
+        },
+    widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter'],
     widgetOptions: {
       editable_columns       : [2,3,4,5,6],  // point to the columns to make editable (zero-based index)
       editable_enterToAccept : true,     // press enter to accept content, or click outside if false

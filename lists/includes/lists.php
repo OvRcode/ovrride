@@ -337,7 +337,7 @@ class Trip_List{
                 <td><input type='checkbox' name='{$ID}:Waiver' {$field['Waiver']}></td>
                 <td><input type='checkbox' name='{$ID}:Product' {$field['Product']}></td>
                 <td><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}></td>
-                <td><input type='checkbox' name='{$ID}:All_Area' {$field['All_Area']}</td>
+                <td><input type='checkbox' name='{$ID}:All_Area' {$field['All_Area']}></td>
                 <td><input type='checkbox' name='{$ID}:Beg' {$field['Beg']}></td>
                 <td><input type='checkbox' name='{$ID}:BRD' {$field['BRD']}></td>
                 <td><input type='checkbox' name='{$ID}:SKI' {$field['SKI']}></td>
