@@ -62,7 +62,7 @@ class Trip_List{
     }
     function csv($type) {
         $sql = "SELECT `post_title` FROM `wp_posts`
-                WHERE `ID` = '$this->trip` 
+                WHERE `ID` = '$this->trip' 
                 AND `post_status` = 'publish'
                 AND `post_type` = 'product'
                 ORDER BY `post_title`";
@@ -90,10 +90,23 @@ class Trip_List{
         foreach($this->order_data as $order => $array){
             foreach($array as $order_item_id => $field){
                 if($type == "trip_list"){
-                    if($this->has_pickup)
-                        $array = array("","",$field['First'],$field['Last'],$field['Pickup Location'],$field['Phone'],$field['Package'],$order);
-                    else
-                        $array = array("","",$field['First'],$field['Last'],$field['Phone'],$field['Package'],$order);
+                    if($this->has_pickup){
+                        $array = array(($field['AM'] == "checked" ? "X":""),($field['PM'] == "checked" ? "X":""),$field['First'],$field['Last'],
+                                        $field['Pickup Location'], $field['Phone'], $field['Package'], $order,
+                                        ($field['Waiver'] == "checked" ? "X":""),($field['Product'] == "checked" ? "X":""),
+                                        ($field['Bus'] == "checked" ? "X":""), ($field['All_Area'] == "checked" ? "X":""),
+                                        ($field['Beg'] == "checked" ? "X":""), ($field['SKI'] == "checked" ? "X":""), 
+                                        ($field['LTS'] == "checked" ? "X":""), ($field['LTR'] == "checked" ? "X":""), 
+                                        ($field['Prog_Lesson'] == "checked" ? "X":""));
+                    }
+                    else{
+                      $array = array(($field['AM'] == "checked" ? "X":""),($field['PM'] == "checked" ? "X":""),$field['First'],$field['Last'],
+                                      $field['Phone'], $field['Package'], $order, ($field['Waiver'] == "checked" ? "X":""),
+                                      ($field['Product'] == "checked" ? "X":""), ($field['Bus'] == "checked" ? "X":""), 
+                                      ($field['All_Area'] == "checked" ? "X":""), ($field['Beg'] == "checked" ? "X":""), 
+                                      ($field['SKI'] == "checked" ? "X":""), ($field['LTS'] == "checked" ? "X":""), 
+                                      ($field['LTR'] == "checked" ? "X":""), ($field['Prog_Lesson'] == "checked" ? "X":""));
+                    }
                 }
                 elseif($type == "email_list"){
                   $array = array($field['Email'],$field['First'],$field['Last']);
@@ -192,16 +205,16 @@ class Trip_List{
                         OR `meta_key` = 'Pickup Location' ) 
                         AND `order_item_id` = '$order_item_id'";
                 $result = $this->db_query($sql);
-              
+
                 while($row = $result->fetch_assoc()){
                     if($row['meta_key'] == 'Package')
-                        $this->order_data[$order][$order_item_id]['Package'] = $this->remove_package_price($row['meta_value']);
+                        $this->order_data[$order][$order_item_id]['Package'] = ucwords(strtolower($this->remove_package_price($row['meta_value'])));
                     elseif($row['meta_key'] == 'Pickup Location')
-                        $this->order_data[$order][$order_item_id]['Pickup Location'] = $this->strip_time($row['meta_value']);
+                        $this->order_data[$order][$order_item_id]['Pickup Location'] = ucwords(strtolower($this->strip_time($row['meta_value'])));
                     elseif($row['meta_key'] == 'Name'){
                         $names = $this->split_name($row['meta_value']);
-                        $this->order_data[$order][$order_item_id]['First'] = $names['First'];
-                        $this->order_data[$order][$order_item_id]['Last'] = $names['Last'];
+                        $this->order_data[$order][$order_item_id]['First'] = ucwords(strtolower($names['First']));
+                        $this->order_data[$order][$order_item_id]['Last'] = ucwords(strtolower($names['Last']));
                     }  
                     else
                         $this->order_data[$order][$order_item_id][$row['meta_key']] = trim($row['meta_value']);
@@ -252,11 +265,11 @@ class Trip_List{
             $exploded_id = explode(":",$row['ID']);
             $order = $exploded_id[0];
             $order_item_id = $exploded_id[1];
-            $this->order_data[$order][$order_item_id]['First'] = trim($row['First']);
-            $this->order_data[$order][$order_item_id]['Last'] = trim($row['Last']);
-            $this->order_data[$order][$order_item_id]['Pickup Location'] = trim($row['Pickup']);
+            $this->order_data[$order][$order_item_id]['First'] = ucwords(strtolower(trim($row['First'])));
+            $this->order_data[$order][$order_item_id]['Last'] = ucwords(strtolower(trim($row['Last'])));
+            $this->order_data[$order][$order_item_id]['Pickup Location'] = ucwords(strtolower(trim($row['Pickup'])));
             $this->order_data[$order][$order_item_id]['Phone'] = $this->reformat_phone($row['Phone']);
-            $this->order_data[$order][$order_item_id]['Package'] = trim($row['Package']);
+            $this->order_data[$order][$order_item_id]['Package'] = ucwords(strtolower(trim($row['Package'])));
             $this->get_checkbox_states($order,$order_item_id);
         }
     }
@@ -294,6 +307,7 @@ class Trip_List{
                 </thead>\n";
                 
       $body = "<tbody>\n";
+      $location_count = array();
       foreach($this->order_data as $order => $array){
           $prefix = substr($order,0,2);
           foreach($array as $order_item_id => $field){
@@ -305,8 +319,13 @@ class Trip_List{
                   $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['First']}</td>";
                   $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Last']}</td>";
 
-              if($this->has_pickup)
-                $body .= "<td".($prefix != "WO" ? " class='no-edit'" : "").">".$field['Pickup Location']."</td>";
+              if($this->has_pickup){
+                  $body .= "<td".($prefix != "WO" ? " class='no-edit'" : "").">".$field['Pickup Location']."</td>";
+                  if(isset($location_count[$field['Pickup Location']]))
+                      $location_count[$field['Pickup Location']] += 1;
+                  else
+                      $location_count[$field['Pickup Location']] = 1;
+              }
               
               $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Phone']}</td>";
               $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Package']}</td>";
@@ -329,13 +348,20 @@ EOT2;
      
       $body .= "</tbody>\n";
       $foot = "<tfoot>\n<tr>
-                 <td colspan=2 >Total Guests: </td>
-                 <td id='total_guests'>$total_guests</td>
-                 <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>
-                 </tr>
-               </tfoot>
-               </table>
-               </div><!-- /.table-responsive -->";
+                <td colspan=2 >Total Guests: </td>
+                <td id='total_guests'>$total_guests</td>
+                <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>";
+      if($this->has_pickup){
+          $foot .= "<td>Guests by Location:</td>";
+          foreach($location_count as $location => $count){
+            $foot .= "<td>$location: $count</td>";
+          }
+      }
+        
+      $foot .="</tr>
+              </tfoot>
+              </table>
+              </div><!-- /.table-responsive -->";
       $this->html_table = $head . $body . $foot;
     }
     private function split_name($name){
