@@ -120,34 +120,37 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <br>
           <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
           <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
-          <button type="button" class="reset btn btn-warning generate-list">Reset Table </button>
+          <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
+            <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters </button>
+          <?php } ?>
       </section>
       <br>
 
       </div><!-- /.container -->
 
-      <?php # Output of the Trip List Table ?>
+      <!-- Output of the Trip List Table -->
       <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
-          print $list->html_table; ?>
-
-      <?php } ?>
+          print $list->html_table;
+      } ?>
       <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
         <div class="container">
           <div class="row">
             <div class="col-md-3 text-center">
-              <h5>Version <?php echo $lists_version ?>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span class="text-danger">For OvR Staff Use Only</span></h5>
+              <h5>Version <?php echo $lists_version ?></h5>
+              <h5><span class="text-danger">For OvR Staff Use Only</span></h5>
             </div>
-            <div class="col-md-5 text-center">
+            <div class="col-md-6 text-center">
+            <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
               <form>
                 <button type="submit" class="btn btn-info footer-btn" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
                 <button type="submit" class="btn btn-info footer-btn" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
                 <button type="button" class="btn btn-success footer-btn" id="save_form" name="save_form" onclick="javascript:tableToForm();">Save</button>
               </form>
+              <?php } ?>
               </form>
             </div>
-            <div class="col-md-3 text-center">
-              <h5><span>&copy; Copyright <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a></span></h5>
+            <div class="col-md-2 text-center">
+              <h5>&copy; Copyright <?php echo date('Y'); ?></h5> <h5><a href="/">OvR ride LLC.</a></h5>
             </div>
       </nav>
       <!-- Include concatenated and minified javascripts -->
