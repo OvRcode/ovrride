@@ -8,7 +8,9 @@
 
 // BEGIN BOOTSTRAP OVERRIDES
 // -------------------------
-
+.navbar-inverse{
+  color:white;
+}
 
 // END BOOTSTRAP OVERRIDES
 // -------------------------
@@ -19,7 +21,8 @@
 
 body {
   // margin: 10px;
- // padding-top:20px;
+  padding-top: 60px;
+  padding-bottom: 50px;
 }
 
 .trip-select {
@@ -35,7 +38,10 @@ body {
   margin-top: 20px;
   margin-left: 20px;
 }
-
+.footer-btn{
+  margin-top: 15px;
+  margin-right: 5px;
+}
 // Order Status checkbox: Stack on mobile checkbox-incline on desktop
 @media (min-width: 768px) {
   .order-checkbox {
@@ -91,8 +97,11 @@ table {
 
 .tablesorter-header {
   font-weight:bold;
+  background:white;
 }
-
+.tablesorter-filter-row td {
+  background:white;
+}
 // Do not wrap table cells
 td {
 white-space: nowrap;
