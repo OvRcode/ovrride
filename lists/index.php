@@ -120,7 +120,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <br>
           <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
           <button type="button" onclick="javascript:formReset();" class="btn btn-primary generate-list">Clear Form</button>
-          <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters</button>
+          <button type="button" class="reset btn btn-warning generate-list">Reset Table </button>
       </section>
       <br>
 
@@ -130,35 +130,26 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
           print $list->html_table; ?>
 
-
-      <div class="container">
-      <form>
-        <button type="submit" class="btn btn-primary generate-list" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
-        <button type="submit" class="btn btn-primary generate-list" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
-        <button type="button" class="btn btn-success generate-list" id="save_form" name="save_form" onclick="javascript:tableToForm();">Save</button>
-      </form>
-      </form>
       <?php } ?>
-
-      </div><!-- /.container -->
-
-      <footer>
-        <div class="page-header"></div><!-- inserts the line separator -->
+      <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
         <div class="container">
           <div class="row">
-            <div class="col-md-4 text-center">
+            <div class="col-md-3 text-center">
+              <h5>Version <?php echo $lists_version ?>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span class="text-danger">For OvR Staff Use Only</span></h5>
+            </div>
+            <div class="col-md-5 text-center">
+              <form>
+                <button type="submit" class="btn btn-info footer-btn" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button> 
+                <button type="submit" class="btn btn-info footer-btn" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
+                <button type="button" class="btn btn-success footer-btn" id="save_form" name="save_form" onclick="javascript:tableToForm();">Save</button>
+              </form>
+              </form>
+            </div>
+            <div class="col-md-3 text-center">
               <h5><span>&copy; Copyright <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a></span></h5>
             </div>
-          <div class="col-md-4 text-center footer-center">
-            <h5>For OvR Staff Use Only</h5>
-          </div>
-          <div class="col-md-4 text-center">
-            <h5>Version <?php echo $lists_version ?></h5>
-          </div>
-        </div>
-      </div>
-      </footer>
-
+      </nav>
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>
