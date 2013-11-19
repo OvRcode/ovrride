@@ -18,6 +18,26 @@ remove_action('wp_head', 'wp_generator');
 // Remove Windows Live Writer meta from head
 remove_action('wp_head', 'wlwmanifest_link');
 
+///////////////////
+//  WooCommerce  //
+///////////////////
+
+// Unhook (remove) the WooCommerce sidebar from archive pages
+add_action('wp', create_function("", "if (is_archive(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
+
+//Unhook (remove) the WooCommerce sidebar on individual product pages
+add_action('wp', create_function("", "if (is_singular(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
+
+//Unhook (remove) the WooCommerce sidebar on all pages
+remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
+
+// Change "OUT OF STOCK" to "SOLD OUT"
+add_filter('woocommerce_get_availability', 'availability_filter_func');
+  function availability_filter_func($availability) {
+      $availability['availability'] = str_ireplace('Out of stock', 'SOLD OUT',
+      $availability['availability']);
+  return $availability;
+  }
 
 // Adds Google Analytics to the footer
 add_action('wp_footer', 'add_google_analytics');
