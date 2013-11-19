@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo
  * Author URI: http://ajacevedo.com
- * Version: 0.1.2
+ * Version: 0.2.0
  * License: MIT License
  */
 
