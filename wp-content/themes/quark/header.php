@@ -24,10 +24,10 @@
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<meta http-equiv="cleartype" content="on">
 
-	<!-- Responsive and mobile friendly stuff -->
-	<meta name="HandheldFriendly" content="True">
-	<meta name="MobileOptimized" content="320">
-    <meta name="viewport" content="device-width; minimum-scale=1.0; initial-scale=1.0; maximum-scale=1.0;"/>
+  <!-- Responsive and mobile friendly stuff -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0">
 
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
