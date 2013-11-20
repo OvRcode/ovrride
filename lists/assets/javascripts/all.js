@@ -11961,7 +11961,7 @@ d.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(d,c,b
 // Order Status: Check All / Uncheck All
 function checkAll(trip_list, checktoggle) {
   var checkboxes = [];
-  checkboxes = document.forms[trip_list].getElementsByClassName('order_status_checkbox');
+  checkboxes = document.getElementsByClassName('order_status_checkbox');
 
   for (var i=0; i<checkboxes.length; i++) {
     if (checkboxes[i].type == 'checkbox') {
@@ -12054,7 +12054,7 @@ $(function(){
       }
     }
   });
-
+  $( "input.tablesorter-filter.disabled" ).remove(); // strip disabled inputs from tablesorter filter
   $('#add').click(function(){
     // Find total cell and increment
     var cell = document.getElementById('total_guests');
