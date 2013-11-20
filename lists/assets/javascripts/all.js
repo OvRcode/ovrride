@@ -12054,7 +12054,6 @@ $(function(){
       }
     }
   });
-  $( "input.tablesorter-filter.disabled" ).remove(); // strip disabled inputs from tablesorter filter
   $('#add').click(function(){
     // Find total cell and increment
     var cell = document.getElementById('total_guests');
