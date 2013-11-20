@@ -64,13 +64,24 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand logo-nav" href="/">OvR Trip Lists</a>
+          <a class="navbar-brand logo-nav" onclick="location.href='/';" href="javascript:void();">OvR Trip Lists</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav nav-puller">
-            <li><a href="http://ovrride.com" target="_blank">Ovrride.com</a></li>
-            <li><a href="https://ovrride.com/sop/" target="_blank">SOP</a></li>
-            <li class="disabled"><a href="#settings">Settings</a></li>
+            <li>
+              <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
+              <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
+                <button type="button" class="btn btn-default" id="save_form" name="save_form" onclick="javascript:tableToForm();" title="Save changes">
+                  <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
+                </button>
+                <button type="submit" class="btn btn-default" id="csv_list" name="csv_list" value="csv_list" title="Full List CSV">
+                  <span class="glyphicon glyphicon-list-alt"></span> CSV
+                </button> 
+                <button type="submit" class="btn btn-default" id="csv_email" name="csv_email" value="csv_email" title="Email CSV">
+                  <span class="glyphicon glyphicon-envelope"></span> CSV
+                </button>
+              <?php } ?>
+            </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
           </ul>
@@ -79,8 +90,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
     </nav>
 
     <div class="container">
-
-    <form action="index.php" method="post" name="trip_list" id="trip_list">
       <section class="trip-select">
           <label>Select a Trip:</label>
           <br>
@@ -97,25 +106,25 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
           <br>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php if(isset($_SESSION['post_data']['processing']) || !isset($_SESSION['post_data']['trip'])) echo 'checked';?>>Processing</input>
+            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php checkbox_helper("processing");?>>Processing</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php if(isset($_SESSION['post_data']['pending']) || !isset($_SESSION['post_data']['trip'])) echo 'checked'; ?>>Pending</input>
+            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php checkbox_helper("pending");?>>Pending</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php if(isset($_SESSION['post_data']['cancelled'])) echo 'checked'; ?>>Cancelled</input>
+            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php checkbox_helper("cancelled");?>>Cancelled</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed" <?php if(isset($_SESSION['post_data']['failed'])) echo 'checked'; ?>>Failed</input>
+            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed" <?php checkbox_helper("failed");?>>Failed</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php if(isset($_SESSION['post_data']['on-hold'])) echo 'checked'; ?>>On-hold</input>
+            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php checkbox_helper("on-hold");?>>On-hold</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php if(isset($_SESSION['post_data']['completed'])) echo 'checked'; ?>>Completed</input>
+            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php checkbox_helper("completed");?>>Completed</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php if(isset($_SESSION['post_data']['refunded'])) echo 'checked'; ?>>Refunded</input>
+            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
           </label>
           <br>
           <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
@@ -134,27 +143,23 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
           print $list->html_table;
       } ?>
-      <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-3 text-center">
-              <h5>Version <?php echo $lists_version ?></h5>
-              <h5><span class="text-danger">For OvR Staff Use Only</span></h5>
+
+      <footer>
+        <div class="page-header"></div><!-- inserts the line separator -->
+          <div class="container">
+            <div class="row">
+              <div class="col-md-4 text-center">
+                <h5><span>&copy; Copyright <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a></span></h5>
+              </div>
+              <div class="col-md-4 text-center footer-center">
+                <h5>For OvR Staff Use Only</h5>
+              </div>
+              <div class="col-md-4 text-center">
+                <h5>Version <?php echo $lists_version ?></h5>
+              </div>
             </div>
-            <div class="col-md-6 text-center">
-            <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
-              <form>
-                <button type="submit" class="btn btn-info footer-btn" id="csv_list" name="csv_list" value="csv_list">Generate List CSV</button>
-                <button type="submit" class="btn btn-info footer-btn" id="csv_email" name="csv_email" value="csv_email">Generate Email CSV</button>
-                <button type="button" class="btn btn-success footer-btn" id="save_form" name="save_form" onclick="javascript:tableToForm();">Save</button>
-              </form>
-              <?php } ?>
-              </form>
-            </div>
-            <div class="col-md-2 text-center">
-              <h5>&copy; Copyright <?php echo date('Y'); ?></h5> <h5><a href="/">OvR ride LLC.</a></h5>
-            </div>
-      </nav>
+          </div>
+        </footer>
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>

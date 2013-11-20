@@ -11,7 +11,6 @@
 .navbar-inverse{
   color:white;
 }
-
 // END BOOTSTRAP OVERRIDES
 // -------------------------
 
@@ -23,8 +22,12 @@ body {
   // margin: 10px;
   padding-top: 60px;
   padding-bottom: 50px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
-
+.totals-row{
+  border-top:solid #000000;
+}
 .trip-select {
   margin-bottom: 10px;
   width: 75%;
@@ -94,7 +97,9 @@ label.checkbox.order-checkbox {
 table {
   color: $grayDark;
 }
-
+.center-me{
+    text-align: center; /* center checkbox horizontally */
+}
 .tablesorter-header {
   font-weight:bold;
   background:white;
@@ -127,18 +132,23 @@ white-space: nowrap;
 	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
 	border-bottom: #000 2px solid;
 }
-
 //Editable Table CSS
 .tablesorter tbody > tr > td[contenteditable=true]:focus {
   outline: #08f 1px solid;
   background: #eee;
   resize: none;
 }
-
 // FOOTER
 // -------------------------
-
+@media (min-width: 768px){
 .login-window {
   padding-top: 60px;
   width: 60%;
+}
+}
+@media (max-width: 767px){
+  .login-window {
+    padding-top: 20px;
+    width: 100%;
+  }
 }
