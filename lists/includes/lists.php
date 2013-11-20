@@ -60,7 +60,7 @@ class Trip_List{
             $this->find_orders();
             if(count($this->orders) > 0){
                 $this->get_order_data();
-                if(isset($_SESSION['post_data']['processing']))
+                if(isset($_SESSION['post_data']['walk-on']))
                   $this->get_saved_data();
                 $this->generate_table();
               }
