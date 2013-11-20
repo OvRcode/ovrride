@@ -32,7 +32,7 @@ if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_em
 }
 function checkbox_helper($field){
   # Prints checked for selected checkboxes OR sets default checkboxes for new form
-  if($field == "processing" || $field == "pending"){
+  if($field == "processing" || $field == "pending" || $field == "walk-on"){
       if(isset($_SESSION['post_data'][$field]) || !isset($_SESSION['post_data']['trip']))
         print ' checked';
   }
@@ -60,7 +60,7 @@ class Trip_List{
             $this->find_orders();
             if(count($this->orders) > 0){
                 $this->get_order_data();
-                if(isset($_SESSION['post_data']['processing']))
+                if(isset($_SESSION['post_data']['walk-on']))
                   $this->get_saved_data();
                 $this->generate_table();
               }

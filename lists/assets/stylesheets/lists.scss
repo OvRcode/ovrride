@@ -93,7 +93,10 @@ label.checkbox.order-checkbox {
 
 // TABLE and TABLESORTER
 // -------------------------
-
+input.tablesorter-filter.disabled{
+  visibility:hidden;
+  width:10px;
+}
 table {
   color: $grayDark;
 }

@@ -112,6 +112,9 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php checkbox_helper("pending");?>>Pending</input>
           </label>
           <label class="checkbox order-checkbox">
+            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" <?php checkbox_helper("walk-on");?>>Walk On</input>
+          </label>
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php checkbox_helper("cancelled");?>>Cancelled</input>
           </label>
           <label class="checkbox order-checkbox">
