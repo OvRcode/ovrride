@@ -32,7 +32,7 @@ if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_em
 }
 function checkbox_helper($field){
   # Prints checked for selected checkboxes OR sets default checkboxes for new form
-  if($field == "processing" || $field == "pending"){
+  if($field == "processing" || $field == "pending" || $field == "walk-on"){
       if(isset($_SESSION['post_data'][$field]) || !isset($_SESSION['post_data']['trip']))
         print ' checked';
   }
