@@ -93,7 +93,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       <section class="trip-select">
           <label>Select a Trip:</label>
           <br>
-          <select class="form-control input-sm" id="destination">
+          <select class="form-control input-sm" id="destination" name="destination">
             <?php echo $list->select_options['destinations']?>
           </select>
           <select class="form-control input-sm" id="trip" name="trip" id="trip">
