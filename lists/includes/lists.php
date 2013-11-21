@@ -46,7 +46,8 @@ class Trip_List{
     var $orders;
     var $order_data;
     var $has_pickup;
-
+    var $destinations;
+    
     function __construct($selected_trip){
         # Connect to database
         require_once("config.php");
@@ -54,6 +55,7 @@ class Trip_List{
         if($this->db_connect->connect_errno > 0){
             die('Unable to connect to database [' . $this->db_connect->connect_error . ']');
         }
+        $this->destinations = array("Camelback MT","Hunter MT","Japan","Killington","MT Snow","Stowe","Stratton","Sugarbush","Whistler","Windham");
         $this->trip = $selected_trip;
         $this->trip_options();
         if($selected_trip != "none"){
@@ -150,18 +152,34 @@ class Trip_List{
         $result = $this->db_query($sql);
 
         # Construct options for a select field
-        $this->select_options = '<option value="none"';
+        $this->select_options['trip'] = '<option value="none"';
         if($this->trip == "none")
-            $this->select_options .= " selected ";
-        $this->select_options .= "> Select trip </option>\n";
+            $this->select_options['trip'] .= " selected ";
+        $this->select_options['trip'] .= "> Select trip </option>\n";
         while($row = $result->fetch_assoc()){
-            $this->select_options .= "<option value='".$row['id']."'";
+            foreach($this->destinations as $value){
+              if($value != "Stratton")
+                  $regex = '/'.$value.'\s(.*)/i';
+              else
+                $regex = '/Stratturday\S(.*)/i';
+
+              if(preg_match($regex,$row['post_title'],$match)){
+                $class = $value;
+                $label = $match[1];
+              }
+                  
+            }
+            $this->select_options['trip'] .= "<option class='".$class."' value='".$row['id']."'";
             if($this->trip == $row['id'])
-                $this->select_options .= " selected ";
-            $this->select_options .= ">".$row['post_title']."</option>\n";
+                $this->select_options['trip'] .= " selected ";
+            $this->select_options['trip'] .= ">".$label."</option>\n";
         }
         # Clean up
         $result->free();
+        $this->select_options['destinations'] = '<option value="">Select a destination</option>';
+        foreach($this->destinations as $destination){
+          $this->select_options['destinations'].= '<option value="'.$destination.'" class="'.$destination.'">'.$destination.'</option>';
+        }
     }
     private function find_orders(){
         # Conditional SQL for checkboxes on form
