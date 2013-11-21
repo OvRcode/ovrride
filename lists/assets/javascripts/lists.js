@@ -61,9 +61,12 @@ function tableToForm(){
   document.getElementById("js_save").submit();
 }
 
-// tablesorter configuration
-// http://mottie.github.io/tablesorter/docs/#Configuration
+
 $(function(){
+  // Chained drop downs
+  $("#trip").chained("#destination");
+  // tablesorter configuration
+  // http://mottie.github.io/tablesorter/docs/#Configuration
   $('#Listable').tablesorter({
     sortList: [[4,0],[3,0]],
     headers: {
