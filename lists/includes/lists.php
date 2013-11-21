@@ -142,8 +142,10 @@ class Trip_List{
                 FROM  `wp_posts` 
                 WHERE  `post_status` =  'publish'
                 AND  `post_type` =  'product'
-                AND  `post_title` NOT LIKE  'High Five%'
-                AND  `post_title` NOT LIKE  'Gift%'
+                AND  `post_title` NOT LIKE  '%High Five%'
+                AND  `post_title` NOT LIKE  '%Gift%'
+                AND   `post_title` NOT LIKE '%Beanie%'
+                
                 ORDER BY  `post_title`";
         $result = $this->db_query($sql);
 
