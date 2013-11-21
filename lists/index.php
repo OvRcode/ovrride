@@ -91,12 +91,16 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
     <div class="container">
       <section class="trip-select">
-          <label>Select a Trip:</label>
-          <br>
-
+          <label>Select a Destination:</label>
+            <select class="form-control input-sm" id="destination" name="destination">
+              <?php echo $list->select_options['destinations']?>
+            </select>
+        </label>
+        <label>Select a Trip:
           <select class="form-control input-sm" id="trip" name="trip" id="trip">
-          <?php echo $list->select_options; ?>
+          <?php echo $list->select_options['trip']; ?>
           </select>
+        </label>
       </section>
       <br>
 
