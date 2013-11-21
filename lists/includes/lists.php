@@ -178,7 +178,10 @@ class Trip_List{
         $result->free();
         $this->select_options['destinations'] = '<option value="">Select a destination</option>';
         foreach($this->destinations as $destination){
-          $this->select_options['destinations'].= '<option value="'.$destination.'" class="'.$destination.'">'.$destination.'</option>';
+          $this->select_options['destinations'].= '<option value="'.$destination.'" class="'.$destination.'"';
+          if(isset($_SESSION['post_data']['destination']) && $_SESSION['post_data']['destination'] ==  $destination)
+              $this->select_options['destinations'] .= ' selected';
+          $this->select_options['destinations'].='>'.$destination.'</option>';
         }
     }
     private function find_orders(){
