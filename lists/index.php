@@ -90,6 +90,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
     </nav>
 
     <div class="container">
+      <div class="col-md-5">
       <section class="trip-select">
           <label>Select a Destination:</label>
             <select class="form-control input-sm" id="destination" name="destination">
@@ -102,6 +103,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           </select>
         </label>
       </section>
+    </div>
       <br>
 
       <section class="order-status-select input-group">
