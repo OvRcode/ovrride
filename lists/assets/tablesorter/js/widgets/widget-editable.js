@@ -13,15 +13,22 @@
 			editable_columns       : [],
 			editable_enterToAccept : true,
 			editable_autoResort    : false,
-			editable_noEdit        : 'no-edit'
+			editable_noEdit        : 'no-edit',
+			editable_editComplete  : 'editComplete'
 		},
 		init: function(table, thisWidget, c, wo){
 			if (!wo.editable_columns.length) { return; }
-			var cols = [];
+			var $t, cols = [];
 			$.each(wo.editable_columns, function(i, col){
 				cols.push('td:nth-child(' + (col + 1) + ')');
 			});
-			c.$tbodies.find( cols.join(',') ).not('.' + wo.editable_noEdit).prop('contenteditable', true);
+			// IE does not allow making TR/TH/TD cells directly editable (issue #404)
+			// so add a div or span inside ( it's faster than using wrapInner() )
+			c.$tbodies.find( cols.join(',') ).not('.' + wo.editable_noEdit).each(function(){
+				// test for children, if they exist, then make the children editable
+				$t = $(this);
+				( $t.children().length ? $t.children() : $t ).prop('contenteditable', true);
+			});
 			c.$tbodies
 				.on('mouseleave.tseditable', function(){
 					if (c.$table.data('contentFocused')) {
@@ -57,7 +64,9 @@
 						if (t) {
 							c.$table
 								.data('contentFocused', false)
-								.trigger('updateCell', [ $this, wo.editable_autoResort ]);
+								.trigger('updateCell', [ $this.closest('td'), wo.editable_autoResort, function(table){
+									$this.trigger( wo.editable_editComplete );
+								} ]);
 							$this.trigger('blur.tseditable');
 						}
 					}
