@@ -1,4 +1,4 @@
-/*! Filter widget formatter functions - updated 10/10/2013
+/*! Filter widget formatter functions - updated 11/9/2013
  * requires: tableSorter 2.7.7+ and jQuery 1.4.3+
  *
  * uiSpinner (jQuery UI spinner)
@@ -92,7 +92,7 @@ $.tablesorter.filterFormatter = {
 			.val(o.value)
 			.appendTo($cell)
 			.spinner(o)
-			.bind('change keyup', function(e){
+			.bind('change keyup', function(){
 				updateSpinner();
 			});
 
@@ -113,7 +113,7 @@ $.tablesorter.filterFormatter = {
 				.val(o.value)
 				.appendTo($shcell)
 				.spinner(o)
-				.bind('change keyup', function(e){
+				.bind('change keyup', function(){
 					$cell.find('.spinner').val( this.value );
 					updateSpinner();
 				});
@@ -228,7 +228,7 @@ $.tablesorter.filterFormatter = {
 			.val(o.value)
 			.appendTo($shcell)
 			.slider(o)
-			.bind('change keyup', function(e){
+			.bind('change keyup', function(){
 				$cell.find('.slider').val( this.value );
 				updateSlider();
 			});
@@ -337,7 +337,7 @@ $.tablesorter.filterFormatter = {
 			.val(o.value)
 			.appendTo($shcell)
 			.slider(o)
-			.bind('change keyup', function(e){
+			.bind('change keyup', function(){
 				$cell.find('.range').val( this.value );
 				updateUiRange();
 			});
@@ -519,7 +519,7 @@ $.tablesorter.filterFormatter = {
 		var localfrom = o.defaultDate = o.from || o.defaultDate;
 
 		closeFrom = o.onClose = function( selectedDate, ui ) {
-			var from = new Date( selectedDate ).getTime() || '',
+			var from = new Date( $cell.find('.dateFrom').datepicker('getDate') ).getTime() || '',
 				to = new Date( $cell.find('.dateTo').datepicker('getDate') ).getTime() || '',
 				range = from ? ( to ? from + ' - ' + to : '>=' + from ) : (to ? '<=' + to : '');
 			$cell
@@ -542,7 +542,7 @@ $.tablesorter.filterFormatter = {
 		o.defaultDate = o.to || '+7d'; // set to date +7 days from today (if not defined)
 		closeTo = o.onClose = function( selectedDate, ui ) {
 			var from = new Date( $cell.find('.dateFrom').datepicker('getDate') ).getTime() || '',
-				to = new Date( selectedDate ).getTime() || '',
+				to = new Date( $cell.find('.dateTo').datepicker('getDate') ).getTime() || '',
 				range = from ? ( to ? from + ' - ' + to : '>=' + from ) : (to ? '<=' + to : '');
 			$cell
 				.find('.dateRange').val(range)
@@ -608,7 +608,7 @@ $.tablesorter.filterFormatter = {
 		$number = $('<input type="number" style="visibility:hidden;" value="test">').appendTo($cell),
 		// test if HTML5 number is supported - from Modernizr
 		numberSupported = o.skipTest || $number.attr('type') === 'number' && $number.val() !== 'test',
-		t, l, $shcell = [],
+		l, $shcell = [],
 		c = $cell.closest('table')[0].config,
 
 		updateCompare = function(v) {
@@ -630,8 +630,7 @@ $.tablesorter.filterFormatter = {
 			var compare = ( $cell.find('.compare').val() || o.compare);
 			$cell.find('input[type=hidden]')
 				// add equal to the beginning, so we filter exact numbers
-				.val( !o.addToggle || chkd ? (o.compare ? o.compare : o.exactMatch ? '=' : '') + v : '' )
-				.val( !o.addToggle || chkd ? compare + v : '' )
+				.val( !o.addToggle || chkd ? (compare ? compare : o.exactMatch ? '=' : '') + v : '' )
 				.trigger('search', delayed ? delayed : o.delayed).end()
 				.find('.number').val(v);
 			if ($cell.find('.number').length) {
@@ -732,7 +731,7 @@ $.tablesorter.filterFormatter = {
 	HTML5 range slider
 	\**********************/
 	html5Range : function($cell, indx, def5Range) {
-		var t, o = $.extend({
+		var o = $.extend({
 			value : 0,
 			min : 0,
 			max : 100,
