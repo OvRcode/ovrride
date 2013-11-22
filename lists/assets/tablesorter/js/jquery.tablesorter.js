@@ -1,5 +1,5 @@
 /**!
-* TableSorter 2.11.1 - Client-side table sorting with ease!
+* TableSorter 2.14.0 - Client-side table sorting with ease!
 * @requires jQuery v1.2.6+
 *
 * Copyright (c) 2007 Christian Bach
@@ -24,7 +24,7 @@
 
 			var ts = this;
 
-			ts.version = "2.11.1";
+			ts.version = "2.14.0";
 
 			ts.parsers = [];
 			ts.widgets = [];
@@ -41,6 +41,7 @@
 
 				// *** functionality
 				cancelSelection  : true,       // prevent text selection in the header
+				tabIndex         : true,       // add tabindex to header for keyboard accessibility
 				dateFormat       : 'mmddyyyy', // other options: "ddmmyyy" or "yyyymmdd"
 				sortMultiSortKey : 'shiftKey', // key used to select additional columns
 				sortResetKey     : 'ctrlKey',  // key used to remove sorting on a column
@@ -54,6 +55,7 @@
 				sortForce        : null,       // column(s) first sorted; always applied
 				sortList         : [],         // Initial sort order; applied initially; updated when manually sorted
 				sortAppend       : null,       // column(s) sorted last; always applied
+				sortStable       : false,      // when sorting two rows with exactly the same content, the original sort order is maintained
 
 				sortInitialOrder : 'asc',      // sort direction on first click
 				sortLocaleCompare: false,      // replace equivalent character (accented characters)
@@ -63,7 +65,8 @@
 				emptyTo          : 'bottom',   // sort empty cell to bottom, top, none, zero
 				stringTo         : 'max',      // sort strings in numerical column as max, min, top, bottom, zero
 				textExtraction   : 'simple',   // text extraction method/function - function(node, table, cellIndex){}
-				textSorter       : null,       // use custom text sorter - function(a,b){ return a.sort(b); } // basic sort
+				textSorter       : null,       // choose overall or specific column sorter function(a, b, direction, table, columnIndex) [alt: ts.sortText]
+				numberSorter     : null,       // choose overall numeric sorter function(a, b, direction, maxColumnValue)
 
 				// *** widget options
 				widgets: [],                   // method to add widgets, e.g. widgets: ['zebra']
@@ -121,7 +124,8 @@
 			};
 
 			/* debuging utils */
-			function log(s) {
+			function log() {
+				var s = arguments.length > 1 ? Array.prototype.slice.call(arguments) : arguments[0];
 				if (typeof console !== "undefined" && typeof console.log !== "undefined") {
 					console.log(s);
 				} else {
@@ -200,9 +204,12 @@
 				var c = table.config,
 					// update table bodies in case we start with an empty table
 					tb = c.$tbodies = c.$table.children('tbody:not(.' + c.cssInfoBlock + ')'),
-					rows, list, l, i, h, ch, p, parsersDebug = "";
+					rows, list, l, i, h, ch, p, time, parsersDebug = "";
 				if ( tb.length === 0) {
 					return c.debug ? log('*Empty table!* Not building a parser cache') : '';
+				} else if (c.debug) {
+					time = new Date();
+					log('Detecting parsers for each column');
 				}
 				rows = tb[0].rows;
 				if (rows[0]) {
@@ -232,6 +239,7 @@
 				}
 				if (c.debug) {
 					log(parsersDebug);
+					benchmark("Completed detecting parsers", time);
 				}
 				c.parsers = list;
 			}
@@ -300,11 +308,12 @@
 			// init flag (true) used by pager plugin to prevent widget application
 			function appendToTable(table, init) {
 				var c = table.config,
-				b = table.tBodies,
-				rows = [],
-				c2 = c.cache,
-				r, n, totalRows, checkCell, $bk, $tb,
-				i, j, k, l, pos, appendTime;
+					wo = c.widgetOptions,
+					b = table.tBodies,
+					rows = [],
+					c2 = c.cache,
+					r, n, totalRows, checkCell, $bk, $tb,
+					i, j, k, l, pos, appendTime;
 				if (isEmptyObject(c2)) { return; } // empty table - fixes #206/#346
 				if (c.debug) {
 					appendTime = new Date();
@@ -321,8 +330,8 @@
 						for (i = 0; i < totalRows; i++) {
 							pos = n[i][checkCell];
 							rows.push(r[pos]);
-							// removeRows used by the pager plugin
-							if (!c.appender || !c.removeRows) {
+							// removeRows used by the pager plugin; don't render if using ajax - fixes #411
+							if (!c.appender || (c.pager && (!c.pager.removeRows || !wo.pager_removeRows) && !c.pager.ajax)) {
 								l = r[pos].length;
 								for (j = 0; j < l; j++) {
 									$tb.append(r[pos][j]);
@@ -339,8 +348,8 @@
 				if (c.debug) {
 					benchmark("Rebuilt table", appendTime);
 				}
-				// apply table widgets
-				if (!init) { ts.applyWidget(table); }
+				// apply table widgets; but not before ajax completes
+				if (!init && !c.appender) { ts.applyWidget(table); }
 				// trigger sortend
 				$(table).trigger("sortEnd", table);
 				$(table).trigger("updateComplete", table);
@@ -388,7 +397,8 @@
 						}
 					}
 				}
-				t.config.columns = cols; // may not be accurate if # header columns !== # tbody columns
+				// may not be accurate if # header columns !== # tbody columns
+				t.config.columns = cols + 1; // add one because it's a zero-based index
 				return lookup;
 			}
 
@@ -405,18 +415,19 @@
 				if (c.debug) {
 					time = new Date();
 				}
-				i = c.cssIcon ? '<i class="' + c.cssIcon + ' ' + ts.css.icon + '"></i>' : ''; // add icon if cssIcon option exists
+				// add icon if cssIcon option exists
+				i = c.cssIcon ? '<i class="' + ( c.cssIcon === ts.css.icon ? ts.css.icon : c.cssIcon + ' ' + ts.css.icon ) + '"></i>' : '';
 				c.$headers = $(table).find(c.selectorHeaders).each(function(index) {
 					$t = $(this);
 					ch = c.headers[index];
-					c.headerContent[index] = this.innerHTML; // save original header content
+					c.headerContent[index] = $(this).html(); // save original header content
 					// set up header template
-					t = c.headerTemplate.replace(/\{content\}/g, this.innerHTML).replace(/\{icon\}/g, i);
+					t = c.headerTemplate.replace(/\{content\}/g, $(this).html()).replace(/\{icon\}/g, i);
 					if (c.onRenderTemplate) {
 						h = c.onRenderTemplate.apply($t, [index, t]);
 						if (h && typeof h === 'string') { t = h; } // only change t if something is returned
 					}
-					this.innerHTML = '<div class="tablesorter-header-inner">' + t + '</div>'; // faster than wrapInner
+					$(this).html('<div class="tablesorter-header-inner">' + t + '</div>'); // faster than wrapInner
 
 					if (c.onRenderHeader) { c.onRenderHeader.apply($t, [index]); }
 
@@ -434,7 +445,7 @@
 					// add to parent in case there are multiple rows
 					$t.parent().addClass(ts.css.headerRow + ' ' + c.cssHeaderRow);
 					// allow keyboard cursor to focus on element
-					$t.attr("tabindex", 0);
+					if (c.tabIndex) { $t.attr("tabindex", 0); }
 				});
 				// enable/disable sorting
 				updateHeader(table);
@@ -515,7 +526,7 @@
 					// ensure all sortList values are numeric - fixes #127
 					s = [ parseInt(v[0], 10), parseInt(v[1], 10) ];
 					// make sure header exists
-					o = c.headerList[s[0]];
+					o = c.$headers[s[0]];
 					if (o) { // prevents error if sorton array is wrong
 						c.sortList.push(s);
 						t = $.inArray(s[1], o.order); // fixes issue #167
@@ -582,12 +593,13 @@
 					}
 					// the user has clicked on an already sorted column
 					if (ts.isValueInArray(i, c.sortList)) {
-						// reverse the sorting direction for all tables
+						// reverse the sorting direction
 						for (j = 0; j < c.sortList.length; j++) {
 							s = c.sortList[j];
-							o = c.headerList[s[0]];
+							o = c.$headers[s[0]];
 							if (s[0] === i) {
-								s[1] = o.order[o.count];
+								// o.count seems to be incorrect when compared to cell.count
+								s[1] = o.order[cell.count];
 								if (s[1] === 2) {
 									c.sortList.splice(j,1);
 									o.count = -1;
@@ -629,41 +641,70 @@
 
 			// sort multiple columns
 			function multisort(table) { /*jshint loopfunc:true */
-				var dir = 0, tc = table.config,
-				sortList = tc.sortList, l = sortList.length, bl = table.tBodies.length,
-				sortTime, i, k, c, colMax, cache, lc, s, order, orgOrderCol;
-				if (tc.serverSideSorting || isEmptyObject(tc.cache)) { // empty table - fixes #206/#346
+				var i, k, num, col, colMax, cache, lc,
+					order, orgOrderCol, sortTime, sort, x, y,
+					dir = 0,
+					c = table.config,
+					cts = c.textSorter || '',
+					sortList = c.sortList,
+					l = sortList.length,
+					bl = table.tBodies.length;
+				if (c.serverSideSorting || isEmptyObject(c.cache)) { // empty table - fixes #206/#346
 					return;
 				}
-				if (tc.debug) { sortTime = new Date(); }
+				if (c.debug) { sortTime = new Date(); }
 				for (k = 0; k < bl; k++) {
-					colMax = tc.cache[k].colMax;
-					cache = tc.cache[k].normalized;
+					colMax = c.cache[k].colMax;
+					cache = c.cache[k].normalized;
 					lc = cache.length;
 					orgOrderCol = (cache && cache[0]) ? cache[0].length - 1 : 0;
 					cache.sort(function(a, b) {
 						// cache is undefined here in IE, so don't use it!
 						for (i = 0; i < l; i++) {
-							c = sortList[i][0];
+							col = sortList[i][0];
 							order = sortList[i][1];
+							// sort direction, true = asc, false = desc
+							dir = order === 0;
+
+							if (c.sortStable && a[col] === b[col] && l === 1) {
+								return a[orgOrderCol] - b[orgOrderCol];
+							}
+
 							// fallback to natural sort since it is more robust
-							s = /n/i.test(getCachedSortType(tc.parsers, c)) ? "Numeric" : "Text";
-							s += order === 0 ? "" : "Desc";
-							if (/Numeric/.test(s) && tc.strings[c]) {
+							num = /n/i.test(getCachedSortType(c.parsers, col));
+							if (num && c.strings[col]) {
 								// sort strings in numerical columns
-								if (typeof (tc.string[tc.strings[c]]) === 'boolean') {
-									dir = (order === 0 ? 1 : -1) * (tc.string[tc.strings[c]] ? -1 : 1);
+								if (typeof (c.string[c.strings[col]]) === 'boolean') {
+									num = (dir ? 1 : -1) * (c.string[c.strings[col]] ? -1 : 1);
 								} else {
-									dir = (tc.strings[c]) ? tc.string[tc.strings[c]] || 0 : 0;
+									num = (c.strings[col]) ? c.string[c.strings[col]] || 0 : 0;
+								}
+								// fall back to built-in numeric sort
+								// var sort = $.tablesorter["sort" + s](table, a[c], b[c], c, colMax[c], dir);
+								sort = c.numberSorter ? c.numberSorter(x[col], y[col], dir, colMax[col], table) :
+									ts[ 'sortNumeric' + (dir ? 'Asc' : 'Desc') ](a[col], b[col], num, colMax[col], col, table);
+							} else {
+								// set a & b depending on sort direction
+								x = dir ? a : b;
+								y = dir ? b : a;
+								// text sort function
+								if (typeof(cts) === 'function') {
+									// custom OVERALL text sorter
+									sort = cts(x[col], y[col], dir, col, table);
+								} else if (typeof(cts) === 'object' && cts.hasOwnProperty(col)) {
+									// custom text sorter for a SPECIFIC COLUMN
+									sort = cts[col](x[col], y[col], dir, col, table);
+								} else {
+									// fall back to natural sort
+									sort = ts[ 'sortNatural' + (dir ? 'Asc' : 'Desc') ](a[col], b[col], col, table, c);
 								}
 							}
-							var sort = $.tablesorter["sort" + s](table, a[c], b[c], c, colMax[c], dir);
 							if (sort) { return sort; }
 						}
 						return a[orgOrderCol] - b[orgOrderCol];
 					});
 				}
-				if (tc.debug) { benchmark("Sorting on " + sortList.toString() + " and dir " + order + " time", sortTime); }
+				if (c.debug) { benchmark("Sorting on " + sortList.toString() + " and dir " + order + " time", sortTime); }
 			}
 
 			function resortComplete($table, callback){
@@ -1030,23 +1071,18 @@
 			};
 
 			// Natural sort - https://github.com/overset/javascript-natural-sort (date sorting removed)
-			ts.sortText = function(table, a, b, col) {
+			ts.sortNatural = function(a, b) {
 				if (a === b) { return 0; }
-				var c = table.config, e = c.string[ (c.empties[col] || c.emptyTo ) ],
-					r = ts.regex, xN, xD, yN, yD, xF, yF, i, mx;
-				// sorting empty cells
-				if (a === '' && e !== 0) { return typeof e === 'boolean' ? (e ? -1 : 1) : -e || -1; }
-				if (b === '' && e !== 0) { return typeof e === 'boolean' ? (e ? 1 : -1) : e || 1; }
-				// custom sorter
-				if (typeof c.textSorter === 'function') { return c.textSorter(a, b, table, col); }
-				// numeric or hex detection
-				yD = parseInt(b.match(r.hex), 16);
+				var xN, xD, yN, yD, xF, yF, i, mx,
+					r = ts.regex;
 				// first try and sort Hex codes
-				if (yD) {
+				if (r.hex.test(b)) {
 					xD = parseInt(a.match(r.hex), 16);
+					yD = parseInt(b.match(r.hex), 16);
 					if ( xD < yD ) { return -1; }
 					if ( xD > yD ) { return 1; }
 				}
+
 				// chunk/tokenize
 				xN = a.replace(r.chunk, '\\0$1\\0').replace(/\\0$/, '').replace(/^\\0/, '').split('\\0');
 				yN = b.replace(r.chunk, '\\0$1\\0').replace(/\\0$/, '').replace(/^\\0/, '').split('\\0');
@@ -1069,48 +1105,66 @@
 				return 0;
 			};
 
-			ts.sortTextDesc = function(table, a, b, col) {
+			ts.sortNaturalAsc = function(a, b, col, table, c) {
 				if (a === b) { return 0; }
-				var c = table.config, e = c.string[ (c.empties[col] || c.emptyTo ) ];
+				var e = c.string[ (c.empties[col] || c.emptyTo ) ];
+				if (a === '' && e !== 0) { return typeof e === 'boolean' ? (e ? -1 : 1) : -e || -1; }
+				if (b === '' && e !== 0) { return typeof e === 'boolean' ? (e ? 1 : -1) : e || 1; }
+				return ts.sortNatural(a, b);
+			};
+
+			ts.sortNaturalDesc = function(a, b, col, table, c) {
+				if (a === b) { return 0; }
+				var e = c.string[ (c.empties[col] || c.emptyTo ) ];
 				if (a === '' && e !== 0) { return typeof e === 'boolean' ? (e ? -1 : 1) : e || 1; }
 				if (b === '' && e !== 0) { return typeof e === 'boolean' ? (e ? 1 : -1) : -e || -1; }
-				if (typeof c.textSorter === 'function') { return c.textSorter(b, a, table, col); }
-				return ts.sortText(table, b, a);
+				return ts.sortNatural(b, a);
+			};
+
+			// basic alphabetical sort
+			ts.sortText = function(a, b) {
+				return a > b ? 1 : (a < b ? -1 : 0);
 			};
 
 			// return text string value by adding up ascii value
 			// so the text is somewhat sorted when using a digital sort
 			// this is NOT an alphanumeric sort
-			ts.getTextValue = function(a, mx, d) {
+			ts.getTextValue = function(a, num, mx) {
 				if (mx) {
 					// make sure the text value is greater than the max numerical value (mx)
-					var i, l = a ? a.length : 0, n = mx + d;
+					var i, l = a ? a.length : 0, n = mx + num;
 					for (i = 0; i < l; i++) {
 						n += a.charCodeAt(i);
 					}
-					return d * n;
+					return num * n;
 				}
 				return 0;
 			};
 
-			ts.sortNumeric = function(table, a, b, col, mx, d) {
+			ts.sortNumericAsc = function(a, b, num, mx, col, table) {
 				if (a === b) { return 0; }
-				var c = table.config, e = c.string[ (c.empties[col] || c.emptyTo ) ];
+				var c = table.config,
+					e = c.string[ (c.empties[col] || c.emptyTo ) ];
 				if (a === '' && e !== 0) { return typeof e === 'boolean' ? (e ? -1 : 1) : -e || -1; }
 				if (b === '' && e !== 0) { return typeof e === 'boolean' ? (e ? 1 : -1) : e || 1; }
-				if (isNaN(a)) { a = ts.getTextValue(a, mx, d); }
-				if (isNaN(b)) { b = ts.getTextValue(b, mx, d); }
+				if (isNaN(a)) { a = ts.getTextValue(a, num, mx); }
+				if (isNaN(b)) { b = ts.getTextValue(b, num, mx); }
 				return a - b;
 			};
 
-			ts.sortNumericDesc = function(table, a, b, col, mx, d) {
+			ts.sortNumericDesc = function(a, b, num, mx, col, table) {
 				if (a === b) { return 0; }
-				var c = table.config, e = c.string[ (c.empties[col] || c.emptyTo ) ];
+				var c = table.config,
+					e = c.string[ (c.empties[col] || c.emptyTo ) ];
 				if (a === '' && e !== 0) { return typeof e === 'boolean' ? (e ? -1 : 1) : e || 1; }
 				if (b === '' && e !== 0) { return typeof e === 'boolean' ? (e ? 1 : -1) : -e || -1; }
-				if (isNaN(a)) { a = ts.getTextValue(a, mx, d); }
-				if (isNaN(b)) { b = ts.getTextValue(b, mx, d); }
+				if (isNaN(a)) { a = ts.getTextValue(a, num, mx); }
+				if (isNaN(b)) { b = ts.getTextValue(b, num, mx); }
 				return b - a;
+			};
+
+			ts.sortNumeric = function(a, b) {
+				return a - b;
 			};
 
 			// used when replacing accented characters during sorting
@@ -1204,7 +1258,7 @@
 				var c = table.config,
 					wo = c.widgetOptions,
 					widgets = [],
-					time, i, w, wd;
+					time, w, wd;
 				if (c.debug) { time = new Date(); }
 				if (c.widgets.length) {
 					// ensure unique widget ids
@@ -1307,7 +1361,7 @@
 				}
 				if(/^\s*\([.\d]+\)/.test(s)) {
 					// make (#) into a negative number -> (10) = -10
-					s = s.replace(/^\s*\(/,'-').replace(/\)/,'');
+					s = s.replace(/^\s*\(([.\d]+)\)/, '-$1');
 				}
 				i = parseFloat(s);
 				// return the text instead of zero
@@ -1499,7 +1553,7 @@
 				l = $tb.children('tr').length;
 				if (l > 1) {
 					row = 0;
-					$tv = $tb.children('tr:visible');
+					$tv = $tb.children('tr:visible').not(c.selectorRemove);
 					// revered back to using jQuery each - strangely it's the fastest method
 					/*jshint loopfunc:true */
 					$tv.each(function(){
