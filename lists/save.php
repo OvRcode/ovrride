@@ -11,7 +11,7 @@ foreach($_POST as $field => $value){
     $exploded = explode(':',$field);
     $id = $exploded[0].":".$exploded[1];
     $label = end($exploded);
-    $table_data[$id][$label]=$value;
+    $table_data[$id][$label]= trim($value);
 }
 # Add to db
 foreach($table_data as $id => $data){
