@@ -142,7 +142,7 @@ class Trip_List{
         # Find trips for the Select a Trip drop down
         $sql = "SELECT  `id` ,  `post_title`
                 FROM  `wp_posts` 
-                WHERE  `post_status` =  'publish'
+                WHERE  (`post_status` =  'publish' OR (`post_status` = 'draft' AND `comment_status` = 'closed'))
                 AND  `post_type` =  'product'
                 AND  `post_title` NOT LIKE  '%High Five%'
                 AND  `post_title` NOT LIKE  '%Gift%'
