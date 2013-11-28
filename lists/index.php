@@ -90,14 +90,20 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
     </nav>
 
     <div class="container">
+      <div class="col-md-5">
       <section class="trip-select">
-          <label>Select a Trip:</label>
-          <br>
-
+          <label>Select a Destination:</label>
+            <select class="form-control input-sm" id="destination" name="destination">
+              <?php echo $list->select_options['destinations']?>
+            </select>
+        </label>
+        <label>Select a Trip:
           <select class="form-control input-sm" id="trip" name="trip" id="trip">
-          <?php echo $list->select_options; ?>
+          <?php echo $list->select_options['trip']; ?>
           </select>
+        </label>
       </section>
+    </div>
       <br>
 
       <section class="order-status-select input-group">
@@ -110,6 +116,9 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           </label>
           <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php checkbox_helper("pending");?>>Pending</input>
+          </label>
+          <label class="checkbox order-checkbox">
+            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" <?php checkbox_helper("walk-on");?>>Walk On</input>
           </label>
           <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php checkbox_helper("cancelled");?>>Cancelled</input>

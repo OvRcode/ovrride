@@ -51,10 +51,10 @@
 
 <div id="wrapper" class="hfeed site">
 
-	<div id="headercontainer">
+  <div id="headercontainer">
 
-		<header id="masthead" class="site-header row clearfix" role="banner">
-			<div class="col grid_3_of_12 site-title">
+    <header id="masthead" class="site-header row clearfix" role="banner">
+      <div class="col grid_2_of_12 site-title">
 				<h1>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" rel="home">
 						<?php 
@@ -67,9 +67,9 @@
 						} ?>
 					</a>
 				</h1>
-			</div> <!-- /.col.grid_5_of_12 -->
+			</div> <!-- /.col.grid_2_of_12 -->
 
-      <div class="col grid_9_of_12">
+      <div class="col grid_10_of_12">
         <div class="social-media-icons">
           <ul style="margin-top:5px;" id="topnav">
             <li class="ovr_soc_icon">
@@ -109,5 +109,5 @@
 		</header> <!-- /#masthead.site-header.row -->
 
 	</div> <!-- /#headercontainer -->
-	
+
 	<div id="maincontentcontainer">
