@@ -61,9 +61,12 @@ function tableToForm(){
   document.getElementById("js_save").submit();
 }
 
-// tablesorter configuration
-// http://mottie.github.io/tablesorter/docs/#Configuration
+
 $(function(){
+  // Chained drop downs
+  $("#trip").chained("#destination");
+  // tablesorter configuration
+  // http://mottie.github.io/tablesorter/docs/#Configuration
   $('#Listable').tablesorter({
     sortList: [[4,0],[3,0]],
     headers: {
@@ -99,7 +102,6 @@ $(function(){
       }
     }
   });
-  $( "input.tablesorter-filter.disabled" ).remove(); // strip disabled inputs from tablesorter filter
   $('#add').click(function(){
     // Find total cell and increment
     var cell = document.getElementById('total_guests');
