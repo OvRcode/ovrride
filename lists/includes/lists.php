@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.7";
+$lists_version = "0.6.8";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -426,18 +426,20 @@ EOT2;
         return array("First" => $first, "Last" => $last); 
     }
     private function reformat_phone($phone){
+        
         # Strip all formatting
         $phone = str_replace('-','',$phone);
         $phone = str_replace('(','',$phone);
         $phone = str_replace(')','',$phone);
         $phone = str_replace(' ','',$phone);
         $phone = str_replace('.','',$phone);
-
+        if(strlen($phone) == 11)
+            $phone = substr($phone,1,10);
         # Add formatting to raw phone num
         $phone = substr_replace($phone,'(',0,0);
         $phone = substr_replace($phone,') ',4,0);
         $phone = substr_replace($phone,'-',9,0);
-
+        
         return $phone;
     }
     private function strip_time($pickup){
