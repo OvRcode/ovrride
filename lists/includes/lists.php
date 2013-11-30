@@ -101,52 +101,42 @@ class Trip_List{
         fputcsv($f,$labels,',');
         foreach($this->order_data as $order => $array){
             foreach($array as $order_item_id => $field){
-                if($type == "trip_list"){
-                    if($this->has_pickup){
-                        $array = array(($field['AM'] == "checked" ? "X":""),
-                                        ($field['PM'] == "checked" ? "X":""),
-                                        $field['First'],
-                                        $field['Last'],
-                                        $field['Pickup Location'], 
-                                        $field['Phone'], 
-                                        $field['Package'], 
-                                        $order,
-                                        ($field['Waiver'] == "checked" ? "X":""),
-                                        ($field['Product'] == "checked" ? "X":""),
-                                        ($field['Bus'] == "checked" ? "X":""), 
-                                        ($field['All_Area'] == "checked" ? "X":""),
-                                        ($field['Beg'] == "checked" ? "X":""), 
-                                        ($field['SKI'] == "checked" ? "X":""),
-                                        ($field['LTS'] == "checked" ? "X":""), 
-                                        ($field['LTR'] == "checked" ? "X":""),
-                                        ($field['Prog_Lesson'] == "checked" ? "X":""));
-                    }
-                    else{
-                      $array = array(($field['AM'] == "checked" ? "X":""),
-                                      ($field['PM'] == "checked" ? "X":""),
-                                      $field['First'],$field['Last'],
-                                      $field['Phone'], $field['Package'], 
-                                      $order, 
-                                      ($field['Waiver'] == "checked" ? "X":""),
-                                      ($field['Product'] == "checked" ? "X":""), 
-                                      ($field['Bus'] == "checked" ? "X":""),
-                                      ($field['All_Area'] == "checked" ? "X":""), 
-                                      ($field['Beg'] == "checked" ? "X":""),
-                                      ($field['SKI'] == "checked" ? "X":""), 
-                                      ($field['LTS'] == "checked" ? "X":""),
-                                      ($field['LTR'] == "checked" ? "X":""), 
-                                      ($field['Prog_Lesson'] == "checked" ? "X":""));
-                    }
-                }
-                elseif($type == "email_list"){
-                  if(isset($field['Email']))
-                      $email = $field['Email'];
+                $data = array();
+                foreach($labels as $label){
+                  if($label == "Order")
+                      $value = $order;
+                  elseif($label == "Phone")
+                      $value = $field[$label];
+                  elseif($label == "First" || $label == "Last" || $label == "Package" || $label == "Order")
+                    $value = $field[$label];
+                  elseif($label == "Pickup")
+                    $value = $field['Pickup Location'];
+                  elseif($label == "Email"){
+                    if(isset($field['Email']))
+                        $value = $field['Email'];
+                    else
+                        $value = "No Email";
+                  }
+                  elseif($label == "Product REC.")
+                      $value = ($field['Product'] == "checked" ? "X":"");
+                  elseif($label == "Bus Only")
+                      $value = ($field['Bus'] == "checked" ? "X":"");
+                  elseif($label == "All Area Lift")
+                      $value = ($field['All_Area'] == "checked" ? "X":"");
+                  elseif($label == "Beg. Lift")
+                      $value = ($field['Beg'] == "checked" ? "X":"");
+                  elseif($label == "BRD Rental")
+                      $value = ($field['BRD'] == "checked" ? "X":"");
+                  elseif($label == "Ski Rental")
+                      $value = ($field['SKI'] == "checked" ? "X":"");
+                  elseif($label == "Prog. Lesson")
+                      $value = ($field['Prog_Lesson'] == "checked" ? "X":"");
                   else
-                      $email = "No Email";
-                      
-                  $array = array($email,$field['First'],$field['Last'],$field['Package'],$field['Pickup Location']);
+                      $value = ($field[$label] == "checked" ? "X":"");
+                  
+                  array_push($data, $value);
                 }
-                fputcsv($f,$array,',');
+                fputcsv($f,$data,',');
             }
         }
 
