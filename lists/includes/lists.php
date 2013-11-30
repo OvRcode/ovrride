@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.3";
+$lists_version = "0.6.5";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -60,13 +60,11 @@ class Trip_List{
         $this->trip_options();
         if($selected_trip != "none"){
             $this->find_orders();
-            if(count($this->orders) > 0){
+            if(count($this->orders) > 0 || count($this->order_data) > 0){
                 $this->get_order_data();
-                if(isset($_SESSION['post_data']['walk-on']))
-                  $this->get_saved_data();
                 $this->generate_table();
               }
-              else{ $this->html_table = "<div class='container'>
+            else{ $this->html_table = "<div class='container'>
                   <p>
                   There are no orders for the selected Trip and Order Status.
                   </p>
@@ -187,13 +185,15 @@ class Trip_List{
     private function find_orders(){
         # Conditional SQL for checkboxes on form
         $sql_conditional = "";
-        $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded");
+        $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded","walk-on");
         foreach($checkboxes as $field){
           if(isset($_SESSION['post_data'][$field])){
-            if($sql_conditional == "")
-              $sql_conditional .= "`wp_terms`.`name` = '$field'";
-            else
-              $sql_conditional .= " OR `wp_terms`.`name` = '$field'";
+              if($field == "walk-on")
+                  $this->get_saved_data();
+              elseif($sql_conditional == "")
+                  $sql_conditional .= "`wp_terms`.`name` = '$field'";
+              else
+                  $sql_conditional .= " OR `wp_terms`.`name` = '$field'";
           }
         }
 
@@ -208,19 +208,18 @@ class Trip_List{
             AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
             AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$this->trip'
             AND ($sql_conditional)";
-        if($sql_conditional === "")
-          $sql = substr($sql, 0, -6);
-
-        $result = $this->db_query($sql);
-        $this->orders = array();
-        while($row = $result->fetch_assoc()){
-            $this->orders[$row['ID']][$row['order_item_id']] = $row['name'];
+        if($sql_conditional != ""){
+            $result = $this->db_query($sql);
+            $this->orders = array();
+            while($row = $result->fetch_assoc()){
+                $this->orders[$row['ID']][$row['order_item_id']] = $row['name'];
+            }
+            $result->free();
         }
-
-        $result->free();
     }
     private function get_order_data(){
-        foreach($this->orders as $order => $data){
+      
+        foreach((array)$this->orders as $order => $data){
             # Get phone number
             $sql = "SELECT  `meta_value` AS  `Phone`
                     FROM wp_postmeta
@@ -298,12 +297,17 @@ class Trip_List{
                 WHERE  `Trip` =  '$this->trip'";
         $result = $this->db_query($sql);
         while($row = $result->fetch_assoc()){
+            
             $exploded_id = explode(":",$row['ID']);
             $order = $exploded_id[0];
             $order_item_id = $exploded_id[1];
             $this->order_data[$order][$order_item_id]['First'] = ucwords(strtolower(trim($row['First'])));
             $this->order_data[$order][$order_item_id]['Last'] = ucwords(strtolower(trim($row['Last'])));
             $this->order_data[$order][$order_item_id]['Pickup Location'] = ucwords(strtolower(trim($row['Pickup'])));
+            if($this->order_data[$order][$order_item_id]['Pickup Location'] != "")
+              $this->has_pickup = TRUE;
+            else
+              $this->has_pickup = FALSE;
             $this->order_data[$order][$order_item_id]['Phone'] = $this->reformat_phone($row['Phone']);
             $this->order_data[$order][$order_item_id]['Package'] = ucwords(strtolower(trim($row['Package'])));
             $this->get_checkbox_states($order,$order_item_id);
