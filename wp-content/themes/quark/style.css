@@ -481,19 +481,83 @@ div.kjo-link p{
 /* ==========================================================================
    Chapmans page styles
    ========================================================================== */
-   
+
+.ui-tabs-panel {
+        padding: .8em .4em !important;
+}
+
+.tab-spacer {
+        float:left;
+        height:5px;
+        width:100%;
+}
+
+.tab-txt {
+        margin-bottom:5px;
+}
+
+.tab-rates {
+        width:540px;
+        float:left;
+}
+
+.tab-bus {
+        width:540px;
+        float:left;
+}
+
+.tab-stop-box {
+        margin:0px 0px 20px 0px;
+        float: left;
+}
+
+.tab-box-l {
+        width: 400px;
+        float: left;
+}
+
+.tab-box-r {
+        width: 60px;
+        float: left;
+}
+
+.tab-box-l-2 {
+        width: 260px;
+        float: left;
+        margin-right:10px;
+}
+
+.tab-box-r-2 {
+        width: 260px;
+        float: left;
+}
+
+.tab-bold {
+        color:#6f1a32;
+        font-size:14px;
+        font-weight:bold;
+        margin-bottom:3px;
+}
+
+.widget_FacebookLikeBox {
+        margin-top:40px;
+}
+
 .seats-left p {
-	margin: 0px;
-	color: #00BCE7;
-	font-size: 17px;
+  margin: 0px;
+  color: #00BCE7;
+  font-size: 17px;
 }
+
 .seats-left a {
-	color: #01bce7;
-	font-weight: bold;
+  color: #01bce7;
+  font-weight: bold;
 }
+
 .minitweets {
-	width:100%;
+  width:100%;
 }
+
 blockquote cite:before {
 	content: "\2014 ";
 }
@@ -537,7 +601,6 @@ table.fullcalendar tbody td li {
 .widget .em-calnav {
 	color:#333;
 }
-
 
 blockquote cite {
 	font-family: 'PT Sans', Helvetica, Arial, sans-serif;
