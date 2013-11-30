@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.5";
+$lists_version = "0.6.7";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -75,55 +75,68 @@ class Trip_List{
     function csv($type) {
         $sql = "SELECT `post_title` FROM `wp_posts`
                 WHERE `ID` = '$this->trip'
-                AND `post_status` = 'publish'
-                AND `post_type` = 'product'
-                ORDER BY `post_title`";
+                AND (`post_status` =  'publish' OR (`post_status` = 'draft' AND `comment_status` = 'closed'))
+                AND `post_type` = 'product'";
         $result = $this->db_query($sql);
         $name = $result->fetch_assoc();
         $filename = $name['post_title'];
         if($type == "email_list")
-        $filename .= "_EMAIL";
+            $filename .= "_EMAIL";
+        $filename .= ".csv";
 
         header("Content-type: text/csv");  
         header("Cache-Control: no-store, no-cache");  
-        header("Content-Disposition: attachment; filename={$filename}.csv");
+        header("Content-Disposition: attachment; filename=".$filename);
         $f = fopen('php://output', 'w');
         # start CSV with column labels
         if($type == "trip_list"){
-            if($this->has_pickup)
-                $labels = array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
-            else
-                $labels = array("AM","PM","First","Last","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
+            $labels = array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
         }
         elseif($type == "email_list"){
-          $labels = array("Email", "First","Last");
+            $labels = array("Email", "First","Last","Package","Pickup");
         }
+        if(!$this->has_pickup)
+          unset($labels["Pickup"]);
+        
         fputcsv($f,$labels,',');
         foreach($this->order_data as $order => $array){
             foreach($array as $order_item_id => $field){
-                if($type == "trip_list"){
-                    if($this->has_pickup){
-                        $array = array(($field['AM'] == "checked" ? "X":""),($field['PM'] == "checked" ? "X":""),$field['First'],$field['Last'],
-                                        $field['Pickup Location'], $field['Phone'], $field['Package'], $order,
-                                        ($field['Waiver'] == "checked" ? "X":""),($field['Product'] == "checked" ? "X":""),
-                                        ($field['Bus'] == "checked" ? "X":""), ($field['All_Area'] == "checked" ? "X":""),
-                                        ($field['Beg'] == "checked" ? "X":""), ($field['SKI'] == "checked" ? "X":""),
-                                        ($field['LTS'] == "checked" ? "X":""), ($field['LTR'] == "checked" ? "X":""),
-                                        ($field['Prog_Lesson'] == "checked" ? "X":""));
-                    }
-                    else{
-                      $array = array(($field['AM'] == "checked" ? "X":""),($field['PM'] == "checked" ? "X":""),$field['First'],$field['Last'],
-                                      $field['Phone'], $field['Package'], $order, ($field['Waiver'] == "checked" ? "X":""),
-                                      ($field['Product'] == "checked" ? "X":""), ($field['Bus'] == "checked" ? "X":""),
-                                      ($field['All_Area'] == "checked" ? "X":""), ($field['Beg'] == "checked" ? "X":""),
-                                      ($field['SKI'] == "checked" ? "X":""), ($field['LTS'] == "checked" ? "X":""),
-                                      ($field['LTR'] == "checked" ? "X":""), ($field['Prog_Lesson'] == "checked" ? "X":""));
-                    }
+                $data = array();
+                foreach($labels as $label){
+                  if($label == "Order")
+                      $value = $order;
+                  elseif($label == "Phone")
+                      $value = $field[$label];
+                  elseif($label == "First" || $label == "Last" || $label == "Package" || $label == "Order")
+                    $value = $field[$label];
+                  elseif($label == "Pickup")
+                    $value = $field['Pickup Location'];
+                  elseif($label == "Email"){
+                    if(isset($field['Email']))
+                        $value = $field['Email'];
+                    else
+                        $value = "No Email";
+                  }
+                  elseif($label == "Product REC.")
+                      $value = ($field['Product'] == "checked" ? "X":"");
+                  elseif($label == "Bus Only")
+                      $value = ($field['Bus'] == "checked" ? "X":"");
+                  elseif($label == "All Area Lift")
+                      $value = ($field['All_Area'] == "checked" ? "X":"");
+                  elseif($label == "Beg. Lift")
+                      $value = ($field['Beg'] == "checked" ? "X":"");
+                  elseif($label == "BRD Rental")
+                      $value = ($field['BRD'] == "checked" ? "X":"");
+                  elseif($label == "Ski Rental")
+                      $value = ($field['SKI'] == "checked" ? "X":"");
+                  elseif($label == "Prog. Lesson")
+                      $value = ($field['Prog_Lesson'] == "checked" ? "X":"");
+                  else
+                      $value = ($field[$label] == "checked" ? "X":"");
+                  
+                  array_push($data, $value);
                 }
-                elseif($type == "email_list"){
-                  $array = array($field['Email'],$field['First'],$field['Last']);
-                }
-                fputcsv($f,$array,',');
+                fputcsv($f,$data,',');
             }
         }
 
