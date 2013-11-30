@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.3";
+$lists_version = "0.6.5";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
