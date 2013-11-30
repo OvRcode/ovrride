@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.6";
+$lists_version = "0.6.7";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -75,18 +75,18 @@ class Trip_List{
     function csv($type) {
         $sql = "SELECT `post_title` FROM `wp_posts`
                 WHERE `ID` = '$this->trip'
-                AND `post_status` = 'publish'
-                AND `post_type` = 'product'
-                ORDER BY `post_title`";
+                AND (`post_status` =  'publish' OR (`post_status` = 'draft' AND `comment_status` = 'closed'))
+                AND `post_type` = 'product'";
         $result = $this->db_query($sql);
         $name = $result->fetch_assoc();
         $filename = $name['post_title'];
         if($type == "email_list")
-        $filename .= "_EMAIL";
+            $filename .= "_EMAIL";
+        $filename .= ".csv";
 
         header("Content-type: text/csv");  
         header("Cache-Control: no-store, no-cache");  
-        header("Content-Disposition: attachment; filename={$filename}.csv");
+        header("Content-Disposition: attachment; filename=".$filename);
         $f = fopen('php://output', 'w');
         # start CSV with column labels
         if($type == "trip_list"){
