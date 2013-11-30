@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.5";
+$lists_version = "0.6.6";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -90,14 +90,14 @@ class Trip_List{
         $f = fopen('php://output', 'w');
         # start CSV with column labels
         if($type == "trip_list"){
-            if($this->has_pickup)
-                $labels = array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
-            else
-                $labels = array("AM","PM","First","Last","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
+            $labels = array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product REC.","Bus Only","All Area Lift","Beg. Lift","BRD Rental","Ski Rental","LTS","LTR","Prog. Lesson");
         }
         elseif($type == "email_list"){
-          $labels = array("Email", "First","Last","Package","Pickup");
+            $labels = array("Email", "First","Last","Package","Pickup");
         }
+        if(!$this->has_pickup)
+          unset($labels["Pickup"]);
+        
         fputcsv($f,$labels,',');
         foreach($this->order_data as $order => $array){
             foreach($array as $order_item_id => $field){
