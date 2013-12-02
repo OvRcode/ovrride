@@ -172,7 +172,7 @@ class Trip_List{
               if($value != "Stratton")
                   $regex = '/'.$value.'\s(.*)/i';
               else
-                $regex = '/Stratturday\S(.*)/i';
+                $regex = '/Stratturday\s(.*)/i';
 
               if(preg_match($regex,$row['post_title'],$match)){
                 $class = $value;
