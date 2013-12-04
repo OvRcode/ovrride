@@ -65,8 +65,28 @@ function tableToForm(){
 $(function(){
   // Chained drop downs
   $("#trip").chained("#destination");
+  
+  //custom column counter
+  $.fn.colCount = function() {
+     var colCount = 0;
+     $('thead:nth-child(1) td', this).each(function () {
+         if ($(this).attr('colspan')) {
+             colCount += +$(this).attr('colspan');
+         } else {
+             colCount++;
+         }
+     });
+     return colCount;
+  };
   // tablesorter configuration
   // http://mottie.github.io/tablesorter/docs/#Configuration
+  var rows = $("#Listable").colCount();
+  var editable = "";
+  // check for pickup column, 18 columns with 17 without
+  if(rows == 18)
+    editable = "2-6";
+  else if (rows == 17)
+    editable = "2-5";
   $('#Listable').tablesorter({
     sortList: [[4,0],[3,0]],
     headers: {
@@ -85,7 +105,7 @@ $(function(){
         },
     widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter'],
     widgetOptions: {
-      editable_columns       : [2,3,4,5,6],  // point to the columns to make editable (zero-based index)
+      editable_columns       : editable,  // point to the columns to make editable (zero-based index)
       editable_enterToAccept : true,     // press enter to accept content, or click outside if false
       editable_autoResort    : false,    // auto resort after the content has changed.
       editable_noEdit        : 'no-edit', // class name of cell that is no editable
