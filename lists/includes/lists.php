@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.6.8";
+$lists_version = "0.6.9";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -54,6 +54,10 @@ class Trip_List{
         $this->db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
         if($this->db_connect->connect_errno > 0){
             die('Unable to connect to database [' . $this->db_connect->connect_error . ']');
+        }
+        else{
+          $this->db_connect->query("SET NAMES utf8");
+          $this->db_connect->query("SET CHARACTER SET utf8");
         }
         $this->destinations = array("Camelback MT","Hunter MT","Japan","Killington","MT Snow","Stowe","Stratton","Sugarbush","Whistler","Windham");
         $this->trip = $selected_trip;

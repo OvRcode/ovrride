@@ -31,9 +31,16 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
     Transfer the directory `public_html` to your home directory  
     `rsync -avz -e ssh ovrridec@ovrride.com:public_html/ ~`
 
-    And there's always the sloooooow way using sftp.
+    And there's always sftp.
 
-**NOTE:** The .htaccess file will cause issues with a local install. Comment out every line outside of the BEGIN and END WordPress comments. Please DO NOT commit your local version of the .htaccess file to the repo.
+
+**NOTES:**
+
+- The .htaccess file may cause issues with a local install. Comment out every line outside of the BEGIN and END WordPress comments. Please DO NOT commit your local version of the .htaccess file to the repo.
+
+- If you'll need to test the Payment Gateway, make sure to (Enable PayPal Sandbox/Test Mode](http://docs.woothemes.com/document/paypal-pro/)
+
+- If your development environment is not setup to use SSL, comment out the 'Force Login page and Admin Dashboard to require SSL' options in wp-config.php. Should be lines 84 and 85.
 
 ### OvR Lists:
 
@@ -45,10 +52,10 @@ Authentication is currently using .htpasswd, This will be changed to utilize [ph
 ### OvR Lists Dependancies:
 
 [Color Me Sass v1.3](http://www.richbray.me/cms/)  
-[Bootstrap Sass v3.0.0](https://github.com/jlong/sass-bootstrap)  
+[Bootstrap Sass v3.0.2](https://github.com/jlong/sass-bootstrap)  
 [Grunt JS v0.4.1](http://gruntjs.com)  
 [jQuery 1.10.2](http://jquery.com)  
-[tablesorter v2.11.1](https://github.com/Mottie/tablesorter)  
+[tablesorter v2.14.0](https://github.com/Mottie/tablesorter)  
 [We are using a customized version php-login.net - 1-minimal version from September 21st 2013](https://github.com/panique/php-login)
 
 Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
