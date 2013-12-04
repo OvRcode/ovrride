@@ -1,6 +1,6 @@
 /*!
  * tablesorter pager plugin
- * updated 11/9/2013
+ * updated 12/2/2013 (v2.14.3)
  */
 /*jshint browser:true, jquery:true, unused:false */
 ;(function($) {
@@ -92,6 +92,7 @@
 			totalPages: 0,
 			filteredRows: 0,
 			filteredPages: 0,
+			ajaxCounter: 0,
 			currentFilters: [],
 			startRow: 0,
 			endRow: 0,
@@ -138,8 +139,12 @@
 					})
 					// {totalPages}, {extra}, {extra:0} (array) or {extra : key} (object)
 					.replace(/\{\w+(\s*:\s*\w+)?\}/gi, function(m){
-						var t = m.replace(/[{}\s]/g,''), a = t.split(':'), d = p.ajaxData;
-						return a.length > 1 && d && d[a[0]] ? d[a[0]][a[1]] : p[t] || (d ? d[t] : '') || '';
+						var str = m.replace(/[{}\s]/g,''),
+							extra = str.split(':'),
+							data = p.ajaxData,
+							// return zero for default page/row numbers
+							deflt = /(rows?|pages?)$/i.test(str) ? 0 : '';
+						return extra.length > 1 && data && data[extra[0]] ? data[extra[0]][extra[1]] : p[str] || (data ? data[str] : deflt) || deflt;
 					});
 				if (out.length) {
 					out[ (out[0].tagName === 'INPUT') ? 'val' : 'html' ](s);
@@ -278,8 +283,8 @@
 						for ( i = 0; i < l; i++ ) {
 							tds += '<tr>';
 							for ( j = 0; j < d[i].length; j++ ) {
-								// build tbody cells
-								tds += '<td>' + d[i][j] + '</td>';
+								// build tbody cells; watch for data containing HTML markup - see #434
+								tds += /^\s*<td/.test(d[i][j]) ? $.trim(d[i][j]) : '<td>' + d[i][j] + '</td>';
 							}
 							tds += '</tr>';
 						}
@@ -340,6 +345,7 @@
 		getAjax = function(table, p){
 			var url = getAjaxUrl(table, p),
 			$doc = $(document),
+			counter,
 			c = table.config;
 			if ( url !== '' ) {
 				if (c.showProcessing) {
@@ -349,8 +355,15 @@
 					renderAjax(null, table, p, xhr, exception);
 					$doc.unbind('ajaxError.pager');
 				});
+
+				counter = ++p.ajaxCounter;
+
 				p.ajaxObject.url = url; // from the ajaxUrl option and modified by customAjaxUrl
 				p.ajaxObject.success = function(data) {
+					// Refuse to process old ajax commands that were overwritten by new ones - see #443
+					if (counter < p.ajaxCounter){
+						return;
+					}
 					renderAjax(data, table, p);
 					$doc.unbind('ajaxError.pager');
 					if (typeof p.oldAjaxSuccess === 'function') {
@@ -585,7 +598,7 @@
 				}
 				p.oldAjaxSuccess = p.oldAjaxSuccess || p.ajaxObject.success;
 				c.appender = $this.appender;
-				if (ts.filter && c.widgets.indexOf('filter') >= 0) {
+				if (ts.filter && $.inArray('filter', c.widgets) >= 0) {
 					// get any default filter settings (data-value attribute) fixes #388
 					p.currentFilters = c.$table.data('lastSearch') || ts.filter.setDefaults(table, c, c.widgetOptions) || [];
 					// set, but don't apply current filters
