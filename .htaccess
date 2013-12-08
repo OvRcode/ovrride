@@ -35,3 +35,6 @@ RewriteRule ^(.*)$ "http\:\/\/ovrride\.com\/$1" [R=301,L]
 # Redirect calendar.ovrride.com to ovrride.com/events
 RewriteCond %{HTTP_HOST} ^calendar\.ovrride\.com
 RewriteRule ^(.*) http://ovrride.com/events/ [L,R=301]
+
+# File type for HTML 5 offline cache
+AddType text/cache-manifest .manifest
