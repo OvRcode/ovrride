@@ -47,11 +47,39 @@ module.exports = function(grunt) {
       },
     },
 
+    // Generate/Update HTML 5 appcache so changes are loaded by browser
+    manifest: {
+      generate: {
+        options: {
+          basePath: "lists/",
+          network: ["save.php","http://*", "https://*"],
+          exclude: ["js/jquery.min.js"],
+          preferOnline: false,
+          timestamp: true
+        },
+        src: [
+          "assets/images/logo.jpg",
+          "assets/images/touch-icon-ipad-retina.png",
+          "assets/images/touch-icon-ipad.png",
+          "assets/images/touch-icon-iphone-retina.png",
+          "assets/images/touch-icon-iphone.png",
+          "assets/javascripts/all.min.js",
+          "assets/stylesheets/all.css",
+          "assets/fonts/glyphicons-halflings-regular.eot",
+          "assets/fonts/glyphicons-halflings-regular.svg",
+          "assets/fonts/glyphicons-halflings-regular.ttf",
+          "assets/fonts/glyphicons-halflings-regular.woff",
+          "includes/lists.php",
+          "includes/config.php"
+        ],
+        dest: "lists/manifest.appcache"
+      },
+    },
     // Simple config to run sass, jshint and uglify any time a js or sass file is added, modified or deleted
     watch: {
       sass: {
         files: ['lists/assets/stylesheets/lists.scss'],
-        tasks: ['sass'],
+        tasks: ['sass','manifest'],
       },
       jshint: {
         files: ['<%= jshint.files %>'],
@@ -59,11 +87,11 @@ module.exports = function(grunt) {
       },
       concat: {
         files : ['<%= concat.dist.src %>'],
-        tasks: ['concat'],
+        tasks: ['concat','manifest'],
       },
       uglify: {
         files: ['lists/assets/javascripts/lists.js'],
-        tasks: ['uglify'],
+        tasks: ['uglify','manifest'],
       },
     },
   });
@@ -74,8 +102,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-manifest');
 
   // Default tasks
-  grunt.registerTask('default', ['jshint', 'concat', 'sass', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'concat', 'sass', 'uglify','manifest']);
 
 };
