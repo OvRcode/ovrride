@@ -25,7 +25,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="manifest.appcache">
   <head>
     <meta charset="utf-8">
     <title>OvR Trip Lists</title>
