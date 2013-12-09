@@ -409,7 +409,13 @@ EOT2;
       $foot = "<tfoot>\n<tr class='totals-row'>
                 <td>Total Guests: </td>
                 <td id='total_guests'>$total_guests</td>
-                <td><button type='button' class='btn btn-primary' id='add'><span class='glyphicon glyphicon-plus'></span></button></td>";
+                <td><button type='button' class='btn btn-primary' id='add'>
+                        <span class='glyphicon glyphicon-plus'></span>
+                    </button>
+                    <button type='button' class='btn btn-danger pull-right' id='remove'>
+                        <span class='glyphicon glyphicon-minus'></span>
+                    </button>
+                </td>";
       if($this->has_pickup){
           $foot .= "<td>Guests by Location:</td>";
           foreach($location_count as $location => $count){

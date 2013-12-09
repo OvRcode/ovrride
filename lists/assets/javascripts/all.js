@@ -12136,11 +12136,39 @@ function tableToForm(){
   document.getElementById("js_save").submit();
 }
 
+// Chained drop downs
+$("#trip").chained("#destination");
+// Dynamically add
+$('#add').click(function(){
+  // Find total cell and increment
+  var cell = document.getElementById('total_guests');
+  total = Number(cell.innerHTML) + 1;
+  cell.innerHTML = total;
 
+  //Generate Walk On order #
+  var itemNum = Math.floor(Math.random()*90000);
+  var order = 'WO'+ Math.floor(Math.random()*90000);
+  var id = order+":"+itemNum;
+  var row = '<tr><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
+  $row = $(row),
+  // resort table using the current sort; set to false to prevent resort, otherwise 
+  // any other value in resort will automatically trigger the table resort. 
+  resort = true;
+  $('#Listable')
+    .find('tbody').append($row)
+    .trigger('addRows', [$row, resort]);
+  return false;
+ });
+
+ $('#remove').click(function(){
+   // TODO: limit this to cells added by the add function above, maybe check first cell name for WO order?
+   $('#Listable tbody tr:last').remove();
+   var total_cell = document.getElementById('total_guests');
+   total = Number(total_cell.innerHTML) - 1;
+   total_cell.innerHTML = total;
+   $('#Listable').trigger("update");
+ });
 $(function(){
-  // Chained drop downs
-  $("#trip").chained("#destination");
-  
   //custom column counter
   $.fn.colCount = function() {
      var colCount = 0;
@@ -12230,24 +12258,4 @@ $(function(){
       }
     }); 
   }
-  $('#add').click(function(){
-    // Find total cell and increment
-    var cell = document.getElementById('total_guests');
-    total = Number(cell.innerHTML) + 1;
-    cell.innerHTML = total;
-
-    //Generate Walk On order #
-    var itemNum = Math.floor(Math.random()*90000);
-    var order = 'WO'+ Math.floor(Math.random()*90000);
-    var id = order+":"+itemNum;
-    var row = '<tr><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
-    $row = $(row),
-    // resort table using the current sort; set to false to prevent resort, otherwise 
-    // any other value in resort will automatically trigger the table resort. 
-    resort = true;
-    $('#Listable')
-      .find('tbody').append($row)
-      .trigger('addRows', [$row, resort]);
-    return false;
-   });
 });
