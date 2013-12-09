@@ -32,11 +32,12 @@ get_header(); ?>
                     $args = array( 'post_type' => 'product', 'order' => 'ASC','posts_per_page' => -1 );   
                     $upcoming_product_loop = new WP_Query( $args );
                 
-                    $trip_dates = [];
-                    $trips_titles = [];
-                    $trip_links = [];
-                    $trip_thumbs = [];
-                    $spots_left = [];
+                    $trip_dates = array();
+                    $trips_titles = array();
+                    $trip_links = array();
+                    $trip_thumbs = array();
+                    $spots_left = array();
+
                 
                     while( $upcoming_product_loop->have_posts() ) : $upcoming_product_loop->the_post();
                         global $post;
@@ -73,15 +74,20 @@ get_header(); ?>
                                 <div class="upcoming-title">
                                     <a href="<?php echo $trip_links[$i]; ?>"><?php echo $trip_titles[$i]; ?></a>
                                 </div>
-                         		
+
                                 <div class="upcoming-info"> 
-                                    <div class="book-this-btn">
-                                        <a class="book-btn-smll" href="<?php echo $trip_links[$i]; ?>">BOOK THIS TRIP</a>
-                                    </div>
+                                    <?php if ( $spots_left[$i] === '0' ): ?>
+                                        <p class="stock out-of-stock">SOLD OUT</p>
+                                    <?php else: ?>
+                                        <div class="book-this-btn">
+                                            <a class="book-btn-smll" href="<?php echo $trip_links[$i]; ?>">BOOK THIS TRIP</a>
+                                        </div>
+                                        
+                                        <div class="seats-left">
+                                           <p><a href="<?php echo $trip_links[$i]; ?>">Space Available <?php echo $spots_left[$i]; ?></a></p>
+                                        </div>
+                                    <?php endif; ?>
                                     
-                                    <div class="seats-left">
-                                       <p><a href="<?php echo $trip_links[$i]; ?>">Space Available <?php echo $spots_left[$i]; ?></a></p>
-                                    </div>
                                 </div>	
                             </div> 
                 

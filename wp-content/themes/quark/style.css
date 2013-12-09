@@ -2570,6 +2570,15 @@ p.srp-widget-date {
 	margin:0px;
 }
 
+.out-of-stock {
+	color: #F00;
+	font-weight: bold;
+	font-size: 1.3em !important;
+	margin: 0px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
 .woocommerce ul.cart_list li a, .woocommerce ul.product_list_widget li a, .woocommerce-page ul.cart_list li a, .woocommerce-page ul.product_list_widget li a {
 	font-weight:normal !important;
 }
