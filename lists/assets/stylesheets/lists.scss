@@ -1,16 +1,19 @@
-/*!
+/*
  *
  * OvR Lists - Custom Sass Styles
  *
  */
+
 @import "bootstrap/bootstrap";
 @import "color-me-sass/color-me-sass";
 
 // BEGIN BOOTSTRAP OVERRIDES
 // -------------------------
-.navbar-inverse{
-  color:white;
+
+.navbar-inverse {
+  color: white;
 }
+
 // END BOOTSTRAP OVERRIDES
 // -------------------------
 
@@ -20,14 +23,16 @@
 
 body {
   // margin: 10px;
-  padding-top: 60px;
+  padding-top:    60px;
   padding-bottom: 50px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left:    20px;
+  margin-right:   20px;
 }
-.totals-row{
-  border-top:solid #000000;
+
+.totals-row {
+  border-top: solid #000000;
 }
+
 .trip-select {
   margin-bottom: 10px;
   width: 75%;
@@ -38,13 +43,15 @@ body {
 }
 
 .generate-list {
-  margin-top: 20px;
+  margin-top:  20px;
   margin-left: 20px;
 }
-.footer-btn{
-  margin-top: 15px;
+
+.footer-btn {
+  margin-top:   15px;
   margin-right: 5px;
 }
+
 // Order Status checkbox: Stack on mobile checkbox-incline on desktop
 @media (min-width: 768px) {
   .order-checkbox {
@@ -72,15 +79,15 @@ label.checkbox.order-checkbox {
 // Pull Navbar right for desktop and left for mobile
 @media (max-width: 767px) {
   .nav-puller {
-  float: left;
+    float: left;
   }
- }
+}
 
 @media (min-width: 768px) {
   .nav-puller {
   float: right;
   }
- }
+}
 
 
 // FOOTER
@@ -88,68 +95,79 @@ label.checkbox.order-checkbox {
 
 .footer-center {
   color: $red;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 // TABLE and TABLESORTER
 // -------------------------
-input.tablesorter-filter.disabled{
-  visibility:hidden;
-  width:10px;
+input.tablesorter-filter.disabled {
+  visibility: hidden;
+  width: 10px;
 }
+
 table {
   color: $grayDark;
 }
-.center-me{
-    text-align: center; /* center checkbox horizontally */
+
+.center-me {
+  text-align: center; /* center checkbox horizontally */
 }
+
 .tablesorter-header {
-  font-weight:bold;
-  background:white;
+  font-weight: bold;
+  background:  white;
 }
 .tablesorter-filter-row td {
   background:white;
 }
+
 // Do not wrap table cells
 td {
-white-space: nowrap;
+  white-space: nowrap;
 }
+
 .tablesorter .header,
 .tablesorter .tablesorter-header {
-	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
-	background-position: center right;
-	background-repeat: no-repeat;
-	cursor: pointer;
-	white-space: nowrap;
-	padding: 4px 20px 4px 4px;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+  background-position: center right;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 4px 20px 4px 4px;
 }
+
 .tablesorter thead .headerSortUp,
 .tablesorter thead .tablesorter-headerSortUp,
 .tablesorter thead .tablesorter-headerAsc {
-	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
-	border-bottom: #000 2px solid;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+  border-bottom: #000 2px solid;
 }
+
 .tablesorter thead .headerSortDown,
 .tablesorter thead .tablesorter-headerSortDown,
 .tablesorter thead .tablesorter-headerDesc {
-	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
-	border-bottom: #000 2px solid;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+  border-bottom: #000 2px solid;
 }
+
 //Editable Table CSS
 .tablesorter tbody > tr > td[contenteditable=true]:focus {
   outline: #08f 1px solid;
   background: #eee;
   resize: none;
 }
+
 // FOOTER
 // -------------------------
-@media (min-width: 768px){
-.login-window {
-  padding-top: 60px;
-  width: 60%;
+
+@media (min-width: 768px) {
+  .login-window {
+    padding-top: 60px;
+    width: 60%;
+  }
 }
-}
-@media (max-width: 767px){
+
+@media (max-width: 767px) {
   .login-window {
     padding-top: 20px;
     width: 100%;
