@@ -3893,7 +3893,7 @@ li span.dots {
 	margin: 1px 0 0 0;
 	margin: .1rem 0 0 0;
 	position: relative;
-	bottom: -45px;
+	bottom: -16px;
 }
 
 .main-navigation h1 {
@@ -3953,7 +3953,7 @@ li span.dots {
 }
 
 .main-navigation ul a {
-	padding: 0px 2px; /* Padding around each top level menu option (if needed) */
+	padding: 0px 0px; /* Padding around each top level menu option (if needed) */
 }
 
 .main-navigation ul ul a {
@@ -4048,6 +4048,7 @@ li span.dots {
    ========================================================================== */
 
 /*  Breakpoints are set based on the design, not based on device sizes */
+
 @media only screen and (max-width: 1183px) {
 	.main-navigation li {
 		margin: 0 0 0 13px;
@@ -4127,7 +4128,7 @@ li span.dots {
 		margin: 0 0 0 .9rem;
 	}
 }
-@media only screen and (max-width: 1101px) {
+@media only screen and (max-width: 1190px) {
 	.main-navigation li {
 		margin: 0 0 0 15px;
 		margin: 0 0 0 0.95rem;
