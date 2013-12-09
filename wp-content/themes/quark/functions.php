@@ -320,7 +320,7 @@ function quark_scripts_styles() {
 	}
 
 	// Enqueue the default WordPress stylesheet
-	wp_enqueue_style( 'style', get_stylesheet_uri(), array(), '1.2.3', 'all' );
+	wp_enqueue_style( 'style', get_stylesheet_uri(), array(), '1.2.4', 'all' );
 
 
 	/**
@@ -899,3 +899,41 @@ add_filter( 'meta_content', 'convert_smilies' );
 add_filter( 'meta_content', 'convert_chars'  );
 add_filter( 'meta_content', 'wpautop' );
 add_filter( 'meta_content', 'shortcode_unautop'  );
+
+
+
+
+/* Filter certain product categories from the /shop/ page */
+
+add_action( 'pre_get_posts', 'product_category_filter_pre_get_posts_query' );
+ 
+function product_category_filter_pre_get_posts_query( $q ) {
+ 
+	if ( ! $q->is_main_query() ) return;
+	if ( ! $q->is_post_type_archive() ) return;
+	
+	if ( ! is_admin() && is_shop() ) {
+ 		
+ 		// Don't display products in the spotify category on the shop page, 
+ 		// Keep adding to this array to add other categories to filter out.
+
+		$dont_show_these_product_categories = array( 
+			'spotify',
+			'gear',
+			'gift-certificate',
+			'hive-five-2'
+
+		 ); 
+
+		$q->set( 'tax_query', array(array(
+			'taxonomy' => 'product_cat',
+			'field' => 'slug',
+			'terms' => $dont_show_these_product_categories, 
+			'operator' => 'NOT IN'
+		)));
+	
+	}
+ 
+	remove_action( 'pre_get_posts', 'product_category_filter_pre_get_posts_query' );
+ 
+}
