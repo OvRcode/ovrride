@@ -330,104 +330,6 @@ class Trip_List{
             $this->get_checkbox_states($order,$order_item_id);
         }
     }
-    private function generate_table(){
-      $total_guests = 0;
-
-      $head = "<table id='Listable' class='tablesorter table table-bordered table-striped table-condensed'>\n
-                 <thead>
-                   <tr class='tablesorter-headerRow'>\n
-                   <td class='filter-false'>AM</td>
-                   <td class='filter-false'>PM</td>
-                   <td>First</td>
-                   <td>Last</td>";
-
-      if($this->has_pickup)
-        $head .= "<td data-placeholder='Choose a Location'>Pickup</td>";
-
-      $head .= "<td>Phone</td>
-                <td data-placeholder='Choose a Package'>Package</td>
-                <td>Order</td>
-                <td class='filter-false'>Waiver</td>
-                <td class='filter-false'>Product REC.</td>
-                <td class='filter-false'>Bus Only</td>";
-
-      $head .= "<td class='filter-false'>All Area Lift</td>
-                <td class='filter-false'>Beg. Lift</td>
-                <td class='filter-false'>BRD Rental</td>
-                <td class='filter-false'>Ski Rental</td>
-                <td class='filter-false'>LTS</td>
-                <td class='filter-false'>LTR</td>
-                <td class='filter-false'>Prog. Lesson</td>\n";
-
-      $head .= "</tr>
-                </thead>\n";
-
-      $body = "<tbody>\n";
-      $location_count = array();
-      foreach($this->order_data as $order => $array){
-          $prefix = substr($order,0,2);
-          foreach($array as $order_item_id => $field){
-              $total_guests += 1;
-              $ID = $order.":".$order_item_id;
-              $body .="<tr>
-                  <td class='center-me'><input type='checkbox' name='{$ID}:AM' {$field['AM']}></td>
-                  <td class='center-me'><input type='checkbox' name='{$ID}:PM' {$field['PM']}></td>";
-                  $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['First']}</td>";
-                  $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Last']}</td>";
-
-              if($this->has_pickup){
-                  $body .= "<td".($prefix != "WO" ? " class='no-edit'" : "").">".$field['Pickup Location']."</td>";
-                  if(isset($location_count[$field['Pickup Location']]))
-                      $location_count[$field['Pickup Location']] += 1;
-                  else
-                      $location_count[$field['Pickup Location']] = 1;
-              }
-
-              $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Phone']}</td>";
-              $body .="<td".($prefix != "WO" ? " class='no-edit'" : "").">{$field['Package']}</td>";
-              if($prefix != "WO")
-                  $body .= "<td><a href='".$this->link($order)."' target='_blank'>$order</a></td>";
-              else
-                  $body .= "<td>$order</td>";
-              $body .= <<< EOT2
-                <td class='center-me'><input type='checkbox' name='{$ID}:Waiver' {$field['Waiver']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:Product' {$field['Product']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:Bus' {$field['Bus']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:All_Area' {$field['All_Area']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:Beg' {$field['Beg']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:BRD' {$field['BRD']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:SKI' {$field['SKI']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:LTS' {$field['LTS']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:LTR' {$field['LTR']}></td>
-                <td class='center-me'><input type='checkbox' name='{$ID}:Prog_Lesson' {$field['Prog_Lesson']}></td>
-              </tr>
-EOT2;
-          }
-      }
-
-      $body .= "</tbody>\n";
-      $foot = "<tfoot>\n<tr class='totals-row'>
-                <td>Total Guests: </td>
-                <td id='total_guests'>$total_guests</td>
-                <td><button type='button' class='btn btn-primary' id='add'>
-                        <span class='glyphicon glyphicon-plus'></span>
-                    </button>
-                    <button type='button' class='btn btn-danger pull-right' id='remove'>
-                        <span class='glyphicon glyphicon-minus'></span>
-                    </button>
-                </td>";
-      if($this->has_pickup){
-          $foot .= "<td>Guests by Location:</td>";
-          foreach($location_count as $location => $count){
-            $foot .= "<td>$location: $count</td>";
-          }
-      }
-
-      $foot .="</tr>
-              </tfoot>
-              </table>";
-      $this->html_table = $head . $body . $foot;
-    }
     private function split_name($name){
         $parts = explode(" ", $name);
         $last = array_pop($parts);
@@ -459,9 +361,6 @@ EOT2;
     }
     private function remove_package_price($package){
         return preg_replace('/\(\$\S*\)/', "", $package);
-    }
-    private function link($order){
-      return "https://ovrride.com/wp-admin/post.php?post=".$order."&action=edit";
     }
 }
 ?>
