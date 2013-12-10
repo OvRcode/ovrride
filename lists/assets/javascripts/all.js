@@ -12199,7 +12199,13 @@ $(function(){
           if (hasPickup == 1) {
             tableBody += row['Pickup Location'];
           } 
-          tableBody += row.Phone + row.Package + '<td>' + orderNumber + '</td>' + row.Waiver + row.Product + row.Bus + row.All_Area;
+          tableBody += row.Phone + row.Package;
+          if (prefix == 'WO') {
+            tableBody += '<td>' + orderNumber + '</td>';
+          } else {
+            tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
+          }
+          tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
           tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
           riders++;
           var locationName = row['Pickup Location'].replace(/<(?:.|\n)*?>/gm, '');
