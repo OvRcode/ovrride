@@ -12141,12 +12141,14 @@ $(function(){
   $.fn.buildTable = function(){
     var hasPickup   = $("#hasPickup").val();
     var orderData   = jQuery.parseJSON($("#orderData").val());
+    var tableHeader = '';
     var tableBody   = '';
     var tableFooter = '';
     var riders      = 0;
+    var byLocation  = {};
     
     if (orderData) {
-      var tableHeader = '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
+      tableHeader += '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
                         '<thead>' +
                         '<tr class="tablesorter-headerRow">\n' +
                         '<td class="filter-false">AM</td>' +
@@ -12178,7 +12180,7 @@ $(function(){
         var prefix = orderNumber.substring(0,2);
         $.each(values, function(orderItemNumber, fields){
           var id = orderNumber+":"+orderItemNumber+":";
-          var row = [];
+          var row = {};
           $.each(fields, function(field, value){
             if (field == 'First' || field == 'Last' || field == 'Pickup Location' || field == 'Phone' || field == 'Package' || field == 'Order') {
               row[field] = '<td';
@@ -12197,9 +12199,14 @@ $(function(){
           if (hasPickup == 1) {
             tableBody += row['Pickup Location'];
           } 
-          tableBody += row.Phone + row.Package + row.Order + row.Waiver + row.Product + row.Bus + row.All_Area;
+          tableBody += row.Phone + row.Package + '<td>' + orderNumber + '</td>' + row.Waiver + row.Product + row.Bus + row.All_Area;
           tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
           riders++;
+          var locationName = row['Pickup Location'].replace(/<(?:.|\n)*?>/gm, '');
+          if(typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined' || typeof byLocation[locationName] === 'NaN'){
+            byLocation[locationName] = 0;
+          }
+          byLocation[locationName] += 1;
         });
       });
       tableBody += '</tbody>\n';
@@ -12210,8 +12217,15 @@ $(function(){
                      '<span class="glyphicon glyphicon-plus"></span></button>' +
                      '<button type="button" class="btn btn-danger pull-right" id="remove">' +
                      '<span class="glyphicon glyphicon-minus"></span></button></td>';
-      $(this).append(tableHeader+tableBody+tableFooter);
-      $('#Listable').trigger("update");
+      if (hasPickup == 1) {
+        tableFooter += '<td>Guests by Pickup: </td>';
+        $.each(byLocation, function(location, value){
+          tableFooter += '<td>' + location + ': ' + value + '</td>';
+        });
+      }
+      tableFooter += '</tfoot></table>';
+      var output = tableHeader + tableBody + tableFooter;
+      $(this).append(output);
     } else {
       $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
     }
@@ -12317,7 +12331,20 @@ $(function(){
     var itemNum = Math.floor(Math.random()*90000);
     var order = 'WO'+ Math.floor(Math.random()*90000);
     var id = order+":"+itemNum;
-    var row = '<tr class="manual"><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
+    var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="'+id+':AM"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td>' +
+    '<td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true">' +
+    '</td><td contenteditable="true"></td><td class="no-edit">'+order+'</td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':Waiver"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':Product"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':Bus"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':All_Area"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':Beg"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':BRD"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':SKI"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':LTS"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':LTR"></td>' +
+    '<td class="center-me"><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
     $row = $(row),
     // resort table using the current sort; set to false to prevent resort, otherwise 
     // any other value in resort will automatically trigger the table resort. 
@@ -12333,6 +12360,6 @@ $(function(){
        $('#Listable tbody tr:last').remove();
        $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) - 1);
        $('#Listable').trigger("update");}
-
    });
+   
 });
