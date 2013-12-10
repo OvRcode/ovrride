@@ -61,15 +61,11 @@ function tableToForm(){
   document.getElementById("js_save").submit();
 }
 
-// Chained drop downs
-$("#trip").chained("#destination");
 // Dynamically add
 $('#add').click(function(){
+  alert("WHY YOU NO WORK?");
   // Find total cell and increment
-  var cell = document.getElementById('total_guests');
-  total = Number(cell.innerHTML) + 1;
-  cell.innerHTML = total;
-
+  $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) + 1);
   //Generate Walk On order #
   var itemNum = Math.floor(Math.random()*90000);
   var order = 'WO'+ Math.floor(Math.random()*90000);
@@ -86,16 +82,98 @@ $('#add').click(function(){
  });
  // remove dynamically added rows from table
  $('#remove').click(function(){
-   // TODO: limit this to cells added by the add function above, maybe check first cell name for WO order?
      if($('#Listable tbody tr:last').hasClass('manual')){
      $('#Listable tbody tr:last').remove();
-     var total_cell = document.getElementById('total_guests');
-     total = Number(total_cell.innerHTML) - 1;
-     total_cell.innerHTML = total;
+     $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) - 1);
      $('#Listable').trigger("update");}
 
  });
+ 
+
 $(function(){
+  // Create a table if data exists
+  $.fn.buildTable = function(){
+    var hasPickup   = $("#hasPickup").val();
+    var orderData   = jQuery.parseJSON($("#orderData").val());
+    var tableBody   = '';
+    var tableFooter = '';
+    var riders      = 0;
+    
+    if (orderData) {
+      var tableHeader = '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
+                        '<thead>' +
+                        '<tr class="tablesorter-headerRow">\n' +
+                        '<td class="filter-false">AM</td>' +
+                        '<td class="filter-false">PM</td>' +
+                        '<td>First</td>' +
+                        '<td>Last</td>';
+                        
+      if (hasPickup == 1) {
+        tableHeader += '<td data-placeholder="Choose a Location">Pickup</td>';
+      }
+      
+      tableHeader += '<td>Phone</td>' +
+                    '<td data-placeholder="Choose a Package">Package</td>' +
+                    '<td>Order</td>' +
+                    '<td class="filter-false">Waiver</td>' +
+                    '<td class="filter-false">Product REC.</td>' +
+                    '<td class="filter-false">Bus Only</td>' +
+                    '<td class="filter-false">All Area Lift</td>' +
+                    '<td class="filter-false">Beg. Lift</td>' +
+                    '<td class="filter-false">BRD Rental</td>' +
+                    '<td class="filter-false">Ski Rental</td>' +
+                    '<td class="filter-false">LTS</td>' +
+                    '<td class="filter-false">LTR</td>' +
+                    '<td class="filter-false">Prog. Lesson</td>\n' +
+                    '</tr>' +
+                    '</thead>\n';
+      
+      $.each(orderData, function(orderNumber, values){
+        var prefix = orderNumber.substring(0,2);
+        $.each(values, function(orderItemNumber, fields){
+          var id = orderNumber+":"+orderItemNumber+":";
+          var row = [];
+          $.each(fields, function(field, value){
+            if (field == 'First' || field == 'Last' || field == 'Pickup Location' || field == 'Phone' || field == 'Package' || field == 'Order') {
+              row[field] = '<td';
+              if (prefix != 'WO') {
+                row[field] += ' class="no-edit"';
+              }
+              row[field] +='>'+value+'</td>';
+            } 
+            else {
+              row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
+            }
+          });
+          /* Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
+              this is proably a result of moving data from PHP to JSON and back to an array */
+          tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
+          if (hasPickup == 1) {
+            tableBody += row['Pickup Location'];
+          } 
+          tableBody += row.Phone + row.Package + row.Order + row.Waiver + row.Product + row.Bus + row.All_Area;
+          tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
+          riders++;
+        });
+      });
+      tableBody += '</tbody>\n';
+      tableFooter += '<tfoot>\n<tr class="totals-row">' +
+                     '<td>Total Guests: </td>\n' +
+                     '<td id="total_guests">' + riders + '</td>' +
+                     '<td><button type="button" class="btn btn-primary" id="add">' +
+                     '<span class="glyphicon glyphicon-plus"></span></button>' +
+                     '<button type="button" class="btn btn-danger pull-right" id="remove">' +
+                     '<span class="glyphicon glyphicon-minus"></span></button></td>';
+      $(this).append(tableHeader+tableBody+tableFooter);
+      $('#Listable').trigger("update");
+    } else {
+      $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
+    }
+    
+  };
+  $("#listTable").buildTable();
+  // Chained drop downs
+  $("#trip").chained("#destination");
   //custom column counter
   $.fn.colCount = function() {
      var colCount = 0;
@@ -129,7 +207,7 @@ $(function(){
             16: { sorter: 'checkbox' },
             17: { sorter: 'checkbox' }
           },
-      widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter'],
+      widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter' ],
       widgetOptions: {
         editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
         editable_enterToAccept : true,     // press enter to accept content, or click outside if false
