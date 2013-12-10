@@ -61,35 +61,6 @@ function tableToForm(){
   document.getElementById("js_save").submit();
 }
 
-// Dynamically add
-$('#add').click(function(){
-  alert("WHY YOU NO WORK?");
-  // Find total cell and increment
-  $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) + 1);
-  //Generate Walk On order #
-  var itemNum = Math.floor(Math.random()*90000);
-  var order = 'WO'+ Math.floor(Math.random()*90000);
-  var id = order+":"+itemNum;
-  var row = '<tr class="manual"><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
-  $row = $(row),
-  // resort table using the current sort; set to false to prevent resort, otherwise 
-  // any other value in resort will automatically trigger the table resort. 
-  resort = true;
-  $('#Listable')
-    .find('tbody').append($row)
-    .trigger('addRows', [$row, resort]);
-  return false;
- });
- // remove dynamically added rows from table
- $('#remove').click(function(){
-     if($('#Listable tbody tr:last').hasClass('manual')){
-     $('#Listable tbody tr:last').remove();
-     $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) - 1);
-     $('#Listable').trigger("update");}
-
- });
- 
-
 $(function(){
   // Create a table if data exists
   $.fn.buildTable = function(){
@@ -263,4 +234,30 @@ $(function(){
       }
     }); 
   }
+  
+  $('#add').click(function(){
+    // Find total cell and increment
+    $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) + 1);
+    //Generate Walk On order #
+    var itemNum = Math.floor(Math.random()*90000);
+    var order = 'WO'+ Math.floor(Math.random()*90000);
+    var id = order+":"+itemNum;
+    var row = '<tr class="manual"><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
+    $row = $(row),
+    // resort table using the current sort; set to false to prevent resort, otherwise 
+    // any other value in resort will automatically trigger the table resort. 
+    resort = true;
+    $('#Listable')
+      .find('tbody').append($row)
+      .trigger('addRows', [$row, resort]);
+    return false;
+   });
+   // remove dynamically added rows from table
+   $('#remove').click(function(){
+       if($('#Listable tbody tr:last').hasClass('manual')){
+       $('#Listable tbody tr:last').remove();
+       $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) - 1);
+       $('#Listable').trigger("update");}
+
+   });
 });
