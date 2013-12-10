@@ -174,7 +174,7 @@ class Trip_List{
         while($row = $result->fetch_assoc()){
             foreach($this->destinations as $value){
               if($value != "Stratton")
-                  $regex = '/'.$value.'\s(.*)/i';
+                  $regex = '/'.$value.'(.*)/i';
               else
                 $regex = '/Stratturday\s(.*)/i';
 
