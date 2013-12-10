@@ -12,7 +12,9 @@
 # error_reporting(E_ALL|E_STRICT);
 # ini_set('display_errors','On');
 
-# Start Session Validation
+# Start Session with a 1 day persistent session lifetime
+ini_set('session.cookie_lifetime', 60 * 60 * 24 * 1);
+session_regenerate_id();
 session_start();
 
 # Include Functions
