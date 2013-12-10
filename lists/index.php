@@ -150,9 +150,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
       <!-- Lists table added here by Jquery -->
       <div id="listTable"></div>
-      <?php #if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ 
-        #  print $list->html_table;
-        #} ?>
 
       <footer>
         <div class="page-header"></div><!-- inserts the line separator -->
@@ -170,7 +167,8 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             </div>
           </div>
         </footer>
-        <input type="hidden" id="orderData" value='<?php echo json_encode($list->order_data);?>'>
+        <?php printf('<input type="hidden" id="orderData" value ="%s">',
+            htmlspecialchars(json_encode($list->order_data), ENT_QUOTES, 'UTF-8')); ?>
         <input type="hidden" id="hasPickup" value='<?php echo $list->has_pickup;?>'>
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
