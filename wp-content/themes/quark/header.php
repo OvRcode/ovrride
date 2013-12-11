@@ -29,8 +29,14 @@
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0">
 
-	<link rel="profile" href="http://gmpg.org/xfn/11" />
-	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+  <link rel="profile" href="http://gmpg.org/xfn/11" />
+  <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+
+  <?php
+    // If Home Page, display generic meta description, else display page specific content
+    if (is_front_page()) { ?>
+      <meta name="description" content="The number one source for snowboard and ski bus trips in New York City. Providing tours to the best East Coast mountains, West Coast resorts, and International destinations!">
+  <?php } ?>
 
   <!-- Facebook Open Graph Properties -->
   <?php if (stristr($_SERVER["HTTP_USER_AGENT"],'facebook') !== false) { ?>
