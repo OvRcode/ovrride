@@ -20,7 +20,7 @@ foreach($table_data as $id => $data){
         # This order has been manually entered into the list, need to save or update: Name and order info
         $sql_manual = <<< EOT
             INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`, `Last`, `Pickup`, `Phone`, `Package`, `Trip`)
-            VALUES ('$id','$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]',$data[Trip])
+            VALUES ('$id','$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]','$data[Trip]')
             ON DUPLICATE KEY UPDATE
             `First` = VALUES(`First`),
             `Last` = VALUES(`Last`),
@@ -34,9 +34,7 @@ EOT;
         }     
     }
     $sql = <<< EOT2
-        INSERT INTO `ovr_lists_checkboxes` (`ID`,`AM`,`PM`,`Waiver`,`Product`,`Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson`)
-        VALUES('$id',$data[AM],$data[PM],$data[Waiver],$data[Product],$data[Bus],$data[All_Area],$data[Beg],$data[BRD],$data[SKI],
-          $data[LTS],$data[LTR],$data[Prog_Lesson])
+        INSERT INTO `ovr_lists_checkboxes` (`ID`,`AM`,`PM`,`Waiver`,`Product`,`Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson`) VALUES('$id','$data[AM]','$data[PM]','$data[Waiver]','$data[Product]','$data[Bus]','$data[All_Area]','$data[Beg]','$data[BRD]','$data[SKI]','$data[LTS]','$data[LTR]','$data[Prog_Lesson]')
         ON DUPLICATE KEY UPDATE
         `AM` = VALUES(`AM`),
         `PM` = VALUES(`PM`),
