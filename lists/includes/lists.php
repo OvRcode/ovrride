@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.7.1";
+$lists_version = "0.8.0";
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -66,13 +66,7 @@ class Trip_List{
             $this->find_orders();
             if(count($this->orders) > 0 || count($this->order_data) > 0){
                 $this->get_order_data();
-                $this->generate_table();
               }
-            else{ $this->html_table = "<div class='container'>
-                  <p>
-                  There are no orders for the selected Trip and Order Status.
-                  </p>
-                </div>"; }
           }
 
     }
