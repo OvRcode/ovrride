@@ -1,2 +1,3 @@
 # File type for HTML 5 offline cache
 AddType text/cache-manifest .appcache
+php_value max_input_vars 2000
