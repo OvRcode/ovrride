@@ -12078,6 +12078,7 @@ e.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(b,a,c
 *
 */
 
+
 // Order Status: Check All / Uncheck All
 function checkAll(trip_list, checktoggle) {
   var checkboxes = [];
@@ -12136,6 +12137,100 @@ function tableToForm(){
   document.getElementById("js_save").submit();
 }
 
+// webSQL Functions
+function dbConnect(){
+  var db=openDatabase('lists.ovrride.com','0.1','OvR Ride Lists local DB', 2 * 1024 * 1024);
+  window.db = db;
+}
+function setupTables(){
+  var db = window.db;
+  db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER)',
+                  [],
+                  function(tx, result) {
+                    console.log("ovr_lists_fields setup success"); },
+                  function(tx, error) {
+                    console.log("ovr_lists_fields setup error: " + error.message); }
+    );
+  });
+  db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
+                  ' `Pickup`, `Phone`, `Package`, `Trip`)',
+                  [],
+                  function(tx, result){
+                    console.log('ovr_lists_manual_orders setup success'); },
+                  function(tx, error){
+                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
+    );
+  });
+}
+function saveCheckbox(id,value){
+  var db = window.db;
+  db.transaction(function(tx) {
+    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_fields` (`ID`, `value`) VALUES(?,?)',
+      [id,value],
+      function(tx, result){
+        console.log('successful insert or replace on ovr_lists_fields');
+      },
+      function(tx, error){
+        console.log('error inserting or replacing on ovr_lists_fields: ' + error.message);
+      }
+    );
+  });
+}
+function saveManualOrder(id,manual){
+  var db = window.db;
+  db.transaction(function(tx) {
+    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_manual_orders`' +
+                  ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`)' +
+                  ' VALUES(?,?,?,?,?,?,?)',
+      [id, manual.First, manual.Last, manual.Pickup, manual.Phone, manual.Package, manual.Trip],
+      function(tx, result){
+        console.log('successful insert or replace on ovr_lists_manual_orders');
+      },
+      function(tx, error){
+        console.log('error inserting or replacing on ovr_lists_manual_orders: ' + error.message);
+      }
+    );
+  });
+}
+// End webSQL Functions
+$("#save").click(function(){
+  // Collect table data and save to local webSQL tables
+  dbConnect();
+  setupTables();
+  var row = $("#Listable tbody");
+  $("#Listable tbody tr").each(function(index){
+    var split = $(this).children('td').children('input').attr('name').split(':');
+    var order = split[0];
+    var manual = {};
+    var id = split[0] + ':' + split[1];
+    $(this).children("td").each(function(){
+      if( $(this).hasClass('center-me') ) {
+        saveCheckbox(id, $(this).children('input').is(':checked'));
+      } else if ($(this).attr('contenteditable')) {
+        var content = $(this).text();
+        if ($(this).hasClass("unsavedFirst")) {
+          manual.First = content;
+        } else if ($(this).hasClass("unsavedLast")) {
+          manual.Last = content;
+        } else if ($(this).hasClass("unsavedPickup")) {
+          manual.Pickup = content;
+        } else if ($(this).hasClass("unsavedPhone")) {
+          manual.Phone = content;
+        } else if ($(this).hasClass("unsavedPackage")) {
+          manual.Package = content;
+        }
+      }
+    });
+    if ( !jQuery.isEmptyObject(manual) ){
+      manual.Trip = $('#trip').val();
+      saveManualOrder(id,manual);
+    }
+  });
+});
 $(function(){
   // Create a table if data exists
   $.fn.buildTable = function(){
@@ -12186,6 +12281,8 @@ $(function(){
               row[field] = '<td';
               if (prefix != 'WO') {
                 row[field] += ' class="no-edit"';
+              } else {
+                row[field] += ' class="saved"';
               }
               row[field] +='>'+value+'</td>';
             } 
@@ -12337,29 +12434,32 @@ $(function(){
     var itemNum = Math.floor(Math.random()*90000);
     var order = 'WO'+ Math.floor(Math.random()*90000);
     var id = order+":"+itemNum;
-    var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="'+id+':AM"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td>' +
-    '<td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true">' +
-    '</td><td contenteditable="true"></td><td class="no-edit">'+order+'</td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':Waiver"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':Product"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':Bus"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':All_Area"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':Beg"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':BRD"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':SKI"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':LTS"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':LTR"></td>' +
-    '<td class="center-me"><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
+    var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="' + id + ':AM"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':PM"></td>' +
+    '<td contenteditable="true" class="unsavedFirst"></td>' +
+    '<td contenteditable="true" class="unsavedLast"></td>' +
+    '<td contenteditable="true" class="unsavedPickup"></td>' +
+    '<td contenteditable="true" class="unsavedPhone"></td>' +
+    '<td contenteditable="true" class="unsavedPackage"></td>' +
+    '<td class="no-edit">' + order + '</td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':Waiver"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':Product"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':Bus"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':All_Area"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':Beg"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':BRD"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':SKI"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':LTS"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':LTR"></td>' +
+    '<td class="center-me"><input type="checkbox" name="' + id + ':Prog_Lesson"></td></tr>',
     $row = $(row),
     // resort table using the current sort; set to false to prevent resort, otherwise 
     // any other value in resort will automatically trigger the table resort. 
     resort = true;
-    $('#Listable')
-      .find('tbody').append($row)
-      .trigger('addRows', [$row, resort]);
+    $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
     return false;
    });
+   
    // remove dynamically added rows from table
    $('#remove').click(function(){
        if($('#Listable tbody tr:last').hasClass('manual')){
