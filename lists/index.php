@@ -45,8 +45,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
     <!-- Include compiled and minified stylesheets -->
     <link rel="stylesheet" href="assets/stylesheets/all.css">
-    <!-- Include tablesorter styles -->
-    <link rel="stylesheet" href="assets/tablesorter/css/theme.bootstrap.css">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -71,7 +69,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <li>
               <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
               <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
-                <button type="button" class="btn btn-default" id="save_form" name="save_form" onclick="javascript:tableToForm();" title="Save changes">
+                <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
                   <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
                 </button>
                 <button type="submit" class="btn btn-default" id="csv_list" name="csv_list" value="csv_list" title="Full List CSV">
