@@ -12209,6 +12209,7 @@ $("#save").click(function(){
     var id = split[0] + ':' + split[1];
     $(this).children("td").each(function(){
       if( $(this).hasClass('center-me') ) {
+        id = $(this).children('input').attr('name');
         saveCheckbox(id, $(this).children('input').is(':checked'));
       } else if ($(this).attr('contenteditable')) {
         var content = $(this).text();
@@ -12226,8 +12227,10 @@ $("#save").click(function(){
       }
     });
     if ( !jQuery.isEmptyObject(manual) ){
+      var label = id.split(':');
+      manualId = label[0] + ':' + label[1];
       manual.Trip = $('#trip').val();
-      saveManualOrder(id,manual);
+      saveManualOrder(manualId,manual);
     }
   });
 });
