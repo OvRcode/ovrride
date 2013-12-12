@@ -97,6 +97,7 @@ module.exports = function(grunt) {
   });
 
   // Load the plug-ins
+  grunt.loadNpmTasks('grunt-notify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-sass');
