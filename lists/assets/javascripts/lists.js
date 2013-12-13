@@ -3,7 +3,6 @@
 *
 */
 
-
 // Order Status: Check All / Uncheck All
 function checkAll(trip_list, checktoggle) {
   var checkboxes = [];
@@ -63,34 +62,6 @@ function tableToForm(){
 }
 
 // webSQL Functions
-function dbConnect(){
-  var db=openDatabase('lists.ovrride.com','0.1','OvR Ride Lists local DB', 2 * 1024 * 1024);
-  window.db = db;
-}
-function setupTables(){
-  var db = window.db;
-  db.transaction(function(tx) {
-    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                  '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER)',
-                  [],
-                  function(tx, result) {
-                    console.log("ovr_lists_fields setup success"); },
-                  function(tx, error) {
-                    console.log("ovr_lists_fields setup error: " + error.message); }
-    );
-  });
-  db.transaction(function(tx) {
-    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                  '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                  ' `Pickup`, `Phone`, `Package`, `Trip`)',
-                  [],
-                  function(tx, result){
-                    console.log('ovr_lists_manual_orders setup success'); },
-                  function(tx, error){
-                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
-    );
-  });
-}
 function saveCheckbox(id,value){
   var db = window.db;
   db.transaction(function(tx) {
@@ -121,11 +92,8 @@ function saveManualOrder(id,manual){
     );
   });
 }
-// End webSQL Functions
 $("#save").click(function(){
   // Collect table data and save to local webSQL tables
-  dbConnect();
-  setupTables();
   var row = $("#Listable tbody");
   $("#Listable tbody tr").each(function(index){
     var split = $(this).children('td').children('input').attr('name').split(':');
@@ -159,7 +127,45 @@ $("#save").click(function(){
     }
   });
 });
+function truncateTables(){
+  // This is just to clear data without resetting browser
+  var db = window.db;
+  db.transaction(function (tx) {  
+    tx.executeSql('DELETE FROM `ovr_lists_fields`');
+  });
+  db.transaction(function (tx) {
+    tx.executeSql('DELETE FROM `ovr_lists_manual_orders`');
+  });
+}
+// End webSQL Functions
 $(function(){
+  // Connect to webSQL DB and create tables
+  (function(){
+    var db = openDatabase('lists.ovrride.com', '0.1', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
+    window.db = db;
+    db.transaction(function(tx) {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                    '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER)',
+                    [],
+                    function(tx, result) {
+                      console.log("ovr_lists_fields setup success"); },
+                    function(tx, error) {
+                      console.log("ovr_lists_fields setup error: " + error.message); }
+      );
+    });
+    db.transaction(function(tx) {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                    '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
+                    ' `Pickup`, `Phone`, `Package`, `Trip`)',
+                    [],
+                    function(tx, result){
+                      console.log('ovr_lists_manual_orders setup success'); },
+                    function(tx, error){
+                      console.log('ovr_lists_manual_orders setup error:' + error.message); }
+      );
+    });
+  })();
+  
   // Create a table if data exists
   $.fn.buildTable = function(){
     var hasPickup   = $("#hasPickup").val();
