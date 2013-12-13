@@ -12236,7 +12236,21 @@ $("#save").click(function(){
       saveWebOrder(saveId, webOrder);
     }
   });
+  if(window.navigator.onLine){
+    alert("online");
+    syncData();
+  }
 });
+function syncData(){
+  // Functionality test, data sent to save.php 
+  // returned a value from the server and a value from the data sent.
+  // This will be replaced with actual functionality soon
+  var test = {"label":"data"};
+  $.post( 'save.php', test, function(data){
+    console.log( data.name );
+      console.log( data.time );
+  }, "json");
+}
 function truncateTables(){
   // This is just to clear data without resetting browser
   var db = window.db;
