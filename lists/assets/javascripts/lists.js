@@ -363,7 +363,7 @@ $(function(){
   
   $('#add').click(function(){
     // Find total cell and increment
-    $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) + 1);
+    $('#total_guests').text(function(i,txt){ return parseInt(txt,10) + 1;});
     //Generate Walk On order #
     var itemNum = Math.floor(Math.random()*90000);
     var order = 'WO'+ Math.floor(Math.random()*90000);
@@ -398,7 +398,7 @@ $(function(){
    $('#remove').click(function(){
        if($('#Listable tbody tr:last').hasClass('manual')){
        $('#Listable tbody tr:last').remove();
-       $("#total_guests").val(parseInt( $("#total_guests").val(), 10 ) - 1);
+       $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
        $('#Listable').trigger("update");}
    });
    
