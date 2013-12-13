@@ -5,8 +5,10 @@ $db_connect = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
     if($db_connect->connect_errno > 0){
         die('Unable to connect to database [' . $db_connect->connect_error . ']');
     }
+header('Content-type: application/json');
+echo json_encode(array("name"=>$_POST['label'],"time"=>"2pm"))
 # Assemble data
-$table_data = array();
+/*$table_data = array();
 foreach($_POST as $field => $value){
     $exploded = explode(':',$field);
     $id = $exploded[0].":".$exploded[1];
@@ -59,5 +61,5 @@ else{
     $_SESSION['saved_table'] = true;
 }
 }
-header('Location: /');
+header('Location: /');*/
 ?>
