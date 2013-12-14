@@ -12237,8 +12237,9 @@ $("#save").click(function(){
     }
   });
   if(window.navigator.onLine){
-    alert("online");
     syncData();
+  } else {
+    alert("offline right now!");
   }
 });
 function syncData(){
@@ -12246,10 +12247,99 @@ function syncData(){
   // returned a value from the server and a value from the data sent.
   // This will be replaced with actual functionality soon
   var test = {"label":"data"};
-  $.post( 'save.php', test, function(data){
-    console.log( data.name );
-      console.log( data.time );
-  }, "json");
+  var tableData = {};
+  var db = window.db;
+  var trip = $('#trip').val();
+  // get checkboxes for regular orders
+  db.transaction(function(tx){
+    tx.executeSql('SELECT `ovr_lists_fields`.`ID`, `ovr_lists_fields`.`value`,`ovr_lists_fields`.`timeStamp`' +
+                  'FROM `ovr_lists_fields`' +
+                  'INNER JOIN `ovr_lists_orders` on `ovr_lists_fields`.`ID` LIKE `ovr_lists_orders`.`ID` || "%"' +
+                  'WHERE `ovr_lists_orders`.`trip` = ?', 
+                  [trip],
+                  function(tx,results){
+                    var len=results.rows.length;
+                    var i;
+                    for(i = 0; i < len; i++) {
+                      var label = results.rows.item(i).ID;
+                      label = label.split(':');
+                      var order = label[0];
+                      var orderItem = label[1];
+                      var field = label[2];
+                      var value = results.rows.item(i).value == 'true' ? 1:0;
+                      if ( typeof tableData[order] === "undefined") {
+                      tableData[order] = {};
+                      }
+                      if ( typeof tableData[order][orderItem] === "undefined" ) {
+                      tableData[order][orderItem] = {};
+                      }
+                      tableData[order][orderItem][field] = value;
+                    }
+                  });
+  });
+  // get info fields for manual orders
+  db.transaction(function(tx){
+    tx.executeSql('SELECT * FROM `ovr_lists_manual_orders` WHERE `trip` = ?',
+                  [trip],
+                  function(tx,results){
+                    var len = results.rows.length;
+                    var i;
+                    for(i = 0; i < len; i++) {
+                      var id = results.rows.item(i).ID;
+                      id = id.split(':');
+                      var order = id[0];
+                      var orderItem = id[1];
+                      if ( typeof tableData[order] === 'undefined') {
+                        tableData[order] = {};
+                      }
+                      if ( typeof tableData[order][orderItem] === 'undefined') {
+                        tableData[order][orderItem] = {};
+                      }
+                      tableData[order][orderItem].timestamp = results.rows.item(i).timeStamp;
+                      tableData[order][orderItem].First = results.rows.item(i).First;
+                      tableData[order][orderItem].Last = results.rows.item(i).Last;
+                      tableData[order][orderItem].Pickup = results.rows.item(i).Pickup;
+                      tableData[order][orderItem].Phone = results.rows.item(i).Phone;
+                      tableData[order][orderItem].Package = results.rows.item(i).Package;
+                      tableData[order][orderItem].Trip = results.rows.item(i).Trip;
+                    }
+                  });
+  });
+  // get checkboxes for manual orders
+  db.transaction(function(tx){
+    tx.executeSql('SELECT `ovr_lists_fields`.*' +
+                  'FROM `ovr_lists_fields`' +
+                  'INNER JOIN `ovr_lists_manual_orders` ' +
+                  'ON `ovr_lists_fields`.`ID` LIKE `ovr_lists_manual_orders`.`ID` || "%"' +
+                  'WHERE `ovr_lists_manual_orders`.`trip` = ?',
+                  [trip],
+                  function(tx,results){
+                    var len = results.rows.length;
+                    var i;
+                    for (i = 0; i < len; i++) {
+                      var id = results.rows.item(i).ID;
+                      id = id.split(':');
+                      var order = id[0];
+                      var orderItem = id[1];
+                      var field = id[2];
+                      var value = results.rows.item(i).value == 'true' ? 1:0;
+                      if ( typeof tableData[order] === 'undefined') {
+                        tableData[order] = {};
+                      }
+                      if ( typeof tableData[order][orderItem] === 'undefined') {
+                        tableData[order][orderItem] = {};
+                      }
+                      tableData[order][orderItem][field] = value;
+                      console.log(order+':'+orderItem+':'+field+':'+value);
+                    }
+                  });
+                  console.log(JSON.stringify(tableData));
+                  $.post( 'save.php', tableData, function(data){
+                    console.log(JSON.stringify(tableData));
+                  }, "json");
+  });
+  
+  
 }
 function truncateTables(){
   // This is just to clear data without resetting browser
