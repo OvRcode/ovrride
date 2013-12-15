@@ -87,7 +87,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       </div><!-- /.container -->
     </nav>
 
-    <div class="container">
+    <div class="container" id="mainBody">
       <div class="col-md-5">
       <section class="trip-select">
           <label>Select a Destination:</label>
@@ -165,9 +165,17 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             </div>
           </div>
         </footer>
-        <?php printf('<input type="hidden" id="orderData" value ="%s">',
-            htmlspecialchars(json_encode($list->order_data), ENT_QUOTES, 'UTF-8')); ?>
-        <input type="hidden" id="hasPickup" value='<?php echo $list->has_pickup;?>'>
+        <?php 
+        $json = htmlspecialchars(json_encode($list->order_data));
+        if (json_last_error() > 0) {
+        error_log('Last JSON encode error: ' . json_last_error());
+        }
+        #printf('<input type="hidden" id="orderData" value ="%s">',htmlspecialchars(json_encode($list->order_data), ENT_QUOTES, 'UTF-8'));
+        #sprintf('<input type="hidden" id ="hasPickup" value="1">', $list->has_pickup);
+        error_log("PICKUP? :".$list->has_pickup);
+        ?>
+        <input type="hidden" id="orderData" value='<?php printf('%s',$json, ENT_QUOTES, 'UTF-8'); ?>'>
+        <input type="hidden" id="hasPickup" value="1" />
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>
