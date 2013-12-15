@@ -47,6 +47,7 @@ class Trip_List{
     var $order_data;
     var $has_pickup;
     var $destinations;
+    var $checkboxes;
     
     function __construct($selected_trip){
         # Connect to database
@@ -58,8 +59,10 @@ class Trip_List{
         else{
           $this->db_connect->query("SET NAMES utf8");
           $this->db_connect->query("SET CHARACTER SET utf8");
+          $this->db_connect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
         $this->destinations = array("Camelback MT","Hunter MT","Japan","Killington","MT Snow","Stowe","Stratton","Sugarbush","Whistler","Windham");
+        $this->checkboxes = array("AM","PM","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
         $this->trip = $selected_trip;
         $this->trip_options();
         if($selected_trip != "none"){
@@ -108,7 +111,7 @@ class Trip_List{
                   elseif($label == "First" || $label == "Last" || $label == "Package" || $label == "Order")
                     $value = $field[$label];
                   elseif($label == "Pickup")
-                    $value = $field['Pickup Location'];
+                    $value = $field['Pickup'];
                   elseif($label == "Email"){
                     if(isset($field['Email']))
                         $value = $field['Email'];
@@ -248,15 +251,15 @@ class Trip_List{
                         WHERE ( `meta_key` = 'Name'
                         OR `meta_key` = 'Email'
                         OR `meta_key` = 'Package'
-                        OR `meta_key` = 'Pickup Location' )
+                        OR `meta_key` = 'Pickup' )
                         AND `order_item_id` = '$order_item_id'";
                 $result = $this->db_query($sql);
 
                 while($row = $result->fetch_assoc()){
                     if($row['meta_key'] == 'Package')
                         $this->order_data[$order][$order_item_id]['Package'] = ucwords(strtolower($this->remove_package_price($row['meta_value'])));
-                    elseif($row['meta_key'] == 'Pickup Location')
-                        $this->order_data[$order][$order_item_id]['Pickup Location'] = ucwords(strtolower($this->strip_time($row['meta_value'])));
+                    elseif($row['meta_key'] == 'Pickup')
+                        $this->order_data[$order][$order_item_id]['Pickup'] = ucwords(strtolower($this->strip_time($row['meta_value'])));
                     elseif($row['meta_key'] == 'Name'){
                         $names = $this->split_name($row['meta_value']);
                         $this->order_data[$order][$order_item_id]['First'] = stripcslashes(ucwords(strtolower($names['First'])));
@@ -269,7 +272,7 @@ class Trip_List{
                 $this->get_checkbox_states($order,$order_item_id);
 
                 # Is there a pickup location for this trip?
-                if(isset($this->order_data[$order][$order_item_id]['Pickup Location']))
+                if(isset($this->order_data[$order][$order_item_id]['Pickup']))
                     $this->has_pickup = TRUE;
                 elseif($this->has_pickup == "")
                     $this->has_pickup = FALSE;
@@ -278,28 +281,18 @@ class Trip_List{
     }
     private function get_checkbox_states($order,$order_item_id){
         # Attempts to lookup set checkboxes from form in ovr_lists_checkboxes table
-        $ID = $order.":".$order_item_id;
-        $sql="SELECT  `AM` ,  `PM` ,  `Waiver` ,  `Product` ,  `Bus` ,  `All_Area` ,  `Beg` ,  `BRD` ,  `SKI` ,  `LTS` ,  `LTR` ,  `Prog_Lesson` 
-              FROM  `ovr_lists_checkboxes`
-              WHERE  `ID` =  '$ID'";
+        $id = $order.":".$order_item_id;
+        $sql = "SELECT `ID`, `value` FROM `ovr_lists_fields` WHERE `ID` LIKE CONCAT('$id','%')";
         $result = $this->db_query($sql);
-        $row = $result->fetch_assoc();
-        if($result->num_rows > 0)
-            foreach($row as $key => $value)
-                $this->order_data[$order][$order_item_id][$key] = ($value == 1 ? "checked" : "");
-        elseif(isset($this->order_data[$order][$order_item_id])){
-            $this->order_data[$order][$order_item_id]['AM'] = "";
-            $this->order_data[$order][$order_item_id]['PM'] = "";
-            $this->order_data[$order][$order_item_id]['Waiver'] = "";
-            $this->order_data[$order][$order_item_id]['Product'] = "";
-            $this->order_data[$order][$order_item_id]['Bus'] = "";
-            $this->order_data[$order][$order_item_id]['All_Area'] = "";
-            $this->order_data[$order][$order_item_id]['Beg'] = "";
-            $this->order_data[$order][$order_item_id]['BRD'] = "";
-            $this->order_data[$order][$order_item_id]['SKI'] = "";
-            $this->order_data[$order][$order_item_id]['LTS'] = "";
-            $this->order_data[$order][$order_item_id]['LTR'] = "";
-            $this->order_data[$order][$order_item_id]['Prog_Lesson'] = "";
+        while ($row = $result->fetch_assoc()) {
+          $label = explode(':',$row['ID']);
+          $this->order_data[$order][$order_item_id][$label[2]] = ($row['value'] == 1 ? "checked" : "");
+        }
+        foreach($this->checkboxes as $field){
+          #error_log($order.":".$order_item_id.":".$field);
+          if (!isset($this->order_data[$order][$order_item_id][$field])){
+            $this->order_data[$order][$order_item_id][$field] = "";
+          }
         }
     }
     private function get_saved_data(){
@@ -314,8 +307,8 @@ class Trip_List{
             $order_item_id = $exploded_id[1];
             $this->order_data[$order][$order_item_id]['First'] = stripcslashes(ucwords(strtolower(trim($row['First']))));
             $this->order_data[$order][$order_item_id]['Last'] = stripcslashes(ucwords(strtolower(trim($row['Last']))));
-            $this->order_data[$order][$order_item_id]['Pickup Location'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
-            if($this->order_data[$order][$order_item_id]['Pickup Location'] != "")
+            $this->order_data[$order][$order_item_id]['Pickup'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
+            if($this->order_data[$order][$order_item_id]['Pickup'] != "")
               $this->has_pickup = TRUE;
             else
               $this->has_pickup = FALSE;
