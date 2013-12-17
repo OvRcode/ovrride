@@ -54,14 +54,16 @@ foreach ($input as $order => $orderInfo) {
                   
               } else {
                   $id = $order.":".$orderItem.":".$fieldName;
-                  $sql = "SELECT `ID`,`value`,UNIX_TIMESTAMP(`timeStamp`) FROM `ovr_lists_fields` WHERE `ID` = '$id'";
+                  $sql = "SELECT `ID`,`value`,UNIX_TIMESTAMP(`timeStamp`) AS `timeStamp` FROM `ovr_lists_fields` WHERE `ID` = '$id'";
                   $result = dbQuery($db,$sql);
                   $row = $result->fetch_assoc();
+                  error_log("DEBUG HERE:");
                   if (($result->num_rows == 0 || !$result->num_rows) || (isset($row['timeStamp']) && $row['timeStamp'] < $value[1])) {
                       $sql = "INSERT INTO `ovr_lists_fields` (`ID`, `value`) ".
                                   "VALUES('$id','{$value[0]}') ".
                                   "ON DUPLICATE KEY UPDATE ".
                                   "`value` = VALUES(`value`)";
+                      error_log($sql);
                       $result = dbQuery($db,$sql);
                   } 
               }
