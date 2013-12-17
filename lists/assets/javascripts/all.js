@@ -12097,45 +12097,6 @@ function formReset(){
   }
 }
 
-function tableToForm(){
-  // Reads through generated table and saves to a php form which is submitted to save values to a mysql table
-  var table = document.getElementById('Listable');
-  // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
-  var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
-  var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
-  var trip = document.getElementById("trip").value;
-  for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
-    var id = table.rows[rowCounter].cells[0].children[0].name;
-    id = id.split(":");
-    id = id[0]+":"+id[1];
-    var prefix = id.substring(0,2);
-    for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
-      if(prefix == "WO"){
-        if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
-        }
-        else if(labels[cellCounter] == "Order"){
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
-          var select = document.getElementById("trip");
-          form += "<input type='hidden' name='"+id+":Trip' value='"+select.options[select.selectedIndex].value+"'>";
-        }
-        else{
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
-        }
-      }
-      else{
-        // Only capture checkboxes for woocommerce orders
-        if(labels[cellCounter] != "First" && labels[cellCounter] != "Last" && labels[cellCounter] != "Pickup" && labels[cellCounter] != "Phone" && labels[cellCounter] != "Package" && labels[cellCounter] != "Order"){
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
-        }
-      }
-    }
-  }
-  form += "</form>";
-  $("body").append(form);
-  document.getElementById("js_save").submit();
-}
-
 // webSQL Functions
 function saveCheckbox(id,value){
   var db = window.db;
@@ -12180,6 +12141,8 @@ function saveWebOrder(id,webOrder){
   });
 }
 $("#save").click(function(){
+  setupProgressBar();
+  $('#saveBar').css('width', '10%');
   // Collect table data and save to local webSQL tables
   var row = $("#Listable tbody");
   $("#Listable tbody tr").each(function(index){
@@ -12229,6 +12192,7 @@ $("#save").click(function(){
       saveWebOrder(saveId, webOrder);
     }
   });
+  $('#saveBar').css('width', '15%');
   if(window.navigator.onLine){
     syncData();
   } else {
@@ -12236,6 +12200,7 @@ $("#save").click(function(){
   }
 });
 function selectOrderCheckboxes(){
+  $('#saveBar').css('width', '30%');
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
@@ -12263,11 +12228,13 @@ function selectOrderCheckboxes(){
                       }
                       tableData[order][orderItem][field] = new Array(value, results.rows.item(i).timeStamp);
                     }
+                    $('#saveBar').css('width', '40%');
                     selectManualOrders();
                   });
   });
 }
 function selectManualOrders(){
+  $('#saveBar').css('width', '50%');
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
@@ -12300,6 +12267,7 @@ function selectManualOrders(){
   });
 }
 function selectManualCheckboxes(){
+  $('#saveBar').css('width', '60%');
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
@@ -12326,7 +12294,6 @@ function selectManualCheckboxes(){
                       if ( typeof tableData[order][orderItem] === 'undefined') {
                         tableData[order][orderItem] = {};
                       }
-                      console.log(order+':'+orderItem+':'+field+':'+value);
                       tableData[order][orderItem][field] = new Array(value, results.rows.item(i).timeStamp);
                     }
                     postData();
@@ -12337,16 +12304,31 @@ function selectManualCheckboxes(){
   });
 }
 function postData(){
+  $('#saveBar').css('width', '80%');
   //console.log(window.tableData);
+  console.log(window.tableData);
   var jqxhr = $.post( "save.php", window.tableData,function() {})
     .done(function() {
-      console.log("POST request done");
+      $('#saveBar').css('width', '100%');
+      setTimeout(function(){
+        $('#saveProgress').remove();
+        $('#mainBody').append('<div id="success" class="alert alert-success alert-dismissable">' +
+                              '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                              'Successful Save</div>');
+        setTimeout(function(){ 
+          $('#success').remove();
+        }, 5000);
+      });
     })
     .fail(function() {
       console.log("POST request error");
+      $('#mainBody').append('<div id="success" class="alert alert-danger alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            'Something went wrong, try saving again</div>');
     });
 }
 function syncData(){
+  $('#saveBar').css('width', '20%');
   window.tableData = {};
   selectOrderCheckboxes();
 }
@@ -12362,6 +12344,15 @@ function truncateTables(){
   db.transaction(function (tx) {
     tx.executeSql('DELETE FROM `ovr_lists_orders`');
   });
+}
+function setupProgressBar(){
+  $('#mainBody').append('<div id="saveProgress"><h3>Save Progress:</h3>' +
+    '<div class="progress progress-striped active">' +
+    '<div id="saveBar" class="progress-bar"  role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%">' +
+      '<span class="sr-only">1% Complete</span>' +
+    '</div>' +
+  '</div>' +
+    '</div>');
 }
 // End webSQL Functions
 $(function(){
@@ -12404,20 +12395,24 @@ $(function(){
   // Create a table if data exists
   $.fn.buildTable = function(){
     var hasPickup   = $("#hasPickup").val();
-    console.log('Pickup:'+hasPickup);
-    console.log('JSON:'+$('#orderData').val());
-    var orderData   = $("#orderData").val();
+
+    var orders = $('.order');
+    var orderData   = {};
     var tableHeader = '';
     var tableBody   = '';
     var tableFooter = '';
     var riders      = 0;
     var byLocation  = {};
-    
-    if (orderData == 'undefined' || orderData === undefined || orderData == 'null') {
+
+    if (orders.length === 0 && $('#trip').val() != "none") {
       $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
     } 
-    else {
-      orderData = jQuery.parseJSON(orderData);
+    else if (orders.length > 0){
+      orders.each(function(){
+        var temp = jQuery.parseJSON($(this).val());
+        orderData[temp[0]] = temp[1];
+      });
+      
       tableHeader += '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
                         '<thead>' +
                         '<tr class="tablesorter-headerRow">\n' +
@@ -12484,8 +12479,8 @@ $(function(){
               row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
             }
           });
-          /* Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
-              this is proably a result of moving data from PHP to JSON and back to an array */
+          // Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
+          //    this is proably a result of moving data from PHP to JSON and back to an array 
           tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
           if (hasPickup == 1) {
             tableBody += row.Pickup;
@@ -12565,7 +12560,7 @@ $(function(){
             16: { sorter: 'checkbox' },
             17: { sorter: 'checkbox' }
           },
-      widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter' ],
+      widgets : [ 'editable', 'columns','stickyHeaders','filter' ],
       widgetOptions: {
         editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
         editable_enterToAccept : true,     // press enter to accept content, or click outside if false
@@ -12602,7 +12597,7 @@ $(function(){
             16: { sorter: 'checkbox' },
             17: { sorter: 'checkbox' }
           },
-      widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter'],
+      widgets : [ 'editable', 'columns','stickyHeaders','filter'],
       widgetOptions: {
         editable_columns       : "2-5",  // point to the columns to make editable (zero-based index)
         editable_enterToAccept : true,     // press enter to accept content, or click outside if false
