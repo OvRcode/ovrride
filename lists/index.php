@@ -166,16 +166,19 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           </div>
         </footer>
         <?php 
-        $json = htmlspecialchars(json_encode($list->order_data));
-        if (json_last_error() > 0) {
-        error_log('Last JSON encode error: ' . json_last_error());
-        }
-        #printf('<input type="hidden" id="orderData" value ="%s">',htmlspecialchars(json_encode($list->order_data), ENT_QUOTES, 'UTF-8'));
-        #sprintf('<input type="hidden" id ="hasPickup" value="1">', $list->has_pickup);
-        error_log("PICKUP? :".$list->has_pickup);
+        if(isset($list->order_data)){
+        foreach($list->order_data as $order => $data){
+            $array = array($order,$data);
+            $json = htmlspecialchars(json_encode($array));
+            if (json_last_error() > 0) {
+            error_log('Last JSON encode error: ' . json_last_error());
+            } else {
+                printf('<input type="hidden" class="order" value="%s">',$json, ENT_QUOTES, 'UTF-8');
+            }
+        }}
         ?>
-        <input type="hidden" id="orderData" value='<?php printf('%s',$json, ENT_QUOTES, 'UTF-8'); ?>'>
-        <input type="hidden" id="hasPickup" value="1" />
+        
+        <input type="hidden" id="hasPickup" value="0" />
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>
