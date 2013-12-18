@@ -167,18 +167,22 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
         </footer>
         <?php 
         if(isset($list->order_data)){
-        foreach($list->order_data as $order => $data){
-            $array = array($order,$data);
-            $json = htmlspecialchars(json_encode($array));
-            if (json_last_error() > 0) {
-            error_log('Last JSON encode error: ' . json_last_error());
-            } else {
-                printf('<input type="hidden" class="order" value="%s">',$json, ENT_QUOTES, 'UTF-8');
+            foreach($list->order_data as $order => $data){
+                $array = array($order,$data);
+                $json = htmlspecialchars(json_encode($array));
+                if (json_last_error() > 0) {
+                    error_log('Last JSON encode error: ' . json_last_error());
+                } else {
+                    printf('<input type="hidden" class="order" value="%s">',$json, ENT_QUOTES, 'UTF-8');
+                }
             }
-        }}
-        ?>
+        }
         
-        <input type="hidden" id="hasPickup" value="0" />
+        if(isset($list->has_pickup)){
+            error_log('Pickup Flag:'.$list->has_pickup);
+            print '<input type="hidden" id="hasPickup" value="'.$list->has_pickup.'" />';
+        }
+        ?>
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>

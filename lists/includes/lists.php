@@ -251,15 +251,18 @@ class Trip_List{
                         WHERE ( `meta_key` = 'Name'
                         OR `meta_key` = 'Email'
                         OR `meta_key` = 'Package'
-                        OR `meta_key` = 'Pickup' )
+                        OR `meta_key` = 'Pickup'
+                        OR `meta_key` = 'Pickup Location')
                         AND `order_item_id` = '$order_item_id'";
                 $result = $this->db_query($sql);
 
                 while($row = $result->fetch_assoc()){
                     if($row['meta_key'] == 'Package')
                         $this->order_data[$order][$order_item_id]['Package'] = ucwords(strtolower($this->remove_package_price($row['meta_value'])));
-                    elseif($row['meta_key'] == 'Pickup')
+                    elseif($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location'){
                         $this->order_data[$order][$order_item_id]['Pickup'] = ucwords(strtolower($this->strip_time($row['meta_value'])));
+                        $this->has_pickup = TRUE;
+                    }
                     elseif($row['meta_key'] == 'Name'){
                         $names = $this->split_name($row['meta_value']);
                         $this->order_data[$order][$order_item_id]['First'] = stripcslashes(ucwords(strtolower($names['First'])));
@@ -270,12 +273,6 @@ class Trip_List{
                 }
                 $result->free();
                 $this->get_checkbox_states($order,$order_item_id);
-
-                # Is there a pickup location for this trip?
-                if(isset($this->order_data[$order][$order_item_id]['Pickup']))
-                    $this->has_pickup = TRUE;
-                elseif($this->has_pickup == "")
-                    $this->has_pickup = FALSE;
             }
         }
     }
@@ -308,10 +305,8 @@ class Trip_List{
             $this->order_data[$order][$order_item_id]['First'] = stripcslashes(ucwords(strtolower(trim($row['First']))));
             $this->order_data[$order][$order_item_id]['Last'] = stripcslashes(ucwords(strtolower(trim($row['Last']))));
             $this->order_data[$order][$order_item_id]['Pickup'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
-            if($this->order_data[$order][$order_item_id]['Pickup'] != "")
-              $this->has_pickup = TRUE;
-            else
-              $this->has_pickup = FALSE;
+            if (isset($row['Pickup']))
+                $this->has_pickup = TRUE;
             $this->order_data[$order][$order_item_id]['Phone'] = $this->reformat_phone($row['Phone']);
             $this->order_data[$order][$order_item_id]['Package'] = stripcslashes(ucwords(strtolower(trim($row['Package']))));
             $this->get_checkbox_states($order,$order_item_id);
