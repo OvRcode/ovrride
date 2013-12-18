@@ -12,8 +12,12 @@
 # error_reporting(E_ALL|E_STRICT);
 # ini_set('display_errors','On');
 
-# Start Session Validation
+session_regenerate_id();
 session_start();
+
+# Start Session with a 1 day persistent session lifetime
+$cookieLifetime = 60 * 60 * 24 * 1;
+setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
 # Include Functions
 require_once("includes/lists.php");
