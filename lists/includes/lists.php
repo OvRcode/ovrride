@@ -7,11 +7,8 @@
  */
 
 # OvR Lists Version Number
-<<<<<<< HEAD
 $lists_version = "0.8.0";
-=======
-$lists_version = "0.7.1";
->>>>>>> origin/rememberme
+
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
