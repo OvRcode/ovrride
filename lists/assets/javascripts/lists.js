@@ -23,6 +23,44 @@ function formReset(){
 }
 
 // webSQL Functions
+function autoSaveManualOrder(id,field,value){
+  var db = window.db;
+  var trip = $('#trip').val();
+  var replaceFields = {};
+  replaceFields.First = "COALESCE((SELECT `First` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
+  replaceFields.Last = "COALESCE((SELECT `Last` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
+  replaceFields.Pickup = "COALESCE((SELECT `Pickup` FROM ovr_lists_manual_orders WHERE `ID` = '" + id +"'),'')";
+  replaceFields.Phone = "COALESCE((SELECT `Phone` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
+  replaceFields.Package = "COALESCE((SELECT `Package` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
+
+  var sql = "INSERT OR REPLACE INTO ovr_lists_manual_orders (`ID`, `First`,`Last`, `Pickup`, `Phone`, `Package`, `Trip`) VALUES(?, ";
+  switch(field){
+    case 'First':
+      sql += "'" + value +"'," + replaceFields.Last + ", " + replaceFields.Pickup + ", " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
+      break;
+    case 'Last':
+      sql += replaceFields.First +",'" + value + "', " + replaceFields.Pickup + ", " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
+      break;
+    case 'Pickup':
+      sql += replaceFields.First +"," + replaceFields.Last + ", '" + value + "', " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
+      break;
+    case 'Phone':
+      sql += replaceFields.First +"," + replaceFields.Last + ", " + replaceFields.Pickup + ", '" + value + "', " + replaceFields.Package + ", ?)";
+      break;
+    case 'Package':
+      sql += replaceFields.First +"," + replaceFields.Last + ", " + replaceFields.Pickup + ", " + replaceFields.Phone + ", '" + value + "', ?)";
+      break;
+    default:
+      sql += replaceFields.First +"," + replaceFields.Last + ", " + replaceFields.Pickup + ", " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
+      break;
+  }
+  db.transaction(function(tx){
+    tx.executeSql(sql, [id, trip], function(tx,result){},
+                  function(tx, error){
+                    console.log(error.message);
+                  }); 
+  });
+}
 function saveCheckbox(id,value){
   var db = window.db;
   var time = (new Date()).valueOf();
@@ -279,6 +317,7 @@ function setupProgressBar(){
   '</div>' +
     '</div>');
 }
+
 // End webSQL Functions
 $(function(){
   // Connect to webSQL DB and create tables
@@ -316,7 +355,19 @@ $(function(){
       );
     });
   })();
-  
+  // save checkboxes and manual entries  on change to websql
+  $.fn.autoSave = function(){
+    /* Function will be called each time a manual row is added
+       unbind events first to avoid duplicate event listeners */
+    $('#Listable').unbind('click');
+    $('#Listable .manual').unbind('focusout');
+    $('#Listable').on('click','.center-me' ,function(){
+      saveCheckbox($(this).children('input').attr('name'),$(this).children('input').is(':checked'));
+    }); 
+    $('#Listable .manual').on('focusout','.unsaved', function(){
+      autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
+    });
+  };
   // Create a table if data exists
   $.fn.buildTable = function(){
     var hasPickup   = $("#hasPickup").val();
@@ -446,7 +497,10 @@ $(function(){
       var output = tableHeader + tableBody + tableFooter;
       $(this).append(output);
     }
-    //$('#orderData').remove();
+    if (orders.length > 0) {
+      orders.remove();
+      $('#hasPickup').remove();
+    }
   };
   $("#listTable").buildTable();
 
@@ -541,7 +595,7 @@ $(function(){
       }
     }); 
   }
-  
+  $().autoSave();
   $('#add').click(function(){
     // Find total cell and increment
     $('#total_guests').text(function(i,txt){ return parseInt(txt,10) + 1;});
@@ -551,11 +605,11 @@ $(function(){
     var id = order+":"+itemNum;
     var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="' + id + ':AM"></td>' +
     '<td class="center-me"><input type="checkbox" name="' + id + ':PM"></td>' +
-    '<td contenteditable="true" headers="First" class="unsaved"></td>' +
-    '<td contenteditable="true" headers="Last" class="unsaved"></td>' +
-    '<td contenteditable="true" headers="Pickup" class="unsaved"></td>' +
-    '<td contenteditable="true" headers="Phone" class="unsaved"></td>' +
-    '<td contenteditable="true" headers="Package" class="unsaved"></td>' +
+    '<td contenteditable="true" headers="First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+    '<td contenteditable="true" headers="Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+    '<td contenteditable="true" headers="Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+    '<td contenteditable="true" headers="Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+    '<td contenteditable="true" headers="Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
     '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
     '<td class="center-me"><input type="checkbox" name="' + id + ':Waiver"></td>' +
     '<td class="center-me"><input type="checkbox" name="' + id + ':Product"></td>' +
@@ -572,6 +626,7 @@ $(function(){
     // any other value in resort will automatically trigger the table resort. 
     resort = true;
     $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
+    $().autoSave();
     return false;
    });
    
@@ -582,5 +637,5 @@ $(function(){
        $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
        $('#Listable').trigger("update");}
    });
-   
+  
 });
