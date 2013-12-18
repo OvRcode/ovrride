@@ -135,7 +135,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
           </label>
           <br>
-          <input type="submit" class="btn btn-primary generate-list" value="Generate List" /> 
+          <input type="submit" class="btn btn-primary generate-list" value="Generate List" />
 
           <button type="button" onclick="location.href='/';" class="btn btn-primary generate-list">Clear Form</button>
 
@@ -165,7 +165,8 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
               </div>
             </div>
           </div>
-        </footer>
+        </div>
+      </footer>
         <?php 
         if(isset($list->order_data)){
             foreach($list->order_data as $order => $data){
@@ -184,6 +185,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             print '<input type="hidden" id="hasPickup" value="'.$list->has_pickup.'" />';
         }
         ?>
+
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
   </body>
