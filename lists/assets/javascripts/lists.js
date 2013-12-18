@@ -74,20 +74,7 @@ function saveCheckbox(id,value){
     );
   });
 }
-function saveManualOrder(id,manual){
-  var db = window.db;
-  db.transaction(function(tx) {
-    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_manual_orders`' +
-                  ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`)' +
-                  ' VALUES(?,?,?,?,?,?,?)',
-      [id, manual.First, manual.Last, manual.Pickup, manual.Phone, manual.Package, manual.Trip],
-      function(tx, result){},
-      function(tx, error){
-        console.log('error inserting or replacing on ovr_lists_manual_orders: ' + error.message);
-      }
-    );
-  });
-}
+// NEED TO RE THINK THIS
 function saveWebOrder(id,webOrder){
   var db = window.db;
   var time = (new Date()).valueOf();
@@ -106,60 +93,19 @@ function saveWebOrder(id,webOrder){
 $("#save").click(function(){
   setupProgressBar();
   $('#saveBar').css('width', '10%');
-  // Collect table data and save to local webSQL tables
-  var row = $("#Listable tbody");
-  $("#Listable tbody tr").each(function(index){
-    var split = $(this).children('td').children('input').attr('name').split(':');
-    var order = split[0];
-    var manual = {};
-    var webOrder = {};
-    var id = split[0] + ':' + split[1];
-    $(this).children("td").each(function(){
-      var content = $(this).text();
-      if( $(this).hasClass('center-me') ) {
-        id = $(this).children('input').attr('name');
-        saveCheckbox(id, $(this).children('input').is(':checked'));
-      } else if ( $(this).hasClass('unsaved') ) {
-        if ($(this).attr('headers') == 'First') {
-          manual.First = content;
-        } else if ($(this).attr('headers') == 'Last') {
-          manual.Last = content;
-        } else if ($(this).attr('headers') == 'Pickup') {
-          manual.Pickup = content;
-        } else if ($(this).attr('headers') == 'Phone') {
-          manual.Phone = content;
-        } else if ($(this).attr('headers') == 'Package') {
-          manual.Package = content;
-        }
-      } else if ( $(this).hasClass('saved') || $(this).hasClass('no-edit')) {
-        if ($(this).attr('headers') == 'First') {
-          webOrder.First = content;
-        } else if ($(this).attr('headers') == 'Last') {
-          webOrder.Last = content;
-        } else if ($(this).attr('headers') == 'Pickup') {
-          webOrder.Pickup = content;
-        } else if ($(this).attr('headers') == 'Phone') {
-          webOrder.Phone = content;
-        } else if ($(this).attr('headers') == 'Package') {
-          webOrder.Package = content;
-        }
-      }
-    });
-    var label = id.split(':');
-    saveId = label[0] + ':' + label[1];
-    if ( !jQuery.isEmptyObject(manual) ){
-      manual.Trip = $('#trip').val();
-      saveManualOrder(saveId,manual);
-    } else if ( !jQuery.isEmptyObject(webOrder) ) { 
-      webOrder.Trip = $('#trip').val();
-      saveWebOrder(saveId, webOrder);
-    }
-  });
-  $('#saveBar').css('width', '15%');
+  
   if(window.navigator.onLine){
-    syncData();
+    $('#saveBar').css('width', '20%');
+    window.tableData = {};
+    selectOrderCheckboxes();
   } else {
-    alert("offline right now!");
+    $('#mainBody').append('<div id="success" class="alert alert-warning alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            'Changes made have been saved locally, try again when you\'re online</div>');
+    $('#saveBar').css('width', '100%');
+    setTimeout(function(){
+      $('#saveProgress').remove();
+    },2000);
   }
 });
 function selectOrderCheckboxes(){
@@ -289,11 +235,6 @@ function postData(){
                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                             'Something went wrong, try saving again</div>');
     });
-}
-function syncData(){
-  $('#saveBar').css('width', '20%');
-  window.tableData = {};
-  selectOrderCheckboxes();
 }
 function truncateTables(){
   // This is just to clear data without resetting browser
