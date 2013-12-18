@@ -58,7 +58,7 @@ Authentication is currently using .htpasswd, This will be changed to utilize [ph
 [tablesorter v2.14.0](https://github.com/Mottie/tablesorter)  
 [We are using a customized version php-login.net - 1-minimal version from September 21st 2013](https://github.com/panique/php-login)
 
-Installing and getting Grunt.js configured can be pretty daunting. [Here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
+Installing and getting Grunt.js configured can be pretty daunting. Check out the [Getting Started](http://gruntjs.com/getting-started) and [here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
 
 Once you have node, npm and grunt installed. You can run grunt tasks from the projects root.
 

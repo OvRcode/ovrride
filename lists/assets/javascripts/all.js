@@ -12346,6 +12346,8 @@ $("#save").click(function(){
   if(window.navigator.onLine){
     $('#saveBar').css('width', '20%');
     window.tableData = {};
+    /* Starts selection of data from webSQL DB's 
+    futher calls are chained on transaction success */
     selectOrderCheckboxes();
   } else {
     $('#mainBody').append('<div id="success" class="alert alert-warning alert-dismissable">' +
