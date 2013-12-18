@@ -14,7 +14,6 @@ function checkAll(trip_list, checktoggle) {
     }
   }
 }
-
 function formReset(){
   var tbl = document.getElementById("Listable");
   while (tbl.firstChild) {
@@ -78,6 +77,7 @@ function saveWebOrder(id,webOrder){
   var db = window.db;
   var time = (new Date()).valueOf();
   var trip = $('#trip').val();
+  
   db.transaction(function(tx) {
     tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_orders`' +
                   ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`,`timeStamp`)' +
@@ -90,29 +90,12 @@ function saveWebOrder(id,webOrder){
     );
   });
 }
-$("#save").click(function(){
-  setupProgressBar();
-  $('#saveBar').css('width', '10%');
-  
-  if(window.navigator.onLine){
-    $('#saveBar').css('width', '20%');
-    window.tableData = {};
-    selectOrderCheckboxes();
-  } else {
-    $('#mainBody').append('<div id="success" class="alert alert-warning alert-dismissable">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            'Changes made have been saved locally, try again when you\'re online</div>');
-    $('#saveBar').css('width', '100%');
-    setTimeout(function(){
-      $('#saveProgress').remove();
-    },2000);
-  }
-});
 function selectOrderCheckboxes(){
   $('#saveBar').css('width', '30%');
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
+  
   db.transaction(function(tx){
     tx.executeSql('SELECT `ovr_lists_fields`.`ID`, `ovr_lists_fields`.`value`,`ovr_lists_fields`.`timeStamp`' +
                   'FROM `ovr_lists_fields`' +
@@ -122,6 +105,7 @@ function selectOrderCheckboxes(){
                   function(tx,results){
                     var len=results.rows.length;
                     var i;
+                    
                     for(i = 0; i < len; i++) {
                       var label = results.rows.item(i).ID;
                       label = label.split(':');
@@ -129,14 +113,17 @@ function selectOrderCheckboxes(){
                       var orderItem = label[1];
                       var field = label[2];
                       var value = results.rows.item(i).value == 'true' ? 1:0;
+                      
                       if ( typeof tableData[order] === "undefined") {
                       tableData[order] = {};
                       }
+                      
                       if ( typeof tableData[order][orderItem] === "undefined" ) {
                       tableData[order][orderItem] = {};
                       }
                       tableData[order][orderItem][field] = new Array(value, results.rows.item(i).timeStamp);
                     }
+                    
                     $('#saveBar').css('width', '40%');
                     selectManualOrders();
                   });
@@ -147,6 +134,7 @@ function selectManualOrders(){
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
+  
   db.transaction(function(tx){
     tx.executeSql('SELECT * FROM `ovr_lists_manual_orders` WHERE `trip` = ?',
                   [trip],
@@ -158,12 +146,15 @@ function selectManualOrders(){
                     id = id.split(':');
                     var order = id[0];
                     var orderItem = id[1];
+                    
                     if ( typeof tableData[order] === 'undefined') {
                       tableData[order] = {};
                     }
+                    
                     if ( typeof tableData[order][orderItem] === 'undefined') {
                       tableData[order][orderItem] = {};
                     }
+                    
                     tableData[order][orderItem].First = results.rows.item(i).First;
                     tableData[order][orderItem].Last = results.rows.item(i).Last;
                     tableData[order][orderItem].Pickup = results.rows.item(i).Pickup;
@@ -180,6 +171,7 @@ function selectManualCheckboxes(){
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
+  
   db.transaction(function(tx){
     tx.executeSql('SELECT `ovr_lists_fields`.* ' +
                   'FROM `ovr_lists_fields`, `ovr_lists_manual_orders`' +
@@ -190,6 +182,7 @@ function selectManualCheckboxes(){
                     var len = results.rows.length;
                     var i;
                     console.log('Results:' + len);
+                    
                     for (i = 0; i < len; i++) {
                       var id = results.rows.item(i).ID;
                       id = id.split(':');
@@ -197,9 +190,11 @@ function selectManualCheckboxes(){
                       var orderItem = id[1];
                       var field = id[2];
                       var value = results.rows.item(i).value == 'true' ? 1:0;
+                      
                       if ( typeof tableData[order] === 'undefined') {
                         tableData[order] = {};
                       }
+                      
                       if ( typeof tableData[order][orderItem] === 'undefined') {
                         tableData[order][orderItem] = {};
                       }
@@ -214,8 +209,6 @@ function selectManualCheckboxes(){
 }
 function postData(){
   $('#saveBar').css('width', '80%');
-  //console.log(window.tableData);
-  console.log(window.tableData);
   var jqxhr = $.post( "save.php", window.tableData,function() {})
     .done(function() {
       $('#saveBar').css('width', '100%');
@@ -257,10 +250,10 @@ function setupProgressBar(){
     '</div>' +
   '</div>' +
     '</div>');
-}
-// save checkboxes and manual entries  on change to websql
+} 
 $.fn.autoSave = function(){
-  /* Function will be called each time a manual row is added
+  /* save checkboxes and manual entries  on change to websql
+     Function will be called each time a manual row is added
      unbind events first to avoid duplicate event listeners */
   $('#Listable').unbind('click');
   $('#Listable .manual').unbind('focusout');
@@ -271,7 +264,38 @@ $.fn.autoSave = function(){
     autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
   });
 };
+$("#save").click(function(){
+  setupProgressBar();
+  $('#saveBar').css('width', '10%');
+  
+  if(window.navigator.onLine){
+    $('#saveBar').css('width', '20%');
+    window.tableData = {};
+    /* Starts selection of data from webSQL DB's 
+    futher calls are chained on transaction success */
+    selectOrderCheckboxes();
+  } else {
+    $('#mainBody').append('<div id="success" class="alert alert-warning alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            'Changes made have been saved locally, try again when you\'re online</div>');
+    $('#saveBar').css('width', '100%');
+    setTimeout(function(){
+      $('#saveProgress').remove();
+    },2000);
+  }
+});
 // End webSQL Functions
+$.fn.colCount = function() {
+   var colCount = 0;
+   $('thead:nth-child(1) td', this).each(function () {
+       if ($(this).attr('colspan')) {
+           colCount += +$(this).attr('colspan');
+       } else {
+           colCount++;
+       }
+   });
+   return colCount;
+};
 $.fn.buildTable = function(){
   var hasPickup   = $("#hasPickup").val();
 
@@ -325,7 +349,9 @@ $.fn.buildTable = function(){
       $.each(values, function(orderItemNumber, fields){
         var id = orderNumber+":"+orderItemNumber+":";
         var row = {};
+        
         saveWebOrder(id,fields);
+        
         $.each(fields, function(field, value){
           if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
             row[field] = '<td';
@@ -362,21 +388,25 @@ $.fn.buildTable = function(){
             }
           }
         });
-        // Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
-        //    this is proably a result of moving data from PHP to JSON and back to an array 
+        /* Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
+            this is proably a result of moving data from PHP to JSON and back to an array */
         tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
         if (hasPickup == 1) {
           tableBody += row.Pickup;
         } 
+        
         tableBody += row.Phone + row.Package;
+        
         if (prefix == 'WO') {
           tableBody += '<td>' + orderNumber + '</td>';
         } else {
           tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
         }
+        
         tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
         tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
         riders++;
+        
         if (hasPickup == 1) {
           var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
           if(typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined'){
@@ -386,6 +416,7 @@ $.fn.buildTable = function(){
         }
       });
     });
+
     tableBody += '</tbody>\n';
     tableFooter += '<tfoot>\n<tr class="totals-row">' +
                    '<td>Total Guests: </td>\n' +
@@ -400,10 +431,12 @@ $.fn.buildTable = function(){
         tableFooter += '<td>' + location + ': ' + value + '</td>';
       });
     }
+    
     tableFooter += '</tfoot></table>';
     var output = tableHeader + tableBody + tableFooter;
     $(this).append(output);
   }
+  
   if (orders.length > 0) {
     orders.remove();
     $('#hasPickup').remove();
@@ -471,18 +504,7 @@ $(function(){
 
   // Chained drop downs
   $("#trip").chained("#destination");
-  //custom column counter
-  $.fn.colCount = function() {
-     var colCount = 0;
-     $('thead:nth-child(1) td', this).each(function () {
-         if ($(this).attr('colspan')) {
-             colCount += +$(this).attr('colspan');
-         } else {
-             colCount++;
-         }
-     });
-     return colCount;
-  };
+
   // tablesorter configuration
   // http://mottie.github.io/tablesorter/docs/#Configuration
   var rows = $("#Listable").colCount();
