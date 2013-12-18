@@ -74,15 +74,15 @@ function saveCheckbox(id,value){
     );
   });
 }
-// NEED TO RE THINK THIS
 function saveWebOrder(id,webOrder){
   var db = window.db;
   var time = (new Date()).valueOf();
+  var trip = $('#trip').val();
   db.transaction(function(tx) {
     tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_orders`' +
                   ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`,`timeStamp`)' +
                   ' VALUES(?,?,?,?,?,?,?,?)',
-      [id, webOrder.First, webOrder.Last, webOrder.Pickup, webOrder.Phone, webOrder.Package, webOrder.Trip, time],
+      [id, webOrder.First, webOrder.Last, webOrder.Pickup, webOrder.Phone, webOrder.Package, trip, time],
       function(tx,result){},
       function(tx, error){
         console.log('error inserting or replacing on ovr_lists_orders: ' + error.message);
@@ -272,6 +272,144 @@ $.fn.autoSave = function(){
   });
 };
 // End webSQL Functions
+$.fn.buildTable = function(){
+  var hasPickup   = $("#hasPickup").val();
+
+  var orders = $('.order');
+  var orderData   = {};
+  var tableHeader = '';
+  var tableBody   = '';
+  var tableFooter = '';
+  var riders      = 0;
+  var byLocation  = {};
+
+  if (orders.length === 0 && $('#trip').val() != "none") {
+    $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
+  } 
+  else if (orders.length > 0){
+    orders.each(function(){
+      var temp = jQuery.parseJSON($(this).val());
+      orderData[temp[0]] = temp[1];
+    });
+    
+    tableHeader += '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
+                      '<thead>' +
+                      '<tr class="tablesorter-headerRow">\n' +
+                      '<td class="filter-false">AM</td>' +
+                      '<td class="filter-false">PM</td>' +
+                      '<td>First</td>' +
+                      '<td>Last</td>';
+                      
+    if (hasPickup == 1) {
+      tableHeader += '<td data-placeholder="Choose a Location">Pickup</td>';
+    }
+    
+    tableHeader += '<td>Phone</td>' +
+                  '<td data-placeholder="Choose a Package">Package</td>' +
+                  '<td>Order</td>' +
+                  '<td class="filter-false">Waiver</td>' +
+                  '<td class="filter-false">Product REC.</td>' +
+                  '<td class="filter-false">Bus Only</td>' +
+                  '<td class="filter-false">All Area Lift</td>' +
+                  '<td class="filter-false">Beg. Lift</td>' +
+                  '<td class="filter-false">BRD Rental</td>' +
+                  '<td class="filter-false">Ski Rental</td>' +
+                  '<td class="filter-false">LTS</td>' +
+                  '<td class="filter-false">LTR</td>' +
+                  '<td class="filter-false">Prog. Lesson</td>\n' +
+                  '</tr>' +
+                  '</thead>\n';
+    
+    $.each(orderData, function(orderNumber, values){
+      var prefix = orderNumber.substring(0,2);
+      $.each(values, function(orderItemNumber, fields){
+        var id = orderNumber+":"+orderItemNumber+":";
+        var row = {};
+        saveWebOrder(id,fields);
+        $.each(fields, function(field, value){
+          if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
+            row[field] = '<td';
+            switch (field) {
+              case 'First':
+                row[field] += ' headers="First"';
+                break;
+              case 'Last':
+                row[field] += ' headers="Last"';
+                break;
+              case 'Pickup':
+                row[field] += ' headers="Pickup"';
+                break;
+              case 'Phone':
+                row[field] += ' headers="Phone"';
+                break;
+              case 'Package':
+                row[field] += ' headers="Package"';
+                break;
+              case 'Order':
+                row[field] += 'headers="Order"';
+            }
+            if (prefix != 'WO') {
+              row[field] += ' class="no-edit"';
+            } else {
+              row[field] += ' class="saved"';
+            }
+            row[field] +='>'+value+'</td>';
+          } 
+          else {
+            row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
+            if (field != 'Email'){
+              saveCheckbox(id+field,(value == "checked" ? true : false));
+            }
+          }
+        });
+        // Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
+        //    this is proably a result of moving data from PHP to JSON and back to an array 
+        tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
+        if (hasPickup == 1) {
+          tableBody += row.Pickup;
+        } 
+        tableBody += row.Phone + row.Package;
+        if (prefix == 'WO') {
+          tableBody += '<td>' + orderNumber + '</td>';
+        } else {
+          tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
+        }
+        tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
+        tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
+        riders++;
+        if (hasPickup == 1) {
+          var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
+          if(typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined'){
+            byLocation[locationName] = 0;
+          }
+          byLocation[locationName] += 1;
+        }
+      });
+    });
+    tableBody += '</tbody>\n';
+    tableFooter += '<tfoot>\n<tr class="totals-row">' +
+                   '<td>Total Guests: </td>\n' +
+                   '<td id="total_guests">' + riders + '</td>' +
+                   '<td><button type="button" class="btn btn-primary" id="add">' +
+                   '<span class="glyphicon glyphicon-plus"></span></button>' +
+                   '<button type="button" class="btn btn-danger pull-right" id="remove">' +
+                   '<span class="glyphicon glyphicon-minus"></span></button></td>';
+    if (hasPickup == 1) {
+      tableFooter += '<td>Guests by Pickup: </td>';
+      $.each(byLocation, function(location, value){
+        tableFooter += '<td>' + location + ': ' + value + '</td>';
+      });
+    }
+    tableFooter += '</tfoot></table>';
+    var output = tableHeader + tableBody + tableFooter;
+    $(this).append(output);
+  }
+  if (orders.length > 0) {
+    orders.remove();
+    $('#hasPickup').remove();
+  }
+};
+
 $(function(){
   // Connect to webSQL DB and create tables
   (function(){
@@ -311,6 +449,7 @@ $(function(){
   $('#status').click(function(e){
     e.preventDefault();
   });
+  // Monitor onLine status and flip navbar indicator 
   setInterval(function () {
     var status = $('#status');
     if (window.navigator.onLine) {
@@ -327,143 +466,7 @@ $(function(){
       }
     }
   }, 250);
-  $(window.navigator.onLine).on('offline',function(event){
-    $('#status').removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color','red');
-  });
   // Create a table if data exists
-  $.fn.buildTable = function(){
-    var hasPickup   = $("#hasPickup").val();
-
-    var orders = $('.order');
-    var orderData   = {};
-    var tableHeader = '';
-    var tableBody   = '';
-    var tableFooter = '';
-    var riders      = 0;
-    var byLocation  = {};
-
-    if (orders.length === 0 && $('#trip').val() != "none") {
-      $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
-    } 
-    else if (orders.length > 0){
-      orders.each(function(){
-        var temp = jQuery.parseJSON($(this).val());
-        orderData[temp[0]] = temp[1];
-      });
-      
-      tableHeader += '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
-                        '<thead>' +
-                        '<tr class="tablesorter-headerRow">\n' +
-                        '<td class="filter-false">AM</td>' +
-                        '<td class="filter-false">PM</td>' +
-                        '<td>First</td>' +
-                        '<td>Last</td>';
-                        
-      if (hasPickup == 1) {
-        tableHeader += '<td data-placeholder="Choose a Location">Pickup</td>';
-      }
-      
-      tableHeader += '<td>Phone</td>' +
-                    '<td data-placeholder="Choose a Package">Package</td>' +
-                    '<td>Order</td>' +
-                    '<td class="filter-false">Waiver</td>' +
-                    '<td class="filter-false">Product REC.</td>' +
-                    '<td class="filter-false">Bus Only</td>' +
-                    '<td class="filter-false">All Area Lift</td>' +
-                    '<td class="filter-false">Beg. Lift</td>' +
-                    '<td class="filter-false">BRD Rental</td>' +
-                    '<td class="filter-false">Ski Rental</td>' +
-                    '<td class="filter-false">LTS</td>' +
-                    '<td class="filter-false">LTR</td>' +
-                    '<td class="filter-false">Prog. Lesson</td>\n' +
-                    '</tr>' +
-                    '</thead>\n';
-      
-      $.each(orderData, function(orderNumber, values){
-        var prefix = orderNumber.substring(0,2);
-        $.each(values, function(orderItemNumber, fields){
-          var id = orderNumber+":"+orderItemNumber+":";
-          var row = {};
-          $.each(fields, function(field, value){
-            if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
-              row[field] = '<td';
-              switch (field) {
-                case 'First':
-                  row[field] += ' headers="First"';
-                  break;
-                case 'Last':
-                  row[field] += ' headers="Last"';
-                  break;
-                case 'Pickup':
-                  row[field] += ' headers="Pickup"';
-                  break;
-                case 'Phone':
-                  row[field] += ' headers="Phone"';
-                  break;
-                case 'Package':
-                  row[field] += ' headers="Package"';
-                  break;
-                case 'Order':
-                  row[field] += 'headers="Order"';
-              }
-              if (prefix != 'WO') {
-                row[field] += ' class="no-edit"';
-              } else {
-                row[field] += ' class="saved"';
-              }
-              row[field] +='>'+value+'</td>';
-            } 
-            else {
-              row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
-            }
-          });
-          // Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
-          //    this is proably a result of moving data from PHP to JSON and back to an array 
-          tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
-          if (hasPickup == 1) {
-            tableBody += row.Pickup;
-          } 
-          tableBody += row.Phone + row.Package;
-          if (prefix == 'WO') {
-            tableBody += '<td>' + orderNumber + '</td>';
-          } else {
-            tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
-          }
-          tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
-          tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
-          riders++;
-          if (hasPickup == 1) {
-            var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
-            if(typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined'){
-              byLocation[locationName] = 0;
-            }
-            byLocation[locationName] += 1;
-          }
-        });
-      });
-      tableBody += '</tbody>\n';
-      tableFooter += '<tfoot>\n<tr class="totals-row">' +
-                     '<td>Total Guests: </td>\n' +
-                     '<td id="total_guests">' + riders + '</td>' +
-                     '<td><button type="button" class="btn btn-primary" id="add">' +
-                     '<span class="glyphicon glyphicon-plus"></span></button>' +
-                     '<button type="button" class="btn btn-danger pull-right" id="remove">' +
-                     '<span class="glyphicon glyphicon-minus"></span></button></td>';
-      if (hasPickup == 1) {
-        tableFooter += '<td>Guests by Pickup: </td>';
-        $.each(byLocation, function(location, value){
-          tableFooter += '<td>' + location + ': ' + value + '</td>';
-        });
-      }
-      tableFooter += '</tfoot></table>';
-      var output = tableHeader + tableBody + tableFooter;
-      $(this).append(output);
-    }
-    if (orders.length > 0) {
-      orders.remove();
-      $('#hasPickup').remove();
-    }
-  };
   $("#listTable").buildTable();
 
   // Chained drop downs
@@ -599,5 +602,4 @@ $(function(){
        $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
        $('#Listable').trigger("update");}
    });
-  
 });
