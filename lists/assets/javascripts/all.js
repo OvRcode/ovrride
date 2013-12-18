@@ -12383,19 +12383,22 @@ $(function(){
       );
     });
   })();
+  $('#status').click(function(e){
+    e.preventDefault();
+  });
   setInterval(function () {
     var status = $('#status');
     if (window.navigator.onLine) {
       if (status.hasClass('glyphicon-cloud-download')) {
-        status.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','');
+        status.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','').text(' online');
       } else if (!status.hasClass('glyphicon-cloud-upload')) {
-        status.addClass('glyphicon-cloud-upload').css('color','');
+        status.addClass('glyphicon-cloud-upload').css('color','').text(' online');
       } 
     } else if (!window.navigator.onLine) {
       if (status.hasClass('glyphicon-cloud-upload')){
-        status.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red');
+        status.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red').text(' offline');
       } else if (!status.hasClass('glyphicon-cloud-download')){
-        status.addClass('glyphicon-cloud-download').css('color','red');
+        status.addClass('glyphicon-cloud-download').css('color','red').text(' offline');
       }
     }
   }, 250);
