@@ -7,7 +7,11 @@
  */
 
 # OvR Lists Version Number
+<<<<<<< HEAD
 $lists_version = "0.8.0";
+=======
+$lists_version = "0.7.1";
+>>>>>>> origin/rememberme
 
 # Form
 if(isset($_SESSION['saved_table']) && $_SESSION['saved_table'])
@@ -170,7 +174,7 @@ class Trip_List{
         while($row = $result->fetch_assoc()){
             foreach($this->destinations as $value){
               if($value != "Stratton")
-                  $regex = '/'.$value.'\s(.*)/i';
+                  $regex = '/'.$value.'(.*)/i';
               else
                 $regex = '/Stratturday\s(.*)/i';
 

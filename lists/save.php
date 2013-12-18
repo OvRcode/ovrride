@@ -24,6 +24,7 @@ function dbConnect(){
     $db->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
     return $db;
 }
+
 function dbQuery($db,$sql){
     if (!$result = $db->query($sql)) {
         die('There was an error running the query [' . $db->error . ']');
@@ -31,6 +32,44 @@ function dbQuery($db,$sql){
         return $result;
     }
 }
+
+# Add to db
+foreach($table_data as $id => $data){
+    $prefix = substr($id, 0,2);
+    if($prefix == "WO"){
+        # This order has been manually entered into the list, need to save or update: Name and order info
+        $sql_manual = <<< EOT
+            INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`, `Last`, `Pickup`, `Phone`, `Package`, `Trip`)
+            VALUES ('$id','$data[First]','$data[Last]','$data[Pickup]','$data[Phone]','$data[Package]','$data[Trip]')
+            ON DUPLICATE KEY UPDATE
+            `First` = VALUES(`First`),
+            `Last` = VALUES(`Last`),
+            `Pickup` = VALUES(`Pickup`),
+            `Phone` = VALUES(`Phone`),
+            `Package` = VALUES(`Package`),
+            `Trip` = VALUES(`Trip`)
+EOT;
+        if(!$result = $db_connect->query($sql_manual)){
+            die('There was an error running the query [' . $db_connect->error . ']');
+        }     
+    }
+    $sql = <<< EOT2
+        INSERT INTO `ovr_lists_checkboxes` (`ID`,`AM`,`PM`,`Waiver`,`Product`,`Bus`,`All_Area`,`Beg`,`BRD`,`SKI`,`LTS`,`LTR`,`Prog_Lesson`) VALUES('$id','$data[AM]','$data[PM]','$data[Waiver]','$data[Product]','$data[Bus]','$data[All_Area]','$data[Beg]','$data[BRD]','$data[SKI]','$data[LTS]','$data[LTR]','$data[Prog_Lesson]')
+        ON DUPLICATE KEY UPDATE
+        `AM` = VALUES(`AM`),
+        `PM` = VALUES(`PM`),
+        `Waiver` = VALUES(`Waiver`),
+        `Product` = VALUES(`Product`),
+        `Bus` = VALUES(`Bus`),
+        `All_Area` = VALUES(`All_Area`),
+        `Beg` = VALUES(`Beg`),
+        `BRD` = VALUES(`BRD`),
+        `SKI` = VALUES(`SKI`),
+        `LTS` = VALUES(`LTS`),
+        `LTR` = VALUES(`LTR`),
+        `Prog_Lesson` = VALUES(`Prog_Lesson`)
+EOT2;
+
 
 $db = dbConnect();
 
