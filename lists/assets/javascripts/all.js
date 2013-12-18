@@ -12333,7 +12333,19 @@ function setupProgressBar(){
   '</div>' +
     '</div>');
 }
-
+// save checkboxes and manual entries  on change to websql
+$.fn.autoSave = function(){
+  /* Function will be called each time a manual row is added
+     unbind events first to avoid duplicate event listeners */
+  $('#Listable').unbind('click');
+  $('#Listable .manual').unbind('focusout');
+  $('#Listable').on('click','.center-me' ,function(){
+    saveCheckbox($(this).children('input').attr('name'),$(this).children('input').is(':checked'));
+  }); 
+  $('#Listable .manual').on('focusout','.unsaved', function(){
+    autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
+  });
+};
 // End webSQL Functions
 $(function(){
   // Connect to webSQL DB and create tables
@@ -12371,19 +12383,25 @@ $(function(){
       );
     });
   })();
-  // save checkboxes and manual entries  on change to websql
-  $.fn.autoSave = function(){
-    /* Function will be called each time a manual row is added
-       unbind events first to avoid duplicate event listeners */
-    $('#Listable').unbind('click');
-    $('#Listable .manual').unbind('focusout');
-    $('#Listable').on('click','.center-me' ,function(){
-      saveCheckbox($(this).children('input').attr('name'),$(this).children('input').is(':checked'));
-    }); 
-    $('#Listable .manual').on('focusout','.unsaved', function(){
-      autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
-    });
-  };
+  setInterval(function () {
+    var status = $('#status');
+    if (window.navigator.onLine) {
+      if (status.hasClass('glyphicon-cloud-download')) {
+        status.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','');
+      } else if (!status.hasClass('glyphicon-cloud-upload')) {
+        status.addClass('glyphicon-cloud-upload').css('color','');
+      } 
+    } else if (!window.navigator.onLine) {
+      if (status.hasClass('glyphicon-cloud-upload')){
+        status.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red');
+      } else if (!status.hasClass('glyphicon-cloud-download')){
+        status.addClass('glyphicon-cloud-download').css('color','red');
+      }
+    }
+  }, 250);
+  $(window.navigator.onLine).on('offline',function(event){
+    $('#status').removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color','red');
+  });
   // Create a table if data exists
   $.fn.buildTable = function(){
     var hasPickup   = $("#hasPickup").val();
