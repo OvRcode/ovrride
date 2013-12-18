@@ -421,7 +421,7 @@ $(function(){
           riders++;
           if (hasPickup == 1) {
             var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
-            if(typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined' || typeof byLocation[locationName] === 'NaN'){
+            if(typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined'){
               byLocation[locationName] = 0;
             }
             byLocation[locationName] += 1;
