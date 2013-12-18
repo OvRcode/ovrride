@@ -65,7 +65,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <a class="navbar-brand logo-nav" onclick="location.href='/';" href="javascript:void();">OvR Trip Lists</a>
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav nav-puller">
+          <ul class="nav navbar-nav nav-puller">  
             <li>
               <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
               <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
@@ -82,6 +82,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
+            <li><a href="#"><span class="glyphicon" id="status"></span></a></li>  
           </ul>
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
