@@ -24,7 +24,6 @@ if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_li
     if($_SESSION['post_data']['csv_list'] == "csv_list")
         $list->csv("trip_list");
 }
-    
 
 if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_email'])){
     if($_SESSION['post_data']['csv_email'] == "csv_email")
@@ -48,7 +47,7 @@ class Trip_List{
     var $has_pickup;
     var $destinations;
     var $checkboxes;
-    
+
     function __construct($selected_trip){
         # Connect to database
         require_once("config.php");
