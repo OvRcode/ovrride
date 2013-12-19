@@ -664,46 +664,54 @@ $.fn.buildTable = function(){
   //$('#hasPickup').remove();
   
 };
-
+// Connect to webSQL DB and create tables
+(function(){
+  var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
+  window.db = db;
+  db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER, `timeStamp` INTEGER)',
+                  [],
+                  function(tx, result) {
+                    console.log("ovr_lists_fields setup success"); },
+                  function(tx, error) {
+                    console.log("ovr_lists_fields setup error: " + error.message); }
+    );
+  });
+  db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
+                  ' `Pickup`, `Phone`, `Package`, `Trip`)',
+                  [],
+                  function(tx, result){
+                    console.log('ovr_lists_manual_orders setup success'); },
+                  function(tx, error){
+                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
+    );
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_orders` (`ID` UNIQUE, `First`, `Last`,' +
+                  ' `Pickup`, `Phone`, `Package`, `Trip`, `timeStamp` INTEGER)',
+                  [],
+                  function(tx, result){
+                    console.log('ovr_lists_manual_orders setup success'); },
+                  function(tx, error){
+                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
+    );
+  });
+})();
 $(function(){
-  // Connect to webSQL DB and create tables
-  (function(){
-    var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
-    window.db = db;
-    db.transaction(function(tx) {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                    '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER, `timeStamp` INTEGER)',
-                    [],
-                    function(tx, result) {
-                      console.log("ovr_lists_fields setup success"); },
-                    function(tx, error) {
-                      console.log("ovr_lists_fields setup error: " + error.message); }
-      );
-    });
-    db.transaction(function(tx) {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                    '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                    ' `Pickup`, `Phone`, `Package`, `Trip`)',
-                    [],
-                    function(tx, result){
-                      console.log('ovr_lists_manual_orders setup success'); },
-                    function(tx, error){
-                      console.log('ovr_lists_manual_orders setup error:' + error.message); }
-      );
-      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                    '`ovr_lists_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                    ' `Pickup`, `Phone`, `Package`, `Trip`, `timeStamp` INTEGER)',
-                    [],
-                    function(tx, result){
-                      console.log('ovr_lists_manual_orders setup success'); },
-                    function(tx, error){
-                      console.log('ovr_lists_manual_orders setup error:' + error.message); }
-      );
-    });
-  })();
+  // Create a table if data exists
+  if ($('.order').length > 0){
+    $("#listTable").buildTable();
+  }
+  
   $('#status').click(function(e){
     e.preventDefault();
   });
+  
+  // Chained drop downs
+  $("#trip").chained("#destination");
+  
   // Monitor onLine status and flip navbar indicator 
   setInterval(function () {
     var status = $('#status');
@@ -730,16 +738,6 @@ $(function(){
       }
     }
   }, 250);
-  // Create a table if data exists
-  if ($('.order').length > 0){
-    $("#listTable").buildTable();
-  }
-
-  // Chained drop downs
-  $("#trip").chained("#destination");
-
-  // tablesorter configuration
-  // http://mottie.github.io/tablesorter/docs/#Configuration
   
   setupTablesorter($("#Listable").colCount());
   // check for pickup column, 18 columns with 17 without
