@@ -84,7 +84,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
-            <li><a href="#"><span class="glyphicon" id="status"></span></a></li>  
+            <li><a href=""><span class="glyphicon" id="status"></span></a></li>  
           </ul>
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
@@ -150,8 +150,33 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       </div><!-- /.container -->
 
       <!-- Lists table added here by Jquery -->
-      <div id="listTable"></div>
+      <div id="listTable">
+          
+      </div>
+      <div class="pager">
 
+          
+          <button type="button" class="first btn btn-default">
+              <span class="glyphicon glyphicon-fast-backward"></span>
+          </button>
+          <button type="button" class="prev btn btn-default">
+              <span class="glyphicon glyphicon-backward"></span>
+          </button>
+          <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+          <button type="button" class="next btn btn-default">
+              <span class="glyphicon glyphicon-forward"></span>
+          </button>
+          <button type="button" class="last btn btn-default">
+              <span class="glyphicon glyphicon-fast-forward"></span>
+          </button>
+          <select class="pagesize">
+              <option selected="selected" value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
+      		</select>
+      	</div>
       <footer>
         <div class="page-header"></div><!-- inserts the line separator -->
           <div class="container">

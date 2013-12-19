@@ -27,6 +27,7 @@ function generateOnOff(){
     document.getElementById("trip_list").submit();
   } else {
     $('#Listable').remove();
+    $('.pager').css('visibility','hidden');
     $('#save').css('visibility','hidden');
     $('#csv_list').css('visibility','hidden');
     $('#csv_email').css('visibility','hidden');
@@ -402,94 +403,77 @@ function setTrip(){
 
 }
 function setupTablesorter(rows) {
-  if(rows == 18){
-    $('#Listable').tablesorter({
+    var pagerOptions = {
+    container: $('.pager'),
+    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})' 
+    };
+    var headerOptions = {
+      0: { sorter: 'checkbox' },
+      1: { sorter: 'checkbox' },
+      2: { sorter: "text" },
+      3: { sorter: "text" },
+      4: { sorter: "text" },
+      5: { sorter: "digit" },
+      6: { sorter: "text" },
+      7: { sorter: "digit" },
+      8: {sorter: 'checkbox'}, 
+      9: { sorter: 'checkbox' },
+      10: { sorter: 'checkbox' },
+      11: { sorter: 'checkbox' },
+      12: { sorter: 'checkbox' },
+      13: { sorter: 'checkbox' },
+      14: { sorter: 'checkbox' },
+      15: { sorter: 'checkbox' },
+      16: { sorter: 'checkbox' },
+      17: { sorter: 'checkbox' },
+      18: { sorter: 'checkbox' }
+    };
+    var filterOptions = {
+        4 : true,
+        6 : true 
+      };
+    var widgetOptions = {
+      editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
+      editable_enterToAccept : true,     // press enter to accept content, or click outside if false
+      editable_autoResort    : false,    // auto resort after the content has changed.
+      editable_noEdit        : 'no-edit', // class name of cell that is no editable
+      stickyHeaders_offset: 50,
+      filter_childRows : true,
+      filter_columnFilters : true,
+      filter_hideFilters : true,
+      filter_ignoreCase : true,
+      filter_reset : '.reset',
+      filter_searchDelay : 0,
+      filter_functions : filterOptions
+    };
+    // Modify options for tables with no pickup column
+    if (rows == 17) {
+      delete headerOptions[18];
+      headerOptions[4].sorter = "digit";
+      headerOptions[5].sorter = "text";
+      headerOptions[6].sorter = "digit";
+      headerOptions[7].sorter = 'checkbox';
+      widgetOptions.editable_columns = "2-5";
+      delete filterOptions[4];
+      delete filterOptions[6];
+      filterOptions[5] = true;
+    }
+    
+    var tablesorterOptions = {
+      debug: true,
+      delayInit: false,
+      widthFixed: true,
+      ignoreCase: true,
+      removeRows: true,
       sortList: [[4,0],[3,0]],
-      headers: {
-            0: { sorter: 'checkbox' },
-            1: { sorter: 'checkbox' },
-            2: { sorter: "text" },
-            3: { sorter: "text" },
-            4: { sorter: "text" },
-            5: { sorter: "digit" },
-            6: { sorter: "text" },
-            7: { sorter: "digit" },
-            8: {sorter: 'checkbox'}, 
-            9: { sorter: 'checkbox' },
-            10: { sorter: 'checkbox' },
-            11: { sorter: 'checkbox' },
-            12: { sorter: 'checkbox' },
-            13: { sorter: 'checkbox' },
-            14: { sorter: 'checkbox' },
-            15: { sorter: 'checkbox' },
-            16: { sorter: 'checkbox' },
-            17: { sorter: 'checkbox' },
-            18: { sorter: 'checkbox' }
-          },
-      widgets : [ 'editable', 'columns','stickyHeaders','filter' ],
-      widgetOptions: {
-        editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
-        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
-        editable_autoResort    : false,    // auto resort after the content has changed.
-        editable_noEdit        : 'no-edit', // class name of cell that is no editable
-        stickyHeaders_offset: 50,
-        filter_childRows : false,
-        filter_columnFilters : true,
-        filter_hideFilters : true,
-        filter_ignoreCase : true,
-        filter_reset : '.reset',
-        filter_searchDelay : 100,
-        filter_functions : {
-          4 : true,
-          6 : true 
-        }
-      }
-    });
-  }
-  else if (rows == 17){
-    $('#Listable').tablesorter({
-      sortList: [[4,0],[3,0]],
-      headers: {
-        headers: {
-              0: { sorter: 'checkbox' },
-              1: { sorter: 'checkbox' },
-              2: { sorter: "text" },
-              3: { sorter: "text" },
-              4: { sorter: "digit" },
-              5: { sorter: "text" },
-              6: { sorter: "digit" },
-              7: {sorter: 'checkbox'}, 
-              8: { sorter: 'checkbox' },
-              9: { sorter: 'checkbox' },
-              10: { sorter: 'checkbox' },
-              11: { sorter: 'checkbox' },
-              12: { sorter: 'checkbox' },
-              13: { sorter: 'checkbox' },
-              14: { sorter: 'checkbox' },
-              15: { sorter: 'checkbox' },
-              16: { sorter: 'checkbox' },
-              17: { sorter: 'checkbox' }
-            },
-          },
-      widgets : [ 'editable', 'columns','stickyHeaders','filter'],
-      widgetOptions: {
-        editable_columns       : "2-5",  // point to the columns to make editable (zero-based index)
-        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
-        editable_autoResort    : false,    // auto resort after the content has changed.
-        editable_noEdit        : 'no-edit', // class name of cell that is no editable
-        stickyHeaders_offset: 50,
-        filter_childRows : false,
-        filter_columnFilters : true,
-        filter_hideFilters : true,
-        filter_ignoreCase : true,
-        filter_reset : '.reset',
-        filter_searchDelay : 100,
-        filter_functions : {
-          5 : true
-        }
-      }
-    }); 
-  }
+      headers: headerOptions,
+      widgets : [ 'editable', 'columns','filter' ],
+      widgetOptions: widgetOptions,
+    };
+    if (rows > 0) {
+      $('#Listable').tablesorter(tablesorterOptions).tablesorterPager(pagerOptions);
+      $('.pager').css('visibility','visible');
+    }
 }
 $.fn.colCount = function() {
    var colCount = 0;
@@ -664,46 +648,54 @@ $.fn.buildTable = function(){
   //$('#hasPickup').remove();
   
 };
-
+// Connect to webSQL DB and create tables
+(function(){
+  var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
+  window.db = db;
+  db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER, `timeStamp` INTEGER)',
+                  [],
+                  function(tx, result) {
+                    console.log("ovr_lists_fields setup success"); },
+                  function(tx, error) {
+                    console.log("ovr_lists_fields setup error: " + error.message); }
+    );
+  });
+  db.transaction(function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
+                  ' `Pickup`, `Phone`, `Package`, `Trip`)',
+                  [],
+                  function(tx, result){
+                    console.log('ovr_lists_manual_orders setup success'); },
+                  function(tx, error){
+                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
+    );
+    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
+                  '`ovr_lists_orders` (`ID` UNIQUE, `First`, `Last`,' +
+                  ' `Pickup`, `Phone`, `Package`, `Trip`, `timeStamp` INTEGER)',
+                  [],
+                  function(tx, result){
+                    console.log('ovr_lists_manual_orders setup success'); },
+                  function(tx, error){
+                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
+    );
+  });
+})();
 $(function(){
-  // Connect to webSQL DB and create tables
-  (function(){
-    var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
-    window.db = db;
-    db.transaction(function(tx) {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                    '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER, `timeStamp` INTEGER)',
-                    [],
-                    function(tx, result) {
-                      console.log("ovr_lists_fields setup success"); },
-                    function(tx, error) {
-                      console.log("ovr_lists_fields setup error: " + error.message); }
-      );
-    });
-    db.transaction(function(tx) {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                    '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                    ' `Pickup`, `Phone`, `Package`, `Trip`)',
-                    [],
-                    function(tx, result){
-                      console.log('ovr_lists_manual_orders setup success'); },
-                    function(tx, error){
-                      console.log('ovr_lists_manual_orders setup error:' + error.message); }
-      );
-      tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                    '`ovr_lists_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                    ' `Pickup`, `Phone`, `Package`, `Trip`, `timeStamp` INTEGER)',
-                    [],
-                    function(tx, result){
-                      console.log('ovr_lists_manual_orders setup success'); },
-                    function(tx, error){
-                      console.log('ovr_lists_manual_orders setup error:' + error.message); }
-      );
-    });
-  })();
+  // Create a table if data exists
+  if ($('.order').length > 0){
+    $("#listTable").buildTable();
+  }
+  
   $('#status').click(function(e){
     e.preventDefault();
   });
+  
+  // Chained drop downs
+  $("#trip").chained("#destination");
+  
   // Monitor onLine status and flip navbar indicator 
   setInterval(function () {
     var status = $('#status');
@@ -730,16 +722,6 @@ $(function(){
       }
     }
   }, 250);
-  // Create a table if data exists
-  if ($('.order').length > 0){
-    $("#listTable").buildTable();
-  }
-
-  // Chained drop downs
-  $("#trip").chained("#destination");
-
-  // tablesorter configuration
-  // http://mottie.github.io/tablesorter/docs/#Configuration
   
   setupTablesorter($("#Listable").colCount());
   // check for pickup column, 18 columns with 17 without
