@@ -20,6 +20,9 @@
 
 // BASE STYLES
 // -------------------------
+#save, #csv_list, #csv_email{
+  visibility:hidden;
+}
 
 body {
   // margin: 10px;
