@@ -12102,6 +12102,10 @@ function generateOnOff(){
     document.getElementById("trip_list").submit();
   } else {
     $('#listable').remove();
+    $('#save').css('visibility','hidden');
+    $('#csv_list').css('visibility','hidden');
+    $('#csv_email').css('visibility','hidden');
+
     // Select data and trigger build at end
     var selectMode = 'build';
     window.selectMode = selectMode;
@@ -12623,7 +12627,11 @@ $.fn.buildTable = function(){
   tableFooter += '</tfoot></table>';
   var output = tableHeader + tableBody + tableFooter;
   $(this).append(output);
-  
+  $('#save').css('visibility','visible');
+  if (window.navigator.onLine){
+    $('#csv_list').css('visibility','visible');
+    $('#csv_email').css('visibility','visible');
+  }
   
   
   $('.order').remove();
@@ -12674,12 +12682,20 @@ $(function(){
   setInterval(function () {
     var status = $('#status');
     if (window.navigator.onLine) {
+      if ($('#Listable').length > 0) {
+      $('#csv_list').css('visibility','visible');
+      $('#csv_email').css('visibility','visible'); 
+      }
+      $('#save').removeClass('btn-warning');
       if (status.hasClass('glyphicon-cloud-download')) {
         status.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','').text(' online');
       } else if (!status.hasClass('glyphicon-cloud-upload')) {
         status.addClass('glyphicon-cloud-upload').css('color','').text(' online');
       } 
     } else if (!window.navigator.onLine) {
+      $('#csv_list').css('visibility','hidden');
+      $('#csv_email').css('visibility','hidden');
+      $('#save').addClass('btn-warning');
       if (status.hasClass('glyphicon-cloud-upload')){
         status.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red').text(' offline');
       } else if (!status.hasClass('glyphicon-cloud-download')){
