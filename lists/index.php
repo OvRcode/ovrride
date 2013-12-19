@@ -72,7 +72,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <ul class="nav navbar-nav nav-puller">  
             <li>
               <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
-              <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
                 <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
                   <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
                 </button>
@@ -82,7 +81,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
                 <button type="submit" class="btn btn-default" id="csv_email" name="csv_email" value="csv_email" title="Email CSV">
                   <span class="glyphicon glyphicon-envelope"></span> CSV
                 </button>
-              <?php } ?>
             </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
