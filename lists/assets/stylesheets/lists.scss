@@ -6,10 +6,13 @@
 
 @import "bootstrap/bootstrap";
 @import "color-me-sass/color-me-sass";
+@import "../tablesorter/addons/pager/jquery.tablesorter.pager.css";
 
 // BEGIN BOOTSTRAP OVERRIDES
 // -------------------------
-
+.next span{
+  padding-bottom:5px;
+}
 .navbar-inverse {
   color: white;
 }
@@ -20,7 +23,7 @@
 
 // BASE STYLES
 // -------------------------
-#save, #csv_list, #csv_email{
+#save, #csv_list, #csv_email, .pager{
   visibility:hidden;
 }
 
