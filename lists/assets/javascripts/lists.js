@@ -428,7 +428,6 @@ $.fn.buildTable = function(){
     }
     
   } else {
-    alert('offline');
     orderData = window.tableData;
     console.log(orderData);
   }
