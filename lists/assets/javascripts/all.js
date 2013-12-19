@@ -12101,7 +12101,7 @@ function generateOnOff(){
   if (window.navigator.onLine){
     document.getElementById("trip_list").submit();
   } else {
-    $('#listable').remove();
+    $('#Listable').remove();
     $('#save').css('visibility','hidden');
     $('#csv_list').css('visibility','hidden');
     $('#csv_email').css('visibility','hidden');
@@ -12208,7 +12208,7 @@ function selectOrderCheckboxes(){
                       var orderItem = label[1];
                       var field = label[2];
                       var value = results.rows.item(i).value == 'true' ? 1:0;
-                      console.log(order+ ' '+ orderItem+' '+field+' '+ value);
+                      
                       if ( typeof tableData[order] === "undefined" || typeof tableData[order] === undefined) {
                       tableData[order] = {};
                       }
@@ -12447,7 +12447,9 @@ function createTripCookie(){
   var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
   var expires = "; expires=" + tomorrow.toGMTString();
   var name = "OvrRide Trip";
-  var value = $('#trip').val();
+  var tripValue = $('#trip').val();
+  var destValue = $('#destination').val();
+  var value = destValue + "," + tripValue;
   document.cookie = name + "=" + value + expires + "; path=/";
 }
 function readTripCookie(){
@@ -12460,10 +12462,109 @@ function readTripCookie(){
   // Take out label
   value = value.split('=');
   value = value[1];
+  value = value.split(',');
   return value;
 }
 function destroyTripCookie(){
   document.cookie = "OvrRide Trip=;-1; path=/";
+}
+function setTrip(){
+  var trip = readTripCookie();
+  $('#destination').val(trip[0]);
+  // Need to trigger change for chained plugin to show trips
+  $('#destination').trigger('change');
+  $('#trip').val(trip[1]);
+
+}
+function setupTablesorter(rows) {
+  if(rows == 18){
+    $('#Listable').tablesorter({
+      sortList: [[4,0],[3,0]],
+      headers: {
+            0: { sorter: 'checkbox' },
+            1: { sorter: 'checkbox' },
+            2: { sorter: "text" },
+            3: { sorter: "text" },
+            4: { sorter: "text" },
+            5: { sorter: "digit" },
+            6: { sorter: "text" },
+            7: { sorter: "digit" },
+            8: {sorter: 'checkbox'}, 
+            9: { sorter: 'checkbox' },
+            10: { sorter: 'checkbox' },
+            11: { sorter: 'checkbox' },
+            12: { sorter: 'checkbox' },
+            13: { sorter: 'checkbox' },
+            14: { sorter: 'checkbox' },
+            15: { sorter: 'checkbox' },
+            16: { sorter: 'checkbox' },
+            17: { sorter: 'checkbox' },
+            18: { sorter: 'checkbox' }
+          },
+      widgets : [ 'editable', 'columns','stickyHeaders','filter' ],
+      widgetOptions: {
+        editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
+        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
+        editable_autoResort    : false,    // auto resort after the content has changed.
+        editable_noEdit        : 'no-edit', // class name of cell that is no editable
+        stickyHeaders_offset: 50,
+        filter_childRows : false,
+        filter_columnFilters : true,
+        filter_hideFilters : true,
+        filter_ignoreCase : true,
+        filter_reset : '.reset',
+        filter_searchDelay : 100,
+        filter_functions : {
+          4 : true,
+          6 : true 
+        }
+      }
+    });
+  }
+  else if (rows == 17){
+    $('#Listable').tablesorter({
+      sortList: [[4,0],[3,0]],
+      headers: {
+        headers: {
+              0: { sorter: 'checkbox' },
+              1: { sorter: 'checkbox' },
+              2: { sorter: "text" },
+              3: { sorter: "text" },
+              4: { sorter: "digit" },
+              5: { sorter: "text" },
+              6: { sorter: "digit" },
+              7: {sorter: 'checkbox'}, 
+              8: { sorter: 'checkbox' },
+              9: { sorter: 'checkbox' },
+              10: { sorter: 'checkbox' },
+              11: { sorter: 'checkbox' },
+              12: { sorter: 'checkbox' },
+              13: { sorter: 'checkbox' },
+              14: { sorter: 'checkbox' },
+              15: { sorter: 'checkbox' },
+              16: { sorter: 'checkbox' },
+              17: { sorter: 'checkbox' }
+            },
+          },
+      widgets : [ 'editable', 'columns','stickyHeaders','filter'],
+      widgetOptions: {
+        editable_columns       : "2-5",  // point to the columns to make editable (zero-based index)
+        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
+        editable_autoResort    : false,    // auto resort after the content has changed.
+        editable_noEdit        : 'no-edit', // class name of cell that is no editable
+        stickyHeaders_offset: 50,
+        filter_childRows : false,
+        filter_columnFilters : true,
+        filter_hideFilters : true,
+        filter_ignoreCase : true,
+        filter_reset : '.reset',
+        filter_searchDelay : 100,
+        filter_functions : {
+          5 : true
+        }
+      }
+    }); 
+  }
 }
 $.fn.colCount = function() {
    var colCount = 0;
@@ -12503,9 +12604,7 @@ $.fn.buildTable = function(){
     }
     
   } else {
-    alert('offline');
-    orderData = window.tableData;
-    console.log(orderData);
+    orderData = window.tableData;    
   }
   
   // Assemble table from data
@@ -12631,6 +12730,8 @@ $.fn.buildTable = function(){
   if (window.navigator.onLine){
     $('#csv_list').css('visibility','visible');
     $('#csv_email').css('visibility','visible');
+  } else {
+    setupTablesorter($("#Listable").colCount());
   }
   
   
@@ -12693,6 +12794,7 @@ $(function(){
         status.addClass('glyphicon-cloud-upload').css('color','').text(' online');
       } 
     } else if (!window.navigator.onLine) {
+      setTrip();
       $('#csv_list').css('visibility','hidden');
       $('#csv_email').css('visibility','hidden');
       $('#save').addClass('btn-warning');
@@ -12713,81 +12815,9 @@ $(function(){
 
   // tablesorter configuration
   // http://mottie.github.io/tablesorter/docs/#Configuration
-  var rows = $("#Listable").colCount();
+  
+  setupTablesorter($("#Listable").colCount());
   // check for pickup column, 18 columns with 17 without
-  if(rows == 18){
-    $('#Listable').tablesorter({
-      sortList: [[4,0],[3,0]],
-      headers: {
-            0: { sorter: 'checkbox' },
-            1: { sorter: 'checkbox' },
-            8: { sorter: 'checkbox' },
-            9: { sorter: 'checkbox' },
-            10: { sorter: 'checkbox' },
-            11: { sorter: 'checkbox' },
-            12: { sorter: 'checkbox' },
-            13: { sorter: 'checkbox' },
-            14: { sorter: 'checkbox' },
-            15: { sorter: 'checkbox' },
-            16: { sorter: 'checkbox' },
-            17: { sorter: 'checkbox' }
-          },
-      widgets : [ 'editable', 'columns','stickyHeaders','filter' ],
-      widgetOptions: {
-        editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
-        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
-        editable_autoResort    : false,    // auto resort after the content has changed.
-        editable_noEdit        : 'no-edit', // class name of cell that is no editable
-        stickyHeaders_offset: 50,
-        filter_childRows : false,
-        filter_columnFilters : true,
-        filter_hideFilters : true,
-        filter_ignoreCase : true,
-        filter_reset : '.reset',
-        filter_searchDelay : 100,
-        filter_functions : {
-          4 : true,
-          6 : true 
-        }
-      }
-    });
-  }
-  else if (rows == 17){
-    $('#Listable').tablesorter({
-      sortList: [[4,0],[3,0]],
-      headers: {
-            0: { sorter: 'checkbox' },
-            1: { sorter: 'checkbox' },
-            8: { sorter: 'checkbox' },
-            9: { sorter: 'checkbox' },
-            10: { sorter: 'checkbox' },
-            11: { sorter: 'checkbox' },
-            12: { sorter: 'checkbox' },
-            13: { sorter: 'checkbox' },
-            14: { sorter: 'checkbox' },
-            15: { sorter: 'checkbox' },
-            16: { sorter: 'checkbox' },
-            17: { sorter: 'checkbox' }
-          },
-      widgets : [ 'editable', 'columns','stickyHeaders','filter'],
-      widgetOptions: {
-        editable_columns       : "2-5",  // point to the columns to make editable (zero-based index)
-        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
-        editable_autoResort    : false,    // auto resort after the content has changed.
-        editable_noEdit        : 'no-edit', // class name of cell that is no editable
-        stickyHeaders_offset: 50,
-        filter_childRows : false,
-        filter_columnFilters : true,
-        filter_hideFilters : true,
-        filter_ignoreCase : true,
-        filter_reset : '.reset',
-        filter_searchDelay : 100,
-        filter_functions : {
-          5 : true
-        }
-      }
-    }); 
-  }
   $().autoSave();
   $('#add').click(function(){
     // Find total cell and increment

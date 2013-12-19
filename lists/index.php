@@ -146,7 +146,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <?php } ?>
       </section>
       <br>
-
+      </form>
       </div><!-- /.container -->
 
       <!-- Lists table added here by Jquery -->
