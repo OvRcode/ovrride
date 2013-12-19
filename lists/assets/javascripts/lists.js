@@ -460,7 +460,6 @@ function setupTablesorter(rows) {
     }
     
     var tablesorterOptions = {
-      debug: true,
       delayInit: false,
       widthFixed: true,
       ignoreCase: true,
