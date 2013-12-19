@@ -139,7 +139,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
           </label>
           <br>
-          <input type="submit" class="btn btn-primary generate-list" value="Generate List" />
+          <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
 
           <button type="button" onclick="location.href='/';" class="btn btn-primary generate-list">Clear Form</button>
 
