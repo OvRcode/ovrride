@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         separator: ';',
       },
       dist: {
-        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js','lists/assets/tablesorter/js/widgets/widget-editable.js','lists/assets/tablesorter/js/parsers/parser-input-select.js','lists/assets/javascripts/jquery.chained.js','lists/assets/javascripts/lists.js'],
+        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js','lists/assets/tablesorter/js/widgets/widget-editable.js','lists/assets/tablesorter/js/parsers/parser-input-select.js','lists/assets/javascripts/jquery.chained.js','lists/assets/tablesorter/addons/pager/jquery.tablesorter.pager.js','lists/assets/javascripts/lists.js'],
         dest: 'lists/assets/javascripts/all.js',
       },
     },
@@ -65,6 +65,8 @@ module.exports = function(grunt) {
           "assets/images/touch-icon-iphone.png",
           "assets/javascripts/all.min.js",
           "assets/stylesheets/all.css",
+          "assets/tablesorter/addons/pager/jquery.tablesorter.pager.css",
+          "assets/tablesorter/addons/pager/icons/*",
           "assets/fonts/glyphicons-halflings-regular.eot",
           "assets/fonts/glyphicons-halflings-regular.svg",
           "assets/fonts/glyphicons-halflings-regular.ttf",
