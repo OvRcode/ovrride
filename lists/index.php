@@ -136,6 +136,12 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
           </label>
+          <label class="checkbox order-checkbox">
+            <input type="checkbox" class="order_status_checkbox" name="balance-due" value="balance-due" <?php checkbox_helper("balance-due");?>>Balance Due</input>
+          </label>
+          <label class="checkbox order-checkbox">
+            <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show" <?php checkbox_helper("no-show");?>>No Show</input>
+          </label>
           <br>
           <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
 

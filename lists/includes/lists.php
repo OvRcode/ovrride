@@ -199,7 +199,8 @@ class Trip_List{
     private function find_orders(){
         # Conditional SQL for checkboxes on form
         $sql_conditional = "";
-        $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed","refunded","walk-on");
+        $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed",
+                            "refunded","walk-on","balance-due","no-show");
         foreach($checkboxes as $field){
           if(isset($_SESSION['post_data'][$field])){
               if($field == "walk-on")
