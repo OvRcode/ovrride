@@ -95,6 +95,10 @@ module.exports = function(grunt) {
         files: ['lists/assets/javascripts/lists.js'],
         tasks: ['uglify','manifest'],
       },
+      manifest: {
+        files: ['lists/index.php'],
+        tasks: ['manifest'],
+      },
     },
   });
 
