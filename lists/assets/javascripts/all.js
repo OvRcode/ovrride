@@ -13531,9 +13531,7 @@ $.fn.buildTable = function(){
   });
 })();
 $(function(){
-  $('#mainBody').noClickDelay();
   $('#listTable').noClickDelay();
-  $('.pager').noClickDelay();
   // Create a table if data exists
   if ($('.order').length > 0){
     $("#listTable").buildTable();
