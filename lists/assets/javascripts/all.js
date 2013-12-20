@@ -13575,6 +13575,7 @@ $(function(){
   // check for pickup column, 18 columns with 17 without
   $().autoSave();
   $('#add').click(function(){
+    $('.last.btn.btn-default').trigger('click');
     // Find total cell and increment
     $('#total_guests').text(function(i,txt){ return parseInt(txt,10) + 1;});
     //Generate Walk On order #
