@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.8.0";
+$lists_version = "0.8.1";
 
 
 # Form
