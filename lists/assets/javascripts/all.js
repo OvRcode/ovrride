@@ -12820,7 +12820,37 @@ $.fn.extend({
 *  OvR Lists - Custom JavaScript
 *
 */
-
+// iOS click lag workaround
+(function( $ ) {
+  $.fn.noClickDelay = function() {
+    var $wrapper = this;
+    var $target = this;
+    var moved = false;
+    $wrapper.bind('touchstart mousedown',function(e) {
+      e.preventDefault();
+      moved = false;
+      $target = $(e.target);
+      if ($target.nodeType == 3) {
+        $target = $($target.parent());
+      }
+      $target.addClass('pressed');
+      $wrapper.bind('touchmove mousemove',function(e) {
+      moved = true;
+      $target.removeClass('pressed');
+    });
+    $wrapper.bind('touchend mouseup',function(e) {
+    $wrapper.unbind('mousemove touchmove');
+    $wrapper.unbind('mouseup touchend');
+    if(!moved && $target.length) {
+      $target.removeClass('pressed');
+      $target.trigger('click');
+      $target.focus();
+    }
+  });
+});
+};
+})( jQuery );
+// end iOS click lag workaround
 // Order Status: Check All / Uncheck All
 function checkAll(status) {
   // reset checked attr status either way
@@ -13501,6 +13531,9 @@ $.fn.buildTable = function(){
   });
 })();
 $(function(){
+  $('#mainBody').noClickDelay();
+  $('#listTable').noClickDelay();
+  $('.pager').noClickDelay();
   // Create a table if data exists
   if ($('.order').length > 0){
     $("#listTable").buildTable();
