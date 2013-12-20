@@ -713,7 +713,7 @@ $.fn.buildTable = function(){
   });
 })();
 $(function(){
-  $('#listTable').noClickDelay();
+  $('#listTable tbody tr td input').noClickDelay();
   // Create a table if data exists
   if ($('.order').length > 0){
     $("#listTable").buildTable();
