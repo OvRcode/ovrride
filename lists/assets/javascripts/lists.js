@@ -4,25 +4,21 @@
 */
 
 // Order Status: Check All / Uncheck All
-function checkAll(trip_list, checktoggle) {
-  var checkboxes = [];
-  checkboxes = document.getElementsByClassName('order_status_checkbox');
-
-  for (var i=0; i<checkboxes.length; i++) {
-    if (checkboxes[i].type == 'checkbox') {
-      checkboxes[i].checked = checktoggle;
-    }
+function checkAll(status) {
+  // reset checked attr status either way
+  $('.order_status_checkbox').removeAttr('checked');
+  
+  if (status == 'check'){
+    $('.order_status_checkbox').prop('checked', true);
   }
 }
 function formReset(){
-  var tbl = document.getElementById("Listable");
-  while (tbl.firstChild) {
-    tbl.removeChild(tbl.firstChild);
-  }
+  $('#Listable').remove();
 }
 
 // webSQL Functions
 function generateOnOff(){
+  // switch generate list button between online and offline mode
   if (window.navigator.onLine){
     document.getElementById("trip_list").submit();
   } else {
@@ -39,6 +35,8 @@ function generateOnOff(){
   }
 }
 function autoSaveManualOrder(id,field,value){
+  /* sqLite db doesn't have an insert or update (upsert) function
+      this function duplicates upsert by selecting the other values on the same row during replacement */
   var db = window.db;
   var trip = $('#trip').val();
   var replaceFields = {};
@@ -290,6 +288,7 @@ function selectManualCheckboxes(){
   });
 }
 function postData(){
+  // send data to backend mySQL database
   $('#saveBar').css('width', '80%');
   var jqxhr = $.post( "save.php", window.tableData,function() {})
     .done(function() {
@@ -312,7 +311,8 @@ function postData(){
     });
 }
 function truncateTables(){
-  // This is just to clear data without resetting browser
+  /* This is just to clear data without resetting browser.
+      just for development, not used by normal flow of script */
   var db = window.db;
   db.transaction(function (tx) {  
     tx.executeSql('DELETE FROM `ovr_lists_fields`');

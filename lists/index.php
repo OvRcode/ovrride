@@ -109,8 +109,8 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 
       <section class="order-status-select input-group">
           <label>Order Status: </label>
-          <a onclick="javascript:checkAll('trip_list', true);" href="javascript:void();"> Check All</a> &#47;
-          <a onclick="javascript:checkAll('trip_list', false);" href="javascript:void();">Uncheck All</a>
+          <a onclick="javascript:checkAll('check');" href="javascript:void();"> Check All</a> &#47;
+          <a onclick="javascript:checkAll('uncheck');" href="javascript:void();">Uncheck All</a>
           <br>
           <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php checkbox_helper("processing");?>>Processing</input>
