@@ -13560,6 +13560,17 @@ $(function(){
   // Chained drop downs
   $("#trip").chained("#destination");
   
+  // save when back online
+  window.addEventListener('online',  function(){
+    $('#mainBody').append('<div id="backOnline" class="alert alert-info alert-dismissable">' +
+                          '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                          'Back online, save starting...</div>');
+    setTimeout(function(){
+      $('#backOnline').remove();
+      $('#save').trigger('click');  
+    },2000);
+    
+  });
   // Monitor onLine status and flip navbar indicator 
   setInterval(function () {
     var status = $('#status');
