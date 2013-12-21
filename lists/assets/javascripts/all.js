@@ -12862,6 +12862,10 @@ function checkAll(status) {
 }
 function formReset(){
   $('#Listable').remove();
+  $('.pager').css('visibility','hidden');
+  $('#destination').val('');
+  $('#destination').trigger('change');
+  checkAll('uncheck');
 }
 
 // webSQL Functions
