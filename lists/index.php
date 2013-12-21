@@ -66,7 +66,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand logo-nav" onclick="location.href='/';" href="javascript:void();">OvR Trip Lists</a>
+          <a class="navbar-brand logo-nav" onclick="formReset();" href="javascript:void();">OvR Trip Lists</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav nav-puller">  
@@ -145,7 +145,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <br>
           <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
 
-          <button type="button" onclick="location.href='/';" class="btn btn-primary generate-list">Clear Form</button>
+          <button type="button" onclick="formReset();" class="btn btn-primary generate-list">Clear Form</button>
 
           <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
             <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters </button>
