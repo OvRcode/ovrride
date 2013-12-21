@@ -49,7 +49,6 @@ function formReset(){
   $('#destination').trigger('change');
   checkAll('uncheck');
 }
-
 // webSQL Functions
 function generateOnOff(){
   // switch generate list button between online and offline mode
@@ -372,12 +371,25 @@ $.fn.autoSave = function(){
      Function will be called each time a manual row is added
      unbind events first to avoid duplicate event listeners */
   $('#Listable').unbind('click');
-  $('#Listable .manual').unbind('focusout');
+  $('#Listable .manual').unbind('blur');
+  $('#Listable .manual').unbind('focusin');
   $('#Listable').on('click','.center-me' ,function(){
     saveCheckbox($(this).children('input').attr('name'),$(this).children('input').is(':checked'));
-  }); 
-  $('#Listable .manual').on('focusout','.unsaved', function(){
-    autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
+  });
+  $('#Listable .manual').on('blur','.unsaved', function(){
+    var text = $(this).text();
+    if ( text === '' || text === ' ' || text == 'Cannot be blank!') {
+      $(this).text('Cannot be blank!').css('color','red');
+    } else {
+      $(this).css('color','');
+      autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
+    }
+  });
+  $('#Listable .manual').on('focusin','.unsaved', function(){
+    var text = $(this).text();
+    if ( text == 'Cannot be blank!' || text === ' ') {
+      $(this).text('');
+    }
   });
 };
 $("#save").click(function(){
