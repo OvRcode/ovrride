@@ -320,6 +320,25 @@ function selectManualCheckboxes(){
                   });
   });
 }
+function deleteOrder(id){
+  var db = window.db;
+  db.transaction(function(tx){
+    tx.executeSql('DELETE FROM `ovr_lists_manual_orders` WHERE `ID` = ?',
+                  [id],
+                  function(tx,result){},
+                  function(tx,error){
+                    console.log('Order:' + id + 'removed from manual orders table');
+                  });
+  });
+  db.transaction(function(tx){
+    tx.executeSql('DELETE FROM `ovr_lists_fields` WHERE `ID` LIKE ? || "%" ',
+                  [id],
+                  function(tx,result){},
+                  function(tx,error){
+                    console.log('Order:' + id + 'removed from manual orders table');
+                  });
+  });
+}
 function postData(){
   // send data to backend mySQL database
   $('#saveBar').css('width', '80%');
@@ -347,8 +366,6 @@ function postData(){
     });
 }
 function truncateTables(){
-  /* This is just to clear data without resetting browser.
-      just for development, not used by normal flow of script */
   var db = window.db;
   db.transaction(function (tx) {  
     tx.executeSql('DELETE FROM `ovr_lists_fields`');
@@ -696,6 +713,52 @@ $.fn.buildTable = function(){
   //$('#hasPickup').remove();
   
 };
+function addOrder(){
+  // switch to last page
+  $('.last.btn.btn-default').trigger('click');
+  
+  // Find total cell and increment
+  $('#total_guests').text( function(i,txt) { return parseInt(txt,10) + 1;} );
+  
+  //Generate Walk On order #
+  var itemNum = Math.floor( Math.random() * 90000 );
+  var order = 'WO' + Math.floor( Math.random() * 90000 );
+  var id = order + ":" + itemNum;
+  
+  var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="' + id + ':AM"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':PM"></td>' +
+  '<td contenteditable="true" headers="First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" headers="Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" headers="Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" headers="Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" headers="Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':Waiver"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':Product"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':Bus"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':All_Area"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':Beg"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':BRD"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':SKI"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':LTS"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':LTR"></td>' +
+  '<td class="center-me"><input type="checkbox" name="' + id + ':Prog_Lesson"></td></tr>',
+  $row = $(row),
+  resort = false;
+  $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
+  $().autoSave();
+  return false;
+}
+function removeOrder(){
+    if($('#Listable tbody tr:last').hasClass('manual')){
+      var label = $('#Listable tbody tr:last input').attr('name');
+      var id = label[0] + ':' + label[1];
+      deleteOrder(id);
+      $('#Listable tbody tr:last').remove();
+      $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
+      $('#Listable').trigger("update"); 
+    }
+}
 // Connect to webSQL DB and create tables
 (function(){
   var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
@@ -731,13 +794,17 @@ $.fn.buildTable = function(){
     );
   });
 })();
+
 $(function(){
+  // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
+  
   // Create a table if data exists
   if ($('.order').length > 0){
     $("#listTable").buildTable();
   }
   
+  // disable link on onLine/offLine status
   $('#status').click(function(e){
     e.preventDefault();
   });
@@ -756,6 +823,7 @@ $(function(){
     },2000);
     
   });
+  
   // Monitor onLine status and flip navbar indicator 
   setInterval(function () {
     var status = $('#status');
@@ -783,49 +851,15 @@ $(function(){
     }
   }, 250);
   
+  
   setupTablesorter($("#Listable").colCount());
-  // check for pickup column, 18 columns with 17 without
+  
+  // Setup initial save listeners for table, listeners are removed and reloaded when table is modified
   $().autoSave();
-  $('#add').click(function(){
-    $('.last.btn.btn-default').trigger('click');
-    // Find total cell and increment
-    $('#total_guests').text(function(i,txt){ return parseInt(txt,10) + 1;});
-    //Generate Walk On order #
-    var itemNum = Math.floor(Math.random()*90000);
-    var order = 'WO'+ Math.floor(Math.random()*90000);
-    var id = order+":"+itemNum;
-    var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="' + id + ':AM"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':PM"></td>' +
-    '<td contenteditable="true" headers="First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-    '<td contenteditable="true" headers="Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-    '<td contenteditable="true" headers="Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-    '<td contenteditable="true" headers="Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-    '<td contenteditable="true" headers="Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-    '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':Waiver"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':Product"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':Bus"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':All_Area"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':Beg"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':BRD"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':SKI"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':LTS"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':LTR"></td>' +
-    '<td class="center-me"><input type="checkbox" name="' + id + ':Prog_Lesson"></td></tr>',
-    $row = $(row),
-    // resort table using the current sort; set to false to prevent resort, otherwise 
-    // any other value in resort will automatically trigger the table resort. 
-    resort = true;
-    $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
-    $().autoSave();
-    return false;
-   });
+  
+  // click event to add row to the table for a manual order
+  $('#add').click(function(){addOrder();});
    
-   // remove dynamically added rows from table
-   $('#remove').click(function(){
-       if($('#Listable tbody tr:last').hasClass('manual')){
-       $('#Listable tbody tr:last').remove();
-       $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
-       $('#Listable').trigger("update");}
-   });
+   // click event to remove unsaved manual orders from table
+   $('#remove').click(function(){removeOrder();});
 });
