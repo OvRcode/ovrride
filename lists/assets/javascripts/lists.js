@@ -341,6 +341,9 @@ function postData(){
       $('#mainBody').append('<div id="success" class="alert alert-danger alert-dismissable">' +
                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                             'Something went wrong, try saving again</div>');
+                            $('.close').on('click',function(){
+                              $('#saveProgress').remove();
+                            });
     });
 }
 function truncateTables(){
