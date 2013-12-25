@@ -49,6 +49,7 @@ function formReset(){
   $('#destination').trigger('change');
   checkAll('uncheck');
 }
+
 // webSQL Functions
 function generateOnOff(){
   // switch generate list button between online and offline mode
@@ -434,6 +435,7 @@ $("#save").click(function(){
   }
 });
 // End webSQL Functions
+
 function createTripCookie(){
   var today = new Date();
   var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
@@ -805,7 +807,7 @@ $(function(){
   }
   
   // disable link on onLine/offLine status
-  $('#status').click(function(e){
+  $('.status').not('.iphone').click(function(e){
     e.preventDefault();
   });
   
@@ -826,7 +828,8 @@ $(function(){
   
   // Monitor onLine status and flip navbar indicator 
   setInterval(function () {
-    var status = $('#status');
+    var status = $('.status').not('.iphone');
+    var statusSmall = $('.status.iphone');
     if (window.navigator.onLine) {
       if ($('#Listable').length > 0) {
       $('#csv_list').css('visibility','visible');
@@ -835,8 +838,10 @@ $(function(){
       $('#save').removeClass('btn-warning');
       if (status.hasClass('glyphicon-cloud-download')) {
         status.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','').text(' online');
+        statusSmall.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','');
       } else if (!status.hasClass('glyphicon-cloud-upload')) {
         status.addClass('glyphicon-cloud-upload').css('color','').text(' online');
+        statusSmall.addClass('glyphicon-cloud-upload').css('color','');
       } 
     } else if (!window.navigator.onLine) {
       setTrip();
@@ -845,8 +850,10 @@ $(function(){
       $('#save').addClass('btn-warning');
       if (status.hasClass('glyphicon-cloud-upload')){
         status.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red').text(' offline');
+        statusSmall.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red');
       } else if (!status.hasClass('glyphicon-cloud-download')){
         status.addClass('glyphicon-cloud-download').css('color','red').text(' offline');
+        statusSmall.addClass('glyphicon-cloud-download').css('color','red');
       }
     }
   }, 250);
