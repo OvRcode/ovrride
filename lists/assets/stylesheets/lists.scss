@@ -23,6 +23,22 @@
 
 // BASE STYLES
 // -------------------------
+@media (max-width: 767px) {
+  .iphone{
+    visibility:visible;
+  }
+  .mdLg{
+    visibility:hidden;
+  }
+}
+@media (min-width: 768px) {
+  .iphone{
+    visibility:hidden;
+  }
+  .mdLg{
+    visibility:visible;
+  }
+}
 #save, #csv_list, #csv_email, .pager{
   visibility:hidden;
 }

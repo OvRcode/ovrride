@@ -66,7 +66,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand logo-nav" onclick="formReset();" href="javascript:void();">OvR Trip Lists</a>
+          <a class="navbar-brand logo-nav" onclick="formReset();" href="javascript:void();">OvR Trip Lists&nbsp;&nbsp;<span class="status iphone glyphicon"></span></a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav nav-puller">  
@@ -84,7 +84,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
-            <li><a href=""><span class="glyphicon" id="status"></span></a></li>  
+            <li><a href=""><span class="status medLg glyphicon"></span></a></li>  
           </ul>
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
