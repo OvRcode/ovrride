@@ -201,6 +201,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
         </div>
       </footer>
         <?php 
+        /*
         if(isset($list->order_data)){
             foreach($list->order_data as $order => $data){
                 $array = array($order,$data);
@@ -216,7 +217,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
         if(isset($list->has_pickup)){
             error_log('Pickup Flag:'.$list->has_pickup);
             print '<input type="hidden" id="hasPickup" value="'.$list->has_pickup.'" />';
-        }
+        }*/
         ?>
 
       <!-- Include concatenated and minified javascripts -->
