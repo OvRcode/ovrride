@@ -265,6 +265,10 @@ function selectWebOrders(){
                     tableData[order][orderItem].Phone = results.rows.item(i).Phone;
                     tableData[order][orderItem].Package = results.rows.item(i).Package;
                     tableData[order][orderItem].Trip = results.rows.item(i).Trip;
+                    tableData[order][orderItem].Email = results.rows.item(i).Email;
+                    if (tableData[order][orderItem].Email === undefined) {
+                      tableData[order][orderItem].Email = "No Email";
+                    }
                   }
                   $("#listTable").buildTable();
       });
@@ -781,6 +785,38 @@ function removeOrder(){
       $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
       $('#Listable').trigger("update"); 
     }
+}
+function exportCsv(mode){
+  var text = '';
+  if ( mode == 'Email' ) {
+    text += 'Email, First, Last, Package, Pickup\n';
+  } else if ( mode == 'Export' ) {
+    text += 'AM, PM, First, Last, Pickup, Phone, Package, Order, Waiver, Product REC.,';
+    text += ' Bus Only, All Area Lift, Beg. Lift, BRD Rental, Ski Rental, LTS, LTR, Prog. Lesson\n';
+  }
+  selectOrderCheckboxes();
+  selectManualOrders();
+  selectWebOrders();
+  selectManualCheckboxes();
+  $.each(window.orderData, function(order,data){
+    $.each(data, function(orderItem, fields){
+      if ( mode == 'Export' ) {
+        text += fields.AM + ',' + fields.PM + ',"' + fields.First + '","' + fields.Last + '","' + fields.Pickup + '","' + fields.Phone + '",'; 
+        text += '"' + fields.Package + '",' + order + ',' +  fields.Waiver + ',' + fields.Product + ',' + fields.Bus + ',' + fields.All_Area + ',';
+        text += fields.Beg + ',' + fields.BRD + ',' + fields.SKI + ',' + fields.LTS + ',' + fields.LTR + ',' + fields.Prog_Lesson + '\n';  
+      } else if ( mode == 'Email' ) { 
+        text += '"' + fields.Email + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
+      }
+    });
+  });
+
+  var encodedUri = encodeURI(text);
+  var link = document.createElement("a");
+  var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
+  link.setAttribute("href", "data:text/csv;charset=utf-8,\uFEFF" + encodedUri);
+  link.setAttribute("download",name);
+  link.click();
+  
 }
 // Connect to webSQL DB and create tables
 (function(){
