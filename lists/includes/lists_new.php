@@ -1,5 +1,6 @@
 <?php
 $list = new TripList();
+$list->tripOptions();
 class TripList{
     var $dbConnect;
     var $destinations;
@@ -20,8 +21,10 @@ class TripList{
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        $this->destinations = array("Camelback MT","Hunter MT","Japan","Killington","MT Snow",
-                                    "Stowe","Stratton","Sugarbush","Whistler","Windham");
+        $this->destinations = array("Camelback MT","Hunter MT","Jackson Hole","Japan","Killington",
+                                    "Lake Tahoe","MT Snow","Paint ball","Sky Diving","Stowe",
+                                    "Stratton","Sugarbush","Whistler","Windham");
+                                    
         $this->checkboxes = array("AM","PM","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
     }
     function dbQuery($sql){
@@ -46,18 +49,25 @@ class TripList{
         $result = $this->dbQuery($sql);
          while($row = $result->fetch_assoc()){
              foreach($this->destinations as $value){
-               if($value != "Stratton")
+               if ($value != "Stratton") {
                    $regex = '/'.$value.'(.*)/i';
-               else
+               } else if ($value == "Jackson Hole") {
+                   $regex = '/\bJackson\sHole\s\b(.*)/i';
+                   preg_match($regex,$row['post_title'],$match);
+                   print($row['post_title']);
+                   print_r($match);
+               } else {
                  $regex = '/Stratturday\s(.*)/i';
-
+                }
+                
                if(preg_match($regex,$row['post_title'],$match)){
                  $class = $value;
                  $label = $match[1];
                }
                   
              }
-             $options[$class][$row['id']] = $label;
+             $this->options['destinations'] = $this->destinations;
+             $this->options['trip'][$class][$row['id']] = $label;
          }
     }
     function tripData($tripId){
