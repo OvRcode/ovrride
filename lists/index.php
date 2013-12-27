@@ -95,12 +95,12 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       <section class="trip-select">
           <label>Select a Destination:</label>
             <select class="form-control input-sm" id="destination" name="destination">
-              <?php echo $list->select_options['destinations']?>
+                <option class="none" value="none">Select a destination</option>
             </select>
         </label>
         <label>Select a Trip:
           <select class="form-control input-sm" id="trip" name="trip" id="trip">
-          <?php echo $list->select_options['trip']; ?>
+              <option class="none" value="none">Select a destination first</option>
           </select>
         </label>
       </section>
@@ -200,25 +200,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           </div>
         </div>
       </footer>
-        <?php 
-        /*
-        if(isset($list->order_data)){
-            foreach($list->order_data as $order => $data){
-                $array = array($order,$data);
-                $json = htmlspecialchars(json_encode($array));
-                if (json_last_error() > 0) {
-                    error_log('Last JSON encode error: ' . json_last_error());
-                } else {
-                    printf('<input type="hidden" class="order" value="%s">',$json, ENT_QUOTES, 'UTF-8');
-                }
-            }
-        }
-        
-        if(isset($list->has_pickup)){
-            error_log('Pickup Flag:'.$list->has_pickup);
-            print '<input type="hidden" id="hasPickup" value="'.$list->has_pickup.'" />';
-        }*/
-        ?>
 
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>

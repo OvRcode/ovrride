@@ -436,7 +436,7 @@ $("#save").click(function(){
   }
 });
 $.fn.getData = function(){
-  var jqxhr = $.post("pull.php", {'trip' : $(this).val()})
+  var jqxhr = $.post("pull.php", {'requestType':'orders','trip' : $(this).val()})
   .done(function(data){
     window.orderData = data;
     $("#listTable").buildTable();
@@ -550,6 +550,27 @@ function setupTablesorter(rows) {
       $('.pager').css('visibility','visible');
     }
 }
+function setupDropDowns(){
+  var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
+  .done(function(data){
+    var destinations = '';
+    var trips = '';
+    $.each(data.destinations, function(key,value){
+      destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
+    });
+    $('#destination', '#mainBody').append(destinations);
+    $.each(data.trip, function(classType,value){
+      $.each(value, function(tripId, tripLabel){
+        console.log('Class:'+classType);
+        console.log('id:'+tripId);  
+        console.log('label:'+tripLabel);
+        trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
+      }); 
+    });
+    $('#trip', '#mainBody').append(trips);
+    $("#trip").chained("#destination");
+  });
+}
 $.fn.colCount = function() {
    var colCount = 0;
    $('thead:nth-child(1) td', this).each(function () {
@@ -573,6 +594,7 @@ $.fn.buildTable = function(){
   $('.order_status_checkbox').each(function(){
     statusBoxes[$(this).attr('name')] = $(this).is(':checked');
   });
+  $('#Listable').remove();
   if (window.navigator.onLine) {
     // ONLINE
     if ($('#trip').length > 0) {
@@ -592,7 +614,6 @@ $.fn.buildTable = function(){
       var row = {};
       
       saveWebOrder(id,fields);
-      console.log(fields.Status + ':'+statusBoxes[fields.Status]);
       if (statusBoxes[fields.Status] === true) {
         $.each(fields, function(field, value){
           if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
@@ -809,6 +830,7 @@ function removeOrder(){
 })();
 
 $(function(){
+  setupDropDowns();
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
   
@@ -816,10 +838,7 @@ $(function(){
   $('.status').not('.iphone').click(function(e){
     e.preventDefault();
   });
-  
-  // Chained drop downs
-  $("#trip").chained("#destination");
-  
+
   // save when back online
   window.addEventListener('online',  function(){
     $('#mainBody').append('<div id="backOnline" class="alert alert-info alert-dismissable">' +
