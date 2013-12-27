@@ -389,6 +389,61 @@ function setupProgressBar(){
   '</div>' +
     '</div>');
 } 
+function saveDropdown(type,classType, tripId, tripLabel){
+  //`type`,`class`,`label`,`value`
+  var db = window.db;
+  if ( type == 'destination' ) {
+    tripId = classType;
+  }
+  db.transaction(function(tx) {
+    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_dropdown` (`type`,`class`,`label`,`value`) VALUES(?,?,?,?)',
+      [type,classType, tripLabel,tripId],
+      function(tx,result){},
+      function(tx, error){
+        console.log('error inserting or replacing on ovr_lists_fields: ' + error.message);
+      }
+    );
+  });
+}
+function selectDropdown(type){
+  var db = window.db;
+  var destinations = window.destinations;
+  var trips = window.trips;
+  if (type == "destination") {
+    db.transaction(function(tx){
+      tx.executeSql('SELECT `class` FROM `ovr_lists_dropdown` WHERE type = ?', 
+        ['destination'],
+        function(tx,results){
+          var len = results.rows.length;
+          var i;
+          
+          for (i = 0; i < len; i++) {
+            var value = results.rows.item(i).class;
+            destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>\n';
+          }
+          window.destinations = destinations;
+        }
+        );
+    });
+  } else if (type == "trip") {
+    db.transaction(function(tx){
+      tx.executeSql('SELECT `class`,`label`,`value` FROM `ovr_lists_dropdown` where type = ?',
+        ['trip'],
+        function(tx,result){
+          var len = result.rows.length;
+          var i;
+          
+          for (i = 0; i < len; i++) {
+            var classType = result.rows.item(i).class;
+            var tripLabel = result.rows.item(i).label;
+            var tripId = result.rows.item(i).value;
+            trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>\n';
+            window.trips = trips;
+          }
+        });
+    });
+  }
+}
 $.fn.autoSave = function(){
   /* save checkboxes and manual entries  on change to websql
      Function will be called each time a manual row is added
@@ -459,25 +514,33 @@ function readTripCookie(){
   var cookies = document.cookie;
   var location = cookies.indexOf(" OvrRide Trip=");
   var value = unescape(cookies.substring(location, cookies.length));
+  var name;
   // Take out Trip cookie
   value = value.split(';');
   value = value[0];
   // Take out label
   value = value.split('=');
+  name = value[0];
   value = value[1];
   value = value.split(',');
-  return value;
+  
+  if (name == 'OvrRide Trip'){
+    return value;
+  } else {
+    return false;
+  }
 }
 function destroyTripCookie(){
   document.cookie = "OvrRide Trip=;-1; path=/";
 }
 function setTrip(){
   var trip = readTripCookie();
-  $('#destination').val(trip[0]);
-  // Need to trigger change for chained plugin to show trips
-  $('#destination').trigger('change');
-  $('#trip').val(trip[1]);
-
+  if ( trip ){
+    $('#destination').val(trip[0]);
+    // Need to trigger change for chained plugin to show trips
+    $('#destination').trigger('change');
+    $('#trip').val(trip[1]);
+  }
 }
 function setupTablesorter(rows) {
     var pagerOptions = {
@@ -552,23 +615,42 @@ function setupTablesorter(rows) {
     }
 }
 function setupDropDowns(){
-  var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
-  .done(function(data){
-    var destinations = '';
-    var trips = '';
-    $.each(data.destinations, function(key,value){
-      destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
+  if (window.navigator.onLine) {
+    var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
+    .done(function(data){
+      var destinations = '';
+      var trips = '';
+      $.each(data.destinations, function(key,value){
+        destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
+        saveDropdown('destination',value,'','');
+      });
+      $('#destination', '#mainBody').append(destinations);
+      $.each(data.trip, function(classType,value){
+        $.each(value, function(tripId, tripLabel){
+          trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
+          saveDropdown('trip',classType,tripId,tripLabel);
+        }); 
+      });
+      $('#trip', '#mainBody').append(trips);
+      $("#trip").chained("#destination");
     });
-    $('#destination', '#mainBody').append(destinations);
-    $.each(data.trip, function(classType,value){
-      $.each(value, function(tripId, tripLabel){
-        trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
-      }); 
-    });
-    $('#trip', '#mainBody').append(trips);
-    $("#trip").chained("#destination");
-  });
+  } else {
+    selectDropdown('destination');
+    selectDropdown('trip');
+    var setDropdown = setInterval(function(){
+      if (window.destination !== undefined && window.trips !== undefined) {
+        $('#trip').append(window.trips);
+        $('#destination').append(window.destinations);
+        $("#trip").chained("#destination");
+        setTrip();
+        window.clearInterval(setDropdown);
+      }
+    },100);
+    
+  }
+  
 }
+
 $.fn.colCount = function() {
    var colCount = 0;
    $('thead:nth-child(1) td', this).each(function () {
@@ -730,12 +812,7 @@ $.fn.buildTable = function(){
   }
   
   setupTablesorter($("#Listable").colCount());
-  
-  
-  
-  $('.order').remove();
-  //$('#hasPickup').remove();
-  
+  createTripCookie();
 };
 function addOrder(){
   // switch to last page
@@ -849,7 +926,7 @@ function exportCsv(mode){
                     console.log('ovr_lists_manual_orders setup error:' + error.message); }
     );
     tx.executeSql('CREATE TABLE IF NOT EXISTS ' +
-                  '`ovr_lists_dropdown` (`type`,`class`,`label`,`value`)',
+                  '`ovr_lists_dropdown` (`type`,`class`,`label`,`value` UNIQUE)',
                   [],
                   function(tx, result){
                     console.log('ovr_lists_dropdown setup success'); },
@@ -861,6 +938,10 @@ function exportCsv(mode){
 
 $(function(){
   setupDropDowns();
+  if (!window.navigator.onLine) {
+    setTrip();
+  }
+  
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
   
@@ -899,7 +980,6 @@ $(function(){
         statusSmall.addClass('glyphicon-cloud-upload').css('color','');
       } 
     } else if (!window.navigator.onLine) {
-      setTrip();
       $('#csv_list').css('visibility','hidden');
       $('#csv_email').css('visibility','hidden');
       $('#save').addClass('btn-warning');
