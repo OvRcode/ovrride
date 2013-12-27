@@ -82,7 +82,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
                   <span class="glyphicon glyphicon-envelope"></span> Export
                 </button>
             </li>
-            <li><a href="login/register.php">Create New User</a></li>
+            <li class="hidden"><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
             <li><a href=""><span class="status medLg glyphicon"></span></a></li>
           </ul>
