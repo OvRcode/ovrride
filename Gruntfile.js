@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     jshint: {
       files: ['Gruntfile.js', 'package.json', 'lists/assets/javascripts/lists.js'],
     },
-    
+
     // Concatenate all OvR Lists javascripts except all.js
     concat: {
       options: {
