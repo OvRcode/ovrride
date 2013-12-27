@@ -73,16 +73,15 @@ $version = file_get_contents('lists.version');
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav nav-puller">  
             <li>
-              <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
-                <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
-                  <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
-                </button>
-                <button type="submit" class="btn btn-default" id="csv_list" name="csv_list" value="csv_list" title="Full List CSV">
-                  <span class="glyphicon glyphicon-list-alt"></span> CSV
-                </button> 
-                <button type="submit" class="btn btn-default" id="csv_email" name="csv_email" value="csv_email" title="Email CSV">
-                  <span class="glyphicon glyphicon-envelope"></span> CSV
-                </button>
+              <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
+                <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
+              </button>
+              <button type="button" class="btn btn-default" title="Export Table" id="csv_list" onclick="exportCsv('Export');">
+                <span class="glyphicon glyphicon-list-alt"></span> Export
+              </button> 
+              <button type="button" class="btn btn-default" id="csv_email" title="Email Export" onclick="exportCsv('Email');">
+                <span class="glyphicon glyphicon-envelope"></span> Email
+              </button>
             </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
@@ -154,7 +153,6 @@ $version = file_get_contents('lists.version');
           <?php } ?>
       </section>
       <br>
-      </form>
       </div><!-- /.container -->
 
       <!-- Lists table added here by Jquery -->
