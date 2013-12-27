@@ -27,6 +27,8 @@ require_once("includes/lists.php");
 if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
   header ("Location: login/index.php");
 
+# get version from file
+$version = file_get_contents('lists.version');
 ?>
 <!DOCTYPE html>
 <html lang="en" manifest="manifest.appcache">
@@ -113,34 +115,34 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <a onclick="javascript:checkAll('uncheck');" href="javascript:void();">Uncheck All</a>
           <br>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php checkbox_helper("processing");?>>Processing</input>
+            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" checked>Processing</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php checkbox_helper("pending");?>>Pending</input>
+            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" checked>Pending</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" <?php checkbox_helper("walk-on");?>>Walk On</input>
+            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" checked>Walk On</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php checkbox_helper("cancelled");?>>Cancelled</input>
+            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled">Cancelled</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed" <?php checkbox_helper("failed");?>>Failed</input>
+            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed">Failed</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php checkbox_helper("on-hold");?>>On-hold</input>
+            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold">On-hold</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php checkbox_helper("completed");?>>Completed</input>
+            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed">Completed</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
+            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded">Refunded</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="balance-due" value="balance-due" <?php checkbox_helper("balance-due");?>>Balance Due</input>
+            <input type="checkbox" class="order_status_checkbox" name="balance-due" value="balance-due">Balance Due</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show" <?php checkbox_helper("no-show");?>>No Show</input>
+            <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show">No Show</input>
           </label>
           <br>
           <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
@@ -194,7 +196,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
                 <h5>For OvR Staff Use Only</h5>
               </div>
               <div class="col-md-4 text-center">
-                <h5>Version <?php echo $lists_version ?></h5>
+                <h5>Version <?php echo $version; ?></h5>
               </div>
             </div>
           </div>

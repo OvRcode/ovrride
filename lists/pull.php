@@ -1,6 +1,6 @@
 <?php
-require_once('includes/lists_new.php');
-//$_POST['requestType'] = 'dropdowns';
+require_once('includes/lists.php');
+
 $list = new TripList();
 switch ($_POST['requestType']){
     case 'orders':

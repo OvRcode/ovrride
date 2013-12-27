@@ -126,12 +126,12 @@ function saveWebOrder(id,webOrder){
   var db = window.db;
   var time = (new Date()).valueOf();
   var trip = $('#trip').val();
-  
+  console.log('Email:'+webOrder.Email);
   db.transaction(function(tx) {
     tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_orders`' +
-                  ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`,`timeStamp`)' +
-                  ' VALUES(?,?,?,?,?,?,?,?)',
-      [id, webOrder.First, webOrder.Last, webOrder.Pickup, webOrder.Phone, webOrder.Package, trip, time],
+                  ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`,`Email`,`timeStamp`)' +
+                  ' VALUES(?,?,?,?,?,?,?,?,?)',
+      [id, webOrder.First, webOrder.Last, webOrder.Pickup, webOrder.Phone, webOrder.Package, trip, webOrder.Email, time],
       function(tx,result){},
       function(tx, error){
         console.log('error inserting or replacing on ovr_lists_orders: ' + error.message);
@@ -561,9 +561,6 @@ function setupDropDowns(){
     $('#destination', '#mainBody').append(destinations);
     $.each(data.trip, function(classType,value){
       $.each(value, function(tripId, tripLabel){
-        console.log('Class:'+classType);
-        console.log('id:'+tripId);  
-        console.log('label:'+tripLabel);
         trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
       }); 
     });
@@ -606,7 +603,7 @@ $.fn.buildTable = function(){
       throw new Error('Aborted table creation, no data here');
     } 
   }
-  
+  truncateTables();
   $.each(orderData, function(orderNumber, values){
     var prefix = orderNumber.substring(0,2);
     $.each(values, function(orderItemNumber, fields){
@@ -811,7 +808,7 @@ function removeOrder(){
     );
     tx.executeSql('CREATE TABLE IF NOT EXISTS' +
                   '`ovr_lists_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                  ' `Pickup`, `Phone`, `Package`, `Trip`, `timeStamp` INTEGER)',
+                  ' `Pickup`, `Phone`, `Package`, `Trip`, `Email`,`timeStamp` INTEGER)',
                   [],
                   function(tx, result){
                     console.log('ovr_lists_manual_orders setup success'); },
