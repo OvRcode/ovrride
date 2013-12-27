@@ -80,7 +80,7 @@ $version = file_get_contents('lists.version');
                 <span class="glyphicon glyphicon-list-alt"></span> Export
               </button> 
               <button type="button" class="btn btn-default" id="csv_email" title="Email Export" onclick="exportCsv('Email');">
-                <span class="glyphicon glyphicon-envelope"></span> Email
+                <span class="glyphicon glyphicon-envelope"></span> Export
               </button>
             </li>
             <li><a href="login/register.php">Create New User</a></li>
