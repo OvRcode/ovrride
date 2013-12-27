@@ -27,6 +27,8 @@ require_once("includes/lists.php");
 if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
   header ("Location: login/index.php");
 
+# get version from file
+$version = file_get_contents('lists.version');
 ?>
 <!DOCTYPE html>
 <html lang="en" manifest="manifest.appcache">
@@ -71,16 +73,15 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav nav-puller">
             <li>
-              <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
-                <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
-                  <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
-                </button>
-                <button type="submit" class="btn btn-default" id="csv_list" name="csv_list" value="csv_list" title="Full List CSV">
-                  <span class="glyphicon glyphicon-list-alt"></span> Export
-                </button> 
-                <button type="submit" class="btn btn-default" id="csv_email" name="csv_email" value="csv_email" title="Email CSV">
-                  <span class="glyphicon glyphicon-envelope"></span> Export
-                </button>
+              <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
+                <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
+              </button>
+              <button type="button" class="btn btn-default" title="Export Table" id="csv_list" onclick="exportCsv('Export');">
+                <span class="glyphicon glyphicon-list-alt"></span> Export
+              </button> 
+              <button type="button" class="btn btn-default" id="csv_email" title="Email Export" onclick="exportCsv('Email');">
+                <span class="glyphicon glyphicon-envelope"></span> Export
+              </button>
             </li>
             <li class="hidden"><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
@@ -95,12 +96,12 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       <section class="trip-select">
           <label>Select a Destination:</label>
             <select class="form-control input-sm" id="destination" name="destination">
-              <?php echo $list->select_options['destinations']?>
+                <option class="none" value="none">Select a destination</option>
             </select>
         </label>
         <label>Select a Trip:
           <select class="form-control input-sm" id="trip" name="trip" id="trip">
-          <?php echo $list->select_options['trip']; ?>
+              <option class="none" value="none">Select a destination first</option>
           </select>
         </label>
       </section>
@@ -113,37 +114,37 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <a onclick="javascript:checkAll('uncheck');" href="javascript:void();">Uncheck All</a>
           <br>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" <?php checkbox_helper("processing");?>>Processing</input>
+            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" checked>Processing</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" <?php checkbox_helper("pending");?>>Pending</input>
+            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" checked>Pending</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" <?php checkbox_helper("walk-on");?>>Walk On</input>
+            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" checked>Walk On</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php checkbox_helper("completed");?>>Completed</input>
+            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" >Completed</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php checkbox_helper("cancelled");?>>Cancelled</input>
+            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" >Cancelled</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed" <?php checkbox_helper("failed");?>>Failed</input>
+            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed">Failed</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php checkbox_helper("on-hold");?>>On-hold</input>
+            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold">On-hold</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="finalized" value="finalized" <?php checkbox_helper("finalized");?>>Finalized</input>
+            <input type="checkbox" class="order_status_checkbox" name="finalized" value="finalized" >Finalized</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
+            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded">Refunded</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="balance-due" value="balance-due" <?php checkbox_helper("balance-due");?>>Balance Due</input>
+            <input type="checkbox" class="order_status_checkbox" name="balance-due" value="balance-due">Balance Due</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show" <?php checkbox_helper("no-show");?>>No Show</input>
+            <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show">No Show</input>
           </label>
           <br>
           <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
@@ -155,7 +156,6 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
           <?php } ?>
       </section>
       <br>
-      </form>
       </div><!-- /.container -->
 
       <!-- Lists table added here by jQuery -->
@@ -196,30 +196,12 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
                 <h5>For OvR Staff Use Only</h5>
               </div>
               <div class="col-md-4 text-center">
-                <h5>Version <?php echo $lists_version ?></h5>
+                <h5>Version <?php echo $version; ?></h5>
               </div>
             </div>
           </div>
         </div>
       </footer>
-        <?php 
-        if(isset($list->order_data)){
-            foreach($list->order_data as $order => $data){
-                $array = array($order,$data);
-                $json = htmlspecialchars(json_encode($array));
-                if (json_last_error() > 0) {
-                    error_log('Last JSON encode error: ' . json_last_error());
-                } else {
-                    printf('<input type="hidden" class="order" value="%s">',$json, ENT_QUOTES, 'UTF-8');
-                }
-            }
-        }
-
-        if(isset($list->has_pickup)){
-            error_log('Pickup Flag:'.$list->has_pickup);
-            print '<input type="hidden" id="hasPickup" value="'.$list->has_pickup.'" />';
-        }
-        ?>
 
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
