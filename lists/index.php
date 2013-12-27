@@ -66,25 +66,25 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand logo-nav" onclick="formReset();" href="javascript:void();">OvR Trip Lists&nbsp;&nbsp;<span class="status iphone glyphicon"></span></a>
+          <a class="navbar-brand logo-nav" >OvR Trip Lists&nbsp;&nbsp;<span class="status iphone glyphicon"></span></a>
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav nav-puller">  
+          <ul class="nav navbar-nav nav-puller">
             <li>
               <form action="index.php" method="post" name="trip_list" id="trip_list" class="navbar-form">
                 <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
                   <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
                 </button>
                 <button type="submit" class="btn btn-default" id="csv_list" name="csv_list" value="csv_list" title="Full List CSV">
-                  <span class="glyphicon glyphicon-list-alt"></span> CSV
+                  <span class="glyphicon glyphicon-list-alt"></span> Export
                 </button> 
                 <button type="submit" class="btn btn-default" id="csv_email" name="csv_email" value="csv_email" title="Email CSV">
-                  <span class="glyphicon glyphicon-envelope"></span> CSV
+                  <span class="glyphicon glyphicon-envelope"></span> Export
                 </button>
             </li>
             <li><a href="login/register.php">Create New User</a></li>
             <li><a href="login/logout.php">Logout</a></li>
-            <li><a href=""><span class="status medLg glyphicon"></span></a></li>  
+            <li><a href=""><span class="status medLg glyphicon"></span></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
@@ -122,6 +122,9 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" <?php checkbox_helper("walk-on");?>>Walk On</input>
           </label>
           <label class="checkbox order-checkbox">
+            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php checkbox_helper("completed");?>>Completed</input>
+          </label>
+          <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" <?php checkbox_helper("cancelled");?>>Cancelled</input>
           </label>
           <label class="checkbox order-checkbox">
@@ -131,7 +134,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
             <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold" <?php checkbox_helper("on-hold");?>>On-hold</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" <?php checkbox_helper("completed");?>>Completed</input>
+            <input type="checkbox" class="order_status_checkbox" name="finalized" value="finalized" <?php checkbox_helper("finalized");?>>Finalized</input>
           </label>
           <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded" <?php checkbox_helper("refunded");?>>Refunded</input>
@@ -155,13 +158,12 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
       </form>
       </div><!-- /.container -->
 
-      <!-- Lists table added here by Jquery -->
+      <!-- Lists table added here by jQuery -->
       <div id="listTable">
           
       </div>
       <div class="pager">
 
-          
           <button type="button" class="first btn btn-default">
               <span class="glyphicon glyphicon-fast-backward"></span>
           </button>
@@ -176,13 +178,13 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
               <span class="glyphicon glyphicon-fast-forward"></span>
           </button>
           <select class="pagesize">
-              <option selected="selected" value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-              <option value="40">40</option>
-              <option value="50">50</option>
-      		</select>
-      	</div>
+            <option selected="selected" value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
       <footer>
         <div class="page-header"></div><!-- inserts the line separator -->
           <div class="container">
@@ -212,7 +214,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
                 }
             }
         }
-        
+
         if(isset($list->has_pickup)){
             error_log('Pickup Flag:'.$list->has_pickup);
             print '<input type="hidden" id="hasPickup" value="'.$list->has_pickup.'" />';

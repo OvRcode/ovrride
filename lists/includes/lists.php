@@ -7,7 +7,7 @@
  */
 
 # OvR Lists Version Number
-$lists_version = "0.8.2";
+$lists_version = "0.8.3";
 
 
 # Form
@@ -32,7 +32,7 @@ if(isset($_SESSION['post_data']['trip']) && isset($_SESSION['post_data']['csv_em
 }
 function checkbox_helper($field){
   # Prints checked for selected checkboxes OR sets default checkboxes for new form
-  if($field == "processing" || $field == "pending" || $field == "walk-on"){
+  if($field == "processing" || $field == "pending" || $field == "walk-on" || $field == "completed"){
       if(isset($_SESSION['post_data'][$field]) || !isset($_SESSION['post_data']['trip']))
         print ' checked';
   }
@@ -200,7 +200,7 @@ class Trip_List{
         # Conditional SQL for checkboxes on form
         $sql_conditional = "";
         $checkboxes = array("processing","pending","cancelled","failed","on-hold","completed",
-                            "refunded","walk-on","balance-due","no-show");
+                            "refunded","walk-on","balance-due","no-show","finalized");
         foreach($checkboxes as $field){
           if(isset($_SESSION['post_data'][$field])){
               if($field == "walk-on")
