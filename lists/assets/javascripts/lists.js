@@ -54,7 +54,6 @@ function formReset(){
 function generateOnOff(){
   // switch generate list button between online and offline mode
   if (window.navigator.onLine){
-    //document.getElementById("trip_list").submit();
     $('#trip').getData();
   } else {
     $('#Listable').remove();
@@ -126,7 +125,6 @@ function saveWebOrder(id,webOrder){
   var db = window.db;
   var time = (new Date()).valueOf();
   var trip = $('#trip').val();
-  console.log('Email:'+webOrder.Email);
   db.transaction(function(tx) {
     tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_orders`' +
                   ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`,`Email`,`timeStamp`)' +
@@ -291,7 +289,6 @@ function selectManualCheckboxes(){
                   function(tx,results){
                     var len = results.rows.length;
                     var i;
-                    console.log('Results:' + len);
                     
                     for (i = 0; i < len; i++) {
                       var id = results.rows.item(i).ID;
