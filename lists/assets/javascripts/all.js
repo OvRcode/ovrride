@@ -13135,7 +13135,7 @@ function selectManualCheckboxes(){
                       }
                     }
                     if (window.selectMode == "save"){
-                    postData();
+                      postData();
                     } else if (window.selectMode == "build"){
                       selectWebOrders();
                     }
@@ -13336,6 +13336,9 @@ $.fn.getData = function(){
   .done(function(data){
     window.orderData = data;
     $("#listTable").buildTable();
+  })
+  .fail(function(error){
+    console.log('Error getting data:' + error.message);
   });
 };
 // End webSQL Functions
@@ -13515,12 +13518,13 @@ $.fn.buildTable = function(){
   $('#Listable').remove();
   if (window.navigator.onLine) {
     // ONLINE
-    if ($('#trip').length > 0) {
+    if ($('#trip').val() != 'none') {
       createTripCookie();
     }
     
-    if (orderData.length === 0 && $('#trip').val() != "none") {
+    if (jQuery.isEmptyObject(orderData)) {
       $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
+      $('#loader').css('display','none');
       throw new Error('Aborted table creation, no data here');
     } 
   }
