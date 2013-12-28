@@ -43,7 +43,7 @@ foreach ($input as $order => $orderInfo) {
     foreach ($orderInfo as $orderItem => $field) {
         foreach ($field as $fieldName => $value) {
             $prefix = substr($order,0,2);
-
+            
             if ($fieldName == "First" || $fieldName == "Last" || $fieldName == "Pickup"
               || $fieldName == "Phone" || $fieldName == "Package" || $fieldName == "Trip") {
                   $id = $order . ":" . $orderItem;
@@ -53,7 +53,7 @@ foreach ($input as $order => $orderInfo) {
                                       "`" . $fieldName . "` = VALUES(`" . $fieldName . "`)";
                   $result = dbQuery($db,$sql);
 
-              } else {
+              } else if ($fieldName != 'Status'){
                   $id = $order.":".$orderItem.":".$fieldName;
                   $sql = "SELECT `ID`,`value`,UNIX_TIMESTAMP(`timeStamp`) AS `timeStamp` FROM `ovr_lists_fields` WHERE `ID` = '$id'";
                   $result = dbQuery($db,$sql);
