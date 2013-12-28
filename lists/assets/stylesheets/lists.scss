@@ -39,6 +39,14 @@
     visibility:visible;
   }
 }
+#loader {
+  display:none;
+  height:128px;
+  width:128px;
+}
+.value{
+  display: none;
+}
 #save, #csv_list, #csv_email, .pager{
   visibility:hidden;
   margin-top:10px;
