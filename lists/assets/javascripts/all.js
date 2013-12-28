@@ -13282,13 +13282,15 @@ $.fn.autoSave = function(){
       span.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
       saveButton(button.attr('name'), false);
       $(this).children('.value').text('false');
-      $('#Listable').trigger('update');
+      //$('#Listable').trigger('update');
+      $('#Listable').trigger('updateCell',[this]);
     } else if ( button.hasClass('btn-danger')) {
       button.removeClass('btn-danger').addClass('btn-success');
       span.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
       saveButton(button.attr('name'), true);
       $(this).children('.value').text('true');
-      $('#Listable').trigger('update');
+      //$('#Listable').trigger('update');
+      $('#Listable').trigger('updateCell',[this]);
     }
   });
   /*$('#Listable').on('click','.center-me' ,function(){
