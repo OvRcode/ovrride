@@ -50,50 +50,85 @@ function formReset(){
   checkAll('uncheck');
 }
 function checkPackages(text, order, orderItem, state){
-  var busOnly    = new RegExp(/bus only/i);
-  var bus        = new RegExp(/bus/i);
+  var bus        = new RegExp(/bus only/i);
   var begLift    = new RegExp(/beginner lift/i);
+  var lts        = new RegExp(/lesson.*ski rental/i);
+  var ltr        = new RegExp(/lesson.*board rental/i);
+  var progSki    = new RegExp(/prog.* lesson.*ski rental/i);
+  var progBrd    = new RegExp(/prog.* lesson.*board rental/i);
   var progLesson = new RegExp(/prog.* lesson/i);
   var ski        = new RegExp(/ski rental/i);
   var brd        = new RegExp(/board rental/i);
-  console.log('Bus Only:'+busOnly.test(text));
-  if ( busOnly.test(text) ) {
-    var busOnlyId = $('#' + order + "\\:" + orderItem + "\\:Bus");
-    if (busOnlyId.text() == state){
-      busOnlyId.click();
+  var allArea    = new RegExp(/all area/i);
+  console.log('Bus Only:'+bus.test(text));
+  if ( bus.test(text) ) {
+    var busId = $('#' + order + "\\:" + orderItem + "\\:Bus");
+    if (busId.text() == state){
+      busId.click();
     }
   } else {
-    //var boxes
-    console.log('Bus:'+bus.test(text));
-    if ( bus.test(text) ) {
-      var busId = $("#" + order + "\\:" + orderItem + "\\:Bus");
-      if ( busId.text() == state ) {
-        busId.click();
-      }
-    }
-    console.log('Beg Lift:'+begLift.test(text));
+    // All area or beginner?
     if (begLift.test(text) ) {
       var begId = $("#" + order + "\\:" + orderItem + "\\:Beg");
       if (begId.text() == state) {
         begId.click();
       }
+    } else if ( allArea.test(text) ) {
+      var allId = $("#" + order + "\\:" + orderItem + "\\:All_Area");
+      if ( allId.text() == state ) {
+        allId.click();
+      }
     }
-    console.log('Prog Lesson:'+progLesson.test(text));
-    if ( progLesson.test(text) ) {
-      var progId = $("#" + order + "\\:" + orderItem + "\\:Prog_Lesson");
+    // Lessons + rental combos
+    var progId, skiRental, brdRental;
+    if ( progSki.test(text) ) {
+      progId = $("#" + order + "\\:" + orderItem + "\\:Prog_Lesson");
+      skiRental = $("#" + order + "\\:" + orderItem + "\\:SKI");
+      if ( progId.text() == state){
+        progId.click();
+      }
+      if ( skiRental.text() == state ) {
+        skiRental.click();
+      }
+    } else if ( progBrd.test(text) ) {
+      progId = $("#" + order + "\\:" + orderItem + "\\:Prog_Lesson");
+      brdRental = $("#" + order + "\\:" + orderItem + "\\:BRD");
+      if ( progId.text() == state){
+        progId.click();
+      }
+      if ( brdRental.text() == state ) {
+        brdRental.click();
+      }
+    } else if ( progLesson.test(text) ) {
+      progId = $("#" + order + "\\:" + orderItem + "\\:Prog_Lesson");
       if ( progId.text() == state) {
         progId.click();
       }
+    } else if ( ltr.test(text) ) {
+      var ltrId = $("#" + order + "\\:" + orderItem + "\\:LTR");
+      brdRental = $("#" + order + "\\:" + orderItem + "\\:BRD");
+      if ( ltrId.text() == state ) {
+        ltrId.click();
+      }
+      if ( brdRental.text() == state ) {
+        brdRental.click();
+      }
     }
-    console.log('Ski:'+ski.test(text));
-    if ( ski.test(text) ) {
+    else if ( lts.test(text) ) {
+      var ltsId = $("#" + order + "\\:" + orderItem + "\\:LTS");
+      skiRental = $("#" + order + "\\:" + orderItem + "\\:SKI");
+      if ( ltsId.text() == state ) {
+        ltsId.click();
+      }
+      if ( skiRental.text() == state ) {
+        skiRental.click();
+      }
+    } else if ( ski.test(text) ) {
       var skiId = $("#" + order + "\\:" + orderItem + "\\:SKI");
       if ( skiId.text() == state) {
         skiId.click();
       }
-    }
-    console.log('Board:'+brd.test(text));
-    if ( brd.test(text) ) {
+    } else if ( brd.test(text) ) {
       var brdId =  $("#" + order + "\\:" + orderItem + "\\:BRD");
       if ( brdId.text() == state) {
         brdId.click();
@@ -827,6 +862,10 @@ $.fn.buildTable = function(){
             value = (value == 1 ? true : false);
             row[field] = '<td class="center-me" id ="' + id + ':' + field + '"><span class="value">'+value+'</span><button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
                           '<span class="glyphicon ' + spanClass + '"></span></button></td>';
+            // WIP if ( field == 'AM') {
+              // Change event for package population
+              
+              //}
             saveButton(id + ':' + field, value);
           }
         });
@@ -877,7 +916,7 @@ $.fn.buildTable = function(){
                 '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
-                '<td class="filter-false">Bus</td>' +
+                '<td class="filter-false">Bus Only</td>' +
                 '<td class="filter-false">All Area Lift</td>' +
                 '<td class="filter-false">Beg. Lift</td>' +
                 '<td class="filter-false">BRD Rental</td>' +
