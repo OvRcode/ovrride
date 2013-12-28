@@ -150,14 +150,13 @@ $version = file_get_contents('lists.version');
           <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
 
           <button type="button" onclick="formReset();" class="btn btn-primary generate-list">Clear Form</button>
-
-          <?php if(isset($_SESSION['post_data']['trip']) && $_SESSION['post_data']['trip'] != "none"){ ?>
-            <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters </button>
-          <?php } ?>
+          <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters </button>
       </section>
       <br>
       </div><!-- /.container -->
-
+      <div class="row text-center">
+        <img id="loader" src="assets/images/loader.gif" />
+      </div>
       <!-- Lists table added here by jQuery -->
       <div id="listTable">
           

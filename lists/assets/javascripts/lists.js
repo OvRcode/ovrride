@@ -54,10 +54,14 @@ function formReset(){
 function generateOnOff(){
   // switch generate list button between online and offline mode
   if (window.navigator.onLine){
+    $('#Listable').remove();
+    $('.pager').css('visiblity','hidden');
+    $('#loader').css('display','inline');
     $('#trip').getData();
   } else {
     $('#Listable').remove();
     $('.pager').css('visibility','hidden');
+    $('#loader').css('display','inline');
     $('#save').css('visibility','hidden');
     $('#csv_list').css('visibility','hidden');
     $('#csv_email').css('visibility','hidden');
@@ -108,7 +112,7 @@ function autoSaveManualOrder(id,field,value){
                   }); 
   });
 }
-function saveCheckbox(id,value){
+function saveButton(id,value){
   var db = window.db;
   var time = (new Date()).valueOf();
   db.transaction(function(tx) {
@@ -313,7 +317,7 @@ function selectManualCheckboxes(){
                       }
                     }
                     if (window.selectMode == "save"){
-                    postData();
+                      postData();
                     } else if (window.selectMode == "build"){
                       selectWebOrders();
                     }
@@ -389,6 +393,62 @@ function setupProgressBar(){
   '</div>' +
     '</div>');
 } 
+function saveDropdown(type,classType, tripId, tripLabel){
+  //`type`,`class`,`label`,`value`
+  var db = window.db;
+  if ( type == 'destination' ) {
+    tripId = classType;
+  }
+  db.transaction(function(tx) {
+    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_dropdown` (`type`,`class`,`label`,`value`) VALUES(?,?,?,?)',
+      [type,classType, tripLabel,tripId],
+      function(tx,result){},
+      function(tx, error){
+        console.log('error inserting or replacing on ovr_lists_fields: ' + error.message);
+      }
+    );
+  });
+}
+function selectDropdown(type){
+  var db = window.db;
+  var destinations = window.destinations;
+  var trips = window.trips;
+  if (type == "destination") {
+    db.transaction(function(tx){
+      tx.executeSql('SELECT `class` FROM `ovr_lists_dropdown` WHERE type = ?', 
+        ['destination'],
+        function(tx,results){
+          var len = results.rows.length;
+          var i;
+          
+          for (i = 0; i < len; i++) {
+            var value = results.rows.item(i).class;
+            destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>\n';
+          }
+          window.destinations = destinations;
+        }
+        );
+    });
+  } else if (type == "trip") {
+    db.transaction(function(tx){
+      tx.executeSql('SELECT `class`,`label`,`value` FROM `ovr_lists_dropdown` where type = ?',
+        ['trip'],
+        function(tx,result){
+          var len = result.rows.length;
+          var i;
+          
+          for (i = 0; i < len; i++) {
+            var classType = result.rows.item(i).class;
+            var tripLabel = result.rows.item(i).label;
+            var tripId = result.rows.item(i).value;
+            trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>\n';
+            window.trips = trips;
+          }
+        });
+    });
+  }
+}
+
 $.fn.autoSave = function(){
   /* save checkboxes and manual entries  on change to websql
      Function will be called each time a manual row is added
@@ -396,9 +456,26 @@ $.fn.autoSave = function(){
   $('#Listable').unbind('click');
   $('#Listable .manual').unbind('blur');
   $('#Listable .manual').unbind('focusin');
-  $('#Listable').on('click','.center-me' ,function(){
-    saveCheckbox($(this).children('input').attr('name'),$(this).children('input').is(':checked'));
+  $('#Listable .center-me').on('click',function(){
+    var button = $(this).children('button');
+    var span = button.children('span');
+    if ( button.hasClass('btn-success')) {
+      button.removeClass('btn-success').addClass('btn-danger');
+      span.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
+      saveButton(button.attr('name'), false);
+      $(this).children('.value').text('false');
+      $('#Listable').trigger('update');
+    } else if ( button.hasClass('btn-danger')) {
+      button.removeClass('btn-danger').addClass('btn-success');
+      span.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
+      saveButton(button.attr('name'), true);
+      $(this).children('.value').text('true');
+      $('#Listable').trigger('update');
+    }
   });
+  /*$('#Listable').on('click','.center-me' ,function(){
+
+  });*/
   $('#Listable .manual').on('blur','.unsaved', function(){
     var text = $(this).text();
     if ( text === '' || text === ' ' || text == 'Cannot be blank!') {
@@ -415,7 +492,7 @@ $.fn.autoSave = function(){
     }
   });
 };
-$("#save").click(function(){
+$('#save').click(function(){
   window.selectMode = 'save';
   setupProgressBar();
   $('#saveBar').css('width', '10%');
@@ -441,10 +518,12 @@ $.fn.getData = function(){
   .done(function(data){
     window.orderData = data;
     $("#listTable").buildTable();
+  })
+  .fail(function(error){
+    console.log('Error getting data:' + error.message);
   });
 };
 // End webSQL Functions
-
 function createTripCookie(){
   var today = new Date();
   var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
@@ -459,25 +538,33 @@ function readTripCookie(){
   var cookies = document.cookie;
   var location = cookies.indexOf(" OvrRide Trip=");
   var value = unescape(cookies.substring(location, cookies.length));
+  var name;
   // Take out Trip cookie
   value = value.split(';');
   value = value[0];
   // Take out label
   value = value.split('=');
+  name = value[0];
   value = value[1];
   value = value.split(',');
-  return value;
+  
+  if (name == 'OvrRide Trip'){
+    return value;
+  } else {
+    return false;
+  }
 }
 function destroyTripCookie(){
   document.cookie = "OvrRide Trip=;-1; path=/";
 }
 function setTrip(){
   var trip = readTripCookie();
-  $('#destination').val(trip[0]);
-  // Need to trigger change for chained plugin to show trips
-  $('#destination').trigger('change');
-  $('#trip').val(trip[1]);
-
+  if ( trip ){
+    $('#destination').val(trip[0]);
+    // Need to trigger change for chained plugin to show trips
+    $('#destination').trigger('change');
+    $('#trip').val(trip[1]);
+  }
 }
 function setupTablesorter(rows) {
     var pagerOptions = {
@@ -485,7 +572,7 @@ function setupTablesorter(rows) {
     output: '{startRow} - {endRow} / {filteredRows} ({totalRows})' 
     };
     var headerOptions = {
-      0: { sorter: 'checkbox' },
+      0: { sorter: 'text' },
       1: { sorter: 'checkbox' },
       2: { sorter: "text" },
       3: { sorter: "text" },
@@ -552,22 +639,40 @@ function setupTablesorter(rows) {
     }
 }
 function setupDropDowns(){
-  var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
-  .done(function(data){
-    var destinations = '';
-    var trips = '';
-    $.each(data.destinations, function(key,value){
-      destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
+  if (window.navigator.onLine) {
+    var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
+    .done(function(data){
+      var destinations = '';
+      var trips = '';
+      $.each(data.destinations, function(key,value){
+        destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
+        saveDropdown('destination',value,'','');
+      });
+      $('#destination', '#mainBody').append(destinations);
+      $.each(data.trip, function(classType,value){
+        $.each(value, function(tripId, tripLabel){
+          trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
+          saveDropdown('trip',classType,tripId,tripLabel);
+        }); 
+      });
+      $('#trip', '#mainBody').append(trips);
+      $("#trip").chained("#destination");
     });
-    $('#destination', '#mainBody').append(destinations);
-    $.each(data.trip, function(classType,value){
-      $.each(value, function(tripId, tripLabel){
-        trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
-      }); 
-    });
-    $('#trip', '#mainBody').append(trips);
-    $("#trip").chained("#destination");
-  });
+  } else {
+    selectDropdown('destination');
+    selectDropdown('trip');
+    var setDropdown = setInterval(function(){
+      if (window.destination !== undefined && window.trips !== undefined) {
+        $('#trip').append(window.trips);
+        $('#destination').append(window.destinations);
+        $("#trip").chained("#destination");
+        setTrip();
+        window.clearInterval(setDropdown);
+      }
+    },100);
+    
+  }
+  
 }
 $.fn.colCount = function() {
    var colCount = 0;
@@ -595,12 +700,13 @@ $.fn.buildTable = function(){
   $('#Listable').remove();
   if (window.navigator.onLine) {
     // ONLINE
-    if ($('#trip').length > 0) {
+    if ($('#trip').val() != 'none') {
       createTripCookie();
     }
     
-    if (orderData.length === 0 && $('#trip').val() != "none") {
+    if (jQuery.isEmptyObject(orderData)) {
       $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
+      $('#loader').css('display','none');
       throw new Error('Aborted table creation, no data here');
     } 
   }
@@ -608,7 +714,7 @@ $.fn.buildTable = function(){
   $.each(orderData, function(orderNumber, values){
     var prefix = orderNumber.substring(0,2);
     $.each(values, function(orderItemNumber, fields){
-      var id = orderNumber+":"+orderItemNumber+":";
+      var id = orderNumber+":"+orderItemNumber;
       var row = {};
       
       saveWebOrder(id,fields);
@@ -641,12 +747,22 @@ $.fn.buildTable = function(){
             } else {
               row[field] += ' class="saved"';
             }
-            row[field] +='>'+value+'</td>';
-          } else {
-            row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
-            if (field != 'Email'){
-              saveCheckbox(id+field,(value == "checked" ? true : false));
+            row[field] +='>' + value + '</td>';
+          } else if (field != 'Email'){
+            //row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
+            var btnClass;
+            var spanClass;
+            if (value == 1) {
+              btnClass = 'btn-success';
+              spanClass = 'glyphicon-ok-sign';
+            } else {
+              btnClass= 'btn-danger';
+              spanClass = 'glyphicon-minus-sign';
             }
+            value = (value == 1 ? true : false);
+            row[field] = '<td class="center-me"><span class="value">'+value+'</span><button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
+                          '<span class="glyphicon ' + spanClass + '"></span></button></td>';
+            saveButton(id + ':' + field, value);
           }
         });
         /* Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
@@ -722,6 +838,7 @@ $.fn.buildTable = function(){
     
   tableFooter += '</tfoot></table>';
   var output = tableHeader + tableBody + tableFooter;
+  $('#loader').css('display','none');
   $(this).append(output);
   $('#save').css('visibility','visible');
   if (window.navigator.onLine){
@@ -730,12 +847,8 @@ $.fn.buildTable = function(){
   }
   
   setupTablesorter($("#Listable").colCount());
-  
-  
-  
-  $('.order').remove();
-  //$('#hasPickup').remove();
-  
+  createTripCookie();
+  $('#Listable').autoSave();
 };
 function addOrder(){
   // switch to last page
@@ -849,7 +962,7 @@ function exportCsv(mode){
                     console.log('ovr_lists_manual_orders setup error:' + error.message); }
     );
     tx.executeSql('CREATE TABLE IF NOT EXISTS ' +
-                  '`ovr_lists_dropdown` (`type`,`class`,`label`,`value`)',
+                  '`ovr_lists_dropdown` (`type`,`class`,`label`,`value` UNIQUE)',
                   [],
                   function(tx, result){
                     console.log('ovr_lists_dropdown setup success'); },
@@ -861,6 +974,10 @@ function exportCsv(mode){
 
 $(function(){
   setupDropDowns();
+  if (!window.navigator.onLine) {
+    setTrip();
+  }
+  
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
   
@@ -899,7 +1016,6 @@ $(function(){
         statusSmall.addClass('glyphicon-cloud-upload').css('color','');
       } 
     } else if (!window.navigator.onLine) {
-      setTrip();
       $('#csv_list').css('visibility','hidden');
       $('#csv_email').css('visibility','hidden');
       $('#save').addClass('btn-warning');
