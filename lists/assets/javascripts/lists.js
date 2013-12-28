@@ -54,10 +54,14 @@ function formReset(){
 function generateOnOff(){
   // switch generate list button between online and offline mode
   if (window.navigator.onLine){
+    $('#Listable').remove();
+    $('.pager').css('visiblity','hidden');
+    $('#loader').css('display','inline');
     $('#trip').getData();
   } else {
     $('#Listable').remove();
     $('.pager').css('visibility','hidden');
+    $('#loader').css('display','inline');
     $('#save').css('visibility','hidden');
     $('#csv_list').css('visibility','hidden');
     $('#csv_email').css('visibility','hidden');
@@ -108,7 +112,7 @@ function autoSaveManualOrder(id,field,value){
                   }); 
   });
 }
-function saveCheckbox(id,value){
+function saveButton(id,value){
   var db = window.db;
   var time = (new Date()).valueOf();
   db.transaction(function(tx) {
@@ -444,6 +448,7 @@ function selectDropdown(type){
     });
   }
 }
+
 $.fn.autoSave = function(){
   /* save checkboxes and manual entries  on change to websql
      Function will be called each time a manual row is added
@@ -451,9 +456,26 @@ $.fn.autoSave = function(){
   $('#Listable').unbind('click');
   $('#Listable .manual').unbind('blur');
   $('#Listable .manual').unbind('focusin');
-  $('#Listable').on('click','.center-me' ,function(){
-    saveCheckbox($(this).children('input').attr('name'),$(this).children('input').is(':checked'));
+  $('#Listable .center-me').on('click',function(){
+    var button = $(this).children('button');
+    var span = button.children('span');
+    if ( button.hasClass('btn-success')) {
+      button.removeClass('btn-success').addClass('btn-danger');
+      span.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
+      saveButton(button.attr('name'), false);
+      $(this).children('.value').text('false');
+      $('#Listable').trigger('update');
+    } else if ( button.hasClass('btn-danger')) {
+      button.removeClass('btn-danger').addClass('btn-success');
+      span.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
+      saveButton(button.attr('name'), true);
+      $(this).children('.value').text('true');
+      $('#Listable').trigger('update');
+    }
   });
+  /*$('#Listable').on('click','.center-me' ,function(){
+
+  });*/
   $('#Listable .manual').on('blur','.unsaved', function(){
     var text = $(this).text();
     if ( text === '' || text === ' ' || text == 'Cannot be blank!') {
@@ -470,7 +492,7 @@ $.fn.autoSave = function(){
     }
   });
 };
-$("#save").click(function(){
+$('#save').click(function(){
   window.selectMode = 'save';
   setupProgressBar();
   $('#saveBar').css('width', '10%');
@@ -499,7 +521,6 @@ $.fn.getData = function(){
   });
 };
 // End webSQL Functions
-
 function createTripCookie(){
   var today = new Date();
   var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
@@ -548,7 +569,7 @@ function setupTablesorter(rows) {
     output: '{startRow} - {endRow} / {filteredRows} ({totalRows})' 
     };
     var headerOptions = {
-      0: { sorter: 'checkbox' },
+      0: { sorter: 'text' },
       1: { sorter: 'checkbox' },
       2: { sorter: "text" },
       3: { sorter: "text" },
@@ -650,7 +671,6 @@ function setupDropDowns(){
   }
   
 }
-
 $.fn.colCount = function() {
    var colCount = 0;
    $('thead:nth-child(1) td', this).each(function () {
@@ -690,7 +710,7 @@ $.fn.buildTable = function(){
   $.each(orderData, function(orderNumber, values){
     var prefix = orderNumber.substring(0,2);
     $.each(values, function(orderItemNumber, fields){
-      var id = orderNumber+":"+orderItemNumber+":";
+      var id = orderNumber+":"+orderItemNumber;
       var row = {};
       
       saveWebOrder(id,fields);
@@ -723,12 +743,22 @@ $.fn.buildTable = function(){
             } else {
               row[field] += ' class="saved"';
             }
-            row[field] +='>'+value+'</td>';
-          } else {
-            row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
-            if (field != 'Email'){
-              saveCheckbox(id+field,(value == "checked" ? true : false));
+            row[field] +='>' + value + '</td>';
+          } else if (field != 'Email'){
+            //row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
+            var btnClass;
+            var spanClass;
+            if (value == 1) {
+              btnClass = 'btn-success';
+              spanClass = 'glyphicon-ok-sign';
+            } else {
+              btnClass= 'btn-danger';
+              spanClass = 'glyphicon-minus-sign';
             }
+            value = (value == 1 ? true : false);
+            row[field] = '<td class="center-me"><span class="value">'+value+'</span><button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
+                          '<span class="glyphicon ' + spanClass + '"></span></button></td>';
+            saveButton(id + ':' + field, value);
           }
         });
         /* Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
@@ -804,6 +834,7 @@ $.fn.buildTable = function(){
     
   tableFooter += '</tfoot></table>';
   var output = tableHeader + tableBody + tableFooter;
+  $('#loader').css('display','none');
   $(this).append(output);
   $('#save').css('visibility','visible');
   if (window.navigator.onLine){
@@ -813,6 +844,7 @@ $.fn.buildTable = function(){
   
   setupTablesorter($("#Listable").colCount());
   createTripCookie();
+  $('#Listable').autoSave();
 };
 function addOrder(){
   // switch to last page

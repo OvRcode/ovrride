@@ -161,7 +161,7 @@ class TripList{
         $result = $this->dbQuery($sql);
         while ($row = $result->fetch_assoc()) {
           $label = explode(':',$row['ID']);
-          $this->orderData[$order][$orderItem][$label[2]] = ($row['value'] == 1 ? "checked" : "");
+          $this->orderData[$order][$orderItem][$label[2]] = $row['value'];
         }
         foreach ($this->checkboxes as $field) {
           if (!isset($this->orderData[$order][$orderItem][$field])){
