@@ -63,6 +63,7 @@ module.exports = function(grunt) {
           "assets/images/touch-icon-ipad.png",
           "assets/images/touch-icon-iphone-retina.png",
           "assets/images/touch-icon-iphone.png",
+          "assets/images/loader.gif",
           "assets/javascripts/all.min.js",
           "assets/stylesheets/all.css",
           "assets/tablesorter/addons/pager/jquery.tablesorter.pager.css",
