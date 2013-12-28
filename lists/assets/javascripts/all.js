@@ -12867,7 +12867,60 @@ function formReset(){
   $('#destination').trigger('change');
   checkAll('uncheck');
 }
-
+function checkPackages(text, order, orderItem, state){
+  var busOnly    = new RegExp(/bus only/i);
+  var bus        = new RegExp(/bus/i);
+  var begLift    = new RegExp(/beginner lift/i);
+  var progLesson = new RegExp(/prog.* lesson/i);
+  var ski        = new RegExp(/ski rental/i);
+  var brd        = new RegExp(/board rental/i);
+  console.log('Bus Only:'+busOnly.test(text));
+  if ( busOnly.test(text) ) {
+    var busOnlyId = $('#' + order + "\\:" + orderItem + "\\:Bus");
+    if (busOnlyId.text() == state){
+      busOnlyId.click();
+    }
+  } else {
+    //var boxes
+    console.log('Bus:'+bus.test(text));
+    if ( bus.test(text) ) {
+      var busId = $("#" + order + "\\:" + orderItem + "\\:Bus");
+      if ( busId.text() == state ) {
+        busId.click();
+      }
+    }
+    console.log('Beg Lift:'+begLift.test(text));
+    if (begLift.test(text) ) {
+      var begId = $("#" + order + "\\:" + orderItem + "\\:Beg");
+      if (begId.text() == state) {
+        begId.click();
+      }
+    }
+    console.log('Prog Lesson:'+progLesson.test(text));
+    if ( progLesson.test(text) ) {
+      var progId = $("#" + order + "\\:" + orderItem + "\\:Prog_Lesson");
+      if ( progId.text() == state) {
+        progId.click();
+      }
+    }
+    console.log('Ski:'+ski.test(text));
+    if ( ski.test(text) ) {
+      var skiId = $("#" + order + "\\:" + orderItem + "\\:SKI");
+      if ( skiId.text() == state) {
+        skiId.click();
+      }
+    }
+    console.log('Board:'+brd.test(text));
+    if ( brd.test(text) ) {
+      var brdId =  $("#" + order + "\\:" + orderItem + "\\:BRD");
+      if ( brdId.text() == state) {
+        brdId.click();
+      }
+    }
+    
+  }
+  
+}
 // webSQL Functions
 function generateOnOff(){
   // switch generate list button between online and offline mode
@@ -13277,19 +13330,30 @@ $.fn.autoSave = function(){
   $('#Listable .center-me').on('click',function(){
     var button = $(this).children('button');
     var span = button.children('span');
+    var id, packageText;
     if ( button.hasClass('btn-success')) {
       button.removeClass('btn-success').addClass('btn-danger');
       span.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
       saveButton(button.attr('name'), false);
       $(this).children('.value').text('false');
-      //$('#Listable').trigger('update');
+      id = $(this).attr('id');
+      id = id.split(':');
+      if ( id[2] == 'AM') {
+        packageText = $("#" + id[0] + "\\:" + id[1] + "\\:Package").text();
+        checkPackages(packageText, id[0], id[1], "true");
+      }
       $('#Listable').trigger('updateCell',[this]);
     } else if ( button.hasClass('btn-danger')) {
       button.removeClass('btn-danger').addClass('btn-success');
       span.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
       saveButton(button.attr('name'), true);
       $(this).children('.value').text('true');
-      //$('#Listable').trigger('update');
+      id = $(this).attr('id');
+      id = id.split(':');
+      if ( id[2] == 'AM') {
+        packageText = $("#" + id[0] + "\\:" + id[1] + "\\:Package").text();
+        checkPackages(packageText, id[0], id[1], "false");
+      }
       $('#Listable').trigger('updateCell',[this]);
     }
   });
@@ -13541,7 +13605,7 @@ $.fn.buildTable = function(){
       if (statusBoxes[fields.Status] === true) {
         $.each(fields, function(field, value){
           if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
-            row[field] = '<td';
+            row[field] = '<td id="' + id + ':' + field +'"';
             switch (field) {
               case 'First':
                 row[field] += ' headers="First"';
@@ -13569,7 +13633,6 @@ $.fn.buildTable = function(){
             }
             row[field] +='>' + value + '</td>';
           } else if (field != 'Email'){
-            //row[field] = '<td class="center-me"><input type="checkbox" name="' + id + field + '" ' + value +'></td>';
             var btnClass;
             var spanClass;
             if (value == 1) {
@@ -13580,7 +13643,7 @@ $.fn.buildTable = function(){
               spanClass = 'glyphicon-minus-sign';
             }
             value = (value == 1 ? true : false);
-            row[field] = '<td class="center-me"><span class="value">'+value+'</span><button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
+            row[field] = '<td class="center-me" id ="' + id + ':' + field + '"><span class="value">'+value+'</span><button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
                           '<span class="glyphicon ' + spanClass + '"></span></button></td>';
             saveButton(id + ':' + field, value);
           }
@@ -13632,7 +13695,7 @@ $.fn.buildTable = function(){
                 '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
-                '<td class="filter-false">Bus Only</td>' +
+                '<td class="filter-false">Bus</td>' +
                 '<td class="filter-false">All Area Lift</td>' +
                 '<td class="filter-false">Beg. Lift</td>' +
                 '<td class="filter-false">BRD Rental</td>' +
