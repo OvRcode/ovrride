@@ -13852,37 +13852,50 @@ function setupTablesorter(rows) {
 }
 function setupDropDowns(){
   if (window.navigator.onLine) {
+    var dropDown = {};
+    dropDown.destinations = {};
+    dropDown.trips = {};
     var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
     .done(function(data){
       var destinations = '';
       var trips = '';
       $.each(data.destinations, function(key,value){
         destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
-        saveDropdown('destination',value,'','');
+        dropDown.destinations[value] = value;
       });
       $('#destination', '#mainBody').append(destinations);
       $.each(data.trip, function(classType,value){
         $.each(value, function(tripId, tripLabel){
           trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
-          saveDropdown('trip',classType,tripId,tripLabel);
+          if ( typeof dropDown.trips[classType] == 'undefined' ) {
+            dropDown.trips[classType] = {};
+          }
+          dropDown.trips[classType][tripId] = tripLabel;
         }); 
       });
+      console.log(dropDown);
+      window.storage.set('dropDown',dropDown);
       $('#trip', '#mainBody').append(trips);
       $("#trip").chained("#destination");
     });
   } else {
-    selectDropdown('destination');
-    selectDropdown('trip');
-    var setDropdown = setInterval(function(){
-      if (window.destination !== undefined && window.trips !== undefined) {
-        $('#trip').append(window.trips);
-        $('#destination').append(window.destinations);
-        $("#trip").chained("#destination");
-        setTrip();
-        window.clearInterval(setDropdown);
-      }
-    },100);
-    
+    var localDropdown = window.storage.get('dropDown');
+    var localTrips = '';
+    var localDestinations = '';
+    $.each(localDropdown.destinations, function(destination){
+      localDestinations += '<option class="' + destination + '" value="' + destination + '">' + destination + '</option>\n';
+    });
+    $('#destination').append(localDestinations);
+    $.each(localDropdown.trips, function(tripClass, data){
+      $.each(data, function(tripId, tripLabel){
+          localTrips += '<option class="' + tripClass + '" value="' + tripId + '">'+tripLabel+'</option>\n';
+      });
+      
+    });
+    $('#trip').append(localTrips);
+    setTimeout(function(){
+      $("#trip").chained("#destination");
+    },200);
   }
   
 }
@@ -14219,6 +14232,8 @@ function exportCsv(mode){
 })();
 
 $(function(){
+  // Setup local storage
+  window.storage = $.localStorage;
   setupDropDowns();
   if (!window.navigator.onLine) {
     setTrip();
