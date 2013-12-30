@@ -123,7 +123,7 @@ $version = file_get_contents('lists.version');
             <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" checked>Walk On</input>
           </label>
           <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" >Completed</input>
+            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" checked>Completed</input>
           </label>
           <label class="checkbox order-checkbox">
             <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" >Cancelled</input>
