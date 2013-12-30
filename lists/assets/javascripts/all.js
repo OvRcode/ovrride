@@ -13014,6 +13014,7 @@ function autoSaveManualOrder(id,field,value){
 function saveButton(id,value){
   var db = window.db;
   var time = (new Date()).valueOf();
+  time = (time.toString()).substr(0,10); // time values were larger than mysql unix time values
   db.transaction(function(tx) {
     tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_fields` (`ID`, `value`, `timeStamp`) VALUES(?,?,?)',
       [id, value, time],
@@ -13027,6 +13028,7 @@ function saveButton(id,value){
 function saveWebOrder(id,webOrder){
   var db = window.db;
   var time = (new Date()).valueOf();
+  time = (time.toString()).substr(0,10);//take most significant 10 digits, was longer than mysql timestamp
   var trip = $('#trip').val();
   db.transaction(function(tx) {
     tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_orders`' +
@@ -13248,7 +13250,8 @@ function deleteOrder(id){
 function postData(){
   // send data to backend mySQL database
   $('#saveBar').css('width', '80%');
-  var jqxhr = $.post( "save.php", window.tableData,function() {})
+  //console.log('DATA: '+JSON.stringify({'data' : window.tableData}));
+  var jqxhr = $.post( "save.php", {'data' : window.tableData } ,function() {})
     .done(function() {
       $('#saveBar').css('width', '100%');
       setTimeout(function(){
