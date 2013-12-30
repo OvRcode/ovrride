@@ -1,4 +1,5 @@
 <?php
+// This function is only needed for testing JSON in string format
 function objectToArray($d) {
     if (is_object($d)) {
         # Gets the properties of the given object
@@ -34,16 +35,12 @@ function dbQuery($db,$sql){
 }
 
 $db = dbConnect();
+$input = $_POST['data'];
 
-foreach ($_POST as $key => $value) {
-  $input[$key] = objectToArray($value);
-}
-
+// Loop through orders
 foreach ($input as $order => $orderInfo) {
     foreach ($orderInfo as $orderItem => $field) {
-        foreach ($field as $fieldName => $value) {
-            $prefix = substr($order,0,2);
-            
+        foreach ($field as $fieldName => $value) {          
             if ($fieldName == "First" || $fieldName == "Last" || $fieldName == "Pickup"
               || $fieldName == "Phone" || $fieldName == "Package" || $fieldName == "Trip") {
                   $id = $order . ":" . $orderItem;
@@ -58,18 +55,16 @@ foreach ($input as $order => $orderInfo) {
                   $sql = "SELECT `ID`,`value`,UNIX_TIMESTAMP(`timeStamp`) AS `timeStamp` FROM `ovr_lists_fields` WHERE `ID` = '$id'";
                   $result = dbQuery($db,$sql);
                   $row = $result->fetch_assoc();
-                  error_log("DEBUG HERE:");
-                  if (($result->num_rows == 0 || !$result->num_rows) || (isset($row['timeStamp']) && $row['timeStamp'] < $value[1])) {
+                  $intValue = (int)$value[0];
+                    if (!isset($row['timeStamp']) || $row['timeStamp'] < intval($value[1])) {
                       $sql = "INSERT INTO `ovr_lists_fields` (`ID`, `value`) ".
-                                  "VALUES('$id','{$value[0]}') ".
+                                  "VALUES('$id',{$intValue}) ".
                                   "ON DUPLICATE KEY UPDATE ".
                                   "`value` = VALUES(`value`)";
-                      error_log($sql);
                       $result = dbQuery($db,$sql);
                   }
               }
         }
     }
 }
-
 ?>
