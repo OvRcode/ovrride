@@ -638,30 +638,30 @@ function setupTablesorter(rows) {
     var headerOptions = {
       0: { sorter: 'text' },
       1: { sorter: 'checkbox' },
-      2: { sorter: "text" },
-      3: { sorter: "text" },
-      4: { sorter: "text" },
-      5: { sorter: "digit" },
-      6: { sorter: "text" },
-      7: { sorter: "digit" },
-      8: {sorter: 'checkbox'}, 
-      9: { sorter: 'checkbox' },
-      10: { sorter: 'checkbox' },
-      11: { sorter: 'checkbox' },
-      12: { sorter: 'checkbox' },
-      13: { sorter: 'checkbox' },
-      14: { sorter: 'checkbox' },
-      15: { sorter: 'checkbox' },
-      16: { sorter: 'checkbox' },
-      17: { sorter: 'checkbox' },
-      18: { sorter: 'checkbox' }
+      2: { sorter: 'text' },
+      3: { sorter: 'text' },
+      4: { sorter: 'text' },
+      5: { sorter: 'digit' },
+      6: { sorter: 'text' },
+      7: { sorter: 'digit' },
+      8: {sorter: 'text'}, 
+      9: { sorter: 'text' },
+      10: { sorter: 'text' },
+      11: { sorter: 'text' },
+      12: { sorter: 'text' },
+      13: { sorter: 'text' },
+      14: { sorter: 'text' },
+      15: { sorter: 'text' },
+      16: { sorter: 'text' },
+      17: { sorter: 'text' },
+      18: { sorter: 'text' }
     };
     var filterOptions = {
         4 : true,
         6 : true 
       };
     var widgetOptions = {
-      editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
+      editable_columns       : '2-6',  // point to the columns to make editable (zero-based index)
       editable_enterToAccept : true,     // press enter to accept content, or click outside if false
       editable_autoResort    : false,    // auto resort after the content has changed.
       editable_noEdit        : 'no-edit', // class name of cell that is no editable
@@ -677,11 +677,11 @@ function setupTablesorter(rows) {
     // Modify options for tables with no pickup column
     if (rows == 17) {
       delete headerOptions[18];
-      headerOptions[4].sorter = "digit";
-      headerOptions[5].sorter = "text";
-      headerOptions[6].sorter = "digit";
-      headerOptions[7].sorter = 'checkbox';
-      widgetOptions.editable_columns = "2-5";
+      headerOptions[4].sorter = 'digit';
+      headerOptions[5].sorter = 'text';
+      headerOptions[6].sorter = 'digit';
+      headerOptions[7].sorter = 'text';
+      widgetOptions.editable_columns = '2-5';
       delete filterOptions[4];
       delete filterOptions[6];
       filterOptions[5] = true;
