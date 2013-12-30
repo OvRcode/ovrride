@@ -13250,7 +13250,6 @@ function deleteOrder(id){
 function postData(){
   // send data to backend mySQL database
   $('#saveBar').css('width', '80%');
-  //console.log('DATA: '+JSON.stringify({'data' : window.tableData}));
   var jqxhr = $.post( "save.php", {'data' : window.tableData } ,function() {})
     .done(function() {
       $('#saveBar').css('width', '100%');
