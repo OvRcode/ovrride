@@ -13288,17 +13288,22 @@ function generateOnOff(){
     $('#loader').css('display','inline');
     $('#trip').getData();
   } else {
+    setupDropDowns();
     $('#Listable').remove();
     $('.pager').css('visibility','hidden');
     $('#loader').css('display','inline');
     $('#save').css('visibility','hidden');
     $('#csv_list').css('visibility','hidden');
     $('#csv_email').css('visibility','hidden');
-
+    console.log('Offline Loading data:');
+    window.orderData = window.storage.get('orderData');
+    console.log(window.orderData);
+    $('#listTable').buildTable();
+    
     // Select data and trigger build at end
-    var selectMode = 'build';
-    window.selectMode = selectMode;
-    selectOrderCheckboxes();
+    //var selectMode = 'build';
+    //window.selectMode = selectMode;
+    //selectOrderCheckboxes();
   }
 }
 function autoSaveManualOrder(id,field,value){
@@ -13731,6 +13736,8 @@ $.fn.getData = function(){
   var jqxhr = $.post("pull.php", {'requestType':'orders','trip' : $(this).val()})
   .done(function(data){
     window.orderData = data;
+    console.log('Server Data:');
+    console.log(window.orderData);
     window.storage.set('orderData',orderData);
     $("#listTable").buildTable();
   })
@@ -13877,6 +13884,7 @@ function setupDropDowns(){
           dropDown.trips[classType][tripId] = tripLabel;
         }); 
       });
+      window.storage.set('dropDown',dropDown);
       $('#trip', '#mainBody').append(trips);
       $("#trip").chained("#destination");
     });
