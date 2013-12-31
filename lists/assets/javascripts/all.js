@@ -13624,6 +13624,7 @@ function setupProgressBar(){
   '</div>' +
     '</div>');
 } 
+// REMOVE THIS FUNCTION
 function saveDropdown(type,classType, tripId, tripLabel){
   //`type`,`class`,`label`,`value`
   var db = window.db;
@@ -13679,7 +13680,7 @@ function selectDropdown(type){
     });
   }
 }
-
+//CONVERT FOR LOCAL STORAGE
 $.fn.autoSave = function(){
   /* save checkboxes and manual entries  on change to websql
      Function will be called each time a manual row is added
@@ -13694,6 +13695,7 @@ $.fn.autoSave = function(){
       $(this).text('Cannot be blank!').css('color','red');
     } else {
       $(this).css('color','');
+      
       autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
     }
   });
@@ -13729,6 +13731,7 @@ $.fn.getData = function(){
   var jqxhr = $.post("pull.php", {'requestType':'orders','trip' : $(this).val()})
   .done(function(data){
     window.orderData = data;
+    window.storage.set('orderData',orderData);
     $("#listTable").buildTable();
   })
   .fail(function(error){
@@ -13769,6 +13772,7 @@ function readTripCookie(){
 function destroyTripCookie(){
   document.cookie = "OvrRide Trip=;-1; path=/";
 }
+// CONVERT TO LOCAL STORAGE
 function setTrip(){
   var trip = readTripCookie();
   if ( trip ){
@@ -13873,8 +13877,6 @@ function setupDropDowns(){
           dropDown.trips[classType][tripId] = tripLabel;
         }); 
       });
-      console.log(dropDown);
-      window.storage.set('dropDown',dropDown);
       $('#trip', '#mainBody').append(trips);
       $("#trip").chained("#destination");
     });
@@ -14068,7 +14070,12 @@ $.fn.buildTable = function(){
   var output = tableHeader + tableBody + tableFooter;
   $('#loader').css('display','none');
   $(this).append(output);
-  
+  // click event to add row to the table for a manual order
+  $('#add').click(function(){addOrder();});
+   
+   // click event to remove unsaved manual orders from table
+   $('#remove').click(function(){removeOrder();});
+   
   $('#save').css('visibility','visible');
   if (window.navigator.onLine){
     $('#csv_list').css('visibility','visible');
@@ -14078,37 +14085,40 @@ $.fn.buildTable = function(){
   setupTablesorter($("#Listable").colCount());
   createTripCookie();
   $.each(events, function(key,value){
-    $(value,'#Listable').on('click',function(){
-      var button = $(this).children('button');
-      var iconSpan = button.children('.glyphicon');
-      var hiddenSpan = $(this).children('span');
-      var tdId = $(this).attr('id');
-      tdId = tdId.split(':');
-      var id, packageText;
-    
-      if ( button.hasClass('btn-success')) {
-        button.removeClass('btn-success').addClass('btn-danger').val('false');
-        iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
-        saveButton(button.attr('name'), false);
-        hiddenSpan.text('false');
-        if (tdId[2] == 'AM') {
-          packageText = $("#"+tdId[0]+"\\:"+tdId[1]+"\\:Package").text();
-          checkPackages(packageText, tdId[0], tdId[1], "true");
-        }
-      } else if ( button.hasClass('btn-danger')) {
-        button.removeClass('btn-danger').addClass('btn-success').val('true');
-        iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
-        saveButton(button.attr('name'), true);
-        hiddenSpan.text('true');
-        if (tdId[2] == 'AM') {
-          packageText = $("#"+tdId[0]+"\\:"+tdId[1]+"\\:Package").text();
-          checkPackages(packageText, tdId[0], tdId[1], "false");
-        }
-      }
-    });
+    addButtonListener(value);
   });
   $('#Listable').autoSave();
 };
+function addButtonListener(value){
+  $(value,'#Listable').on('click',function(){
+    var button = $(this).children('button');
+    var iconSpan = button.children('.glyphicon');
+    var hiddenSpan = $(this).children('span');
+    var tdId = $(this).attr('id');
+    tdId = tdId.split(':');
+    var id, packageText;
+  
+    if ( button.hasClass('btn-success')) {
+      button.removeClass('btn-success').addClass('btn-danger').val('false');
+      iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
+      saveButton(button.attr('name'), false);
+      hiddenSpan.text('false');
+      if (tdId[2] == 'AM') {
+        packageText = $("#"+tdId[0]+"\\:"+tdId[1]+"\\:Package").text();
+        checkPackages(packageText, tdId[0], tdId[1], "true");
+      }
+    } else if ( button.hasClass('btn-danger')) {
+      button.removeClass('btn-danger').addClass('btn-success').val('true');
+      iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
+      saveButton(button.attr('name'), true);
+      hiddenSpan.text('true');
+      if (tdId[2] == 'AM') {
+        packageText = $("#"+tdId[0]+"\\:"+tdId[1]+"\\:Package").text();
+        checkPackages(packageText, tdId[0], tdId[1], "false");
+      }
+    }
+  });
+}
 function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
@@ -14121,33 +14131,69 @@ function addOrder(){
   var order = 'WO' + Math.floor( Math.random() * 90000 );
   var id = order + ":" + itemNum;
   
-  var row = '<tr class="manual"><td class="center-me"><input type="checkbox" name="' + id + ':AM"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':PM"></td>' +
+  var row = '<tr class="manual">' +
+  '<td class="center-me" id ="' + id + ':AM"><span class="value">false</span>' +
+  '<button name ="' + id + ':AM" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':PM"><span class="value">false</span>' +
+  '<button name ="' + id + ':PM" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
   '<td contenteditable="true" headers="First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td contenteditable="true" headers="Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td contenteditable="true" headers="Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td contenteditable="true" headers="Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td contenteditable="true" headers="Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':Waiver"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':Product"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':Bus"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':All_Area"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':Beg"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':BRD"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':SKI"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':LTS"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':LTR"></td>' +
-  '<td class="center-me"><input type="checkbox" name="' + id + ':Prog_Lesson"></td></tr>',
+  '<td class="center-me" id ="' + id + ':Waiver"><span class="value">false</span>' +
+  '<button name ="' + id + ':Waiver" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Product"><span class="value">false</span>' +
+  '<button name ="' + id + ':Product" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Bus"><span class="value">false</span>' +
+  '<button name ="' + id + ':Bus" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':All_Area"><span class="value">false</span>' +
+  '<button name ="' + id + ':All_Area" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Beg"><span class="value">false</span>' +
+  '<button name ="' + id + ':Beg" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':BRD"><span class="value">false</span>' +
+  '<button name ="' + id + ':BRD" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':SKI"><span class="value">false</span>' +
+  '<button name ="' + id + ':SKI" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':LTS"><span class="value">false</span>' +
+  '<button name ="' + id + ':LTS" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':LTR"><span class="value">false</span>' +
+  '<button name ="' + id + ':LTR" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Prog_Lesson"><span class="value">false</span>' +
+  '<button name ="' + id + ':Prog_Lesson" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td></tr>',
   $row = $(row),
   resort = false;
   $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
-  $().autoSave();
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:AM");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Product");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Bus");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:All_Area");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Beg");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:BRD");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:SKI");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:LTS");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:LTR");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Prog_Lesson");
   return false;
 }
 function removeOrder(){
     if($('#Listable tbody tr:last').hasClass('manual')){
-      var label = $('#Listable tbody tr:last input').attr('name');
+      var label = $('#Listable tbody tr:last td').attr('id');
       var id = label[0] + ':' + label[1];
       deleteOrder(id);
       $('#Listable tbody tr:last').remove();
@@ -14289,13 +14335,4 @@ $(function(){
       }
     }
   }, 250);
-  
-  // Setup initial save listeners for table, listeners are removed and reloaded when table is modified
-  $().autoSave();
-  
-  // click event to add row to the table for a manual order
-  $('#add').click(function(){addOrder();});
-   
-   // click event to remove unsaved manual orders from table
-   $('#remove').click(function(){removeOrder();});
 });
