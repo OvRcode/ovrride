@@ -140,17 +140,18 @@ function generateOnOff(){
     $('#trip').getData();
   } else {
     $('#loader').css('display','inline');
-    setupDropDowns();
-    $('#Listable').remove();
-    $('.pager').css('visibility','hidden');
-    $('#save').css('visibility','hidden');
-    $('#csv_list').css('visibility','hidden');
-    $('#csv_email').css('visibility','hidden');
-    console.log('Offline Loading data:');
-    window.orderData = window.storage.get('orderData');
-    console.log(window.orderData);
+    setTimeout(function(){
+      setupDropDowns();
+      $('#Listable').remove();
+      $('.pager').css('visibility','hidden');
+      $('#save').css('visibility','hidden');
+      $('#csv_list').css('visibility','hidden');
+      $('#csv_email').css('visibility','hidden');
+      console.log('Offline Loading data:');
+      window.orderData = window.storage.get('orderData');
     
-    $('#listTable').buildTable();
+      $('#listTable').buildTable();
+    },200);
   }
 }
 function postData(){
@@ -209,8 +210,6 @@ $.fn.getData = function(){
   var jqxhr = $.post("pull.php", {'requestType':'orders','trip' : $(this).val()})
   .done(function(data){
     window.orderData = data;
-    console.log('Server Data:');
-    console.log(window.orderData);
     window.storage.set('orderData',orderData);
     $("#listTable").buildTable();
   })
@@ -511,8 +510,8 @@ $.fn.buildTable = function(){
     
   tableFooter += '</tfoot></table>';
   var output = tableHeader + tableBody + tableFooter;
-  $('#loader').css('display','none');
   $(this).append(output);
+  $('#loader').css('display','none');
   // click event to add row to the table for a manual order
   $('#add').click(function(){addOrder();});
    
@@ -569,8 +568,6 @@ function addButtonListener(value){
     orderData[order][item].timeStamp = time;
     
     window.storage.set('orderData',window.orderData);
-    console.log('Data @ save:');
-    console.log(orderData);
     
     //check packages if AM
     if (field == 'AM') {
