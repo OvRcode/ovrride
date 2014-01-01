@@ -13569,26 +13569,6 @@ function selectManualCheckboxes(){
                   });
   });
 }
-function deleteOrder(id){
-  // TODO: remove when local storage is implemented
-  var db = window.db;
-  db.transaction(function(tx){
-    tx.executeSql('DELETE FROM `ovr_lists_manual_orders` WHERE `ID` = ?',
-                  [id],
-                  function(tx,result){},
-                  function(tx,error){
-                    console.log('Order:' + id + 'removed from manual orders table');
-                  });
-  });
-  db.transaction(function(tx){
-    tx.executeSql('DELETE FROM `ovr_lists_fields` WHERE `ID` LIKE ? || "%" ',
-                  [id],
-                  function(tx,result){},
-                  function(tx,error){
-                    console.log('Order:' + id + 'removed from manual orders table');
-                  });
-  });
-}
 function postData(){
   // send data to backend mySQL database
   $('#saveBar').css('width', '80%');
@@ -14241,7 +14221,11 @@ function removeOrder(){
     if($('#Listable tbody tr:last').hasClass('manual')){
       var label = $('#Listable tbody tr:last td').attr('id');
       var id = label[0] + ':' + label[1];
-      deleteOrder(id);
+      
+      // Delete from object and local storage
+      delete window.orderData[id];
+      window.storage.set('orderData',window.orderData);
+      
       $('#Listable tbody tr:last').remove();
       $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
       $('#Listable').trigger("update"); 
