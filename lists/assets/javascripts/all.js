@@ -13347,6 +13347,7 @@ function autoSaveManualOrder(id,field,value){
   });
 }
 function saveButton(id,value){
+  // TODO: port to Local storage
   var db = window.db;
   var time = (new Date()).valueOf();
   time = (time.toString()).substr(0,10); // time values were larger than mysql unix time values
@@ -13361,6 +13362,7 @@ function saveButton(id,value){
   });
 }
 function saveWebOrder(id,webOrder){
+  // TODO: remove when local storage is implemented
   var db = window.db;
   var time = (new Date()).valueOf();
   time = (time.toString()).substr(0,10);//take most significant 10 digits, was longer than mysql timestamp
@@ -13378,6 +13380,7 @@ function saveWebOrder(id,webOrder){
   });
 }
 function selectOrderCheckboxes(){
+  // TODO: remove when local storage is implemented
   if (window.selectMode == "save"){
   $('#saveBar').css('width', '30%');
   }
@@ -13430,6 +13433,7 @@ function selectOrderCheckboxes(){
   });
 }
 function selectManualOrders(){
+  // TODO: remove when local storage is implemented
   if (window.selectMode == "save"){
     $('#saveBar').css('width', '50%');
   }
@@ -13473,6 +13477,7 @@ function selectManualOrders(){
   });
 }
 function selectWebOrders(){
+  // TODO: remove when local storage is implemented
   var db = window.db;
   var tableData = window.tableData;
   var trip = $('#trip').val();
@@ -13513,6 +13518,7 @@ function selectWebOrders(){
   });
 }
 function selectManualCheckboxes(){
+  // TODO: remove when local storage is implemented
   if (window.selectMode == "save"){
     $('#saveBar').css('width', '60%');
   }
@@ -13564,6 +13570,7 @@ function selectManualCheckboxes(){
   });
 }
 function deleteOrder(id){
+  // TODO: remove when local storage is implemented
   var db = window.db;
   db.transaction(function(tx){
     tx.executeSql('DELETE FROM `ovr_lists_manual_orders` WHERE `ID` = ?',
@@ -13609,6 +13616,7 @@ function postData(){
     });
 }
 function truncateTables(){
+  // TODO: remove when local storage is implemented
   var db = window.db;
   db.transaction(function (tx) {  
     tx.executeSql('DELETE FROM `ovr_lists_fields`');
@@ -13631,7 +13639,7 @@ function setupProgressBar(){
 } 
 // REMOVE THIS FUNCTION
 function saveDropdown(type,classType, tripId, tripLabel){
-  //`type`,`class`,`label`,`value`
+  // TODO: remove when local storage is implemented
   var db = window.db;
   if ( type == 'destination' ) {
     tripId = classType;
@@ -13647,6 +13655,7 @@ function saveDropdown(type,classType, tripId, tripLabel){
   });
 }
 function selectDropdown(type){
+  // TODO: remove when local storage is implemented
   var db = window.db;
   var destinations = window.destinations;
   var trips = window.trips;
@@ -13700,8 +13709,8 @@ $.fn.autoSave = function(){
       $(this).text('Cannot be blank!').css('color','red');
     } else {
       $(this).css('color','');
-      
-      autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
+      // TODO: Replace with local storage save
+      //autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
     }
   });
   $('#Listable .manual').on('focusin','.unsaved', function(){
@@ -14104,26 +14113,38 @@ function addButtonListener(value){
     var hiddenSpan = $(this).children('span');
     var tdId = $(this).attr('id');
     tdId = tdId.split(':');
-    var id, packageText;
-  
+    var order = tdId[0];
+    var item = tdId[1];
+    var field = tdId[2];
+    var packageText;
+    var time = (((new Date()).valueOf()).toString()).substr(0,10);
+    
     if ( button.hasClass('btn-success')) {
       button.removeClass('btn-success').addClass('btn-danger').val('false');
       iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
-      saveButton(button.attr('name'), false);
       hiddenSpan.text('false');
-      if (tdId[2] == 'AM') {
-        packageText = $("#"+tdId[0]+"\\:"+tdId[1]+"\\:Package").text();
-        checkPackages(packageText, tdId[0], tdId[1], "true");
-      }
+      orderData[order][item][field] = 0;
     } else if ( button.hasClass('btn-danger')) {
       button.removeClass('btn-danger').addClass('btn-success').val('true');
       iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
-      saveButton(button.attr('name'), true);
       hiddenSpan.text('true');
-      if (tdId[2] == 'AM') {
-        packageText = $("#"+tdId[0]+"\\:"+tdId[1]+"\\:Package").text();
-        checkPackages(packageText, tdId[0], tdId[1], "false");
-      }
+      orderData[order][item][field] = 1;
+    }
+    
+    if ( typeof orderData[order][item].timeStamp === undefined ) {
+      console.log('Setting timeStamp field');
+    }
+    
+    orderData[order][item].timeStamp = time;
+    
+    window.storage.set('orderData',window.orderData);
+    console.log('Data @ save:');
+    console.log(orderData);
+    
+    //check packages if AM
+    if (field == 'AM') {
+      packageText = $("#" + order + "\\:" + item + "\\:Package").text();
+      checkPackages(packageText, order, item, "true");
     }
   });
 }
@@ -14241,6 +14262,7 @@ function exportCsv(mode){
   link.click();
   
 }
+// TODO: REMOVE when all functions are ported to local storage
 // Connect to webSQL DB and create tables
 (function(){
   var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
