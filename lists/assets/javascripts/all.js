@@ -13694,32 +13694,6 @@ function selectDropdown(type){
     });
   }
 }
-//CONVERT FOR LOCAL STORAGE
-$.fn.autoSave = function(){
-  /* save checkboxes and manual entries  on change to websql
-     Function will be called each time a manual row is added
-     unbind events first to avoid duplicate event listeners */
-  $('#Listable .manual').unbind('blur');
-  $('#Listable .manual').unbind('focusin');
-  // update table when sorting (speeds up click lag on iOS/mobile devices )
-  $('#Listable thead tr td').on("click", function(){ $('#Listable').trigger('update'); });
-  $('#Listable .manual').on('blur','.unsaved', function(){
-    var text = $(this).text();
-    if ( text === '' || text === ' ' || text == 'Cannot be blank!') {
-      $(this).text('Cannot be blank!').css('color','red');
-    } else {
-      $(this).css('color','');
-      // TODO: Replace with local storage save
-      //autoSaveManualOrder($(this).children('input').val(), $(this).attr('headers'), $(this).text());
-    }
-  });
-  $('#Listable .manual').on('focusin','.unsaved', function(){
-    var text = $(this).text();
-    if ( text == 'Cannot be blank!' || text === ' ') {
-      $(this).text('');
-    }
-  });
-};
 $('#save').click(function(){
   window.selectMode = 'save';
   setupProgressBar();
@@ -14100,11 +14074,16 @@ $.fn.buildTable = function(){
   }
   
   setupTablesorter($("#Listable").colCount());
+  
+  // update table when sorting (speeds up click lag on iOS/mobile devices )
+  $('#Listable thead tr td').on("click", function(){ $('#Listable').trigger('update'); });
+  
   createTripCookie();
+  
   $.each(events, function(key,value){
     addButtonListener(value);
   });
-  $('#Listable').autoSave();
+  //$('#Listable').autoSave();
 };
 function addButtonListener(value){
   $(value,'#Listable').on('click',function(){
@@ -14148,6 +14127,39 @@ function addButtonListener(value){
     }
   });
 }
+function addManualListener(value){
+  $(value).on('blur', function(){
+    var id = $(this).attr('id');
+    id = id.split(':');
+    var order = id[0];
+    var itemNum = id[1];
+    var field = id[2];
+    var time = (((new Date()).valueOf()).toString()).substr(0,10);
+    var text = $(this).text();
+
+    if ( text === '' || text === ' ' || text == 'Cannot be blank!') {
+      $(this).text('Cannot be blank!').css('color','red');
+    } else {
+      $(this).css('color','');
+      // Setup nested objects if they do not exist
+      if ( typeof window.orderData[order] === "undefined" ) {
+        window.orderData[order] = {};
+      }
+      if (typeof window.orderData[order][itemNum] === "undefined" ) {
+        window.orderData[order][itemNum] = {};
+      }
+      window.orderData[order][itemNum][field] = text;
+      window.orderData[order][itemNum].timeStamp = time;
+      window.storage.set('orderData',window.orderData);
+    }
+  });
+  $(value).on('focusin', function(){
+    var text = $(this).text();
+    if ( text == 'Cannot be blank!' || text === ' ') {
+      $(this).text('');
+    }
+  });
+}
 function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
@@ -14167,11 +14179,11 @@ function addOrder(){
   '<td class="center-me" id ="' + id + ':PM"><span class="value">false</span>' +
   '<button name ="' + id + ':PM" class="btn-xs btn-default btn-danger" value="false">' +
   '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td contenteditable="true" headers="First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" headers="Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" headers="Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" headers="Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" headers="Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
   '<td class="center-me" id ="' + id + ':Waiver"><span class="value">false</span>' +
   '<button name ="' + id + ':Waiver" class="btn-xs btn-default btn-danger" value="false">' +
@@ -14208,6 +14220,11 @@ function addOrder(){
   $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
   addButtonListener("#" + order + "\\:" + itemNum + "\\:AM");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:First");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Last");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Phone");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Product");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Bus");
@@ -14218,7 +14235,7 @@ function addOrder(){
   addButtonListener("#" + order + "\\:" + itemNum + "\\:LTS");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:LTR");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Prog_Lesson");
-  return false;
+  $("#" + order + "\\:" + itemNum + "\\:First").focus();
 }
 function removeOrder(){
     if($('#Listable tbody tr:last').hasClass('manual')){
