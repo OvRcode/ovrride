@@ -54,7 +54,6 @@ module.exports = function(grunt) {
           basePath: "lists/",
           network: ["save.php","http://*", "https://*"],
           exclude: ["js/jquery.min.js"],
-          preferOnline: false,
           timestamp: true
         },
         src: [
