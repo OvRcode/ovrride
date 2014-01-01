@@ -13279,7 +13279,6 @@ function checkPackages(text, order, orderItem, value){
   }
   
 }
-// webSQL Functions
 function generateOnOff(){
   // switch generate list button between online and offline mode
   if (window.navigator.onLine){
@@ -13288,291 +13287,24 @@ function generateOnOff(){
     $('#loader').css('display','inline');
     $('#trip').getData();
   } else {
+    $('#loader').css('display','inline');
     setupDropDowns();
     $('#Listable').remove();
     $('.pager').css('visibility','hidden');
-    $('#loader').css('display','inline');
     $('#save').css('visibility','hidden');
     $('#csv_list').css('visibility','hidden');
     $('#csv_email').css('visibility','hidden');
     console.log('Offline Loading data:');
     window.orderData = window.storage.get('orderData');
     console.log(window.orderData);
-    $('#listTable').buildTable();
     
-    // Select data and trigger build at end
-    //var selectMode = 'build';
-    //window.selectMode = selectMode;
-    //selectOrderCheckboxes();
+    $('#listTable').buildTable();
   }
-}
-function autoSaveManualOrder(id,field,value){
-  /* sqLite db doesn't have an insert or update (upsert) function
-      this function duplicates upsert by selecting the other values on the same row during replacement */
-  var db = window.db;
-  var trip = $('#trip').val();
-  var replaceFields = {};
-  replaceFields.First = "COALESCE((SELECT `First` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
-  replaceFields.Last = "COALESCE((SELECT `Last` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
-  replaceFields.Pickup = "COALESCE((SELECT `Pickup` FROM ovr_lists_manual_orders WHERE `ID` = '" + id +"'),'')";
-  replaceFields.Phone = "COALESCE((SELECT `Phone` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
-  replaceFields.Package = "COALESCE((SELECT `Package` FROM ovr_lists_manual_orders WHERE `ID` = '" + id + "'),'')";
-
-  var sql = "INSERT OR REPLACE INTO ovr_lists_manual_orders (`ID`, `First`,`Last`, `Pickup`, `Phone`, `Package`, `Trip`) VALUES(?, ";
-  switch(field){
-    case 'First':
-      sql += "'" + value +"'," + replaceFields.Last + ", " + replaceFields.Pickup + ", " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
-      break;
-    case 'Last':
-      sql += replaceFields.First +",'" + value + "', " + replaceFields.Pickup + ", " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
-      break;
-    case 'Pickup':
-      sql += replaceFields.First +"," + replaceFields.Last + ", '" + value + "', " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
-      break;
-    case 'Phone':
-      sql += replaceFields.First +"," + replaceFields.Last + ", " + replaceFields.Pickup + ", '" + value + "', " + replaceFields.Package + ", ?)";
-      break;
-    case 'Package':
-      sql += replaceFields.First +"," + replaceFields.Last + ", " + replaceFields.Pickup + ", " + replaceFields.Phone + ", '" + value + "', ?)";
-      break;
-    default:
-      sql += replaceFields.First +"," + replaceFields.Last + ", " + replaceFields.Pickup + ", " + replaceFields.Phone + ", " + replaceFields.Package + ", ?)";
-      break;
-  }
-  db.transaction(function(tx){
-    tx.executeSql(sql, [id, trip], function(tx,result){},
-                  function(tx, error){
-                    console.log(error.message);
-                  }); 
-  });
-}
-function saveButton(id,value){
-  // TODO: port to Local storage
-  var db = window.db;
-  var time = (new Date()).valueOf();
-  time = (time.toString()).substr(0,10); // time values were larger than mysql unix time values
-  db.transaction(function(tx) {
-    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_fields` (`ID`, `value`, `timeStamp`) VALUES(?,?,?)',
-      [id, value, time],
-      function(tx,result){},
-      function(tx, error){
-        console.log('error inserting or replacing on ovr_lists_fields: ' + error.message);
-      }
-    );
-  });
-}
-function saveWebOrder(id,webOrder){
-  // TODO: remove when local storage is implemented
-  var db = window.db;
-  var time = (new Date()).valueOf();
-  time = (time.toString()).substr(0,10);//take most significant 10 digits, was longer than mysql timestamp
-  var trip = $('#trip').val();
-  db.transaction(function(tx) {
-    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_orders`' +
-                  ' (`ID`, `First`, `Last`, `Pickup`, `Phone`,`Package`, `Trip`,`Email`,`timeStamp`)' +
-                  ' VALUES(?,?,?,?,?,?,?,?,?)',
-      [id, webOrder.First, webOrder.Last, webOrder.Pickup, webOrder.Phone, webOrder.Package, trip, webOrder.Email, time],
-      function(tx,result){},
-      function(tx, error){
-        console.log('error inserting or replacing on ovr_lists_orders: ' + error.message);
-      }
-    );
-  });
-}
-function selectOrderCheckboxes(){
-  // TODO: remove when local storage is implemented
-  if (window.selectMode == "save"){
-  $('#saveBar').css('width', '30%');
-  }
-  var db = window.db;
-  if (window.tableData === undefined){
-    window.tableData = {};
-  }
-  var tableData = window.tableData;
-  var trip = $('#trip').val();
-  
-  db.transaction(function(tx){
-    tx.executeSql('SELECT `ovr_lists_fields`.`ID`, `ovr_lists_fields`.`value`,`ovr_lists_fields`.`timeStamp`' +
-                  'FROM `ovr_lists_fields`' +
-                  'INNER JOIN `ovr_lists_orders` on `ovr_lists_fields`.`ID` LIKE `ovr_lists_orders`.`ID` || "%"' +
-                  'WHERE `ovr_lists_orders`.`trip` = ?', 
-                  [trip],
-                  function(tx,results){
-                    var len=results.rows.length;
-                    var i;
-                    
-                    for(i = 0; i < len; i++) {
-                      var label = results.rows.item(i).ID;
-                      label = label.split(':');
-                      var order = label[0];
-                      var orderItem = label[1];
-                      var field = label[2];
-                      var value = results.rows.item(i).value == 'true' ? 1:0;
-                      
-                      if ( typeof tableData[order] === "undefined" || typeof tableData[order] === undefined) {
-                      tableData[order] = {};
-                      }
-                      
-                      if ( typeof tableData[order][orderItem] === "undefined" || typeof tableData[order][orderItem] === undefined) {
-                      tableData[order][orderItem] = {};
-                      }
-                      // only save time stamps for saving to external DB
-                      if (window.selectMode == "save") {
-                        tableData[order][orderItem][field] = new Array(value, results.rows.item(i).timeStamp);
-                      } else if (window.selectMode == "build") {
-                        tableData[order][orderItem][field] = value;
-                      }
-                    }
-                    if (window.selectMode == "save"){
-                      $('#saveBar').css('width', '40%');
-                      selectManualOrders();
-                    } else if (window.selectMode == "build"){
-                      selectManualOrders();
-                    }
-                  });
-  });
-}
-function selectManualOrders(){
-  // TODO: remove when local storage is implemented
-  if (window.selectMode == "save"){
-    $('#saveBar').css('width', '50%');
-  }
-  var db = window.db;
-  var tableData = window.tableData;
-  var trip = $('#trip').val();
-  
-  db.transaction(function(tx){
-    tx.executeSql('SELECT * FROM `ovr_lists_manual_orders` WHERE `trip` = ?',
-                  [trip],
-                  function(tx,results){
-                  var len = results.rows.length;
-                  var i;
-                  for(i = 0; i < len; i++) {
-                    var id = results.rows.item(i).ID;
-                    id = id.split(':');
-                    var order = id[0];
-                    var orderItem = id[1];
-                    
-                    if ( typeof tableData[order] === 'undefined') {
-                      tableData[order] = {};
-                    }
-                    
-                    if ( typeof tableData[order][orderItem] === 'undefined') {
-                      tableData[order][orderItem] = {};
-                    }
-                    
-                    tableData[order][orderItem].First = results.rows.item(i).First;
-                    tableData[order][orderItem].Last = results.rows.item(i).Last;
-                    tableData[order][orderItem].Pickup = results.rows.item(i).Pickup;
-                    tableData[order][orderItem].Phone = results.rows.item(i).Phone;
-                    tableData[order][orderItem].Package = results.rows.item(i).Package;
-                    tableData[order][orderItem].Trip = results.rows.item(i).Trip;
-                  }
-                  if (window.selectMode == "save"){
-                    selectManualCheckboxes();
-                  } else if (window.selectMode == "build") {
-                    selectManualCheckboxes();
-                  }
-      });
-  });
-}
-function selectWebOrders(){
-  // TODO: remove when local storage is implemented
-  var db = window.db;
-  var tableData = window.tableData;
-  var trip = $('#trip').val();
-  
-  db.transaction(function(tx){
-    tx.executeSql('SELECT * FROM `ovr_lists_orders` WHERE `trip` = ?',
-                  [trip],
-                  function(tx,results){
-                  var len = results.rows.length;
-                  var i;
-                  for(i = 0; i < len; i++) {
-                    var id = results.rows.item(i).ID;
-                    id = id.split(':');
-                    var order = id[0];
-                    var orderItem = id[1];
-                    
-                    if ( typeof tableData[order] === 'undefined') {
-                      tableData[order] = {};
-                    }
-                    
-                    if ( typeof tableData[order][orderItem] === 'undefined') {
-                      tableData[order][orderItem] = {};
-                    }
-                    
-                    tableData[order][orderItem].First = results.rows.item(i).First;
-                    tableData[order][orderItem].Last = results.rows.item(i).Last;
-                    tableData[order][orderItem].Pickup = results.rows.item(i).Pickup;
-                    tableData[order][orderItem].Phone = results.rows.item(i).Phone;
-                    tableData[order][orderItem].Package = results.rows.item(i).Package;
-                    tableData[order][orderItem].Trip = results.rows.item(i).Trip;
-                    tableData[order][orderItem].Email = results.rows.item(i).Email;
-                    if (tableData[order][orderItem].Email === undefined) {
-                      tableData[order][orderItem].Email = "No Email";
-                    }
-                  }
-                  $("#listTable").buildTable();
-      });
-  });
-}
-function selectManualCheckboxes(){
-  // TODO: remove when local storage is implemented
-  if (window.selectMode == "save"){
-    $('#saveBar').css('width', '60%');
-  }
-  var db = window.db;
-  var tableData = window.tableData;
-  var trip = $('#trip').val();
-  
-  db.transaction(function(tx){
-    tx.executeSql('SELECT `ovr_lists_fields`.* ' +
-                  'FROM `ovr_lists_fields`, `ovr_lists_manual_orders`' +
-                  'WHERE `ovr_lists_fields`.`ID` LIKE `ovr_lists_manual_orders`.`ID`||"%" ' +
-                  'AND `ovr_lists_manual_orders`.`trip` = ?',
-                  [trip],
-                  function(tx,results){
-                    var len = results.rows.length;
-                    var i;
-                    
-                    for (i = 0; i < len; i++) {
-                      var id = results.rows.item(i).ID;
-                      id = id.split(':');
-                      var order = id[0];
-                      var orderItem = id[1];
-                      var field = id[2];
-                      var value = results.rows.item(i).value == 'true' ? 1:0;
-                      
-                      if ( typeof tableData[order] === 'undefined') {
-                        tableData[order] = {};
-                      }
-                      
-                      if ( typeof tableData[order][orderItem] === 'undefined') {
-                        tableData[order][orderItem] = {};
-                      }
-                      // only save timestamp for saving to external DB
-                      if (window.selectMode == "save") {
-                        tableData[order][orderItem][field] = new Array(value, results.rows.item(i).timeStamp);
-                      } else if (window.selectMode == "build") {
-                        tableData[order][orderItem][field] = value;
-                      }
-                    }
-                    if (window.selectMode == "save"){
-                      postData();
-                    } else if (window.selectMode == "build"){
-                      selectWebOrders();
-                    }
-                  },
-                  function(tx,error) {
-                    console.log("query error:" + error.message);
-                  });
-  });
 }
 function postData(){
   // send data to backend mySQL database
   $('#saveBar').css('width', '80%');
-  var jqxhr = $.post( "save.php", {'data' : window.tableData } ,function() {})
+  var jqxhr = $.post( "save.php", {'data' : window.orderData } ,function() {})
     .done(function() {
       $('#saveBar').css('width', '100%');
       setTimeout(function(){
@@ -13595,19 +13327,6 @@ function postData(){
                             });
     });
 }
-function truncateTables(){
-  // TODO: remove when local storage is implemented
-  var db = window.db;
-  db.transaction(function (tx) {  
-    tx.executeSql('DELETE FROM `ovr_lists_fields`');
-  });
-  db.transaction(function (tx) {
-    tx.executeSql('DELETE FROM `ovr_lists_manual_orders`');
-  });
-  db.transaction(function (tx) {
-    tx.executeSql('DELETE FROM `ovr_lists_orders`');
-  });
-}
 function setupProgressBar(){
   $('#mainBody').append('<div id="saveProgress"><h3>Save Progress:</h3>' +
     '<div class="progress progress-striped active">' +
@@ -13617,78 +13336,17 @@ function setupProgressBar(){
   '</div>' +
     '</div>');
 } 
-// REMOVE THIS FUNCTION
-function saveDropdown(type,classType, tripId, tripLabel){
-  // TODO: remove when local storage is implemented
-  var db = window.db;
-  if ( type == 'destination' ) {
-    tripId = classType;
-  }
-  db.transaction(function(tx) {
-    tx.executeSql('INSERT OR REPLACE INTO `ovr_lists_dropdown` (`type`,`class`,`label`,`value`) VALUES(?,?,?,?)',
-      [type,classType, tripLabel,tripId],
-      function(tx,result){},
-      function(tx, error){
-        console.log('error inserting or replacing on ovr_lists_fields: ' + error.message);
-      }
-    );
-  });
-}
-function selectDropdown(type){
-  // TODO: remove when local storage is implemented
-  var db = window.db;
-  var destinations = window.destinations;
-  var trips = window.trips;
-  if (type == "destination") {
-    db.transaction(function(tx){
-      tx.executeSql('SELECT `class` FROM `ovr_lists_dropdown` WHERE type = ?', 
-        ['destination'],
-        function(tx,results){
-          var len = results.rows.length;
-          var i;
-          
-          for (i = 0; i < len; i++) {
-            var value = results.rows.item(i).class;
-            destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>\n';
-          }
-          window.destinations = destinations;
-        }
-        );
-    });
-  } else if (type == "trip") {
-    db.transaction(function(tx){
-      tx.executeSql('SELECT `class`,`label`,`value` FROM `ovr_lists_dropdown` where type = ?',
-        ['trip'],
-        function(tx,result){
-          var len = result.rows.length;
-          var i;
-          
-          for (i = 0; i < len; i++) {
-            var classType = result.rows.item(i).class;
-            var tripLabel = result.rows.item(i).label;
-            var tripId = result.rows.item(i).value;
-            trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>\n';
-            window.trips = trips;
-          }
-        });
-    });
-  }
-}
 $('#save').click(function(){
-  window.selectMode = 'save';
   setupProgressBar();
   $('#saveBar').css('width', '10%');
   
   if(window.navigator.onLine){
-    $('#saveBar').css('width', '20%');
-    window.tableData = {};
-    /* Starts selection of data from webSQL DB's 
-    futher calls are chained on transaction success */
-    selectOrderCheckboxes();
+    $('#saveBar').css('width', '50%');
+    postData();
   } else {
     $('#mainBody').append('<div id="success" class="alert alert-warning alert-dismissable">' +
                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            'Changes made have been saved locally, try again when you\'re online</div>');
+                            'Changes made have already been saved locally, try again when you\'re online</div>');
     $('#saveBar').css('width', '100%');
     setTimeout(function(){
       $('#saveProgress').remove();
@@ -13708,49 +13366,16 @@ $.fn.getData = function(){
     console.log('Error getting data:' + error.message);
   });
 };
-// End webSQL Functions
-function createTripCookie(){
-  var today = new Date();
-  var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
-  var expires = "; expires=" + tomorrow.toGMTString();
-  var name = "OvrRide Trip";
-  var tripValue = $('#trip').val();
-  var destValue = $('#destination').val();
-  var value = destValue + "," + tripValue;
-  document.cookie = name + "=" + value + expires + "; path=/";
+function setLocalTrip(){
+  window.storage.set('trip', $('#trip').val());
+  window.storage.set('destination', $('#destination').val());
 }
-function readTripCookie(){
-  var cookies = document.cookie;
-  var location = cookies.indexOf(" OvrRide Trip=");
-  var value = unescape(cookies.substring(location, cookies.length));
-  var name;
-  // Take out Trip cookie
-  value = value.split(';');
-  value = value[0];
-  // Take out label
-  value = value.split('=');
-  name = value[0];
-  value = value[1];
-  value = value.split(',');
-  
-  if (name == 'OvrRide Trip'){
-    return value;
-  } else {
-    return false;
-  }
-}
-function destroyTripCookie(){
-  document.cookie = "OvrRide Trip=;-1; path=/";
-}
-// CONVERT TO LOCAL STORAGE
 function setTrip(){
-  var trip = readTripCookie();
-  if ( trip ){
-    $('#destination').val(trip[0]);
-    // Need to trigger change for chained plugin to show trips
-    $('#destination').trigger('change');
-    $('#trip').val(trip[1]);
-  }
+  $('#destination').val(window.storage.get('destination'));
+  // Need to trigger change for chained plugin to show trips
+  $('#destination').trigger('change');
+  $('#trip').val(window.storage.get('trip'));
+
 }
 function setupTablesorter(rows) {
     var pagerOptions = {
@@ -13898,9 +13523,6 @@ $.fn.buildTable = function(){
   $('#Listable').remove();
   if (window.navigator.onLine) {
     // ONLINE
-    if ($('#trip').val() != 'none') {
-      createTripCookie();
-    }
     
     if (jQuery.isEmptyObject(orderData)) {
       $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
@@ -13908,7 +13530,7 @@ $.fn.buildTable = function(){
       throw new Error('Aborted table creation, no data here');
     } 
   }
-  truncateTables();
+
   var events = [];
   $.each(orderData, function(orderNumber, values){
     var prefix = orderNumber.substring(0,2);
@@ -13916,7 +13538,6 @@ $.fn.buildTable = function(){
       var id = orderNumber+":"+orderItemNumber;
       var row = {};
       
-      saveWebOrder(id,fields);
       if (statusBoxes[fields.Status] === true) {
         $.each(fields, function(field, value){
           if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
@@ -13961,8 +13582,7 @@ $.fn.buildTable = function(){
             row[field] = '<td class="center-me" id ="' + id + ':' + field + '"><span class="value">' + value + '</span>' +
                           '<button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
                           '<span class="glyphicon ' + spanClass + '"></span></button></td>';
-            saveButton(id + ':' + field, value);
-            // ADD selector to array!
+
             events.push("#"+orderNumber+"\\:"+orderItemNumber+"\\:"+field);
           }
         });
@@ -14058,7 +13678,7 @@ $.fn.buildTable = function(){
   // update table when sorting (speeds up click lag on iOS/mobile devices )
   $('#Listable thead tr td').on("click", function(){ $('#Listable').trigger('update'); });
   
-  createTripCookie();
+  setLocalTrip();
   
   $.each(events, function(key,value){
     addButtonListener(value);
@@ -14232,6 +13852,8 @@ function removeOrder(){
     }
 }
 function exportCsv(mode){
+  // TODO: convert for local storage
+  // TODO: add filter for order status checkboxes
   var text = '';
   if ( mode == 'Email' ) {
     text += 'Email, First, Last, Package, Pickup\n';
@@ -14263,50 +13885,6 @@ function exportCsv(mode){
   link.click();
   
 }
-// TODO: REMOVE when all functions are ported to local storage
-// Connect to webSQL DB and create tables
-(function(){
-  var db = openDatabase('lists.ovrride.com', '0.2', 'OvR Ride Lists local DB', 2 * 1024 * 1024);
-  window.db = db;
-  db.transaction(function(tx) {
-    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                  '`ovr_lists_fields` (`ID` UNIQUE, `value` INTEGER, `timeStamp` INTEGER)',
-                  [],
-                  function(tx, result) {
-                    console.log("ovr_lists_fields setup success"); },
-                  function(tx, error) {
-                    console.log("ovr_lists_fields setup error: " + error.message); }
-    );
-  });
-  db.transaction(function(tx) {
-    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                  '`ovr_lists_manual_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                  ' `Pickup`, `Phone`, `Package`, `Trip`)',
-                  [],
-                  function(tx, result){
-                    console.log('ovr_lists_manual_orders setup success'); },
-                  function(tx, error){
-                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
-    );
-    tx.executeSql('CREATE TABLE IF NOT EXISTS' +
-                  '`ovr_lists_orders` (`ID` UNIQUE, `First`, `Last`,' +
-                  ' `Pickup`, `Phone`, `Package`, `Trip`, `Email`,`timeStamp` INTEGER)',
-                  [],
-                  function(tx, result){
-                    console.log('ovr_lists_manual_orders setup success'); },
-                  function(tx, error){
-                    console.log('ovr_lists_manual_orders setup error:' + error.message); }
-    );
-    tx.executeSql('CREATE TABLE IF NOT EXISTS ' +
-                  '`ovr_lists_dropdown` (`type`,`class`,`label`,`value` UNIQUE)',
-                  [],
-                  function(tx, result){
-                    console.log('ovr_lists_dropdown setup success'); },
-                  function(tx, error){
-                    console.log('ovr_lists_dropdown setup error:' + error.message); }
-    );
-  });
-})();
 
 $(function(){
   // Setup local storage
