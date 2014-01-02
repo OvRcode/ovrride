@@ -33,38 +33,53 @@ function dbQuery($db,$sql){
         return $result;
     }
 }
-
+function insertToFields($id,$value,$timeStamp){
+    //GET DB TIMESTAMP
+    global $db;
+    $sql = "SELECT `ID`,`value`,UNIX_TIMESTAMP(`timeStamp`) AS `timeStamp` FROM `ovr_lists_fields` WHERE `ID` = '$id'";
+    $result = dbQuery($db,$sql);
+    $row = $result->fetch_assoc();
+    $dbTime = $row['timeStamp'];
+    $value = (int)$value;
+    if ( $timeStamp > $dbTime || !isset($row['timeStamp']) ) {
+        $sql = "INSERT INTO `ovr_lists_fields` (`ID`, `value`) ".
+                    "VALUES('$id',$value) ".
+                    "ON DUPLICATE KEY UPDATE ".
+                    "`value` = VALUES(`value`)";
+        $result = dbQuery($db,$sql);
+    }
+}
 $db = dbConnect();
 $input = $_POST['data'];
 
 // Loop through orders
 foreach ($input as $order => $orderInfo) {
     foreach ($orderInfo as $orderItem => $field) {
-        foreach ($field as $fieldName => $value) {          
-            if ($fieldName == "First" || $fieldName == "Last" || $fieldName == "Pickup"
-              || $fieldName == "Phone" || $fieldName == "Package" || $fieldName == "Trip") {
-                  $id = $order . ":" . $orderItem;
-                  $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `" . $fieldName . "`)" .
-                                      "VALUES ('$id','$value')" .
-                                      "ON DUPLICATE KEY UPDATE" .
-                                      "`" . $fieldName . "` = VALUES(`" . $fieldName . "`)";
-                  $result = dbQuery($db,$sql);
-
-              } else if ($fieldName != 'Status'){
-                  $id = $order.":".$orderItem.":".$fieldName;
-                  $sql = "SELECT `ID`,`value`,UNIX_TIMESTAMP(`timeStamp`) AS `timeStamp` FROM `ovr_lists_fields` WHERE `ID` = '$id'";
-                  $result = dbQuery($db,$sql);
-                  $row = $result->fetch_assoc();
-                  $intValue = (int)$value[0];
-                    if (!isset($row['timeStamp']) || $row['timeStamp'] < intval($value[1])) {
-                      $sql = "INSERT INTO `ovr_lists_fields` (`ID`, `value`) ".
-                                  "VALUES('$id',{$intValue}) ".
-                                  "ON DUPLICATE KEY UPDATE ".
-                                  "`value` = VALUES(`value`)";
+      if ( isset($input[$order][$orderItem]['timeStamp']) ) {
+        $inputTimeStamp = $input[$order][$orderItem]['timeStamp'];
+        foreach ($field as $fieldName => $value) { 
+            $prefix = substr($order,0,2);
+            $id = $order . ":" . $orderItem;
+            if ($prefix == 'WO') {
+                if ($fieldName == "First" || $fieldName == "Last" || $fieldName == "Pickup"
+                  || $fieldName == "Phone" || $fieldName == "Package" || $fieldName == "Trip") {
+                      $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `" . $fieldName . "`)" .
+                                          "VALUES ('$id','$value')" .
+                                          "ON DUPLICATE KEY UPDATE" .
+                                          "`" . $fieldName . "` = VALUES(`" . $fieldName . "`)";
                       $result = dbQuery($db,$sql);
+
+                  } else if($fieldName != "Email" && $fieldName != "timeStamp" && $fieldName != "Status"){
+                      insertToFields($id.":".$fieldName, $value, $inputTimeStamp);
                   }
-              }
+            }
+            else if ($fieldName != "First" && $fieldName != "Last" && $fieldName != "Pickup" 
+                    && $fieldName != "Phone" && $fieldName != "Package" && $fieldName != "Trip" 
+                    && $fieldName != "Email" && $fieldName != "timeStamp" && $fieldName != "Status") {
+                    insertToFields($id.":".$fieldName, $value, $inputTimeStamp);
+            }
         }
+      }
     }
 }
 ?>
