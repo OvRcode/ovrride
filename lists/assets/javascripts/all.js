@@ -13200,84 +13200,110 @@ function formReset(){
 function checkPackages(text, order, orderItem, value){
   var bus        = new RegExp(/bus only/i);
   var begLift    = new RegExp(/beginner lift/i);
-  var lts        = new RegExp(/lesson.*ski rental/i);
-  var ltr        = new RegExp(/lesson.*board rental/i);
+  var lesson     = new RegExp(/lesson/i);
   var progSki    = new RegExp(/prog.* lesson.*ski rental/i);
   var progBrd    = new RegExp(/prog.* lesson.*board rental/i);
   var progLesson = new RegExp(/prog.* lesson/i);
   var ski        = new RegExp(/ski rental/i);
   var brd        = new RegExp(/board rental/i);
   var allArea    = new RegExp(/all area/i);
-  // TODO: reorder checks for packages based off most ordered to improve efficiency
+
   if ( bus.test(text) ) {
-    var busId = $('#' + order + "\\:" + orderItem + "\\:Bus .value");
-    if ( busId.text() == value ){
-      busId.click();
-    }
-  } else {
+    console.log('RegExp: Matched bus only');
+    var busId = $('#' + order + "\\:" + orderItem + "\\:Bus");
+    if ( busId.children('span').text() == value ){
+      busId.children('button').click();
+    } else { console.log('Bus: wrong value');}
+  } 
+  else {
     // Selectors for button values
-    var begId   = "#" + order + "\\:" + orderItem + "\\:Beg .value";
-    var allAreaId = "#" + order + "\\:" + orderItem + "\\:All_Area .value";
-    var progId    = "#" + order + "\\:" + orderItem + "\\:Prog_Lesson .value";
-    var skiId     = "#" + order + "\\:" + orderItem + "\\:SKI .value";
-    var brdId     = "#" + order + "\\:" + orderItem + "\\:BRD .value";
-    var ltrId     = "#" + order + "\\:" + orderItem + "\\:LTR .value";
-    var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS .value";
+    var begId   = "#" + order + "\\:" + orderItem + "\\:Beg";
+    var allAreaId = "#" + order + "\\:" + orderItem + "\\:All_Area";
+    var progId    = "#" + order + "\\:" + orderItem + "\\:Prog_Lesson";
+    var skiId     = "#" + order + "\\:" + orderItem + "\\:SKI";
+    var brdId     = "#" + order + "\\:" + orderItem + "\\:BRD";
+    var ltrId     = "#" + order + "\\:" + orderItem + "\\:LTR";
+    var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS";
     
     // All area or beginner?
     if ( begLift.test(text) ) {
-      if ( $(begId).text() == value ){
-        $(begId).parent().click();
+      if ( $(begId).children('span').text() == value ){
+        $(begId).children('button').click();
       }
     } else if ( allArea.test(text) ) {
-      if ( $(allAreaId).text() == value ) {
-        $(allAreaId).parent().click();
+      if ( $(allAreaId).children('span').text() == value ) {
+        $(allAreaId).children('button').click();
       }
     }
     
     // Lessons + rental combos
     if ( progSki.test(text)) {
-      if ( $(progId).text() == value ) {
-        $(progId).parent().click();
+      if ( $(progId).children('span').text() == value ) {
+        $(progId).children('button').click();
       }
-      if ( $(skiId).text() == value ) {
-        $(skiId).parent().click();
+      if ( $(skiId).children('span').text() == value ) {
+        $(skiId).children('button').click();
       }
-    } else if ( progBrd.test(text) ) {
-      if ( $(brdId).text() == value ) {
-        $(brdId).parent().click();
+    } 
+    else if ( progBrd.test(text) ) {
+      if ( $(brdId).children('span').text() == value ) {
+        $(brdId).children('button').click();
       }
-      if ( $(progId).text() == value ) {
-        $(progId).parent().click();
+      if ( $(progId).children('span').text() == value ) {
+        $(progId).children('button').click();
+      } 
+    } 
+    else if ( progLesson.test(text) ) {
+      // ADD VALUE CHECK
+      progId.children('button').click();
+    } 
+    else if ( lesson.test(text) && brd.test(text) ) {
+      if ( $(ltrId).children('span').text() == value ) {
+        $(ltrId).children('button').click();
+      }
+      if ( $(brdId).children('span').text() == value ) {
+        $(brdId).children('button').click();
+      }
+    } 
+    else if ( lesson.test(text) && ski.test(text) ) {
+      if ( $(ltsId).children('span').text() == value ) {
+        $(ltsId).children('button').click();
+      }
+      if ( $(skiId).children('span').text() ){
+        $(skiId).children('button').click();
+      }
+    } 
+    else if ( ski.test(text) ) {
+      if ( $(skiId).children('span').text() == value ) {
+        $(skiId).children('button').click();
+      }
+    } 
+    else if ( brd.test(text) ) {
+      if ( $(brdId).children('span').text() == value ) {
+        $(brdId).children('button').click();
+      }
+    }
+    else if ( lesson.test(text) ) {
+      if ( value == "false" ) {
+        var skiRegex = new RegExp(/ski/i);
+        var brdRegex = new RegExp(/brd/i);
+        var input = prompt('SKI or BRD Lesson?\n(enter ski or brd)');
+        if ( skiRegex.test(input) ) {
+          $(ltsId).children('button').click();
+        } else if ( brdRegex.test(input) ) {
+          $(ltrId).children('button').click();
+        }  
+      } else {
+        if ( $(ltsId).children('span').text() == value ) {
+          $(ltsId).children('button').click();
+        }
+        if ( $(ltrId).children('span').text() == value ) {
+          $(ltrId).children('button').click();
+        }
       }
       
-    } else if ( progLesson.test(text) ) {
-      progId.click();
-    } else if ( ltr.test(text) ) {
-      if ( $(ltrId).text() == value ) {
-        $(ltrId).parent().click();
-      }
-      if ( $(brdId).text() == value ) {
-        $(brdId).parent().click();
-      }
-    } else if ( lts.test(text) ) {
-      if ( $(ltsId).text() == value ) {
-        $(ltsId).parent().click();
-      }
-      if ( $(skiId).text() ){
-        $(skiId).parent().click();
-      }
-    } else if ( ski.test(text) ) {
-      if ( $(skiId).text() == value ) {
-        $(skiId).parent().click();
-      }
-    } else if ( brd.test(text) ) {
-      if ( $(brdId).text() == value ) {
-        $(brdId).parent().click();}
     }
-    
-  }
-  
+  } 
 }
 function generateOnOff(){
   // switch generate list button between online and offline mode
@@ -13304,8 +13330,11 @@ function generateOnOff(){
 }
 function postData(){
   // send data to backend mySQL database
+
+  console.log('SaveData: ');
+  console.log(window.storage.get('orderData'));
   $('#saveBar').css('width', '80%');
-  var jqxhr = $.post( "save.php", {'data' : window.orderData } ,function() {})
+  var jqxhr = $.post( "save.php", {'data' : window.storage.get('orderData') } ,function() {})
     .done(function() {
       $('#saveBar').css('width', '100%');
       setTimeout(function(){
@@ -13695,6 +13724,7 @@ function addButtonListener(value){
     var item = tdId[1];
     var field = tdId[2];
     var packageText;
+    var packageValue;
     var time = (((new Date()).valueOf()).toString()).substr(0,10);
     
     if ( button.hasClass('btn-success')) {
@@ -13702,11 +13732,13 @@ function addButtonListener(value){
       iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
       hiddenSpan.text('false');
       orderData[order][item][field] = 0;
+      packageValue = "true";
     } else if ( button.hasClass('btn-danger')) {
       button.removeClass('btn-danger').addClass('btn-success').val('true');
       iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
       hiddenSpan.text('true');
       orderData[order][item][field] = 1;
+      packageValue = "false";
     }
     
     if ( typeof orderData[order][item].timeStamp === undefined ) {
@@ -13720,7 +13752,7 @@ function addButtonListener(value){
     //check packages if AM
     if (field == 'AM') {
       packageText = $("#" + order + "\\:" + item + "\\:Package").text();
-      checkPackages(packageText, order, item, "true");
+      checkPackages(packageText, order, item, packageValue);
     }
   });
 }
