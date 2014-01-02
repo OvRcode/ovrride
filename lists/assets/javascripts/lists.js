@@ -236,7 +236,7 @@ $('#save').click(function(){
   }
 });
 $.fn.getData = function(){
-  var jqxhr = $.post("pull.php", {'requestType':'orders','trip' : $(this).val()})
+  var jqxhr = $.post("/pull.php", {'requestType':'orders','trip' : $(this).val()})
   .done(function(data){
     window.orderData = data;
     window.storage.set('orderData',orderData);
@@ -334,7 +334,7 @@ function setupDropDowns(){
     var dropDown = {};
     dropDown.destinations = {};
     dropDown.trips = {};
-    var jqxhr = $.post('pull.php', {'requestType':'dropdowns'})
+    var jqxhr = $.post('/pull.php', {'requestType':'dropdowns'})
     .done(function(data){
       var destinations = '';
       var trips = '';
@@ -583,13 +583,13 @@ function addButtonListener(value){
       button.removeClass('btn-success').addClass('btn-danger').val('false');
       iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
       hiddenSpan.text('false');
-      orderData[order][item][field] = 0;
+      orderData[order][item][field] = "0";
       packageValue = "true";
     } else if ( button.hasClass('btn-danger')) {
       button.removeClass('btn-danger').addClass('btn-success').val('true');
       iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
       hiddenSpan.text('true');
-      orderData[order][item][field] = 1;
+      orderData[order][item][field] = "1";
       packageValue = "false";
     }
     
