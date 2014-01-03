@@ -43,11 +43,26 @@ function checkAll(status) {
   }
 }
 function formReset(){
-  $('#Listable').remove();
-  $('.pager').css('visibility','hidden');
-  $('#destination').val('');
-  $('#destination').trigger('change');
-  checkAll('uncheck');
+  var clearForm = confirm("You are about to clear the form and locally saved data. Ok?");
+  if ( clearForm ) {
+    $("#Listable").trigger("destroy");
+    $('#Listable').remove();
+    $('#locationContainer').remove();
+    $('#itemContainer').remove();
+    $('.pager').css('visibility','hidden');
+    $('#destination').val('none');
+    $('#destination').trigger('change');
+    checkAll('uncheck');
+    $('input[name=pending]').click();
+    $('input[name=processing]').click();
+    $('input[name=walk-on]').click();
+    $('input[name=completed]').click();
+    window.storage.set('unsaved', false);
+    window.storage.remove('orderData');
+    window.storage.remove('destination');
+    window.storage.remove('trip');
+    window.storage.remove('tablesorter-pager');
+  }
 }
 function checkPackages(text, order, orderItem, value){
   var bus         = new RegExp(/bus only/i);
@@ -198,6 +213,7 @@ function postData(){
         setTimeout(function(){ 
           $('#success').remove();
         }, 5000);
+        window.storage.set('unsaved', false);
       });
     })
     .fail(function() {
@@ -584,7 +600,6 @@ $.fn.buildTable = function(){
   itemTable += '<tr><td>Progressive Lesson</td><td id="Prog_Lesson">' + fieldTotals.Prog_Lesson + '</td></tr>\n';
   itemTable += '</tbody></table></div>';
   $('#totals').append(itemTable);
-  
   var output = tableHeader + tableBody + tableFooter;
   $(this).append(output);
   $('#loader').css('display','none');
@@ -675,6 +690,7 @@ function addButtonListener(value){
     orderData[order][item].timeStamp = time;
     
     window.storage.set('orderData',window.orderData);
+    window.storage.set('unsaved',true);
     
     if (field == 'AM') {
       packageText = $("#" + order + "\\:" + item + "\\:Package").text();
@@ -709,6 +725,7 @@ function addManualListener(value){
       window.orderData[order][itemNum][field] = text;
       window.orderData[order][itemNum].timeStamp = time;
       window.storage.set('orderData',window.orderData);
+      window.storage.set('unsaved',true);
     }
   });
   $(value).on('focusin', function(){
@@ -845,10 +862,34 @@ function exportCsv(mode){
   link.click();
   
 }
-
+function reloadData() {
+  if ( window.storage.get('unsaved') ) {
+    window.orderData = window.storage.get('orderData');
+    console.log('found unsaved data');
+    $('#loader').css('display','inline');
+    if (window.navigator.onLine){
+      $('#mainBody').append('<div id="#unsavedOnline" class="alert alert-warning alert-dismissable">'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+                            'Found some unsaved data, save when you get a chance</div>');
+    } else {
+      $('#loader').css('display','inline');
+      $('#save').css('visibility','hidden');
+      $('#csv_list').css('visibility','hidden');
+      $('#csv_email').css('visibility','hidden');
+      $('#mainBody').append('<div id="#unsavedOffline" class="alert alert-success alert-dismissable">'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+                            'Reloaded data offline</div>');  
+      setTimeout(function(){
+        $('#unsavedOffline').remove();
+      },10000);
+    }
+    $('#listTable').buildTable();
+  }
+}
 $(function(){
   // Setup local storage
   window.storage = $.localStorage;
+  reloadData();
   setupDropDowns();
   if (!window.navigator.onLine) {
     setTrip();

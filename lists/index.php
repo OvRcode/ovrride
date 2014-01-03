@@ -143,10 +143,10 @@ $version = file_get_contents('lists.version');
             <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show">No Show</input>
           </label>
           <br>
-          <input type="button" class="btn btn-primary generate-list" value="Generate List" onclick="generateOnOff();" />
-
-          <button type="button" onclick="formReset();" class="btn btn-primary generate-list">Clear Form</button>
+          <button type="button" class="btn btn-success generate-list" onclick="generateOnOff();" >Generate List</button>
           <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters </button>
+          <button type="button" onclick="formReset();" class="btn btn-danger generate-list">Clear Form</button>
+          
       </section>
       <br>
       </div><!-- /.container -->
