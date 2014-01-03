@@ -1,2 +1,5 @@
 # File type for HTML 5 offline cache
 AddType text/cache-manifest .appcache
+
+# increase php POST variable size
+php_value max_input_vars 5000

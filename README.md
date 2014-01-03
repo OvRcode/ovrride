@@ -20,7 +20,8 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
       - post_max_size = 256M  
       - memory_limit = 256M   
       - upload_max_filesize = 256M  
-
+      - max_input_vars = 5000
+      
 3. Export and download a copy of the remote database in SQL format from cPanel phpMyAdmin.
 
 4. Create a local database and database user with the values in wp-config.php using [phpMyAdmin](http://***REMOVED***/MAMP/?language=English)
