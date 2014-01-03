@@ -13308,17 +13308,17 @@ function checkPackages(text, order, orderItem, value){
 }
 function generateOnOff(){
   // switch generate list button between online and offline mode
+  $('#locationContainer').remove();
+  $('#itemContainer').remove();
+  $('#Listable').remove();
+  $('.pager').css("visiblity", "hidden");
   if (window.navigator.onLine){
-    $('#Listable').remove();
-    $('.pager').css('visiblity','hidden');
     $('#loader').css('display','inline');
     $('#trip').getData();
   } else {
     $('#loader').css('display','inline');
     setTimeout(function(){
       setupDropDowns();
-      $('#Listable').remove();
-      $('.pager').css('visibility','hidden');
       $('#save').css('visibility','hidden');
       $('#csv_list').css('visibility','hidden');
       $('#csv_email').css('visibility','hidden');
@@ -13543,9 +13543,11 @@ $.fn.buildTable = function(){
   var tableHeader = '';
   var tableBody   = '';
   var tableFooter = '';
-  var riders      = 0;
+  var localtionTable = '';
+  var itemTable = '';
   var byLocation  = {};
   var statusBoxes = {};
+  var fieldTotals = {"Bus" : 0, "All_Area" : 0, "Beg" : 0, "BRD" : 0, "SKI" : 0, "LTS" : 0, "LTR" : 0, "Prog_Lesson" : 0};
   $('.order_status_checkbox').each(function(){
     statusBoxes[$(this).attr('name')] = $(this).is(':checked');
   });
@@ -13608,6 +13610,16 @@ $.fn.buildTable = function(){
               spanClass = 'glyphicon-minus-sign';
             }
             value = (value == 1 ? true : false);
+            if ( value == 1 ) {
+              value = true;
+              if ( typeof fieldTotals[field] === 'undefined' && (field != 'Waiver' && field != 'Order') ) {
+                fieldTotals[field] = 1;
+              } else if (field != 'Waiver' && field != 'Order'){
+                fieldTotals[field]++;
+              }
+            } else {
+              value = false;
+            }
             row[field] = '<td class="center-me" id ="' + id + ':' + field + '"><span class="value">' + value + '</span>' +
                           '<button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
                           '<span class="glyphicon ' + spanClass + '"></span></button></td>';
@@ -13632,14 +13644,30 @@ $.fn.buildTable = function(){
         
         tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
         tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
-        riders++;
-      
+        //set itemTable values
+        if ( findButtonValueString(row.Bus) == "true" ) { fieldTotals.Bus++; }
+        if ( findButtonValueString(row.All_Area) == "true" ) { fieldTotals.All_Area++; }
+        if ( findButtonValueString(row.Beg) == "true" ) { fieldTotals.Beg++; }
+        if ( findButtonValueString(row.BRD) == "true" ) { fieldTotals.BRD++; }
+        if ( findButtonValueString(row.SKI) == "true" ) { fieldTotals.SKI++; }
+        if ( findButtonValueString(row.LTS) == "true" ) { fieldTotals.LTS++; }
+        if ( findButtonValueString(row.LTR) == "true" ) { fieldTotals.LTR++; }
+        if ( findButtonValueString(row.Prog_Lesson) == "true" ) { fieldTotals.Prog_Lesson++; }
         if (row.Pickup) {
           var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
-          if (typeof byLocation[locationName] === undefined || typeof byLocation[locationName] === 'undefined') {
-            byLocation[locationName] = 0;
+          if ( typeof byLocation[locationName] === 'undefined' ) {
+            byLocation[locationName] = {};
+            byLocation[locationName].Expected = 0;
+            byLocation[locationName].AM = 0;
+            byLocation[locationName].PM = 0;
+          } 
+          byLocation[locationName].Expected++;
+          if ( findButtonValueString(row.AM) == "true" ) {
+            byLocation[locationName].AM++;
           }
-          byLocation[locationName] += 1;
+          if ( findButtonValueString(row.PM) == "true") {
+            byLocation[locationName].PM++;
+          }
         }
       }
     });
@@ -13674,19 +13702,37 @@ $.fn.buildTable = function(){
                 '</thead>\n';
                 
   tableBody += '</tbody>\n';
-  tableFooter += '<tfoot>\n<tr class="totals-row">' +
+  tableFooter += '<tfoot>\n<tr>' +
                  '<td><button type="button" class="btn btn-primary" id="add">' +
                  '<span class="glyphicon glyphicon-plus"></span></button></td>' +
                  '<td><button type="button" class="btn btn-danger" id="remove">' +
-                 '<span class="glyphicon glyphicon-minus"></span></button></td>';
+                 '<span class="glyphicon glyphicon-minus"></span></button></td>' +
+                 '</tfoot></table>';
   if (byLocation) {
-    tableFooter += '<td>Guests by Pickup: </td>';
+    locationTable = '<div id="locationContainer" class="col col-md-4 col-md-offset-2"><h4>Riders by pickup location:</h4>';
+    locationTable += '<table id="locationTable" class="table table-bordered table-striped table-condensed">\n';
+    locationTable += '<thead><tr><td>Location</td><td>Expected</td><td>AM</td><td>PM</td></tr></thead>\n';
+    locationTable += '<tbody>\n';
     $.each(byLocation, function(location, value){
-      tableFooter += '<td>' + location + ': ' + value + '</td>';
+      locationTable += '<tr><td>' + location + '</td><td>' + value.Expected + '</td><td>' + value.AM+ '</td><td>' + value.PM + '</td></tr>\n';
     });
+    locationTable += '</tbody></table></div>';
+    $('#totals').append(locationTable);
   }
-    
-  tableFooter += '</tfoot></table>';
+  itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
+  itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
+  itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n';
+  itemTable += '<tbody><tr><td>Bus Only</td><td id="Bus">' + fieldTotals.Bus + '</td></tr>\n';
+  itemTable += '<tr><td>All Area Lift</td><td id="All_Area">' + fieldTotals.All_Area + '</td></tr>\n';
+  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + fieldTotals.Beg + '</td></tr>\n';
+  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + fieldTotals.BRD + '</td></tr>\n';
+  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + fieldTotals.SKI + '</td></tr>\n';
+  itemTable += '<tr><td>Learn To Ski</td><td id="LTS">' + fieldTotals.LTS + '</td></tr>\n';
+  itemTable += '<tr><td>Learn To Ride</td><td id="LTR">' + fieldTotals.LTR + '</td></tr>\n';
+  itemTable += '<tr><td>Progressive Lesson</td><td id="Prog_Lesson">' + fieldTotals.Prog_Lesson + '</td></tr>\n';
+  itemTable += '</tbody></table></div>';
+  $('#totals').append(itemTable);
+  
   var output = tableHeader + tableBody + tableFooter;
   $(this).append(output);
   $('#loader').css('display','none');
@@ -13713,6 +13759,11 @@ $.fn.buildTable = function(){
     addButtonListener(value);
   });
 };
+function findButtonValueString(searchString){
+  var reg = new RegExp(/"value">([a-zA-Z]*)/);
+  var result = reg.exec(searchString);
+  return result[1];
+}
 function addButtonListener(value){
   $(value,'#Listable').on('click',function(){
     var button = $(this).children('button');
@@ -13725,6 +13776,10 @@ function addButtonListener(value){
     var field = tdId[2];
     var packageText;
     var packageValue;
+    var fieldValue;
+    var listLocation;
+    var locationRow;
+    
     var time = (((new Date()).valueOf()).toString()).substr(0,10);
     
     if ( button.hasClass('btn-success')) {
@@ -13733,12 +13788,32 @@ function addButtonListener(value){
       hiddenSpan.text('false');
       orderData[order][item][field] = "0";
       packageValue = "true";
+      $("#" + field).text(parseInt($("#" + field).text(), 10) - 1);
+      if ( field == 'AM' ) {
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) - 1);
+      } else if ( field == 'PM' ) {
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().next().text(parseInt(locationRow.next().next().next().text(), 10) - 1);
+      }
     } else if ( button.hasClass('btn-danger')) {
       button.removeClass('btn-danger').addClass('btn-success').val('true');
       iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
       hiddenSpan.text('true');
       orderData[order][item][field] = "1";
       packageValue = "false";
+      $("#" + field).text(parseInt($("#" + field).text(), 10) + 1);
+      if ( field == 'AM'){
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) + 1);
+      } else if ( field == 'PM' ) {
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().next().text(parseInt(locationRow.next().next().next().text(), 10) + 1);
+      }
     }
     
     if ( typeof orderData[order][item].timeStamp === undefined ) {
@@ -13749,7 +13824,6 @@ function addButtonListener(value){
     
     window.storage.set('orderData',window.orderData);
     
-    //check packages if AM
     if (field == 'AM') {
       packageText = $("#" + order + "\\:" + item + "\\:Package").text();
       checkPackages(packageText, order, item, packageValue);
@@ -13979,4 +14053,8 @@ $(function(){
       }
     }
   }, 250);
+  $('#logo').on('click', function(event){
+    event.preventDefault();
+    window.location = $(this).attr("href");
+  });
 });
