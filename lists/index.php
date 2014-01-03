@@ -56,7 +56,6 @@ $version = file_get_contents('lists.version');
     <![endif]-->
   </head>
   <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -65,7 +64,7 @@ $version = file_get_contents('lists.version');
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand logo-nav" >OvR Trip Lists&nbsp;&nbsp;<span class="status iphone glyphicon"></span></a>
+          <a class="navbar-brand logo-nav" href="/" id="logo">OvR Trip Lists&nbsp;&nbsp;<span class="status iphone glyphicon"></span></a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav nav-puller">
@@ -159,28 +158,29 @@ $version = file_get_contents('lists.version');
           
       </div>
       <div class="pager">
-
-          <button type="button" class="first btn btn-default">
-              <span class="glyphicon glyphicon-fast-backward"></span>
-          </button>
-          <button type="button" class="prev btn btn-default">
-              <span class="glyphicon glyphicon-backward"></span>
-          </button>
-          <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
-          <button type="button" class="next btn btn-default">
-              <span class="glyphicon glyphicon-forward"></span>
-          </button>
-          <button type="button" class="last btn btn-default">
-              <span class="glyphicon glyphicon-fast-forward"></span>
-          </button>
-          <select class="pagesize">
-            <option selected="selected" value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-            <option value="40">40</option>
-            <option value="50">50</option>
-          </select>
-        </div>
+        <button type="button" class="first btn btn-default">
+          <span class="glyphicon glyphicon-fast-backward"></span>
+        </button>
+        <button type="button" class="prev btn btn-default">
+          <span class="glyphicon glyphicon-backward"></span>
+        </button>
+        <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+        <button type="button" class="next btn btn-default">
+          <span class="glyphicon glyphicon-forward"></span>
+        </button>
+        <button type="button" class="last btn btn-default">
+          <span class="glyphicon glyphicon-fast-forward"></span>
+        </button>
+        <select class="pagesize">
+          <option selected="selected" value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <div id="totals">
+      </div>
       <footer>
         <div class="page-header"></div><!-- inserts the line separator -->
           <div class="container">
