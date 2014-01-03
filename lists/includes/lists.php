@@ -196,7 +196,11 @@ class TripList{
     function stripTime($pickup){
       # Remove dash and time from pickup
       preg_match("/(.*).-.*/", $pickup, $matched);
-      return $matched[1];
+      if ( isset($matched[1]) ) {
+          return $matched[1];
+      } else {
+          return $pickup;
+      }
     }
     function removePackagePrice($package){
         return preg_replace('/\(\$\S*\)/', "", $package);
