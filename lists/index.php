@@ -19,9 +19,6 @@ session_start();
 $cookieLifetime = 60 * 60 * 24 * 1;
 setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
-# Include Functions
-require_once("includes/lists.php");
-
 # Session Validation - Is User logged in?
 # else redirect to login page
 if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
