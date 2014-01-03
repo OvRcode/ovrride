@@ -13198,15 +13198,16 @@ function formReset(){
   checkAll('uncheck');
 }
 function checkPackages(text, order, orderItem, value){
-  var bus        = new RegExp(/bus only/i);
-  var begLift    = new RegExp(/beginner lift/i);
-  var lesson     = new RegExp(/lesson/i);
-  var progSki    = new RegExp(/prog.* lesson.*ski rental/i);
-  var progBrd    = new RegExp(/prog.* lesson.*board rental/i);
-  var progLesson = new RegExp(/prog.* lesson/i);
-  var ski        = new RegExp(/ski rental/i);
-  var brd        = new RegExp(/board rental/i);
-  var allArea    = new RegExp(/all area/i);
+  var bus         = new RegExp(/bus only/i);
+  var begLift     = new RegExp(/beginner lift/i);
+  var lesson      = new RegExp(/lesson/i);
+  var progSki     = new RegExp(/prog.* lesson.*ski rental/i);
+  var progBrd     = new RegExp(/prog.* lesson.*board rental/i);
+  var progLesson  = new RegExp(/prog.* lesson/i);
+  var ski         = new RegExp(/ski rental/i);
+  var brd         = new RegExp(/board rental/i);
+  var allArea     = new RegExp(/all area/i);
+  var weekendLift = new RegExp(/lift/i);
 
   if ( bus.test(text) ) {
     console.log('RegExp: Matched bus only');
@@ -13225,12 +13226,12 @@ function checkPackages(text, order, orderItem, value){
     var ltrId     = "#" + order + "\\:" + orderItem + "\\:LTR";
     var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS";
     
-    // All area or beginner?
+    // All area, beginner, weekend lift ticket
     if ( begLift.test(text) ) {
       if ( $(begId).children('span').text() == value ){
         $(begId).children('button').click();
       }
-    } else if ( allArea.test(text) ) {
+    } else if ( allArea.test(text) || weekendLift.test(text) ) {
       if ( $(allAreaId).children('span').text() == value ) {
         $(allAreaId).children('button').click();
       }
@@ -13553,7 +13554,7 @@ $.fn.buildTable = function(){
     // ONLINE
     
     if (jQuery.isEmptyObject(orderData)) {
-      $(this).append('<div class="container"><p>There are no orders for the selected Trip and Order Status.</p></div>');
+      $(this).append('<div class="container" id="Listable"><p>There are no orders for the selected Trip and Order Status.</p></div>');
       $('#loader').css('display','none');
       throw new Error('Aborted table creation, no data here');
     } 
@@ -13711,7 +13712,6 @@ $.fn.buildTable = function(){
   $.each(events, function(key,value){
     addButtonListener(value);
   });
-  //$('#Listable').autoSave();
 };
 function addButtonListener(value){
   $(value,'#Listable').on('click',function(){
