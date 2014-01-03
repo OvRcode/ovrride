@@ -32,29 +32,36 @@ else{
 }
 
 // Get checkbox data
-$sql = "SELECT * FROM `ovr_lists_checkboxes`";
+$sql = "SELECT * 
+        FROM `ovr_lists_checkboxes`
+        WHERE `AM` != '0' 
+        OR `PM` != '0'
+        OR `Waiver` != '0'
+        OR `Product` != '0'
+        OR `Bus` != '0'
+        OR `All_Area` != '0'
+        OR `Beg` != '0'
+        OR `BRD` != '0'
+        OR `SKI` != '0'
+        OR `LTS` != '0'
+        OR `LTR` != '0'
+        OR `Prog_Lesson` != '0'";
 $result = db_query($sql);
 while($row = $result->fetch_assoc()){
     $baseId = $row['ID'];
     if ($baseId != ":undefined") {
-    $sql2 = "INSERT INTO `ovr_lists_fields` (`ID`,`value`)
-            VALUES ('".$baseId.":AM', '".$row['AM']."'),
-            ('".$baseId.":PM', '".$row['PM']."'),
-            ('".$baseId.":Waiver', '".$row['Waiver']."'),
-            ('".$baseId.":Product', '".$row['Product']."'),
-            ('".$baseId.":Bus', '".$row['Bus']."'),
-            ('".$baseId.":All_Area', '".$row['All_Area']."'),
-            ('".$baseId.":Beg', '".$row['Beg']."'),
-            ('".$baseId.":BRD', '".$row['BRD']."'),
-            ('".$baseId.":SKI', '".$row['SKI']."'),
-            ('".$baseId.":LTS', '".$row['LTS']."'),
-            ('".$baseId.":LTR', '".$row['LTR']."'),
-            ('".$baseId.":Prog_Lesson', '".$row['Lesson']."')";
-            if(db_query($sql2)){
-                print $baseId . " Success\n";
-            } else {
-                print $baseId . " FAIL!, do something about this!\n";
+        foreach ( $row as $key => $value ) {
+            // only insert checked boxes, on duplicate key value will be dropped
+            $id = $baseId.":".$key;
+            if ( $value == 1){
+                $sql2 = "INSERT IGNORE INTO `ovr_lists_fields` (`ID`,`value`) VALUES('$id','$value')";
+                if(db_query($sql2)){
+                    print $baseId . " Success\n";
+                } else {
+                    print $baseId . " FAIL!, do something about this!\n";
+                }
             }
         }
+    }
 }
 ?>
