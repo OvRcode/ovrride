@@ -80,7 +80,7 @@ $version = file_get_contents('lists.version');
               </button>
             </li>
             <li class="hidden"><a href="login/register.php">Create New User</a></li>
-            <li><a href="login/logout.php">Logout</a></li>
+            <li><a href="login/logout.php" id="logout">Logout</a></li>
             <li><a href=""><span class="status medLg glyphicon"></span></a></li>
           </ul>
         </div><!--/.nav-collapse -->
