@@ -629,6 +629,9 @@ function addManualListener(value){
       if (typeof window.orderData[order][itemNum] === "undefined" ) {
         window.orderData[order][itemNum] = {};
       }
+      if (typeof window.orderData[order][itemNum].Trip === "undefined" ) {
+        window.orderData[order][itemNum].Trip = $('#trip').val();
+      }
       window.orderData[order][itemNum][field] = text;
       window.orderData[order][itemNum].timeStamp = time;
       window.storage.set('orderData',window.orderData);
