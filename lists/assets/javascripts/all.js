@@ -13884,8 +13884,6 @@ function removeOrder(){
     }
 }
 function exportCsv(mode){
-  // TODO: convert for local storage
-  // TODO: add filter for order status checkboxes
   var text = '';
   if ( mode == 'Email' ) {
     text += 'Email, First, Last, Package, Pickup\n';
@@ -13893,15 +13891,22 @@ function exportCsv(mode){
     text += 'AM, PM, First, Last, Pickup, Phone, Package, Order, Waiver, Product REC.,';
     text += ' Bus Only, All Area Lift, Beg. Lift, BRD Rental, Ski Rental, LTS, LTR, Prog. Lesson\n';
   }
-
+  var statusBoxes = {};
+  $('.order_status_checkbox').each(function(){
+    statusBoxes[$(this).attr('name')] = $(this).is(':checked');
+  });
   $.each(window.orderData, function(order,data){
     $.each(data, function(orderItem, fields){
-      if ( mode == 'Export' ) {
-        text += fields.AM + ',' + fields.PM + ',"' + fields.First + '","' + fields.Last + '","' + fields.Pickup + '","' + fields.Phone + '",'; 
-        text += '"' + fields.Package + '",' + order + ',' +  fields.Waiver + ',' + fields.Product + ',' + fields.Bus + ',' + fields.All_Area + ',';
-        text += fields.Beg + ',' + fields.BRD + ',' + fields.SKI + ',' + fields.LTS + ',' + fields.LTR + ',' + fields.Prog_Lesson + '\n';  
-      } else if ( mode == 'Email' ) { 
-        text += '"' + fields.Email + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
+      if ( statusBoxes[fields.Status] === true ) {
+        if ( mode == 'Export' ) {
+          text += (fields.AM == 1 ? "X":"O") + ',' + (fields.PM == 1 ? "X":"O") + ',"' + fields.First + '","' + fields.Last + '","' + fields.Pickup + '","' + fields.Phone + '",'; 
+          text += '"' + fields.Package + '",' + order + ',' +  (fields.Waiver == 1 ? "X":"O") + ',' + (fields.Product == 1 ? "X":"O") + ',';
+          text += (fields.Bus == 1 ? "X":"O") + ',' + (fields.All_Area == 1 ? "X":"O") + ',' + (fields.Beg == 1 ? "X":"O") + ',';
+          text += (fields.BRD == 1 ? "X":"O") + ',' + (fields.SKI == 1 ? "X":"O") + ',' + (fields.LTS == 1 ? "X":"O") + ',';
+          text += (fields.LTR == 1 ? "X":"O") + ',' + (fields.Prog_Lesson == 1 ? "X":"O") + '\n';  
+        } else if ( mode == 'Email' ) { 
+          text += '"' + fields.Email + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
+        }
       }
     });
   });
@@ -13909,7 +13914,7 @@ function exportCsv(mode){
   var encodedUri = encodeURI(text);
   var link = document.createElement("a");
   var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
-  link.setAttribute("href", "data:text/csv;charset=utf-8,\uFEFF" + encodedUri);
+  link.setAttribute("href", "data:text/csv;charset=utf-8," + encodedUri);
   link.setAttribute("download",name);
   link.click();
   
