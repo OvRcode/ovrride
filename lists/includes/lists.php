@@ -42,15 +42,17 @@ class TripList{
     function tripOptions(){
         $options = array();
         # Find trips for the Select a Trip drop down
-        $sql = "SELECT  `id` ,  `post_title`
-                FROM  `wp_posts` 
-                WHERE  (`post_status` =  'publish' OR (`post_status` = 'draft' AND `comment_status` = 'closed'))
-                AND  `post_type` =  'product'
-                AND  `post_title` NOT LIKE  '%High Five%'
-                AND  `post_title` NOT LIKE  '%Gift%'
-                AND   `post_title` NOT LIKE '%Beanie%'
-                
-                ORDER BY  `post_title`";
+        $sql = "SELECT DISTINCT `id`, `post_title`
+                FROM `wp_posts`
+                INNER JOIN `wp_postmeta` ON `wp_posts`.`id` = `wp_postmeta`.`post_id`
+                WHERE  (`post_status` =  'publish' OR (`post_status` = 'draft' AND `wp_postmeta`.`meta_value` = 'visible'))
+                AND `post_type` =  'product'
+                AND `post_title` NOT LIKE  '%High Five%'
+                AND `post_title` NOT LIKE  '%Gift%'
+                AND `post_title` NOT LIKE '%Beanie%'
+                AND `post_title` NOT LIKE '%East Coast Fold Hat%'
+                ORDER BY `post_title`";
+        
         $result = $this->dbQuery($sql);
          while($row = $result->fetch_assoc()){
              foreach($this->destinations as $value){
