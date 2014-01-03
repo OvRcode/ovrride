@@ -13893,10 +13893,7 @@ function exportCsv(mode){
     text += 'AM, PM, First, Last, Pickup, Phone, Package, Order, Waiver, Product REC.,';
     text += ' Bus Only, All Area Lift, Beg. Lift, BRD Rental, Ski Rental, LTS, LTR, Prog. Lesson\n';
   }
-  selectOrderCheckboxes();
-  selectManualOrders();
-  selectWebOrders();
-  selectManualCheckboxes();
+
   $.each(window.orderData, function(order,data){
     $.each(data, function(orderItem, fields){
       if ( mode == 'Export' ) {
@@ -13936,14 +13933,15 @@ $(function(){
 
   // save when back online
   window.addEventListener('online',  function(){
-    $('#mainBody').append('<div id="backOnline" class="alert alert-info alert-dismissable">' +
-                          '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                          'Back online, save starting...</div>');
-    setTimeout(function(){
-      $('#backOnline').remove();
-      $('#save').trigger('click');  
-    },2000);
-    
+    if ( $('#Listable').length > 0) {
+      $('#mainBody').append('<div id="backOnline" class="alert alert-info alert-dismissable">' +
+        '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+        'Back online, save starting...</div>');
+        setTimeout(function(){
+          $('#backOnline').remove();
+          $('#save').trigger('click');  
+        },2000);
+    }
   });
   
   // Monitor onLine status and flip navbar indicator 
