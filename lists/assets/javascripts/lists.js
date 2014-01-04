@@ -889,12 +889,16 @@ function reloadData() {
 $(function(){
   // Setup local storage
   window.storage = $.localStorage;
-  reloadData();
+  var iOS = ( navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false );
+  if ( iOS ) {
+    $('#csv_email').css('display', 'none');
+    $('#csv_list').css('display', 'none');
+  }
   setupDropDowns();
   if (!window.navigator.onLine) {
     setTrip();
   }
-  
+  reloadData();
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
   
