@@ -13,8 +13,15 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 
 1. Download and install [MAMP](http://www.mamp.info/en/index.html)
 
-2. Configure MAMP Preferences: ports: PHP = port 80, MySQL = port 3306 and Document Root = /path_to/public_html
-
+2. Configure MAMP Preferences:  
+      Ports: PHP = port 80, MySQL = port 3306  
+      Document Root = /path_to/public_html  
+      [Increase MAMP's php.ini memory limits:](http://blog-en.mamp.info/2009/09/increase-php-memory-limit-with-mamp-pro.html)  
+      - post_max_size = 256M  
+      - memory_limit = 256M   
+      - upload_max_filesize = 256M  
+      - max_input_vars = 5000
+      
 3. Export and download a copy of the remote database in SQL format from cPanel phpMyAdmin.
 
 4. Create a local database and database user with the values in wp-config.php using [phpMyAdmin](http://localhost/MAMP/?language=English)
