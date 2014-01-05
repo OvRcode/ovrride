@@ -16,17 +16,16 @@ if ($login->messages) {
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="manifest.appcache">
   <head>
     <meta charset="utf-8">
+    <title>OvR Trip Lists</title>
 
     <!-- Mobile view properties & enable iOS Web App-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-
-    <title>OvR Trip Lists</title>
 
     <!-- favicon and apple-touch-icon -->
     <link rel="apple-touch-icon" href="../../assets/images/touch-icon-iphone.png" />
@@ -52,7 +51,9 @@ if ($login->messages) {
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
           <div class="panel panel-info">
             <div class="panel-heading">
-              <h3 class="panel-title">OvR Trip Lists</h3>
+              <h3 class="panel-title center-me">
+                <img src="../../assets/images/logo.jpg" align="middle">
+              </h3>
             </div>
             <div class="panel-body">
               <form accept-charset="UTF-8" role="form" method="post" action="index.php" name="loginform">
