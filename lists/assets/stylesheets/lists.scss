@@ -6,10 +6,13 @@
 
 @import "bootstrap/bootstrap";
 @import "color-me-sass/color-me-sass";
+@import "../tablesorter/addons/pager/jquery.tablesorter.pager.css";
 
 // BEGIN BOOTSTRAP OVERRIDES
 // -------------------------
-
+.next span{
+  padding-bottom:5px;
+}
 .navbar-inverse {
   color: white;
 }
@@ -20,6 +23,34 @@
 
 // BASE STYLES
 // -------------------------
+@media (max-width: 767px) {
+  .iphone{
+    visibility:visible;
+  }
+  .mdLg{
+    visibility:hidden;
+  }
+}
+@media (min-width: 768px) {
+  .iphone{
+    visibility:hidden;
+  }
+  .mdLg{
+    visibility:visible;
+  }
+}
+#loader {
+  display:none;
+  height:128px;
+  width:128px;
+}
+.value{
+  display: none;
+}
+#save, #csv_list, #csv_email, .pager{
+  visibility:hidden;
+  margin-top:10px;
+}
 
 body {
   // margin: 10px;
@@ -98,13 +129,31 @@ label.checkbox.order-checkbox {
   font-weight: bold;
 }
 
-// TABLE and TABLESORTER
+// TABLES and TABLESORTER
 // -------------------------
 input.tablesorter-filter.disabled {
   visibility: hidden;
   width: 10px;
 }
-
+// REWRITE IN PROPER SCSS 
+.tablesorter .tablesorter-filter-row td:nth-child(3) .tablesorter-filter {
+    width: 100px;
+}
+.tablesorter .tablesorter-filter-row td:nth-child(4) .tablesorter-filter {
+    width: 100px;
+}
+.tablesorter .tablesorter-filter-row td:nth-child(5) .tablesorter-filter {
+    width: auto;
+}
+.tablesorter .tablesorter-filter-row td:nth-child(6) .tablesorter-filter {
+    width: 100px;
+}
+.tablesorter .tablesorter-filter-row td:nth-child(7) .tablesorter-filter {
+    width: auto;
+}
+.tablesorter .tablesorter-filter-row td:nth-child(8) .tablesorter-filter {
+    width: 100px;
+}
 table {
   color: $grayDark;
 }
@@ -151,6 +200,7 @@ td {
 }
 
 //Editable Table CSS
+
 .tablesorter tbody > tr > td[contenteditable=true]:focus {
   outline: #08f 1px solid;
   background: #eee;

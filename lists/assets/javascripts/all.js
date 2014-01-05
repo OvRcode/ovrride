@@ -11790,26 +11790,25 @@ if (typeof jQuery === "undefined") { throw new Error("Bootstrap requires jQuery"
 
 }(jQuery);
 ;/*!
-* TableSorter 2.14.3 min - Client-side table sorting with ease!
+* TableSorter 2.14.4 min - Client-side table sorting with ease!
 * Copyright (c) 2007 Christian Bach
 */
-!function(g){g.extend({tablesorter:new function(){function c(){var a=1<arguments.length?Array.prototype.slice.call(arguments):arguments[0];"undefined"!==typeof console&&"undefined"!==typeof console.log?console.log(a):alert(a)}function q(a,b){c(a+" ("+((new Date).getTime()-b.getTime())+"ms)")}function k(a){for(var b in a)return!1;return!0}function p(a,b,d){if(!b)return"";var h=a.config,e=h.textExtraction,n="",n="simple"===e?h.supportsTextContent?b.textContent:g(b).text():"function"===typeof e?e(b, a,d):"object"===typeof e&&e.hasOwnProperty(d)?e[d](b,a,d):h.supportsTextContent?b.textContent:g(b).text();return g.trim(n)}function s(a){var b=a.config,d=b.$tbodies=b.$table.children("tbody:not(."+b.cssInfoBlock+")"),h,e,n,l,w,g,m,x="";if(0===d.length)return b.debug?c("*Empty table!* Not building a parser cache"):"";b.debug&&(m=new Date,c("Detecting parsers for each column"));d=d[0].rows;if(d[0])for(h=[],e=d[0].cells.length,n=0;n<e;n++){l=b.$headers.filter(":not([colspan])");l=l.add(b.$headers.filter('[colspan="1"]')).filter('[data-column="'+ n+'"]:last');w=b.headers[n];g=f.getParserById(f.getData(l,w,"sorter"));b.empties[n]=f.getData(l,w,"empty")||b.emptyTo||(b.emptyToBottom?"bottom":"top");b.strings[n]=f.getData(l,w,"string")||b.stringTo||"max";if(!g)a:{l=a;w=d;g=-1;for(var k=n,u=void 0,A=f.parsers.length,r=!1,s="",u=!0;""===s&&u;)g++,w[g]?(r=w[g].cells[k],s=p(l,r,k),l.config.debug&&c("Checking if value was empty on row "+g+", column: "+k+': "'+s+'"')):u=!1;for(;0<=--A;)if((u=f.parsers[A])&&"text"!==u.id&&u.is&&u.is(s,l,r)){g=u;break a}g= f.getParserById("text")}b.debug&&(x+="column:"+n+"; parser:"+g.id+"; string:"+b.strings[n]+"; empty: "+b.empties[n]+"\n");h.push(g)}b.debug&&(c(x),q("Completed detecting parsers",m));b.parsers=h}function v(a){var b=a.tBodies,d=a.config,h,e,n=d.parsers,l,w,y,m,x,k,u,A=[];d.cache={};if(!n)return d.debug?c("*Empty table!* Not building a cache"):"";d.debug&&(u=new Date);d.showProcessing&&f.isProcessing(a,!0);for(m=0;m<b.length;m++)if(d.cache[m]={row:[],normalized:[]},!g(b[m]).hasClass(d.cssInfoBlock)){h= b[m]&&b[m].rows.length||0;e=b[m].rows[0]&&b[m].rows[0].cells.length||0;for(w=0;w<h;++w)if(x=g(b[m].rows[w]),k=[],x.hasClass(d.cssChildRow))d.cache[m].row[d.cache[m].row.length-1]=d.cache[m].row[d.cache[m].row.length-1].add(x);else{d.cache[m].row.push(x);for(y=0;y<e;++y)l=p(a,x[0].cells[y],y),l=n[y].format(l,a,x[0].cells[y],y),k.push(l),"numeric"===(n[y].type||"").toLowerCase()&&(A[y]=Math.max(Math.abs(l)||0,A[y]||0));k.push(d.cache[m].normalized.length);d.cache[m].normalized.push(k)}d.cache[m].colMax= A}d.showProcessing&&f.isProcessing(a);d.debug&&q("Building cache for "+h+" rows",u)}function z(a,b){var d=a.config,h=d.widgetOptions,e=a.tBodies,n=[],l=d.cache,c,y,m,x,p,u,A,r,s,t,v;if(!k(l)){d.debug&&(v=new Date);for(r=0;r<e.length;r++)if(c=g(e[r]),c.length&&!c.hasClass(d.cssInfoBlock)){p=f.processTbody(a,c,!0);c=l[r].row;y=l[r].normalized;x=(m=y.length)?y[0].length-1:0;for(u=0;u<m;u++)if(t=y[u][x],n.push(c[t]),!d.appender||d.pager&&!(d.pager.removeRows&&h.pager_removeRows||d.pager.ajax))for(s=c[t].length, A=0;A<s;A++)p.append(c[t][A]);f.processTbody(a,p,!1)}d.appender&&d.appender(a,n);d.debug&&q("Rebuilt table",v);b||d.appender||f.applyWidget(a);g(a).trigger("sortEnd",a);g(a).trigger("updateComplete",a)}}function D(a){var b=[],d={},h=0,e=g(a).find("thead:eq(0), tfoot").children("tr"),n,l,c,f,m,k,q,p,t,r;for(n=0;n<e.length;n++)for(m=e[n].cells,l=0;l<m.length;l++){f=m[l];k=f.parentNode.rowIndex;q=k+"-"+f.cellIndex;p=f.rowSpan||1;t=f.colSpan||1;"undefined"===typeof b[k]&&(b[k]=[]);for(c=0;c<b[k].length+ 1;c++)if("undefined"===typeof b[k][c]){r=c;break}d[q]=r;h=Math.max(r,h);g(f).attr({"data-column":r});for(c=k;c<k+p;c++)for("undefined"===typeof b[c]&&(b[c]=[]),q=b[c],f=r;f<r+t;f++)q[f]="x"}a.config.columns=h+1;return d}function B(a){return/^d/i.test(a)||1===a}function E(a){var b=D(a),d,h,e,n,l,w,k,m=a.config;m.headerList=[];m.headerContent=[];m.debug&&(k=new Date);n=m.cssIcon?'<i class="'+(m.cssIcon===f.css.icon?f.css.icon:m.cssIcon+" "+f.css.icon)+'"></i>':"";m.$headers=g(a).find(m.selectorHeaders).each(function(a){h= g(this);d=m.headers[a];m.headerContent[a]=g(this).html();l=m.headerTemplate.replace(/\{content\}/g,g(this).html()).replace(/\{icon\}/g,n);m.onRenderTemplate&&(e=m.onRenderTemplate.apply(h,[a,l]))&&"string"===typeof e&&(l=e);g(this).html('<div class="tablesorter-header-inner">'+l+"</div>");m.onRenderHeader&&m.onRenderHeader.apply(h,[a]);this.column=b[this.parentNode.rowIndex+"-"+this.cellIndex];this.order=B(f.getData(h,d,"sortInitialOrder")||m.sortInitialOrder)?[1,0,2]:[0,1,2];this.count=-1;this.lockedOrder= !1;w=f.getData(h,d,"lockedOrder")||!1;"undefined"!==typeof w&&!1!==w&&(this.order=this.lockedOrder=B(w)?[1,1,1]:[0,0,0]);h.addClass(f.css.header+" "+m.cssHeader);m.headerList[a]=this;h.parent().addClass(f.css.headerRow+" "+m.cssHeaderRow);m.tabIndex&&h.attr("tabindex",0)});I(a);m.debug&&(q("Built headers:",k),c(m.$headers))}function C(a,b,d){var h=a.config;h.$table.find(h.selectorRemove).remove();s(a);v(a);F(h.$table,b,d)}function I(a){var b,d=a.config;d.$headers.each(function(a,e){b="false"===f.getData(e, d.headers[a],"sorter");e.sortDisabled=b;g(e)[b?"addClass":"removeClass"]("sorter-false")})}function G(a){var b,d,h,e=a.config,n=e.sortList,l=[f.css.sortAsc+" "+e.cssAsc,f.css.sortDesc+" "+e.cssDesc],c=g(a).find("tfoot tr").children().removeClass(l.join(" "));e.$headers.removeClass(l.join(" "));h=n.length;for(b=0;b<h;b++)if(2!==n[b][1]&&(a=e.$headers.not(".sorter-false").filter('[data-column="'+n[b][0]+'"]'+(1===h?":last":"")),a.length))for(d=0;d<a.length;d++)a[d].sortDisabled||(a.eq(d).addClass(l[n[b][1]]), c.length&&c.filter('[data-column="'+n[b][0]+'"]').eq(d).addClass(l[n[b][1]]))}function L(a){if(a.config.widthFixed&&0===g(a).find("colgroup").length){var b=g("<colgroup>"),d=g(a).width();g(a.tBodies[0]).find("tr:first").children("td:visible").each(function(){b.append(g("<col>").css("width",parseInt(g(this).width()/d*1E3,10)/10+"%"))});g(a).prepend(b)}}function M(a,b){var d,h,e,n=a.config,c=b||n.sortList;n.sortList=[];g.each(c,function(a,b){d=[parseInt(b[0],10),parseInt(b[1],10)];if(e=n.$headers[d[0]])n.sortList.push(d), h=g.inArray(d[1],e.order),e.count=0<=h?h:d[1]%(n.sortReset?3:2)})}function N(a,b){return a&&a[b]?a[b].type||"":""}function O(a,b,d){var h,e,n,c=a.config,w=!d[c.sortMultiSortKey],k=g(a);k.trigger("sortStart",a);b.count=d[c.sortResetKey]?2:(b.count+1)%(c.sortReset?3:2);c.sortRestart&&(e=b,c.$headers.each(function(){this===e||!w&&g(this).is("."+f.css.sortDesc+",."+f.css.sortAsc)||(this.count=-1)}));e=b.column;if(w){c.sortList=[];if(null!==c.sortForce)for(h=c.sortForce,d=0;d<h.length;d++)h[d][0]!==e&& c.sortList.push(h[d]);h=b.order[b.count];if(2>h&&(c.sortList.push([e,h]),1<b.colSpan))for(d=1;d<b.colSpan;d++)c.sortList.push([e+d,h])}else if(c.sortAppend&&1<c.sortList.length&&f.isValueInArray(c.sortAppend[0][0],c.sortList)&&c.sortList.pop(),f.isValueInArray(e,c.sortList))for(d=0;d<c.sortList.length;d++)n=c.sortList[d],h=c.$headers[n[0]],n[0]===e&&(n[1]=h.order[b.count],2===n[1]&&(c.sortList.splice(d,1),h.count=-1));else if(h=b.order[b.count],2>h&&(c.sortList.push([e,h]),1<b.colSpan))for(d=1;d< b.colSpan;d++)c.sortList.push([e+d,h]);if(null!==c.sortAppend)for(h=c.sortAppend,d=0;d<h.length;d++)h[d][0]!==e&&c.sortList.push(h[d]);k.trigger("sortBegin",a);setTimeout(function(){G(a);H(a);z(a)},1)}function H(a){var b,d,c,e,n,l,g,p,m,x,t,u,s=0,r=a.config,v=r.textSorter||"",z=r.sortList,B=z.length,C=a.tBodies.length;if(!r.serverSideSorting&&!k(r.cache)){r.debug&&(m=new Date);for(d=0;d<C;d++)n=r.cache[d].colMax,p=(l=r.cache[d].normalized)&&l[0]?l[0].length-1:0,l.sort(function(d,l){for(b=0;b<B;b++){e= z[b][0];g=z[b][1];s=0===g;if(r.sortStable&&d[e]===l[e]&&1===B)break;(c=/n/i.test(N(r.parsers,e)))&&r.strings[e]?(c="boolean"===typeof r.string[r.strings[e]]?(s?1:-1)*(r.string[r.strings[e]]?-1:1):r.strings[e]?r.string[r.strings[e]]||0:0,x=r.numberSorter?r.numberSorter(t[e],u[e],s,n[e],a):f["sortNumeric"+(s?"Asc":"Desc")](d[e],l[e],c,n[e],e,a)):(t=s?d:l,u=s?l:d,x="function"===typeof v?v(t[e],u[e],s,e,a):"object"===typeof v&&v.hasOwnProperty(e)?v[e](t[e],u[e],s,e,a):f["sortNatural"+(s?"Asc":"Desc")](d[e], l[e],e,a,r));if(x)return x}return d[p]-l[p]});r.debug&&q("Sorting on "+z.toString()+" and dir "+g+" time",m)}}function J(a,b){var d=a[0].config;d.pager&&!d.pager.ajax&&a.trigger("updateComplete");"function"===typeof b&&b(a[0])}function F(a,b,d){!1===b||a[0].isProcessing?J(a,d):a.trigger("sorton",[a[0].config.sortList,function(){J(a,d)}])}function K(a){var b=a.config,d=b.$table,c,e;b.$headers.find(b.selectorSort).add(b.$headers.filter(b.selectorSort)).unbind("mousedown.tablesorter mouseup.tablesorter sort.tablesorter keypress.tablesorter").bind("mousedown.tablesorter mouseup.tablesorter sort.tablesorter keypress.tablesorter", function(d,c){if(!(1!==(d.which||d.button)&&!/sort|keypress/.test(d.type)||"keypress"===d.type&&13!==d.which||"mouseup"===d.type&&!0!==c&&250<(new Date).getTime()-e)){if("mousedown"===d.type)return e=(new Date).getTime(),"INPUT"===d.target.tagName?"":!b.cancelSelection;b.delayInit&&k(b.cache)&&v(a);var h=(/TH|TD/.test(this.tagName)?g(this):g(this).parents("th, td").filter(":first"))[0];h.sortDisabled||O(a,h,d)}});b.cancelSelection&&b.$headers.attr("unselectable","on").bind("selectstart",!1).css({"user-select":"none", MozUserSelect:"none"});d.unbind("sortReset update updateRows updateCell updateAll addRows sorton appendCache applyWidgetId applyWidgets refreshWidgets destroy mouseup mouseleave ".split(" ").join(".tablesorter ")).bind("sortReset.tablesorter",function(d){d.stopPropagation();b.sortList=[];G(a);H(a);z(a)}).bind("updateAll.tablesorter",function(b,d,c){b.stopPropagation();f.refreshWidgets(a,!0,!0);f.restoreHeaders(a);E(a);K(a);C(a,d,c)}).bind("update.tablesorter updateRows.tablesorter",function(b,d,c){b.stopPropagation(); I(a);C(a,d,c)}).bind("updateCell.tablesorter",function(c,e,h,f){c.stopPropagation();d.find(b.selectorRemove).remove();var m,k,q;m=d.find("tbody");c=m.index(g(e).parents("tbody").filter(":first"));var s=g(e).parents("tr").filter(":first");e=g(e)[0];m.length&&0<=c&&(k=m.eq(c).find("tr").index(s),q=e.cellIndex,m=b.cache[c].normalized[k].length-1,b.cache[c].row[a.config.cache[c].normalized[k][m]]=s,b.cache[c].normalized[k][q]=b.parsers[q].format(p(a,e,q),a,e,q),F(d,h,f))}).bind("addRows.tablesorter", function(e,f,g,k){e.stopPropagation();var m=f.filter("tr").length,q=[],v=f[0].cells.length,u=d.find("tbody").index(f.parents("tbody").filter(":first"));b.parsers||s(a);for(e=0;e<m;e++){for(c=0;c<v;c++)q[c]=b.parsers[c].format(p(a,f[e].cells[c],c),a,f[e].cells[c],c);q.push(b.cache[u].row.length);b.cache[u].row.push([f[e]]);b.cache[u].normalized.push(q);q=[]}F(d,g,k)}).bind("sorton.tablesorter",function(b,c,e,h){var f=a.config;b.stopPropagation();d.trigger("sortStart",this);M(a,c);G(a);f.delayInit&& k(f.cache)&&v(a);d.trigger("sortBegin",this);H(a);z(a,h);"function"===typeof e&&e(a)}).bind("appendCache.tablesorter",function(b,d,c){b.stopPropagation();z(a,c);"function"===typeof d&&d(a)}).bind("applyWidgetId.tablesorter",function(d,c){d.stopPropagation();f.getWidgetById(c).format(a,b,b.widgetOptions)}).bind("applyWidgets.tablesorter",function(b,d){b.stopPropagation();f.applyWidget(a,d)}).bind("refreshWidgets.tablesorter",function(b,d,c){b.stopPropagation();f.refreshWidgets(a,d,c)}).bind("destroy.tablesorter", function(b,d,c){b.stopPropagation();f.destroy(a,d,c)})}var f=this;f.version="2.14.3";f.parsers=[];f.widgets=[];f.defaults={theme:"default",widthFixed:!1,showProcessing:!1,headerTemplate:"{content}",onRenderTemplate:null,onRenderHeader:null,cancelSelection:!0,tabIndex:!0,dateFormat:"mmddyyyy",sortMultiSortKey:"shiftKey",sortResetKey:"ctrlKey",usNumberFormat:!0,delayInit:!1,serverSideSorting:!1,headers:{},ignoreCase:!0,sortForce:null,sortList:[],sortAppend:null,sortStable:!1,sortInitialOrder:"asc", sortLocaleCompare:!1,sortReset:!1,sortRestart:!1,emptyTo:"bottom",stringTo:"max",textExtraction:"simple",textSorter:null,numberSorter:null,widgets:[],widgetOptions:{zebra:["even","odd"]},initWidgets:!0,initialized:null,tableClass:"",cssAsc:"",cssDesc:"",cssHeader:"",cssHeaderRow:"",cssProcessing:"",cssChildRow:"tablesorter-childRow",cssIcon:"tablesorter-icon",cssInfoBlock:"tablesorter-infoOnly",selectorHeaders:"> thead th, > thead td",selectorSort:"th, td",selectorRemove:".remove-me",debug:!1,headerList:[], empties:{},strings:{},parsers:[]};f.css={table:"tablesorter",childRow:"tablesorter-childRow",header:"tablesorter-header",headerRow:"tablesorter-headerRow",icon:"tablesorter-icon",info:"tablesorter-infoOnly",processing:"tablesorter-processing",sortAsc:"tablesorter-headerAsc",sortDesc:"tablesorter-headerDesc"};f.log=c;f.benchmark=q;f.construct=function(a){return this.each(function(){var b=g.extend(!0,{},f.defaults,a);!this.hasInitialized&&f.buildTable&&"TABLE"!==this.tagName&&f.buildTable(this,b);f.setup(this, b)})};f.setup=function(a,b){if(!a||!a.tHead||0===a.tBodies.length||!0===a.hasInitialized)return b.debug?c("stopping initialization! No table, thead, tbody or tablesorter has already been initialized"):"";var d="",h=g(a),e=g.metadata;a.hasInitialized=!1;a.isProcessing=!0;a.config=b;g.data(a,"tablesorter",b);b.debug&&g.data(a,"startoveralltimer",new Date);b.supportsTextContent="x"===g("<span>x</span>")[0].textContent;b.supportsDataObject=function(a){a[0]=parseInt(a[0],10);return 1<a[0]||1===a[0]&&4<= parseInt(a[1],10)}(g.fn.jquery.split("."));b.string={max:1,min:-1,"max+":1,"max-":-1,zero:0,none:0,"null":0,top:!0,bottom:!1};/tablesorter\-/.test(h.attr("class"))||(d=""!==b.theme?" tablesorter-"+b.theme:"");b.$table=h.addClass(f.css.table+" "+b.tableClass+d);b.$tbodies=h.children("tbody:not(."+b.cssInfoBlock+")");b.widgetInit={};E(a);L(a);s(a);b.delayInit||v(a);K(a);b.supportsDataObject&&"undefined"!==typeof h.data().sortlist?b.sortList=h.data().sortlist:e&&h.metadata()&&h.metadata().sortlist&& (b.sortList=h.metadata().sortlist);f.applyWidget(a,!0);0<b.sortList.length?h.trigger("sorton",[b.sortList,{},!b.initWidgets]):b.initWidgets&&f.applyWidget(a);b.showProcessing&&h.unbind("sortBegin.tablesorter sortEnd.tablesorter").bind("sortBegin.tablesorter sortEnd.tablesorter",function(b){f.isProcessing(a,"sortBegin"===b.type)});a.hasInitialized=!0;a.isProcessing=!1;b.debug&&f.benchmark("Overall initialization time",g.data(a,"startoveralltimer"));h.trigger("tablesorter-initialized",a);"function"=== typeof b.initialized&&b.initialized(a)};f.isProcessing=function(a,b,d){a=g(a);var c=a[0].config;a=d||a.find("."+f.css.header);b?(0<c.sortList.length&&(a=a.filter(function(){return this.sortDisabled?!1:f.isValueInArray(parseFloat(g(this).attr("data-column")),c.sortList)})),a.addClass(f.css.processing+" "+c.cssProcessing)):a.removeClass(f.css.processing+" "+c.cssProcessing)};f.processTbody=function(a,b,d){if(d)return a.isProcessing=!0,b.before('<span class="tablesorter-savemyplace"/>'),d=g.fn.detach? b.detach():b.remove();d=g(a).find("span.tablesorter-savemyplace");b.insertAfter(d);d.remove();a.isProcessing=!1};f.clearTableBody=function(a){g(a)[0].config.$tbodies.empty()};f.restoreHeaders=function(a){var b=a.config;b.$table.find(b.selectorHeaders).each(function(a){g(this).find(".tablesorter-header-inner").length&&g(this).html(b.headerContent[a])})};f.destroy=function(a,b,d){a=g(a)[0];if(a.hasInitialized){f.refreshWidgets(a,!0,!0);var c=g(a),e=a.config,n=c.find("thead:first"),l=n.find("tr."+f.css.headerRow).removeClass(f.css.headerRow+ " "+e.cssHeaderRow),k=c.find("tfoot:first > tr").children("th, td");n.find("tr").not(l).remove();c.removeData("tablesorter").unbind("sortReset update updateAll updateRows updateCell addRows sorton appendCache applyWidgetId applyWidgets refreshWidgets destroy mouseup mouseleave keypress sortBegin sortEnd ".split(" ").join(".tablesorter "));e.$headers.add(k).removeClass([f.css.header,e.cssHeader,e.cssAsc,e.cssDesc,f.css.sortAsc,f.css.sortDesc].join(" ")).removeAttr("data-column");l.find(e.selectorSort).unbind("mousedown.tablesorter mouseup.tablesorter keypress.tablesorter"); f.restoreHeaders(a);!1!==b&&c.removeClass(f.css.table+" "+e.tableClass+" tablesorter-"+e.theme);a.hasInitialized=!1;"function"===typeof d&&d(a)}};f.regex={chunk:/(^([+\-]?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?)?$|^0x[0-9a-f]+$|\d+)/gi,hex:/^0x[0-9a-f]+$/i};f.sortNatural=function(a,b){if(a===b)return 0;var d,c,e,g,l,k;c=f.regex;if(c.hex.test(b)){d=parseInt(a.match(c.hex),16);e=parseInt(b.match(c.hex),16);if(d<e)return-1;if(d>e)return 1}d=a.replace(c.chunk,"\\0$1\\0").replace(/\\0$/,"").replace(/^\\0/, "").split("\\0");c=b.replace(c.chunk,"\\0$1\\0").replace(/\\0$/,"").replace(/^\\0/,"").split("\\0");k=Math.max(d.length,c.length);for(l=0;l<k;l++){e=isNaN(d[l])?d[l]||0:parseFloat(d[l])||0;g=isNaN(c[l])?c[l]||0:parseFloat(c[l])||0;if(isNaN(e)!==isNaN(g))return isNaN(e)?1:-1;typeof e!==typeof g&&(e+="",g+="");if(e<g)return-1;if(e>g)return 1}return 0};f.sortNaturalAsc=function(a,b,d,c,e){if(a===b)return 0;d=e.string[e.empties[d]||e.emptyTo];return""===a&&0!==d?"boolean"===typeof d?d?-1:1:-d||-1:""=== b&&0!==d?"boolean"===typeof d?d?1:-1:d||1:f.sortNatural(a,b)};f.sortNaturalDesc=function(a,b,d,c,e){if(a===b)return 0;d=e.string[e.empties[d]||e.emptyTo];return""===a&&0!==d?"boolean"===typeof d?d?-1:1:d||1:""===b&&0!==d?"boolean"===typeof d?d?1:-1:-d||-1:f.sortNatural(b,a)};f.sortText=function(a,b){return a>b?1:a<b?-1:0};f.getTextValue=function(a,b,d){if(d){var c=a?a.length:0,e=d+b;for(d=0;d<c;d++)e+=a.charCodeAt(d);return b*e}return 0};f.sortNumericAsc=function(a,b,d,c,e,g){if(a===b)return 0;g= g.config;e=g.string[g.empties[e]||g.emptyTo];if(""===a&&0!==e)return"boolean"===typeof e?e?-1:1:-e||-1;if(""===b&&0!==e)return"boolean"===typeof e?e?1:-1:e||1;isNaN(a)&&(a=f.getTextValue(a,d,c));isNaN(b)&&(b=f.getTextValue(b,d,c));return a-b};f.sortNumericDesc=function(a,b,d,c,e,g){if(a===b)return 0;g=g.config;e=g.string[g.empties[e]||g.emptyTo];if(""===a&&0!==e)return"boolean"===typeof e?e?-1:1:e||1;if(""===b&&0!==e)return"boolean"===typeof e?e?1:-1:-e||-1;isNaN(a)&&(a=f.getTextValue(a,d,c));isNaN(b)&& (b=f.getTextValue(b,d,c));return b-a};f.sortNumeric=function(a,b){return a-b};f.characterEquivalents={a:"\u00e1\u00e0\u00e2\u00e3\u00e4\u0105\u00e5",A:"\u00c1\u00c0\u00c2\u00c3\u00c4\u0104\u00c5",c:"\u00e7\u0107\u010d",C:"\u00c7\u0106\u010c",e:"\u00e9\u00e8\u00ea\u00eb\u011b\u0119",E:"\u00c9\u00c8\u00ca\u00cb\u011a\u0118",i:"\u00ed\u00ec\u0130\u00ee\u00ef\u0131",I:"\u00cd\u00cc\u0130\u00ce\u00cf",o:"\u00f3\u00f2\u00f4\u00f5\u00f6",O:"\u00d3\u00d2\u00d4\u00d5\u00d6",ss:"\u00df",SS:"\u1e9e",u:"\u00fa\u00f9\u00fb\u00fc\u016f", U:"\u00da\u00d9\u00db\u00dc\u016e"};f.replaceAccents=function(a){var b,d="[",c=f.characterEquivalents;if(!f.characterRegex){f.characterRegexArray={};for(b in c)"string"===typeof b&&(d+=c[b],f.characterRegexArray[b]=RegExp("["+c[b]+"]","g"));f.characterRegex=RegExp(d+"]")}if(f.characterRegex.test(a))for(b in c)"string"===typeof b&&(a=a.replace(f.characterRegexArray[b],b));return a};f.isValueInArray=function(a,b){var d,c=b.length;for(d=0;d<c;d++)if(b[d][0]===a)return!0;return!1};f.addParser=function(a){var b, d=f.parsers.length,c=!0;for(b=0;b<d;b++)f.parsers[b].id.toLowerCase()===a.id.toLowerCase()&&(c=!1);c&&f.parsers.push(a)};f.getParserById=function(a){var b,d=f.parsers.length;for(b=0;b<d;b++)if(f.parsers[b].id.toLowerCase()===a.toString().toLowerCase())return f.parsers[b];return!1};f.addWidget=function(a){f.widgets.push(a)};f.getWidgetById=function(a){var b,d,c=f.widgets.length;for(b=0;b<c;b++)if((d=f.widgets[b])&&d.hasOwnProperty("id")&&d.id.toLowerCase()===a.toLowerCase())return d};f.applyWidget= function(a,b){a=g(a)[0];var d=a.config,c=d.widgetOptions,e=[],k,l,p;d.debug&&(k=new Date);d.widgets.length&&(d.widgets=g.grep(d.widgets,function(a,b){return g.inArray(a,d.widgets)===b}),g.each(d.widgets||[],function(a,b){(p=f.getWidgetById(b))&&p.id&&(p.priority||(p.priority=10),e[a]=p)}),e.sort(function(a,b){return a.priority<b.priority?-1:a.priority===b.priority?0:1}),g.each(e,function(e,f){if(f){if(b||!d.widgetInit[f.id])f.hasOwnProperty("options")&&(c=a.config.widgetOptions=g.extend(!0,{},f.options, c)),f.hasOwnProperty("init")&&f.init(a,f,d,c),d.widgetInit[f.id]=!0;!b&&f.hasOwnProperty("format")&&f.format(a,d,c,!1)}}));d.debug&&(l=d.widgets.length,q("Completed "+(!0===b?"initializing ":"applying ")+l+" widget"+(1!==l?"s":""),k))};f.refreshWidgets=function(a,b,d){a=g(a)[0];var h,e=a.config,k=e.widgets,l=f.widgets,q=l.length;for(h=0;h<q;h++)l[h]&&l[h].id&&(b||0>g.inArray(l[h].id,k))&&(e.debug&&c("Refeshing widgets: Removing "+l[h].id),l[h].hasOwnProperty("remove")&&e.widgetInit[l[h].id]&&(l[h].remove(a, e,e.widgetOptions),e.widgetInit[l[h].id]=!1));!0!==d&&f.applyWidget(a,b)};f.getData=function(a,b,d){var c="";a=g(a);var e,f;if(!a.length)return"";e=g.metadata?a.metadata():!1;f=" "+(a.attr("class")||"");"undefined"!==typeof a.data(d)||"undefined"!==typeof a.data(d.toLowerCase())?c+=a.data(d)||a.data(d.toLowerCase()):e&&"undefined"!==typeof e[d]?c+=e[d]:b&&"undefined"!==typeof b[d]?c+=b[d]:" "!==f&&f.match(" "+d+"-")&&(c=f.match(RegExp("\\s"+d+"-([\\w-]+)"))[1]||"");return g.trim(c)};f.formatFloat= function(a,b){if("string"!==typeof a||""===a)return a;var c;a=(b&&b.config?!1!==b.config.usNumberFormat:"undefined"!==typeof b?b:1)?a.replace(/,/g,""):a.replace(/[\s|\.]/g,"").replace(/,/g,".");/^\s*\([.\d]+\)/.test(a)&&(a=a.replace(/^\s*\(([.\d]+)\)/,"-$1"));c=parseFloat(a);return isNaN(c)?g.trim(a):c};f.isDigit=function(a){return isNaN(a)?/^[\-+(]?\d+[)]?$/.test(a.toString().replace(/[,.'"\s]/g,"")):!0}}});var p=g.tablesorter;g.fn.extend({tablesorter:p.construct});p.addParser({id:"text",is:function(){return!0}, format:function(c,q){var k=q.config;c&&(c=g.trim(k.ignoreCase?c.toLocaleLowerCase():c),c=k.sortLocaleCompare?p.replaceAccents(c):c);return c},type:"text"});p.addParser({id:"digit",is:function(c){return p.isDigit(c)},format:function(c,q){var k=p.formatFloat((c||"").replace(/[^\w,. \-()]/g,""),q);return c&&"number"===typeof k?k:c?g.trim(c&&q.config.ignoreCase?c.toLocaleLowerCase():c):c},type:"numeric"});p.addParser({id:"currency",is:function(c){return/^\(?\d+[\u00a3$\u20ac\u00a4\u00a5\u00a2?.]|[\u00a3$\u20ac\u00a4\u00a5\u00a2?.]\d+\)?$/.test((c|| "").replace(/[,. ]/g,""))},format:function(c,q){var k=p.formatFloat((c||"").replace(/[^\w,. \-()]/g,""),q);return c&&"number"===typeof k?k:c?g.trim(c&&q.config.ignoreCase?c.toLocaleLowerCase():c):c},type:"numeric"});p.addParser({id:"ipAddress",is:function(c){return/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(c)},format:function(c,g){var k,t=c?c.split("."):"",s="",v=t.length;for(k=0;k<v;k++)s+=("00"+t[k]).slice(-3);return c?p.formatFloat(s,g):c},type:"numeric"});p.addParser({id:"url",is:function(c){return/^(https?|ftp|file):\/\//.test(c)}, format:function(c){return c?g.trim(c.replace(/(https?|ftp|file):\/\//,"")):c},type:"text"});p.addParser({id:"isoDate",is:function(c){return/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}/.test(c)},format:function(c,g){return c?p.formatFloat(""!==c?(new Date(c.replace(/-/g,"/"))).getTime()||"":"",g):c},type:"numeric"});p.addParser({id:"percent",is:function(c){return/(\d\s*?%|%\s*?\d)/.test(c)&&15>c.length},format:function(c,g){return c?p.formatFloat(c.replace(/%/g,""),g):c},type:"numeric"});p.addParser({id:"usLongDate", is:function(c){return/^[A-Z]{3,10}\.?\s+\d{1,2},?\s+(\d{4})(\s+\d{1,2}:\d{2}(:\d{2})?(\s+[AP]M)?)?$/i.test(c)||/^\d{1,2}\s+[A-Z]{3,10}\s+\d{4}/i.test(c)},format:function(c,g){return c?p.formatFloat((new Date(c.replace(/(\S)([AP]M)$/i,"$1 $2"))).getTime()||"",g):c},type:"numeric"});p.addParser({id:"shortDate",is:function(c){return/(^\d{1,2}[\/\s]\d{1,2}[\/\s]\d{4})|(^\d{4}[\/\s]\d{1,2}[\/\s]\d{1,2})/.test((c||"").replace(/\s+/g," ").replace(/[\-.,]/g,"/"))},format:function(c,g,k,t){if(c){k=g.config; var s=k.headerList[t];t=s.dateFormat||p.getData(s,k.headers[t],"dateFormat")||k.dateFormat;c=c.replace(/\s+/g," ").replace(/[\-.,]/g,"/");"mmddyyyy"===t?c=c.replace(/(\d{1,2})[\/\s](\d{1,2})[\/\s](\d{4})/,"$3/$1/$2"):"ddmmyyyy"===t?c=c.replace(/(\d{1,2})[\/\s](\d{1,2})[\/\s](\d{4})/,"$3/$2/$1"):"yyyymmdd"===t&&(c=c.replace(/(\d{4})[\/\s](\d{1,2})[\/\s](\d{1,2})/,"$1/$2/$3"))}return c?p.formatFloat((new Date(c)).getTime()||"",g):c},type:"numeric"});p.addParser({id:"time",is:function(c){return/^(([0-2]?\d:[0-5]\d)|([0-1]?\d:[0-5]\d\s?([AP]M)))$/i.test(c)}, format:function(c,g){return c?p.formatFloat((new Date("2000/01/01 "+c.replace(/(\S)([AP]M)$/i,"$1 $2"))).getTime()||"",g):c},type:"numeric"});p.addParser({id:"metadata",is:function(){return!1},format:function(c,p,k){c=p.config;c=c.parserMetadataName?c.parserMetadataName:"sortValue";return g(k).metadata()[c]},type:"numeric"});p.addWidget({id:"zebra",priority:90,format:function(c,q,k){var t,s,v,z,D,B,E=RegExp(q.cssChildRow,"i"),C=q.$tbodies;q.debug&&(D=new Date);for(c=0;c<C.length;c++)t=C.eq(c),B=t.children("tr").length, 1<B&&(v=0,t=t.children("tr:visible").not(q.selectorRemove),t.each(function(){s=g(this);E.test(this.className)||v++;z=0===v%2;s.removeClass(k.zebra[z?1:0]).addClass(k.zebra[z?0:1])}));q.debug&&p.benchmark("Applying Zebra widget",D)},remove:function(c,p,k){var t;p=p.$tbodies;var s=(k.zebra||["even","odd"]).join(" ");for(k=0;k<p.length;k++)t=g.tablesorter.processTbody(c,p.eq(k),!0),t.children().removeClass(s),g.tablesorter.processTbody(c,t,!1)}})}(jQuery);
-;/*! tableSorter 2.8+ widgets - updated 12/2/2013 (v2.14.3) */
+!function(g){g.extend({tablesorter:new function(){function c(){var a=1<arguments.length?Array.prototype.slice.call(arguments):arguments[0];"undefined"!==typeof console&&"undefined"!==typeof console.log?console.log(a):alert(a)}function r(a,b){c(a+" ("+((new Date).getTime()-b.getTime())+"ms)")}function k(a){for(var b in a)return!1;return!0}function p(a,b,d){if(!b)return"";var h=a.config,e=h.textExtraction,n="",n="simple"===e?h.supportsTextContent?b.textContent:g(b).text():"function"===typeof e?e(b, a,d):"object"===typeof e&&e.hasOwnProperty(d)?e[d](b,a,d):h.supportsTextContent?b.textContent:g(b).text();return g.trim(n)}function s(a){var b=a.config,d=b.$tbodies=b.$table.children("tbody:not(."+b.cssInfoBlock+")"),h,e,n,l,x,g,m,v="";if(0===d.length)return b.debug?c("*Empty table!* Not building a parser cache"):"";b.debug&&(m=new Date,c("Detecting parsers for each column"));d=d[0].rows;if(d[0])for(h=[],e=d[0].cells.length,n=0;n<e;n++){l=b.$headers.filter(":not([colspan])");l=l.add(b.$headers.filter('[colspan="1"]')).filter('[data-column="'+ n+'"]:last');x=b.headers[n];g=f.getParserById(f.getData(l,x,"sorter"));b.empties[n]=f.getData(l,x,"empty")||b.emptyTo||(b.emptyToBottom?"bottom":"top");b.strings[n]=f.getData(l,x,"string")||b.stringTo||"max";if(!g)a:{l=a;x=d;g=-1;for(var k=n,u=void 0,A=f.parsers.length,q=!1,s="",u=!0;""===s&&u;)g++,x[g]?(q=x[g].cells[k],s=p(l,q,k),l.config.debug&&c("Checking if value was empty on row "+g+", column: "+k+': "'+s+'"')):u=!1;for(;0<=--A;)if((u=f.parsers[A])&&"text"!==u.id&&u.is&&u.is(s,l,q)){g=u;break a}g= f.getParserById("text")}b.debug&&(v+="column:"+n+"; parser:"+g.id+"; string:"+b.strings[n]+"; empty: "+b.empties[n]+"\n");h.push(g)}b.debug&&(c(v),r("Completed detecting parsers",m));b.parsers=h}function w(a){var b=a.tBodies,d=a.config,h,e,n=d.parsers,l,x,y,m,v,k,u,A=[];d.cache={};if(!n)return d.debug?c("*Empty table!* Not building a cache"):"";d.debug&&(u=new Date);d.showProcessing&&f.isProcessing(a,!0);for(m=0;m<b.length;m++)if(d.cache[m]={row:[],normalized:[]},!g(b[m]).hasClass(d.cssInfoBlock)){h= b[m]&&b[m].rows.length||0;e=b[m].rows[0]&&b[m].rows[0].cells.length||0;for(x=0;x<h;++x)if(v=g(b[m].rows[x]),k=[],v.hasClass(d.cssChildRow))d.cache[m].row[d.cache[m].row.length-1]=d.cache[m].row[d.cache[m].row.length-1].add(v);else{d.cache[m].row.push(v);for(y=0;y<e;++y)l=p(a,v[0].cells[y],y),l=n[y].format(l,a,v[0].cells[y],y),k.push(l),"numeric"===(n[y].type||"").toLowerCase()&&(A[y]=Math.max(Math.abs(l)||0,A[y]||0));k.push(d.cache[m].normalized.length);d.cache[m].normalized.push(k)}d.cache[m].colMax= A}d.showProcessing&&f.isProcessing(a);d.debug&&r("Building cache for "+h+" rows",u)}function z(a,b){var d=a.config,h=d.widgetOptions,e=a.tBodies,n=[],l=d.cache,c,y,m,v,p,u,A,q,s,t,w;if(!k(l)){d.debug&&(w=new Date);for(q=0;q<e.length;q++)if(c=g(e[q]),c.length&&!c.hasClass(d.cssInfoBlock)){p=f.processTbody(a,c,!0);c=l[q].row;y=l[q].normalized;v=(m=y.length)?y[0].length-1:0;for(u=0;u<m;u++)if(t=y[u][v],n.push(c[t]),!d.appender||d.pager&&!(d.pager.removeRows&&h.pager_removeRows||d.pager.ajax))for(s=c[t].length, A=0;A<s;A++)p.append(c[t][A]);f.processTbody(a,p,!1)}d.appender&&d.appender(a,n);d.debug&&r("Rebuilt table",w);b||d.appender||f.applyWidget(a);g(a).trigger("sortEnd",a);g(a).trigger("updateComplete",a)}}function D(a){var b=[],d={},h=0,e=g(a).find("thead:eq(0), tfoot").children("tr"),n,l,c,f,m,k,r,p,t,q;for(n=0;n<e.length;n++)for(m=e[n].cells,l=0;l<m.length;l++){f=m[l];k=f.parentNode.rowIndex;r=k+"-"+f.cellIndex;p=f.rowSpan||1;t=f.colSpan||1;"undefined"===typeof b[k]&&(b[k]=[]);for(c=0;c<b[k].length+ 1;c++)if("undefined"===typeof b[k][c]){q=c;break}d[r]=q;h=Math.max(q,h);g(f).attr({"data-column":q});for(c=k;c<k+p;c++)for("undefined"===typeof b[c]&&(b[c]=[]),r=b[c],f=q;f<q+t;f++)r[f]="x"}a.config.columns=h+1;return d}function C(a){return/^d/i.test(a)||1===a}function E(a){var b=D(a),d,h,e,n,l,x,k,m=a.config;m.headerList=[];m.headerContent=[];m.debug&&(k=new Date);n=m.cssIcon?'<i class="'+(m.cssIcon===f.css.icon?f.css.icon:m.cssIcon+" "+f.css.icon)+'"></i>':"";m.$headers=g(a).find(m.selectorHeaders).each(function(a){h= g(this);d=m.headers[a];m.headerContent[a]=g(this).html();l=m.headerTemplate.replace(/\{content\}/g,g(this).html()).replace(/\{icon\}/g,n);m.onRenderTemplate&&(e=m.onRenderTemplate.apply(h,[a,l]))&&"string"===typeof e&&(l=e);g(this).html('<div class="tablesorter-header-inner">'+l+"</div>");m.onRenderHeader&&m.onRenderHeader.apply(h,[a]);this.column=b[this.parentNode.rowIndex+"-"+this.cellIndex];this.order=C(f.getData(h,d,"sortInitialOrder")||m.sortInitialOrder)?[1,0,2]:[0,1,2];this.count=-1;this.lockedOrder= !1;x=f.getData(h,d,"lockedOrder")||!1;"undefined"!==typeof x&&!1!==x&&(this.order=this.lockedOrder=C(x)?[1,1,1]:[0,0,0]);h.addClass(f.css.header+" "+m.cssHeader);m.headerList[a]=this;h.parent().addClass(f.css.headerRow+" "+m.cssHeaderRow);m.tabIndex&&h.attr("tabindex",0)});F(a);m.debug&&(r("Built headers:",k),c(m.$headers))}function B(a,b,d){var h=a.config;h.$table.find(h.selectorRemove).remove();s(a);w(a);G(h.$table,b,d)}function F(a){var b,d=a.config;d.$headers.each(function(a,e){b="false"===f.getData(e, d.headers[a],"sorter");e.sortDisabled=b;g(e)[b?"addClass":"removeClass"]("sorter-false")})}function H(a){var b,d,h,e=a.config,n=e.sortList,l=[f.css.sortAsc+" "+e.cssAsc,f.css.sortDesc+" "+e.cssDesc],c=g(a).find("tfoot tr").children().removeClass(l.join(" "));e.$headers.removeClass(l.join(" "));h=n.length;for(b=0;b<h;b++)if(2!==n[b][1]&&(a=e.$headers.not(".sorter-false").filter('[data-column="'+n[b][0]+'"]'+(1===h?":last":"")),a.length))for(d=0;d<a.length;d++)a[d].sortDisabled||(a.eq(d).addClass(l[n[b][1]]), c.length&&c.filter('[data-column="'+n[b][0]+'"]').eq(d).addClass(l[n[b][1]]))}function L(a){if(a.config.widthFixed&&0===g(a).find("colgroup").length){var b=g("<colgroup>"),d=g(a).width();g(a.tBodies[0]).find("tr:first").children("td:visible").each(function(){b.append(g("<col>").css("width",parseInt(g(this).width()/d*1E3,10)/10+"%"))});g(a).prepend(b)}}function M(a,b){var d,h,e,n=a.config,c=b||n.sortList;n.sortList=[];g.each(c,function(a,b){d=[parseInt(b[0],10),parseInt(b[1],10)];if(e=n.$headers[d[0]])n.sortList.push(d), h=g.inArray(d[1],e.order),e.count=0<=h?h:d[1]%(n.sortReset?3:2)})}function N(a,b){return a&&a[b]?a[b].type||"":""}function O(a,b,d){var h,e,n,c=a.config,x=!d[c.sortMultiSortKey],k=g(a);k.trigger("sortStart",a);b.count=d[c.sortResetKey]?2:(b.count+1)%(c.sortReset?3:2);c.sortRestart&&(e=b,c.$headers.each(function(){this===e||!x&&g(this).is("."+f.css.sortDesc+",."+f.css.sortAsc)||(this.count=-1)}));e=b.column;if(x){c.sortList=[];if(null!==c.sortForce)for(h=c.sortForce,d=0;d<h.length;d++)h[d][0]!==e&& c.sortList.push(h[d]);h=b.order[b.count];if(2>h&&(c.sortList.push([e,h]),1<b.colSpan))for(d=1;d<b.colSpan;d++)c.sortList.push([e+d,h])}else if(c.sortAppend&&1<c.sortList.length&&f.isValueInArray(c.sortAppend[0][0],c.sortList)&&c.sortList.pop(),f.isValueInArray(e,c.sortList))for(d=0;d<c.sortList.length;d++)n=c.sortList[d],h=c.$headers[n[0]],n[0]===e&&(n[1]=h.order[b.count],2===n[1]&&(c.sortList.splice(d,1),h.count=-1));else if(h=b.order[b.count],2>h&&(c.sortList.push([e,h]),1<b.colSpan))for(d=1;d< b.colSpan;d++)c.sortList.push([e+d,h]);if(null!==c.sortAppend)for(h=c.sortAppend,d=0;d<h.length;d++)h[d][0]!==e&&c.sortList.push(h[d]);k.trigger("sortBegin",a);setTimeout(function(){H(a);I(a);z(a)},1)}function I(a){var b,d,c,e,n,l,g,p,m,v,t,u,s=0,q=a.config,w=q.textSorter||"",z=q.sortList,B=z.length,C=a.tBodies.length;if(!q.serverSideSorting&&!k(q.cache)){q.debug&&(m=new Date);for(d=0;d<C;d++)n=q.cache[d].colMax,p=(l=q.cache[d].normalized)&&l[0]?l[0].length-1:0,l.sort(function(d,l){for(b=0;b<B;b++){e= z[b][0];g=z[b][1];s=0===g;if(q.sortStable&&d[e]===l[e]&&1===B)break;(c=/n/i.test(N(q.parsers,e)))&&q.strings[e]?(c="boolean"===typeof q.string[q.strings[e]]?(s?1:-1)*(q.string[q.strings[e]]?-1:1):q.strings[e]?q.string[q.strings[e]]||0:0,v=q.numberSorter?q.numberSorter(t[e],u[e],s,n[e],a):f["sortNumeric"+(s?"Asc":"Desc")](d[e],l[e],c,n[e],e,a)):(t=s?d:l,u=s?l:d,v="function"===typeof w?w(t[e],u[e],s,e,a):"object"===typeof w&&w.hasOwnProperty(e)?w[e](t[e],u[e],s,e,a):f["sortNatural"+(s?"Asc":"Desc")](d[e], l[e],e,a,q));if(v)return v}return d[p]-l[p]});q.debug&&r("Sorting on "+z.toString()+" and dir "+g+" time",m)}}function J(a,b){var d=a[0].config;d.pager&&!d.pager.ajax&&a.trigger("updateComplete");"function"===typeof b&&b(a[0])}function G(a,b,d){!1===b||a[0].isProcessing?J(a,d):a.trigger("sorton",[a[0].config.sortList,function(){J(a,d)}])}function K(a){var b=a.config,d=b.$table,c,e;b.$headers.find(b.selectorSort).add(b.$headers.filter(b.selectorSort)).unbind("mousedown.tablesorter mouseup.tablesorter sort.tablesorter keypress.tablesorter").bind("mousedown.tablesorter mouseup.tablesorter sort.tablesorter keypress.tablesorter", function(d,c){if(!(1!==(d.which||d.button)&&!/sort|keypress/.test(d.type)||"keypress"===d.type&&13!==d.which||"mouseup"===d.type&&!0!==c&&250<(new Date).getTime()-e)){if("mousedown"===d.type)return e=(new Date).getTime(),"INPUT"===d.target.tagName?"":!b.cancelSelection;b.delayInit&&k(b.cache)&&w(a);var h=(/TH|TD/.test(this.tagName)?g(this):g(this).parents("th, td").filter(":first"))[0];h.sortDisabled||O(a,h,d)}});b.cancelSelection&&b.$headers.attr("unselectable","on").bind("selectstart",!1).css({"user-select":"none", MozUserSelect:"none"});d.unbind("sortReset update updateRows updateCell updateAll addRows sorton appendCache applyWidgetId applyWidgets refreshWidgets destroy mouseup mouseleave ".split(" ").join(".tablesorter ")).bind("sortReset.tablesorter",function(d){d.stopPropagation();b.sortList=[];H(a);I(a);z(a)}).bind("updateAll.tablesorter",function(b,d,c){b.stopPropagation();f.refreshWidgets(a,!0,!0);f.restoreHeaders(a);E(a);K(a);B(a,d,c)}).bind("update.tablesorter updateRows.tablesorter",function(b,d,c){b.stopPropagation(); F(a);B(a,d,c)}).bind("updateCell.tablesorter",function(c,e,h,f){c.stopPropagation();d.find(b.selectorRemove).remove();var m,k,r;m=d.find("tbody");c=m.index(g(e).parents("tbody").filter(":first"));var s=g(e).parents("tr").filter(":first");e=g(e)[0];m.length&&0<=c&&(k=m.eq(c).find("tr").index(s),r=e.cellIndex,m=b.cache[c].normalized[k].length-1,b.cache[c].row[a.config.cache[c].normalized[k][m]]=s,b.cache[c].normalized[k][r]=b.parsers[r].format(p(a,e,r),a,e,r),G(d,h,f))}).bind("addRows.tablesorter", function(e,f,g,r){e.stopPropagation();if(k(b.cache))F(a),B(a,g,r);else{var m=f.filter("tr").length,v=[],w=f[0].cells.length,u=d.find("tbody").index(f.parents("tbody").filter(":first"));b.parsers||s(a);for(e=0;e<m;e++){for(c=0;c<w;c++)v[c]=b.parsers[c].format(p(a,f[e].cells[c],c),a,f[e].cells[c],c);v.push(b.cache[u].row.length);b.cache[u].row.push([f[e]]);b.cache[u].normalized.push(v);v=[]}G(d,g,r)}}).bind("sorton.tablesorter",function(b,c,e,h){var f=a.config;b.stopPropagation();d.trigger("sortStart", this);M(a,c);H(a);f.delayInit&&k(f.cache)&&w(a);d.trigger("sortBegin",this);I(a);z(a,h);"function"===typeof e&&e(a)}).bind("appendCache.tablesorter",function(b,d,c){b.stopPropagation();z(a,c);"function"===typeof d&&d(a)}).bind("applyWidgetId.tablesorter",function(d,c){d.stopPropagation();f.getWidgetById(c).format(a,b,b.widgetOptions)}).bind("applyWidgets.tablesorter",function(b,d){b.stopPropagation();f.applyWidget(a,d)}).bind("refreshWidgets.tablesorter",function(b,d,c){b.stopPropagation();f.refreshWidgets(a, d,c)}).bind("destroy.tablesorter",function(b,d,c){b.stopPropagation();f.destroy(a,d,c)})}var f=this;f.version="2.14.4";f.parsers=[];f.widgets=[];f.defaults={theme:"default",widthFixed:!1,showProcessing:!1,headerTemplate:"{content}",onRenderTemplate:null,onRenderHeader:null,cancelSelection:!0,tabIndex:!0,dateFormat:"mmddyyyy",sortMultiSortKey:"shiftKey",sortResetKey:"ctrlKey",usNumberFormat:!0,delayInit:!1,serverSideSorting:!1,headers:{},ignoreCase:!0,sortForce:null,sortList:[],sortAppend:null,sortStable:!1, sortInitialOrder:"asc",sortLocaleCompare:!1,sortReset:!1,sortRestart:!1,emptyTo:"bottom",stringTo:"max",textExtraction:"simple",textSorter:null,numberSorter:null,widgets:[],widgetOptions:{zebra:["even","odd"]},initWidgets:!0,initialized:null,tableClass:"",cssAsc:"",cssDesc:"",cssHeader:"",cssHeaderRow:"",cssProcessing:"",cssChildRow:"tablesorter-childRow",cssIcon:"tablesorter-icon",cssInfoBlock:"tablesorter-infoOnly",selectorHeaders:"> thead th, > thead td",selectorSort:"th, td",selectorRemove:".remove-me", debug:!1,headerList:[],empties:{},strings:{},parsers:[]};f.css={table:"tablesorter",childRow:"tablesorter-childRow",header:"tablesorter-header",headerRow:"tablesorter-headerRow",icon:"tablesorter-icon",info:"tablesorter-infoOnly",processing:"tablesorter-processing",sortAsc:"tablesorter-headerAsc",sortDesc:"tablesorter-headerDesc"};f.log=c;f.benchmark=r;f.construct=function(a){return this.each(function(){var b=g.extend(!0,{},f.defaults,a);!this.hasInitialized&&f.buildTable&&"TABLE"!==this.tagName&& f.buildTable(this,b);f.setup(this,b)})};f.setup=function(a,b){if(!a||!a.tHead||0===a.tBodies.length||!0===a.hasInitialized)return b.debug?c("stopping initialization! No table, thead, tbody or tablesorter has already been initialized"):"";var d="",h=g(a),e=g.metadata;a.hasInitialized=!1;a.isProcessing=!0;a.config=b;g.data(a,"tablesorter",b);b.debug&&g.data(a,"startoveralltimer",new Date);b.supportsTextContent="x"===g("<span>x</span>")[0].textContent;b.supportsDataObject=function(a){a[0]=parseInt(a[0], 10);return 1<a[0]||1===a[0]&&4<=parseInt(a[1],10)}(g.fn.jquery.split("."));b.string={max:1,min:-1,"max+":1,"max-":-1,zero:0,none:0,"null":0,top:!0,bottom:!1};/tablesorter\-/.test(h.attr("class"))||(d=""!==b.theme?" tablesorter-"+b.theme:"");b.$table=h.addClass(f.css.table+" "+b.tableClass+d);b.$tbodies=h.children("tbody:not(."+b.cssInfoBlock+")");b.widgetInit={};E(a);L(a);s(a);b.delayInit||w(a);K(a);b.supportsDataObject&&"undefined"!==typeof h.data().sortlist?b.sortList=h.data().sortlist:e&&h.metadata()&& h.metadata().sortlist&&(b.sortList=h.metadata().sortlist);f.applyWidget(a,!0);0<b.sortList.length?h.trigger("sorton",[b.sortList,{},!b.initWidgets]):b.initWidgets&&f.applyWidget(a);b.showProcessing&&h.unbind("sortBegin.tablesorter sortEnd.tablesorter").bind("sortBegin.tablesorter sortEnd.tablesorter",function(b){f.isProcessing(a,"sortBegin"===b.type)});a.hasInitialized=!0;a.isProcessing=!1;b.debug&&f.benchmark("Overall initialization time",g.data(a,"startoveralltimer"));h.trigger("tablesorter-initialized", a);"function"===typeof b.initialized&&b.initialized(a)};f.isProcessing=function(a,b,d){a=g(a);var c=a[0].config;a=d||a.find("."+f.css.header);b?(0<c.sortList.length&&(a=a.filter(function(){return this.sortDisabled?!1:f.isValueInArray(parseFloat(g(this).attr("data-column")),c.sortList)})),a.addClass(f.css.processing+" "+c.cssProcessing)):a.removeClass(f.css.processing+" "+c.cssProcessing)};f.processTbody=function(a,b,d){if(d)return a.isProcessing=!0,b.before('<span class="tablesorter-savemyplace"/>'), d=g.fn.detach?b.detach():b.remove();d=g(a).find("span.tablesorter-savemyplace");b.insertAfter(d);d.remove();a.isProcessing=!1};f.clearTableBody=function(a){g(a)[0].config.$tbodies.empty()};f.restoreHeaders=function(a){var b=a.config;b.$table.find(b.selectorHeaders).each(function(a){g(this).find(".tablesorter-header-inner").length&&g(this).html(b.headerContent[a])})};f.destroy=function(a,b,d){a=g(a)[0];if(a.hasInitialized){f.refreshWidgets(a,!0,!0);var c=g(a),e=a.config,n=c.find("thead:first"),l=n.find("tr."+ f.css.headerRow).removeClass(f.css.headerRow+" "+e.cssHeaderRow),k=c.find("tfoot:first > tr").children("th, td");n.find("tr").not(l).remove();c.removeData("tablesorter").unbind("sortReset update updateAll updateRows updateCell addRows sorton appendCache applyWidgetId applyWidgets refreshWidgets destroy mouseup mouseleave keypress sortBegin sortEnd ".split(" ").join(".tablesorter "));e.$headers.add(k).removeClass([f.css.header,e.cssHeader,e.cssAsc,e.cssDesc,f.css.sortAsc,f.css.sortDesc].join(" ")).removeAttr("data-column"); l.find(e.selectorSort).unbind("mousedown.tablesorter mouseup.tablesorter keypress.tablesorter");f.restoreHeaders(a);!1!==b&&c.removeClass(f.css.table+" "+e.tableClass+" tablesorter-"+e.theme);a.hasInitialized=!1;"function"===typeof d&&d(a)}};f.regex={chunk:/(^([+\-]?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?)?$|^0x[0-9a-f]+$|\d+)/gi,hex:/^0x[0-9a-f]+$/i};f.sortNatural=function(a,b){if(a===b)return 0;var d,c,e,g,l,k;c=f.regex;if(c.hex.test(b)){d=parseInt(a.match(c.hex),16);e=parseInt(b.match(c.hex), 16);if(d<e)return-1;if(d>e)return 1}d=a.replace(c.chunk,"\\0$1\\0").replace(/\\0$/,"").replace(/^\\0/,"").split("\\0");c=b.replace(c.chunk,"\\0$1\\0").replace(/\\0$/,"").replace(/^\\0/,"").split("\\0");k=Math.max(d.length,c.length);for(l=0;l<k;l++){e=isNaN(d[l])?d[l]||0:parseFloat(d[l])||0;g=isNaN(c[l])?c[l]||0:parseFloat(c[l])||0;if(isNaN(e)!==isNaN(g))return isNaN(e)?1:-1;typeof e!==typeof g&&(e+="",g+="");if(e<g)return-1;if(e>g)return 1}return 0};f.sortNaturalAsc=function(a,b,d,c,e){if(a===b)return 0; d=e.string[e.empties[d]||e.emptyTo];return""===a&&0!==d?"boolean"===typeof d?d?-1:1:-d||-1:""===b&&0!==d?"boolean"===typeof d?d?1:-1:d||1:f.sortNatural(a,b)};f.sortNaturalDesc=function(a,b,d,c,e){if(a===b)return 0;d=e.string[e.empties[d]||e.emptyTo];return""===a&&0!==d?"boolean"===typeof d?d?-1:1:d||1:""===b&&0!==d?"boolean"===typeof d?d?1:-1:-d||-1:f.sortNatural(b,a)};f.sortText=function(a,b){return a>b?1:a<b?-1:0};f.getTextValue=function(a,b,d){if(d){var c=a?a.length:0,e=d+b;for(d=0;d<c;d++)e+= a.charCodeAt(d);return b*e}return 0};f.sortNumericAsc=function(a,b,d,c,e,g){if(a===b)return 0;g=g.config;e=g.string[g.empties[e]||g.emptyTo];if(""===a&&0!==e)return"boolean"===typeof e?e?-1:1:-e||-1;if(""===b&&0!==e)return"boolean"===typeof e?e?1:-1:e||1;isNaN(a)&&(a=f.getTextValue(a,d,c));isNaN(b)&&(b=f.getTextValue(b,d,c));return a-b};f.sortNumericDesc=function(a,b,d,c,e,g){if(a===b)return 0;g=g.config;e=g.string[g.empties[e]||g.emptyTo];if(""===a&&0!==e)return"boolean"===typeof e?e?-1:1:e||1;if(""=== b&&0!==e)return"boolean"===typeof e?e?1:-1:-e||-1;isNaN(a)&&(a=f.getTextValue(a,d,c));isNaN(b)&&(b=f.getTextValue(b,d,c));return b-a};f.sortNumeric=function(a,b){return a-b};f.characterEquivalents={a:"\u00e1\u00e0\u00e2\u00e3\u00e4\u0105\u00e5",A:"\u00c1\u00c0\u00c2\u00c3\u00c4\u0104\u00c5",c:"\u00e7\u0107\u010d",C:"\u00c7\u0106\u010c",e:"\u00e9\u00e8\u00ea\u00eb\u011b\u0119",E:"\u00c9\u00c8\u00ca\u00cb\u011a\u0118",i:"\u00ed\u00ec\u0130\u00ee\u00ef\u0131",I:"\u00cd\u00cc\u0130\u00ce\u00cf",o:"\u00f3\u00f2\u00f4\u00f5\u00f6", O:"\u00d3\u00d2\u00d4\u00d5\u00d6",ss:"\u00df",SS:"\u1e9e",u:"\u00fa\u00f9\u00fb\u00fc\u016f",U:"\u00da\u00d9\u00db\u00dc\u016e"};f.replaceAccents=function(a){var b,d="[",c=f.characterEquivalents;if(!f.characterRegex){f.characterRegexArray={};for(b in c)"string"===typeof b&&(d+=c[b],f.characterRegexArray[b]=RegExp("["+c[b]+"]","g"));f.characterRegex=RegExp(d+"]")}if(f.characterRegex.test(a))for(b in c)"string"===typeof b&&(a=a.replace(f.characterRegexArray[b],b));return a};f.isValueInArray=function(a, b){var d,c=b.length;for(d=0;d<c;d++)if(b[d][0]===a)return!0;return!1};f.addParser=function(a){var b,d=f.parsers.length,c=!0;for(b=0;b<d;b++)f.parsers[b].id.toLowerCase()===a.id.toLowerCase()&&(c=!1);c&&f.parsers.push(a)};f.getParserById=function(a){var b,d=f.parsers.length;for(b=0;b<d;b++)if(f.parsers[b].id.toLowerCase()===a.toString().toLowerCase())return f.parsers[b];return!1};f.addWidget=function(a){f.widgets.push(a)};f.getWidgetById=function(a){var b,d,c=f.widgets.length;for(b=0;b<c;b++)if((d= f.widgets[b])&&d.hasOwnProperty("id")&&d.id.toLowerCase()===a.toLowerCase())return d};f.applyWidget=function(a,b){a=g(a)[0];var d=a.config,c=d.widgetOptions,e=[],k,l,p;d.debug&&(k=new Date);d.widgets.length&&(d.widgets=g.grep(d.widgets,function(a,b){return g.inArray(a,d.widgets)===b}),g.each(d.widgets||[],function(a,b){(p=f.getWidgetById(b))&&p.id&&(p.priority||(p.priority=10),e[a]=p)}),e.sort(function(a,b){return a.priority<b.priority?-1:a.priority===b.priority?0:1}),g.each(e,function(e,f){if(f){if(b|| !d.widgetInit[f.id])f.hasOwnProperty("options")&&(c=a.config.widgetOptions=g.extend(!0,{},f.options,c)),f.hasOwnProperty("init")&&f.init(a,f,d,c),d.widgetInit[f.id]=!0;!b&&f.hasOwnProperty("format")&&f.format(a,d,c,!1)}}));d.debug&&(l=d.widgets.length,r("Completed "+(!0===b?"initializing ":"applying ")+l+" widget"+(1!==l?"s":""),k))};f.refreshWidgets=function(a,b,d){a=g(a)[0];var h,e=a.config,k=e.widgets,l=f.widgets,r=l.length;for(h=0;h<r;h++)l[h]&&l[h].id&&(b||0>g.inArray(l[h].id,k))&&(e.debug&& c("Refeshing widgets: Removing "+l[h].id),l[h].hasOwnProperty("remove")&&e.widgetInit[l[h].id]&&(l[h].remove(a,e,e.widgetOptions),e.widgetInit[l[h].id]=!1));!0!==d&&f.applyWidget(a,b)};f.getData=function(a,b,d){var c="";a=g(a);var e,f;if(!a.length)return"";e=g.metadata?a.metadata():!1;f=" "+(a.attr("class")||"");"undefined"!==typeof a.data(d)||"undefined"!==typeof a.data(d.toLowerCase())?c+=a.data(d)||a.data(d.toLowerCase()):e&&"undefined"!==typeof e[d]?c+=e[d]:b&&"undefined"!==typeof b[d]?c+=b[d]: " "!==f&&f.match(" "+d+"-")&&(c=f.match(RegExp("\\s"+d+"-([\\w-]+)"))[1]||"");return g.trim(c)};f.formatFloat=function(a,b){if("string"!==typeof a||""===a)return a;var c;a=(b&&b.config?!1!==b.config.usNumberFormat:"undefined"!==typeof b?b:1)?a.replace(/,/g,""):a.replace(/[\s|\.]/g,"").replace(/,/g,".");/^\s*\([.\d]+\)/.test(a)&&(a=a.replace(/^\s*\(([.\d]+)\)/,"-$1"));c=parseFloat(a);return isNaN(c)?g.trim(a):c};f.isDigit=function(a){return isNaN(a)?/^[\-+(]?\d+[)]?$/.test(a.toString().replace(/[,.'"\s]/g, "")):!0}}});var p=g.tablesorter;g.fn.extend({tablesorter:p.construct});p.addParser({id:"text",is:function(){return!0},format:function(c,r){var k=r.config;c&&(c=g.trim(k.ignoreCase?c.toLocaleLowerCase():c),c=k.sortLocaleCompare?p.replaceAccents(c):c);return c},type:"text"});p.addParser({id:"digit",is:function(c){return p.isDigit(c)},format:function(c,r){var k=p.formatFloat((c||"").replace(/[^\w,. \-()]/g,""),r);return c&&"number"===typeof k?k:c?g.trim(c&&r.config.ignoreCase?c.toLocaleLowerCase():c): c},type:"numeric"});p.addParser({id:"currency",is:function(c){return/^\(?\d+[\u00a3$\u20ac\u00a4\u00a5\u00a2?.]|[\u00a3$\u20ac\u00a4\u00a5\u00a2?.]\d+\)?$/.test((c||"").replace(/[,. ]/g,""))},format:function(c,r){var k=p.formatFloat((c||"").replace(/[^\w,. \-()]/g,""),r);return c&&"number"===typeof k?k:c?g.trim(c&&r.config.ignoreCase?c.toLocaleLowerCase():c):c},type:"numeric"});p.addParser({id:"ipAddress",is:function(c){return/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(c)},format:function(c, g){var k,t=c?c.split("."):"",s="",w=t.length;for(k=0;k<w;k++)s+=("00"+t[k]).slice(-3);return c?p.formatFloat(s,g):c},type:"numeric"});p.addParser({id:"url",is:function(c){return/^(https?|ftp|file):\/\//.test(c)},format:function(c){return c?g.trim(c.replace(/(https?|ftp|file):\/\//,"")):c},type:"text"});p.addParser({id:"isoDate",is:function(c){return/^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}/.test(c)},format:function(c,g){return c?p.formatFloat(""!==c?(new Date(c.replace(/-/g,"/"))).getTime()||"":"",g):c}, type:"numeric"});p.addParser({id:"percent",is:function(c){return/(\d\s*?%|%\s*?\d)/.test(c)&&15>c.length},format:function(c,g){return c?p.formatFloat(c.replace(/%/g,""),g):c},type:"numeric"});p.addParser({id:"usLongDate",is:function(c){return/^[A-Z]{3,10}\.?\s+\d{1,2},?\s+(\d{4})(\s+\d{1,2}:\d{2}(:\d{2})?(\s+[AP]M)?)?$/i.test(c)||/^\d{1,2}\s+[A-Z]{3,10}\s+\d{4}/i.test(c)},format:function(c,g){return c?p.formatFloat((new Date(c.replace(/(\S)([AP]M)$/i,"$1 $2"))).getTime()||"",g):c},type:"numeric"}); p.addParser({id:"shortDate",is:function(c){return/(^\d{1,2}[\/\s]\d{1,2}[\/\s]\d{4})|(^\d{4}[\/\s]\d{1,2}[\/\s]\d{1,2})/.test((c||"").replace(/\s+/g," ").replace(/[\-.,]/g,"/"))},format:function(c,g,k,t){if(c){k=g.config;var s=k.headerList[t];t=s.dateFormat||p.getData(s,k.headers[t],"dateFormat")||k.dateFormat;c=c.replace(/\s+/g," ").replace(/[\-.,]/g,"/");"mmddyyyy"===t?c=c.replace(/(\d{1,2})[\/\s](\d{1,2})[\/\s](\d{4})/,"$3/$1/$2"):"ddmmyyyy"===t?c=c.replace(/(\d{1,2})[\/\s](\d{1,2})[\/\s](\d{4})/, "$3/$2/$1"):"yyyymmdd"===t&&(c=c.replace(/(\d{4})[\/\s](\d{1,2})[\/\s](\d{1,2})/,"$1/$2/$3"))}return c?p.formatFloat((new Date(c)).getTime()||"",g):c},type:"numeric"});p.addParser({id:"time",is:function(c){return/^(([0-2]?\d:[0-5]\d)|([0-1]?\d:[0-5]\d\s?([AP]M)))$/i.test(c)},format:function(c,g){return c?p.formatFloat((new Date("2000/01/01 "+c.replace(/(\S)([AP]M)$/i,"$1 $2"))).getTime()||"",g):c},type:"numeric"});p.addParser({id:"metadata",is:function(){return!1},format:function(c,p,k){c=p.config; c=c.parserMetadataName?c.parserMetadataName:"sortValue";return g(k).metadata()[c]},type:"numeric"});p.addWidget({id:"zebra",priority:90,format:function(c,r,k){var t,s,w,z,D,C,E=RegExp(r.cssChildRow,"i"),B=r.$tbodies;r.debug&&(D=new Date);for(c=0;c<B.length;c++)t=B.eq(c),C=t.children("tr").length,1<C&&(w=0,t=t.children("tr:visible").not(r.selectorRemove),t.each(function(){s=g(this);E.test(this.className)||w++;z=0===w%2;s.removeClass(k.zebra[z?1:0]).addClass(k.zebra[z?0:1])}));r.debug&&p.benchmark("Applying Zebra widget", D)},remove:function(c,p,k){var t;p=p.$tbodies;var s=(k.zebra||["even","odd"]).join(" ");for(k=0;k<p.length;k++)t=g.tablesorter.processTbody(c,p.eq(k),!0),t.children().removeClass(s),g.tablesorter.processTbody(c,t,!1)}})}(jQuery);
+;/*! tableSorter 2.8+ widgets - updated 12/16/2013 (v2.14.5) */
 ;(function(k){
-var e=k.tablesorter=k.tablesorter||{};
-e.themes={bootstrap:{table:"table table-bordered table-striped",caption:"caption",header:"bootstrap-header",footerRow:"",footerCells:"",icons:"",sortNone:"bootstrap-icon-unsorted",sortAsc:"icon-chevron-up glyphicon glyphicon-chevron-up",sortDesc:"icon-chevron-down glyphicon glyphicon-chevron-down",active:"",hover:"",filterRow:"",even:"",odd:""},jui:{table:"ui-widget ui-widget-content ui-corner-all",caption:"ui-widget-content ui-corner-all",header:"ui-widget-header ui-corner-all ui-state-default", footerRow:"",footerCells:"",icons:"ui-icon",sortNone:"ui-icon-carat-2-n-s",sortAsc:"ui-icon-carat-1-n",sortDesc:"ui-icon-carat-1-s",active:"ui-state-active",hover:"ui-state-hover",filterRow:"",even:"ui-widget-content",odd:"ui-state-default"}};
-e.storage=function(b,a,c,f){b=k(b)[0];var d,g,e=!1;d={};g=b.config;var p=k(b);b=f&&f.id||p.attr(f&&f.group||"data-table-group")||b.id||k(".tablesorter").index(p);f=f&&f.url||p.attr(f&&f.page||"data-table-page")||g&&g.fixedUrl||window.location.pathname;if("localStorage"in window)try{window.localStorage.setItem("_tmptest","temp"),e=!0,window.localStorage.removeItem("_tmptest")}catch(q){}k.parseJSON&&(e?d=k.parseJSON(localStorage[a]||"{}"):(g=document.cookie.split(/[;\s|=]/),d=k.inArray(a,g)+1,d=0!==d?k.parseJSON(g[d]||"{}"):{}));if((c||""===c)&&window.JSON&&JSON.hasOwnProperty("stringify"))d[f]||(d[f]={}),d[f][b]=c,e?localStorage[a]=JSON.stringify(d):(c=new Date,c.setTime(c.getTime()+31536E6),document.cookie=a+"="+JSON.stringify(d).replace(/\"/g,'"')+"; expires="+c.toGMTString()+ "; path=/");else return d&&d[f]?d[f][b]:{}};
-e.addHeaderResizeEvent=function(b,a,c){var f;c=k.extend({},{timer:250},c);var d=b.config,e=d.widgetOptions,h=function(a){e.resize_flag=!0;f=[];d.$headers.each(function(){var a=k(this),b=a.data("savedSizes")||[0,0],c=this.offsetWidth,d=this.offsetHeight;if(c!==b[0]||d!==b[1])a.data("savedSizes",[c,d]),f.push(this)});f.length&&!1!==a&&d.$table.trigger("resize",[f]);e.resize_flag=!1};h(!1);clearInterval(e.resize_timer);if(a)return e.resize_flag=!1;e.resize_timer= setInterval(function(){e.resize_flag||h()},c.timer)};
-e.addWidget({id:"uitheme",priority:10,format:function(b,a,c){var f,d,g,h,p=e.themes,q=a.$table,n=a.$headers,l=a.theme||"jui",m=p[l]||p.jui,u=m.sortNone+" "+m.sortDesc+" "+m.sortAsc;a.debug&&(f=new Date);q.hasClass("tablesorter-"+l)&&a.theme!==l&&b.hasInitialized||(""!==m.even&&(c.zebra[0]+=" "+m.even),""!==m.odd&&(c.zebra[1]+=" "+m.odd),q.find("caption").addClass(m.caption),b=q.removeClass(""===a.theme?"":"tablesorter-"+a.theme).addClass("tablesorter-"+ l+" "+m.table).find("tfoot"),b.length&&b.find("tr").addClass(m.footerRow).children("th, td").addClass(m.footerCells),n.addClass(m.header).not(".sorter-false").bind("mouseenter.tsuitheme mouseleave.tsuitheme",function(a){k(this)["mouseenter"===a.type?"addClass":"removeClass"](m.hover)}),n.find(".tablesorter-wrapper").length||n.wrapInner('<div class="tablesorter-wrapper" style="position:relative;height:100%;width:100%"></div>'),a.cssIcon&&n.find("."+e.css.icon).addClass(m.icons),q.hasClass("hasFilters")&& n.find(".tablesorter-filter-row").addClass(m.filterRow));k.each(n,function(){g=k(this);h=e.css.icon?g.find("."+e.css.icon):g;this.sortDisabled?(g.removeClass(u),h.removeClass(u+" tablesorter-icon "+m.icons)):(d=g.hasClass(e.css.sortAsc)?m.sortAsc:g.hasClass(e.css.sortDesc)?m.sortDesc:g.hasClass(e.css.header)?m.sortNone:"",g[d===m.sortNone?"removeClass":"addClass"](m.active),h.removeClass(u).addClass(d))});a.debug&&e.benchmark("Applying "+l+" theme",f)},remove:function(b,a,c){b=a.$table;a=a.theme|| "jui";c=e.themes[a]||e.themes.jui;var f=b.children("thead").children(),d=c.sortNone+" "+c.sortDesc+" "+c.sortAsc;b.removeClass("tablesorter-"+a+" "+c.table).find(e.css.header).removeClass(c.header);f.unbind("mouseenter.tsuitheme mouseleave.tsuitheme").removeClass(c.hover+" "+d+" "+c.active).find(".tablesorter-filter-row").removeClass(c.filterRow);f.find(".tablesorter-icon").removeClass(c.icons)}});
-e.addWidget({id:"columns",priority:30,options:{columns:["primary","secondary","tertiary"]},format:function(b, a,c){var f,d,g,h,p,q,n,l,m=a.$table,u=a.$tbodies,r=a.sortList,w=r.length,v=c&&c.columns||["primary","secondary","tertiary"],y=v.length-1;n=v.join(" ");a.debug&&(f=new Date);for(g=0;g<u.length;g++)d=e.processTbody(b,u.eq(g),!0),h=d.children("tr"),h.each(function(){p=k(this);if("none"!==this.style.display&&(q=p.children().removeClass(n),r&&r[0]&&(q.eq(r[0][0]).addClass(v[0]),1<w)))for(l=1;l<w;l++)q.eq(r[l][0]).addClass(v[l]||v[y])}),e.processTbody(b,d,!1);b=!1!==c.columns_thead?["thead tr"]:[];!1!== c.columns_tfoot&&b.push("tfoot tr");if(b.length&&(h=m.find(b.join(",")).children().removeClass(n),w))for(l=0;l<w;l++)h.filter('[data-column="'+r[l][0]+'"]').addClass(v[l]||v[y]);a.debug&&e.benchmark("Applying Columns widget",f)},remove:function(b,a,c){var f=a.$tbodies,d=(c.columns||["primary","secondary","tertiary"]).join(" ");a.$headers.removeClass(d);a.$table.children("tfoot").children("tr").children("th, td").removeClass(d);for(a=0;a<f.length;a++)c=e.processTbody(b,f.eq(a),!0),c.children("tr").each(function(){k(this).children().removeClass(d)}), e.processTbody(b,c,!1)}});
-e.addWidget({id:"filter",priority:50,options:{filter_anyMatch:!1,filter_childRows:!1,filter_columnFilters:!0,filter_cssFilter:"",filter_filteredRow:"filtered",filter_formatter:null,filter_functions:null,filter_hideFilters:!1,filter_ignoreCase:!0,filter_liveSearch:!0,filter_onlyAvail:"filter-onlyAvail",filter_reset:null,filter_saveFilters:!1,filter_searchDelay:300,filter_startsWith:!1,filter_useParsedData:!1,filter_serversideFiltering:!1,filter_defaultAttrib:"data-value"}, format:function(b,a,c){a.$table.hasClass("hasFilters")||(a.parsers||!a.parsers&&c.filter_serversideFiltering)&&e.filter.init(b,a,c)},remove:function(b,a,c){var f,d=a.$tbodies;a.$table.removeClass("hasFilters").unbind("addRows updateCell update updateComplete appendCache search filterStart filterEnd ".split(" ").join(".tsfilter ")).find(".tablesorter-filter-row").remove();for(a=0;a<d.length;a++)f=e.processTbody(b,d.eq(a),!0),f.children().removeClass(c.filter_filteredRow).show(),e.processTbody(b,f, !1);c.filter_reset&&k(document).undelegate(c.filter_reset,"click.tsfilter")}});
-e.filter={regex:{regex:/^\/((?:\\\/|[^\/])+)\/([mig]{0,3})?$/,child:/tablesorter-childRow/,filtered:/filtered/,type:/undefined|number/,exact:/(^[\"|\'|=]+)|([\"|\'|=]+$)/g,nondigit:/[^\w,. \-()]/g,operators:/[<>=]/g},types:{regex:function(b,a,c,f){if(e.filter.regex.regex.test(a)){var d;b=e.filter.regex.regex.exec(a);try{d=RegExp(b[1],b[2]).test(f)}catch(g){d=!1}return d}return null},exact:function(b,a,c,f){return e.filter.regex.exact.test(a)? a.replace(e.filter.regex.exact,"")==f:null},notMatch:function(b,a,c,f,d,e,h,p){return/^\!/.test(a)?(a=a.replace("!",""),b=f.search(k.trim(a)),""===a?!0:!(p.filter_startsWith?0===b:0<=b)):null},operators:function(b,a,c,f,d,g,h,k,q){if(/^[<>]=?/.test(a)){var n,l;n=h.config;b=e.formatFloat(a.replace(e.filter.regex.operators,""),h);c=n.parsers[g];k=b;if(q[g]||"numeric"===c.type)n=c.format(""+a.replace(e.filter.regex.operators,""),h,n.$headers.eq(g),g),b="number"!==typeof b||""===n||isNaN(n)?b:n;n=!q[g]&& "numeric"!==c.type||isNaN(b)||!d?isNaN(f)?e.formatFloat(f.replace(e.filter.regex.nondigit,""),h):e.formatFloat(f,h):d;/>/.test(a)&&(l=/>=/.test(a)?n>=b:n>b);/</.test(a)&&(l=/<=/.test(a)?n<=b:n<b);l||""!==k||(l=!0);return l}return null},and:function(b,a,c,f){if(/\s+(AND|&&)\s+/g.test(b)){b=a.split(/(?:\s+(?:and|&&)\s+)/g);a=0<=f.search(k.trim(b[0]));for(c=b.length-1;a&&c;)a=a&&0<=f.search(k.trim(b[c])),c--;return a}return null},range:function(b,a,c,f,d,g,h,k,q){if(/\s+(-|to)\s+/.test(a)){b=h.config; var n=a.split(/(?: - | to )/);c=e.formatFloat(n[0].replace(e.filter.regex.nondigit,""),h);k=e.formatFloat(n[1].replace(e.filter.regex.nondigit,""),h);if(q[g]||"numeric"===b.parsers[g].type)a=b.parsers[g].format(""+n[0],h,b.$headers.eq(g),g),c=""===a||isNaN(a)?c:a,a=b.parsers[g].format(""+n[1],h,b.$headers.eq(g),g),k=""===a||isNaN(a)?k:a;a=!q[g]&&"numeric"!==b.parsers[g].type||isNaN(c)||isNaN(k)?isNaN(f)?e.formatFloat(f.replace(e.filter.regex.nondigit,""),h):e.formatFloat(f,h):d;c>k&&(f=c,c=k,k=f); return a>=c&&a<=k||""===c||""===k}return null},wild:function(b,a,c,f,d,e,h){return/[\?|\*]/.test(a)||/\s+OR\s+/.test(b)?(b=h.config,a=a.replace(/\s+OR\s+/gi,"|"),!b.$headers.filter('[data-column="'+e+'"]:last').hasClass("filter-match")&&/\|/.test(a)&&(a="^("+a+")$"),RegExp(a.replace(/\?/g,"\\S{1}").replace(/\*/g,"\\S*")).test(f)):null},fuzzy:function(b,a,c,f){if(/^~/.test(a)){b=0;c=f.length;var d=a.slice(1);for(a=0;a<c;a++)f[a]===d[b]&&(b+=1);return b===d.length?!0:!1}return null}},init:function(b, a,c){var f,d,g,h,p,q;a.debug&&(q=new Date);a.$table.addClass("hasFilters");e.filter.regex.child=RegExp(a.cssChildRow);e.filter.regex.filtered=RegExp(c.filter_filteredRow);!1!==c.filter_columnFilters&&a.$headers.filter(".filter-false").length!==a.$headers.length&&e.filter.buildRow(b,a,c);a.$table.bind("addRows updateCell update updateRows updateComplete appendCache filterReset filterEnd search ".split(" ").join(".tsfilter "),function(c,d){/(search|filterReset|filterEnd)/.test(c.type)||(c.stopPropagation(), e.filter.buildDefault(b,!0));"filterReset"===c.type&&e.filter.searching(b,[]);"filterEnd"===c.type?e.filter.buildDefault(b,!0):(d="search"===c.type?d:"updateComplete"===c.type?a.$table.data("lastSearch"):"",e.filter.searching(b,d));return!1});e.filter.bindSearch(b,a.$table.find("input.tablesorter-filter"));c.filter_reset&&k(document).delegate(c.filter_reset,"click.tsfilter",function(){a.$table.trigger("filterReset")});if(c.filter_functions)for(h in c.filter_functions)if(c.filter_functions.hasOwnProperty(h)&& "string"===typeof h)if(g=a.$headers.filter('[data-column="'+h+'"]:last'),f="",!0===c.filter_functions[h]&&!g.hasClass("filter-false"))e.filter.buildSelect(b,h);else if("string"===typeof h&&!g.hasClass("filter-false")){for(d in c.filter_functions[h])"string"===typeof d&&(f+=""===f?'<option value="">'+(g.data("placeholder")||g.attr("data-placeholder")||"")+"</option>":"",f+='<option value="'+d+'">'+d+"</option>");a.$table.find("thead").find('select.tablesorter-filter[data-column="'+h+'"]').append(f)}e.filter.buildDefault(b, !0);a.$table.find("select.tablesorter-filter").bind("change search",function(a,c){e.filter.checkFilters(b,c)});c.filter_hideFilters&&e.filter.hideFilters(b,a);a.showProcessing&&a.$table.bind("filterStart.tsfilter filterEnd.tsfilter",function(c,d){g=d?a.$table.find("."+e.css.header).filter("[data-column]").filter(function(){return""!==d[k(this).data("column")]}):"";e.isProcessing(b,"filterStart"===c.type,d?g:"")});a.debug&&e.benchmark("Applying Filter widget",q);a.$table.bind("tablesorter-initialized pagerInitialized", function(){p=e.filter.setDefaults(b,a,c)||[];p.length&&e.setFilters(b,p,!0);e.filter.checkFilters(b,p)});c.filter_Initialized=!0;a.$table.trigger("filterInit")},setDefaults:function(b,a,c){var f,d=[],g=a.columns;c.filter_saveFilters&&e.storage&&(d=e.storage(b,"tablesorter-filters")||[],(f=k.isArray(d))&&""===d.join("")||!f)&&(d=[]);if(!d.length)for(f=0;f<g;f++)d[f]=a.$headers.filter('[data-column="'+f+'"]:last').attr(c.filter_defaultAttrib)||d[f];k(b).data("lastSearch",d);return d},buildRow:function(b, a,c){var f,d,g,h=a.columns;d='<tr class="tablesorter-filter-row">';for(b=0;b<h;b++)d+="<td></td>";a.$filters=k(d+"</tr>").appendTo(a.$table.find("thead").eq(0)).find("td");for(b=0;b<h;b++)f=a.$headers.filter('[data-column="'+b+'"]:last'),d=c.filter_functions&&c.filter_functions[b]&&"function"!==typeof c.filter_functions[b]||f.hasClass("filter-select"),g=e.getData?"false"===e.getData(f[0],a.headers[b],"filter"):a.headers[b]&&a.headers[b].hasOwnProperty("filter")&&!1===a.headers[b].filter||f.hasClass("filter-false"), d?d=k("<select>").appendTo(a.$filters.eq(b)):(c.filter_formatter&&k.isFunction(c.filter_formatter[b])?((d=c.filter_formatter[b](a.$filters.eq(b),b))&&0===d.length&&(d=a.$filters.eq(b).children("input")),d&&(0===d.parent().length||d.parent().length&&d.parent()[0]!==a.$filters[b])&&a.$filters.eq(b).append(d)):d=k('<input type="search">').appendTo(a.$filters.eq(b)),d&&d.attr("placeholder",f.data("placeholder")||f.attr("data-placeholder")||"")),d&&(d.addClass("tablesorter-filter "+c.filter_cssFilter).attr("data-column", b),g&&(d.addClass("disabled")[0].disabled=!0))},bindSearch:function(b,a){b=k(b)[0];var c,f=b.config.widgetOptions;a.unbind("keyup search filterReset").bind("keyup search",function(d,g){var h=k(this);if(27===d.which)this.value="";else if("number"===typeof f.filter_liveSearch&&this.value.length<f.filter_liveSearch&&""!==this.value||"keyup"===d.type&&(32>d.which&&8!==d.which&&!0===f.filter_liveSearch&&13!==d.which||37<=d.which&&40>=d.which||13!==d.which&&!1===f.filter_liveSearch))return;h.hasClass("tablesorter-filter")&& !h.hasClass("tablesorter-external-filter")?c=g:(c=[],a.each(function(){c[k(this).data("column")||0]=k(this).val()}));e.filter.searching(b,g,c)}).bind("filterReset",function(){a.val("")})},checkFilters:function(b,a){var c=b.config,f=c.widgetOptions,d=k.isArray(a),g=d?a:e.getFilters(b),h=(g||[]).join("");d&&e.setFilters(b,g);f.filter_hideFilters&&c.$table.find(".tablesorter-filter-row").trigger(""===h?"mouseleave":"mouseenter");if(c.lastCombinedFilter!==h||!1===a)if(c.$table.trigger("filterStart",[g]), c.showProcessing)setTimeout(function(){e.filter.findRows(b,g,h);return!1},30);else return e.filter.findRows(b,g,h),!1},hideFilters:function(b,a){var c,f,d;a.$table.find(".tablesorter-filter-row").addClass("hideme").bind("mouseenter mouseleave",function(a){c=k(this);clearTimeout(d);d=setTimeout(function(){/enter|over/.test(a.type)?c.removeClass("hideme"):k(document.activeElement).closest("tr")[0]!==c[0]&&""===e.getFilters(b).join("")&&c.addClass("hideme")},200)}).find("input, select").bind("focus blur", function(a){f=k(this).closest("tr");clearTimeout(d);d=setTimeout(function(){if(""===e.getFilters(b).join(""))f["focus"===a.type?"removeClass":"addClass"]("hideme")},200)})},findRows:function(b,a,c){if(b.config.lastCombinedFilter!==c){var f,d,g,h,p,q,n,l,m,u,r,w,v,y,A,z,B,C,x,E,t=b.config,s=t.widgetOptions,G=t.columns,D=t.$tbodies,H=["range","notMatch","operators"],F=t.$headers.map(function(a){return e.getData?"parsed"===e.getData(t.$headers.filter('[data-column="'+a+'"]:last'),t.headers[a],"filter"): k(this).hasClass("filter-parsed")}).get();t.debug&&(E=new Date);for(p=0;p<D.length;p++)if(!D.eq(p).hasClass(e.css.info)){q=e.processTbody(b,D.eq(p),!0);g=q.children("tr").not("."+t.cssChildRow).not(t.selectorRemove);d=g.length;if(""===c||s.filter_serversideFiltering)q.children().show().removeClass(s.filter_filteredRow);else for(B=!0,y=t.lastSearch||t.$table.data("lastSearch")||[],k.each(a,function(a,b){B=0===(b||"").indexOf(y[a]||"")&&B&&!/(\s+or\s+|\|)/g.test(b||"")}),B&&0===g.filter(":visible").length&& (B=!1),h=0;h<d;h++)if(m=g[h].className,!(e.filter.regex.child.test(m)||B&&e.filter.regex.filtered.test(m))){x=!0;m=g.eq(h).nextUntil("tr:not(."+t.cssChildRow+")");u=m.length&&s.filter_childRows?m.text():"";u=s.filter_ignoreCase?u.toLocaleLowerCase():u;n=g.eq(h).children("td");for(l=0;l<G;l++)if(a[l]||s.filter_anyMatch){f=t.cache[p].normalized[h][l];s.filter_useParsedData||F[l]?r=f:(r=k.trim(n.eq(l).text()),r=t.sortLocaleCompare?e.replaceAccents(r):r);w=!e.filter.regex.type.test(typeof r)&&s.filter_ignoreCase? r.toLocaleLowerCase():r;z=x;if("undefined"===typeof a[l]||null===a[l])a[l]=s.filter_anyMatch?c:a[l];a[l]=t.sortLocaleCompare?e.replaceAccents(a[l]):a[l];v=s.filter_ignoreCase?a[l].toLocaleLowerCase():a[l];s.filter_functions&&s.filter_functions[l]?!0===s.filter_functions[l]?z=t.$headers.filter('[data-column="'+l+'"]:last').hasClass("filter-match")?0<=w.search(v):a[l]===r:"function"===typeof s.filter_functions[l]?z=s.filter_functions[l](r,f,a[l],l,g.eq(h)):"function"===typeof s.filter_functions[l][a[l]]&& (z=s.filter_functions[l][a[l]](r,f,a[l],l,g.eq(h))):(C=null,k.each(e.filter.types,function(c,d){if(!s.filter_anyMatch||s.filter_anyMatch&&0>k.inArray(c,H))if(A=d(a[l],v,r,w,f,l,b,s,F),null!==A)return C=A,!1}),null!==C?z=C:(r=(w+u).indexOf(v),z=!s.filter_startsWith&&0<=r||s.filter_startsWith&&0===r));if(s.filter_anyMatch){if(x=z)break}else x=z?x:!1}g[h].style.display=x?"":"none";g.eq(h)[x?"removeClass":"addClass"](s.filter_filteredRow);if(m.length){if(t.pager&&t.pager.countChildRows||s.pager_countChildRows)m[x? "removeClass":"addClass"](s.filter_filteredRow);m.toggle(x)}}e.processTbody(b,q,!1)}t.lastCombinedFilter=c;t.lastSearch=a;t.$table.data("lastSearch",a);s.filter_saveFilters&&e.storage&&e.storage(b,"tablesorter-filters",a);t.debug&&e.benchmark("Completed filter widget search",E);t.$table.trigger("applyWidgets");t.$table.trigger("filterEnd")}},buildSelect:function(b,a,c,f){a=parseInt(a,10);var d,g,h;b=b.config;var p=b.widgetOptions,q=b.$tbodies,n=[],l=b.$headers.filter('[data-column="'+a+'"]:last'), m='<option value="">'+(l.data("placeholder")||l.attr("data-placeholder")||"")+"</option>";for(g=0;g<q.length;g++)for(h=b.cache[g].row.length,d=0;d<h;d++)f&&b.cache[g].row[d][0].className.match(p.filter_filteredRow)||(p.filter_useParsedData?n.push(""+b.cache[g].normalized[d][a]):(l=b.cache[g].row[d][0].cells[a])&&n.push(k.trim(l.textContent||l.innerText||k(l).text())));n=k.grep(n,function(a,b){return k.inArray(a,n)===b});n=e.sortNatural?n.sort(function(a,b){return e.sortNatural(a,b)}):n.sort(!0);d= b.$table.find("thead").find('select.tablesorter-filter[data-column="'+a+'"]').val();for(f=0;f<n.length;f++)g=n[f].replace(/\"/g,"&quot;"),m+=""!==n[f]?'<option value="'+g+'"'+(d===g?' selected="selected"':"")+">"+n[f]+"</option>":"";b.$table.find("thead").find('select.tablesorter-filter[data-column="'+a+'"]')[c?"html":"append"](m)},buildDefault:function(b,a){var c,f,d=b.config,g=d.widgetOptions,h=d.columns;for(c=0;c<h;c++)f=d.$headers.filter('[data-column="'+c+'"]:last'),(f.hasClass("filter-select")|| g.filter_functions&&!0===g.filter_functions[c])&&!f.hasClass("filter-false")&&(g.filter_functions||(g.filter_functions={}),g.filter_functions[c]=!0,e.filter.buildSelect(b,c,a,f.hasClass(g.filter_onlyAvail)))},searching:function(b,a,c){if("undefined"===typeof a||!0===a||c){var f=b.config.widgetOptions;clearTimeout(f.searchTimer);f.searchTimer=setTimeout(function(){e.filter.checkFilters(b,c||a)},f.filter_liveSearch?f.filter_searchDelay:10)}else e.filter.checkFilters(b,a)}};
-e.getFilters=function(b){var a= b?k(b)[0].config:{};return a&&a.widgetOptions&&!a.widgetOptions.filter_columnFilters?k(b).data("lastSearch"):a&&a.$filters?a.$filters.map(function(a,b){return k(b).find(".tablesorter-filter").val()||""}).get()||[]:!1};
-e.setFilters=function(b,a,c){b=k(b);var e=b.length?b[0].config:{},e=e&&e.$filters?e.$filters.each(function(b,c){k(c).find(".tablesorter-filter").val(a[b]||"")}).trigger("change.tsfilter")||!1:!1;c&&b.trigger("search",[a,!1]);return!!e};
-e.addWidget({id:"stickyHeaders",priority:60,options:{stickyHeaders:"", stickyHeaders_offset:0,stickyHeaders_cloneId:"-sticky",stickyHeaders_addResizeEvent:!0,stickyHeaders_includeCaption:!0,stickyHeaders_zIndex:2},format:function(b,a,c){if(!a.$table.hasClass("hasStickyHeaders")){var f,d=a.$table,g=k(window),h=d.children("thead:first"),p=h.children("tr").not(".sticky-false").children(),q=d.find("tfoot"),n=isNaN(c.stickyHeaders_offset)?k(c.stickyHeaders_offset):"",l=n.length?n.height()||0:parseInt(c.stickyHeaders_offset,10)||0,m=c.$sticky=d.clone().addClass("containsStickyHeaders").css({position:"fixed", margin:0,top:l,visibility:"hidden",zIndex:c.stickyHeaders_zIndex?c.stickyHeaders_zIndex:2}),u=m.children("thead:first").addClass("tablesorter-stickyHeader "+c.stickyHeaders),r,w="",v=0,y="collapse"!==d.css("border-collapse")&&!/(webkit|msie)/i.test(navigator.userAgent),A=function(){l=n.length?n.height()||0:parseInt(c.stickyHeaders_offset,10)||0;v=0;y&&(v=2*parseInt(p.eq(0).css("border-left-width"),10));m.css({left:h.offset().left-g.scrollLeft()-v,width:d.width()});r.filter(":visible").each(function(b){b= p.filter(":visible").eq(b);var c=y&&k(this).attr("data-column")===""+parseInt(a.columns/2,10)?1:0;k(this).css({width:b.width()-v,height:b.height()}).find(".tablesorter-header-inner").width(b.find(".tablesorter-header-inner").width()-c)})};m.attr("id")&&(m[0].id+=c.stickyHeaders_cloneId);m.find("thead:gt(0), tr.sticky-false, tbody, tfoot").remove();c.stickyHeaders_includeCaption?m.find("caption").css("margin-left","-1px"):m.find("caption").remove();r=u.children().children();m.css({height:0,width:0, padding:0,margin:0,border:0});r.find(".tablesorter-resizer").remove();d.addClass("hasStickyHeaders").bind("sortEnd.tsSticky",function(){p.filter(":visible").each(function(b){f=r.filter(":visible").eq(b).attr("class",k(this).attr("class")).removeClass(e.css.processing+" "+a.cssProcessing);a.cssIcon&&f.find("."+e.css.icon).attr("class",k(this).find("."+e.css.icon).attr("class"))})}).bind("pagerComplete.tsSticky",function(){A()});p.find(a.selectorSort).add(a.$headers.filter(a.selectorSort)).each(function(b){var c= k(this);b=u.children("tr.tablesorter-headerRow").children().eq(b).bind("mouseup",function(a){c.trigger(a,!0)});a.cancelSelection&&b.attr("unselectable","on").bind("selectstart",!1).css({"user-select":"none",MozUserSelect:"none"})});d.after(m);g.bind("scroll.tsSticky resize.tsSticky",function(a){if(d.is(":visible")){var b=d.offset(),e=c.stickyHeaders_includeCaption?0:d.find("caption").outerHeight(!0),e=g.scrollTop()+l-e,f=d.height()-(m.height()+(q.height()||0)),b=e>b.top&&e<b.top+f?"visible":"hidden"; m.removeClass("tablesorter-sticky-visible tablesorter-sticky-hidden").addClass("tablesorter-sticky-"+b).css({left:h.offset().left-g.scrollLeft()-v,visibility:b});if(b!==w||"resize"===a.type)A(),w=b}});c.stickyHeaders_addResizeEvent&&e.addHeaderResizeEvent(b);d.hasClass("hasFilters")&&(d.bind("filterEnd",function(){k(document.activeElement).closest("thead")[0]!==u[0]&&u.find(".tablesorter-filter-row").children().each(function(b){k(this).find(".tablesorter-filter").val(a.$filters.find(".tablesorter-filter").eq(b).val())})}), e.filter.bindSearch(d,r.find(".tablesorter-filter").addClass("tablesorter-external-filter")));d.trigger("stickyHeadersInit")}},remove:function(b,a,c){a.$table.removeClass("hasStickyHeaders").unbind("sortEnd.tsSticky pagerComplete.tsSticky").find(".tablesorter-stickyHeader").remove();c.$sticky&&c.$sticky.length&&c.$sticky.remove();k(".hasStickyHeaders").length||k(window).unbind("scroll.tsSticky resize.tsSticky");e.addHeaderResizeEvent(b,!1)}});
-e.addWidget({id:"resizable",priority:40,options:{resizable:!0, resizable_addLastColumn:!1},format:function(b,a,c){if(!a.$table.hasClass("hasResizable")){a.$table.addClass("hasResizable");var f,d,g,h,p={},q=a.$table,n=0,l=null,m=null,u=20>Math.abs(q.parent().width()-q.width()),r=function(){e.storage&&l&&(p[l.index()]=l.width(),p[m.index()]=m.width(),l.width(p[l.index()]),m.width(p[m.index()]),!1!==c.resizable&&e.storage(b,"tablesorter-resizable",p));n=0;l=m=null;k(window).trigger("resize")};if(p=e.storage&&!1!==c.resizable?e.storage(b,"tablesorter-resizable"): {})for(h in p)!isNaN(h)&&h<a.$headers.length&&a.$headers.eq(h).width(p[h]);f=q.children("thead:first").children("tr");f.children().each(function(){var b;b=k(this);h=b.attr("data-column");b="false"===e.getData(b,a.headers[h],"resizable");f.children().filter('[data-column="'+h+'"]')[b?"addClass":"removeClass"]("resizable-false")});f.each(function(){g=k(this).children().not(".resizable-false");k(this).find(".tablesorter-wrapper").length||g.wrapInner('<div class="tablesorter-wrapper" style="position:relative;height:100%;width:100%"></div>'); c.resizable_addLastColumn||(g=g.slice(0,-1));d=d?d.add(g):g});d.each(function(){var a=k(this),b=parseInt(a.css("padding-right"),10)+10;a.find(".tablesorter-wrapper").append('<div class="tablesorter-resizer" style="cursor:w-resize;position:absolute;z-index:1;right:-'+b+'px;top:0;height:100%;width:20px;"></div>')}).bind("mousemove.tsresize",function(a){if(0!==n&&l){var b=a.pageX-n,c=l.width();l.width(c+b);l.width()!==c&&u&&m.width(m.width()-b);n=a.pageX}}).bind("mouseup.tsresize",function(){r()}).find(".tablesorter-resizer,.tablesorter-resizer-grip").bind("mousedown", function(b){l=k(b.target).closest("th");var c=a.$headers.filter('[data-column="'+l.attr("data-column")+'"]');1<c.length&&(l=l.add(c));m=b.shiftKey?l.parent().find("th").not(".resizable-false").filter(":last"):l.nextAll(":not(.resizable-false)").eq(0);n=b.pageX});q.find("thead:first").bind("mouseup.tsresize mouseleave.tsresize",function(){r()}).bind("contextmenu.tsresize",function(){e.resizableReset(b);var a=k.isEmptyObject?k.isEmptyObject(p):!0;p={};return a})}},remove:function(b,a){a.$table.removeClass("hasResizable").children("thead").unbind("mouseup.tsresize mouseleave.tsresize contextmenu.tsresize").children("tr").children().unbind("mousemove.tsresize mouseup.tsresize").find(".tablesorter-resizer,.tablesorter-resizer-grip").remove(); e.resizableReset(b)}});
-e.resizableReset=function(b){b.config.$headers.not(".resizable-false").css("width","");e.storage&&e.storage(b,"tablesorter-resizable",{})};
-e.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(b,a,c,e){a.format(b,c,e,!0)},format:function(b,a,c,f){var d,g=a.$table;c=!1!==c.saveSort;var h={sortList:a.sortList};a.debug&&(d=new Date);g.hasClass("hasSaveSort")?c&&b.hasInitialized&&e.storage&&(e.storage(b,"tablesorter-savesort",h),a.debug&&e.benchmark("saveSort widget: Saving last sort: "+ a.sortList,d)):(g.addClass("hasSaveSort"),h="",e.storage&&(h=(c=e.storage(b,"tablesorter-savesort"))&&c.hasOwnProperty("sortList")&&k.isArray(c.sortList)?c.sortList:"",a.debug&&e.benchmark('saveSort: Last sort loaded: "'+h+'"',d),g.bind("saveSortReset",function(a){a.stopPropagation();e.storage(b,"tablesorter-savesort","")})),f&&h&&0<h.length?a.sortList=h:b.hasInitialized&&h&&0<h.length&&g.trigger("sorton",[h]))},remove:function(b){e.storage&&e.storage(b,"tablesorter-savesort","")}})
+var f=k.tablesorter=k.tablesorter||{};
+f.themes={bootstrap:{table:"table table-bordered table-striped",caption:"caption",header:"bootstrap-header",footerRow:"",footerCells:"",icons:"",sortNone:"bootstrap-icon-unsorted",sortAsc:"icon-chevron-up glyphicon glyphicon-chevron-up",sortDesc:"icon-chevron-down glyphicon glyphicon-chevron-down",active:"",hover:"",filterRow:"",even:"",odd:""},jui:{table:"ui-widget ui-widget-content ui-corner-all",caption:"ui-widget-content ui-corner-all",header:"ui-widget-header ui-corner-all ui-state-default", footerRow:"",footerCells:"",icons:"ui-icon",sortNone:"ui-icon-carat-2-n-s",sortAsc:"ui-icon-carat-1-n",sortDesc:"ui-icon-carat-1-s",active:"ui-state-active",hover:"ui-state-hover",filterRow:"",even:"ui-widget-content",odd:"ui-state-default"}};
+f.storage=function(b,a,c,e){b=k(b)[0];var d,g,f=!1;d={};g=b.config;var p=k(b);b=e&&e.id||p.attr(e&&e.group||"data-table-group")||b.id||k(".tablesorter").index(p);e=e&&e.url||p.attr(e&&e.page||"data-table-page")||g&&g.fixedUrl||window.location.pathname;if("localStorage"in window)try{window.localStorage.setItem("_tmptest","temp"),f=!0,window.localStorage.removeItem("_tmptest")}catch(q){}k.parseJSON&&(f?d=k.parseJSON(localStorage[a]||"{}"):(g=document.cookie.split(/[;\s|=]/),d=k.inArray(a,g)+1,d=0!==d?k.parseJSON(g[d]||"{}"):{}));if((c||""===c)&&window.JSON&&JSON.hasOwnProperty("stringify"))d[e]||(d[e]={}),d[e][b]=c,f?localStorage[a]=JSON.stringify(d):(c=new Date,c.setTime(c.getTime()+31536E6),document.cookie=a+"="+JSON.stringify(d).replace(/\"/g,'"')+"; expires="+c.toGMTString()+ "; path=/");else return d&&d[e]?d[e][b]:{}};
+f.addHeaderResizeEvent=function(b,a,c){var e;c=k.extend({},{timer:250},c);var d=b.config,g=d.widgetOptions,f=function(a){g.resize_flag=!0;e=[];d.$headers.each(function(){var a=k(this),b=a.data("savedSizes")||[0,0],c=this.offsetWidth,d=this.offsetHeight;if(c!==b[0]||d!==b[1])a.data("savedSizes",[c,d]),e.push(this)});e.length&&!1!==a&&d.$table.trigger("resize",[e]);g.resize_flag=!1};f(!1);clearInterval(g.resize_timer);if(a)return g.resize_flag=!1;g.resize_timer= setInterval(function(){g.resize_flag||f()},c.timer)};
+f.addWidget({id:"uitheme",priority:10,format:function(b,a,c){var e,d,g,h,p=f.themes,q=a.$table,m=a.$headers,l=a.theme||"jui",n=p[l]||p.jui,s=n.sortNone+" "+n.sortDesc+" "+n.sortAsc;a.debug&&(e=new Date);q.hasClass("tablesorter-"+l)&&a.theme!==l&&b.hasInitialized||(""!==n.even&&(c.zebra[0]+=" "+n.even),""!==n.odd&&(c.zebra[1]+=" "+n.odd),q.find("caption").addClass(n.caption),b=q.removeClass(""===a.theme?"":"tablesorter-"+a.theme).addClass("tablesorter-"+ l+" "+n.table).find("tfoot"),b.length&&b.find("tr").addClass(n.footerRow).children("th, td").addClass(n.footerCells),m.addClass(n.header).not(".sorter-false").bind("mouseenter.tsuitheme mouseleave.tsuitheme",function(a){k(this)["mouseenter"===a.type?"addClass":"removeClass"](n.hover)}),m.find(".tablesorter-wrapper").length||m.wrapInner('<div class="tablesorter-wrapper" style="position:relative;height:100%;width:100%"></div>'),a.cssIcon&&m.find("."+f.css.icon).addClass(n.icons),q.hasClass("hasFilters")&& m.find(".tablesorter-filter-row").addClass(n.filterRow));k.each(m,function(){g=k(this);h=f.css.icon?g.find("."+f.css.icon):g;this.sortDisabled?(g.removeClass(s),h.removeClass(s+" tablesorter-icon "+n.icons)):(d=g.hasClass(f.css.sortAsc)?n.sortAsc:g.hasClass(f.css.sortDesc)?n.sortDesc:g.hasClass(f.css.header)?n.sortNone:"",g[d===n.sortNone?"removeClass":"addClass"](n.active),h.removeClass(s).addClass(d))});a.debug&&f.benchmark("Applying "+l+" theme",e)},remove:function(b,a,c){b=a.$table;a=a.theme|| "jui";c=f.themes[a]||f.themes.jui;var e=b.children("thead").children(),d=c.sortNone+" "+c.sortDesc+" "+c.sortAsc;b.removeClass("tablesorter-"+a+" "+c.table).find(f.css.header).removeClass(c.header);e.unbind("mouseenter.tsuitheme mouseleave.tsuitheme").removeClass(c.hover+" "+d+" "+c.active).find(".tablesorter-filter-row").removeClass(c.filterRow);e.find(".tablesorter-icon").removeClass(c.icons)}});
+f.addWidget({id:"columns",priority:30,options:{columns:["primary","secondary","tertiary"]},format:function(b, a,c){var e,d,g,h,p,q,m,l,n=a.$table,s=a.$tbodies,r=a.sortList,v=r.length,w=c&&c.columns||["primary","secondary","tertiary"],x=w.length-1;m=w.join(" ");a.debug&&(e=new Date);for(g=0;g<s.length;g++)d=f.processTbody(b,s.eq(g),!0),h=d.children("tr"),h.each(function(){p=k(this);if("none"!==this.style.display&&(q=p.children().removeClass(m),r&&r[0]&&(q.eq(r[0][0]).addClass(w[0]),1<v)))for(l=1;l<v;l++)q.eq(r[l][0]).addClass(w[l]||w[x])}),f.processTbody(b,d,!1);b=!1!==c.columns_thead?["thead tr"]:[];!1!== c.columns_tfoot&&b.push("tfoot tr");if(b.length&&(h=n.find(b.join(",")).children().removeClass(m),v))for(l=0;l<v;l++)h.filter('[data-column="'+r[l][0]+'"]').addClass(w[l]||w[x]);a.debug&&f.benchmark("Applying Columns widget",e)},remove:function(b,a,c){var e=a.$tbodies,d=(c.columns||["primary","secondary","tertiary"]).join(" ");a.$headers.removeClass(d);a.$table.children("tfoot").children("tr").children("th, td").removeClass(d);for(a=0;a<e.length;a++)c=f.processTbody(b,e.eq(a),!0),c.children("tr").each(function(){k(this).children().removeClass(d)}), f.processTbody(b,c,!1)}});
+f.addWidget({id:"filter",priority:50,options:{filter_anyMatch:!1,filter_childRows:!1,filter_columnFilters:!0,filter_cssFilter:"",filter_filteredRow:"filtered",filter_formatter:null,filter_functions:null,filter_hideFilters:!1,filter_ignoreCase:!0,filter_liveSearch:!0,filter_onlyAvail:"filter-onlyAvail",filter_reset:null,filter_saveFilters:!1,filter_searchDelay:300,filter_startsWith:!1,filter_useParsedData:!1,filter_serversideFiltering:!1,filter_defaultAttrib:"data-value"}, format:function(b,a,c){a.$table.hasClass("hasFilters")||(a.parsers||!a.parsers&&c.filter_serversideFiltering)&&f.filter.init(b,a,c)},remove:function(b,a,c){var e,d=a.$tbodies;a.$table.removeClass("hasFilters").unbind("addRows updateCell update updateRows updateComplete appendCache filterReset filterEnd search ".split(" ").join(".tsfilter ")).find(".tablesorter-filter-row").remove();for(a=0;a<d.length;a++)e=f.processTbody(b,d.eq(a),!0),e.children().removeClass(c.filter_filteredRow).show(),f.processTbody(b, e,!1);c.filter_reset&&k(document).undelegate(c.filter_reset,"click.tsfilter")}});f.filter={regex:{regex:/^\/((?:\\\/|[^\/])+)\/([mig]{0,3})?$/,child:/tablesorter-childRow/,filtered:/filtered/,type:/undefined|number/,exact:/(^[\"|\'|=]+)|([\"|\'|=]+$)/g,nondigit:/[^\w,. \-()]/g,operators:/[<>=]/g},types:{regex:function(b,a,c,e){if(f.filter.regex.regex.test(a)){var d;b=f.filter.regex.regex.exec(a);try{d=RegExp(b[1],b[2]).test(e)}catch(g){d=!1}return d}return null},exact:function(b,a,c,e){return f.filter.regex.exact.test(a)? a.replace(f.filter.regex.exact,"")==e:null},notMatch:function(b,a,c,e,d,g,f,p){return/^\!/.test(a)?(a=a.replace("!",""),b=e.search(k.trim(a)),""===a?!0:!(p.filter_startsWith?0===b:0<=b)):null},operators:function(b,a,c,e,d,g,h,k,q){if(/^[<>]=?/.test(a)){var m,l;m=h.config;b=f.formatFloat(a.replace(f.filter.regex.operators,""),h);c=m.parsers[g];k=b;if(q[g]||"numeric"===c.type)m=c.format(""+a.replace(f.filter.regex.operators,""),h,m.$headers.eq(g),g),b="number"!==typeof b||""===m||isNaN(m)?b:m;m=!q[g]&& "numeric"!==c.type||isNaN(b)||!d?isNaN(e)?f.formatFloat(e.replace(f.filter.regex.nondigit,""),h):f.formatFloat(e,h):d;/>/.test(a)&&(l=/>=/.test(a)?m>=b:m>b);/</.test(a)&&(l=/<=/.test(a)?m<=b:m<b);l||""!==k||(l=!0);return l}return null},and:function(b,a,c,e){if(/\s+(AND|&&)\s+/g.test(b)){b=a.split(/(?:\s+(?:and|&&)\s+)/g);a=0<=e.search(k.trim(b[0]));for(c=b.length-1;a&&c;)a=a&&0<=e.search(k.trim(b[c])),c--;return a}return null},range:function(b,a,c,e,d,g,h,k,q){if(/\s+(-|to)\s+/.test(a)){b=h.config; var m=a.split(/(?: - | to )/);c=f.formatFloat(m[0].replace(f.filter.regex.nondigit,""),h);k=f.formatFloat(m[1].replace(f.filter.regex.nondigit,""),h);if(q[g]||"numeric"===b.parsers[g].type)a=b.parsers[g].format(""+m[0],h,b.$headers.eq(g),g),c=""===a||isNaN(a)?c:a,a=b.parsers[g].format(""+m[1],h,b.$headers.eq(g),g),k=""===a||isNaN(a)?k:a;a=!q[g]&&"numeric"!==b.parsers[g].type||isNaN(c)||isNaN(k)?isNaN(e)?f.formatFloat(e.replace(f.filter.regex.nondigit,""),h):f.formatFloat(e,h):d;c>k&&(e=c,c=k,k=e); return a>=c&&a<=k||""===c||""===k}return null},wild:function(b,a,c,e,d,f,h){return/[\?|\*]/.test(a)||/\s+OR\s+/.test(b)?(b=h.config,a=a.replace(/\s+OR\s+/gi,"|"),!b.$headers.filter('[data-column="'+f+'"]:last').hasClass("filter-match")&&/\|/.test(a)&&(a="^("+a+")$"),RegExp(a.replace(/\?/g,"\\S{1}").replace(/\*/g,"\\S*")).test(e)):null},fuzzy:function(b,a,c,e){if(/^~/.test(a)){b=0;c=e.length;var d=a.slice(1);for(a=0;a<c;a++)e[a]===d[b]&&(b+=1);return b===d.length?!0:!1}return null}},init:function(b, a,c){var e,d,g,h,p,q;a.debug&&(q=new Date);a.$table.addClass("hasFilters");f.filter.regex.child=RegExp(a.cssChildRow);f.filter.regex.filtered=RegExp(c.filter_filteredRow);!1!==c.filter_columnFilters&&a.$headers.filter(".filter-false").length!==a.$headers.length&&f.filter.buildRow(b,a,c);a.$table.bind("addRows updateCell update updateRows updateComplete appendCache filterReset filterEnd search ".split(" ").join(".tsfilter "),function(c,d){/(search|filterReset|filterEnd)/.test(c.type)||(c.stopPropagation(), f.filter.buildDefault(b,!0));"filterReset"===c.type?f.filter.searching(b,[]):"filterEnd"===c.type?f.filter.buildDefault(b,!0):(d="search"===c.type?d:"updateComplete"===c.type?a.$table.data("lastSearch"):"",f.filter.searching(b,d));return!1});f.filter.bindSearch(b,a.$table.find("input.tablesorter-filter"));c.filter_reset&&k(document).delegate(c.filter_reset,"click.tsfilter",function(){a.$table.trigger("filterReset")});if(c.filter_functions)for(h in c.filter_functions)if(c.filter_functions.hasOwnProperty(h)&& "string"===typeof h)if(g=a.$headers.filter('[data-column="'+h+'"]:last'),e="",!0===c.filter_functions[h]&&!g.hasClass("filter-false"))f.filter.buildSelect(b,h);else if("string"===typeof h&&!g.hasClass("filter-false")){for(d in c.filter_functions[h])"string"===typeof d&&(e+=""===e?'<option value="">'+(g.data("placeholder")||g.attr("data-placeholder")||"")+"</option>":"",e+='<option value="'+d+'">'+d+"</option>");a.$table.find("thead").find('select.tablesorter-filter[data-column="'+h+'"]').append(e)}f.filter.buildDefault(b, !0);a.$table.find("select.tablesorter-filter").bind("change search",function(a,c){f.filter.checkFilters(b,c)});c.filter_hideFilters&&f.filter.hideFilters(b,a);a.showProcessing&&a.$table.bind("filterStart.tsfilter filterEnd.tsfilter",function(c,d){g=d?a.$table.find("."+f.css.header).filter("[data-column]").filter(function(){return""!==d[k(this).data("column")]}):"";f.isProcessing(b,"filterStart"===c.type,d?g:"")});a.debug&&f.benchmark("Applying Filter widget",q);a.$table.bind("tablesorter-initialized pagerInitialized", function(){p=f.filter.setDefaults(b,a,c)||[];p.length&&f.setFilters(b,p,!0);f.filter.checkFilters(b,p)});c.filter_Initialized=!0;a.$table.trigger("filterInit")},setDefaults:function(b,a,c){var e,d=[],g=a.columns;c.filter_saveFilters&&f.storage&&(d=f.storage(b,"tablesorter-filters")||[],(e=k.isArray(d))&&""===d.join("")||!e)&&(d=[]);if(!d.length)for(e=0;e<g;e++)d[e]=a.$headers.filter('[data-column="'+e+'"]:last').attr(c.filter_defaultAttrib)||d[e];k(b).data("lastSearch",d);return d},buildRow:function(b, a,c){var e,d,g,h=a.columns;d='<tr class="tablesorter-filter-row">';for(b=0;b<h;b++)d+="<td></td>";a.$filters=k(d+"</tr>").appendTo(a.$table.find("thead").eq(0)).find("td");for(b=0;b<h;b++)e=a.$headers.filter('[data-column="'+b+'"]:last'),d=c.filter_functions&&c.filter_functions[b]&&"function"!==typeof c.filter_functions[b]||e.hasClass("filter-select"),g=f.getData?"false"===f.getData(e[0],a.headers[b],"filter"):a.headers[b]&&a.headers[b].hasOwnProperty("filter")&&!1===a.headers[b].filter||e.hasClass("filter-false"), d?d=k("<select>").appendTo(a.$filters.eq(b)):(c.filter_formatter&&k.isFunction(c.filter_formatter[b])?((d=c.filter_formatter[b](a.$filters.eq(b),b))&&0===d.length&&(d=a.$filters.eq(b).children("input")),d&&(0===d.parent().length||d.parent().length&&d.parent()[0]!==a.$filters[b])&&a.$filters.eq(b).append(d)):d=k('<input type="search">').appendTo(a.$filters.eq(b)),d&&d.attr("placeholder",e.data("placeholder")||e.attr("data-placeholder")||"")),d&&(d.addClass("tablesorter-filter "+c.filter_cssFilter).attr("data-column", b),g&&(d.addClass("disabled")[0].disabled=!0))},bindSearch:function(b,a){b=k(b)[0];var c,e=b.config.widgetOptions;a.unbind("keyup search filterReset").bind("keyup search",function(d,g){var h=k(this);if(27===d.which)this.value="";else if("number"===typeof e.filter_liveSearch&&this.value.length<e.filter_liveSearch&&""!==this.value||"keyup"===d.type&&(32>d.which&&8!==d.which&&!0===e.filter_liveSearch&&13!==d.which||37<=d.which&&40>=d.which||13!==d.which&&!1===e.filter_liveSearch))return;h.hasClass("tablesorter-filter")&& !h.hasClass("tablesorter-external-filter")?c=g:(c=[],a.each(function(){c[k(this).data("column")||0]=k(this).val()}));f.filter.searching(b,g,c)}).bind("filterReset",function(){a.val("")})},checkFilters:function(b,a){var c=b.config,e=c.widgetOptions,d=k.isArray(a),g=d?a:f.getFilters(b),h=(g||[]).join("");d&&f.setFilters(b,g);e.filter_hideFilters&&c.$table.find(".tablesorter-filter-row").trigger(""===h?"mouseleave":"mouseenter");if(c.lastCombinedFilter!==h||!1===a)if(!1===a&&(c.lastCombinedFilter=null), c.$table.trigger("filterStart",[g]),c.showProcessing)setTimeout(function(){f.filter.findRows(b,g,h);return!1},30);else return f.filter.findRows(b,g,h),!1},hideFilters:function(b,a){var c,e,d;a.$table.find(".tablesorter-filter-row").addClass("hideme").bind("mouseenter mouseleave",function(a){c=k(this);clearTimeout(d);d=setTimeout(function(){/enter|over/.test(a.type)?c.removeClass("hideme"):k(document.activeElement).closest("tr")[0]!==c[0]&&""===f.getFilters(b).join("")&&c.addClass("hideme")},200)}).find("input, select").bind("focus blur", function(a){e=k(this).closest("tr");clearTimeout(d);d=setTimeout(function(){if(""===f.getFilters(b).join(""))e["focus"===a.type?"removeClass":"addClass"]("hideme")},200)})},findRows:function(b,a,c){if(b.config.lastCombinedFilter!==c){var e,d,g,h,p,q,m,l,n,s,r,v,w,x,A,y,B,C,z,E,u=b.config,t=u.widgetOptions,G=u.columns,D=u.$tbodies,H=["range","notMatch","operators"],F=u.$headers.map(function(a){return f.getData?"parsed"===f.getData(u.$headers.filter('[data-column="'+a+'"]:last'),u.headers[a],"filter"): k(this).hasClass("filter-parsed")}).get();u.debug&&(E=new Date);for(p=0;p<D.length;p++)if(!D.eq(p).hasClass(f.css.info)){q=f.processTbody(b,D.eq(p),!0);g=q.children("tr").not("."+u.cssChildRow).not(u.selectorRemove);d=g.length;if(""===c||t.filter_serversideFiltering)q.children().show().removeClass(t.filter_filteredRow);else for(B=!0,x=u.lastSearch||u.$table.data("lastSearch")||[],k.each(a,function(a,b){B=0===(b||"").indexOf(x[a]||"")&&B&&!/(\s+or\s+|\|)/g.test(b||"")}),B&&0===g.filter(":visible").length&& (B=!1),h=0;h<d;h++)if(n=g[h].className,!(f.filter.regex.child.test(n)||B&&f.filter.regex.filtered.test(n))){z=!0;n=g.eq(h).nextUntil("tr:not(."+u.cssChildRow+")");s=n.length&&t.filter_childRows?n.text():"";s=t.filter_ignoreCase?s.toLocaleLowerCase():s;m=g.eq(h).children("td");for(l=0;l<G;l++)if(a[l]||t.filter_anyMatch){e=u.cache[p].normalized[h][l];t.filter_useParsedData||F[l]?r=e:(r=k.trim(m.eq(l).text()),r=u.sortLocaleCompare?f.replaceAccents(r):r);v=!f.filter.regex.type.test(typeof r)&&t.filter_ignoreCase? r.toLocaleLowerCase():r;y=z;if("undefined"===typeof a[l]||null===a[l])a[l]=t.filter_anyMatch?c:a[l];a[l]=u.sortLocaleCompare?f.replaceAccents(a[l]):a[l];w=t.filter_ignoreCase?a[l].toLocaleLowerCase():a[l];t.filter_functions&&t.filter_functions[l]?!0===t.filter_functions[l]?y=u.$headers.filter('[data-column="'+l+'"]:last').hasClass("filter-match")?0<=v.search(w):a[l]===r:"function"===typeof t.filter_functions[l]?y=t.filter_functions[l](r,e,a[l],l,g.eq(h)):"function"===typeof t.filter_functions[l][a[l]]&& (y=t.filter_functions[l][a[l]](r,e,a[l],l,g.eq(h))):(C=null,k.each(f.filter.types,function(c,d){if(!t.filter_anyMatch||t.filter_anyMatch&&0>k.inArray(c,H))if(A=d(a[l],w,r,v,e,l,b,t,F),null!==A)return C=A,!1}),null!==C?y=C:(r=(v+s).indexOf(w),y=!t.filter_startsWith&&0<=r||t.filter_startsWith&&0===r));if(t.filter_anyMatch){if(z=y)break}else z=y?z:!1}g[h].style.display=z?"":"none";g.eq(h)[z?"removeClass":"addClass"](t.filter_filteredRow);if(n.length){if(u.pager&&u.pager.countChildRows||t.pager_countChildRows|| t.filter_childRows)n[z?"removeClass":"addClass"](t.filter_filteredRow);n.toggle(z)}}f.processTbody(b,q,!1)}u.lastCombinedFilter=c;u.lastSearch=a;u.$table.data("lastSearch",a);t.filter_saveFilters&&f.storage&&f.storage(b,"tablesorter-filters",a);u.debug&&f.benchmark("Completed filter widget search",E);u.$table.trigger("applyWidgets");u.$table.trigger("filterEnd")}},buildSelect:function(b,a,c,e){a=parseInt(a,10);var d,g,h;b=b.config;var p=b.widgetOptions,q=b.$tbodies,m=[],l=b.$headers.filter('[data-column="'+ a+'"]:last'),n='<option value="">'+(l.data("placeholder")||l.attr("data-placeholder")||"")+"</option>";for(g=0;g<q.length;g++)for(h=b.cache[g].row.length,d=0;d<h;d++)e&&b.cache[g].row[d][0].className.match(p.filter_filteredRow)||(p.filter_useParsedData?m.push(""+b.cache[g].normalized[d][a]):(l=b.cache[g].row[d][0].cells[a])&&m.push(k.trim(l.textContent||l.innerText||k(l).text())));m=k.grep(m,function(a,b){return k.inArray(a,m)===b});m=f.sortNatural?m.sort(function(a,b){return f.sortNatural(a,b)}): m.sort(!0);d=b.$table.find("thead").find('select.tablesorter-filter[data-column="'+a+'"]').val();for(e=0;e<m.length;e++)g=m[e].replace(/\"/g,"&quot;"),n+=""!==m[e]?'<option value="'+g+'"'+(d===g?' selected="selected"':"")+">"+m[e]+"</option>":"";b.$table.find("thead").find('select.tablesorter-filter[data-column="'+a+'"]')[c?"html":"append"](n)},buildDefault:function(b,a){var c,e,d=b.config,g=d.widgetOptions,h=d.columns;for(c=0;c<h;c++)e=d.$headers.filter('[data-column="'+c+'"]:last'),(e.hasClass("filter-select")|| g.filter_functions&&!0===g.filter_functions[c])&&!e.hasClass("filter-false")&&(g.filter_functions||(g.filter_functions={}),g.filter_functions[c]=!0,f.filter.buildSelect(b,c,a,e.hasClass(g.filter_onlyAvail)))},searching:function(b,a,c){if("undefined"===typeof a||!0===a||c){var e=b.config.widgetOptions;clearTimeout(e.searchTimer);e.searchTimer=setTimeout(function(){f.filter.checkFilters(b,c||a)},e.filter_liveSearch?e.filter_searchDelay:10)}else f.filter.checkFilters(b,a)}};
+f.getFilters=function(b){var a= b?k(b)[0].config:{};return a&&a.widgetOptions&&!a.widgetOptions.filter_columnFilters?k(b).data("lastSearch"):a&&a.$filters?a.$filters.map(function(a,b){return k(b).find(".tablesorter-filter").val()||""}).get()||[]:!1};
+f.setFilters=function(b,a,c){b=k(b);var e=b.length?b[0].config:{},e=e&&e.$filters?e.$filters.each(function(b,c){k(c).find(".tablesorter-filter").val(a[b]||"")}).trigger("change.tsfilter")||!1:!1;c&&b.trigger("search",[a,!1]);return!!e};
+f.addWidget({id:"stickyHeaders",priority:60,options:{stickyHeaders:"", stickyHeaders_attachTo:null,stickyHeaders_offset:0,stickyHeaders_cloneId:"-sticky",stickyHeaders_addResizeEvent:!0,stickyHeaders_includeCaption:!0,stickyHeaders_zIndex:2},format:function(b,a,c){if(!(a.$table.hasClass("hasStickyHeaders")||0<=k.inArray("filter",a.widgets)&&!a.$table.hasClass("hasFilters"))){var e,d=a.$table,g=k(c.stickyHeaders_attachTo),h=d.children("thead:first"),p=g.length?g:k(window),q=h.children("tr").not(".sticky-false").children(),m=d.find("tfoot"),l=isNaN(c.stickyHeaders_offset)? k(c.stickyHeaders_offset):"",n=g.length?0:l.length?l.height()||0:parseInt(c.stickyHeaders_offset,10)||0,s=c.$sticky=d.clone().addClass("containsStickyHeaders").css({position:g.length?"absolute":"fixed",margin:0,top:n,left:0,visibility:"hidden",zIndex:c.stickyHeaders_zIndex?c.stickyHeaders_zIndex:2}),r=s.children("thead:first").addClass("tablesorter-stickyHeader "+c.stickyHeaders),v,w="",x=0,A="collapse"!==d.css("border-collapse")&&!/(webkit|msie)/i.test(navigator.userAgent),y=function(){n=l.length? l.height()||0:parseInt(c.stickyHeaders_offset,10)||0;x=0;A&&(x=2*parseInt(q.eq(0).css("border-left-width"),10));s.css({left:g.length?parseInt(g.css("padding-left"),10)+parseInt(g.css("margin-left"),10)+parseInt(d.css("border-left-width"),10):h.offset().left-p.scrollLeft()-x,width:d.width()});v.filter(":visible").each(function(b){b=q.filter(":visible").eq(b);var c=A&&k(this).attr("data-column")===""+parseInt(a.columns/2,10)?1:0;k(this).css({width:b.width()-x,height:b.height()}).find(".tablesorter-header-inner").width(b.find(".tablesorter-header-inner").width()- c)})};s.attr("id")&&(s[0].id+=c.stickyHeaders_cloneId);s.find("thead:gt(0), tr.sticky-false, tbody, tfoot").remove();c.stickyHeaders_includeCaption?s.find("caption").css("margin-left","-1px"):s.find("caption").remove();v=r.children().children();s.css({height:0,width:0,padding:0,margin:0,border:0});v.find(".tablesorter-resizer").remove();d.addClass("hasStickyHeaders").bind("sortEnd.tsSticky",function(){q.filter(":visible").each(function(b){e=v.filter(":visible").eq(b).attr("class",k(this).attr("class")).removeClass(f.css.processing+ " "+a.cssProcessing);a.cssIcon&&e.find("."+f.css.icon).attr("class",k(this).find("."+f.css.icon).attr("class"))})}).bind("pagerComplete.tsSticky",function(){y()});q.find(a.selectorSort).add(a.$headers.filter(a.selectorSort)).each(function(b){var c=k(this);b=r.children("tr.tablesorter-headerRow").children().eq(b).bind("mouseup",function(a){c.trigger(a,!0)});a.cancelSelection&&b.attr("unselectable","on").bind("selectstart",!1).css({"user-select":"none",MozUserSelect:"none"})});d.after(s);p.bind("scroll.tsSticky resize.tsSticky", function(a){if(d.is(":visible")){var b=d.offset(),e=c.stickyHeaders_includeCaption?0:d.find("caption").outerHeight(!0),e=(g.length?g.offset().top:p.scrollTop())+n-e,f=d.height()-(s.height()+(m.height()||0)),b=e>b.top&&e<b.top+f?"visible":"hidden",e={visibility:b};g.length?e.top=g.scrollTop():e.left=h.offset().left-p.scrollLeft()-x;s.removeClass("tablesorter-sticky-visible tablesorter-sticky-hidden").addClass("tablesorter-sticky-"+b).css(e);if(b!==w||"resize"===a.type)y(),w=b}});c.stickyHeaders_addResizeEvent&& f.addHeaderResizeEvent(b);d.hasClass("hasFilters")&&(d.bind("filterEnd",function(){k(document.activeElement).closest("thead")[0]!==r[0]&&r.find(".tablesorter-filter-row").children().each(function(b){k(this).find(".tablesorter-filter").val(a.$filters.find(".tablesorter-filter").eq(b).val())})}),f.filter.bindSearch(d,v.find(".tablesorter-filter").addClass("tablesorter-external-filter")));d.trigger("stickyHeadersInit")}},remove:function(b,a,c){a.$table.removeClass("hasStickyHeaders").unbind("sortEnd.tsSticky pagerComplete.tsSticky").find(".tablesorter-stickyHeader").remove(); c.$sticky&&c.$sticky.length&&c.$sticky.remove();k(".hasStickyHeaders").length||k(window).unbind("scroll.tsSticky resize.tsSticky");f.addHeaderResizeEvent(b,!1)}});
+f.addWidget({id:"resizable",priority:40,options:{resizable:!0,resizable_addLastColumn:!1},format:function(b,a,c){if(!a.$table.hasClass("hasResizable")){a.$table.addClass("hasResizable");var e,d,g,h,p={},q=a.$table,m=0,l=null,n=null,s=20>Math.abs(q.parent().width()-q.width()),r=function(){f.storage&&l&&(p[l.index()]=l.width(),p[n.index()]= n.width(),l.width(p[l.index()]),n.width(p[n.index()]),!1!==c.resizable&&f.storage(b,"tablesorter-resizable",p));m=0;l=n=null;k(window).trigger("resize")};if(p=f.storage&&!1!==c.resizable?f.storage(b,"tablesorter-resizable"):{})for(h in p)!isNaN(h)&&h<a.$headers.length&&a.$headers.eq(h).width(p[h]);e=q.children("thead:first").children("tr");e.children().each(function(){var b;b=k(this);h=b.attr("data-column");b="false"===f.getData(b,a.headers[h],"resizable");e.children().filter('[data-column="'+h+'"]')[b? "addClass":"removeClass"]("resizable-false")});e.each(function(){g=k(this).children().not(".resizable-false");k(this).find(".tablesorter-wrapper").length||g.wrapInner('<div class="tablesorter-wrapper" style="position:relative;height:100%;width:100%"></div>');c.resizable_addLastColumn||(g=g.slice(0,-1));d=d?d.add(g):g});d.each(function(){var a=k(this),b=parseInt(a.css("padding-right"),10)+10;a.find(".tablesorter-wrapper").append('<div class="tablesorter-resizer" style="cursor:w-resize;position:absolute;z-index:1;right:-'+ b+'px;top:0;height:100%;width:20px;"></div>')}).bind("mousemove.tsresize",function(a){if(0!==m&&l){var b=a.pageX-m,c=l.width();l.width(c+b);l.width()!==c&&s&&n.width(n.width()-b);m=a.pageX}}).bind("mouseup.tsresize",function(){r()}).find(".tablesorter-resizer,.tablesorter-resizer-grip").bind("mousedown",function(b){l=k(b.target).closest("th");var c=a.$headers.filter('[data-column="'+l.attr("data-column")+'"]');1<c.length&&(l=l.add(c));n=b.shiftKey?l.parent().find("th").not(".resizable-false").filter(":last"): l.nextAll(":not(.resizable-false)").eq(0);m=b.pageX});q.find("thead:first").bind("mouseup.tsresize mouseleave.tsresize",function(){r()}).bind("contextmenu.tsresize",function(){f.resizableReset(b);var a=k.isEmptyObject?k.isEmptyObject(p):!0;p={};return a})}},remove:function(b,a){a.$table.removeClass("hasResizable").children("thead").unbind("mouseup.tsresize mouseleave.tsresize contextmenu.tsresize").children("tr").children().unbind("mousemove.tsresize mouseup.tsresize").find(".tablesorter-resizer,.tablesorter-resizer-grip").remove(); f.resizableReset(b)}});
+f.resizableReset=function(b){b.config.$headers.not(".resizable-false").css("width","");f.storage&&f.storage(b,"tablesorter-resizable",{})};
+f.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(b,a,c,e){a.format(b,c,e,!0)},format:function(b,a,c,e){var d,g=a.$table;c=!1!==c.saveSort;var h={sortList:a.sortList};a.debug&&(d=new Date);g.hasClass("hasSaveSort")?c&&b.hasInitialized&&f.storage&&(f.storage(b,"tablesorter-savesort",h),a.debug&&f.benchmark("saveSort widget: Saving last sort: "+ a.sortList,d)):(g.addClass("hasSaveSort"),h="",f.storage&&(h=(c=f.storage(b,"tablesorter-savesort"))&&c.hasOwnProperty("sortList")&&k.isArray(c.sortList)?c.sortList:"",a.debug&&f.benchmark('saveSort: Last sort loaded: "'+h+'"',d),g.bind("saveSortReset",function(a){a.stopPropagation();f.storage(b,"tablesorter-savesort","")})),e&&h&&0<h.length?a.sortList=h:b.hasInitialized&&h&&0<h.length&&g.trigger("sorton",[h]))},remove:function(b){f.storage&&f.storage(b,"tablesorter-savesort","")}})
 })(jQuery);
 ;/*! tablesorter Editable Content widget - updated 11/25/2013 (core v2.14.2)
  * Requires tablesorter v2.8+ and jQuery 1.7+
@@ -11896,84 +11895,6 @@ e.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(b,a,c
 					}
 				});
 		}
-	});
-
-})(jQuery);
-;/*! input & select parsers for jQuery 1.7+ & tablesorter 2.7.11+
- * Demo: http://mottie.github.com/tablesorter/docs/example-widget-grouping.html
- */
-/*jshint browser: true, jquery:true, unused:false */
-;(function($){
-"use strict";
-
-	var resort = true, // resort table after update
-		updateServer = function(event, $table, $input){
-			// do something here to update your server, if needed
-			// event = change event object
-			// $table = jQuery object of the table that was just updated
-			// $input = jQuery object of the input or select that was modified
-		};
-
-	// Custom parser for parsing input values
-	// updated dynamically using the "change" function below
-	$.tablesorter.addParser({
-		id: "inputs",
-		is: function(){
-			return false;
-		},
-		format: function(s, table, cell) {
-			return $(cell).find('input').val() || s;
-		},
-		type: "text"
-	});
-
-	// Custom parser for including checkbox status if using the grouping widget
-	// updated dynamically using the "change" function below
-	$.tablesorter.addParser({
-		id: "checkbox",
-		is: function(){
-			return false;
-		},
-		format: function(s, table, cell) {
-			// using plain language here because this is what is shown in the group headers
-			// change it as desired
-			var $c = $(cell).find('input');
-			return $c.length ? $c.is(':checked') ? 'checked' : 'unchecked' : s;
-		},
-		type: "text"
-	});
-
-	// Custom parser which returns the currently selected options
-	// updated dynamically using the "change" function below
-	$.tablesorter.addParser({
-		id: "select",
-		is: function(){
-			return false;
-		},
-		format: function(s, table, cell) {
-			return $(cell).find('select').val() || s;
-		},
-		type: "text"
-	});
-
-	// update select and all input types in the tablesorter cache when the change event fires.
-	// This method only works with jQuery 1.7+
-	// you can change it to use delegate (v1.4.3+) or live (v1.3+) as desired
-	// if this code interferes somehow, target the specific table $('#mytable'), instead of $('table')
-	$(window).load(function(){
-		// this flag prevents the updateCell event from being spammed
-		// it happens when you modify input text and hit enter
-		var alreadyUpdating = false;
-		$('table').find('tbody').on('change', 'select, input', function(e){
-			if (!alreadyUpdating) {
-				var $tar = $(e.target),
-					$table = $tar.closest('table');
-				alreadyUpdating = true;
-				$table.trigger('updateCell', [ $tar.closest('td'), resort ]);
-				updateServer(e, $table, $tar);
-				setTimeout(function(){ alreadyUpdating = false; }, 10);
-			}
-		});
 	});
 
 })(jQuery);
@@ -12073,181 +11994,2116 @@ e.addWidget({id:"saveSort",priority:20,options:{saveSort:!0},init:function(b,a,c
     /* Default settings for plugin. */
     $.fn.chained.defaults = {};
 
-})(window.jQuery || window.Zepto, window, document);;/**
+})(window.jQuery || window.Zepto, window, document);;/*!
+ * tablesorter pager plugin
+ * updated 12/16/2013 (v2.14.5)
+ */
+/*jshint browser:true, jquery:true, unused:false */
+;(function($) {
+	"use strict";
+	/*jshint supernew:true */
+	var ts = $.tablesorter;
+
+	$.extend({ tablesorterPager: new function() {
+
+		this.defaults = {
+			// target the pager markup
+			container: null,
+
+			// use this format: "http://mydatabase.com?page={page}&size={size}&{sortList:col}&{filterList:fcol}"
+			// where {page} is replaced by the page number, {size} is replaced by the number of records to show,
+			// {sortList:col} adds the sortList to the url into a "col" array, and {filterList:fcol} adds
+			// the filterList to the url into an "fcol" array.
+			// So a sortList = [[2,0],[3,0]] becomes "&col[2]=0&col[3]=0" in the url
+			// and a filterList = [[2,Blue],[3,13]] becomes "&fcol[2]=Blue&fcol[3]=13" in the url
+			ajaxUrl: null,
+
+			// modify the url after all processing has been applied
+			customAjaxUrl: function(table, url) { return url; },
+
+			// modify the $.ajax object to allow complete control over your ajax requests
+			ajaxObject: {
+				dataType: 'json'
+			},
+
+			// set this to false if you want to block ajax loading on init
+			processAjaxOnInit: true,
+
+			// process ajax so that the following information is returned:
+			// [ total_rows (number), rows (array of arrays), headers (array; optional) ]
+			// example:
+			// [
+			//   100,  // total rows
+			//   [
+			//     [ "row1cell1", "row1cell2", ... "row1cellN" ],
+			//     [ "row2cell1", "row2cell2", ... "row2cellN" ],
+			//     ...
+			//     [ "rowNcell1", "rowNcell2", ... "rowNcellN" ]
+			//   ],
+			//   [ "header1", "header2", ... "headerN" ] // optional
+			// ]
+			ajaxProcessing: function(ajax){ return [ 0, [], null ]; },
+
+			// output default: '{page}/{totalPages}'
+			// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+			output: '{startRow} to {endRow} of {totalRows} rows', // '{page}/{totalPages}'
+
+			// apply disabled classname to the pager arrows when the rows at either extreme is visible
+			updateArrows: true,
+
+			// starting page of the pager (zero based index)
+			page: 0,
+
+			// Number of visible rows
+			size: 10,
+
+			// Save pager page & size if the storage script is loaded (requires $.tablesorter.storage in jquery.tablesorter.widgets.js)
+			savePages: true,
+
+			// if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
+			// table row set to a height to compensate; default is false
+			fixedHeight: false,
+
+			// count child rows towards the set page size? (set true if it is a visible table row within the pager)
+			// if true, child row(s) may not appear to be attached to its parent row, may be split across pages or
+			// may distort the table if rowspan or cellspans are included.
+			countChildRows: false,
+
+			// remove rows from the table to speed up the sort of large tables.
+			// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+			removeRows: false, // removing rows in larger tables speeds up the sort
+
+			// css class names of pager arrows
+			cssFirst: '.first', // go to first page arrow
+			cssPrev: '.prev', // previous page arrow
+			cssNext: '.next', // next page arrow
+			cssLast: '.last', // go to last page arrow
+			cssGoto: '.gotoPage', // go to page selector - select dropdown that sets the current page
+			cssPageDisplay: '.pagedisplay', // location of where the "output" is displayed
+			cssPageSize: '.pagesize', // page size selector - select dropdown that sets the "size" option
+			cssErrorRow: 'tablesorter-errorRow', // error information row
+
+			// class added to arrows when at the extremes (i.e. prev/first arrows are "disabled" when on the first page)
+			cssDisabled: 'disabled', // Note there is no period "." in front of this class name
+
+			// stuff not set by the user
+			totalRows: 0,
+			totalPages: 0,
+			filteredRows: 0,
+			filteredPages: 0,
+			ajaxCounter: 0,
+			currentFilters: [],
+			startRow: 0,
+			endRow: 0,
+			$size: null,
+			last: {}
+
+		};
+
+		var $this = this,
+
+		// hide arrows at extremes
+		pagerArrows = function(p, disable) {
+			var a = 'addClass',
+			r = 'removeClass',
+			d = p.cssDisabled,
+			dis = !!disable,
+			tp = Math.min( p.totalPages, p.filteredPages );
+			if ( p.updateArrows ) {
+				p.$container.find(p.cssFirst + ',' + p.cssPrev)[ ( dis || p.page === 0 ) ? a : r ](d);
+				p.$container.find(p.cssNext + ',' + p.cssLast)[ ( dis || p.page === tp - 1 || p.totalPages === 0 ) ? a : r ](d);
+			}
+		},
+
+		updatePageDisplay = function(table, p, flag) {
+			var i, pg, s, out,
+				c = table.config,
+				f = c.$table.hasClass('hasFilters') && !p.ajaxUrl,
+				t = (c.widgetOptions && c.widgetOptions.filter_filteredRow || 'filtered') + ',' + c.selectorRemove +
+					(p.countChildRows ? '' : ',.' + c.cssChildRow),
+				sz = p.size || 10; // don't allow dividing by zero
+			p.totalPages = Math.ceil( p.totalRows / sz ); // needed for "pageSize" method
+			p.filteredRows = (f) ? c.$tbodies.eq(0).children('tr').not('.' + t ).length : p.totalRows;
+			p.filteredPages = (f) ? Math.ceil( p.filteredRows / sz ) || 1 : p.totalPages;
+			if ( Math.min( p.totalPages, p.filteredPages ) >= 0 ) {
+				t = (p.size * p.page > p.filteredRows);
+				p.startRow = (t) ? 1 : (p.filteredRows === 0 ? 0 : p.size * p.page + 1);
+				p.page = (t) ? 0 : p.page;
+				p.endRow = Math.min( p.filteredRows, p.totalRows, p.size * ( p.page + 1 ) );
+				out = p.$container.find(p.cssPageDisplay);
+				// form the output string (can now get a new output string from the server)
+				s = ( p.ajaxData && p.ajaxData.output ? p.ajaxData.output || p.output : p.output )
+					// {page} = one-based index; {page+#} = zero based index +/- value
+					.replace(/\{page([\-+]\d+)?\}/gi, function(m,n){
+						return p.totalPages ? p.page + (n ? parseInt(n, 10) : 1) : 0;
+					})
+					// {totalPages}, {extra}, {extra:0} (array) or {extra : key} (object)
+					.replace(/\{\w+(\s*:\s*\w+)?\}/gi, function(m){
+						var str = m.replace(/[{}\s]/g,''),
+							extra = str.split(':'),
+							data = p.ajaxData,
+							// return zero for default page/row numbers
+							deflt = /(rows?|pages?)$/i.test(str) ? 0 : '';
+						return extra.length > 1 && data && data[extra[0]] ? data[extra[0]][extra[1]] : p[str] || (data ? data[str] : deflt) || deflt;
+					});
+				if (out.length) {
+					out[ (out[0].tagName === 'INPUT') ? 'val' : 'html' ](s);
+					if ( p.$goto.length ) {
+						t = '';
+						pg = Math.min( p.totalPages, p.filteredPages );
+						for ( i = 1; i <= pg; i++ ) {
+							t += '<option>' + i + '</option>';
+						}
+						p.$goto.html(t).val( p.page + 1 );
+					}
+				}
+			}
+			pagerArrows(p);
+			if (p.initialized && flag !== false) {
+				c.$table.trigger('pagerComplete', p);
+				// save pager info to storage
+				if (p.savePages && ts.storage) {
+					ts.storage(table, 'tablesorter-pager', {
+						page : p.page,
+						size : p.size
+					});
+				}
+			}
+		},
+
+		fixHeight = function(table, p) {
+			var d, h,
+				c = table.config,
+				$b = c.$tbodies.eq(0);
+			if (p.fixedHeight) {
+				$b.find('tr.pagerSavedHeightSpacer').remove();
+				h = $.data(table, 'pagerSavedHeight');
+				if (h) {
+					d = h - $b.height();
+					if ( d > 5 && $.data(table, 'pagerLastSize') === p.size && $b.children('tr:visible').length < p.size ) {
+						$b.append('<tr class="pagerSavedHeightSpacer ' + c.selectorRemove.replace(/(tr)?\./g,'') + '" style="height:' + d + 'px;"></tr>');
+					}
+				}
+			}
+		},
+
+		changeHeight = function(table, p) {
+			var $b = table.config.$tbodies.eq(0);
+			$b.find('tr.pagerSavedHeightSpacer').remove();
+			$.data(table, 'pagerSavedHeight', $b.height());
+			fixHeight(table, p);
+			$.data(table, 'pagerLastSize', p.size);
+		},
+
+		hideRows = function(table, p){
+			if (!p.ajaxUrl) {
+				var i,
+				c = table.config,
+				rows = c.$tbodies.eq(0).children(),
+				l = rows.length,
+				s = ( p.page * p.size ),
+				e =  s + p.size,
+				f = c.widgetOptions && c.widgetOptions.filter_filteredRow || 'filtered',
+				j = 0; // size counter
+				for ( i = 0; i < l; i++ ){
+					if ( !rows[i].className.match(f) ) {
+						rows[i].style.display = ( j >= s && j < e ) ? '' : 'none';
+						// don't count child rows
+						j += rows[i].className.match(c.cssChildRow + '|' + c.selectorRemove.slice(1)) && !p.countChildRows ? 0 : 1;
+					}
+				}
+			}
+		},
+
+		hideRowsSetup = function(table, p){
+			p.size = parseInt( p.$size.val(), 10 ) || p.size;
+			$.data(table, 'pagerLastSize', p.size);
+			pagerArrows(p);
+			if ( !p.removeRows ) {
+				hideRows(table, p);
+				$(table).bind('sortEnd.pager filterEnd.pager', function(){
+					hideRows(table, p);
+				});
+			}
+		},
+
+		renderAjax = function(data, table, p, xhr, exception){
+			// process data
+			if ( typeof(p.ajaxProcessing) === "function" ) {
+				// ajaxProcessing result: [ total, rows, headers ]
+				var i, j, hsh, $f, $sh, t, th, d, l, $err, rr_count,
+					c = table.config,
+					$t = c.$table,
+					tds = '',
+					result = p.ajaxProcessing(data, table) || [ 0, [] ],
+					hl = $t.find('thead th').length;
+
+				$t.find('thead tr.' + p.cssErrorRow).remove(); // Clean up any previous error.
+
+				if ( exception ) {
+					if (c.debug) {
+						ts.log('Ajax Error', xhr, exception);
+					}
+					$err = $('<tr class="' + p.cssErrorRow + '"><td style="text-align:center;" colspan="' + hl + '">' + (
+						xhr.status === 0 ? 'Not connected, verify Network' :
+						xhr.status === 404 ? 'Requested page not found [404]' :
+						xhr.status === 500 ? 'Internal Server Error [500]' :
+						exception === 'parsererror' ? 'Requested JSON parse failed' :
+						exception === 'timeout' ? 'Time out error' :
+						exception === 'abort' ? 'Ajax Request aborted' :
+						'Uncaught error: ' + xhr.statusText + ' [' + xhr.status + ']' ) + '</td></tr>')
+					.click(function(){
+						$(this).remove();
+					})
+					// add error row to thead instead of tbody, or clicking on the header will result in a parser error
+					.appendTo( $t.find('thead:first') );
+					c.$tbodies.eq(0).empty();
+				} else {
+					// process ajax object
+					if (!$.isArray(result)) {
+						p.ajaxData = result;
+						p.totalRows = result.total;
+						th = result.headers;
+						d = result.rows;
+					} else {
+						// allow [ total, rows, headers ]  or [ rows, total, headers ]
+						t = isNaN(result[0]) && !isNaN(result[1]);
+						//ensure a zero returned row count doesn't fail the logical ||
+						rr_count = result[t ? 1 : 0];
+						p.totalRows = isNaN(rr_count) ? p.totalRows || 0 : rr_count;
+						d = p.totalRows === 0 ? [""] : result[t ? 0 : 1] || []; // row data
+						th = result[2]; // headers
+					}
+					l = d.length;
+					if (d instanceof jQuery) {
+						// append jQuery object
+						c.$tbodies.eq(0).empty().append(d);
+					} else if (l) {
+						// build table from array
+						for ( i = 0; i < l; i++ ) {
+							tds += '<tr>';
+							for ( j = 0; j < d[i].length; j++ ) {
+								// build tbody cells; watch for data containing HTML markup - see #434
+								tds += /^\s*<td/.test(d[i][j]) ? $.trim(d[i][j]) : '<td>' + d[i][j] + '</td>';
+							}
+							tds += '</tr>';
+						}
+						// add rows to first tbody
+						p.processAjaxOnInit ? c.$tbodies.eq(0).html( tds ) : p.processAjaxOnInit = true;
+					}
+					// only add new header text if the length matches
+					if ( th && th.length === hl ) {
+						hsh = $t.hasClass('hasStickyHeaders');
+						$sh = hsh ? c.widgetOptions.$sticky.children('thead:first').children().children() : '';
+						$f = $t.find('tfoot tr:first').children();
+						// don't change td headers (may contain pager)
+						c.$headers.filter('th').each(function(j){
+							var $t = $(this), icn;
+							// add new test within the first span it finds, or just in the header
+							if ( $t.find('.' + ts.css.icon).length ) {
+								icn = $t.find('.' + ts.css.icon).clone(true);
+								$t.find('.tablesorter-header-inner').html( th[j] ).append(icn);
+								if ( hsh && $sh.length ) {
+									icn = $sh.eq(j).find('.' + ts.css.icon).clone(true);
+									$sh.eq(j).find('.tablesorter-header-inner').html( th[j] ).append(icn);
+								}
+							} else {
+								$t.find('.tablesorter-header-inner').html( th[j] );
+								if (hsh && $sh.length) {
+									$sh.eq(j).find('.tablesorter-header-inner').html( th[j] );
+								}
+							}
+							$f.eq(j).html( th[j] );
+						});
+					}
+				}
+				if (c.showProcessing) {
+					ts.isProcessing(table); // remove loading icon
+				}
+				// make sure last pager settings are saved, prevents multiple server side calls with
+				// the same parameters
+				p.last.totalPages =  p.totalPages = Math.ceil( p.totalRows / ( p.size || 10 ) );
+				p.last.currentFilters = p.currentFilters;
+				p.last.sortList = (c.sortList || []).join(',');
+				updatePageDisplay(table, p);
+				fixHeight(table, p);
+				// apply widgets after table has rendered
+				$t.trigger('applyWidgets');
+				$t.trigger('update', [false, function(){
+					if (p.initialized) {
+						$t.trigger('updateComplete');
+						$t.trigger('pagerChange', p);
+					}
+				}]);
+			}
+			if (!p.initialized) {
+				p.initialized = true;
+				$(table).trigger('pagerInitialized', p);
+			}
+		},
+
+		getAjax = function(table, p){
+			var url = getAjaxUrl(table, p),
+			$doc = $(document),
+			counter,
+			c = table.config;
+			if ( url !== '' ) {
+				if (c.showProcessing) {
+					ts.isProcessing(table, true); // show loading icon
+				}
+				$doc.bind('ajaxError.pager', function(e, xhr, settings, exception) {
+					renderAjax(null, table, p, xhr, exception);
+					$doc.unbind('ajaxError.pager');
+				});
+
+				counter = ++p.ajaxCounter;
+
+				p.ajaxObject.url = url; // from the ajaxUrl option and modified by customAjaxUrl
+				p.ajaxObject.success = function(data) {
+					// Refuse to process old ajax commands that were overwritten by new ones - see #443
+					if (counter < p.ajaxCounter){
+						return;
+					}
+					renderAjax(data, table, p);
+					$doc.unbind('ajaxError.pager');
+					if (typeof p.oldAjaxSuccess === 'function') {
+						p.oldAjaxSuccess(data);
+					}
+				};
+				if (c.debug) {
+					ts.log('ajax initialized', p.ajaxObject);
+				}
+				$.ajax(p.ajaxObject);
+			}
+		},
+
+		getAjaxUrl = function(table, p) {
+			var c = table.config,
+				url = (p.ajaxUrl) ? p.ajaxUrl
+				// allow using "{page+1}" in the url string to switch to a non-zero based index
+				.replace(/\{page([\-+]\d+)?\}/, function(s,n){ return p.page + (n ? parseInt(n, 10) : 0); })
+				.replace(/\{size\}/g, p.size) : '',
+			sl = c.sortList,
+			fl = p.currentFilters || $(table).data('lastSearch') || [],
+			sortCol = url.match(/\{\s*sort(?:List)?\s*:\s*(\w*)\s*\}/),
+			filterCol = url.match(/\{\s*filter(?:List)?\s*:\s*(\w*)\s*\}/),
+			arry = [];
+			if (sortCol) {
+				sortCol = sortCol[1];
+				$.each(sl, function(i,v){
+					arry.push(sortCol + '[' + v[0] + ']=' + v[1]);
+				});
+				// if the arry is empty, just add the col parameter... "&{sortList:col}" becomes "&col"
+				url = url.replace(/\{\s*sort(?:List)?\s*:\s*(\w*)\s*\}/g, arry.length ? arry.join('&') : sortCol );
+				arry = [];
+			}
+			if (filterCol) {
+				filterCol = filterCol[1];
+				$.each(fl, function(i,v){
+					if (v) {
+						arry.push(filterCol + '[' + i + ']=' + encodeURIComponent(v));
+					}
+				});
+				// if the arry is empty, just add the fcol parameter... "&{filterList:fcol}" becomes "&fcol"
+				url = url.replace(/\{\s*filter(?:List)?\s*:\s*(\w*)\s*\}/g, arry.length ? arry.join('&') : filterCol );
+				p.currentFilters = fl;
+			}
+			if ( typeof(p.customAjaxUrl) === "function" ) {
+				url = p.customAjaxUrl(table, url);
+			}
+			if (c.debug) {
+				ts.log('Pager ajax url: ' + url);
+			}
+			return url;
+		},
+
+		renderTable = function(table, rows, p) {
+			var i, $tb,
+				l = rows && rows.length || 0, // rows may be undefined
+				s = ( p.page * p.size ),
+				e = ( s + p.size );
+			if ( l < 1 ) { return; } // empty table, abort!
+			if ( p.page >= p.totalPages ) {
+				// lets not render the table more than once
+				moveToLastPage(table, p);
+			}
+			p.isDisabled = false; // needed because sorting will change the page and re-enable the pager
+			if (p.initialized) { $(table).trigger('pagerChange', p); }
+
+			if ( !p.removeRows ) {
+				hideRows(table, p);
+			} else {
+				if ( e > rows.length ) {
+					e = rows.length;
+				}
+				ts.clearTableBody(table);
+				$tb = ts.processTbody(table, table.config.$tbodies.eq(0), true);
+				for ( i = s; i < e; i++ ) {
+					$tb.append(rows[i]);
+				}
+				ts.processTbody(table, $tb, false);
+			}
+
+			updatePageDisplay(table, p);
+			if ( !p.isDisabled ) { fixHeight(table, p); }
+			$(table).trigger('applyWidgets');
+		},
+
+		showAllRows = function(table, p){
+			if ( p.ajax ) {
+				pagerArrows(p, true);
+			} else {
+				p.isDisabled = true;
+				$.data(table, 'pagerLastPage', p.page);
+				$.data(table, 'pagerLastSize', p.size);
+				p.page = 0;
+				p.size = p.totalRows;
+				p.totalPages = 1;
+				$(table).addClass('pagerDisabled').find('tr.pagerSavedHeightSpacer').remove();
+				renderTable(table, table.config.rowsCopy, p);
+				if (table.config.debug) {
+					ts.log('pager disabled');
+				}
+			}
+			// disable size selector
+			p.$size.add(p.$goto).each(function(){
+				$(this).addClass(p.cssDisabled)[0].disabled = true;
+			});
+		},
+
+		moveToPage = function(table, p, flag) {
+			if ( p.isDisabled ) { return; }
+			var c = table.config,
+				l = p.last,
+				pg = Math.min( p.totalPages, p.filteredPages );
+			if ( p.page < 0 ) { p.page = 0; }
+			if ( p.page > ( pg - 1 ) && pg !== 0 ) { p.page = pg - 1; }
+			// don't allow rendering multiple times on the same page/size/totalpages/filters/sorts
+			if ( l.page === p.page && l.size === p.size && l.totalPages === p.totalPages &&
+				(l.currentFilters || []).join(',') === (p.currentFilters || []).join(',') &&
+				l.sortList === (c.sortList || []).join(',') ) { return; }
+			if (c.debug) {
+				ts.log('Pager changing to page ' + p.page);
+			}
+			p.last = {
+				page : p.page,
+				size : p.size,
+				// fixes #408; modify sortList otherwise it auto-updates
+				sortList : (c.sortList || []).join(','),
+				totalPages : p.totalPages,
+				currentFilters : p.currentFilters || []
+			};
+			if (p.ajax) {
+				getAjax(table, p);
+			} else if (!p.ajax) {
+				renderTable(table, table.config.rowsCopy, p);
+			}
+			$.data(table, 'pagerLastPage', p.page);
+			if (p.initialized && flag !== false) {
+				c.$table.trigger('pageMoved', p);
+				c.$table.trigger('applyWidgets');
+			}
+		},
+
+		setPageSize = function(table, size, p) {
+			p.size = size || p.size || 10;
+			p.$size.val(p.size);
+			$.data(table, 'pagerLastPage', p.page);
+			$.data(table, 'pagerLastSize', p.size);
+			p.totalPages = Math.ceil( p.totalRows / p.size );
+			moveToPage(table, p);
+		},
+
+		moveToFirstPage = function(table, p) {
+			p.page = 0;
+			moveToPage(table, p);
+		},
+
+		moveToLastPage = function(table, p) {
+			p.page = ( Math.min( p.totalPages, p.filteredPages ) - 1 );
+			moveToPage(table, p);
+		},
+
+		moveToNextPage = function(table, p) {
+			p.page++;
+			if ( p.page >= ( Math.min( p.totalPages, p.filteredPages ) - 1 ) ) {
+				p.page = ( Math.min( p.totalPages, p.filteredPages ) - 1 );
+			}
+			moveToPage(table, p);
+		},
+
+		moveToPrevPage = function(table, p) {
+			p.page--;
+			if ( p.page <= 0 ) {
+				p.page = 0;
+			}
+			moveToPage(table, p);
+		},
+
+		destroyPager = function(table, p){
+			showAllRows(table, p);
+			p.$container.hide(); // hide pager
+			table.config.appender = null; // remove pager appender function
+			p.initialized = false;
+			$(table).unbind('destroy.pager sortEnd.pager filterEnd.pager enable.pager disable.pager');
+			if (ts.storage) {
+				ts.storage(table, 'tablesorter-pager', '');
+			}
+		},
+
+		enablePager = function(table, p, triggered){
+			var pg = p.$size.removeClass(p.cssDisabled).removeAttr('disabled');
+			p.$goto.removeClass(p.cssDisabled).removeAttr('disabled');
+			p.isDisabled = false;
+			p.page = $.data(table, 'pagerLastPage') || p.page || 0;
+			p.size = $.data(table, 'pagerLastSize') || parseInt(pg.find('option[selected]').val(), 10) || p.size || 10;
+			pg.val(p.size); // set page size
+			p.totalPages = Math.ceil( Math.min( p.totalPages, p.filteredPages ) / p.size );
+			if ( triggered ) {
+				$(table).trigger('update');
+				setPageSize(table, p.size, p);
+				hideRowsSetup(table, p);
+				fixHeight(table, p);
+				if (table.config.debug) {
+					ts.log('pager enabled');
+				}
+			}
+		};
+
+		$this.appender = function(table, rows) {
+			var c = table.config,
+				p = c.pager;
+			if ( !p.ajax ) {
+				c.rowsCopy = rows;
+				p.totalRows = p.countChildRows ? c.$tbodies.eq(0).children().length : rows.length;
+				p.size = $.data(table, 'pagerLastSize') || p.size || 10;
+				p.totalPages = Math.ceil( p.totalRows / p.size );
+				renderTable(table, rows, p);
+			}
+		};
+
+		$this.construct = function(settings) {
+			return this.each(function() {
+				// check if tablesorter has initialized
+				if (!(this.config && this.hasInitialized)) { return; }
+				var t, ctrls, fxn,
+					table = this,
+					c = table.config,
+					p = c.pager = $.extend( {}, $.tablesorterPager.defaults, settings ),
+					$t = c.$table,
+					// added in case the pager is reinitialized after being destroyed.
+					pager = p.$container = $(p.container).addClass('tablesorter-pager').show();
+				if (c.debug) {
+					ts.log('Pager initializing');
+				}
+				p.oldAjaxSuccess = p.oldAjaxSuccess || p.ajaxObject.success;
+				c.appender = $this.appender;
+				if (ts.filter && $.inArray('filter', c.widgets) >= 0) {
+					// get any default filter settings (data-value attribute) fixes #388
+					p.currentFilters = c.$table.data('lastSearch') || ts.filter.setDefaults(table, c, c.widgetOptions) || [];
+					// set, but don't apply current filters
+					ts.setFilters(table, p.currentFilters, false);
+				}
+				if (p.savePages && ts.storage) {
+					t = ts.storage(table, 'tablesorter-pager') || {}; // fixes #387
+					p.page = isNaN(t.page) ? p.page : t.page;
+					p.size = ( isNaN(t.size) ? p.size : t.size ) || 10;
+					$.data(table, 'pagerLastSize', p.size);
+				}
+
+				$t
+					.unbind('filterStart filterEnd sortEnd disable enable destroy update updateRows updateAll addRows pageSize '.split(' ').join('.pager '))
+					.bind('filterStart.pager', function(e, filters) {
+						p.currentFilters = filters;
+						p.page = 0; // fixes #456
+					})
+					// update pager after filter widget completes
+					.bind('filterEnd.pager sortEnd.pager', function() {
+						if (p.initialized) {
+							moveToPage(table, p, false);
+							updatePageDisplay(table, p, false);
+							fixHeight(table, p);
+						}
+					})
+					.bind('disable.pager', function(e){
+						e.stopPropagation();
+						showAllRows(table, p);
+					})
+					.bind('enable.pager', function(e){
+						e.stopPropagation();
+						enablePager(table, p, true);
+					})
+					.bind('destroy.pager', function(e){
+						e.stopPropagation();
+						destroyPager(table, p);
+					})
+					.bind('update updateRows updateAll addRows '.split(' ').join('.pager '), function(e){
+						e.stopPropagation();
+						hideRows(table, p);
+					})
+					.bind('pageSize.pager', function(e,v){
+						e.stopPropagation();
+						setPageSize(table, parseInt(v, 10) || 10, p);
+						hideRows(table, p);
+						updatePageDisplay(table, p, false);
+						if (p.$size.length) { p.$size.val(p.size); } // twice?
+					})
+					.bind('pageSet.pager', function(e,v){
+						e.stopPropagation();
+						p.page = (parseInt(v, 10) || 1) - 1;
+						if (p.$goto.length) { p.$goto.val(p.size); } // twice?
+						moveToPage(table, p);
+						updatePageDisplay(table, p, false);
+					});
+
+				// clicked controls
+				ctrls = [ p.cssFirst, p.cssPrev, p.cssNext, p.cssLast ];
+				fxn = [ moveToFirstPage, moveToPrevPage, moveToNextPage, moveToLastPage ];
+				pager.find(ctrls.join(','))
+					.unbind('click.pager')
+					.bind('click.pager', function(e){
+						e.stopPropagation();
+						var i, $t = $(this), l = ctrls.length;
+						if ( !$t.hasClass(p.cssDisabled) ) {
+							for (i = 0; i < l; i++) {
+								if ($t.is(ctrls[i])) {
+									fxn[i](table, p);
+									break;
+								}
+							}
+						}
+					});
+
+				// goto selector
+				p.$goto = pager.find(p.cssGoto);
+				if ( p.$goto.length ) {
+					p.$goto
+						.unbind('change')
+						.bind('change', function(){
+							p.page = $(this).val() - 1;
+							moveToPage(table, p);
+							updatePageDisplay(table, p, false);
+						});
+				}
+
+				// page size selector
+				p.$size = pager.find(p.cssPageSize);
+				if ( p.$size.length ) {
+					p.$size.unbind('change.pager').bind('change.pager', function() {
+						p.$size.val( $(this).val() ); // in case there are more than one pagers
+						if ( !$(this).hasClass(p.cssDisabled) ) {
+							setPageSize(table, parseInt( $(this).val(), 10 ), p);
+							changeHeight(table, p);
+						}
+						return false;
+					});
+				}
+
+				// clear initialized flag
+				p.initialized = false;
+				// before initialization event
+				$t.trigger('pagerBeforeInitialized', p);
+
+				enablePager(table, p, false);
+
+				if ( typeof(p.ajaxUrl) === 'string' ) {
+					// ajax pager; interact with database
+					p.ajax = true;
+					//When filtering with ajax, allow only custom filtering function, disable default filtering since it will be done server side.
+					c.widgetOptions.filter_serversideFiltering = true;
+					c.serverSideSorting = true;
+					moveToPage(table, p);
+				} else {
+					p.ajax = false;
+					// Regular pager; all rows stored in memory
+					$(this).trigger("appendCache", true);
+					hideRowsSetup(table, p);
+				}
+
+				changeHeight(table, p);
+
+				// pager initialized
+				if (!p.ajax) {
+					p.initialized = true;
+					$(table).trigger('pagerInitialized', p);
+				}
+			});
+		};
+
+	}()
+});
+// extend plugin scope
+$.fn.extend({
+	tablesorterPager: $.tablesorterPager.construct
+});
+
+})(jQuery);
+;/*
+ * jQuery Storage API Plugin
+ *
+ * Copyright (c) 2013 Julien Maurel
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * Project home:
+ * https://github.com/julien-maurel/jQuery-Storage-API
+ *
+ * Version: 1.6.0
+ *
+ */
+(function($){
+  // Prefix to use with cookie fallback
+  var cookie_local_prefix="ls_";
+  var cookie_session_prefix="ss_";
+
+  // Get items from a storage
+  function _get(storage){
+    var l=arguments.length,s=window[storage],a=arguments,a1=a[1],vi,ret,tmp;
+    if(l<2) throw new Error('Minimum 2 arguments must be given');
+    else if($.isArray(a1)){
+      // If second argument is an array, return an object with value of storage for each item in this array
+      ret={};
+      for(var i in a1){
+        vi=a1[i];
+        try{
+          ret[vi]=JSON.parse(s.getItem(vi));
+        }catch(e){
+          ret[vi]=s.getItem(vi);
+        }
+      }
+      return ret;
+    }else if(l==2){
+      // If only 2 arguments, return value directly
+      try{
+        return JSON.parse(s.getItem(a1));
+      }catch(e){
+        return s.getItem(a1);
+      }
+    }else{
+      // If more than 2 arguments, parse storage to retrieve final value to return it
+      // Get first level
+      try{
+        ret=JSON.parse(s.getItem(a1));
+      }catch(e){
+        throw new ReferenceError(a1+' is not defined in this storage');
+      }
+      // Parse next levels
+      for(var i=2;i<l-1;i++){
+        ret=ret[a[i]];
+        if(ret===undefined) throw new ReferenceError([].slice.call(a,1,i+1).join('.')+' is not defined in this storage');
+      }
+      // If last argument is an array, return an object with value for each item in this array
+      // Else return value normally
+      if($.isArray(a[i])){
+        tmp=ret;
+        ret={};
+        for(var j in a[i]){
+          ret[a[i][j]]=tmp[a[i][j]];
+        }
+        return ret;
+      }else{
+        return ret[a[i]];
+      }
+    }
+  }
+
+  // Set items of a storage
+  function _set(storage){
+    var l=arguments.length,s=window[storage],a=arguments,a1=a[1],a2=a[2],vi,to_store={},tmp;
+    if(l<2 || !$.isPlainObject(a1) && l<3) throw new Error('Minimum 3 arguments must be given or second parameter must be an object');
+    else if($.isPlainObject(a1)){
+      // If first argument is an object, set values of storage for each property of this object
+      for(var i in a1){
+        vi=a1[i];
+        if(!$.isPlainObject(vi)) s.setItem(i,vi);
+        else s.setItem(i,JSON.stringify(vi));
+      }
+      return a1;
+    }else if(l==3){
+      // If only 3 arguments, set value of storage directly
+      if(typeof a2==='object') s.setItem(a1,JSON.stringify(a2));
+      else s.setItem(a1,a2);
+      return a2;
+    }else{
+      // If more than 3 arguments, parse storage to retrieve final node and set value
+      // Get first level
+      try{
+        tmp=s.getItem(a1);
+        if(tmp!=null) {
+          to_store=JSON.parse(tmp);
+        }
+      }catch(e){
+      }
+      tmp=to_store;
+      // Parse next levels and set value
+      for(var i=2;i<l-2;i++){
+        vi=a[i];
+        if(!tmp[vi] || !$.isPlainObject(tmp[vi])) tmp[vi]={};
+        tmp=tmp[vi];
+      }
+      tmp[a[i]]=a[i+1];
+      s.setItem(a1,JSON.stringify(to_store));
+      return to_store;
+    }
+  }
+
+  // Remove items from a storage
+  function _remove(storage){
+    var l=arguments.length,s=window[storage],a=arguments,a1=a[1],to_store,tmp;
+    if(l<2) throw new Error('Minimum 2 arguments must be given');
+    else if($.isArray(a1)){
+      // If first argument is an array, remove values from storage for each item of this array
+      for(var i in a1){
+        s.removeItem(a1[i]);
+      }
+      return true;
+    }else if(l==2){
+      // If only 2 arguments, remove value from storage directly
+      s.removeItem(a1);
+      return true;
+    }else{
+      // If more than 2 arguments, parse storage to retrieve final node and remove value
+      // Get first level
+      try{
+        to_store=tmp=JSON.parse(s.getItem(a1));
+      }catch(e){
+        throw new ReferenceError(a1+' is not defined in this storage');
+      }
+      // Parse next levels and remove value
+      for(var i=2;i<l-1;i++){
+        tmp=tmp[a[i]];
+        if(tmp===undefined) throw new ReferenceError([].slice.call(a,1,i).join('.')+' is not defined in this storage');
+      }
+      // If last argument is an array,remove value for each item in this array
+      // Else remove value normally
+      if($.isArray(a[i])){
+        for(var j in a[i]){
+          delete tmp[a[i][j]];
+        }
+      }else{
+        delete tmp[a[i]];
+      }
+      s.setItem(a1,JSON.stringify(to_store));
+      return true;
+    }
+  }
+
+  // Remove all items from a storage
+  function _removeAll(storage, reinit_ns){
+    var keys=_keys(storage);
+    for(var i in keys){
+      _remove(storage,keys[i]);
+    }
+    // Reinitialize all namespace storages
+    if(reinit_ns){
+      for(var i in $.namespaceStorages){
+        _createNamespace(i);
+      }
+    }
+  }
+
+  // Check if items of a storage are empty
+  function _isEmpty(storage){
+    var l=arguments.length,a=arguments,s=window[storage],a1=a[1];
+    if(l==1){
+      // If only one argument, test if storage is empty
+      return (_keys(storage).length==0);
+    }else if($.isArray(a1)){
+      // If first argument is an array, test each item of this array and return true only if all items are empty
+      for(var i=0; i<a1.length;i++){
+        if(!_isEmpty(storage,a1[i])) return false;
+      }
+      return true;
+    }else{
+      // If more than 1 argument, try to get value and test it
+      try{
+        var v=_get.apply(this, arguments);
+        // Convert result to an object (if last argument is an array, _get return already an object) and test each item
+        if(!$.isArray(a[l-1])) v={'totest':v};
+        for(var i in v){
+          if(!(
+            ($.isPlainObject(v[i]) && $.isEmptyObject(v[i])) ||
+            ($.isArray(v[i]) && !v[i].length) ||
+            (!v[i])
+          )) return false;
+        }
+        return true;
+      }catch(e){
+        return true;
+      }
+    }
+  }
+
+  // Check if items of a storage exist
+  function _isSet(storage){
+    var l=arguments.length,a=arguments,s=window[storage],a1=a[1];
+    if(l<2) throw new Error('Minimum 2 arguments must be given');
+    if($.isArray(a1)){
+      // If first argument is an array, test each item of this array and return true only if all items exist
+      for(var i=0; i<a1.length;i++){
+        if(!_isSet(storage,a1[i])) return false;
+      }
+      return true;
+    }else{
+      // For other case, try to get value and test it
+      try{
+        var v=_get.apply(this, arguments);
+        // Convert result to an object (if last argument is an array, _get return already an object) and test each item
+        if(!$.isArray(a[l-1])) v={'totest':v};
+        for(var i in v){
+          if(!(v[i]!==undefined && v[i]!==null)) return false;
+        }
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+  }
+
+  // Get keys of a storage or of an item of the storage
+  function _keys(storage){
+    var l=arguments.length,s=window[storage],a=arguments,a1=a[1],keys=[],o={};
+    // If more than 1 argument, get value from storage to retrieve keys
+    // Else, use storage to retrieve keys
+    if(l>1){
+      o=_get.apply(this,a);
+    }else{
+      o=s;
+    }
+    if(o._cookie){
+      // If storage is a cookie, use $.cookie to retrieve keys
+      for(var key in $.cookie()){
+        if(key!='') {
+          keys.push(key.replace(o._prefix,''));
+        }
+      }
+    }else{
+      for(var i in o){
+        keys.push(i);
+      }
+    }
+    return keys;
+  }
+
+  // Create new namespace storage
+  function _createNamespace(name){
+    if(!name || typeof name!="string") throw new Error('First parameter must be a string');
+    if(!window.localStorage.getItem(name)) window.localStorage.setItem(name,'{}');
+    if(!window.sessionStorage.getItem(name)) window.sessionStorage.setItem(name,'{}');
+    var ns={
+      localStorage:$.extend({},$.localStorage,{_ns:name}),
+      sessionStorage:$.extend({},$.sessionStorage,{_ns:name})
+    };
+    if($.cookie){
+      if(!window.cookieStorage.getItem(name)) window.cookieStorage.setItem(name,'{}');
+      ns.cookieStorage=$.extend({},$.cookieStorage,{_ns:name});
+    }
+    $.namespaceStorages[name]=ns;
+    return ns;
+  }
+
+  // Namespace object
+  var storage={
+    _type:'',
+    _ns:'',
+    _callMethod:function(f,a){
+      var p=[this._type];
+      if(this._ns) p.push(this._ns);
+      [].push.apply(p,a);
+      return f.apply(this,p);
+    },
+    // Get items. If no parameters and storage have a namespace, return all namespace
+    get:function(){
+      return this._callMethod(_get,arguments);
+    },
+    // Set items
+    set:function(){
+      var l=arguments.length,a=arguments,a0=a[0];
+      if(l<1 || !$.isPlainObject(a0) && l<2) throw new Error('Minimum 2 arguments must be given or first parameter must be an object');
+      // If first argument is an object and storage is a namespace storage, set values individually
+      if($.isPlainObject(a0) && this._ns){
+        for(var i in a0){
+          _set(this._type,this._ns,i,a0[i]);
+        }
+        return a0;
+      }else{
+        r=this._callMethod(_set,a);
+        if(this._ns) return r[a0];
+        else return r;
+      }
+    },
+    // Delete items
+    remove:function(){
+      if(arguments.length<1) throw new Error('Minimum 1 argument must be given');
+      return this._callMethod(_remove,arguments);
+    },
+    // Delete all items
+    removeAll:function(reinit_ns){
+      if(this._ns){
+        _set(this._type,this._ns,{});
+        return true;
+      }else{
+        return _removeAll(this._type, reinit_ns);
+      }
+    },
+    // Items empty
+    isEmpty:function(){
+      return this._callMethod(_isEmpty,arguments);
+    },
+    // Items exists
+    isSet:function(){
+      if(arguments.length<1) throw new Error('Minimum 1 argument must be given');
+      return this._callMethod(_isSet,arguments);
+    },
+    // Get keys of items
+    keys:function(){
+      return this._callMethod(_keys,arguments);
+    }
+  };
+
+  // Use jquery.cookie for compatibility with old browsers and give access to cookieStorage
+  if($.cookie){
+    // sessionStorage is valid for one window/tab. To simulate that with cookie, we set a name for the window and use it for the name of the cookie
+    if(!window.name) window.name=Math.floor(Math.random()*100000000);
+    var cookie_storage={
+      _cookie:true,
+      _prefix:'',
+      _expires:null,
+      _path:null,
+      _domain:null,
+      setItem:function(n,v){
+        $.cookie(this._prefix+n,v,{expires:this._expires,path:this._path,domain:this._domain});
+      },
+      getItem:function(n){
+        return $.cookie(this._prefix+n);
+      },
+      removeItem:function(n){
+        return $.removeCookie(this._prefix+n);
+      },
+      clear:function(){
+        for(var key in $.cookie()){
+          if(key!=''){
+            if(!this._prefix && key.indexOf(cookie_local_prefix)===-1 && key.indexOf(cookie_session_prefix)===-1 || this._prefix && key.indexOf(this._prefix)===0) {
+              $.removeCookie(key);
+            }
+          }
+        }
+      },
+      setExpires:function(e){
+        this._expires=e;
+        return this;
+      },
+      setPath:function(p){
+        this._path=p;
+        return this;
+      },
+      setDomain:function(d){
+        this._domain=d;
+        return this;
+      },
+      setConf:function(c){
+        if(c.path) this._path=c.path;
+        if(c.domain) this._domain=c.domain;
+        if(c.expires) this._expires=c.expires;
+        return this;
+      },
+      setDefaultConf:function(){
+        this._path=this._domain=this._expires=null;
+      }
+    };
+    if(!window.localStorage){
+      window.localStorage=$.extend({},cookie_storage,{_prefix:cookie_local_prefix,_expires:365*10});
+      window.sessionStorage=$.extend({},cookie_storage,{_prefix:cookie_session_prefix+window.name+'_'});
+    }
+    window.cookieStorage=$.extend({},cookie_storage);
+    // cookieStorage API
+    $.cookieStorage=$.extend({},storage,{
+      _type:'cookieStorage',
+      setExpires:function(e){window.cookieStorage.setExpires(e); return this;},
+      setPath:function(p){window.cookieStorage.setPath(p); return this;},
+      setDomain:function(d){window.cookieStorage.setDomain(d); return this;},
+      setConf:function(c){window.cookieStorage.setConf(c); return this;},
+      setDefaultConf:function(){window.cookieStorage.setDefaultConf(); return this;}
+    });
+  }
+
+  // Get a new API on a namespace
+  $.initNamespaceStorage=function(ns){ return _createNamespace(ns); };
+  // localStorage API
+  $.localStorage=$.extend({},storage,{_type:'localStorage'});
+  // sessionStorage API
+  $.sessionStorage=$.extend({},storage,{_type:'sessionStorage'});
+  // List of all namespace storage
+  $.namespaceStorages={};
+  // Remove all items in all storages
+  $.removeAllStorages=function(reinit_ns){
+    $.localStorage.removeAll(reinit_ns);
+    $.sessionStorage.removeAll(reinit_ns);
+    if($.cookieStorage) $.cookieStorage.removeAll(reinit_ns);
+    if(!reinit_ns){
+      $.namespaceStorages={};
+    }
+  }
+})(jQuery);
+;/**
 *  OvR Lists - Custom JavaScript
 *
 */
-
+// iOS click lag workaround
+(function( $ ) {
+  $.fn.noClickDelay = function() {
+    var $wrapper = this;
+    var $target = this;
+    var moved = false;
+    $wrapper.bind('touchstart mousedown',function(e) {
+      e.preventDefault();
+      moved = false;
+      $target = $(e.target);
+      if ($target.nodeType == 3) {
+        $target = $($target.parent());
+      }
+      $target.addClass('pressed');
+      $wrapper.bind('touchmove mousemove',function(e) {
+      moved = true;
+      $target.removeClass('pressed');
+    });
+    $wrapper.bind('touchend mouseup',function(e) {
+    $wrapper.unbind('mousemove touchmove');
+    $wrapper.unbind('mouseup touchend');
+    if(!moved && $target.length) {
+      $target.removeClass('pressed');
+      $target.trigger('click');
+      $target.focus();
+    }
+  });
+});
+};
+})( jQuery );
+// end iOS click lag workaround
 // Order Status: Check All / Uncheck All
-function checkAll(trip_list, checktoggle) {
-  var checkboxes = [];
-  checkboxes = document.getElementsByClassName('order_status_checkbox');
-
-  for (var i=0; i<checkboxes.length; i++) {
-    if (checkboxes[i].type == 'checkbox') {
-      checkboxes[i].checked = checktoggle;
-    }
-  }
-}
-
-function formReset(){
-  var tbl = document.getElementById("Listable");
-  while (tbl.firstChild) {
-    tbl.removeChild(tbl.firstChild);
-  }
-}
-
-function tableToForm(){
-  // Reads through generated table and saves to a php form which is submitted to save values to a mysql table
-  var table = document.getElementById('Listable');
-  // Start on row 1 (SKIP HEADER ROW), rowLength - 1 (SKIP FOOTER ROW)
-  var labels = new Array("AM","PM","First","Last","Pickup","Phone","Package","Order","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
-  var form = "<form name='js_save' id='js_save' method='post' action='save.php'>";
-  var trip = document.getElementById("trip").value;
-  for(var rowCounter = 1, rowLength = table.rows.length; rowCounter < rowLength - 1; rowCounter++ ){
-    var id = table.rows[rowCounter].cells[0].children[0].name;
-    id = id.split(":");
-    id = id[0]+":"+id[1];
-    var prefix = id.substring(0,2);
-    for(var cellCounter = 0, cellLength = table.rows[rowCounter].cells.length; cellCounter < cellLength; cellCounter++){
-      if(prefix == "WO"){
-        if(labels[cellCounter] == "First" || labels[cellCounter] == "Last" || labels[cellCounter] == "Pickup" || labels[cellCounter] == "Phone" || labels[cellCounter] == "Package"){
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
-        }
-        else if(labels[cellCounter] == "Order"){
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].innerText+"'>";
-          var select = document.getElementById("trip");
-          form += "<input type='hidden' name='"+id+":Trip' value='"+select.options[select.selectedIndex].value+"'>";
-        }
-        else{
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
-        }
-      }
-      else{
-        // Only capture checkboxes for woocommerce orders
-        if(labels[cellCounter] != "First" && labels[cellCounter] != "Last" && labels[cellCounter] != "Pickup" && labels[cellCounter] != "Phone" && labels[cellCounter] != "Package" && labels[cellCounter] != "Order"){
-          form += "<input type='hidden' name='"+id+":"+labels[cellCounter]+"' value='"+table.rows[rowCounter].cells[cellCounter].children[0].checked+"'>";
-        }
-      }
-    }
-  }
-  form += "</form>";
-  $("body").append(form);
-  document.getElementById("js_save").submit();
-}
-
-
-$(function(){
-  // Chained drop downs
-  $("#trip").chained("#destination");
+function checkAll(status) {
+  // reset checked attr status either way
+  $('.order_status_checkbox').removeAttr('checked');
   
-  //custom column counter
-  $.fn.colCount = function() {
-     var colCount = 0;
-     $('thead:nth-child(1) td', this).each(function () {
-         if ($(this).attr('colspan')) {
-             colCount += +$(this).attr('colspan');
-         } else {
-             colCount++;
-         }
-     });
-     return colCount;
-  };
-  // tablesorter configuration
-  // http://mottie.github.io/tablesorter/docs/#Configuration
-  var rows = $("#Listable").colCount();
-  // check for pickup column, 18 columns with 17 without
-  if(rows == 18){
-    $('#Listable').tablesorter({
+  if (status == 'check'){
+    $('.order_status_checkbox').prop('checked', true);
+  }
+}
+function formReset(){
+  var clearForm = confirm("You are about to clear the form and locally saved data. Ok?");
+  if ( clearForm ) {
+    $("#Listable").trigger("destroy");
+    $('#Listable').remove();
+    $('#locationContainer').remove();
+    $('#itemContainer').remove();
+    $('.pager').css('visibility','hidden');
+    $('#destination').val('none');
+    $('#destination').trigger('change');
+    checkAll('uncheck');
+    $('input[name=pending]').click();
+    $('input[name=processing]').click();
+    $('input[name=walk-on]').click();
+    $('input[name=completed]').click();
+    window.storage.set('unsaved', false);
+    window.storage.remove('orderData');
+    window.storage.remove('destination');
+    window.storage.remove('trip');
+    window.storage.remove('tablesorter-pager');
+  }
+}
+function checkPackages(text, order, orderItem, value){
+  var bus         = new RegExp(/bus only/i);
+  var begLift     = new RegExp(/beginner lift/i);
+  var lesson      = new RegExp(/lesson/i);
+  var progSki     = new RegExp(/prog.* lesson.*ski rental/i);
+  var progBrd     = new RegExp(/prog.* lesson.*board rental/i);
+  var progLesson  = new RegExp(/prog.* lesson/i);
+  var ski         = new RegExp(/ski rental/i);
+  var brd         = new RegExp(/board rental/i);
+  var allArea     = new RegExp(/all area/i);
+  var weekendLift = new RegExp(/lift/i);
+
+  if ( bus.test(text) ) {
+    console.log('RegExp: Matched bus only');
+    var busId = $('#' + order + "\\:" + orderItem + "\\:Bus");
+    if ( busId.children('span').text() == value ){
+      busId.children('button').click();
+    } else { console.log('Bus: wrong value');}
+  } 
+  else {
+    // Selectors for button values
+    var begId   = "#" + order + "\\:" + orderItem + "\\:Beg";
+    var allAreaId = "#" + order + "\\:" + orderItem + "\\:All_Area";
+    var progId    = "#" + order + "\\:" + orderItem + "\\:Prog_Lesson";
+    var skiId     = "#" + order + "\\:" + orderItem + "\\:SKI";
+    var brdId     = "#" + order + "\\:" + orderItem + "\\:BRD";
+    var ltrId     = "#" + order + "\\:" + orderItem + "\\:LTR";
+    var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS";
+    
+    // All area, beginner, weekend lift ticket
+    if ( begLift.test(text) ) {
+      if ( $(begId).children('span').text() == value ){
+        $(begId).children('button').click();
+      }
+    } else if ( allArea.test(text) || weekendLift.test(text) ) {
+      if ( $(allAreaId).children('span').text() == value ) {
+        $(allAreaId).children('button').click();
+      }
+    }
+    
+    // Lessons + rental combos
+    if ( progSki.test(text)) {
+      if ( $(progId).children('span').text() == value ) {
+        $(progId).children('button').click();
+      }
+      if ( $(skiId).children('span').text() == value ) {
+        $(skiId).children('button').click();
+      }
+    } 
+    else if ( progBrd.test(text) ) {
+      if ( $(brdId).children('span').text() == value ) {
+        $(brdId).children('button').click();
+      }
+      if ( $(progId).children('span').text() == value ) {
+        $(progId).children('button').click();
+      } 
+    } 
+    else if ( progLesson.test(text) ) {
+      // ADD VALUE CHECK
+      progId.children('button').click();
+    } 
+    else if ( lesson.test(text) && brd.test(text) ) {
+      if ( $(ltrId).children('span').text() == value ) {
+        $(ltrId).children('button').click();
+      }
+      if ( $(brdId).children('span').text() == value ) {
+        $(brdId).children('button').click();
+      }
+    } 
+    else if ( lesson.test(text) && ski.test(text) ) {
+      if ( $(ltsId).children('span').text() == value ) {
+        $(ltsId).children('button').click();
+      }
+      if ( $(skiId).children('span').text() ){
+        $(skiId).children('button').click();
+      }
+    } 
+    else if ( ski.test(text) ) {
+      if ( $(skiId).children('span').text() == value ) {
+        $(skiId).children('button').click();
+      }
+    } 
+    else if ( brd.test(text) ) {
+      if ( $(brdId).children('span').text() == value ) {
+        $(brdId).children('button').click();
+      }
+    }
+    else if ( lesson.test(text) ) {
+      if ( value == "false" ) {
+        var skiRegex = new RegExp(/ski/i);
+        var brdRegex = new RegExp(/brd/i);
+        var input = prompt('SKI or BRD Lesson?\n(enter ski or brd)');
+        if ( skiRegex.test(input) ) {
+          $(ltsId).children('button').click();
+        } else if ( brdRegex.test(input) ) {
+          $(ltrId).children('button').click();
+        }  
+      } else {
+        if ( $(ltsId).children('span').text() == value ) {
+          $(ltsId).children('button').click();
+        }
+        if ( $(ltrId).children('span').text() == value ) {
+          $(ltrId).children('button').click();
+        }
+      }
+      
+    }
+  } 
+}
+function generateOnOff(){
+  // switch generate list button between online and offline mode
+  $('#locationContainer').remove();
+  $('#itemContainer').remove();
+  $('#Listable').remove();
+  $('.pager').css("visiblity", "hidden");
+  if (window.navigator.onLine){
+    $('#loader').css('display','inline');
+    $('#trip').getData();
+  } else {
+    $('#loader').css('display','inline');
+    setTimeout(function(){
+      setupDropDowns();
+      $('#save').css('visibility','hidden');
+      $('#csv_list').css('visibility','hidden');
+      $('#csv_email').css('visibility','hidden');
+      console.log('Offline Loading data:');
+      window.orderData = window.storage.get('orderData');
+    
+      $('#listTable').buildTable();
+    },200);
+  }
+}
+function postData(){
+  // send data to backend mySQL database
+
+  console.log('SaveData: ');
+  console.log(window.storage.get('orderData'));
+  $('#saveBar').css('width', '80%');
+  var jqxhr = $.post( "save.php", {'data' : window.storage.get('orderData') } ,function() {})
+    .done(function() {
+      $('#saveBar').css('width', '100%');
+      setTimeout(function(){
+        $('#saveProgress').remove();
+        $('#mainBody').append('<div id="success" class="alert alert-success alert-dismissable">' +
+                              '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                              'Successful Save</div>');
+        setTimeout(function(){ 
+          $('#success').remove();
+        }, 5000);
+        window.storage.set('unsaved', false);
+      });
+    })
+    .fail(function() {
+      console.log("POST request error");
+      $('#mainBody').append('<div id="success" class="alert alert-danger alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            'Something went wrong, try saving again</div>');
+                            $('.close').on('click',function(){
+                              $('#saveProgress').remove();
+                            });
+    });
+}
+function setupProgressBar(){
+  $('#mainBody').append('<div id="saveProgress"><h3>Save Progress:</h3>' +
+    '<div class="progress progress-striped active">' +
+    '<div id="saveBar" class="progress-bar"  role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 1%">' +
+      '<span class="sr-only">1% Complete</span>' +
+    '</div>' +
+  '</div>' +
+    '</div>');
+} 
+$('#save').click(function(){
+  setupProgressBar();
+  $('#saveBar').css('width', '10%');
+  
+  if(window.navigator.onLine){
+    $('#saveBar').css('width', '50%');
+    postData();
+  } else {
+    $('#mainBody').append('<div id="success" class="alert alert-warning alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+                            'Changes made have already been saved locally, try again when you\'re online</div>');
+    $('#saveBar').css('width', '100%');
+    setTimeout(function(){
+      $('#saveProgress').remove();
+    },2000);
+  }
+});
+$.fn.getData = function(){
+  var jqxhr = $.post("/pull.php", {'requestType':'orders','trip' : $(this).val()})
+  .done(function(data){
+    window.orderData = data;
+    window.storage.set('orderData',orderData);
+    $("#listTable").buildTable();
+  })
+  .fail(function(error){
+    console.log('Error getting data:' + error.message);
+  });
+};
+function setLocalTrip(){
+  window.storage.set('trip', $('#trip').val());
+  window.storage.set('destination', $('#destination').val());
+}
+function setTrip(){
+  $('#destination').val(window.storage.get('destination'));
+  // Need to trigger change for chained plugin to show trips
+  $('#destination').trigger('change');
+  $('#trip').val(window.storage.get('trip'));
+
+}
+function setupTablesorter(rows) {
+    var pagerOptions = {
+    container: $('.pager'),
+    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})' 
+    };
+    var headerOptions = {
+      0: { sorter: 'text' },
+      1: { sorter: 'checkbox' },
+      2: { sorter: 'text' },
+      3: { sorter: 'text' },
+      4: { sorter: 'text' },
+      5: { sorter: 'digit' },
+      6: { sorter: 'text' },
+      7: { sorter: 'digit' },
+      8: {sorter: 'text'}, 
+      9: { sorter: 'text' },
+      10: { sorter: 'text' },
+      11: { sorter: 'text' },
+      12: { sorter: 'text' },
+      13: { sorter: 'text' },
+      14: { sorter: 'text' },
+      15: { sorter: 'text' },
+      16: { sorter: 'text' },
+      17: { sorter: 'text' },
+      18: { sorter: 'text' }
+    };
+    var filterOptions = {
+        4 : true,
+        6 : true 
+      };
+    var widgetOptions = {
+      editable_columns       : '2-6',  // point to the columns to make editable (zero-based index)
+      editable_enterToAccept : true,     // press enter to accept content, or click outside if false
+      editable_autoResort    : false,    // auto resort after the content has changed.
+      editable_noEdit        : 'no-edit', // class name of cell that is no editable
+      stickyHeaders_offset: 50,
+      filter_childRows : true,
+      filter_columnFilters : true,
+      filter_hideFilters : true,
+      filter_ignoreCase : true,
+      filter_reset : '.reset',
+      filter_searchDelay : 0,
+      filter_functions : filterOptions
+    };
+    // Modify options for tables with no pickup column
+    if (rows == 17) {
+      delete headerOptions[18];
+      headerOptions[4].sorter = 'digit';
+      headerOptions[5].sorter = 'text';
+      headerOptions[6].sorter = 'digit';
+      headerOptions[7].sorter = 'text';
+      widgetOptions.editable_columns = '2-5';
+      delete filterOptions[4];
+      delete filterOptions[6];
+      filterOptions[5] = true;
+    }
+    
+    var tablesorterOptions = {
+      delayInit: false,
+      widthFixed: true,
+      ignoreCase: true,
+      removeRows: true,
       sortList: [[4,0],[3,0]],
-      headers: {
-            0: { sorter: 'checkbox' },
-            1: { sorter: 'checkbox' },
-            8: { sorter: 'checkbox' },
-            9: { sorter: 'checkbox' },
-            10: { sorter: 'checkbox' },
-            11: { sorter: 'checkbox' },
-            12: { sorter: 'checkbox' },
-            13: { sorter: 'checkbox' },
-            14: { sorter: 'checkbox' },
-            15: { sorter: 'checkbox' },
-            16: { sorter: 'checkbox' },
-            17: { sorter: 'checkbox' }
-          },
-      widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter'],
-      widgetOptions: {
-        editable_columns       : "2-6",  // point to the columns to make editable (zero-based index)
-        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
-        editable_autoResort    : false,    // auto resort after the content has changed.
-        editable_noEdit        : 'no-edit', // class name of cell that is no editable
-        stickyHeaders_offset: 50,
-        filter_childRows : false,
-        filter_columnFilters : true,
-        filter_hideFilters : true,
-        filter_ignoreCase : true,
-        filter_reset : '.reset',
-        filter_searchDelay : 100,
-        filter_functions : {
-          4 : true,
-          6 : true 
+      headers: headerOptions,
+      widgets : [ 'editable', 'columns','filter' ],
+      widgetOptions: widgetOptions,
+    };
+    if (rows > 0) {
+      $('#Listable').tablesorter(tablesorterOptions).tablesorterPager(pagerOptions);
+      $('.pager').css('visibility','visible');
+    }
+}
+function setupDropDowns(){
+  if (window.navigator.onLine) {
+    var dropDown = {};
+    dropDown.destinations = {};
+    dropDown.trips = {};
+    var jqxhr = $.post('/pull.php', {'requestType':'dropdowns'})
+    .done(function(data){
+      var destinations = '';
+      var trips = '';
+      $.each(data.destinations, function(key,value){
+        destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
+        dropDown.destinations[value] = value;
+      });
+      $('#destination', '#mainBody').append(destinations);
+      $.each(data.trip, function(classType,value){
+        $.each(value, function(tripId, tripLabel){
+          trips += '<option class="' + classType + '" value="' + tripId + '">' + tripLabel + '</option>';
+          if ( typeof dropDown.trips[classType] == 'undefined' ) {
+            dropDown.trips[classType] = {};
+          }
+          dropDown.trips[classType][tripId] = tripLabel;
+        }); 
+      });
+      window.storage.set('dropDown',dropDown);
+      $('#trip', '#mainBody').append(trips);
+      $("#trip").chained("#destination");
+    });
+  } else {
+    var localDropdown = window.storage.get('dropDown');
+    var localTrips = '';
+    var localDestinations = '';
+    $.each(localDropdown.destinations, function(destination){
+      localDestinations += '<option class="' + destination + '" value="' + destination + '">' + destination + '</option>\n';
+    });
+    $('#destination').append(localDestinations);
+    $.each(localDropdown.trips, function(tripClass, data){
+      $.each(data, function(tripId, tripLabel){
+          localTrips += '<option class="' + tripClass + '" value="' + tripId + '">'+tripLabel+'</option>\n';
+      });
+      
+    });
+    $('#trip').append(localTrips);
+    setTimeout(function(){
+      $("#trip").chained("#destination");
+    },200);
+  }
+  
+}
+$.fn.colCount = function() {
+   var colCount = 0;
+   $('thead:nth-child(1) td', this).each(function () {
+       if ($(this).attr('colspan')) {
+           colCount += +$(this).attr('colspan');
+       } else {
+           colCount++;
+       }
+   });
+   return colCount;
+};
+$.fn.buildTable = function(){
+  var hasPickup = '';
+  var orderData   = window.orderData;
+  var tableHeader = '';
+  var tableBody   = '';
+  var tableFooter = '';
+  var localtionTable = '';
+  var itemTable = '';
+  var byLocation  = {};
+  var statusBoxes = {};
+  var fieldTotals = {"Bus" : 0, "All_Area" : 0, "Beg" : 0, "BRD" : 0, "SKI" : 0, "LTS" : 0, "LTR" : 0, "Prog_Lesson" : 0};
+  $('.order_status_checkbox').each(function(){
+    statusBoxes[$(this).attr('name')] = $(this).is(':checked');
+  });
+  $('#Listable').remove();
+  if (window.navigator.onLine) {
+    // ONLINE
+    
+    if (jQuery.isEmptyObject(orderData)) {
+      $(this).append('<div class="container" id="Listable"><p>There are no orders for the selected Trip and Order Status.</p></div>');
+      $('#loader').css('display','none');
+      throw new Error('Aborted table creation, no data here');
+    } 
+  }
+
+  var events = [];
+  $.each(orderData, function(orderNumber, values){
+    var prefix = orderNumber.substring(0,2);
+    $.each(values, function(orderItemNumber, fields){
+      var id = orderNumber+":"+orderItemNumber;
+      var row = {};
+      
+      if (statusBoxes[fields.Status] === true) {
+        $.each(fields, function(field, value){
+          if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
+            row[field] = '<td id="' + id + ':' + field +'"';
+            switch (field) {
+              case 'First':
+                row[field] += ' headers="First"';
+                break;
+              case 'Last':
+                row[field] += ' headers="Last"';
+                break;
+              case 'Pickup':
+                row[field] += ' headers="Pickup"';
+                hasPickup = true;
+                break;
+              case 'Phone':
+                row[field] += ' headers="Phone"';
+                break;
+              case 'Package':
+                row[field] += ' headers="Package"';
+                break;
+              case 'Order':
+                row[field] += 'headers="Order"';
+            }
+            if (prefix != 'WO') {
+              row[field] += ' class="no-edit"';
+            } else {
+              row[field] += ' class="saved"';
+            }
+            row[field] +='>' + value + '</td>';
+          } else if (field != 'Email'){
+            var btnClass;
+            var spanClass;
+            if (value == 1) {
+              btnClass = 'btn-success';
+              spanClass = 'glyphicon-ok-sign';
+            } else {
+              btnClass= 'btn-danger';
+              spanClass = 'glyphicon-minus-sign';
+            }
+            value = (value == 1 ? true : false);
+            if ( value == 1 ) {
+              value = true;
+              if ( typeof fieldTotals[field] === 'undefined' && (field != 'Waiver' && field != 'Order') ) {
+                fieldTotals[field] = 1;
+              } else if (field != 'Waiver' && field != 'Order'){
+                fieldTotals[field]++;
+              }
+            } else {
+              value = false;
+            }
+            row[field] = '<td class="center-me" id ="' + id + ':' + field + '"><span class="value">' + value + '</span>' +
+                          '<button name ="' + id + ':' + field + '" class="btn-xs btn-default ' + btnClass + '" value="' + value + '">' +
+                          '<span class="glyphicon ' + spanClass + '"></span></button></td>';
+
+            events.push("#"+orderNumber+"\\:"+orderItemNumber+"\\:"+field);
+          }
+        });
+        /* Had to manually assemble cells in correct order, couldn't get AM/Pm on left side of table with a loop
+          this is proably a result of moving data from PHP to JSON and back to an array */
+        tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
+        if (row.Pickup) {
+          tableBody += row.Pickup;
+        } 
+        
+        tableBody += row.Phone + row.Package;
+        
+        if (prefix == 'WO') {
+          tableBody += '<td>' + orderNumber + '</td>';
+        } else {
+          tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
+        }
+        
+        tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
+        tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
+        //set itemTable values
+        if ( findButtonValueString(row.Bus) == "true" ) { fieldTotals.Bus++; }
+        if ( findButtonValueString(row.All_Area) == "true" ) { fieldTotals.All_Area++; }
+        if ( findButtonValueString(row.Beg) == "true" ) { fieldTotals.Beg++; }
+        if ( findButtonValueString(row.BRD) == "true" ) { fieldTotals.BRD++; }
+        if ( findButtonValueString(row.SKI) == "true" ) { fieldTotals.SKI++; }
+        if ( findButtonValueString(row.LTS) == "true" ) { fieldTotals.LTS++; }
+        if ( findButtonValueString(row.LTR) == "true" ) { fieldTotals.LTR++; }
+        if ( findButtonValueString(row.Prog_Lesson) == "true" ) { fieldTotals.Prog_Lesson++; }
+        if (row.Pickup) {
+          var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
+          if ( typeof byLocation[locationName] === 'undefined' ) {
+            byLocation[locationName] = {};
+            byLocation[locationName].Expected = 0;
+            byLocation[locationName].AM = 0;
+            byLocation[locationName].PM = 0;
+          } 
+          byLocation[locationName].Expected++;
+          if ( findButtonValueString(row.AM) == "true" ) {
+            byLocation[locationName].AM++;
+          }
+          if ( findButtonValueString(row.PM) == "true") {
+            byLocation[locationName].PM++;
+          }
         }
       }
     });
+  });
+  // Assemble table from data
+  tableHeader += '<table id="Listable" class="tablesorter table table-bordered table-striped table-condensed">\n' +
+                    '<thead>' +
+                    '<tr class="tablesorter-headerRow">\n' +
+                    '<td class="filter-false">AM</td>' +
+                    '<td class="filter-false">PM</td>' +
+                    '<td>First</td>' +
+                    '<td>Last</td>';
+                      
+  if (hasPickup == 1) {
+    tableHeader += '<td data-placeholder="Choose a Location">Pickup</td>';
   }
-  else if (rows == 17){
-    $('#Listable').tablesorter({
-      sortList: [[4,0],[3,0]],
-      headers: {
-            0: { sorter: 'checkbox' },
-            1: { sorter: 'checkbox' },
-            8: { sorter: 'checkbox' },
-            9: { sorter: 'checkbox' },
-            10: { sorter: 'checkbox' },
-            11: { sorter: 'checkbox' },
-            12: { sorter: 'checkbox' },
-            13: { sorter: 'checkbox' },
-            14: { sorter: 'checkbox' },
-            15: { sorter: 'checkbox' },
-            16: { sorter: 'checkbox' },
-            17: { sorter: 'checkbox' }
-          },
-      widgets : [ 'editable','zebra', 'columns','stickyHeaders','filter'],
-      widgetOptions: {
-        editable_columns       : "2-5",  // point to the columns to make editable (zero-based index)
-        editable_enterToAccept : true,     // press enter to accept content, or click outside if false
-        editable_autoResort    : false,    // auto resort after the content has changed.
-        editable_noEdit        : 'no-edit', // class name of cell that is no editable
-        stickyHeaders_offset: 50,
-        filter_childRows : false,
-        filter_columnFilters : true,
-        filter_hideFilters : true,
-        filter_ignoreCase : true,
-        filter_reset : '.reset',
-        filter_searchDelay : 100,
-        filter_functions : {
-          5 : true
+    
+  tableHeader += '<td>Phone</td>' +
+                '<td data-placeholder="Choose a Package">Package</td>' +
+                '<td>Order</td>' +
+                '<td class="filter-false">Waiver</td>' +
+                '<td class="filter-false">Product REC.</td>' +
+                '<td class="filter-false">Bus Only</td>' +
+                '<td class="filter-false">All Area Lift</td>' +
+                '<td class="filter-false">Beg. Lift</td>' +
+                '<td class="filter-false">BRD Rental</td>' +
+                '<td class="filter-false">Ski Rental</td>' +
+                '<td class="filter-false">LTS</td>' +
+                '<td class="filter-false">LTR</td>' +
+                '<td class="filter-false">Prog. Lesson</td>\n' +
+                '</tr>' +
+                '</thead>\n';
+                
+  tableBody += '</tbody>\n';
+  tableFooter += '<tfoot>\n<tr>' +
+                 '<td><button type="button" class="btn btn-primary" id="add">' +
+                 '<span class="glyphicon glyphicon-plus"></span></button></td>' +
+                 '<td><button type="button" class="btn btn-danger" id="remove">' +
+                 '<span class="glyphicon glyphicon-minus"></span></button></td>' +
+                 '</tfoot></table>';
+  if (byLocation) {
+    locationTable = '<div id="locationContainer" class="col col-md-4 col-md-offset-2"><h4>Riders by pickup location:</h4>';
+    locationTable += '<table id="locationTable" class="table table-bordered table-striped table-condensed">\n';
+    locationTable += '<thead><tr><td>Location</td><td>Expected</td><td>AM</td><td>PM</td></tr></thead>\n';
+    locationTable += '<tbody>\n';
+    $.each(byLocation, function(location, value){
+      locationTable += '<tr><td>' + location + '</td><td>' + value.Expected + '</td><td>' + value.AM+ '</td><td>' + value.PM + '</td></tr>\n';
+    });
+    locationTable += '</tbody></table></div>';
+    $('#totals').append(locationTable);
+  }
+  itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
+  itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
+  itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n';
+  itemTable += '<tbody><tr><td>Bus Only</td><td id="Bus">' + fieldTotals.Bus + '</td></tr>\n';
+  itemTable += '<tr><td>All Area Lift</td><td id="All_Area">' + fieldTotals.All_Area + '</td></tr>\n';
+  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + fieldTotals.Beg + '</td></tr>\n';
+  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + fieldTotals.BRD + '</td></tr>\n';
+  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + fieldTotals.SKI + '</td></tr>\n';
+  itemTable += '<tr><td>Learn To Ski</td><td id="LTS">' + fieldTotals.LTS + '</td></tr>\n';
+  itemTable += '<tr><td>Learn To Ride</td><td id="LTR">' + fieldTotals.LTR + '</td></tr>\n';
+  itemTable += '<tr><td>Progressive Lesson</td><td id="Prog_Lesson">' + fieldTotals.Prog_Lesson + '</td></tr>\n';
+  itemTable += '</tbody></table></div>';
+  $('#totals').append(itemTable);
+  var output = tableHeader + tableBody + tableFooter;
+  $(this).append(output);
+  $('#loader').css('display','none');
+  // click event to add row to the table for a manual order
+  $('#add').click(function(){addOrder();});
+   
+   // click event to remove unsaved manual orders from table
+   $('#remove').click(function(){removeOrder();});
+   
+  $('#save').css('visibility','visible');
+  if (window.navigator.onLine){
+    $('#csv_list').css('visibility','visible');
+    $('#csv_email').css('visibility','visible');
+  }
+  
+  setupTablesorter($("#Listable").colCount());
+  
+  // update table when sorting (speeds up click lag on iOS/mobile devices )
+  $('#Listable thead tr td').on("click", function(){ $('#Listable').trigger('update'); });
+  
+  setLocalTrip();
+  
+  $.each(events, function(key,value){
+    addButtonListener(value);
+  });
+};
+function findButtonValueString(searchString){
+  var reg = new RegExp(/"value">([a-zA-Z]*)/);
+  var result = reg.exec(searchString);
+  return result[1];
+}
+function addButtonListener(value){
+  $(value,'#Listable').on('click',function(){
+    var button = $(this).children('button');
+    var iconSpan = button.children('.glyphicon');
+    var hiddenSpan = $(this).children('span');
+    var tdId = $(this).attr('id');
+    tdId = tdId.split(':');
+    var order = tdId[0];
+    var item = tdId[1];
+    var field = tdId[2];
+    var packageText;
+    var packageValue;
+    var fieldValue;
+    var listLocation;
+    var locationRow;
+    
+    var time = (((new Date()).valueOf()).toString()).substr(0,10);
+    
+    if ( button.hasClass('btn-success')) {
+      button.removeClass('btn-success').addClass('btn-danger').val('false');
+      iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
+      hiddenSpan.text('false');
+      orderData[order][item][field] = "0";
+      packageValue = "true";
+      $("#" + field).text(parseInt($("#" + field).text(), 10) - 1);
+      if ( field == 'AM' ) {
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) - 1);
+      } else if ( field == 'PM' ) {
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().next().text(parseInt(locationRow.next().next().next().text(), 10) - 1);
+      }
+    } else if ( button.hasClass('btn-danger')) {
+      button.removeClass('btn-danger').addClass('btn-success').val('true');
+      iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
+      hiddenSpan.text('true');
+      orderData[order][item][field] = "1";
+      packageValue = "false";
+      $("#" + field).text(parseInt($("#" + field).text(), 10) + 1);
+      if ( field == 'AM'){
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) + 1);
+      } else if ( field == 'PM' ) {
+        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
+        locationRow.next().next().next().text(parseInt(locationRow.next().next().next().text(), 10) + 1);
+      }
+    }
+    
+    if ( typeof orderData[order][item].timeStamp === undefined ) {
+      console.log('Setting timeStamp field');
+    }
+    
+    orderData[order][item].timeStamp = time;
+    
+    window.storage.set('orderData',window.orderData);
+    window.storage.set('unsaved',true);
+    
+    if (field == 'AM') {
+      packageText = $("#" + order + "\\:" + item + "\\:Package").text();
+      checkPackages(packageText, order, item, packageValue);
+    }
+  });
+}
+function addManualListener(value){
+  $(value).on('blur', function(){
+    var id = $(this).attr('id');
+    id = id.split(':');
+    var order = id[0];
+    var itemNum = id[1];
+    var field = id[2];
+    var time = (((new Date()).valueOf()).toString()).substr(0,10);
+    var text = $(this).text();
+
+    if ( text === '' || text === ' ' || text == 'Cannot be blank!') {
+      $(this).text('Cannot be blank!').css('color','red');
+    } else {
+      $(this).css('color','');
+      // Setup nested objects if they do not exist
+      if ( typeof window.orderData[order] === "undefined" ) {
+        window.orderData[order] = {};
+      }
+      if (typeof window.orderData[order][itemNum] === "undefined" ) {
+        window.orderData[order][itemNum] = {};
+      }
+      if (typeof window.orderData[order][itemNum].Trip === "undefined" ) {
+        window.orderData[order][itemNum].Trip = $('#trip').val();
+      }
+      window.orderData[order][itemNum][field] = text;
+      window.orderData[order][itemNum].timeStamp = time;
+      window.storage.set('orderData',window.orderData);
+      window.storage.set('unsaved',true);
+    }
+  });
+  $(value).on('focusin', function(){
+    var text = $(this).text();
+    if ( text == 'Cannot be blank!' || text === ' ') {
+      $(this).text('');
+    }
+  });
+}
+function addOrder(){
+  // switch to last page
+  $('.last.btn.btn-default').trigger('click');
+  
+  // Find total cell and increment
+  $('#total_guests').text( function(i,txt) { return parseInt(txt,10) + 1;} );
+  
+  //Generate Walk On order #
+  var itemNum = Math.floor( Math.random() * 90000 );
+  var order = 'WO' + Math.floor( Math.random() * 90000 );
+  var id = order + ":" + itemNum;
+  
+  var row = '<tr class="manual">' +
+  '<td class="center-me" id ="' + id + ':AM"><span class="value">false</span>' +
+  '<button name ="' + id + ':AM" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':PM"><span class="value">false</span>' +
+  '<button name ="' + id + ':PM" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td contenteditable="true" id ="' + id +':First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
+  '<td class="center-me" id ="' + id + ':Waiver"><span class="value">false</span>' +
+  '<button name ="' + id + ':Waiver" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Product"><span class="value">false</span>' +
+  '<button name ="' + id + ':Product" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Bus"><span class="value">false</span>' +
+  '<button name ="' + id + ':Bus" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':All_Area"><span class="value">false</span>' +
+  '<button name ="' + id + ':All_Area" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Beg"><span class="value">false</span>' +
+  '<button name ="' + id + ':Beg" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':BRD"><span class="value">false</span>' +
+  '<button name ="' + id + ':BRD" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':SKI"><span class="value">false</span>' +
+  '<button name ="' + id + ':SKI" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':LTS"><span class="value">false</span>' +
+  '<button name ="' + id + ':LTS" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':LTR"><span class="value">false</span>' +
+  '<button name ="' + id + ':LTR" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id ="' + id + ':Prog_Lesson"><span class="value">false</span>' +
+  '<button name ="' + id + ':Prog_Lesson" class="btn-xs btn-default btn-danger" value="false">' +
+  '<span class="glyphicon glyphicon-minus-sign"></span></button></td></tr>',
+  $row = $(row),
+  resort = false;
+  $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:AM");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:First");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Last");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Phone");
+  addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Product");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Bus");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:All_Area");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Beg");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:BRD");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:SKI");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:LTS");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:LTR");
+  addButtonListener("#" + order + "\\:" + itemNum + "\\:Prog_Lesson");
+  $("#" + order + "\\:" + itemNum + "\\:First").focus();
+}
+function removeOrder(){
+    if($('#Listable tbody tr:last').hasClass('manual')){
+      var label = $('#Listable tbody tr:last td').attr('id');
+      var id = label[0] + ':' + label[1];
+      
+      // Delete from object and local storage
+      delete window.orderData[id];
+      window.storage.set('orderData',window.orderData);
+      
+      $('#Listable tbody tr:last').remove();
+      $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
+      $('#Listable').trigger("update"); 
+    }
+}
+function exportCsv(mode){
+  var text = '';
+  if ( mode == 'Email' ) {
+    text += 'Email, First, Last, Package, Pickup\n';
+  } else if ( mode == 'Export' ) {
+    text += 'AM, PM, First, Last, Pickup, Phone, Package, Order, Waiver, Product REC.,';
+    text += ' Bus Only, All Area Lift, Beg. Lift, BRD Rental, Ski Rental, LTS, LTR, Prog. Lesson\n';
+  }
+  var statusBoxes = {};
+  $('.order_status_checkbox').each(function(){
+    statusBoxes[$(this).attr('name')] = $(this).is(':checked');
+  });
+  $.each(window.orderData, function(order,data){
+    $.each(data, function(orderItem, fields){
+      if ( statusBoxes[fields.Status] === true ) {
+        if ( mode == 'Export' ) {
+          text += (fields.AM == 1 ? "X":"O") + ',' + (fields.PM == 1 ? "X":"O") + ',"' + fields.First + '","' + fields.Last + '","' + fields.Pickup + '","' + fields.Phone + '",'; 
+          text += '"' + fields.Package + '",' + order + ',' +  (fields.Waiver == 1 ? "X":"O") + ',' + (fields.Product == 1 ? "X":"O") + ',';
+          text += (fields.Bus == 1 ? "X":"O") + ',' + (fields.All_Area == 1 ? "X":"O") + ',' + (fields.Beg == 1 ? "X":"O") + ',';
+          text += (fields.BRD == 1 ? "X":"O") + ',' + (fields.SKI == 1 ? "X":"O") + ',' + (fields.LTS == 1 ? "X":"O") + ',';
+          text += (fields.LTR == 1 ? "X":"O") + ',' + (fields.Prog_Lesson == 1 ? "X":"O") + '\n';  
+        } else if ( mode == 'Email' ) { 
+          text += '"' + fields.Email + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
         }
       }
-    }); 
-  }
-  $('#add').click(function(){
-    // Find total cell and increment
-    var cell = document.getElementById('total_guests');
-    total = Number(cell.innerHTML) + 1;
-    cell.innerHTML = total;
+    });
+  });
 
-    //Generate Walk On order #
-    var itemNum = Math.floor(Math.random()*90000);
-    var order = 'WO'+ Math.floor(Math.random()*90000);
-    var id = order+":"+itemNum;
-    var row = '<tr><td><input type="checkbox" name="'+id+':AM"></td><td><input type="checkbox" name="'+id+':PM"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td class="no-edit">'+order+'</td><td><input type="checkbox" name="'+id+':Waiver"></td><td><input type="checkbox" name="'+id+':Product"></td><td><input type="checkbox" name="'+id+':Bus"></td><td><input type="checkbox" name="'+id+':All_Area"></td><td><input type="checkbox" name="'+id+':Beg"></td><td><input type="checkbox" name="'+id+':BRD"></td><td><input type="checkbox" name="'+id+':SKI"></td><td><input type="checkbox" name="'+id+':LTS"></td><td><input type="checkbox" name="'+id+':LTR"></td><td><input type="checkbox" name="'+id+':Prog_Lesson"></td></tr>',
-    $row = $(row),
-    // resort table using the current sort; set to false to prevent resort, otherwise 
-    // any other value in resort will automatically trigger the table resort. 
-    resort = true;
-    $('#Listable')
-      .find('tbody').append($row)
-      .trigger('addRows', [$row, resort]);
-    return false;
-   });
+  var encodedUri = encodeURI(text);
+  var link = document.createElement("a");
+  var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
+  link.setAttribute("href", "data:text/csv;charset=utf-8," + encodedUri);
+  link.setAttribute("download",name);
+  link.click();
+  
+}
+function reloadData() {
+  if ( window.storage.get('unsaved') ) {
+    window.orderData = window.storage.get('orderData');
+    console.log('found unsaved data');
+    $('#loader').css('display','inline');
+    if (window.navigator.onLine){
+      $('#mainBody').append('<div id="#unsavedOnline" class="alert alert-warning alert-dismissable">'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+                            'Found some unsaved data, save when you get a chance</div>');
+    } else {
+      $('#loader').css('display','inline');
+      $('#save').css('visibility','hidden');
+      $('#csv_list').css('visibility','hidden');
+      $('#csv_email').css('visibility','hidden');
+      $('#mainBody').append('<div id="#unsavedOffline" class="alert alert-success alert-dismissable">'+
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+                            'Reloaded data offline</div>');  
+      setTimeout(function(){
+        $('#unsavedOffline').remove();
+      },10000);
+    }
+    $('#listTable').buildTable();
+  }
+}
+$(function(){
+  // Setup local storage
+  window.storage = $.localStorage;
+  var iOS = ( navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false );
+  if ( iOS ) {
+    $('#csv_email').css('display', 'none');
+    $('#csv_list').css('display', 'none');
+  }
+  setupDropDowns();
+  if (!window.navigator.onLine) {
+    setTrip();
+  }
+  reloadData();
+  // remove 300ms click input for checkboxes on iOS
+  $('#listTable tbody tr td input').noClickDelay();
+  
+  // disable link on onLine/offLine status
+  $('.status').not('.iphone').click(function(e){
+    e.preventDefault();
+  });
+
+  // save when back online
+  window.addEventListener('online',  function(){
+    if ( $('#Listable').length > 0) {
+      $('#mainBody').append('<div id="backOnline" class="alert alert-info alert-dismissable">' +
+        '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+        'Back online, save starting...</div>');
+        setTimeout(function(){
+          $('#backOnline').remove();
+          $('#save').trigger('click');  
+        },2000);
+    }
+  });
+  
+  // Monitor onLine status and flip navbar indicator 
+  setInterval(function () {
+    var status = $('.status').not('.iphone');
+    var statusSmall = $('.status.iphone');
+    if (window.navigator.onLine) {
+      if ($('#Listable').length > 0) {
+      $('#csv_list').css('visibility','visible');
+      $('#csv_email').css('visibility','visible'); 
+      }
+      $('#save').removeClass('btn-warning');
+      if (status.hasClass('glyphicon-cloud-download')) {
+        status.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','').text(' online');
+        statusSmall.removeClass('glyphicon-cloud-download').addClass('glyphicon-cloud-upload').css('color','');
+      } else if (!status.hasClass('glyphicon-cloud-upload')) {
+        status.addClass('glyphicon-cloud-upload').css('color','').text(' online');
+        statusSmall.addClass('glyphicon-cloud-upload').css('color','');
+      } 
+    } else if (!window.navigator.onLine) {
+      $('#csv_list').css('visibility','hidden');
+      $('#csv_email').css('visibility','hidden');
+      $('#save').addClass('btn-warning');
+      if (status.hasClass('glyphicon-cloud-upload')){
+        status.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red').text(' offline');
+        statusSmall.removeClass('glyphicon-cloud-upload').addClass('glyphicon-cloud-download').css('color', 'red');
+      } else if (!status.hasClass('glyphicon-cloud-download')){
+        status.addClass('glyphicon-cloud-download').css('color','red').text(' offline');
+        statusSmall.addClass('glyphicon-cloud-download').css('color','red');
+      }
+    }
+  }, 250);
+  $('#logo').on('click', function(event){
+    event.preventDefault();
+    window.location = $(this).attr("href");
+  });
+  $('#logout').on('click', function(event){
+    event.preventDefault();
+    window.location = $(this).attr("href");
+  });
 });
