@@ -848,18 +848,26 @@ function exportCsv(mode){
           text += (fields.BRD == 1 ? "X":"O") + ',' + (fields.SKI == 1 ? "X":"O") + ',' + (fields.LTS == 1 ? "X":"O") + ',';
           text += (fields.LTR == 1 ? "X":"O") + ',' + (fields.Prog_Lesson == 1 ? "X":"O") + '\n';  
         } else if ( mode == 'Email' ) { 
-          text += '"' + fields.Email + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
+          text += '"' + (typeof fields.Email === 'undefined' ? "No Email" : fields.Email) + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
         }
       }
     });
   });
-
+  // for maximum compatibility csv results are bounced through a php script to get consistent download results
+  var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
+  $('body').append('<form id="csv" method="post" action="csv.php">' +
+                  '<input type="hidden" name="csvName" /><input type="hidden" name="csvData" /></form>');
+  $('#csv input[name=csvName]').val(name);
+  $('#csv input[name=csvData]').val(text);
+  $('#csv').submit();
+  $('#csv').remove();
+  /* TODO: change this back to the following lines when safari and firefox support HTML5 link download spec
   var encodedUri = encodeURI(text);
   var link = document.createElement("a");
   var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
   link.setAttribute("href", "data:text/csv;charset=utf-8," + encodedUri);
   link.setAttribute("download",name);
-  link.click();
+  link.click();*/
   
 }
 function reloadData() {
