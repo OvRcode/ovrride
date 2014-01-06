@@ -52,7 +52,7 @@ module.exports = function(grunt) {
       generate: {
         options: {
           basePath: "lists/",
-          network: ["save.php","http://*", "https://*"],
+          network: ["save.php","pull.php","csv.php","http://*", "https://*"],
           exclude: ["js/jquery.min.js"],
           timestamp: true
         },
