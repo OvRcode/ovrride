@@ -13223,7 +13223,7 @@ function checkPackages(text, order, orderItem, value){
   var brd         = new RegExp(/board rental/i);
   var allArea     = new RegExp(/all area/i);
   var weekendLift = new RegExp(/lift/i);
-
+  
   if ( bus.test(text) ) {
     console.log('RegExp: Matched bus only');
     var busId = $('#' + order + "\\:" + orderItem + "\\:Bus");
@@ -13242,7 +13242,51 @@ function checkPackages(text, order, orderItem, value){
     var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS";
     
     // All area, beginner, weekend lift ticket
-    if ( begLift.test(text) ) {
+    if ( lesson.test(text) && brd.test(text) && begLift.test(text)) {
+      if ( $(begId).children('span').text() == value ){
+        // Counter act value incriment for LTS/LTR package items
+        if ( value == "true" ) {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) + 1);
+        } else {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) - 1);
+        }
+        $(begId).children('button').click();
+      }
+      if ( $(ltrId).children('span').text() == value ) {
+        $(ltrId).children('button').click();
+      }
+      if ( $(brdId).children('span').text() == value ) {
+        if ( value == "true" ) {
+          $("#BRD").text(parseInt($("#BRD").text(), 10) + 1);
+        } else {
+          $("#BRD").text(parseInt($("#BRD").text(), 10) - 1);
+        }
+        $(brdId).children('button').click();
+      }
+    }
+    else if ( lesson.test(text) && ski.test(text) && begLift.test(text) ) {
+      if ( $(begId).children('span').text() == value ){
+        // Counter act value incriment for LTS/LTR package items
+        if ( value == "true" ) {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) + 1);
+        } else {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) - 1);
+        }
+        $(begId).children('button').click();
+      }
+      if ( $(ltsId).children('span').text() == value ) {
+        $(ltsId).children('button').click();
+      }
+      if ( $(skiId).children('span').text() == value ){
+        if ( value == "true" ) {
+          $("#SKI").text(parseInt($("#SKI").text(), 10) + 1);
+        } else {
+          $("#SKI").text(parseInt($("#SKI").text(), 10) - 1);
+        }
+        $(skiId).children('button').click();
+      }
+    }
+    else if ( begLift.test(text) ) {
       if ( $(begId).children('span').text() == value ){
         $(begId).children('button').click();
       }
@@ -13270,23 +13314,8 @@ function checkPackages(text, order, orderItem, value){
       } 
     } 
     else if ( progLesson.test(text) ) {
-      // ADD VALUE CHECK
-      progId.children('button').click();
-    } 
-    else if ( lesson.test(text) && brd.test(text) ) {
-      if ( $(ltrId).children('span').text() == value ) {
-        $(ltrId).children('button').click();
-      }
-      if ( $(brdId).children('span').text() == value ) {
-        $(brdId).children('button').click();
-      }
-    } 
-    else if ( lesson.test(text) && ski.test(text) ) {
-      if ( $(ltsId).children('span').text() == value ) {
-        $(ltsId).children('button').click();
-      }
-      if ( $(skiId).children('span').text() ){
-        $(skiId).children('button').click();
+      if ( $(progId).children('span').text() == value ) {
+        progId.children('button').click();
       }
     } 
     else if ( ski.test(text) ) {
@@ -13629,9 +13658,7 @@ $.fn.buildTable = function(){
             if ( value == 1 ) {
               value = true;
               if ( typeof fieldTotals[field] === 'undefined' && (field != 'Waiver' && field != 'Order') ) {
-                fieldTotals[field] = 1;
-              } else if (field != 'Waiver' && field != 'Order'){
-                fieldTotals[field]++;
+                fieldTotals[field] = 0;
               }
             } else {
               value = false;
@@ -13735,14 +13762,17 @@ $.fn.buildTable = function(){
     locationTable += '</tbody></table></div>';
     $('#totals').append(locationTable);
   }
+  var adjustedBeg = Math.max(fieldTotals.Beg - ( fieldTotals.LTS + fieldTotals.LTR ), 0);
+  var adjustedBRD = Math.max(fieldTotals.BRD - fieldTotals.LTR, 0);
+  var adjustedSKI = Math.max(fieldTotals.SKI - fieldTotals.LTS, 0);
   itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
   itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
   itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n';
   itemTable += '<tbody><tr><td>Bus Only</td><td id="Bus">' + fieldTotals.Bus + '</td></tr>\n';
   itemTable += '<tr><td>All Area Lift</td><td id="All_Area">' + fieldTotals.All_Area + '</td></tr>\n';
-  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + fieldTotals.Beg + '</td></tr>\n';
-  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + fieldTotals.BRD + '</td></tr>\n';
-  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + fieldTotals.SKI + '</td></tr>\n';
+  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + adjustedBeg + '</td></tr>\n';
+  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + adjustedBRD + '</td></tr>\n';
+  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + adjustedSKI + '</td></tr>\n';
   itemTable += '<tr><td>Learn To Ski</td><td id="LTS">' + fieldTotals.LTS + '</td></tr>\n';
   itemTable += '<tr><td>Learn To Ride</td><td id="LTR">' + fieldTotals.LTR + '</td></tr>\n';
   itemTable += '<tr><td>Progressive Lesson</td><td id="Prog_Lesson">' + fieldTotals.Prog_Lesson + '</td></tr>\n';
