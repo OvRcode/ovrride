@@ -14054,7 +14054,6 @@ $(function(){
   if (!window.navigator.onLine) {
     setTrip();
   }
-  reloadData();
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
   
@@ -14114,4 +14113,5 @@ $(function(){
     event.preventDefault();
     window.location = $(this).attr("href");
   });
+  reloadData();
 });
