@@ -13195,6 +13195,7 @@ function formReset(){
   if ( clearForm ) {
     $("#Listable").trigger("destroy");
     $('#Listable').remove();
+    $('#footer').css('position','absolute');
     $('#locationContainer').remove();
     $('#itemContainer').remove();
     $('.pager').css('visibility','hidden');
@@ -13355,6 +13356,7 @@ function generateOnOff(){
   $('#locationContainer').remove();
   $('#itemContainer').remove();
   $('#Listable').remove();
+  $('#footer').css('position','absolute');
   $('.pager').css("visiblity", "hidden");
   if (window.navigator.onLine){
     $('#loader').css('display','inline');
@@ -13597,6 +13599,7 @@ $.fn.buildTable = function(){
     statusBoxes[$(this).attr('name')] = $(this).is(':checked');
   });
   $('#Listable').remove();
+  $('#footer').css('position','absolute');
   if (window.navigator.onLine) {
     // ONLINE
     
@@ -13780,6 +13783,7 @@ $.fn.buildTable = function(){
   $('#totals').append(itemTable);
   var output = tableHeader + tableBody + tableFooter;
   $(this).append(output);
+  $('#footer').css('position','static');
   $('#loader').css('display','none');
   // click event to add row to the table for a manual order
   $('#add').click(function(){addOrder();});
