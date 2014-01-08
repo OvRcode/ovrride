@@ -223,3 +223,29 @@ td {
     width: 100%;
   }
 }
+
+// Sticky footer
+// -------------------------
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+#container {
+   min-height:100%;
+   position:relative;
+}
+#header {
+   background:#ff0;
+   padding:10px;
+}
+#body {
+   padding-top:50px;
+}
+#footer {
+   position:absolute;
+   bottom:42px;
+   width:100%;
+   height:60px;   /* Height of the footer */
+}

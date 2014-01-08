@@ -101,7 +101,9 @@ $version = file_get_contents('lists.version');
     <![endif]-->
   </head>
   <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div id="container">
+    <div id="header">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -131,7 +133,8 @@ $version = file_get_contents('lists.version');
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
     </nav>
-
+    </div>
+    <div id="body">
     <div class="container" id="mainBody">
       <div class="col-md-5">
       <section class="trip-select">
@@ -226,7 +229,8 @@ $version = file_get_contents('lists.version');
       </div>
       <div id="totals">
       </div>
-      <footer>
+    </div>
+    <div id="footer" >
         <div class="page-header"></div><!-- inserts the line separator -->
           <div class="container">
             <div class="row">
@@ -242,9 +246,9 @@ $version = file_get_contents('lists.version');
             </div>
           </div>
         </div>
-      </footer>
-
+    </div>
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
+  </div>
   </body>
 </html>
