@@ -13195,6 +13195,7 @@ function formReset(){
   if ( clearForm ) {
     $("#Listable").trigger("destroy");
     $('#Listable').remove();
+    $('#footer').css('position','absolute');
     $('#locationContainer').remove();
     $('#itemContainer').remove();
     $('.pager').css('visibility','hidden');
@@ -13223,7 +13224,7 @@ function checkPackages(text, order, orderItem, value){
   var brd         = new RegExp(/board rental/i);
   var allArea     = new RegExp(/all area/i);
   var weekendLift = new RegExp(/lift/i);
-
+  
   if ( bus.test(text) ) {
     console.log('RegExp: Matched bus only');
     var busId = $('#' + order + "\\:" + orderItem + "\\:Bus");
@@ -13242,7 +13243,51 @@ function checkPackages(text, order, orderItem, value){
     var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS";
     
     // All area, beginner, weekend lift ticket
-    if ( begLift.test(text) ) {
+    if ( lesson.test(text) && brd.test(text) && begLift.test(text)) {
+      if ( $(begId).children('span').text() == value ){
+        // Counter act value incriment for LTS/LTR package items
+        if ( value == "true" ) {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) + 1);
+        } else {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) - 1);
+        }
+        $(begId).children('button').click();
+      }
+      if ( $(ltrId).children('span').text() == value ) {
+        $(ltrId).children('button').click();
+      }
+      if ( $(brdId).children('span').text() == value ) {
+        if ( value == "true" ) {
+          $("#BRD").text(parseInt($("#BRD").text(), 10) + 1);
+        } else {
+          $("#BRD").text(parseInt($("#BRD").text(), 10) - 1);
+        }
+        $(brdId).children('button').click();
+      }
+    }
+    else if ( lesson.test(text) && ski.test(text) && begLift.test(text) ) {
+      if ( $(begId).children('span').text() == value ){
+        // Counter act value incriment for LTS/LTR package items
+        if ( value == "true" ) {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) + 1);
+        } else {
+          $("#Beg").text(parseInt($("#Beg").text(), 10) - 1);
+        }
+        $(begId).children('button').click();
+      }
+      if ( $(ltsId).children('span').text() == value ) {
+        $(ltsId).children('button').click();
+      }
+      if ( $(skiId).children('span').text() == value ){
+        if ( value == "true" ) {
+          $("#SKI").text(parseInt($("#SKI").text(), 10) + 1);
+        } else {
+          $("#SKI").text(parseInt($("#SKI").text(), 10) - 1);
+        }
+        $(skiId).children('button').click();
+      }
+    }
+    else if ( begLift.test(text) ) {
       if ( $(begId).children('span').text() == value ){
         $(begId).children('button').click();
       }
@@ -13270,23 +13315,8 @@ function checkPackages(text, order, orderItem, value){
       } 
     } 
     else if ( progLesson.test(text) ) {
-      // ADD VALUE CHECK
-      progId.children('button').click();
-    } 
-    else if ( lesson.test(text) && brd.test(text) ) {
-      if ( $(ltrId).children('span').text() == value ) {
-        $(ltrId).children('button').click();
-      }
-      if ( $(brdId).children('span').text() == value ) {
-        $(brdId).children('button').click();
-      }
-    } 
-    else if ( lesson.test(text) && ski.test(text) ) {
-      if ( $(ltsId).children('span').text() == value ) {
-        $(ltsId).children('button').click();
-      }
-      if ( $(skiId).children('span').text() ){
-        $(skiId).children('button').click();
+      if ( $(progId).children('span').text() == value ) {
+        progId.children('button').click();
       }
     } 
     else if ( ski.test(text) ) {
@@ -13326,6 +13356,7 @@ function generateOnOff(){
   $('#locationContainer').remove();
   $('#itemContainer').remove();
   $('#Listable').remove();
+  $('#footer').css('position','absolute');
   $('.pager').css("visiblity", "hidden");
   if (window.navigator.onLine){
     $('#loader').css('display','inline');
@@ -13568,6 +13599,7 @@ $.fn.buildTable = function(){
     statusBoxes[$(this).attr('name')] = $(this).is(':checked');
   });
   $('#Listable').remove();
+  $('#footer').css('position','absolute');
   if (window.navigator.onLine) {
     // ONLINE
     
@@ -13629,9 +13661,7 @@ $.fn.buildTable = function(){
             if ( value == 1 ) {
               value = true;
               if ( typeof fieldTotals[field] === 'undefined' && (field != 'Waiver' && field != 'Order') ) {
-                fieldTotals[field] = 1;
-              } else if (field != 'Waiver' && field != 'Order'){
-                fieldTotals[field]++;
+                fieldTotals[field] = 0;
               }
             } else {
               value = false;
@@ -13735,14 +13765,17 @@ $.fn.buildTable = function(){
     locationTable += '</tbody></table></div>';
     $('#totals').append(locationTable);
   }
+  var adjustedBeg = Math.max(fieldTotals.Beg - ( fieldTotals.LTS + fieldTotals.LTR ), 0);
+  var adjustedBRD = Math.max(fieldTotals.BRD - fieldTotals.LTR, 0);
+  var adjustedSKI = Math.max(fieldTotals.SKI - fieldTotals.LTS, 0);
   itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
   itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
   itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n';
   itemTable += '<tbody><tr><td>Bus Only</td><td id="Bus">' + fieldTotals.Bus + '</td></tr>\n';
   itemTable += '<tr><td>All Area Lift</td><td id="All_Area">' + fieldTotals.All_Area + '</td></tr>\n';
-  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + fieldTotals.Beg + '</td></tr>\n';
-  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + fieldTotals.BRD + '</td></tr>\n';
-  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + fieldTotals.SKI + '</td></tr>\n';
+  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + adjustedBeg + '</td></tr>\n';
+  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + adjustedBRD + '</td></tr>\n';
+  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + adjustedSKI + '</td></tr>\n';
   itemTable += '<tr><td>Learn To Ski</td><td id="LTS">' + fieldTotals.LTS + '</td></tr>\n';
   itemTable += '<tr><td>Learn To Ride</td><td id="LTR">' + fieldTotals.LTR + '</td></tr>\n';
   itemTable += '<tr><td>Progressive Lesson</td><td id="Prog_Lesson">' + fieldTotals.Prog_Lesson + '</td></tr>\n';
@@ -13750,6 +13783,7 @@ $.fn.buildTable = function(){
   $('#totals').append(itemTable);
   var output = tableHeader + tableBody + tableFooter;
   $(this).append(output);
+  $('#footer').css('position','static');
   $('#loader').css('display','none');
   // click event to add row to the table for a manual order
   $('#add').click(function(){addOrder();});
@@ -13996,18 +14030,26 @@ function exportCsv(mode){
           text += (fields.BRD == 1 ? "X":"O") + ',' + (fields.SKI == 1 ? "X":"O") + ',' + (fields.LTS == 1 ? "X":"O") + ',';
           text += (fields.LTR == 1 ? "X":"O") + ',' + (fields.Prog_Lesson == 1 ? "X":"O") + '\n';  
         } else if ( mode == 'Email' ) { 
-          text += '"' + fields.Email + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
+          text += '"' + (typeof fields.Email === 'undefined' ? "No Email" : fields.Email) + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
         }
       }
     });
   });
-
+  // for maximum compatibility csv results are bounced through a php script to get consistent download results
+  var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
+  $('body').append('<form id="csv" method="post" action="csv.php">' +
+                  '<input type="hidden" name="csvName" /><input type="hidden" name="csvData" /></form>');
+  $('#csv input[name=csvName]').val(name);
+  $('#csv input[name=csvData]').val(text);
+  $('#csv').submit();
+  $('#csv').remove();
+  /* TODO: change this back to the following lines when safari and firefox support HTML5 link download spec
   var encodedUri = encodeURI(text);
   var link = document.createElement("a");
   var name = $('#destination').val() + ' ' + $('#trip option:selected').text() + ' ' + mode + '.csv';
   link.setAttribute("href", "data:text/csv;charset=utf-8," + encodedUri);
   link.setAttribute("download",name);
-  link.click();
+  link.click();*/
   
 }
 function reloadData() {
@@ -14046,7 +14088,6 @@ $(function(){
   if (!window.navigator.onLine) {
     setTrip();
   }
-  reloadData();
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
   
@@ -14106,4 +14147,5 @@ $(function(){
     event.preventDefault();
     window.location = $(this).attr("href");
   });
+  reloadData();
 });
