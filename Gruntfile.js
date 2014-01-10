@@ -52,7 +52,7 @@ module.exports = function(grunt) {
       generate: {
         options: {
           basePath: "lists/",
-          network: ["save.php","http://*", "https://*"],
+          network: ["save.php","pull.php","csv.php","http://*", "https://*"],
           exclude: ["js/jquery.min.js"],
           timestamp: true
         },
@@ -63,6 +63,13 @@ module.exports = function(grunt) {
           "assets/images/touch-icon-iphone-retina.png",
           "assets/images/touch-icon-iphone.png",
           "assets/images/loader.gif",
+          "assets/images/startup-320x460.png",
+          "assets/images/startup-640x920.png",
+          "assets/images/startup-640x1096.png",
+          "assets/images/startup-748x1024.png",
+          "assets/images/startup-768x1004.png",
+          "assets/images/startup-1496x2048.png",
+          "assets/images/startup-1536x2008.png",
           "assets/javascripts/all.min.js",
           "assets/stylesheets/all.css",
           "assets/tablesorter/addons/pager/jquery.tablesorter.pager.css",
