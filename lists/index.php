@@ -38,8 +38,53 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <!-- iOS splash screens -->
+    <!-- iOS 6 & 7 iPad (retina, portrait) -->
+    <link href="assets/images/startup-1536x2008.png"
+      media="(device-width: 768px) and (device-height: 1024px)
+        and (orientation: portrait)
+        and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image" />
+  
+    <!-- iOS 6 & 7 iPad (retina, landscape) -->
+    <link href="assets/images/startup-1496x2048.png"
+      media="(device-width: 768px) and (device-height: 1024px)
+        and (orientation: landscape)
+        and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image" />
+ 
+    <!-- iOS 6 iPad (portrait) -->
+    <link href="assets/images/startup-768x1004.png"
+      media="(device-width: 768px) and (device-height: 1024px)
+        and (orientation: portrait)
+        and (-webkit-device-pixel-ratio: 1)"
+      rel="apple-touch-startup-image" />
 
-    <!-- favicon and apple-touch-icon -->
+    <!-- iOS 6 iPad (landscape) -->
+    <link href="assets/images/startup-748x1024.png"
+      media="(device-width: 768px) and (device-height: 1024px)
+        and (orientation: landscape)
+        and (-webkit-device-pixel-ratio: 1)"
+      rel="apple-touch-startup-image" />
+ 
+    <!-- iOS 6 & 7 iPhone 5 -->
+    <link href="assets/images/startup-640x1096.png"
+      media="(device-width: 320px) and (device-height: 568px)
+        and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image" />
+ 
+    <!-- iOS 6 & 7 iPhone (retina) -->
+    <link href="assets/images/startup-640x920.png"
+      media="(device-width: 320px) and (device-height: 480px)
+        and (-webkit-device-pixel-ratio: 2)"
+      rel="apple-touch-startup-image" />
+ 
+    <!-- iOS 6 iPhone -->
+    <link href="assets/images/startup-320x460.png"
+      media="(device-width: 320px) and (device-height: 480px)
+        and (-webkit-device-pixel-ratio: 1)"
+      rel="apple-touch-startup-image" />
+    <!-- favicon and apple-touch-icon --> 
     <link rel="apple-touch-icon" href="assets/images/touch-icon-iphone.png" />
     <link rel="apple-touch-icon" sizes="76x76" href="assets/images/touch-icon-ipad.png" />
     <link rel="apple-touch-icon" sizes="120x120" href="assets/images/touch-icon-iphone-retina.png" />
@@ -56,7 +101,9 @@ $version = file_get_contents('lists.version');
     <![endif]-->
   </head>
   <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div id="container">
+    <div id="header">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -86,7 +133,8 @@ $version = file_get_contents('lists.version');
         </div><!--/.nav-collapse -->
       </div><!-- /.container -->
     </nav>
-
+    </div>
+    <div id="body">
     <div class="container" id="mainBody">
       <div class="col-md-5">
       <section class="trip-select">
@@ -181,7 +229,8 @@ $version = file_get_contents('lists.version');
       </div>
       <div id="totals">
       </div>
-      <footer>
+    </div>
+    <div id="footer" >
         <div class="page-header"></div><!-- inserts the line separator -->
           <div class="container">
             <div class="row">
@@ -197,9 +246,9 @@ $version = file_get_contents('lists.version');
             </div>
           </div>
         </div>
-      </footer>
-
+    </div>
       <!-- Include concatenated and minified javascripts -->
       <script src="assets/javascripts/all.min.js"></script>
+  </div>
   </body>
 </html>
