@@ -38,3 +38,9 @@ RewriteRule ^(.*) http://ovrride.com/events/ [L,R=301]
 
 # File type for HTML 5 offline cache
 AddType text/cache-manifest .manifest
+
+# Redirect ovrride.com/lists
+RewriteRule ^lists$ http://lists.ovrride.com/ [R=301,L]
+
+# Redirect ovrride.com/beta
+RewriteRule ^beta$ http://beta.ovrride.com/ [R=301,L]
