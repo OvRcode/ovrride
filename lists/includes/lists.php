@@ -93,9 +93,6 @@ class TripList{
         $this->orders = array();
         while($row = $result->fetch_assoc()){
             $this->orders[$row['ID']][$row['order_item_id']] = $row['name'];
-            if ( $row['name'] == 'Spa' ) {
-              $this->orders[$row['ID']][$row['order_item_id']] = "no-show";
-            }
         }
         $result->free();
         
