@@ -498,7 +498,12 @@ $.fn.buildTable = function(){
             } else {
               row[field] += ' class="saved"';
             }
-            row[field] +='>' + value + '</td>';
+            // Add phone links, were not being auto detected on mobile platforms
+            if ( field == 'Phone' ) {
+              row[field] += '><a href="tel://'+ value + '">' + value + '</a></td>';
+            } else {
+              row[field] +='>' + value + '</td>';
+            }
           } else if (field != 'Email'){
             var btnClass;
             var spanClass;
