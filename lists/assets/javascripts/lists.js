@@ -65,145 +65,8 @@ function formReset(){
     window.storage.remove('tablesorter-pager');
   }
 }
-function checkPackages(text, order, orderItem, value){
-  var bus         = new RegExp(/bus only/i);
-  var begLift     = new RegExp(/beginner lift/i);
-  var lesson      = new RegExp(/lesson/i);
-  var progSki     = new RegExp(/prog.* lesson.*ski rental/i);
-  var progBrd     = new RegExp(/prog.* lesson.*board rental/i);
-  var progLesson  = new RegExp(/prog.* lesson/i);
-  var ski         = new RegExp(/ski rental/i);
-  var brd         = new RegExp(/board rental/i);
-  var allArea     = new RegExp(/all area/i);
-  var weekendLift = new RegExp(/lift/i);
-  
-  if ( bus.test(text) ) {
-    console.log('RegExp: Matched bus only');
-    var busId = $('#' + order + "\\:" + orderItem + "\\:Bus");
-    if ( busId.children('span').text() == value ){
-      busId.children('button').click();
-    } else { console.log('Bus: wrong value');}
-  } 
-  else {
-    // Selectors for button values
-    var begId   = "#" + order + "\\:" + orderItem + "\\:Beg";
-    var allAreaId = "#" + order + "\\:" + orderItem + "\\:All_Area";
-    var progId    = "#" + order + "\\:" + orderItem + "\\:Prog_Lesson";
-    var skiId     = "#" + order + "\\:" + orderItem + "\\:SKI";
-    var brdId     = "#" + order + "\\:" + orderItem + "\\:BRD";
-    var ltrId     = "#" + order + "\\:" + orderItem + "\\:LTR";
-    var ltsId     = "#" + order + "\\:" + orderItem + "\\:LTS";
-    
-    // All area, beginner, weekend lift ticket
-    if ( lesson.test(text) && brd.test(text) && begLift.test(text)) {
-      if ( $(begId).children('span').text() == value ){
-        // Counter act value incriment for LTS/LTR package items
-        if ( value == "true" ) {
-          $("#Beg").text(parseInt($("#Beg").text(), 10) + 1);
-        } else {
-          $("#Beg").text(parseInt($("#Beg").text(), 10) - 1);
-        }
-        $(begId).children('button').click();
-      }
-      if ( $(ltrId).children('span').text() == value ) {
-        $(ltrId).children('button').click();
-      }
-      if ( $(brdId).children('span').text() == value ) {
-        if ( value == "true" ) {
-          $("#BRD").text(parseInt($("#BRD").text(), 10) + 1);
-        } else {
-          $("#BRD").text(parseInt($("#BRD").text(), 10) - 1);
-        }
-        $(brdId).children('button').click();
-      }
-    }
-    else if ( lesson.test(text) && ski.test(text) && begLift.test(text) ) {
-      if ( $(begId).children('span').text() == value ){
-        // Counter act value incriment for LTS/LTR package items
-        if ( value == "true" ) {
-          $("#Beg").text(parseInt($("#Beg").text(), 10) + 1);
-        } else {
-          $("#Beg").text(parseInt($("#Beg").text(), 10) - 1);
-        }
-        $(begId).children('button').click();
-      }
-      if ( $(ltsId).children('span').text() == value ) {
-        $(ltsId).children('button').click();
-      }
-      if ( $(skiId).children('span').text() == value ){
-        if ( value == "true" ) {
-          $("#SKI").text(parseInt($("#SKI").text(), 10) + 1);
-        } else {
-          $("#SKI").text(parseInt($("#SKI").text(), 10) - 1);
-        }
-        $(skiId).children('button').click();
-      }
-    }
-    else if ( begLift.test(text) ) {
-      if ( $(begId).children('span').text() == value ){
-        $(begId).children('button').click();
-      }
-    } else if ( allArea.test(text) || weekendLift.test(text) ) {
-      if ( $(allAreaId).children('span').text() == value ) {
-        $(allAreaId).children('button').click();
-      }
-    }
-    
-    // Lessons + rental combos
-    if ( progSki.test(text)) {
-      if ( $(progId).children('span').text() == value ) {
-        $(progId).children('button').click();
-      }
-      if ( $(skiId).children('span').text() == value ) {
-        $(skiId).children('button').click();
-      }
-    } 
-    else if ( progBrd.test(text) ) {
-      if ( $(brdId).children('span').text() == value ) {
-        $(brdId).children('button').click();
-      }
-      if ( $(progId).children('span').text() == value ) {
-        $(progId).children('button').click();
-      } 
-    } 
-    else if ( progLesson.test(text) ) {
-      if ( $(progId).children('span').text() == value ) {
-        progId.children('button').click();
-      }
-    } 
-    else if ( ski.test(text) ) {
-      if ( $(skiId).children('span').text() == value ) {
-        $(skiId).children('button').click();
-      }
-    } 
-    else if ( brd.test(text) ) {
-      if ( $(brdId).children('span').text() == value ) {
-        $(brdId).children('button').click();
-      }
-    }
-    else if ( lesson.test(text) ) {
-      if ( value == "false" ) {
-        var skiRegex = new RegExp(/ski/i);
-        var brdRegex = new RegExp(/brd/i);
-        var input = prompt('SKI or BRD Lesson?\n(enter ski or brd)');
-        if ( skiRegex.test(input) ) {
-          $(ltsId).children('button').click();
-        } else if ( brdRegex.test(input) ) {
-          $(ltrId).children('button').click();
-        }  
-      } else {
-        if ( $(ltsId).children('span').text() == value ) {
-          $(ltsId).children('button').click();
-        }
-        if ( $(ltrId).children('span').text() == value ) {
-          $(ltrId).children('button').click();
-        }
-      }
-      
-    }
-  } 
-}
 function generateOnOff(){
+  window.fieldTotals = {};
   // switch generate list button between online and offline mode
   $('#locationContainer').remove();
   $('#itemContainer').remove();
@@ -229,9 +92,6 @@ function generateOnOff(){
 }
 function postData(){
   // send data to backend mySQL database
-
-  console.log('SaveData: ');
-  console.log(window.storage.get('orderData'));
   $('#saveBar').css('width', '80%');
   var jqxhr = $.post( "save.php", {'data' : window.storage.get('orderData') } ,function() {})
     .done(function() {
@@ -320,16 +180,7 @@ function setupTablesorter(rows) {
       6: { sorter: 'text' },
       7: { sorter: 'digit' },
       8: {sorter: 'text'}, 
-      9: { sorter: 'text' },
-      10: { sorter: 'text' },
-      11: { sorter: 'text' },
-      12: { sorter: 'text' },
-      13: { sorter: 'text' },
-      14: { sorter: 'text' },
-      15: { sorter: 'text' },
-      16: { sorter: 'text' },
-      17: { sorter: 'text' },
-      18: { sorter: 'text' }
+      9: { sorter: 'text' }
     };
     var filterOptions = {
         4 : true,
@@ -436,6 +287,108 @@ $.fn.colCount = function() {
    });
    return colCount;
 };
+function parsePackage(packageText, addSubtract) {
+  var bus         = new RegExp(/bus only/i);
+  var begLiftLesson     = new RegExp(/beginner lift.*lesson/i);
+  var allArea     = new RegExp(/all area/i);
+  var weekendLift = new RegExp(/lift/i);
+  var ltr         = new RegExp(/beginner lift area.*bus.*lesson.*board/i);
+  var lts         = new RegExp(/beginner lift area.*bus.*lesson.*ski/i);
+  var progLesson  = new RegExp(/prog.* lesson/i);
+  var ski         = new RegExp(/ski rental/i);
+  var brd         = new RegExp(/board rental/i);
+
+  if ( typeof window.fieldTotals == 'undefined' ) {
+    window.fieldTotals = {};
+  }
+  // Check bus/Lift options
+  if ( bus.test(packageText) ) {
+    if ( typeof window.fieldTotals["Bus Only"] == 'undefined' ) {
+      window.fieldTotals["Bus Only"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Bus Only"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Bus Only"]--;
+    }
+  } else if ( begLiftLesson.test(packageText) ) {
+    if ( typeof window.fieldTotals["Beginner Lift and Lesson"] == 'undefined' ) {
+      window.fieldTotals["Beginner Lift and Lesson"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Beginner Lift and Lesson"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Beginner Lift and Lesson"]--;
+    }
+  } else if ( allArea.test(packageText) ) {
+    if ( typeof window.fieldTotals["All Area Lift"] == 'undefined' ) {
+      window.fieldTotals["All Area Lift"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["All Area Lift"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["All Area Lift"]--;
+    }
+  } else if ( weekendLift.test(packageText) ) {
+    if ( typeof window.fieldTotals["Weekend Lift"] == 'undefined' ) {
+      window.fieldTotals["Weekend Lift"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Weekend Lift"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Weekend Lift"]--;
+    }
+  }
+  // Check rentals and lessons
+  if ( ltr.test(packageText) ) {
+    if ( typeof window.fieldTotals["Learn to Ride"] == 'undefined' ) {
+      window.fieldTotals["Learn to Ride"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Learn to Ride"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Learn to Ride"]--;
+    }
+  } else if ( lts.test(packageText) ) {
+    if ( typeof window.fieldTotals["Learn to Ski"] == 'undefined' ) {
+      window.fieldTotals["Learn to Ski"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Learn to Ski"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Learn to Ski"]--;
+    }
+  } else if ( progLesson.test(packageText) ) {
+    if ( typeof window.fieldTotals["Progressive Lesson"] ) {
+      window.fieldTotals["Progressive Lesson"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Progressive Lesson"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Progressive Lesson"]--;
+    }
+  }
+  if ( ski.test(packageText) && !lts.test(packageText) ) {
+    if ( typeof window.fieldTotals["Ski Rental"] == 'undefined' ) {
+      window.fieldTotals["Ski Rental"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Ski Rental"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Ski Rental"]--;
+    }
+  } else if ( brd.test(packageText) && !ltr.test(packageText) ) {
+    if ( typeof window.fieldTotals["Board Rental"] == 'undefined' ) {
+      window.fieldTotals["Board Rental"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      window.fieldTotals["Board Rental"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      window.fieldTotals["Board Rental"]--;
+    }
+  }
+  
+}
 $.fn.buildTable = function(){
   var hasPickup = '';
   var orderData   = window.orderData;
@@ -446,7 +399,7 @@ $.fn.buildTable = function(){
   var itemTable = '';
   var byLocation  = {};
   var statusBoxes = {};
-  var fieldTotals = {"Bus" : 0, "All_Area" : 0, "Beg" : 0, "BRD" : 0, "SKI" : 0, "LTS" : 0, "LTR" : 0, "Prog_Lesson" : 0};
+
   $('.order_status_checkbox').each(function(){
     statusBoxes[$(this).attr('name')] = $(this).is(':checked');
   });
@@ -517,9 +470,6 @@ $.fn.buildTable = function(){
             value = (value == 1 ? true : false);
             if ( value == 1 ) {
               value = true;
-              if ( typeof fieldTotals[field] === 'undefined' && (field != 'Waiver' && field != 'Order') ) {
-                fieldTotals[field] = 0;
-              }
             } else {
               value = false;
             }
@@ -545,17 +495,14 @@ $.fn.buildTable = function(){
           tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
         }
         
-        tableBody += row.Waiver + row.Product + row.Bus + row.All_Area;
-        tableBody += row.Beg + row.BRD + row.SKI + row.LTS + row.LTR + row.Prog_Lesson + '</tr>';
+        tableBody += row.Waiver + row.Product + '</tr>';
         //set itemTable values
-        if ( findButtonValueString(row.Bus) == "true" ) { fieldTotals.Bus++; }
-        if ( findButtonValueString(row.All_Area) == "true" ) { fieldTotals.All_Area++; }
-        if ( findButtonValueString(row.Beg) == "true" ) { fieldTotals.Beg++; }
-        if ( findButtonValueString(row.BRD) == "true" ) { fieldTotals.BRD++; }
-        if ( findButtonValueString(row.SKI) == "true" ) { fieldTotals.SKI++; }
-        if ( findButtonValueString(row.LTS) == "true" ) { fieldTotals.LTS++; }
-        if ( findButtonValueString(row.LTR) == "true" ) { fieldTotals.LTR++; }
-        if ( findButtonValueString(row.Prog_Lesson) == "true" ) { fieldTotals.Prog_Lesson++; }
+        if ( findButtonValueString(row.AM) == "true" ) {
+          parsePackage(row.Package,'add');
+        } else {
+          parsePackage(row.Package, 'setup' );
+        }
+
         if (row.Pickup) {
           var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
           if ( typeof byLocation[locationName] === 'undefined' ) {
@@ -593,14 +540,6 @@ $.fn.buildTable = function(){
                 '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
-                '<td class="filter-false">Bus Only</td>' +
-                '<td class="filter-false">All Area Lift</td>' +
-                '<td class="filter-false">Beg. Lift</td>' +
-                '<td class="filter-false">BRD Rental</td>' +
-                '<td class="filter-false">Ski Rental</td>' +
-                '<td class="filter-false">LTS</td>' +
-                '<td class="filter-false">LTR</td>' +
-                '<td class="filter-false">Prog. Lesson</td>\n' +
                 '</tr>' +
                 '</thead>\n';
                 
@@ -622,20 +561,13 @@ $.fn.buildTable = function(){
     locationTable += '</tbody></table></div>';
     $('#totals').append(locationTable);
   }
-  var adjustedBeg = Math.max(fieldTotals.Beg - ( fieldTotals.LTS + fieldTotals.LTR ), 0);
-  var adjustedBRD = Math.max(fieldTotals.BRD - fieldTotals.LTR, 0);
-  var adjustedSKI = Math.max(fieldTotals.SKI - fieldTotals.LTS, 0);
+
   itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
   itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
-  itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n';
-  itemTable += '<tbody><tr><td>Bus Only</td><td id="Bus">' + fieldTotals.Bus + '</td></tr>\n';
-  itemTable += '<tr><td>All Area Lift</td><td id="All_Area">' + fieldTotals.All_Area + '</td></tr>\n';
-  itemTable += '<tr><td>Beginner Lift</td><td id="Beg">' + adjustedBeg + '</td></tr>\n';
-  itemTable += '<tr><td>Board Rental</td><td id="BRD">' + adjustedBRD + '</td></tr>\n';
-  itemTable += '<tr><td>Ski Rental</td><td id="SKI">' + adjustedSKI + '</td></tr>\n';
-  itemTable += '<tr><td>Learn To Ski</td><td id="LTS">' + fieldTotals.LTS + '</td></tr>\n';
-  itemTable += '<tr><td>Learn To Ride</td><td id="LTR">' + fieldTotals.LTR + '</td></tr>\n';
-  itemTable += '<tr><td>Progressive Lesson</td><td id="Prog_Lesson">' + fieldTotals.Prog_Lesson + '</td></tr>\n';
+  itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n<tbody>\n';
+  $.each(window.fieldTotals, function(name, quantity){
+    itemTable += '<tr><td>' + name + '</td><td id="' + name + '">' + quantity + '</td></tr>\n';
+  });
   itemTable += '</tbody></table></div>';
   $('#totals').append(itemTable);
   var output = tableHeader + tableBody + tableFooter;
@@ -683,11 +615,11 @@ function addButtonListener(value){
     var item = tdId[1];
     var field = tdId[2];
     var packageText;
-    var packageValue;
+    var action;
     var fieldValue;
     var listLocation;
     var locationRow;
-    
+
     var time = (((new Date()).valueOf()).toString()).substr(0,10);
     
     if ( button.hasClass('btn-success')) {
@@ -695,7 +627,7 @@ function addButtonListener(value){
       iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
       hiddenSpan.text('false');
       orderData[order][item][field] = "0";
-      packageValue = "true";
+      action = 'subtract';
       $("#" + field).text(parseInt($("#" + field).text(), 10) - 1);
       if ( field == 'AM' ) {
         listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
@@ -711,7 +643,7 @@ function addButtonListener(value){
       iconSpan.removeClass('glyphicon-minus-sign').addClass('glyphicon-ok-sign');
       hiddenSpan.text('true');
       orderData[order][item][field] = "1";
-      packageValue = "false";
+      action = 'add';
       $("#" + field).text(parseInt($("#" + field).text(), 10) + 1);
       if ( field == 'AM'){
         listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
@@ -735,7 +667,9 @@ function addButtonListener(value){
     
     if (field == 'AM') {
       packageText = $("#" + order + "\\:" + item + "\\:Package").text();
-      checkPackages(packageText, order, item, packageValue);
+      parsePackage(packageText, action);
+      updateItemTable();
+      //checkPackages(packageText, order, item, packageValue);
     }
   });
 }
@@ -776,6 +710,17 @@ function addManualListener(value){
     }
   });
 }
+function updateItemTable(){
+  $.each(window.fieldTotals, function(name,quantity){
+    var selector = $("[id='" + name + "']");
+    if ( selector.length > 0 ) {
+      selector.text(quantity);
+    } else {
+      var html = '<tr><td>' + name + '</td><td id="' + name + '">' + quantity + '</td></tr>\n';
+      $('#itemTable').append(html);
+    }
+  });
+}
 function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
@@ -807,30 +752,7 @@ function addOrder(){
   '<td class="center-me" id ="' + id + ':Product"><span class="value">false</span>' +
   '<button name ="' + id + ':Product" class="btn-xs btn-default btn-danger" value="false">' +
   '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':Bus"><span class="value">false</span>' +
-  '<button name ="' + id + ':Bus" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':All_Area"><span class="value">false</span>' +
-  '<button name ="' + id + ':All_Area" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':Beg"><span class="value">false</span>' +
-  '<button name ="' + id + ':Beg" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':BRD"><span class="value">false</span>' +
-  '<button name ="' + id + ':BRD" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':SKI"><span class="value">false</span>' +
-  '<button name ="' + id + ':SKI" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':LTS"><span class="value">false</span>' +
-  '<button name ="' + id + ':LTS" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':LTR"><span class="value">false</span>' +
-  '<button name ="' + id + ':LTR" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
-  '<td class="center-me" id ="' + id + ':Prog_Lesson"><span class="value">false</span>' +
-  '<button name ="' + id + ':Prog_Lesson" class="btn-xs btn-default btn-danger" value="false">' +
-  '<span class="glyphicon glyphicon-minus-sign"></span></button></td></tr>',
+  '</tr>',
   $row = $(row),
   resort = false;
   $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
@@ -843,14 +765,6 @@ function addOrder(){
   addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Product");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:Bus");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:All_Area");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:Beg");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:BRD");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:SKI");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:LTS");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:LTR");
-  addButtonListener("#" + order + "\\:" + itemNum + "\\:Prog_Lesson");
   $("#" + order + "\\:" + itemNum + "\\:First").focus();
   updateViewAll();
   $('#viewAll').trigger('change');
