@@ -225,6 +225,7 @@ $version = file_get_contents('lists.version');
           <option value="30">30</option>
           <option value="40">40</option>
           <option value="50">50</option>
+          <option value="500" id="viewAll">View All</option>
         </select>
       </div>
       <div id="totals">
