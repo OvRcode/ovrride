@@ -13787,8 +13787,10 @@ $.fn.buildTable = function(){
   $('#loader').css('display','none');
   // click event to add row to the table for a manual order
   $('#add').click(function(){addOrder();});
-   
-   // click event to remove unsaved manual orders from table
+  //Update view all option in pager for # of rows
+  updateViewAll();
+  
+  // click event to remove unsaved manual orders from table
    $('#remove').click(function(){removeOrder();});
    
   $('#save').css('visibility','visible');
@@ -13929,7 +13931,7 @@ function addOrder(){
   var order = 'WO' + Math.floor( Math.random() * 90000 );
   var id = order + ":" + itemNum;
   
-  var row = '<tr class="manual">' +
+  var row = '<tr style="display:table-row" class="manual">' +
   '<td class="center-me" id ="' + id + ':AM"><span class="value">false</span>' +
   '<button name ="' + id + ':AM" class="btn-xs btn-default btn-danger" value="false">' +
   '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
@@ -13993,6 +13995,8 @@ function addOrder(){
   addButtonListener("#" + order + "\\:" + itemNum + "\\:LTR");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Prog_Lesson");
   $("#" + order + "\\:" + itemNum + "\\:First").focus();
+  updateViewAll();
+  $('#viewAll').trigger('change');
 }
 function removeOrder(){
     if($('#Listable tbody tr:last').hasClass('manual')){
@@ -14006,6 +14010,7 @@ function removeOrder(){
       $('#Listable tbody tr:last').remove();
       $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
       $('#Listable').trigger("update"); 
+      updateViewAll();
     }
 }
 function exportCsv(mode){
@@ -14075,6 +14080,10 @@ function reloadData() {
     }
     $('#listTable').buildTable();
   }
+}
+function updateViewAll(){
+  var rows = $('#Listable tbody tr').length;
+  $('#viewAll').val(rows);
 }
 $(function(){
   // Setup local storage
