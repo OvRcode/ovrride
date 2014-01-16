@@ -30,7 +30,7 @@ class TripList{
                                     "Lake Tahoe","MT Snow","Paint ball","Sky Diving","Stowe",
                                     "Stratton","Sugarbush","Whistler","Windham");
                                     
-        $this->checkboxes = array("AM","PM","Waiver","Product","Bus","All_Area","Beg","BRD","SKI","LTS","LTR","Prog_Lesson");
+        $this->checkboxes = array("AM","PM","Waiver","Product");
     }
     function dbQuery($sql){
         if ( !$result = $this->dbConnect->query($sql)) {
