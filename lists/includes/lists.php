@@ -84,7 +84,8 @@ class TripList{
             INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
             INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
             INNER JOIN `wp_term_relationships` ON `wp_posts`.`id` = `wp_term_relationships`.`object_id`
-            INNER JOIN `wp_terms` on `wp_term_relationships`.`term_taxonomy_id` = `wp_terms`.`term_id`
+            INNER JOIN `wp_term_taxonomy` ON `wp_term_relationships`.`term_taxonomy_id` = `wp_term_taxonomy`.`term_taxonomy_id`
+            INNER JOIN `wp_terms` on `wp_term_taxonomy`.`term_id` = `wp_terms`.`term_id`
             WHERE `wp_posts`.`post_type` =  'shop_order'
             AND `wp_woocommerce_order_items`.`order_item_type` =  'line_item'
             AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
