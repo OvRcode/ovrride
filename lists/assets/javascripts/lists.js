@@ -171,16 +171,17 @@ function setupTablesorter(rows) {
     output: '{startRow} - {endRow} / {filteredRows} ({totalRows})' 
     };
     var headerOptions = {
-      0: { sorter: 'text' },
-      1: { sorter: 'checkbox' },
-      2: { sorter: 'text' },
-      3: { sorter: 'text' },
-      4: { sorter: 'text' },
-      5: { sorter: 'digit' },
-      6: { sorter: 'text' },
-      7: { sorter: 'digit' },
-      8: {sorter: 'text'}, 
-      9: { sorter: 'text' }
+      0:  { sorter: 'text' },
+      1:  { sorter: 'checkbox' },
+      2:  { sorter: 'text' },
+      3:  { sorter: 'text' },
+      4:  { sorter: 'text' },
+      5:  { sorter: 'digit' },
+      6:  { sorter: 'text' },
+      7:  { sorter: 'digit' },
+      8:  {sorter: 'text'}, 
+      9:  { sorter: 'text' },
+      10: { sorter: false }
     };
     var filterOptions = {
         4 : true,
@@ -399,7 +400,7 @@ $.fn.buildTable = function(){
   var itemTable = '';
   var byLocation  = {};
   var statusBoxes = {};
-
+  var manualEvents = [];
   $('.order_status_checkbox').each(function(){
     statusBoxes[$(this).attr('name')] = $(this).is(':checked');
   });
@@ -454,6 +455,9 @@ $.fn.buildTable = function(){
             // Add phone links, were not being auto detected on mobile platforms
             if ( field == 'Phone' ) {
               row[field] += '><a href="tel://'+ value + '">' + value + '</a></td>';
+              if ( prefix == 'WO' ) {
+                manualEvents.push("#"+orderNumber+"\\:"+orderItemNumber);
+              }
             } else {
               row[field] +='>' + value + '</td>';
             }
@@ -487,7 +491,7 @@ $.fn.buildTable = function(){
           tableBody += row.Pickup;
         } 
         
-        tableBody += row.Phone + row.Package;
+        tableBody += row.Phone + row.Package ;
         
         if (prefix == 'WO') {
           tableBody += '<td>' + orderNumber + '</td>';
@@ -495,7 +499,13 @@ $.fn.buildTable = function(){
           tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
         }
         
-        tableBody += row.Waiver + row.Product + '</tr>';
+        tableBody += row.Waiver + row.Product;
+        if ( prefix == 'WO') {
+          tableBody += '<td class="center-me" id="' + id +'"><button class="btn-xs btn-warning" >' +
+            '<span class="glyphicon glyphicon-remove"></span></button></td>';
+        } else {
+          tableBody += '<td></td></tr>';
+        }
         //set itemTable values
         if ( findButtonValueString(row.AM) == "true" ) {
           parsePackage(row.Package,'add');
@@ -540,7 +550,7 @@ $.fn.buildTable = function(){
                 '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
-                '</tr>' +
+                '<td class="filter-false"></td></tr>' +
                 '</thead>\n';
                 
   tableBody += '</tbody>\n';
@@ -597,6 +607,11 @@ $.fn.buildTable = function(){
   
   $.each(events, function(key,value){
     addButtonListener(value);
+  });
+  $.each(manualEvents, function(key,value){
+    $(value).on('click', function(elem){
+      removeManualOrder(elem);
+    });
   });
 };
 function findButtonValueString(searchString){
@@ -721,18 +736,50 @@ function updateItemTable(){
     }
   });
 }
+function removeManualOrder(elem){
+  var id = elem.currentTarget.id;
+  var order = id.split(':');
+  var selector = $("#"+order[0]+"\\:"+order[1]);
+  var removeOrder = confirm("Are you sure you want to delete this order?");
+  if ( removeOrder === true ) {
+    // Remove from local storage
+    delete window.orderData[order];
+    window.storage.set('orderData',window.orderData);
+
+    // Remove item count if AM box was checked
+    if ( selector.parent('tr').children('td:first').text() == "true" ) {
+      var packageText = selector.parent('tr').children('td:nth-child(7)').text();
+      parsePackage(packageText, 'subtract');
+    }
+  
+    if ( !selector.parent('tr').children('td').hasClass('unsaved') ) {
+      // This order has been saved to the serverSide DB
+      if ( window.navigator.onLine ) {
+        // Delete data from server
+        $.post("delete.php", {"order" : order[0] + ":" + order[1]});
+      } else {
+        // alert user to delete when online
+        var html = '<div id="offLineDelete" class="alert alert-danger alert-dismissable">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
+          '<strong>WARNING!</strong> This order can only be removed when online, please try again when online</div>';
+        $('#mainBody').append(html);
+        $('#offLineDelete').focus();
+        setTimeout(function(){
+          $('#offLineDelete').remove();
+        }, 10000);
+      }
+    }
+    selector.parent('tr').remove();
+  }
+}
 function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
-  
-  // Find total cell and increment
-  $('#total_guests').text( function(i,txt) { return parseInt(txt,10) + 1;} );
   
   //Generate Walk On order #
   var itemNum = Math.floor( Math.random() * 90000 );
   var order = 'WO' + Math.floor( Math.random() * 90000 );
   var id = order + ":" + itemNum;
-  
   var row = '<tr style="display:table-row" class="manual">' +
   '<td class="center-me" id ="' + id + ':AM"><span class="value">false</span>' +
   '<button name ="' + id + ':AM" class="btn-xs btn-default btn-danger" value="false">' +
@@ -752,10 +799,15 @@ function addOrder(){
   '<td class="center-me" id ="' + id + ':Product"><span class="value">false</span>' +
   '<button name ="' + id + ':Product" class="btn-xs btn-default btn-danger" value="false">' +
   '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
+  '<td class="center-me" id="' + id +'"><button class="btn-xs btn-warning">' +
+  '<span class="glyphicon glyphicon-remove"></span></button></td>' +
   '</tr>',
   $row = $(row),
   resort = false;
   $('#Listable').find('tbody').append($row).trigger('addRows', [$row, resort]);
+  $("#"+order+"\\:"+itemNum).on('click', function(elem){
+    removeManualOrder(elem);
+  });
   addButtonListener("#" + order + "\\:" + itemNum + "\\:AM");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
   addManualListener("#" + order + "\\:" + itemNum + "\\:First");
@@ -765,9 +817,10 @@ function addOrder(){
   addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Product");
-  $("#" + order + "\\:" + itemNum + "\\:First").focus();
   updateViewAll();
   $('#viewAll').trigger('change');
+  $("#" + order + "\\:" + itemNum + "\\:First").focus();
+
 }
 function removeOrder(){
     if($('#Listable tbody tr:last').hasClass('manual')){
