@@ -559,9 +559,9 @@ $.fn.buildTable = function(){
                 
   tableBody += '</tbody>\n';
   tableFooter += '<tfoot>\n<tr>' +
-                 '<td><button type="button" class="btn btn-primary" id="add">' +
+                 '<td class="center-me"><button type="button" class="btn btn-primary" id="add">' +
                  '<span class="glyphicon glyphicon-plus"></span></button></td>' +
-                 '<td><button type="button" class="btn btn-danger" id="remove">' +
+                 '<td class="center-me"><button type="button" class="btn btn-danger" id="remove">' +
                  '<span class="glyphicon glyphicon-minus"></span></button></td>' +
                  '</tfoot></table>';
   if (byLocation) {
