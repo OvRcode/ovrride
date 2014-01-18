@@ -13694,11 +13694,11 @@ $.fn.buildTable = function(){
                     '<td>Last</td>';
                       
   if (hasPickup == 1) {
-    tableHeader += '<td data-placeholder="Choose a Location">Pickup</td>';
+    tableHeader += '<td data-placeholder="Location">Pickup</td>';
   }
     
   tableHeader += '<td>Phone</td>' +
-                '<td data-placeholder="Choose a Package">Package</td>' +
+                '<td data-placeholder="Package">Package</td>' +
                 '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
