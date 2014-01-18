@@ -13436,107 +13436,111 @@ $.fn.colCount = function() {
    });
    return colCount;
 };
-function parsePackage(packageText, addSubtract) {
+function parsePackage(packageText, addSubtract, outputType) {
   var bus         = new RegExp(/bus only/i);
-  var begLiftLesson     = new RegExp(/beginner lift.*lesson/i);
+  var begLiftLesson     = new RegExp(/beginner lift.*lesson$/i);
   var allArea     = new RegExp(/all area/i);
-  var weekendLift = new RegExp(/lift/i);
+  var weekendLift = new RegExp(/^lift/i);
   var ltr         = new RegExp(/beginner lift area.*bus.*lesson.*board/i);
   var lts         = new RegExp(/beginner lift area.*bus.*lesson.*ski/i);
   var progLesson  = new RegExp(/prog.* lesson/i);
   var ski         = new RegExp(/ski rental/i);
   var brd         = new RegExp(/board rental/i);
-
-  if ( typeof window.fieldTotals == 'undefined' ) {
-    window.fieldTotals = {};
+  var output;
+  if ( outputType == 'List' ) {
+    output = window.fieldTotals;
+  } else if ( outputType == 'CSV' ) {
+    output = window.csvValue;
+  }
+  if ( typeof output == 'undefined' ) {
+    output = {};
   }
   // Check bus/Lift options
   if ( bus.test(packageText) ) {
-    if ( typeof window.fieldTotals["Bus Only"] == 'undefined' ) {
-      window.fieldTotals["Bus Only"] = 0;
+    if ( typeof output["Bus Only"] == 'undefined' ) {
+      output["Bus Only"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Bus Only"]++;
+      output["Bus Only"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Bus Only"]--;
+      output["Bus Only"] = Math.max(0,--output["Bus Only"]);
     }
   } else if ( begLiftLesson.test(packageText) ) {
-    if ( typeof window.fieldTotals["Beginner Lift and Lesson"] == 'undefined' ) {
-      window.fieldTotals["Beginner Lift and Lesson"] = 0;
+    if ( typeof output["Beginner Lift and Lesson"] == 'undefined' ) {
+      output["Beginner Lift and Lesson"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Beginner Lift and Lesson"]++;
+      output["Beginner Lift and Lesson"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Beginner Lift and Lesson"]--;
+      output["Beginner Lift and Lesson"] = Math.max(0, --output["Beginner Lift and Lesson"]);
     }
   } else if ( allArea.test(packageText) ) {
-    if ( typeof window.fieldTotals["All Area Lift"] == 'undefined' ) {
-      window.fieldTotals["All Area Lift"] = 0;
+    if ( typeof output["All Area Lift"] == 'undefined' ) {
+      output["All Area Lift"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["All Area Lift"]++;
+      output["All Area Lift"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["All Area Lift"]--;
+      output["All Area Lift"] = Math.max(0, --output["All Area Lift"]);
     }
   } else if ( weekendLift.test(packageText) ) {
-    if ( typeof window.fieldTotals["Weekend Lift"] == 'undefined' ) {
-      window.fieldTotals["Weekend Lift"] = 0;
+    if ( typeof output["Weekend Lift"] == 'undefined' ) {
+      output["Weekend Lift"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Weekend Lift"]++;
+      output["Weekend Lift"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Weekend Lift"]--;
+      output["Weekend Lift"] = Math.max(0, --output["Weekend Lift"]);
     }
   }
   // Check rentals and lessons
   if ( ltr.test(packageText) ) {
-    if ( typeof window.fieldTotals["Learn to Ride"] == 'undefined' ) {
-      window.fieldTotals["Learn to Ride"] = 0;
+    if ( typeof output["Learn to Ride"] == 'undefined' ) {
+      output["Learn to Ride"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Learn to Ride"]++;
+      output["Learn to Ride"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Learn to Ride"]--;
+      output["Learn to Ride"] = Math.max(0, --output["Learn to Ride"]);
     }
   } else if ( lts.test(packageText) ) {
-    if ( typeof window.fieldTotals["Learn to Ski"] == 'undefined' ) {
-      window.fieldTotals["Learn to Ski"] = 0;
+    if ( typeof output["Learn to Ski"] == 'undefined' ) {
+      output["Learn to Ski"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Learn to Ski"]++;
+      output["Learn to Ski"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Learn to Ski"]--;
+      output["Learn to Ski"] = Math.max(0, --output["Learn to Ski"]);
     }
   } else if ( progLesson.test(packageText) ) {
-    if ( typeof window.fieldTotals["Progressive Lesson"] ) {
-      window.fieldTotals["Progressive Lesson"] = 0;
+    if ( typeof output["Progressive Lesson"] ) {
+      output["Progressive Lesson"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Progressive Lesson"]++;
+      output["Progressive Lesson"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Progressive Lesson"]--;
+      output["Progressive Lesson"] = Math.max(0, --output["Progressive Lesson"]);
     }
   }
   if ( ski.test(packageText) && !lts.test(packageText) ) {
-    if ( typeof window.fieldTotals["Ski Rental"] == 'undefined' ) {
-      window.fieldTotals["Ski Rental"] = 0;
+    if ( typeof output["Ski Rental"] == 'undefined' ) {
+      output["Ski Rental"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Ski Rental"]++;
+      output["Ski Rental"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Ski Rental"]--;
+      output["Ski Rental"] = Math.max(0, --output["Ski Rental"]);
     }
   } else if ( brd.test(packageText) && !ltr.test(packageText) ) {
-    if ( typeof window.fieldTotals["Board Rental"] == 'undefined' ) {
-      window.fieldTotals["Board Rental"] = 0;
+    if ( typeof output["Board Rental"] == 'undefined' ) {
+      output["Board Rental"] = 0;
     }
     if ( addSubtract == 'add' ) {
-      window.fieldTotals["Board Rental"]++;
+      output["Board Rental"]++;
     } else if ( addSubtract == 'subtract' ) {
-      window.fieldTotals["Board Rental"]--;
+      output["Board Rental"] = Math.max(0, --output["Board Rental"]);
     }
   }
-  
 }
 $.fn.buildTable = function(){
   var hasPickup = '';
@@ -13656,9 +13660,9 @@ $.fn.buildTable = function(){
         }
         //set itemTable values
         if ( findButtonValueString(row.AM) == "true" ) {
-          parsePackage(row.Package,'add');
+          parsePackage(row.Package,'add', 'List');
         } else {
-          parsePackage(row.Package, 'setup' );
+          parsePackage(row.Package, 'setup', 'List');
         }
 
         if (row.Pickup) {
@@ -13830,9 +13834,8 @@ function addButtonListener(value){
     
     if (field == 'AM') {
       packageText = $("#" + order + "\\:" + item + "\\:Package").text();
-      parsePackage(packageText, action);
+      parsePackage(packageText, action, 'List');
       updateItemTable();
-      //checkPackages(packageText, order, item, packageValue);
     }
   });
 }
@@ -13897,7 +13900,7 @@ function removeManualOrder(elem){
     // Remove item count if AM box was checked
     if ( selector.parent('tr').children('td:first').text() == "true" ) {
       var packageText = selector.parent('tr').children('td:nth-child(7)').text();
-      parsePackage(packageText, 'subtract');
+      parsePackage(packageText, 'subtract', 'List');
     }
   
     if ( !selector.parent('tr').children('td').hasClass('unsaved') ) {
@@ -14001,11 +14004,19 @@ function exportCsv(mode){
     $.each(data, function(orderItem, fields){
       if ( statusBoxes[fields.Status] === true ) {
         if ( mode == 'Export' ) {
-          text += (fields.AM == 1 ? "X":"O") + ',' + (fields.PM == 1 ? "X":"O") + ',"' + fields.First + '","' + fields.Last + '","' + fields.Pickup + '","' + fields.Phone + '",'; 
-          text += '"' + fields.Package + '",' + order + ',' +  (fields.Waiver == 1 ? "X":"O") + ',' + (fields.Product == 1 ? "X":"O") + ',';
-          text += (fields.Bus == 1 ? "X":"O") + ',' + (fields.All_Area == 1 ? "X":"O") + ',' + (fields.Beg == 1 ? "X":"O") + ',';
-          text += (fields.BRD == 1 ? "X":"O") + ',' + (fields.SKI == 1 ? "X":"O") + ',' + (fields.LTS == 1 ? "X":"O") + ',';
-          text += (fields.LTR == 1 ? "X":"O") + ',' + (fields.Prog_Lesson == 1 ? "X":"O") + '\n';  
+          window.csvValue = {};
+          if ( fields.AM == 1 ) {
+            parsePackage(fields.Package, 'add', 'CSV');
+          } else {
+            parsePackage(fields.Package, 'setup', 'CSV');
+          }
+          text += (fields.AM == 1 ? "X":"") + ',' + (fields.PM == 1 ? "X":"") + ',"' + fields.First + '","' + fields.Last + 
+                  '","' + fields.Pickup + '","' + fields.Phone + '","' + fields.Package + '",' + order + ',' +  
+                  (fields.Waiver == 1 ? "X":"") + ',' + (fields.Product == 1 ? "X":"") + ',' + (csvValue["Bus Only"] == 1 ? "X":"") + 
+                  ',' + (csvValue["All Area Lift"] == 1 ? "X":"") + ',' + (csvValue["Beginner Lift and Lesson"] == 1 ? "X":"") + 
+                  ',' + (csvValue["Board Rental"] == 1 ? "X":"") + ',' + (csvValue["Ski Rental"] == 1 ? "X":"") + 
+                  ',' + (csvValue["Learn to Ski"] == 1 ? "X":"") + ',' + (csvValue["Learn to Ride"] == 1 ? "X":"") + 
+                  ',' + (csvValue["Progressive Lesson"] == 1 ? "X":"") + '\n';  
         } else if ( mode == 'Email' ) { 
           text += '"' + (typeof fields.Email === 'undefined' ? "No Email" : fields.Email) + '","' + fields.First + '","' + fields.Last + '","' + fields.Package + '","' + fields.Pickup + '"\n';
         }
