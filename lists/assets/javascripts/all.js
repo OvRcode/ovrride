@@ -13437,15 +13437,16 @@ $.fn.colCount = function() {
    return colCount;
 };
 function parsePackage(packageText, addSubtract, outputType) {
-  var bus         = new RegExp(/bus only/i);
-  var begLiftLesson     = new RegExp(/beginner lift.*lesson$/i);
-  var allArea     = new RegExp(/all area/i);
-  var weekendLift = new RegExp(/^lift/i);
-  var ltr         = new RegExp(/beginner lift area.*bus.*lesson.*board/i);
-  var lts         = new RegExp(/beginner lift area.*bus.*lesson.*ski/i);
-  var progLesson  = new RegExp(/prog.* lesson/i);
-  var ski         = new RegExp(/ski rental/i);
-  var brd         = new RegExp(/board rental/i);
+  var bus           = new RegExp(/bus only/i);
+  var begLiftLesson = new RegExp(/beginner lift.*lesson$/i);
+  var allArea       = new RegExp(/all area/i);
+  var weekendLift   = new RegExp(/^lift/i);
+  var weekendLift2  = new RegExp(/Balance \(lift/i);
+  var ltr           = new RegExp(/beginner lift area.*bus.*lesson.*board/i);
+  var lts           = new RegExp(/beginner lift area.*bus.*lesson.*ski/i);
+  var progLesson    = new RegExp(/prog.* lesson/i);
+  var ski           = new RegExp(/ski rental/i);
+  var brd           = new RegExp(/board rental/i);
   var output;
   if ( outputType == 'List' ) {
     output = window.fieldTotals;
@@ -13483,7 +13484,7 @@ function parsePackage(packageText, addSubtract, outputType) {
     } else if ( addSubtract == 'subtract' ) {
       output["All Area Lift"] = Math.max(0, --output["All Area Lift"]);
     }
-  } else if ( weekendLift.test(packageText) ) {
+  } else if ( weekendLift.test(packageText) || weekendLift2.test(packageText) ) {
     if ( typeof output["Weekend Lift"] == 'undefined' ) {
       output["Weekend Lift"] = 0;
     }
