@@ -37,7 +37,7 @@
 function checkAll(status) {
   // reset checked attr status either way
   $('.order_status_checkbox').removeAttr('checked');
-  
+
   if (status == 'check'){
     $('.order_status_checkbox').prop('checked', true);
   }
@@ -85,7 +85,7 @@ function generateOnOff(){
       $('#csv_email').css('visibility','hidden');
       console.log('Offline Loading data:');
       window.orderData = window.storage.get('orderData');
-    
+
       $('#listTable').buildTable();
     },200);
   }
@@ -125,11 +125,11 @@ function setupProgressBar(){
     '</div>' +
   '</div>' +
     '</div>');
-} 
+}
 $('#save').click(function(){
   setupProgressBar();
   $('#saveBar').css('width', '10%');
-  
+
   if(window.navigator.onLine){
     $('#saveBar').css('width', '50%');
     postData();
@@ -202,7 +202,7 @@ function setupTablesorter(rows) {
       filter_functions : filterOptions
     };
     // Modify options for tables with no pickup column
-    if (rows == 17) {
+    if (rows == 10) {
       delete headerOptions[18];
       headerOptions[4].sorter = 'digit';
       headerOptions[5].sorter = 'text';
@@ -213,7 +213,7 @@ function setupTablesorter(rows) {
       delete filterOptions[6];
       filterOptions[5] = true;
     }
-    
+
     var tablesorterOptions = {
       delayInit: false,
       widthFixed: true,
@@ -250,7 +250,7 @@ function setupDropDowns(){
             dropDown.trips[classType] = {};
           }
           dropDown.trips[classType][tripId] = tripLabel;
-        }); 
+        });
       });
       window.storage.set('dropDown',dropDown);
       $('#trip', '#mainBody').append(trips);
@@ -268,18 +268,18 @@ function setupDropDowns(){
       $.each(data, function(tripId, tripLabel){
           localTrips += '<option class="' + tripClass + '" value="' + tripId + '">'+tripLabel+'</option>\n';
       });
-      
+
     });
     $('#trip').append(localTrips);
     setTimeout(function(){
       $("#trip").chained("#destination");
     },200);
   }
-  
+
 }
 $.fn.colCount = function() {
    var colCount = 0;
-   $('thead:nth-child(1) td', this).each(function () {
+   $('thead tr:nth-child(1) td', this).each(function () {
        if ($(this).attr('colspan')) {
            colCount += +$(this).attr('colspan');
        } else {
@@ -412,12 +412,12 @@ $.fn.buildTable = function(){
   $('#footer').css('position','absolute');
   if (window.navigator.onLine) {
     // ONLINE
-    
+
     if (jQuery.isEmptyObject(orderData)) {
       $(this).append('<div class="container" id="Listable"><p>There are no orders for the selected Trip and Order Status.</p></div>');
       $('#loader').css('display','none');
       throw new Error('Aborted table creation, no data here');
-    } 
+    }
   }
 
   var events = [];
@@ -426,10 +426,13 @@ $.fn.buildTable = function(){
     $.each(values, function(orderItemNumber, fields){
       var id = orderNumber+":"+orderItemNumber;
       var row = {};
-      
+
       if (statusBoxes[fields.Status] === true) {
         $.each(fields, function(field, value){
-          if (field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
+          if ( field == 'Pickup' && value == "No Pickup" ) {
+            return true;//skip this loop;
+          }
+          if ( field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
             row[field] = '<td id="' + id + ':' + field +'"';
             switch (field) {
               case 'First':
@@ -493,16 +496,16 @@ $.fn.buildTable = function(){
         tableBody += '<tr>'+row.AM + row.PM + row.First + row.Last;
         if (row.Pickup) {
           tableBody += row.Pickup;
-        } 
-        
+        }
+
         tableBody += row.Phone + row.Package ;
-        
+
         if (prefix == 'WO') {
           tableBody += '<td>' + orderNumber + '</td>';
         } else {
           tableBody += '<td><a href="https://ovrride.com/wp-admin/post.php?post=' + orderNumber +'&action=edit" target="_blank">' + orderNumber+ '</a></td>';
         }
-        
+
         tableBody += row.Waiver + row.Product;
         if ( prefix == 'WO') {
           tableBody += '<td class="center-me" id="' + id +'"><button class="btn-xs btn-warning" >' +
@@ -524,7 +527,7 @@ $.fn.buildTable = function(){
             byLocation[locationName].Expected = 0;
             byLocation[locationName].AM = 0;
             byLocation[locationName].PM = 0;
-          } 
+          }
           byLocation[locationName].Expected++;
           if ( findButtonValueString(row.AM) == "true" ) {
             byLocation[locationName].AM++;
@@ -544,11 +547,11 @@ $.fn.buildTable = function(){
                     '<td class="filter-false">PM</td>' +
                     '<td>First</td>' +
                     '<td>Last</td>';
-                      
+
   if (hasPickup == 1) {
     tableHeader += '<td data-placeholder="Location">Pickup</td>';
   }
-    
+
   tableHeader += '<td>Phone</td>' +
                 '<td data-placeholder="Package">Package</td>' +
                 '<td>Order</td>' +
@@ -556,7 +559,7 @@ $.fn.buildTable = function(){
                 '<td class="filter-false">Product REC.</td>' +
                 '<td class="filter-false"></td></tr>' +
                 '</thead>\n';
-                
+
   tableBody += '</tbody>\n';
   tableFooter += '<tfoot>\n<tr>' +
                  '<td class="center-me"><button type="button" class="btn btn-primary" id="add">' +
@@ -564,7 +567,7 @@ $.fn.buildTable = function(){
                  '<td class="center-me"><button type="button" class="btn btn-danger" id="remove">' +
                  '<span class="glyphicon glyphicon-minus"></span></button></td>' +
                  '</tfoot></table>';
-  if (byLocation) {
+  if (!jQuery.isEmptyObject(byLocation)) {
     locationTable = '<div id="locationContainer" class="col col-md-4 col-md-offset-2"><h4>Riders by pickup location:</h4>';
     locationTable += '<table id="locationTable" class="table table-bordered table-striped table-condensed">\n';
     locationTable += '<thead><tr><td>Location</td><td>Expected</td><td>AM</td><td>PM</td></tr></thead>\n';
@@ -574,16 +577,16 @@ $.fn.buildTable = function(){
     });
     locationTable += '</tbody></table></div>';
     $('#totals').append(locationTable);
-  }
 
-  itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
-  itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
-  itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n<tbody>\n';
-  $.each(window.fieldTotals, function(name, quantity){
-    itemTable += '<tr><td>' + name + '</td><td id="' + name + '">' + quantity + '</td></tr>\n';
-  });
-  itemTable += '</tbody></table></div>';
-  $('#totals').append(itemTable);
+    itemTable =  '<div id="itemContainer" class="col col-md-4"><h4>Package item totals:</h4>\n';
+    itemTable += '<table id="itemTable" class="table table-bordered table-striped table-condensed">\n';
+    itemTable += '<thead><tr><td>Package Item</td><td>Count</td></tr></thead>\n<tbody>\n';
+    $.each(window.fieldTotals, function(name, quantity){
+      itemTable += '<tr><td>' + name + '</td><td id="' + name + '">' + quantity + '</td></tr>\n';
+    });
+    itemTable += '</tbody></table></div>';
+    $('#totals').append(itemTable);
+  }
   var output = tableHeader + tableBody + tableFooter;
   $(this).append(output);
   $('#footer').css('position','static');
@@ -592,23 +595,23 @@ $.fn.buildTable = function(){
   $('#add').click(function(){addOrder();});
   //Update view all option in pager for # of rows
   updateViewAll();
-  
+
   // click event to remove unsaved manual orders from table
    $('#remove').click(function(){removeOrder();});
-   
+
   $('#save').css('visibility','visible');
   if (window.navigator.onLine){
     $('#csv_list').css('visibility','visible');
     $('#csv_email').css('visibility','visible');
   }
-  
+
   setupTablesorter($("#Listable").colCount());
-  
+
   // update table when sorting (speeds up click lag on iOS/mobile devices )
   $('#Listable thead tr td').on("click", function(){ $('#Listable').trigger('update'); });
-  
+
   setLocalTrip();
-  
+
   $.each(events, function(key,value){
     addButtonListener(value);
   });
@@ -640,7 +643,7 @@ function addButtonListener(value){
     var locationRow;
 
     var time = (((new Date()).valueOf()).toString()).substr(0,10);
-    
+
     if ( button.hasClass('btn-success')) {
       button.removeClass('btn-success').addClass('btn-danger').val('false');
       iconSpan.removeClass('glyphicon-ok-sign').addClass('glyphicon-minus-sign');
@@ -674,16 +677,16 @@ function addButtonListener(value){
         locationRow.next().next().next().text(parseInt(locationRow.next().next().next().text(), 10) + 1);
       }
     }
-    
+
     if ( typeof orderData[order][item].timeStamp === undefined ) {
       console.log('Setting timeStamp field');
     }
-    
+
     orderData[order][item].timeStamp = time;
-    
+
     window.storage.set('orderData',window.orderData);
     window.storage.set('unsaved',true);
-    
+
     if (field == 'AM') {
       packageText = $("#" + order + "\\:" + item + "\\:Package").text();
       parsePackage(packageText, action, 'List');
@@ -754,7 +757,7 @@ function removeManualOrder(elem){
       var packageText = selector.parent('tr').children('td:nth-child(7)').text();
       parsePackage(packageText, 'subtract', 'List');
     }
-  
+
     if ( !selector.parent('tr').children('td').hasClass('unsaved') ) {
       // This order has been saved to the serverSide DB
       if ( window.navigator.onLine ) {
@@ -778,7 +781,7 @@ function removeManualOrder(elem){
 function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
-  
+  var hasPickup = ($('#Listable').colCount() == 11 ? true : false);
   //Generate Walk On order #
   var itemNum = Math.floor( Math.random() * 90000 );
   var order = 'WO' + Math.floor( Math.random() * 90000 );
@@ -792,7 +795,7 @@ function addOrder(){
   '<span class="glyphicon glyphicon-minus-sign"></span></button></td>' +
   '<td contenteditable="true" id ="' + id +':First" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td contenteditable="true" id ="' + id +':Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" id ="' + id +':Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  ( hasPickup ? '<td contenteditable="true" id ="' + id +':Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
   '<td contenteditable="true" id ="' + id +':Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td contenteditable="true" id ="' + id +':Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
@@ -829,11 +832,11 @@ function removeOrder(){
     if($('#Listable tbody tr:last').hasClass('manual')){
       var label = $('#Listable tbody tr:last td').attr('id');
       var id = label[0] + ':' + label[1];
-      
+
       // Delete from object and local storage
       delete window.orderData[id];
       window.storage.set('orderData',window.orderData);
-      
+
       $('#Listable tbody tr:last').remove();
       $('#total_guests').text(function(i,txt){ return parseInt(txt,10) - 1; });
       $('#Listable').trigger("update"); 
@@ -890,7 +893,7 @@ function exportCsv(mode){
   link.setAttribute("href", "data:text/csv;charset=utf-8," + encodedUri);
   link.setAttribute("download",name);
   link.click();*/
-  
+
 }
 function reloadData() {
   if ( window.storage.get('unsaved') ) {
@@ -934,7 +937,7 @@ $(function(){
   }
   // remove 300ms click input for checkboxes on iOS
   $('#listTable tbody tr td input').noClickDelay();
-  
+
   // disable link on onLine/offLine status
   $('.status').not('.iphone').click(function(e){
     e.preventDefault();
@@ -948,19 +951,19 @@ $(function(){
         'Back online, save starting...</div>');
         setTimeout(function(){
           $('#backOnline').remove();
-          $('#save').trigger('click');  
+          $('#save').trigger('click');
         },2000);
     }
   });
-  
-  // Monitor onLine status and flip navbar indicator 
+
+  // Monitor onLine status and flip navbar indicator
   setInterval(function () {
     var status = $('.status').not('.iphone');
     var statusSmall = $('.status.iphone');
     if (window.navigator.onLine) {
       if ($('#Listable').length > 0) {
       $('#csv_list').css('visibility','visible');
-      $('#csv_email').css('visibility','visible'); 
+      $('#csv_email').css('visibility','visible');
       }
       $('#save').removeClass('btn-warning');
       if (status.hasClass('glyphicon-cloud-download')) {
@@ -969,7 +972,7 @@ $(function(){
       } else if (!status.hasClass('glyphicon-cloud-upload')) {
         status.addClass('glyphicon-cloud-upload').css('color','').text(' online');
         statusSmall.addClass('glyphicon-cloud-upload').css('color','');
-      } 
+      }
     } else if (!window.navigator.onLine) {
       $('#csv_list').css('visibility','hidden');
       $('#csv_email').css('visibility','hidden');
