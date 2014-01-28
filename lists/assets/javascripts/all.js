@@ -13514,9 +13514,10 @@ function parsePackage(packageText, addSubtract, outputType) {
       output["Learn to Ski"] = Math.max(0, --output["Learn to Ski"]);
     }
   } else if ( progLesson.test(packageText) ) {
-    if ( typeof output["Progressive Lesson"] ) {
+    if ( typeof output["Progressive Lesson"] == 'undefined' ) {
       output["Progressive Lesson"] = 0;
     }
+
     if ( addSubtract == 'add' ) {
       output["Progressive Lesson"]++;
     } else if ( addSubtract == 'subtract' ) {
