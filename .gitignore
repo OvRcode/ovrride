@@ -11,6 +11,8 @@
 !/lists/*/*/*
 !/lists/*/*/*/*
 !/lists/*/*/*/*/*
+!/lists/*/*/*/*/*/*
+!/lists/*/*/*/*/*/*/*
 !package.json
 !README.md
 !/wp-content/
