@@ -26,8 +26,8 @@ class TripList{
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        $this->destinations = array("Camelback MT","Hunter MT","Jackson Hole","Japan","Killington",
-                                    "Lake Tahoe","MT Snow","Paint ball","Sky Diving","Stowe",
+        $this->destinations = array("Breckenridge","Camelback MT","Hunter MT","Jackson Hole","Japan","Killington",
+                                    "Lake Tahoe","MT Snow","Paint ball","Sky Diving","Snowbird","Stowe",
                                     "Stratton","Sugarbush","Whistler","Windham");
                                     
         $this->checkboxes = array("AM","PM","Waiver","Product");
@@ -56,15 +56,12 @@ class TripList{
         $result = $this->dbQuery($sql);
          while($row = $result->fetch_assoc()){
              foreach($this->destinations as $value){
-               if ($value != "Stratton") {
-                   $regex = '/'.$value.'(.*)/i';
+               if ($value == "Stratton") {
+                   $regex = '/Stratturday\s(.*)/i';
                } else if ($value == "Jackson Hole") {
                    $regex = '/\bJackson\sHole\s\b(.*)/i';
-                   preg_match($regex,$row['post_title'],$match);
-                   print($row['post_title']);
-                   print_r($match);
                } else {
-                 $regex = '/Stratturday\s(.*)/i';
+                 $regex = '/'.$value.'(.*)/i';
                 }
                 
                if(preg_match($regex,$row['post_title'],$match)){
