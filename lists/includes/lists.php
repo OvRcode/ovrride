@@ -13,7 +13,7 @@ class TripList{
     var $orderData;
     var $options;
     var $checkboxes;
-    
+
     function __construct(){
         # Connect to database
         require_once("config.php");
@@ -27,9 +27,10 @@ class TripList{
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
         $this->destinations = array("Breckenridge","Camelback MT","Hunter MT","Jackson Hole","Japan","Killington",
-                                    "Lake Tahoe","MT Snow","Paint ball","Sky Diving","Snowbird","Stowe",
+                                    "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paint ball",
+                                    "Sky Diving","Snowbird","Southern Argentina","Southern Chile","Stowe",
                                     "Stratton","Sugarbush","Whistler","Windham");
-                                    
+
         $this->checkboxes = array("AM","PM","Waiver","Product");
     }
     function dbQuery($sql){
@@ -52,7 +53,7 @@ class TripList{
                 AND `post_title` NOT LIKE '%Beanie%'
                 AND `post_title` NOT LIKE '%East Coast Fold Hat%'
                 ORDER BY `post_title`";
-        
+
         $result = $this->dbQuery($sql);
          while($row = $result->fetch_assoc()){
              foreach($this->destinations as $value){
@@ -63,12 +64,12 @@ class TripList{
                } else {
                  $regex = '/'.$value.'(.*)/i';
                 }
-                
+
                if(preg_match($regex,$row['post_title'],$match)){
                  $class = $value;
                  $label = $match[1];
                }
-                  
+
              }
              $this->options['destinations'] = $this->destinations;
              $this->options['trip'][$class][$row['id']] = $label;
@@ -93,7 +94,7 @@ class TripList{
             $this->orders[$row['ID']][$row['order_item_id']] = $row['name'];
         }
         $result->free();
-        
+
         foreach ( $this->orders as $order => $data ) {
             # Get phone number
             $sql = "SELECT  `meta_value` AS  `Phone`
@@ -130,10 +131,10 @@ class TripList{
                         $this->orderData[$order][$orderItem][$row['meta_key']] = trim($row['meta_value']);
                     }
                 }
-                
+
                 $this->getCheckboxStates($order,$orderItem);
             }
-        }   
+        }
     }
     function getManualOrders($tripId){
         $sql = "SELECT  `ID` ,  `First` ,  `Last` ,  `Pickup` ,  `Phone` ,  `Package`
@@ -141,7 +142,7 @@ class TripList{
                 WHERE  `Trip` =  '$tripId'";
         $result = $this->dbQuery($sql);
         while($row = $result->fetch_assoc()){
-            
+
             $explodedId = explode(":",$row['ID']);
             $order = $explodedId[0];
             $orderItem = $explodedId[1];
@@ -170,7 +171,7 @@ class TripList{
         }
     }
     function reformatPhone($phone){
-        
+
         # Strip all formatting
         $phone = str_replace('-','',$phone);
         $phone = str_replace('(','',$phone);
@@ -183,14 +184,14 @@ class TripList{
         $phone = substr_replace($phone,'(',0,0);
         $phone = substr_replace($phone,') ',4,0);
         $phone = substr_replace($phone,'-',9,0);
-        
+
         return $phone;
     }
     function splitName($name){
         $parts = explode(" ", $name);
         $last = array_pop($parts);
         $first = implode(" ", $parts);
-        
+
         return array("First" => $first, "Last" => $last); 
     }
     function stripTime($pickup){
