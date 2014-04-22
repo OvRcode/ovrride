@@ -26,10 +26,10 @@ class TripList{
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        $this->destinations = array("Breckenridge","Camelback MT","Hunter MT","Jackson Hole","Japan","Killington",
+        $this->destinations = array("Breckenridge","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
                                     "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paint ball",
                                     "Sky Diving","Snowbird","Southern Argentina","Southern Chile","Stowe",
-                                    "Stratton","Sugarbush","Whistler","Windham");
+                                    "Stratton","Sugarbush","Tap New York","Whistler","Windham");
 
         $this->checkboxes = array("AM","PM","Waiver","Product");
     }
