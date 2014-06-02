@@ -26,10 +26,10 @@ class TripList{
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        $this->destinations = array("Breckenridge","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
-                                    "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paint ball",
+        $this->destinations = array("Asbury Park","Breckenridge","Camelbeach","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
+                                    "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paint ball","Rockaway Beach",
                                     "Sky Diving","Snowbird","Southern Argentina","Southern Chile","Stowe",
-                                    "Stratton","Sugarbush","Tap New York","Whistler","Windham");
+                                    "Stratton","Sugarbush","Tap New York","Whistler","Whitewater Weekend","Windham");
 
         $this->checkboxes = array("AM","PM","Waiver","Product");
     }
@@ -66,13 +66,14 @@ class TripList{
                 }
 
                if(preg_match($regex,$row['post_title'],$match)){
-                 $class = $value;
+                 $HTMLclass = $value;
                  $label = $match[1];
                }
 
              }
              $this->options['destinations'] = $this->destinations;
-             $this->options['trip'][$class][$row['id']] = $label;
+             if(isset($HTMLclass))
+               $this->options['trip'][$HTMLclass][$row['id']] = $label;
          }
     }
     function tripData($tripId){

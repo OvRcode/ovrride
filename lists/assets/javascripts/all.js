@@ -13382,10 +13382,13 @@ function setupDropDowns(){
     var dropDown = {};
     dropDown.destinations = {};
     dropDown.trips = {};
+    console.log("dropdown setup started");
     var jqxhr = $.post('/pull.php', {'requestType':'dropdowns'})
     .done(function(data){
       var destinations = '';
       var trips = '';
+      console.log("data received from php");
+      console.log(data);
       $.each(data.destinations, function(key,value){
         destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
         dropDown.destinations[value] = value;
