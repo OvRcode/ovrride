@@ -13828,7 +13828,11 @@ function addButtonListener(value){
       action = 'subtract';
       $("#" + field).text(parseInt($("#" + field).text(), 10) - 1);
       if ( field == 'AM' ) {
-        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        if ( $("#destination").val() == "Rockaway Beach" )
+          listLocation = $("[id='"+ order +":"+ item +":Transit To Rockaway']").text();
+        else
+          listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+
         locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
         locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) - 1);
       } else if ( field == 'PM' ) {
@@ -13844,7 +13848,11 @@ function addButtonListener(value){
       action = 'add';
       $("#" + field).text(parseInt($("#" + field).text(), 10) + 1);
       if ( field == 'AM'){
-        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        if ( $("#destination").val() == "Rockaway Beach" )
+          listLocation = $("[id='"+ order +":"+ item +":Transit To Rockaway']").text();
+        else
+          listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+
         locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
         locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) + 1);
       } else if ( field == 'PM' ) {
