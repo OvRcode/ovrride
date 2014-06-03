@@ -302,6 +302,13 @@ function parsePackage(packageText, addSubtract, outputType) {
   var progLesson    = new RegExp(/prog.* lesson/i);
   var ski           = new RegExp(/ski rental/i);
   var brd           = new RegExp(/board rental/i);
+  // Beach / Waterpark Specific packages
+  var allMountainCoaster = new RegExp(/mountain coaster/i);
+  var waterPark          = new RegExp(/all area waterpark/i);
+  var oneWay             = new RegExp(/one way bus/i);
+  var roundTrip          = new RegExp(/round trip bus/i);
+  var beachDay           = new RegExp(/day at the beach package/i);
+  var beachSurf          = new RegExp(/surf lesson/i);
   var output;
   if ( outputType == 'List' ) {
     output = window.fieldTotals;
@@ -311,8 +318,69 @@ function parsePackage(packageText, addSubtract, outputType) {
   if ( typeof output == 'undefined' ) {
     output = {};
   }
-  // Check bus/Lift options
-  if ( bus.test(packageText) ) {
+  //TODO: write functions to clean up redundant code for checking undefined and add/subtract
+  // Check summer packages then bus/Lift options
+  if ( beachSurf.test(packageText) ) {
+    if ( typeof output["Surf Lesson"] == 'undefined' ) {
+      output["Surf Lesson"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      output["Surf Lesson"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      output["Surf Lesson"] = Math.max(0,--output["Surf Lesson"]);
+    }
+  }
+  else if ( beachDay.test(packageText) ) {
+    if ( typeof output["Day at the beach"] == 'undefined' ) {
+      output["Day at the beach"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      output["Day at the beach"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      output["Day at the beach"] = Math.max(0,--output["Day at the beach"]);
+    }
+  }
+  else if ( oneWay.test(packageText) ) {
+    if ( typeof output["One way bus"] == 'undefined' ) {
+      output["One way bus"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      output["One way bus"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      output["One way bus"] = Math.max(0,--output["One way bus"]);
+    }
+  }
+  else if ( roundTrip.test(packageText) ) {
+    if ( typeof output["Round Trip Bus"] == 'undefined' ) {
+      output["Round Trip Bus"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      output["Round Trip Bus"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      output["Round Trip Bus"] = Math.max(0,--output["Round Trip Bus"]);
+    }
+  }
+  else if ( waterPark.test(packageText) ) {
+    if ( typeof output["All Area Waterpark"] == 'undefined' ) {
+      output["All Area Waterpark"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      output["All Area Waterpark"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      output["All Area Waterpark"] = Math.max(0,--output["All Area Waterpark"]);
+    }
+  }
+  else if ( allMountainCoaster.test(packageText) ) {
+    if ( typeof output["Waterpark & Mountain Coaster"] == 'undefined' ) {
+      output["Waterpark & Mountain Coaster"] = 0;
+    }
+    if ( addSubtract == 'add' ) {
+      output["Waterpark & Mountain Coaster"]++;
+    } else if ( addSubtract == 'subtract' ) {
+      output["Waterpark & Mountain Coaster"] = Math.max(0,--output["Waterpark & Mountain Coaster"]);
+    }
+  }
+  else if ( bus.test(packageText) ) {
     if ( typeof output["Bus Only"] == 'undefined' ) {
       output["Bus Only"] = 0;
     }
