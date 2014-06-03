@@ -201,9 +201,8 @@ function setupTablesorter(rows) {
       filter_searchDelay : 0,
       filter_functions : filterOptions
     };
-    // Modify options for tables with no pickup column
+    // Modify options for tables with no pickup column 
     if (rows == 10) {
-      delete headerOptions[18];
       headerOptions[4].sorter = 'digit';
       headerOptions[5].sorter = 'text';
       headerOptions[6].sorter = 'digit';
@@ -212,6 +211,18 @@ function setupTablesorter(rows) {
       delete filterOptions[4];
       delete filterOptions[6];
       filterOptions[5] = true;
+    } else if ( rows == 12 ) {
+      headerOptions[4].sorter = 'digit';
+      headerOptions[5].sorter = 'text';
+      headerOptions[6].sorter = 'text';
+      headerOptions[7].sorter = 'text';
+      headerOptions[8].sorter = 'digit';
+      headerOptions[9].sorter = 'text';
+      headerOptions[10].sorter = 'text';
+      delete filterOptions[4];
+      filterOptions[5] = true;
+      filterOptions[6] = true;
+      filterOptions[7] = true;
     }
 
     var tablesorterOptions = {
@@ -426,7 +437,9 @@ $.fn.buildTable = function(){
           if ( field == 'Pickup' && value == "No Pickup" ) {
             return true;//skip this loop;
           }
-          if ( field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
+          if ( field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || 
+             field == 'Package' || field == 'Order' || field == 'Transit To Rockaway' || 
+             field == 'Transit From Rockaway') {
             row[field] = '<td id="' + id + ':' + field +'"';
             switch (field) {
               case 'First':
@@ -447,6 +460,13 @@ $.fn.buildTable = function(){
                 break;
               case 'Order':
                 row[field] += 'headers="Order"';
+                break;
+              case 'Transit To Rockaway':
+                row[field] += 'headers="To Rockaway"';
+                break;
+              case 'Transit From Rockaway':
+                row[field] += 'headers="From Rockaway"';
+                break;
             }
             if (prefix != 'WO') {
               row[field] += ' class="no-edit"';
@@ -493,7 +513,12 @@ $.fn.buildTable = function(){
         }
 
         tableBody += row.Phone + row.Package ;
-
+        if ( row["Transit To Rockaway"] ) {
+          tableBody += row["Transit To Rockaway"];
+        }
+        if ( row["Transit From Rockaway"] ) {
+          tableBody += row["Transit From Rockaway"];
+        }
         if (prefix == 'WO') {
           tableBody += '<td>' + orderNumber + '</td>';
         } else {
@@ -546,9 +571,12 @@ $.fn.buildTable = function(){
     tableHeader += '<td data-placeholder="Location">Pickup</td>';
   }
 
-  tableHeader += '<td>Phone</td>' +
-                '<td data-placeholder="Package">Package</td>' +
-                '<td>Order</td>' +
+  tableHeader += '<td>Phone</td><td data-placeholder="Package">Package</td>';
+  if ( $("#destination").val() == "Rockaway Beach" ) {
+    tableHeader += '<td data-placeholder="To Rockaway">To Rockaway</td>' +
+                   '<td data-placeholder="From Rockaway">From Rockaway</td>';
+  }
+  tableHeader += '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
                 '<td class="filter-false"></td></tr>' +
