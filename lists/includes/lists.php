@@ -52,6 +52,8 @@ class TripList{
                 AND `post_title` NOT LIKE  '%Gift%'
                 AND `post_title` NOT LIKE '%Beanie%'
                 AND `post_title` NOT LIKE '%East Coast Fold Hat%'
+                AND `post_title` NOT LIKE '%Good Wood%'
+                AND `post_title` NOT LIKE '%East Coast Snapback%'
                 ORDER BY `post_title`";
 
         $result = $this->dbQuery($sql);
