@@ -117,7 +117,9 @@ class TripList{
                         OR `meta_key` = 'Email'
                         OR `meta_key` = 'Package'
                         OR `meta_key` = 'Pickup'
-                        OR `meta_key` = 'Pickup Location')
+                        OR `meta_key` = 'Pickup Location'
+                        OR `meta_key` = 'Transit To Rockaway'
+                        OR `meta_key` = 'Transit From Rockaway')
                         AND `order_item_id` = '$orderItem'";
                 $result = $this->dbQuery($sql);
                 while ($row = $result->fetch_assoc()) {
