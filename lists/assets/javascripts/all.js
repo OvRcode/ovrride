@@ -13294,8 +13294,6 @@ $('#save').click(function(){
 $.fn.getData = function(){
   var jqxhr = $.post("/pull.php", {'requestType':'orders','trip' : $(this).val()})
   .done(function(data){
-    console.log('PHP DATA:');
-    console.log(data);
     window.orderData = data;
     window.storage.set('orderData',orderData);
     $("#listTable").buildTable();
@@ -13400,8 +13398,6 @@ function setupDropDowns(){
     .done(function(data){
       var destinations = '';
       var trips = '';
-      console.log("data received from php");
-      console.log(data);
       $.each(data.destinations, function(key,value){
         destinations += '<option class="' + value + '" value="' + value + '">'+ value + '</option>';
         dropDown.destinations[value] = value;
