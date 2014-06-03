@@ -117,14 +117,20 @@ class TripList{
                         OR `meta_key` = 'Email'
                         OR `meta_key` = 'Package'
                         OR `meta_key` = 'Pickup'
-                        OR `meta_key` = 'Pickup Location')
+                        OR `meta_key` = 'Pickup Location'
+                        OR `meta_key` = 'Transit To Rockaway'
+                        OR `meta_key` = 'Transit From Rockaway')
                         AND `order_item_id` = '$orderItem'";
                 $result = $this->dbQuery($sql);
                 while ($row = $result->fetch_assoc()) {
                     if ($row['meta_key'] == 'Package') {
                         $this->orderData[$order][$orderItem]['Package'] = ucwords(strtolower($this->removePackagePrice($row['meta_value'])));
-                    } elseif($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location') {
+                    } elseif($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location' ||
+                    $row['meta_key'] == 'Transit To Rockaway'|| $row['meta_key'] == 'Transit From Rockaway') {
+                      if ($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location')
                         $this->orderData[$order][$orderItem]['Pickup'] = ucwords(strtolower($this->stripTime($row['meta_value'])));
+                      else
+                        $this->orderData[$order][$orderItem][$row['meta_key']] = ucwords(strtolower($this->stripTime($row['meta_value'])));
                     }
                     elseif($row['meta_key'] == 'Name'){
                         $names = $this->splitName($row['meta_value']);
@@ -134,7 +140,6 @@ class TripList{
                         $this->orderData[$order][$orderItem][$row['meta_key']] = trim($row['meta_value']);
                     }
                 }
-
                 $this->getCheckboxStates($order,$orderItem);
             }
         }
@@ -165,9 +170,12 @@ class TripList{
         $result = $this->dbQuery($sql);
         while ($row = $result->fetch_assoc()) {
           $label = explode(':',$row['ID']);
-          $this->orderData[$order][$orderItem][$label[2]] = $row['value'];
+          if($label[2] != 'Transit To Rockaway' && $label[2] != 'Transit From Rockawa'){
+            $this->orderData[$order][$orderItem][$label[2]] = $row['value'];
+          }
         }
         foreach ($this->checkboxes as $field) {
+         
           if (!isset($this->orderData[$order][$orderItem][$field])){
             $this->orderData[$order][$orderItem][$field] = "";
           }
