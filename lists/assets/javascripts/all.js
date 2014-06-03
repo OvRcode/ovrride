@@ -13689,8 +13689,12 @@ $.fn.buildTable = function(){
           parsePackage(row.Package, 'setup', 'List');
         }
 
-        if (row.Pickup) {
-          var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
+        if (row.Pickup || row["Transit To Rockaway"]) {
+          var locationName;
+          if ( row.Pickup )
+            locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
+          else
+            locationName = row["Transit To Rockaway"].replace(/<(?:.|\n)*?>/gm, '');
           if ( typeof byLocation[locationName] === 'undefined' ) {
             byLocation[locationName] = {};
             byLocation[locationName].Expected = 0;
