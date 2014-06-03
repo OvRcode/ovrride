@@ -14002,7 +14002,12 @@ function addOrder(){
   addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
   addManualListener("#" + order + "\\:" + itemNum + "\\:First");
   addManualListener("#" + order + "\\:" + itemNum + "\\:Last");
-  addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  if ( rockaway ) {
+    addManualListener("[id='" + order +":" + itemNum + ":Transit To Rockaway']");
+    addManualListener("[id='" + order +":" + itemNum + ":Transit From Rockaway']");
+  } else{
+    addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  }
   addManualListener("#" + order + "\\:" + itemNum + "\\:Phone");
   addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
