@@ -145,7 +145,7 @@ class TripList{
         }
     }
     function getManualOrders($tripId){
-        $sql = "SELECT  `ID` ,  `First` ,  `Last` ,  `Pickup` ,  `Phone` ,  `Package`
+        $sql = "SELECT  `ID` ,  `First` ,  `Last` ,  `Pickup` ,  `Phone` ,  `Package`, `Transit To Rockaway`, `Transit From Rockaway`
                 FROM  `ovr_lists_manual_orders` 
                 WHERE  `Trip` =  '$tripId'";
         $result = $this->dbQuery($sql);
