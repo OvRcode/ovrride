@@ -201,9 +201,8 @@ function setupTablesorter(rows) {
       filter_searchDelay : 0,
       filter_functions : filterOptions
     };
-    // Modify options for tables with no pickup column
+    // Modify options for tables with no pickup column 
     if (rows == 10) {
-      delete headerOptions[18];
       headerOptions[4].sorter = 'digit';
       headerOptions[5].sorter = 'text';
       headerOptions[6].sorter = 'digit';
@@ -212,6 +211,18 @@ function setupTablesorter(rows) {
       delete filterOptions[4];
       delete filterOptions[6];
       filterOptions[5] = true;
+    } else if ( rows == 12 ) {
+      headerOptions[4].sorter = 'digit';
+      headerOptions[5].sorter = 'text';
+      headerOptions[6].sorter = 'text';
+      headerOptions[7].sorter = 'text';
+      headerOptions[8].sorter = 'digit';
+      headerOptions[9].sorter = 'text';
+      headerOptions[10].sorter = 'text';
+      delete filterOptions[4];
+      filterOptions[5] = true;
+      filterOptions[6] = true;
+      filterOptions[7] = true;
     }
 
     var tablesorterOptions = {
@@ -234,6 +245,7 @@ function setupDropDowns(){
     var dropDown = {};
     dropDown.destinations = {};
     dropDown.trips = {};
+    console.log("dropdown setup started");
     var jqxhr = $.post('/pull.php', {'requestType':'dropdowns'})
     .done(function(data){
       var destinations = '';
@@ -288,6 +300,18 @@ $.fn.colCount = function() {
    });
    return colCount;
 };
+function define(objectName,propertyName) {
+  if ( typeof objectName[propertyName] == 'undefined' ) {
+    objectName[propertyName] = 0;
+  }
+}
+function addOrSubtract(objectName, propertyName, addSubtract) {
+  if ( addSubtract == 'add' ) {
+    objectName[propertyName]++;
+  } else if ( addSubtract == 'subtract' ) {
+    objectName[propertyName] = Math.max(0,--objectName[propertyName]);
+  }
+}
 function parsePackage(packageText, addSubtract, outputType) {
   var bus           = new RegExp(/bus only/i);
   var begLiftLesson = new RegExp(/beginner lift.*lesson$/i);
@@ -299,6 +323,13 @@ function parsePackage(packageText, addSubtract, outputType) {
   var progLesson    = new RegExp(/prog.* lesson/i);
   var ski           = new RegExp(/ski rental/i);
   var brd           = new RegExp(/board rental/i);
+  // Beach / Waterpark Specific packages
+  var allMountainCoaster = new RegExp(/mountain coaster/i);
+  var waterPark          = new RegExp(/all area waterpark/i);
+  var oneWay             = new RegExp(/one way bus/i);
+  var roundTrip          = new RegExp(/round trip bus/i);
+  var beachDay           = new RegExp(/day at the beach package/i);
+  var beachSurf          = new RegExp(/surf lesson/i);
   var output;
   if ( outputType == 'List' ) {
     output = window.fieldTotals;
@@ -308,92 +339,62 @@ function parsePackage(packageText, addSubtract, outputType) {
   if ( typeof output == 'undefined' ) {
     output = {};
   }
-  // Check bus/Lift options
-  if ( bus.test(packageText) ) {
-    if ( typeof output["Bus Only"] == 'undefined' ) {
-      output["Bus Only"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Bus Only"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Bus Only"] = Math.max(0,--output["Bus Only"]);
-    }
+  // Check summer packages then bus/Lift options
+  if ( beachSurf.test(packageText) ) {
+    define(output,"Surf Lesson");
+    addOrSubtract(output, "Surf Lesson", addSubtract);
+  }
+  else if ( beachDay.test(packageText) ) {
+    define(output, "Day at the beach");
+    addOrSubtract(output, "Day at the beach", addSubtract);
+  }
+  else if ( oneWay.test(packageText) ) {
+    define(output, "One way bus");
+    addOrSubtract(output, "One way bus", addSubtract);
+  }
+  else if ( roundTrip.test(packageText) ) {
+    define(output, "Round Trip Bus");
+    addOrSubtract(output, "Round Trip Bus", addSubtract);
+  }
+  else if ( waterPark.test(packageText) ) {
+    define(output, "All Area Waterpark");
+    addOrSubtract(output, "All Area Waterpark", addSubtract);
+  }
+  else if ( allMountainCoaster.test(packageText) ) {
+    define(output, "Waterpark & Mountain Coaster");
+    addOrSubtract(output, "Waterpark & Mountain Coaster", addSubtract);
+  }
+  else if ( bus.test(packageText) ) {
+    define(output, "Bus Only");
+    addOrSubtract(output, "Bus Only", addSubtract);
   } else if ( begLiftLesson.test(packageText) ) {
-    if ( typeof output["Beginner Lift and Lesson"] == 'undefined' ) {
-      output["Beginner Lift and Lesson"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Beginner Lift and Lesson"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Beginner Lift and Lesson"] = Math.max(0, --output["Beginner Lift and Lesson"]);
-    }
+    define(output, "Beginner Lift and Lesson");
+    addOrSubtract(output, "Beginner Lift and Lesson", addSubtract);
   } else if ( allArea.test(packageText) ) {
-    if ( typeof output["All Area Lift"] == 'undefined' ) {
-      output["All Area Lift"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["All Area Lift"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["All Area Lift"] = Math.max(0, --output["All Area Lift"]);
-    }
+    define(output, "All Area Lift");
+    addOrSubtract(output, "All Area Lift", addSubtract);
   } else if ( weekendLift.test(packageText) || weekendLift2.test(packageText) ) {
-    if ( typeof output["Weekend Lift"] == 'undefined' ) {
-      output["Weekend Lift"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Weekend Lift"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Weekend Lift"] = Math.max(0, --output["Weekend Lift"]);
-    }
+    define(output, "Weekend Lift");
+    addOrSubtract(output, "Weekend Lift", addSubtract);
   }
   // Check rentals and lessons
   if ( ltr.test(packageText) ) {
-    if ( typeof output["Learn to Ride"] == 'undefined' ) {
-      output["Learn to Ride"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Learn to Ride"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Learn to Ride"] = Math.max(0, --output["Learn to Ride"]);
-    }
+    define(output, "Learn to Ride");
+    addOrSubtract(output, "Learn to Ride", addSubtract);
   } else if ( lts.test(packageText) ) {
-    if ( typeof output["Learn to Ski"] == 'undefined' ) {
-      output["Learn to Ski"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Learn to Ski"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Learn to Ski"] = Math.max(0, --output["Learn to Ski"]);
-    }
+    define(output,"Learn to Ski");
+    addOrSubtract(output, "Learn to Ski", addSubtract);
   } else if ( progLesson.test(packageText) ) {
-    if ( typeof output["Progressive Lesson"] == 'undefined' ) {
-      output["Progressive Lesson"] = 0;
-    }
-
-    if ( addSubtract == 'add' ) {
-      output["Progressive Lesson"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Progressive Lesson"] = Math.max(0, --output["Progressive Lesson"]);
-    }
+    define(output, "Progressive Lesson");
+    addOrSubtract(output, "Progressive Lesson", addSubtract);
   }
+  
   if ( ski.test(packageText) && !lts.test(packageText) ) {
-    if ( typeof output["Ski Rental"] == 'undefined' ) {
-      output["Ski Rental"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Ski Rental"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Ski Rental"] = Math.max(0, --output["Ski Rental"]);
-    }
+    define(output, "Ski Rental");
+    addOrSubtract(output, "Ski Rental", addSubtract);
   } else if ( brd.test(packageText) && !ltr.test(packageText) ) {
-    if ( typeof output["Board Rental"] == 'undefined' ) {
-      output["Board Rental"] = 0;
-    }
-    if ( addSubtract == 'add' ) {
-      output["Board Rental"]++;
-    } else if ( addSubtract == 'subtract' ) {
-      output["Board Rental"] = Math.max(0, --output["Board Rental"]);
-    }
+    define(output, "Board Rental");
+    addOrSubtract(output, "Board Rental", addSubtract);
   }
 }
 $.fn.buildTable = function(){
@@ -434,7 +435,9 @@ $.fn.buildTable = function(){
           if ( field == 'Pickup' && value == "No Pickup" ) {
             return true;//skip this loop;
           }
-          if ( field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || field == 'Package' || field == 'Order') {
+          if ( field == 'First' || field == 'Last' || field == 'Pickup' || field == 'Phone' || 
+             field == 'Package' || field == 'Order' || field == 'Transit To Rockaway' || 
+             field == 'Transit From Rockaway') {
             row[field] = '<td id="' + id + ':' + field +'"';
             switch (field) {
               case 'First':
@@ -455,6 +458,13 @@ $.fn.buildTable = function(){
                 break;
               case 'Order':
                 row[field] += 'headers="Order"';
+                break;
+              case 'Transit To Rockaway':
+                row[field] += 'headers="To Rockaway"';
+                break;
+              case 'Transit From Rockaway':
+                row[field] += 'headers="From Rockaway"';
+                break;
             }
             if (prefix != 'WO') {
               row[field] += ' class="no-edit"';
@@ -501,7 +511,12 @@ $.fn.buildTable = function(){
         }
 
         tableBody += row.Phone + row.Package ;
-
+        if ( row["Transit To Rockaway"] ) {
+          tableBody += row["Transit To Rockaway"];
+        }
+        if ( row["Transit From Rockaway"] ) {
+          tableBody += row["Transit From Rockaway"];
+        }
         if (prefix == 'WO') {
           tableBody += '<td>' + orderNumber + '</td>';
         } else {
@@ -522,8 +537,12 @@ $.fn.buildTable = function(){
           parsePackage(row.Package, 'setup', 'List');
         }
 
-        if (row.Pickup) {
-          var locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
+        if (row.Pickup || row["Transit To Rockaway"]) {
+          var locationName;
+          if ( row.Pickup )
+            locationName = row.Pickup.replace(/<(?:.|\n)*?>/gm, '');
+          else
+            locationName = row["Transit To Rockaway"].replace(/<(?:.|\n)*?>/gm, '');
           if ( typeof byLocation[locationName] === 'undefined' ) {
             byLocation[locationName] = {};
             byLocation[locationName].Expected = 0;
@@ -554,9 +573,12 @@ $.fn.buildTable = function(){
     tableHeader += '<td data-placeholder="Location">Pickup</td>';
   }
 
-  tableHeader += '<td>Phone</td>' +
-                '<td data-placeholder="Package">Package</td>' +
-                '<td>Order</td>' +
+  tableHeader += '<td>Phone</td><td data-placeholder="Package">Package</td>';
+  if ( $("#destination").val() == "Rockaway Beach" ) {
+    tableHeader += '<td data-placeholder="To Rockaway">To Rockaway</td>' +
+                   '<td data-placeholder="From Rockaway">From Rockaway</td>';
+  }
+  tableHeader += '<td>Order</td>' +
                 '<td class="filter-false">Waiver</td>' +
                 '<td class="filter-false">Product REC.</td>' +
                 '<td class="filter-false"></td></tr>' +
@@ -654,7 +676,11 @@ function addButtonListener(value){
       action = 'subtract';
       $("#" + field).text(parseInt($("#" + field).text(), 10) - 1);
       if ( field == 'AM' ) {
-        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        if ( $("#destination").val() == "Rockaway Beach" )
+          listLocation = $("[id='"+ order +":"+ item +":Transit To Rockaway']").text();
+        else
+          listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+
         locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
         locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) - 1);
       } else if ( field == 'PM' ) {
@@ -670,7 +696,11 @@ function addButtonListener(value){
       action = 'add';
       $("#" + field).text(parseInt($("#" + field).text(), 10) + 1);
       if ( field == 'AM'){
-        listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+        if ( $("#destination").val() == "Rockaway Beach" )
+          listLocation = $("[id='"+ order +":"+ item +":Transit To Rockaway']").text();
+        else
+          listLocation = $("#" + order + "\\:" + item + "\\:Pickup").text();
+
         locationRow = $('tr','#locationTable').find('td:contains(' + listLocation + ')');
         locationRow.next().next().text(parseInt(locationRow.next().next().text(), 10) + 1);
       } else if ( field == 'PM' ) {
@@ -784,6 +814,7 @@ function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
   var hasPickup = ($('#Listable').colCount() == 11 ? true : false);
+  var rockaway = ($("#destination").val() == 'Rockaway Beach' ? true : false);
   //Generate Walk On order #
   var itemNum = Math.floor( Math.random() * 90000 );
   var order = 'WO' + Math.floor( Math.random() * 90000 );
@@ -799,7 +830,10 @@ function addOrder(){
   '<td contenteditable="true" id ="' + id +':Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   ( hasPickup ? '<td contenteditable="true" id ="' + id +':Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
   '<td contenteditable="true" id ="' + id +':Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" id ="' + id +':Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Package" class="unsaved">' +
+  ( rockaway ? '<td contenteditable="true" id ="' + id + ':Transit To Rockaway" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
+  ( rockaway ? '<td contenteditable="true" id ="' + id + ':Transit From Rockaway" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
+  '<input type="hidden" value="' + id + '" /></td>' +
   '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
   '<td class="center-me" id ="' + id + ':Waiver"><span class="value">false</span>' +
   '<button name ="' + id + ':Waiver" class="btn-xs btn-default btn-danger" value="false">' +
@@ -820,7 +854,12 @@ function addOrder(){
   addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
   addManualListener("#" + order + "\\:" + itemNum + "\\:First");
   addManualListener("#" + order + "\\:" + itemNum + "\\:Last");
-  addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  if ( rockaway ) {
+    addManualListener("[id='" + order +":" + itemNum + ":Transit To Rockaway']");
+    addManualListener("[id='" + order +":" + itemNum + ":Transit From Rockaway']");
+  } else{
+    addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  }
   addManualListener("#" + order + "\\:" + itemNum + "\\:Phone");
   addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
