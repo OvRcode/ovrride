@@ -13962,6 +13962,7 @@ function addOrder(){
   // switch to last page
   $('.last.btn.btn-default').trigger('click');
   var hasPickup = ($('#Listable').colCount() == 11 ? true : false);
+  var rockaway = ($("#destination").val() == 'Rockaway Beach' ? true : false);
   //Generate Walk On order #
   var itemNum = Math.floor( Math.random() * 90000 );
   var order = 'WO' + Math.floor( Math.random() * 90000 );
@@ -13977,7 +13978,10 @@ function addOrder(){
   '<td contenteditable="true" id ="' + id +':Last" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
   ( hasPickup ? '<td contenteditable="true" id ="' + id +':Pickup" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
   '<td contenteditable="true" id ="' + id +':Phone" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
-  '<td contenteditable="true" id ="' + id +':Package" class="unsaved"><input type="hidden" value="' + id + '" /></td>' +
+  '<td contenteditable="true" id ="' + id +':Package" class="unsaved">' +
+  ( rockaway ? '<td contenteditable="true" id ="' + id + ':Transit To Rockaway" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
+  ( rockaway ? '<td contenteditable="true" id ="' + id + ':Transit From Rockaway" class="unsaved"><input type="hidden" value="' + id + '" /></td>' : '') +
+  '<input type="hidden" value="' + id + '" /></td>' +
   '<td headers="Order" class="no-edit unsaved">' + order + '</td>' +
   '<td class="center-me" id ="' + id + ':Waiver"><span class="value">false</span>' +
   '<button name ="' + id + ':Waiver" class="btn-xs btn-default btn-danger" value="false">' +
@@ -13998,7 +14002,12 @@ function addOrder(){
   addButtonListener("#" + order + "\\:" + itemNum + "\\:PM");
   addManualListener("#" + order + "\\:" + itemNum + "\\:First");
   addManualListener("#" + order + "\\:" + itemNum + "\\:Last");
-  addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  if ( rockaway ) {
+    addManualListener("[id='" + order +":" + itemNum + ":Transit To Rockaway']");
+    addManualListener("[id='" + order +":" + itemNum + ":Transit From Rockaway']");
+  } else{
+    addManualListener("#" + order + "\\:" + itemNum + "\\:Pickup");
+  }
   addManualListener("#" + order + "\\:" + itemNum + "\\:Phone");
   addManualListener("#" + order + "\\:" + itemNum + "\\:Package");
   addButtonListener("#" + order + "\\:" + itemNum + "\\:Waiver");
