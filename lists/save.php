@@ -62,7 +62,8 @@ foreach ($input as $order => $orderInfo) {
             $id = $order . ":" . $orderItem;
             if ($prefix == 'WO') {
                 if ($fieldName == "First" || $fieldName == "Last" || $fieldName == "Pickup"
-                  || $fieldName == "Phone" || $fieldName == "Package" || $fieldName == "Trip") {
+                  || $fieldName == "Phone" || $fieldName == "Package" || $fieldName == "Trip"
+                  || $fieldName == "Transit To Rockaway" || $fieldName == "Transit From Rockaway") {
                       $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `" . $fieldName . "`)" .
                                           "VALUES ('$id','$value')" .
                                           "ON DUPLICATE KEY UPDATE" .
