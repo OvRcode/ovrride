@@ -156,7 +156,12 @@ class TripList{
             $orderItem = $explodedId[1];
             $this->orderData[$order][$orderItem]['First'] = stripcslashes(ucwords(strtolower(trim($row['First']))));
             $this->orderData[$order][$orderItem]['Last'] = stripcslashes(ucwords(strtolower(trim($row['Last']))));
-            $this->orderData[$order][$orderItem]['Pickup'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
+            if ( isset($row['Pickup']) )
+              $this->orderData[$order][$orderItem]['Pickup'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
+            if ( isset($row['Transit To Rockaway']) )
+              $this->orderData[$order][$orderItem]['Transit To Rockaway'] = stripcslashes(ucwords(strtolower(trim($row['Transit To Rockaway']))));
+            if ( isset($row['Transit From Rockaway']) )
+              $this->orderData[$order][$orderItem]['Transit From Rockaway'] = stripcslashes(ucwords(strtolower(trim($row['Transit From Rockaway']))));
             $this->orderData[$order][$orderItem]['Phone'] = $this->reformatPhone($row['Phone']);
             $this->orderData[$order][$orderItem]['Package'] = stripcslashes(ucwords(strtolower(trim($row['Package']))));
             $this->orderData[$order][$orderItem]['Status'] = 'walk-on';
