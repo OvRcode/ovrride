@@ -60,10 +60,10 @@ get_header(); ?>
 
                 <h3 id="squelch-taas-header-4" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-4" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-4">South America</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-4 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-4" aria-labelledby="squelch-taas-header-4" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/north-chile/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/argentina.png">North Chile</a><br>
-                <a href="/destinations/south-chile/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/argentina.png">South Chile</a><br>
-                <a href="/destinations/north-argentina/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/chile.png">North Argentina</a><br>
-                <a href="/destinations/south-argentina/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/chile.png">South Argentina</a>
+                <a href="/destinations/north-chile/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/chile.png">North Chile</a><br>
+                <a href="/destinations/south-chile/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/chile.png">South Chile</a><br>
+                <a href="/destinations/north-argentina/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/argentina.png">North Argentina</a><br>
+                <a href="/destinations/south-argentina/"><img style="float: left; margin: 0px 4px 0px 0px;" alt="" src="<?php bloginfo('template_directory');?>/images/destination-imgs/argentina.png">South Argentina</a>
                 </div>
 
                 <h3 id="squelch-taas-header-5" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-5" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-5">Canada</a></h3>

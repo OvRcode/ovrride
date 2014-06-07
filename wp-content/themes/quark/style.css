@@ -22,9 +22,9 @@ Text Domain: quark
 /* Using rem font sizing (Root em’s) with fallback to px for ie8 and below - http://snook.ca/archives/html_and_css/font-size-with-rem */
 body { margin: 0; font-size: 16px; font-size: 1rem; line-height: 1.5; }
 
-::-webkit-selection { background: #00BCE7; color: #fff; text-shadow: none; }
-::-moz-selection { background: #00BCE7; color: #fff; text-shadow: none; }
-::selection { background: #00BCE7; color: #fff; text-shadow: none; }
+::-webkit-selection { background: #fed208; color: #fff; text-shadow: none; }
+::-moz-selection { background: #fed208; color: #fff; text-shadow: none; }
+::selection { background: #fed208; color: #fff; text-shadow: none; }
 
 a { color: #333; text-decoration: underline; }
 a:visited { color: #333; }
@@ -345,12 +345,12 @@ a:visited {
 
 a:focus { 
 	outline: thin dotted;
-	color: #00BCE7;
+	color: #fed208;
 }
 
 a:hover, a:active { 
 	outline: 0;
-	color: #00BCE7;
+	color: #fed208;
 	text-decoration:underline;
 }
 
@@ -415,73 +415,32 @@ blockquote p {
 blockquote.pull-right p, blockquote.pull-right small {
 	text-align: right;
 }
-/* ==========================================================================
-   Calendar Plugnin Changes
-   ========================================================================== */
-
-.calendar-date-switcher {
-	background: none !important;
-	border: none !important;
-}
-.calendar-date-switcher select {
-	width:100px !important;
-}
-td.calendar-heading {
-	background: #000;
-	border: none;
-	margin: 0px !important;
-	color:#FFF;
-}
-.calendar-month {
-	font-size:20px;
-}
-.calendar-prev a {
-	color:#FFF;
-	font-size:20px;
-}
-.calendar-next a {
-	color:#FFF;
-	font-size:20px;
-}
-.normal-day-heading {
-	background:#444 !important;
-	color:#FFF ;
-	border: none !important;
-}
-.weekend-heading {
-	background:#444 !important;
-	color:#FFF !important;
-	border: none !important;
-}
-.current-day {
-	background-color:#CFCFCF !important;
-}
-.weekend {
-	color:#000 !important
-}
-.calnk a {
-	padding: 2px 8px 2px 5px;
-	font-size:13px;
-	border-bottom:none !important;
-}
-div.kjo-link p{
-	display:none !important
-}
-.calnk a:hover span {
-	width:auto !important;
-}
-#events_calendar .widget-title {
-	display:none;
-}
-.calnk a:hover span {
-	background:#00BCE7 !important; 
-}
 
 
-/* ==========================================================================
-   Chapmans page styles
-   ========================================================================== */
+/* ====== CHAPMAN CODE CHANGES START HERE =======
+					    W
+                       WWW
+                       WWW
+                      WWWWW
+                W     WWWWW     W
+                WWW   WWWWW   WWW
+                 WWW  WWWWW  WWW
+                  WWW  WWW  WWW
+                   WWW WWW WWW
+                     WWWWWWW
+                  WWWW  |  WWWW
+                        |          
+                        |
+========= CHAPMAN CODE CHANGES START HERE ====== */
 
+.chap_break {
+	float:left;
+	width:100%;
+	height:10px;
+}
+.gfield_select:focus{
+	border:1px solid #fed208;
+}
 .ui-tabs-panel {
         padding: .8em .4em !important;
 }
@@ -494,10 +453,22 @@ div.kjo-link p{
 
 .tab-txt {
         margin-bottom:5px;
+		padding:0px 3px;
+}
+
+.option-txt {
+        margin-bottom:5px;
+		padding:0px 3px;
+}
+.option-txt:hover {
+        margin-bottom:5px;
+		background: rgba(0,0,0,1);
+		padding:0px 3px;
+		color:#FFF;
 }
 
 .tab-rates {
-        width:540px;
+        width:100%;
         float:left;
 }
 
@@ -512,12 +483,11 @@ div.kjo-link p{
 }
 
 .tab-box-l {
-        width: 400px;
         float: left;
 }
 
 .tab-box-r {
-        width: 60px;
+        width: 20%;
         float: left;
 }
 
@@ -545,13 +515,17 @@ div.kjo-link p{
 
 .seats-left p {
   margin: 0px;
-  color: #00BCE7;
+  color: #fed208;
   font-size: 17px;
+}
+.calnk a {
+	background-color:#fed208 !important;
 }
 
 .seats-left a {
-  color: #01bce7;
+  color: #fed208;
   font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .minitweets {
@@ -933,6 +907,67 @@ select {
 	text-transform: uppercase;
 }
 
+/* ==========================================================================
+   Calendar Plugnin Changes
+   ========================================================================== */
+.calendar-date-switcher {
+	background: none !important;
+	border: none !important;
+}
+.calendar-date-switcher select {
+	width:100px !important;
+}
+td.calendar-heading {
+	background: #000;
+	border: none;
+	margin: 0px !important;
+	color:#FFF;
+}
+.calendar-month {
+	font-size:20px;
+}
+.calendar-prev a {
+	color:#FFF;
+	font-size:20px;
+}
+.calendar-next a {
+	color:#FFF;
+	font-size:20px;
+}
+.normal-day-heading {
+	background:#444 !important;
+	color:#FFF ;
+	border: none !important;
+}
+.weekend-heading {
+	background:#444 !important;
+	color:#FFF !important;
+	border: none !important;
+}
+.current-day {
+	background-color:#CFCFCF !important;
+}
+.weekend {
+	color:#000 !important
+}
+.calnk a {
+	padding: 2px 8px 2px 5px;
+	font-size:13px;
+	border-bottom:none !important;
+}
+div.kjo-link p{
+	display:none !important
+}
+.calnk a:hover span {
+	width:auto !important;
+}
+#events_calendar .widget-title {
+	display:none;
+}
+.calnk a:hover span {
+	background:#fed208 !important; 
+}
+
 
 /* ==========================================================================
    Site specific styles
@@ -959,12 +994,12 @@ payment_methods methods {
 	width: 48%;
 }
 .myaccount_user a{
-	color: #00BCE7;
+	color: #fed208;
 	font-weight: bold;
 	text-decoration: underline;
 }
 .myaccount_user a:hover{
-	color: #00BCE7;
+	color: #fed208;
 	font-weight: bold;
 	text-decoration: none;
 }
@@ -1149,9 +1184,6 @@ payment_methods methods {
 
 
 .book-btn  a:hover {
-	font-size: 27px;
-	font-size: 1.7rem;
-	line-height: 1.25;
 	color: #333;
 	text-decoration:none;
 	text-align: center;
@@ -1171,16 +1203,16 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #33d4f9, #00BCE7);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#33d4f9), to(#00BCE7));
-	background-image: -webkit-linear-gradient(top, #33d4f9, #00BCE7);
-	background-image: -o-linear-gradient(top, #33d4f9, #00BCE7);
-	background-image: linear-gradient(top, #33d4f9, #00BCE7);
-	background-image: -moz-linear-gradient(top, #33d4f9, #00BCE7);
+	background-image: -ms-linear-gradient(top, #ffe469, #fed208);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffe469), to(#fed208));
+	background-image: -webkit-linear-gradient(top, #ffe469, #fed208);
+	background-image: -o-linear-gradient(top, #ffe469, #fed208);
+	background-image: linear-gradient(top, #ffe469, #fed208);
+	background-image: -moz-linear-gradient(top, #ffe469, #fed208);
 	background-repeat: repeat-x;
 	border: 1px solid #CCC;
 	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-	border-color: #00a7cd #00a7cd #BFBFBF;
+	border-color: #d7bb39 #d7bb39 #BFBFBF;
 	border-bottom-color: #B3B3B3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -1194,8 +1226,8 @@ payment_methods methods {
 .book-btn:hover {
 	color: #333333;
 	text-decoration: none;
-	background-color: #0bb8e0;
-	*background-color: #0bb8e0; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-color: #eac621;
+	*background-color: #eac621; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1204,8 +1236,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn:active {
-	background-color: #00BCE7;
-	background-color: #00BCE7 \9;
+	background-color: #fed208;
+	background-color: #fed208 \9;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1228,16 +1260,16 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #33D4F9, #00BCE7);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#33D4F9), to(#00BCE7));
-	background-image: -webkit-linear-gradient(top, #33D4F9, #00BCE7);
-	background-image: -o-linear-gradient(top, #33D4F9, #00BCE7);
-	background-image: linear-gradient(top, #33D4F9, #00BCE7);
-	background-image: -moz-linear-gradient(top, #33D4F9, #00BCE7);
+	background-image: -ms-linear-gradient(top, #ffe469, #fed208);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffe469), to(#fed208));
+	background-image: -webkit-linear-gradient(top, #ffe469, #fed208);
+	background-image: -o-linear-gradient(top, #ffe469, #fed208);
+	background-image: linear-gradient(top, #ffe469, #fed208);
+	background-image: -moz-linear-gradient(top, #ffe469, #fed208);
 	background-repeat: repeat-x;
 	border: 1px solid #CCC;
 	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-	border-color: #00A7CD #00A7CD #BFBFBF;
+	border-color: #d7bb39 #d7bb39 #BFBFBF;
 	border-bottom-color: #B3B3B3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -1251,8 +1283,8 @@ payment_methods methods {
 .book-btn-smll:hover {
 	color: #333333;
 	text-decoration: none;
-	background-color: #0bb8e0;
-	*background-color: #0bb8e0; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-color: #eac621;
+	*background-color: #eac621; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1261,8 +1293,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn-smll:active {
-	background-color: #00BCE7;
-	background-color: #00BCE7 \9;
+	background-color: #fed208;
+	background-color: #fed208 \9;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1314,7 +1346,7 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	color:#FFF;
 }
 .eventful {
-	background:#00BCE7;
+	background:#fed208;
 	border:1px solid #CCC !important;
 }
    
@@ -2611,6 +2643,31 @@ p.srp-widget-date {
 	padding:0.8em 1em !important;
 	background:#FFF !important;
 }
+.tab-rates .ui-accordion-header {
+	background:none !important;
+	border:none !important;
+	text-align: left !important;
+	font-size:14px !important;
+	color:#222 !important;
+	font-family: Verdana,Arial,sans-serif;
+	text-shadow: none;
+	padding:0px 3px !important;
+}
+.tab-rates .ui-accordion-content {
+	background:#aaa !important;
+	border: 1px solid #999 !important;
+	font-size:15px;
+	margin:-5px 0px 10px 0px !important;
+	padding:8px !important;
+}
+.tab-rates .ui-state-default a, .tab-rates .ui-state-default a:link, .tab-rates .ui-state-default a:visited {
+	color:#222 !important;
+	line-height: 21px !important;
+}
+.tab-bus a {
+	font-weight:bold;
+	color:#6f1a32 !important;
+}
 .ui-widget-content a {
 	line-height: 30px;
 	float: left;
@@ -2707,7 +2764,7 @@ p.srp-widget-date {
 	width: 100%;
 }
 a.read-more {
-	color:#00BCE7;
+	color:#fed208;
 	text-decoration:none;
 }
 a.read-more:hover {
@@ -2883,7 +2940,7 @@ a.read-more:hover {
 }
 
 .social-media-icons a:hover, .social-media-icons a:active { 
-	color: #00BCE7;
+	color: #fed208;
 	text-decoration:underline;
 }
 
@@ -2926,7 +2983,7 @@ iframe ul {
 }
 
 .entry-header h1 a:hover {
-	color: #00BCE7;
+	color: #fed208;
 }
 
 article.sticky .featured-post {
@@ -2971,7 +3028,7 @@ article.sticky {
 }
 
 .header-meta a:hover {
-	color: #00BCE7;
+	color: #fed208;
 }
 
 .entry-content {
@@ -3000,7 +3057,7 @@ article.sticky {
 
 .post-categories a:hover,
 .post-tags a:hover {
-	background-color: #00BCE7;
+	background-color: #fed208;
 	color: #fff;
 }
 
@@ -3053,7 +3110,7 @@ article.sticky {
 }
 
 .page-links a:hover .page-numbers {
-	background-color: #00BCE7;
+	background-color: #fed208;
 	color: #fff;
 }
 
@@ -3110,6 +3167,9 @@ article.sticky {
 	border-top: 1px solid #ccc;
 	padding: 6px 10px 6px 0;
 	padding: 0.375rem 0.625rem 0.375rem 0;
+}
+.woocommerce td.product-name {
+	padding:6px 12px !important;
 }
 
 .entry-content ol,
@@ -3243,7 +3303,7 @@ article.sticky {
 .author-link a:hover,
 .author-link a:active { 
 	outline: 0;
-	color: #00BCE7;
+	color: #fed208;
 }
 
 .author.archive .author-info {
@@ -3602,7 +3662,7 @@ form label.error {
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 }
 #footercontainer a {
-	color:#00BCE7;
+	color:#fed208;
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 	text-decoration:none;
 	text-transform:uppercase;
@@ -3643,7 +3703,7 @@ form label.error {
 }
 
 .site-footer a:hover { 
-	color: #00BCE7;
+	color: #fed208;
 }
 
 .site-footer a:focus { 
@@ -3676,7 +3736,7 @@ form label.error {
 }
 
 .smallprint a:hover { 
-	color: #00BCE7;
+	color: #fed208;
 }
 
 
@@ -3856,14 +3916,14 @@ li a:visited.page-numbers {
 }
 
 li a:hover.page-numbers {
-	background-color: #00BCE7;
+	background-color: #fed208;
 	color: #fff;
 }
 
 li a:hover.prev,
 li a:hover.next {
 	background-color: transparent;
-	color: #00BCE7;
+	color: #fed208;
 }
 
 .page-numbers li {
@@ -3893,7 +3953,7 @@ li span.dots {
 	margin: 1px 0 0 0;
 	margin: .1rem 0 0 0;
 	position: relative;
-	bottom: -16px;
+	bottom: -35px;
 }
 
 .main-navigation h1 {
@@ -4017,7 +4077,7 @@ li span.dots {
 .main-navigation .current-menu-ancestor > a,
 .main-navigation .current_page_item > a,
 .main-navigation .current_page_ancestor > a {
-	color: #00BCE7; /* Nav bar link color for current menu item or ancestor */
+	color: #fed208; /* Nav bar link color for current menu item or ancestor */
 }
 
 .main-navigation ul .divider {
@@ -4120,6 +4180,12 @@ li span.dots {
 		font-size: 23px;
 		font-size: 1.45rem;
 	}
+	.woocommerce div.product div.summary, .woocommerce #content div.product div.summary, .woocommerce-page div.product div.summary, .woocommerce-page #content div.product div.summary {
+		width:100% !important;
+	}
+	.woocommerce-tabs {
+		width:100%;
+	}
 }
 
 @media only screen and (max-width: 1010px) {
@@ -4128,11 +4194,14 @@ li span.dots {
 		margin: 0 0 0 .9rem;
 	}
 }
-@media only screen and (max-width: 1190px) {
+@media only screen and (max-width: 1200px) {
 	.main-navigation li {
 		margin: 0 0 0 15px;
 		margin: 0 0 0 0.95rem;
 		font-size: 19px;
+	}
+	.main-navigation {
+		bottom: -15px;
 	}
 }
 @media only screen and (max-width: 768px) {
@@ -4160,6 +4229,10 @@ li span.dots {
 	.social-media-icons li {
 		font-size:25px;
 		
+	}
+	.responsiveMenuSelect {
+		top:-18px;
+		position:relative;
 	}
 }
 
@@ -4283,6 +4356,10 @@ li span.dots {
 	.phn {
 		display:none !important;
 	}
+	.responsiveMenuSelect {
+		top:-5px;
+		position:relative;
+	}
 }
 
 
@@ -4295,6 +4372,9 @@ li span.dots {
 	}
 	.phn {
 		display:none !important;
+	}
+	.tab-box-r-2 {
+		clear:left;
 	}
 }
 
