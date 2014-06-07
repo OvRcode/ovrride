@@ -26,10 +26,10 @@ class TripList{
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        $this->destinations = array("Breckenridge","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
-                                    "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paint ball",
+        $this->destinations = array("Asbury Park","Breckenridge","Camelbeach","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
+                                    "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paintball","Rockaway Beach",
                                     "Sky Diving","Snowbird","Southern Argentina","Southern Chile","Stowe",
-                                    "Stratton","Sugarbush","Tap New York","Whistler","Windham");
+                                    "Stratton","Sugarbush","Tap New York","Whistler","Whitewater Weekend","Windham");
 
         $this->checkboxes = array("AM","PM","Waiver","Product");
     }
@@ -52,6 +52,8 @@ class TripList{
                 AND `post_title` NOT LIKE  '%Gift%'
                 AND `post_title` NOT LIKE '%Beanie%'
                 AND `post_title` NOT LIKE '%East Coast Fold Hat%'
+                AND `post_title` NOT LIKE '%Good Wood%'
+                AND `post_title` NOT LIKE '%East Coast Snapback%'
                 ORDER BY `post_title`";
 
         $result = $this->dbQuery($sql);
@@ -66,13 +68,14 @@ class TripList{
                 }
 
                if(preg_match($regex,$row['post_title'],$match)){
-                 $class = $value;
+                 $HTMLclass = $value;
                  $label = $match[1];
                }
 
              }
              $this->options['destinations'] = $this->destinations;
-             $this->options['trip'][$class][$row['id']] = $label;
+             if(isset($HTMLclass))
+               $this->options['trip'][$HTMLclass][$row['id']] = $label;
          }
     }
     function tripData($tripId){
@@ -114,14 +117,20 @@ class TripList{
                         OR `meta_key` = 'Email'
                         OR `meta_key` = 'Package'
                         OR `meta_key` = 'Pickup'
-                        OR `meta_key` = 'Pickup Location')
+                        OR `meta_key` = 'Pickup Location'
+                        OR `meta_key` = 'Transit To Rockaway'
+                        OR `meta_key` = 'Transit From Rockaway')
                         AND `order_item_id` = '$orderItem'";
                 $result = $this->dbQuery($sql);
                 while ($row = $result->fetch_assoc()) {
                     if ($row['meta_key'] == 'Package') {
                         $this->orderData[$order][$orderItem]['Package'] = ucwords(strtolower($this->removePackagePrice($row['meta_value'])));
-                    } elseif($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location') {
+                    } elseif($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location' ||
+                    $row['meta_key'] == 'Transit To Rockaway'|| $row['meta_key'] == 'Transit From Rockaway') {
+                      if ($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location')
                         $this->orderData[$order][$orderItem]['Pickup'] = ucwords(strtolower($this->stripTime($row['meta_value'])));
+                      else
+                        $this->orderData[$order][$orderItem][$row['meta_key']] = ucwords(strtolower($this->stripTime($row['meta_value'])));
                     }
                     elseif($row['meta_key'] == 'Name'){
                         $names = $this->splitName($row['meta_value']);
@@ -131,13 +140,12 @@ class TripList{
                         $this->orderData[$order][$orderItem][$row['meta_key']] = trim($row['meta_value']);
                     }
                 }
-
                 $this->getCheckboxStates($order,$orderItem);
             }
         }
     }
     function getManualOrders($tripId){
-        $sql = "SELECT  `ID` ,  `First` ,  `Last` ,  `Pickup` ,  `Phone` ,  `Package`
+        $sql = "SELECT  `ID` ,  `First` ,  `Last` ,  `Pickup` ,  `Phone` ,  `Package`, `Transit To Rockaway`, `Transit From Rockaway`
                 FROM  `ovr_lists_manual_orders` 
                 WHERE  `Trip` =  '$tripId'";
         $result = $this->dbQuery($sql);
@@ -148,7 +156,12 @@ class TripList{
             $orderItem = $explodedId[1];
             $this->orderData[$order][$orderItem]['First'] = stripcslashes(ucwords(strtolower(trim($row['First']))));
             $this->orderData[$order][$orderItem]['Last'] = stripcslashes(ucwords(strtolower(trim($row['Last']))));
-            $this->orderData[$order][$orderItem]['Pickup'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
+            if ( isset($row['Pickup']) )
+              $this->orderData[$order][$orderItem]['Pickup'] = stripcslashes(ucwords(strtolower(trim($row['Pickup']))));
+            if ( isset($row['Transit To Rockaway']) )
+              $this->orderData[$order][$orderItem]['Transit To Rockaway'] = stripcslashes(ucwords(strtolower(trim($row['Transit To Rockaway']))));
+            if ( isset($row['Transit From Rockaway']) )
+              $this->orderData[$order][$orderItem]['Transit From Rockaway'] = stripcslashes(ucwords(strtolower(trim($row['Transit From Rockaway']))));
             $this->orderData[$order][$orderItem]['Phone'] = $this->reformatPhone($row['Phone']);
             $this->orderData[$order][$orderItem]['Package'] = stripcslashes(ucwords(strtolower(trim($row['Package']))));
             $this->orderData[$order][$orderItem]['Status'] = 'walk-on';
@@ -162,9 +175,12 @@ class TripList{
         $result = $this->dbQuery($sql);
         while ($row = $result->fetch_assoc()) {
           $label = explode(':',$row['ID']);
-          $this->orderData[$order][$orderItem][$label[2]] = $row['value'];
+          if($label[2] != 'Transit To Rockaway' && $label[2] != 'Transit From Rockawa'){
+            $this->orderData[$order][$orderItem][$label[2]] = $row['value'];
+          }
         }
         foreach ($this->checkboxes as $field) {
+         
           if (!isset($this->orderData[$order][$orderItem][$field])){
             $this->orderData[$order][$orderItem][$field] = "";
           }
