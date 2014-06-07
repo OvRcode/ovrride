@@ -27,6 +27,12 @@ if ( ! isset( $content_width ) )
 if ( ! function_exists( 'quark_setup' ) ) {
 	function quark_setup() {
 		global $content_width;
+		//fix for pingback security issue
+		add_filter( 'xmlrpc_methods', 'remove_xmlrpc_pingback_ping' );
+		function remove_xmlrpc_pingback_ping( $methods ) {
+   			unset( $methods['pingback.ping'] );
+  		 	return $methods;
+		} ;
 
 		/**
 		 * Make theme available for translation
