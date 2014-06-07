@@ -16,10 +16,13 @@
 !package.json
 !README.md
 !/wp-content/
+!/wp-content/*
 !/wp-content/plugins/
+!/wp-content/plugins/*
 !/wp-content/plugins/ovr_functions/
 !/wp-content/plugins/ovr_functions/*
 !/wp-content/themes/
+!/wp-content/themes/*
 !/wp-content/themes/quark/
 !/wp-content/themes/quark/*
 !/wp-content/themes/quark/*/*
