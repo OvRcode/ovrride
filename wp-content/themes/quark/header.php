@@ -35,7 +35,7 @@
   <?php
     // If Home Page, display generic meta description, else display page specific content
     if (is_front_page()) { ?>
-      <meta name="description" content="The number one source for snowboard and ski bus trips in New York City. Providing tours to the best East Coast mountains, West Coast resorts, and International destinations!">
+      <meta name="description" content="The number one source for snowboard and ski trips in New York City. Providing tours to the best East Coast mountains, West Coast resorts, and International destinations!">
   <?php } ?>
 
   <!-- Facebook Open Graph Properties -->
