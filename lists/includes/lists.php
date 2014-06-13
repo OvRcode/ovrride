@@ -130,7 +130,7 @@ class TripList{
                       if ($row['meta_key'] == 'Pickup' || $row['meta_key'] == 'Pickup Location')
                         $this->orderData[$order][$orderItem]['Pickup'] = ucwords(strtolower($this->stripTime($row['meta_value'])));
                       else
-                        $this->orderData[$order][$orderItem][$row['meta_key']] = ucwords(strtolower($this->stripTime($row['meta_value'])));
+                        $this->orderData[$order][$orderItem][$row['meta_key']] = ucwords(strtolower($row['meta_value']));
                     }
                     elseif($row['meta_key'] == 'Name'){
                         $names = $this->splitName($row['meta_value']);
