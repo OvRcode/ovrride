@@ -1,5 +1,5 @@
 # Protect system files from peeping eyes
-<FilesMatch "php.ini|error_log|README.md|readme.html">
+<FilesMatch "php.ini|error_log|README.md|readme.html|register.php">
   Order allow,deny
   Deny from all
 </FilesMatch>
