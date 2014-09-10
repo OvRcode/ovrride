@@ -1,0 +1,1 @@
+DȅR<?php exit; ?>a:1:{s:7:"content";a:3:{s:12:"is_valid_key";s:1:"1";s:7:"version";s:3:"1.2";s:3:"url";s:177:"http://s3.amazonaws.com/gravityforms/addons/picatcha/gravityformspicatcha_1.2.zip?AWSAccessKeyId=1603BBK66770VCSCJSG2&Expires=1384628868&Signature=akBtOpyAaCIBcPnXPs7EU0dwnvk%3D";}}

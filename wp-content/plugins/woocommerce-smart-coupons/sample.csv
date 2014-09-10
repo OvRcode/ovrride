@@ -1,0 +1,6 @@
+"post_title","post_excerpt","post_status","post_parent","menu_order","post_date","discount_type","coupon_amount","individual_use","product_ids","exclude_product_ids","usage_limit","expiry_date","apply_before_tax","free_shipping","product_categories","exclude_product_categories","minimum_amount","customer_email"
+"Coupon1",,"publish",0,0,,"Product Discount",101,"yes","100|103",100,1,,"no","yes",,,50,"abx@yahoo.co.in"
+"Coupon2",,"publish",0,0,,"Cart Discount",102,"no",105,100,1,,"no","no",,,50,
+"Coupon3",,"publish",0,0,,"Product % Discount",103,"yes","100|107",100,1,"2013-11-13","no","yes",,,50,"abx@yahoo.co.in"
+"Coupon4",,"publish",0,0,,"Cart % Discount",104,"no",109,100,1,"2013-11-12","no","no",,,50,"abx@yahoo.co.in"
+"Coupon5",,"publish",0,0,,"Store Credit / Gift Certificate",105,"yes","100|111",100,1,"2013-11-11","no","yes",,,50,

@@ -1,34 +1,4 @@
-# Ignore everything
-*
-
-# Ignore everything except
-!.gitignore
-!.htaccess
-!Gruntfile.js
-!/lists/
-!/lists/*
-!/lists/*/*
-!/lists/*/*/*
-!/lists/*/*/*/*
-!/lists/*/*/*/*/*
-!/lists/*/*/*/*/*/*
-!/lists/*/*/*/*/*/*/*
-!package.json
-!README.md
-!/wp-content/
-!/wp-content/*
-!/wp-content/plugins/
-!/wp-content/plugins/*
-!/wp-content/plugins/ovr_functions/
-!/wp-content/plugins/ovr_functions/*
-!/wp-content/themes/
-!/wp-content/themes/*
-!/wp-content/themes/quark/
-!/wp-content/themes/quark/*
-!/wp-content/themes/quark/*/*
-!/wp-content/themes/quark/*/*/*
-!/wp-content/themes/quark/*/*/*/*
-!/wp-content/themes/quark/*/*/*/*/*
-
+wp-content/themes/quark/error_log
+wp-content/uploads/20*
+error_log
 .DS_Store
-node_modules

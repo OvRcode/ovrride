@@ -1,0 +1,152 @@
+*** WooCommerce Smart Coupons Changelog ***
+
+2013.11.15 - version 1.6
+ * Fix: Coupons not generating for product having price zero
+ * Fix: Warnings for BC Math module of PHP
+ * Fix: Warnings for incorrect line ending while importing coupons
+ * Fix: Warnings on shop page when showing coupons using shortcode
+ * Update: Added buttons for products which are used to sell credits on shop archive page
+ * Update: Additional field in coupons to make it visible on cart / checkout to everyone
+ * Update: Additional field to prevent addition of emails in 'Email restriction' field of coupons
+ * New: Option to allow recursive coupon generation along with subscription renewal order (by default coupon generation on renewal order is disabled)
+
+2013.09.12 - version 1.5.1
+ * Fix: Change CSS code to remove conflict with other wordpress elements 
+ * Fix: Sometimes failed to add store credit / gift certificate in cart
+ * Fix: Unwanted 'console.debug' was breaking functionality in IE10
+ * Fix: Removed unwanted field from coupon configuration if it is Store Credit
+
+2013.09.01 - version 1.5
+ * Fix: Coupons & emails are not getting generated in few cases
+ * New: Coupon can be applied from My Account page or from URL query string [coupon-code=coupon_name]
+ * New: Generated coupon's details like - coupon code, receiver email & messages are saved in order meta 'sc_coupon_receiver_details'
+ * Update: Allow addition of different Store Credit amount in same order
+ * Update: Changes in Store Credit Receiver Details form layout
+ * Update: Changes in Coupon shortcode popup window
+ * Update: Separate message field for each e-mail address on Store Credit Receiver Detail form
+ * Update: Coupons can be associated with product_type 'subscription' & 'variable subscription'
+ * Update: Changes in email content to be sent
+ * Update: Minor change in showing expiry date of coupons
+ * Update: Don't show expired coupons
+
+2013.08.08 - version 1.4.2
+ * Fix: PHP Warning
+
+2013.08.02 - version 1.4.1
+ * Fix: 'Add to cart' not working after page says 'Invalid amount'
+
+2013.08.01 - version 1.4
+ * Fix: Credit amount picking up price of product, even if it is not set
+ * Fix: Show Coupon's field only for simple & variable products, on products edit page
+ * New: Shortcode [smart_coupons]
+ * New: Style of coupons display on Cart, Checkout and My Account pages
+ * New: CSS Classes to change style of coupons
+
+2013.07.29 - version 1.3.2
+* Update: Validation before purchase of credit amount
+* Update: Changed credit field from 'text field' to 'number field'
+* Update: Hide unnecessary text from product shop page if coupon is invalid
+
+2013.07.26 - version 1.3.1
+* Fix: Issue with localization
+
+2013.07.12 - version 1.3
+ * New: Field for setting expiry date of coupon in days, weeks, months & years
+ * Update: Support for adding many manual store credit / gift certificate in same
+
+2013.05.17 - version 1.2.9.1
+ * Fix: PHP Warning: Invalid argument for foreach
+
+2013.05.13 - version 1.2.9
+ * New: More data fields for generation & import of coupons
+ * New: Option to e-mail coupon's code to respective customers while importing coupons
+ * New: Option to set/modify texts from Smart Coupons to be displayed on front end
+ * Update: Option to prevent addition of emails through Smart Coupons in 'E-mail Restriction' field of coupons
+
+2013.05.01 - version 1.2.8.7
+ * Update: Converted all front end javascript to inline javascript using 'add_inline_js' of WC object
+
+2013.04.29 - version 1.2.8.6
+ * Update: Location of 'Gift Certificate Receiver Detail Form' on Checkout page
+ * Update: Included text 'Purchase credit worth' in HTML element
+
+2013.04.24 - version 1.2.8.5
+ * Fix: Changed hook for displaying "Store Credit detail" form
+ * Fix: Changing 'customer_email' field of coupon on 'Profile' update
+
+2013.04.20 - version 1.2.8.4
+ * Fix: Export coupon failing when site name is a URL
+
+2013.03.19 - version 1.2.8.3
+ * Fix: Fatal error of 'Call to undefined function str_getcsv()' for PHP version lower than 5.3
+ * Update: Display all available coupons on 'My Account' page instead of showing just 'Store Credit'
+
+2013.03.11 - version 1.2.8.2
+ * Fix: Fatal error of "Cannot re-assign auto-global variable _POST"
+
+2013.02.28 - version 1.2.8.1
+ * Fix: Store Credit getting sent multiple times on order status change
+
+2013.02.28 - version 1.2.8
+ * Fix: For errors while importing coupons having same coupon code
+ * New: Bulk generation of coupons. Either export them in CSV file or directly import
+ * New: Export coupons list from store which can be used for importing also.
+ * New: Support for PayPal Express Checkout
+ * Update: 'Send Store Credit' feature now supports sending of bulk Store Credit to multiple e-mail ids (comma separated) at one go
+
+2013.02.22 - version 1.2.7.1
+ * Fix: 'Minimum amount' field of coupon was not considered in generation/creation of another coupon
+ * Text Changes
+
+2013.02.12 - version 1.2.7
+ * Fix: Fatal error, when sending invoice of order (on which coupons are applied) to customer's e-mail
+
+2013.01.30 - version 1.2.6
+ * Update: Compatible version for both WooCommerce 1.6.6 & 2.0.0
+ * Fix: Customer not getting full usage of the coupon which they have received after purchasing multiple quantities of the product
+
+2012.12.27 - version 1.2.5
+ * Fix: Products configured for 'Store Credit of any amount' was getting added with price zero, when it was getting added from Catalog/Shop page
+
+2012.12.19 - version 1.2.4
+ * Fix for notices
+
+2012.12.10 - version 1.2.3
+ * Fix: Store Credit once applied, is not getting removed
+ * Fix: Unable to bring coupon's list in auto-complete text-field, when associating coupons to product
+ * Fix: Store Credit / Gift Certificate is added to cart with price zero
+
+2012.12.04 - version 1.2.2
+ * New updater
+
+2012.11.20 - version 1.2.1
+ * Updated: Better localisation compatibility for the plugin - separate text domain
+ * Updated: Currency symbol added when user enters the amount for a gift certificate of any denomination
+
+2012.11.19 - version 1.2
+ * New: Allow purchasing gift certificates / store credits of any denomination
+  (compatible with "WooCommerce Name Your Price" plugin too)
+ * New: Feature to Send Store Credit / Gift Certificate to multiple people
+ * New: Additional setting to change subject of E-mail containing Coupon Codes
+ * Removed: "Apply Before Tax" option for Store Credit / Gift Certificate
+ * Updated: URL for store that is included in e-mails
+ * Fix: Expiry date of generated coupons getting set to 1970
+
+
+2012.10.19 - version 1.1.1
+ * Small case change
+
+2012.10.11 - version 1.1
+ * New: Bulk Import for Coupons
+ * New: Automatic Generation of Coupons
+ * New: Support for adding prefix & suffix to automatically generated coupons
+ * New: "Duplicate Coupon"
+ * New: Send Store Credit / Gift Certificate
+ * New: Support for searching a coupon using Customer's e-mail address
+ * Updated: Notify customer about balance remaining in Store Credit / Gift Certificate in "Order Completed" e-mail
+ * Updated: Link to the store is included in e-mails
+ * Fixed: "Order stays in processing state & never completes" problem
+
+
+2012.08.07 - version 1.0
+ * First release
