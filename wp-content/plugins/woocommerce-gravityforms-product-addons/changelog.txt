@@ -1,0 +1,134 @@
+*** Gravity Forms Product Add-Ons Changelog ***
+2013.11.11 - version 2.4.12
+	* Moved bulk of the custom javascript to an external javascript file. 
+
+2013.11.05 - version 2.4.11
+	* Update:  HTML entities on admin order screen. 
+
+2013.10.25 - version 2.4.10
+	* Fix: return false from validation routine if $valid is already false. 
+
+2013.10.21 - version 2.4.9
+	* Hide gravity form on variable subscription products until the variation is selected. 
+	* Update to esc_attr() in gravity form metabox on products. 
+
+2013.10.08 - version 2.4.8
+	* Update to Order Again to account for irregularities in meta key naming in core.
+	* Update to restore error_reporting to previous level
+	* No longer disable the submit button during updating of the price. In rare situations when the change event fires when 
+		the submit button is clicked, the form will not submit until it was clicked a second time. 
+
+2013.09.25 - version 2.4.7
+	* Added support for Order Again
+
+2013.09.12 - version 2.4.6
+	* Fix: Remove wp_get_referer() in constructor for compatibility with WordPress 3.6.1 load order. 
+
+2013.08.31 - version 2.4.5
+	* Update: Better compatibility with Wishlists. 
+
+2013.07.16 - version 2.4.4
+	* Update: CSS tweaks for display of checkbox items in the cart.
+
+2013.06.18 - version 2.4.3
+	* Update:  Added notice that Gravity Forms is required.
+	* Fix:  Incorrect text domain used in some strings.
+
+2013.05.04 - version 2.4.2
+  * Update for PHP 5.4.
+  * Updates for total discounting and dynamic pricing.
+  * Fixes additional 1.7 compatibility issues.
+
+2013.04.29 - version 2.4.1
+  * Additional support for Gravity Forms 1.7x
+  * Modified HTML stripping rules to strip only when it's not a file upload field.
+
+2013.04.25 - version 2.4.0
+  * Support for Gravity Forms 1.7x
+
+2013.04.22 - version 2.3.3
+ * Added: Filter to control when HTML is stripped from the order.
+        apply_filters('woocommerce_gforms_strip_meta_html', $strip_html, $value, $field, $entry, $form_meta, $order_item_id, $cart_item);
+
+2013.04.22 - version 2.3.2
+    * Multisite activation compatibiliity.
+
+2013.04.11 - version 2.3.1
+    * Update - strip tags from fields that generate HTML, such as the list field.
+
+2013.04.09 - version 2.3
+    * Added support for displaying calculations when price effected by dynamic pricing simple rules.
+
+2013.03.21 - version 2.2.3
+   * Fixes scripts not rendering on all product types, preventing multipage from working when Totals were disabled.
+
+2013.03.04 - version 2.2.2
+   * Updated order meta for WC 2.0 compatibility.
+   * Fix to make variable products compatible with WC 2.0
+
+2013.03.01 - version 2.2
+   * Fix for quantity field on multipage forms
+   * Fix for display problem with variation sale price when gravity form total calculations are disabled.
+
+2013.01.22 - version 2.1
+   * Added support for image / upload fields on multi-page forms as well as forms that have validation.
+
+2012.12.28 - version 2.0
+   *Support for WooCommerce 2.0
+
+2012.12.12 - version 1.4.1
+   *Fix $wpdb->prepare error after WP3.5 upgrades
+
+2012.12.08 - version 1.4.0
+    *Standard gravity forms product fields added to cart item meta, and order item meta. Use a hidden product if you do not want the gravity form product to show to the end user.
+
+2012.12.04 - version 1.3.9
+ * New updater
+
+2012.11.03 - version 1.3.8
+  * Updated the event for triggering price calculations to the found_variation event.
+
+2012.09.04 - version 1.3.7
+  * Added notice about a price or variation being required before the gravity form will display on single-product pages.
+
+2012.07.24 - version 1.3.6
+  * Updated tabs
+
+2012.07.24 - version 1.3.5
+  * Fixed multipage form validation issue.
+  * Fixed continue shopping and redirect to cart after submission problem.
+
+2012.06.27 - version 1.3.4
+  * Fixed product total displaying when Gravity Forms calculations are being used.
+
+2012.06.19 - version 1.3.3
+  * Fixed hidden prices for variations
+
+2012.05.02 - version 1.3.2
+  * Fixed validation error in gravity forms 1.6.4 where the product would be double added to the cart
+
+2012.02.11 - version 1.3.1
+  * Updates for Gravity Forms 1.6.3
+
+2012.02.11 - version 1.3
+  * Force turning off PHP warnings during submission process.  Required due to bugs in Gravity Forms which generate warnings.
+  * Updated to respect redirect to cart setting in WooCommerce catalog settings.
+
+2012.02.02 - version 1.2.2
+ * Fixed a bug that was not displaying check box fields on the order details email and in the admin area.
+
+2012.02.02 - version 1.2.1
+ * Fixed a bug that was not processing checkbox fields properly after going to the orders screen.
+ * Fixed changelog
+
+2012.01.28 - version 1.2
+ * Now requires WooCommerce 1.4
+ * Modifications to support new features in WooCommerce 1.4
+ * Allow Multi-Page forms
+ * Allow Gravity Forms validation
+
+2012.01.17 - version 1.1
+ * Modification to allow a gravity form to be used on the same page as a product with an attached gravity form.
+
+2011.12.22 - version 1.0
+ * First Release
