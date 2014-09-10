@@ -1,0 +1,368 @@
+/* 
+Contents:
+
+1 General Styles
+2 Icon Types (defaults for each icon type)
+	2.1 Icons
+	2.2 Genericons
+	2.3 Text
+3 Sizes
+4 Share Types (mapping icons/glyphs to each share option)
+5 Styling for Share Text
+6 Special Effects
+7 Media Queries
+
+*/
+
+/* 1 General Styles */
+.quickshare-container, .quickshare-container * {
+	/* Make sure box model is handled as expected regardless of theme */
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+.quickshare-container {
+	display: block;
+	overflow: hidden;
+	width: 100%;
+	text-align: center;
+	padding: .3em 0;
+	margin: .5em 0;
+	border-top: 1px solid rgba(180,180,180,.5);
+	border-bottom: 1px solid rgba(180,180,180,.5);
+}
+.quickshare-icons,
+.quickshare-genericons,
+.quickshare-text {
+	list-style: none !important; /* really need to ensure themes don't override this one */
+	margin: 0 !important;
+	padding: 0 !important;
+	clear: both;
+}
+.quickshare-icons li,
+.quickshare-genericons li,
+.quickshare-text li {
+	float: left;
+	margin: 3px 5px !important;
+	padding: 0 !important;
+}
+
+/* 2 Icon Types */
+/* 2.1 Icons */
+.quickshare-icons span {
+	display: block;
+	width: 48px;
+	height: 48px;
+	padding: 0;
+	margin: 0; 
+	border: 0;
+	border-radius: 0;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.2);
+	background-color: #fff; /* for transparent icons */
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: contain;
+	font-size: 0;
+	opacity: .6;
+	transition: .2s all cubic-bezier(0.636,0.197,0.0202,0.352);
+	cursor: pointer;
+}
+.quickshare-icons span:hover {
+	opacity: 1;
+}
+
+/* 2.2 Genericons */
+.quickshare-genericons span:before {
+	display: inline-block;
+	width: 48px;
+	height: 48px;
+	font-size: 48px;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	font-family: Genericons;
+	text-decoration: none;
+	font-weight: normal;
+	font-style: normal;
+	vertical-align: middle;
+	transition: .2s all cubic-bezier(0.636,0.197,0.0202,0.352);
+}
+.quickshare-genericons span {
+	float: left;
+	display: block;
+	min-width: 48px; /* in case themes do weird things to the share text item */
+	width: 48px;
+	height: 48px;
+	padding: 0;
+	margin: 0; 
+	border: 0;
+	border-radius: 0;
+	background-image: none !important;
+	font-size: 0;
+	cursor: pointer;
+	opacity: .7;
+	transition: .2s all cubic-bezier(0.636,0.197,0.0202,0.352);
+}
+.quickshare-genericons.monochrome span,
+.quickshare-genericons span:hover {
+	opacity: 1;
+}
+.quickshare-genericons.monochrome span:before {
+	color: inherit; /* use this selector to override icon colors */
+}
+.quickshare-genericons.monochrome-color span:before {
+	color: inherit; /* use this selector to override icon colors */
+}
+
+/* 2.3 Text */
+.quickshare-text span {
+	float: left;
+	display: block;
+	width: auto;
+	padding: 5px 10px;
+	margin: 0;
+	vertical-align: middle;
+	border: 0;
+	border-radius: 3px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.15);
+	background-image: none !important;
+	background-color: rgba(77,77,77,.07);
+	font-size: 1em;
+	text-decoration: none;
+	transition: .2s all cubic-bezier(0.636,0.197,0.0202,0.352);
+	cursor: pointer;
+	position: relative;
+}
+.quickshare-text span:hover {
+	box-shadow: 1px 1px 1px rgba(0,0,0,.4);
+	background-color: rgba(77,77,77,.18);
+}
+.quickshare-text span a:hover {
+	text-decoration: none;
+}
+.quickshare-text span:before {
+	font-size: 0;
+}
+.quickshare-text.qs-genericons span {
+	padding: 4px 8px 4px 28px;
+}
+.quickshare-text.qs-genericons span:before {
+	font-family: Genericons;
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	left: 8px;
+	top: 50%;
+	margin-top: -12px;
+	transition: .2s all cubic-bezier(0.636,0.197,0.0202,0.352);
+}
+
+/* 3 Sizes */
+.quickshare-icons.quickshare-small span {
+	width: 32px;
+	height: 32px;
+}
+.quickshare-genericons.quickshare-small span {
+	width: 32px;
+	min-width: 32px;
+	height: 32px;
+}
+.quickshare-genericons.quickshare-small span:before {
+	width: 32px;
+	height: 32px;
+	font-size: 32px;
+}
+.quickshare-text.quickshare-small span {
+	font-size: .7em;
+}
+
+.quickshare-icons.quickshare-large span {
+	width: 64px;
+	height: 64px;
+}
+.quickshare-genericons.quickshare-large span {
+	width: 64px;
+	min-width: 64px;
+	height: 64px;
+}
+.quickshare-genericons.quickshare-large span:before {
+	width: 64px;
+	height: 64px;
+	font-size: 64px;
+}
+.quickshare-text.quickshare-large span {
+	font-size: 1.3em;
+}
+
+/* 4 Share Types */
+.quickshare-email {
+	background-image: url('icons/email.png');
+}
+.quickshare-email:before {
+	content: '\f410';
+	font-size: 1.2em;
+	color: #880015;
+}
+.monochrome-color span.quickshare-email:hover:before {
+	color: #880015;
+}
+.quickshare-facebook {
+	background-image: url('icons/facebook.png');
+}
+.quickshare-facebook:before {
+	content: '\f203';
+	color: #3f5094;
+}
+.monochrome-color span.quickshare-facebook:hover:before {
+	color: #3f5094;
+}
+.quickshare-twitter {
+	background-image: url('icons/twitter.png');
+}
+.quickshare-twitter:before {
+	content: '\f202';
+	color: #00adff;
+}
+.monochrome-color span.quickshare-twitter:hover:before {
+	color: #00adff;
+}
+.quickshare-linkedin {
+	background-image: url('icons/linkedin.png');
+}
+.quickshare-linkedin:before {
+	content: '\f208';
+	color: #0080b1;
+}
+.monochrome-color span.quickshare-linkedin:hover:before {
+	color: #0080b1;
+}
+.quickshare-pinterest {
+	background-image: url('icons/pinterest.png');
+}
+.quickshare-pinterest:before {
+	content: '\f210';
+	color: #c92a2a;
+}
+.monochrome-color span.quickshare-pinterest:hover:before {
+	color: #c92a2a;
+}
+.quickshare-googleplus {
+	background-image: url('icons/googleplus.png');
+}
+.quickshare-googleplus:before {
+	content: '\f206';
+	color: #c23727;
+}
+.monochrome-color span.quickshare-googleplus:hover:before {
+	color: #c23727;
+}
+.quickshare-reddit {
+	background-image: url('icons/reddit.png');
+}
+.quickshare-genericons .quickshare-reddit {
+	display: none;
+}
+.quickshare-tumblr {
+	background-image: url('icons/tumblr.png');
+}
+.quickshare-tumblr:before {
+	content: '\f214';
+	color: #3d5777;
+}
+.monochrome-color span.quickshare-tumblr:hover:before {
+	color: #3d5777;
+}
+.quickshare-stumbleupon {
+	background-image: url('icons/stumbleupon.png');
+}
+.quickshare-genericons .quickshare-stumbleupon {
+	display: none;
+}
+
+/* 5 Share Text Styles: must be after other styles to override */
+li.quickshare-share {
+	font-size: 1.1em;
+	padding-right: .5em;
+	width: auto !important; /* need to allow this span to resize to fit the text */
+	background: transparent !important; /* Share text is designed to be treated independently of the icons and should be against the background color directly */
+	box-shadow: none !important; /*        ^^^ */
+	border-radius: 0;
+	cursor: default;
+	opacity: .7;
+}
+.quickshare-genericons li.quickshare-share:before,
+.quickshare-text.qs-genericons li.quickshare-share:before {
+	font-family: Genericons;
+	font-size: 16px;
+	-webkit-font-smoothing: antialiased;
+	content: "\f415";
+	height: 16px;
+	width: 16px;
+	margin-right: 3px;
+}
+
+/* 6 Special Effects */
+.quickshare-share {
+	-webkit-transform: none !important;
+	-moz-transform: none !important;
+	transform: none !important;
+}
+.quickshare-effect-spin span:hover {
+	-webkit-transform: rotate(360deg);
+	-moz-transform: rotate(360deg);
+	transform: rotate(360deg);
+}
+.quickshare-text.quickshare-effect-spin span:hover {
+	/* Skew instead of spinning */	
+	-webkit-transform: skew(-10deg,-2deg);
+	-moz-transform: skew(-10deg,-2deg);
+	transform: skew(-10deg,-2deg);
+}
+.quickshare-effect-round span:hover {
+	border-radius: 32px;
+}
+.quickshare-effect-glow span:hover {
+	box-shadow: 0 0 20px #777;
+}
+.quickshare-effect-contract span:hover {
+	-webkit-transform: scale(.86);
+	-moz-transform: scale(.86);
+	transform: scale(.86);
+}
+.quickshare-effect-expand span:hover {
+	-webkit-transform: scale(1.12);
+	-moz-transform: scale(1.12);
+	transform: scale(1.12);
+}
+/* compounded transform effects */
+.quickshare-effect-spin.quickshare-effect-contract span:hover {
+	-webkit-transform: rotate(360deg) scale(.86);
+	-moz-transform: rotate(360deg) scale(.86);
+	transform: rotate(360deg) scale(.86);
+}
+.quickshare-effect-spin.quickshare-effect-expand span:hover {
+	-webkit-transform: rotate(360deg) scale(1.12);
+	-moz-transform: rotate(360deg) scale(1.12);
+	transform: rotate(360deg) scale(1.12);
+}
+.quickshare-text.quickshare-effect-spin.quickshare-effect-contract span:hover {
+	-webkit-transform: skew(-10deg,-2deg) scale(.86);
+	-moz-transform: skew(-10deg,-2deg) scale(.86);
+	transform: skew(-10deg,-2deg) scale(.86);
+}
+.quickshare-text.quickshare-effect-spin.quickshare-effect-expand span:hover {
+	-webkit-transform: skew(-10deg,-2deg) scale(1.12);
+	-moz-transform: skew(-10deg,-2deg) scale(1.12);
+	transform: skew(-10deg,-2deg) scale(1.12);
+}
+
+/* 7 Media Queries */
+@media print {
+	.quickshare-container {
+		display: none;
+	}
+}
