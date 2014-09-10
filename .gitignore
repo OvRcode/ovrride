@@ -1,4 +1,5 @@
 wp-content/themes/quark/error_log
 wp-content/uploads/20*
+wp-content/plugins/special-recent-posts/cache/*
 error_log
 .DS_Store
