@@ -116,6 +116,7 @@
 .srp-content-box .srp-post-date,
 .widget-area .widget .srp-post-date {
 	margin: 0 0 10px;
+	font-weight:900;
 }
 
 .srp-content-box .srp-post-title,
@@ -132,6 +133,7 @@
 .srp-content-box .srp-post-title,
 .widget-area .widget .srp-post-title {
   margin: 0;
+  font-weight:900;
 }
 
 .srp-content-box .srp-post-stringbreak-link {
@@ -147,6 +149,8 @@
 .srp-content-box .srp-post-content,
 .widget-area .widget .srp-post-content {
 	margin: 0;
+	font-size: 14.5px;			
+	line-height: 20px;
 }
 
 
