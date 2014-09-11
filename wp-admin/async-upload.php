@@ -6,12 +6,18 @@
  * @subpackage Administration
  */
 
-define('WP_ADMIN', true);
+if ( isset( $_REQUEST['action'] ) && 'upload-attachment' === $_REQUEST['action'] ) {
+	define( 'DOING_AJAX', true );
+}
+
+if ( ! defined( 'WP_ADMIN' ) ) {
+	define( 'WP_ADMIN', true );
+}
 
 if ( defined('ABSPATH') )
 	require_once(ABSPATH . 'wp-load.php');
 else
-	require_once('../wp-load.php');
+	require_once( dirname( dirname( __FILE__ ) ) . '/wp-load.php' );
 
 if ( ! ( isset( $_REQUEST['action'] ) && 'upload-attachment' == $_REQUEST['action'] ) ) {
 	// Flash often fails to send cookies with the POST or upload, so we need to pass it in GET or POST instead
@@ -24,7 +30,7 @@ if ( ! ( isset( $_REQUEST['action'] ) && 'upload-attachment' == $_REQUEST['actio
 	unset($current_user);
 }
 
-require_once('./admin.php');
+require_once( ABSPATH . 'wp-admin/admin.php' );
 
 if ( !current_user_can('upload_files') )
 	wp_die(__('You do not have permission to upload files.'));
@@ -32,8 +38,7 @@ if ( !current_user_can('upload_files') )
 header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 
 if ( isset( $_REQUEST['action'] ) && 'upload-attachment' === $_REQUEST['action'] ) {
-	define( 'DOING_AJAX', true );
-	include ABSPATH . 'wp-admin/includes/ajax-actions.php';
+	include( ABSPATH . 'wp-admin/includes/ajax-actions.php' );
 
 	send_nosniff_header();
 	nocache_headers();
@@ -47,8 +52,7 @@ if ( isset($_REQUEST['attachment_id']) && ($id = intval($_REQUEST['attachment_id
 	$post = get_post( $id );
 	if ( 'attachment' != $post->post_type )
 		wp_die( __( 'Unknown post type.' ) );
-	$post_type_object = get_post_type_object( 'attachment' );
-	if ( ! current_user_can( $post_type_object->cap->edit_post, $id ) )
+	if ( ! current_user_can( 'edit_post', $id ) )
 		wp_die( __( 'You are not allowed to edit this item.' ) );
 
 	switch ( $_REQUEST['fetch'] ) {
@@ -57,7 +61,7 @@ if ( isset($_REQUEST['attachment_id']) && ($id = intval($_REQUEST['attachment_id
 				echo '<img class="pinkynail" src="' . esc_url( $thumb_url[0] ) . '" alt="" />';
 			echo '<a class="edit-attachment" href="' . esc_url( get_edit_post_link( $id ) ) . '" target="_blank">' . _x( 'Edit', 'media item' ) . '</a>';
 			$title = $post->post_title ? $post->post_title : wp_basename( $post->guid ); // title shouldn't ever be empty, but use filename just in cas.e
-			echo '<div class="filename new"><span class="title">' . esc_html( wp_html_excerpt( $title, 60 ) ) . '</span></div>';
+			echo '<div class="filename new"><span class="title">' . esc_html( wp_html_excerpt( $title, 60, '&hellip;' ) ) . '</span></div>';
 			break;
 		case 2 :
 			add_filter('attachment_fields_to_edit', 'media_single_attachment_fields_to_edit', 10, 2);
@@ -82,7 +86,7 @@ if ( isset( $_REQUEST['post_id'] ) ) {
 
 $id = media_handle_upload( 'async-upload', $post_id );
 if ( is_wp_error($id) ) {
-	echo '<div class="error-div">
+	echo '<div class="error-div error">
 	<a class="dismiss" href="#" onclick="jQuery(this).parents(\'div.media-item\').slideUp(200, function(){jQuery(this).remove();});">' . __('Dismiss') . '</a>
 	<strong>' . sprintf(__('&#8220;%s&#8221; has failed to upload due to an error'), esc_html($_FILES['async-upload']['name']) ) . '</strong><br />' .
 	esc_html($id->get_error_message()) . '</div>';
@@ -90,10 +94,21 @@ if ( is_wp_error($id) ) {
 }
 
 if ( $_REQUEST['short'] ) {
-	// short form response - attachment ID only
+	// Short form response - attachment ID only.
 	echo $id;
 } else {
-	// long form response - big chunk o html
+	// Long form response - big chunk o html.
 	$type = $_REQUEST['type'];
-	echo apply_filters("async_upload_{$type}", $id);
+
+	/**
+	 * Filter the returned ID of an uploaded attachment.
+	 *
+	 * The dynamic portion of the hook name, $type, refers to the attachment type,
+	 * such as 'image', 'audio', 'video', 'file', etc.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param int $id Uploaded attachment ID.
+	 */
+	echo apply_filters( "async_upload_{$type}", $id );
 }
