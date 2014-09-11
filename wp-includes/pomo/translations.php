@@ -57,7 +57,7 @@ class Translations {
 		$this->headers[$header] = $value;
 	}
 
-	function set_headers(&$headers) {
+	function set_headers($headers) {
 		foreach($headers as $header => $value) {
 			$this->set_header($header, $value);
 		}
@@ -172,7 +172,7 @@ class Gettext_Translations extends Translations {
 	}
 
 	/**
-	 * Adds parantheses to the inner parts of ternary operators in
+	 * Adds parentheses to the inner parts of ternary operators in
 	 * plural expressions, because PHP evaluates ternary oerators from left to right
 	 *
 	 * @param string $expression the expression without parentheses
@@ -242,7 +242,7 @@ class NOOP_Translations {
 	function set_header($header, $value) {
 	}
 
-	function set_headers(&$headers) {
+	function set_headers($headers) {
 	}
 
 	function get_header($header) {

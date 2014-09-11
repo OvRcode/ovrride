@@ -2,46 +2,47 @@
 /**
  * Edit address form
  *
- * @author 		WooThemes
- * @package 	WooCommerce/Templates
- * @version     1.6.4
+ * @author      WooThemes
+ * @package     WooCommerce/Templates
+ * @version     2.1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-global $woocommerce, $current_user;
+global $current_user;
+
+$page_title = ( $load_address === 'billing' ) ? __( 'Billing Address', 'woocommerce' ) : __( 'Shipping Address', 'woocommerce' );
 
 get_currentuserinfo();
 ?>
 
-<?php $woocommerce->show_messages(); ?>
+<?php wc_print_notices(); ?>
 
-<?php if (!$load_address) : ?>
+<?php if ( ! $load_address ) : ?>
 
-	<?php woocommerce_get_template('myaccount/my-address.php'); ?>
+	<?php wc_get_template( 'myaccount/my-address.php' ); ?>
 
 <?php else : ?>
 
-	<form action="<?php echo esc_url( add_query_arg( 'address', $load_address, get_permalink( woocommerce_get_page_id('edit_address') ) ) ); ?>" method="post">
+	<form method="post">
 
-		<h3><?php if ($load_address=='billing') _e( 'Billing Address', 'woocommerce' ); else _e( 'Shipping Address', 'woocommerce' ); ?></h3>
+		<h3><?php echo apply_filters( 'woocommerce_my_account_edit_address_title', $page_title ); ?></h3>
 
-		<?php
-		foreach ($address as $key => $field) :
-			$value = (isset($_POST[$key])) ? $_POST[$key] : get_user_meta( get_current_user_id(), $key, true );
+		<?php do_action( "woocommerce_before_edit_address_form_{$load_address}" ); ?>
 
-			// Default values
-			if (!$value && ($key=='billing_email' || $key=='shipping_email')) $value = $current_user->user_email;
-			if (!$value && ($key=='billing_country' || $key=='shipping_country')) $value = $woocommerce->countries->get_base_country();
-			if (!$value && ($key=='billing_state' || $key=='shipping_state')) $value = $woocommerce->countries->get_base_state();
+		<?php foreach ( $address as $key => $field ) : ?>
 
-			woocommerce_form_field( $key, $field, $value );
-		endforeach;
-		?>
+			<?php woocommerce_form_field( $key, $field, ! empty( $_POST[ $key ] ) ? wc_clean( $_POST[ $key ] ) : $field['value'] ); ?>
+
+		<?php endforeach; ?>
+		
+		<?php do_action( "woocommerce_after_edit_address_form_{$load_address}" ); ?>
 
 		<p>
 			<input type="submit" class="button" name="save_address" value="<?php _e( 'Save Address', 'woocommerce' ); ?>" />
-			<?php $woocommerce->nonce_field('edit_address') ?>
+			<?php wp_nonce_field( 'woocommerce-edit_address' ); ?>
 			<input type="hidden" name="action" value="edit_address" />
 		</p>
 

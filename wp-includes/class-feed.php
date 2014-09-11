@@ -1,7 +1,7 @@
 <?php
 
 if ( !class_exists('SimplePie') )
-	require_once (ABSPATH . WPINC . '/class-simplepie.php');
+	require_once( ABSPATH . WPINC . '/class-simplepie.php' );
 
 class WP_Feed_Cache extends SimplePie_Cache {
 	/**
@@ -10,23 +10,33 @@ class WP_Feed_Cache extends SimplePie_Cache {
 	 * @static
 	 * @access public
 	 */
-	function create($location, $filename, $extension) {
+	public function create($location, $filename, $extension) {
 		return new WP_Feed_Cache_Transient($location, $filename, $extension);
 	}
 }
 
 class WP_Feed_Cache_Transient {
-	var $name;
-	var $mod_name;
-	var $lifetime = 43200; //Default lifetime in cache of 12 hours
+	public $name;
+	public $mod_name;
+	public $lifetime = 43200; //Default lifetime in cache of 12 hours
 
-	function __construct($location, $filename, $extension) {
+	public function __construct($location, $filename, $extension) {
 		$this->name = 'feed_' . $filename;
 		$this->mod_name = 'feed_mod_' . $filename;
-		$this->lifetime = apply_filters('wp_feed_cache_transient_lifetime', $this->lifetime, $filename);
+
+		$lifetime = $this->lifetime;
+		/**
+		 * Filter the transient lifetime of the feed cache.
+		 *
+		 * @since 2.8.0
+		 *
+		 * @param int    $lifetime Cache duration in seconds. Default is 43200 seconds (12 hours).
+		 * @param string $filename Unique identifier for the cache object.
+		 */
+		$this->lifetime = apply_filters( 'wp_feed_cache_transient_lifetime', $lifetime, $filename);
 	}
 
-	function save($data) {
+	public function save($data) {
 		if ( is_a($data, 'SimplePie') )
 			$data = $data->data;
 
@@ -35,19 +45,19 @@ class WP_Feed_Cache_Transient {
 		return true;
 	}
 
-	function load() {
+	public function load() {
 		return get_transient($this->name);
 	}
 
-	function mtime() {
+	public function mtime() {
 		return get_transient($this->mod_name);
 	}
 
-	function touch() {
+	public function touch() {
 		return set_transient($this->mod_name, time(), $this->lifetime);
 	}
 
-	function unlink() {
+	public function unlink() {
 		delete_transient($this->name);
 		delete_transient($this->mod_name);
 		return true;
@@ -56,7 +66,7 @@ class WP_Feed_Cache_Transient {
 
 class WP_SimplePie_File extends SimplePie_File {
 
-	function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false) {
+	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false) {
 		$this->url = $url;
 		$this->timeout = $timeout;
 		$this->redirects = $redirects;
@@ -69,7 +79,6 @@ class WP_SimplePie_File extends SimplePie_File {
 			$args = array(
 				'timeout' => $this->timeout,
 				'redirection' => $this->redirects,
-				'reject_unsafe_urls' => true,
 			);
 
 			if ( !empty($this->headers) )
@@ -78,7 +87,7 @@ class WP_SimplePie_File extends SimplePie_File {
 			if ( SIMPLEPIE_USERAGENT != $this->useragent ) //Use default WP user agent unless custom has been specified
 				$args['user-agent'] = $this->useragent;
 
-			$res = wp_remote_request($url, $args);
+			$res = wp_safe_remote_request($url, $args);
 
 			if ( is_wp_error($res) ) {
 				$this->error = 'WP HTTP Error: ' . $res->get_error_message();

@@ -3,8 +3,8 @@ Contributors: squelch
 Donate link: http://squelchdesign.com/wordpress-plugin-squelch-tabs-accordions-shortcodes/
 Tags: squelch,tabs, accordions,shortcodes,FAQs,tabbed,user interface,vaccordion,haccordion,thethe,thethe fly
 Requires at least: 3.5
-Tested up to: 3.5.2
-Stable tag: 0.3.1
+Tested up to: 3.9
+Stable tag: 0.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,8 +101,18 @@ If you're on an older version of WordPress and still want to use the plugin then
 
 == Changelog ==
 
+= 0.3.4 =
+* Emergency bug-fix: Paragraphs and breaks being interfered with
+
+= 0.3.3 =
+* Version bump (which should work)
+* Putting icons live as they've been in the dev branch for too long
+
+= 0.3.2 =
+* Version bump (which went wrong)
+
 = 0.3.1 =
-Minor fix for a warning in debug mode.
+* Minor fix for a warning in debug mode.
 
 = 0.3 =
 * The plugin was banned from the WordPress.org directory for providing jQuery from the Google CDN and allowing the user to choose the version of jQuery they wanted to run on their site. Apparently this contravenes the WordPress.org directory guidelines, despite the fact that the guidelines seem to make no mention of jQuery anywhere and despite the fact there are a number of plugins in the directory that do exactly the same thing. In order to get the plugin relisted it was necessary to use the WordPress-hosted version of jQuery and package the jQuery UI theme files. As a result the plugin no longer works on WP<3.5 and there's not much I can do about that.
@@ -141,6 +151,15 @@ Minor fix for a warning in debug mode.
 * Initial version
 
 == Upgrade Notice ==
+
+= 0.3.4 =
+Emergency bug-fix to prevent stripping of paragraphs / breaks
+
+= 0.3.3 =
+Version bump for WP 3.9 + introduction of icons in tabs
+
+= 0.3.2 =
+Version bump for WP 3.9 (failed)
 
 = 0.3.1 =
 Very minor code quality update.
