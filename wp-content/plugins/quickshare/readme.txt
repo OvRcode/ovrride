@@ -2,8 +2,8 @@
 Contributors: celloexpressions
 Tags: Social, Share, Sharing, Social Sharing, Social Media, Quick, Easy, Lightweight, No JS, Flexible, Customizable, Responsive, Facebook, Twitter, Pinterest, Linkedin, Google+, Tumblr, Email, Reddit, StumbleUpon
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 1.4
+Tested up to: 4.0
+Stable tag: 1.5
 Description: Add quick social sharing functions to your content. Challenge social sharing norms with a flexible design and fast performance.
 License: GPLv2
 
@@ -49,6 +49,9 @@ QuickShare provides many options for design customization, but if you want to go
 = Using Custom CSS Styling =
 If you look at quickshare.css, you'll notice that the majority of the plugin's options are controlled through CSS. I recommend poking around in there to get some ideas, then adding your styles to the custom CSS field in the admin settings page. Placing the code here will ensure it overrides all plugin options. Depending on the share display type (icons/genericons/text), you can change icon and background colors and sizes, adjust shadows and borders, change how the plugin fits with your theme's layout (margins, padding, horizontal separations), add more CSS3 effects, and more! Unfortunately, it will be necessary to use `!important` in some places.
 
+= Icons / Bullets / Arrows / Text display on top of/behind share icons =
+An unfortunately large number of themes have not-fully-thought-out styling that interferes with QuickShare. Please post in the support forums with a link to your site and I can provide the appropriate custom CSS that will fix it for your site (I have seen themes do this in many, many different ways, so the steps QuickShare takes to resolve the issues are somethimes insufficient).
+
 = Share bar doesn't display =
 QuickShare can only display after posts use `the_content()`. One example of where QuickShare can't display is in gallery post formats on index and archive (not single view) pages in the Twenty Thirteen theme. However, if you have a custom theme or a child theme, you can customize the QuickShare output by adding `<?php do_quickshare_output(); ?>` to your template files somewhere within the loop.
 
@@ -57,10 +60,7 @@ For additional customization, you can use `<?php do_quickshare_output( $url, $ti
 An example of a website using QuickShare in a custom context is <a href="http://euclidsmuse.com/app?id=269">Euclid's Muse, on app display pages</a>.
 
 = Browser Support =
-QuickShare is designed for modern browsers. I do not (and will not make much effort to) support IE8 or below, and do not support features that aren't achievable with minimal CSS in other outdated browsers (including, now, IE9). That being said, if you find a compatibility issue *with an easy fix*, let me know on the support forums and I'll consider including it. In the meantime, you can always add any desired CSS to the custom CSS field without worrying about losing plugin edits to updates. For the most part, everything should fail gracefully; older browsers won't see special effects like rounded corners, transitions/animations, box shadows, and opacity filters, but will be functionally fine. Genericons do not work in several browsers (including IE7/8 and IE9 mobile, but not IE9 desktop), so don't use that display option if you need lots of browser support.
-
-= Icons are missing for Reddit and Stumbleupon =
-Well, the Genericons are actually missing and it's because there aren't Genericons for either icon. Depending on who you ask, these sites are less popular and on the way out, but I included them in the plugin with partial support in case anyone really wants them.
+QuickShare is designed for modern browsers. I do not (and will not make much effort to) support IE8 or below, and do not support features that aren't achievable with minimal CSS in other outdated browsers (including, now, IE9). That being said, if you find a compatibility issue *with an easy fix*, let me know on the support forums and I'll consider including it. In the meantime, you can always add any desired CSS to the custom CSS field without worrying about losing plugin edits to updates. For the most part, everything should fail gracefully; older browsers won't see special effects like rounded corners, transitions/animations, box shadows, and opacity filters, but will be functionally fine. Genericons do not work in several browsers (including IE7 and IE9 mobile, but not IE9 desktop), so don't use that display option if you need lots of browser support.
 
 = Sharing to additional social media networks =
 If you think QuickShare should support sharing to additional networks, please let me know in the support forums and I'll consider adding support. I don't intend to add any more networks that would be enabled by default (or automatically enabled after an update), though.
@@ -73,10 +73,16 @@ QuickShare does **not** work in WordPress versions below 3.5 (it will probably t
 
 
 == Screenshots ==
-1. Admin settings screen with live preview of output (with MP6).
+1. Admin settings screen with live-updating preview of design.
 2. Default plugin display with the Twenty Thirteen theme.
 
 == Changelog ==
+= 1.5 =
+* Improved Twitter sharing, with ability to include your username in the tweet by default (enter name on the settings page)
+* Add support for Reddit and Stumbleupon with the Genericons display type
+* Update Genericons to version 3.0.2 (includes redesigned email icon)
+* Prevent QuickShare from displaying in widgets by default (with CSS, easy to override), for better compatibility with Twenty Fourteen's Ephemera Widget
+
 = 1.4 =
 * Introduce a shortcode for custom QuickShare output. You can now use `[quickshare]` anywhere in your posts/pages, even if QuickShare is disabled for that post type by default.
 * Allow QuickShare to be excluded (hidden) from specific pages or posts, by id, in the settings page.
@@ -117,6 +123,9 @@ QuickShare does **not** work in WordPress versions below 3.5 (it will probably t
 * Compatible with WordPress 3.5-3.6
 
 == Upgrade Notice ==
+= 1.5 =
+* Improved Twitter sharing for better social engagement, hide from widgets, update Genericons to 3.0.2, adds Reddit and Stumbleupon Genericons.
+
 = 1.4 =
 * Better support for displaying QuickShare exactly where you want it, including new `[quickshare]` shortcode. Several other features and tweaks, see changelog.
 
