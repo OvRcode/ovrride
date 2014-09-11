@@ -14,7 +14,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 	/**
 	 * Version
 	 */
-	var $api_version = '1.0.7';
+	var $api_version = '1.0.17';
 
     /**
      * settings sections array
@@ -64,12 +64,28 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
      * @var object
      */
     private static $_instance;
+
+	/**
+	 * Main Instance
+	 *
+	 * @staticvar 	array 	$instance
+	 * @return 		The one true instance
+	 */
+	public static function instance() {
+		if ( ! isset( self::$_instance ) ) {
+			self::$_instance = new self;
+			self::$_instance->init();
+		}
+		return self::$_instance;
+	}
+	
+    function __construct() {}
 	
 	/**
 	 * Fire
 	 *
 	 */
-    public function __construct() {
+    function init() {
         add_action( 'admin_enqueue_scripts',	array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'init',						array( $this, 'late_init' ), 89 );
     }
@@ -89,6 +105,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		
 		add_action( 'admin_notices',			array( $this, 'show_notifications' ) );
 		add_action( 'admin_init',				array( $this, 'notification_ignore' ) );
+		add_action( 'admin_menu',				array( $this, 'modify_transient' ) );
 	}
 	
 	/**
@@ -134,14 +151,17 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		wp_enqueue_style( 'wp-color-picker' );
 		
 		/* jQuery Chosen */
-		wp_enqueue_script( 'jquery-chosen', plugins_url( 'assets/js/chosen.jquery.min.js', CUSTOM_LOGIN_FILE ), array( 'jquery' ), '0.9.12', false );
-		wp_enqueue_style( 'jquery-chosen', plugins_url( 'assets/css/chosen.css', CUSTOM_LOGIN_FILE ), false, '0.9.12', 'screen' );
+		wp_enqueue_script( 'jquery-chosen', plugins_url( 'assets/js/chosen.jquery.min.js', CUSTOM_LOGIN_FILE ), array( 'jquery' ), '1.0.0', false );
+		wp_enqueue_style( 'jquery-chosen', plugins_url( 'assets/css/chosen.css', CUSTOM_LOGIN_FILE ), false, '1.0.0', 'screen' );
 		
 		/* Admin */
-		wp_enqueue_style( $this->domain, plugins_url( 'assets/css/admin.css', CUSTOM_LOGIN_FILE ), false, '', 'screen' );
+		wp_enqueue_script( $this->domain, plugins_url( 'assets/js/admin.js', CUSTOM_LOGIN_FILE ), array( 'jquery' ), $this->version, false );
+		wp_enqueue_style( $this->domain, plugins_url( 'assets/css/admin.css', CUSTOM_LOGIN_FILE ), false, $this->version, 'screen' );
 		
 		/* Genericons */
-		wp_enqueue_style( 'genericons', plugins_url( 'assets/css/genericons.css', CUSTOM_LOGIN_FILE ), false, '', 'screen' );
+		wp_enqueue_style( 'genericons', plugins_url( 'assets/css/genericons.css', CUSTOM_LOGIN_FILE ), false, '3.0.3', 'screen' );
+			
+		do_action( 'custom_login_admin_enqueue_scripts' );
     }
 
     /**
@@ -272,6 +292,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
      * @param array   $args settings field args
      */
     function callback_text_array( $args ) {
+		static $counter = 0;
 		
         $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
         $size  = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
@@ -295,6 +316,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		$html .= '</ul>';
 		$html .= sprintf( '<a href="#" class="button docopy-%1$s[%2$s]">+</a>', $args['section'], $args['id'] );
 		
+		$counter++;
 		ob_start(); ?>
 		<script>
 		jQuery(document).ready(function($) {
@@ -321,7 +343,8 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 			});
 		});
 		</script><?php
-		$html .= ob_get_clean();
+		
+		$html .= 1 === $counter ? ob_get_clean() : '';
 				
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
@@ -334,12 +357,14 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
      * @param array   $args settings field args
      */
     function callback_colorpicker( $args ) {
+		static $counter = 0;
 		
-        $value	 = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-		$check	 = esc_attr( $this->get_option( $args['id'] . '_checkbox', $args['section'], $args['std'] ) );
-        $opacity = esc_attr( $this->get_option( $args['id'] . '_opacity', $args['section'], $args['std'] ) );
-        $size	 = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'small';
+		$value	 	= esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+		$check	 	= esc_attr( $this->get_option( $args['id'] . '_checkbox', $args['section'], $args['std'] ) );
+		$opacity 	= esc_attr( $this->get_option( $args['id'] . '_opacity', $args['section'], $args['std'] ) );
+		$size	 	= isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'small';
 		$opaque_options = array( '1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1', '0', );
+		$class		= 'on' != $check ? ' hidden' : '';
 		
 		/* Color */
         $html  = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" style="float:left"/>', $size, $args['section'], $args['id'], $value );
@@ -353,12 +378,13 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		
 		/* Opacity */
        // $html .= sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" style="margin-left:70px;%5$s" />', $size, $args['section'], $args['id'] . '_opacity', $opacity, ( 'on' !== $check ? 'display:none;' : '' ) );
-	   $html .= sprintf( '<select class="%1$s%4$s" name="%2$s[%3$s]" id="%2$s[%3$s]" style="margin-left:70px;">', $size, $args['section'], $args['id'] . '_opacity', ( 'on' !== $check ? ' hidden' : '' ) );
+	   $html .= sprintf( '<select class="%1$s%4$s" name="%2$s[%3$s]" id="%2$s[%3$s]" style="margin-left:70px;">', $size, $args['section'], $args['id'] . '_opacity', $class );
         foreach ( $opaque_options as $key ) {
             $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $opacity, $key, false ), $key );
         }
         $html .= sprintf( '</select>' );
 		
+		$counter++;
 		ob_start(); ?>
         <script>
 		jQuery(document).ready(function($) {
@@ -378,21 +404,26 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 			};
 			$('input[name="<?php echo $args['section'] . '[' . $args['id'] . ']'; ?>"]').wpColorPicker();
 		   
-		    $('select[name="<?php echo $args['section'] . '[' . $args['id'] . '_opacity]'; ?>"]').chosen();
 			if ( $('select[name="<?php echo $args['section'] . '[' . $args['id'] . '_opacity]'; ?>"]').hasClass('hidden') ) {
-		    	$('#<?php echo str_replace( '[', '_', $args['section'] . '[' . $args['id'] . '_opacity' ); ?>__chzn').hide();
+				$('select[name="<?php echo $args['section'] . '[' . $args['id'] . '_opacity]'; ?>"]').removeClass('hidden').chosen().addClass('hidden');
+			} else {
+				$('select[name="<?php echo $args['section'] . '[' . $args['id'] . '_opacity]'; ?>"]').chosen();
+			}
+			
+			if ( $('select[name="<?php echo $args['section'] . '[' . $args['id'] . '_opacity]'; ?>"]').hasClass('hidden') ) {
+				$('#<?php echo str_replace( '[', '_', $args['section'] . '[' . $args['id'] . '_opacity' ); ?>__chosen').hide();
 			}
 			
 		    $('input[name="<?php echo $args['section'] . '[' . $args['id'] . '_checkbox]'; ?>"]').on('change', function() {
-		    	//$('select[name="<?php echo $args['section'] . '[' . $args['id'] . '_opacity]'; ?>"]').toggle();
-		    	$('#<?php echo str_replace( '[', '_', $args['section'] . '[' . $args['id'] . '_opacity' ); ?>__chzn').toggle();
+		    	$('#<?php echo str_replace( '[', '_', $args['section'] . '[' . $args['id'] . '_opacity' ); ?>__chosen').toggle();
 			});
 		});
 		</script><?php
-		$html .= ob_get_clean();
+		$html .= 1 === $counter ? ob_get_clean() : '';
 		
 		/* Description */
-        $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
+		if ( !empty( $args['desc'] ) )
+			$html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
     }
@@ -482,12 +513,14 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
             $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $value, $key, false ), $label );
         }
         $html .= sprintf( '</select>' );
+		
 		ob_start(); ?>
         <script>
 		jQuery(document).ready(function($) {
 		    $('select[name="<?php echo $args['section'] . '[' . $args['id'] . ']'; ?>"]').chosen();
 		});
 		</script><?php
+		
 		$html .= ob_get_clean();
         $html .= sprintf( '<span class="description"> %s</span>', $args['desc'] );
 
@@ -505,7 +538,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		//$value = wp_specialchars_decode( stripslashes( $this->get_option( $args['id'], $args['section'], $args['std'] ) ), 1, 0, 1 );
         $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-        $html = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], $value );
+        $html = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]">%4$s</textarea>', $size, $args['section'], $args['id'], stripslashes( $value ) );
         $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
 
         echo $html;
@@ -527,8 +560,8 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
      */
     function callback_wysiwyg( $args ) {
 
-        $value = wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
+        $value	= wpautop( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size	= isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : '500px';
 
         echo '<div style="width: ' . $size . ';">';
 
@@ -547,13 +580,15 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
     function callback_file( $args ) {
 		static $counter = 0;
 		
-        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
-        $size = isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
-        $id = $args['section']  . '[' . $args['id'] . ']';
-        $html = sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
-        $html .= '<input type="button" class="button extendd-browse" id="'. $id .'_button" value="Browse" style="margin-left:5px" />';
-        $html .= '<input type="button" class="button extendd-clear" id="'. $id .'_clear" value="Clear" style="margin-left:5px" />';
-		if ( 0 == $counter ) {
+        $value	= esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+        $size	= isset( $args['size'] ) && !is_null( $args['size'] ) ? $args['size'] : 'regular';
+        $id		= $args['section']  . '[' . $args['id'] . ']';
+        $html 	= sprintf( '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', $size, $args['section'], $args['id'], $value );
+        $html  .= '<input type="button" class="button extendd-browse" id="'. $id .'_button" value="Browse" style="margin-left:5px" />';
+        $html  .= '<input type="button" class="button extendd-clear" id="'. $id .'_clear" value="Clear" style="margin-left:5px" />';
+		
+		$counter++;
+		if ( 1 === $counter ) {
 			ob_start(); ?>
 			<script>
 			jQuery(document).ready(function($) {			
@@ -610,12 +645,12 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 					});
 		
 					// When an image is selected, run a callback.
-					file_frame.on( 'insert', function() {
-		
+					file_frame.on( 'insert', function() {	
 						var attachment = file_frame.state().get('selection').first().toJSON();
 					//	console.log(attachment);
+					
 						window.formfield.find('input[type="text"]').val(attachment.url);
-					//	window.formfield.find('').val(attachment.title);
+						window.formfield.find('#<?php echo $id; ?>_preview').html('<div class="img" style="width:250px"><img src="'+attachment.url+'" alt="" /><a href="#" class="remove_file_button" rel="<?php echo $id; ?>">Remove Image</a></div>');
 					});
 		
 					// Finally, open the modal
@@ -627,18 +662,35 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 				window.formfield = ''; 
 				
 				$('input[type="button"].button.extendd-clear').on('click', function(e) {  
-					e.preventDefault();		
-					var $this = $(this);
-					$this.closest('td').find('input[type="text"]').val('');
+					e.preventDefault();
+					$(this).closest('td').find('input[type="text"]').val('');
+					$(this).closest('td').find('#' + $(this).prop('id').replace( '_clear', '_preview') + ' div.image').remove();
+				});
+				$('a.remove_file_button').on( 'click', function(e) {
+					e.preventDefault();
+					$(this).closest('td').find('input[type="text"]').val('');
+					$(this).parent().slideUp().remove();
 				});
 			});
 			</script><?php
 			$html .= ob_get_clean();
 		}
         $html .= sprintf( '<br><span class="description"> %s</span>', $args['desc'] );
+		
+		/* Image */
+		$html .= '<div id="' . $id . '_preview" class="' . $id . '_preview">';	
+			if ( $value != '' ) { 
+				$check_image = preg_match( '/(^.*\.jpg|jpeg|png|gif|ico*)/i', $value );
+				if ( $check_image ) {
+					$html .= '<div class="img" style="display:none">';
+					$html .= '<img src="' . $value . '" alt="" />';
+					$html .= '<a href="#" class="remove_file_button" rel="' . $id . '">Remove Image</a>';
+					$html .= '</div>';
+				}
+			}
+		$html .= '</div>';
 
         echo $html;
-		$counter++;
     }
 
     /**
@@ -739,6 +791,46 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 
         echo $html;
     }
+	
+	/**
+     * Helper function to make remote calls
+	 *
+	 * @since 2.2
+     */
+    function wp_remote_get_set_transient( $url = false, $transient, $type = 'message', $cache_time = null ) {
+		if ( !$url ) return;
+		
+		if ( is_null( $cache_time ) ) {
+			if ( defined( 'DAY_IN_SECONDS' ) )
+				$cache_time = DAY_IN_SECONDS;
+			else
+				$cache_time = 24 * 60 * 60;
+		}
+		
+		if ( false === ( $output = get_transient( $transient ) ) ) {
+			$site = wp_remote_get( $url, array( 'timeout' => 15, 'sslverify' => false ) );
+			if ( !is_wp_error( $site ) ) {
+				if ( isset( $site['body'] ) && strlen( $site['body'] ) > 0 ) {
+					$output = json_decode( wp_remote_retrieve_body( $site ) );
+					
+					// For when I mess up the JSON or github is down.
+					if ( is_wp_error( $output ) || empty( $output->$type ) )
+						return false;
+						
+					set_transient( $transient, $output, $cache_time ); // Cache for two weeks
+					update_option( $transient . '_message', $output->$type ); // Update the message
+					
+					// Return the data
+					return $output;
+				}
+			} else {
+				// Error, lets return!
+				return false;
+			}
+		}
+		return $output;
+		
+	}
 
     /**
      * Show the section settings forms
@@ -750,7 +842,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
     function show_notifications() {
 		$transient		= $this->prefix . '_announcement';	
 		$ignore			= $this->prefix . '_ignore_announcement';		
-		$old_message	= get_option( $this->prefix . '_announcement_message' );
+		$old_message	= get_option( $transient . '_message' );
 		$user_meta		= get_user_meta( get_current_user_id(), $ignore, true );		
 		
 //		delete_user_meta( get_current_user_id(), $ignore, 1 );
@@ -761,24 +853,16 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		if ( !current_user_can( 'manage_options' ) )
 			return;
 		
-		if ( false === ( $announcement = get_transient( $transient ) ) ) {
-			$site = wp_remote_get( 'https://raw.github.com/thefrosty/custom-login/master/extensions.json', array( 'timeout' => 15, 'sslverify' => false ) );
-			if ( !is_wp_error( $site ) ) {
-				if ( isset( $site['body'] ) && strlen( $site['body'] ) > 0 ) {
-					$announcement = json_decode( wp_remote_retrieve_body( $site ) );
-					set_transient( $transient, $announcement, WEEK_IN_SECONDS * 2 ); // Cache for two weeks
-					update_option( $this->prefix . '_announcement_message', $announcement->message ); // Update the message
-				}
-			} else {
-				// Error, lets return!
-				return;
-			}
-		}
+		$announcement = $this->wp_remote_get_set_transient( 'https://raw.github.com/thefrosty/custom-login/master/extensions.json', $transient, 'message' );
+		
+		//print_r( $announcement );
+		
+		if ( false === $announcement ) return;
 			
 		if ( trim( $old_message ) !== trim( $announcement->message ) && !empty( $old_message ) ) {
 			delete_user_meta( get_current_user_id(), $ignore, 1 );
 			delete_transient( $transient );
-			delete_option( $this->prefix . '_announcement_message' );			
+			delete_option( $transient . '_message' );
 			//echo 'test';
 		}
 		
@@ -809,24 +893,54 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		/* If user clicks to ignore the notice, add that to their user meta */
 		add_user_meta( get_current_user_id(), $ignore, 1, true );
 	}
+	
+	/**
+	 */
+	function load_edd_add_ons_page() {
+		if ( ! class_exists( 'Easy_Digital_Downloads' ) )
+			return;
+			
+		global $edd_add_ons_page;
+		add_action( 'load-' . $edd_add_ons_page, array( $this, 'modify_transient' ), 11 );
+	}
+	
+	/**
+	 */
+	function modify_transient() {
+			
+		if ( false !== ( $cache = get_transient( 'easydigitaldownloads_add_ons_feed' ) ) ) {
+			
+			if ( false === ( $cl = get_transient( 'custom_login_edd_add_ons_feed' ) ) ) {
+				// Replace ?utm_* link
+				//$cache	= preg_replace( '/(\?|\&|&#038;)utm_[a-z]+=[a-zA-Z0-9-]+/', '', $cache );				
+				//var_dump( $cache ); exit;				
+				// Replace 'ref=1' on "Get the Add On" link.
+				$cache	= preg_replace( '/ref=(\d+)/i', 'ref=116', $cache );				
+				//echo( $cache ); exit;
+				delete_transient( 'easydigitaldownloads_add_ons_feed' );
+				set_transient( 'easydigitaldownloads_add_ons_feed', $cache, WEEK_IN_SECONDS * 2 );
+				set_transient( 'custom_login_edd_add_ons_feed', '1', WEEK_IN_SECONDS * 2 );
+				echo 'fart';
+			}
+		}
+	
+	}
 
     /**
      * Show the section settings forms
      *
      * This function displays every sections in a different form
      */
-    function show_forms() {
-?>
-        <div class="metabox-left-wrapper" style="float:left; width:73%">
-        <div class="metabox-holder">
-            <div class="postbox">
+    function show_forms() { ?>
+        <div class="section col-group">
+            <div class="postbox col span_2_of_3">
                 <?php foreach ( $this->settings_sections as $form ) { ?>
                     <div id="<?php echo $form['id']; ?>" class="group">
                         <form method="post" action="options.php">
 
                             <?php do_action( $this->prefix . '_form_top_' . $form['id'], $form ); ?>
                             <?php settings_fields( $form['id'] ); ?>
-                            <?php do_settings_sections( $form['id'] ); ?>
+                            <div class="inside"><?php do_settings_sections( $form['id'] ); ?></div>
                             <?php do_action( $this->prefix . '_form_bottom_' . $form['id'], $form ); ?>
 
                             <div style="padding-left: 10px">
@@ -836,10 +950,10 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
                     </div>
                 <?php } ?>
             </div>
-        </div>
-        </div><!-- .metabox-left-wrapper -->
-        <div style="float:right; max-width:300px; width:25%;">
+        <div class="col span_1_of_3" style="margin-top:0">
         	<?php do_action( $this->prefix . '_settings_sidebars', $this->settings_sidebars ); ?>
+        </div>
+        
         </div>
         <br class="clear">
         <?php
@@ -931,7 +1045,9 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 	 * @return 	array|bool False on error, array of RSS items on success.
 	 */
 	public function fetch_rss_items( $num, $feed ) {
-		include_once( ABSPATH . WPINC . '/feed.php' );
+		if ( !function_exists( 'fetch_feed' ) )
+			include_once( ABSPATH . WPINC . '/feed.php' );
+			
 		$rss = fetch_feed( $feed );
 
 		// Bail if feed doesn't work
@@ -959,7 +1075,7 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		
 		$defaults = array(
 			'items' => 6,
-			'feed' 	=> 'http://extendd.com/feed/?post_type=plugin',
+			'feed' 	=> 'https://extendd.com/feed/?post_type=download',
 		);
 		
 		$args = wp_parse_args( $args, $defaults );
@@ -979,11 +1095,11 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 		}
 		$content .= '</ul>';
 		$content .= '<ul class="social">';
-		$content .= '<li class="facebook"><a href="https://www.facebook.com/WPExtendd">' . __( 'Like Extendd on Facebook', $this->domain ) . '</a></li>';
-		$content .= '<li class="twitter"><a href="http://twitter.com/WPExtendd">' . __( 'Follow Extendd on Twitter', $this->domain ) . '</a></li>';
-		$content .= '<li class="twitter"><a href="http://twitter.com/TheFrosty">' . __( 'Follow Austin on Twitter', $this->domain ) . '</a></li>';
-		$content .= '<li class="googleplus"><a href="https://plus.google.com/113609352601311785002/">' . __( 'Circle Extendd on Google+', $this->domain ) . '</a></li>';
-		$content .= '<li class="email"><a href="http://eepurl.com/vi0bz">' . __( 'Subscribe via email', $this->domain ) . '</a></li>';
+		$content .= '<li class="facebook"><span class="genericon genericon-facebook"></span><a href="https://www.facebook.com/WPExtendd">' . __( 'Like Extendd on Facebook', $this->domain ) . '</a></li>';
+		$content .= '<li class="twitter"><span class="genericon genericon-twitter"></span><a href="https://twitter.com/WPExtendd">' . __( 'Follow Extendd on Twitter', $this->domain ) . '</a></li>';
+		$content .= '<li class="twitter"><span class="genericon genericon-twitter"></span><a href="http://twitter.com/TheFrosty">' . __( 'Follow Austin on Twitter', $this->domain ) . '</a></li>';
+		$content .= '<li class="googleplus"><span class="genericon genericon-googleplus"></span><a href="https://plus.google.com/113609352601311785002/">' . __( 'Circle Extendd on Google+', $this->domain ) . '</a></li>';
+		$content .= '<li class="email"><span class="genericons genericons-mail"></span><a href="http://eepurl.com/vi0bz">' . __( 'Subscribe via email', $this->domain ) . '</a></li>';
 
 		$content .= '</ul>';
 		$this->postbox( 'extenddlatest', __( 'Latest plugins from Extendd.com', $this->domain ), $content );
@@ -991,3 +1107,20 @@ if ( !class_exists( 'Extendd_Plugin_Settings_API' ) ):
 
 }
 endif;
+
+/**
+ * The main function responsible for returning the one true
+ * Instance to functions everywhere.
+ *
+ * Use this function like you would a global variable, except without needing
+ * to declare the global.
+ *
+ * Example: <?php $custom_login = CUSTOMLOGIN(); ?>
+ *
+ * @return The one true Instance
+ */
+if ( !function_exists( 'EXTENDD_PLUGIN_SETTINGS_API' ) ) {
+	function EXTENDD_PLUGIN_SETTINGS_API() {
+		return Extendd_Plugin_Settings_API::instance();
+	}
+}

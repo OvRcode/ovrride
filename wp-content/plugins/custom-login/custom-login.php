@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Plugin Name: Custom Login 2.0
- * Plugin URI: http://extendd.com/plugin/custom-login
- * Description: A simple way to customize your WordPress <code>wp-login.php</code> screen! Use the built in, easy to use <a href="./options-general.php?page=custom-login">settings</a> page to do the work for you. Share you designs on <a href="http://flickr.com/groups/custom-login/">Flickr</a> or get Custom Login extensions at <a href="http://extendd.com/plugins/tag/custom-login-extension">Extendd.com</a>.
- * Version: 2.1.6
+ * Plugin Name: Custom Login
+ * Plugin URI: https://extendd.com/plugin/custom-login
+ * Description: A simple way to customize your WordPress <code>wp-login.php</code> screen! Use the built in, easy to use <a href="./options-general.php?page=custom-login">settings</a> page to do the work for you. Share you designs on <a href="http://flickr.com/groups/custom-login/">Flickr</a> or get Custom Login extensions at <a href="https://extendd.com/plugins/tag/custom-login-extension">Extendd.com</a>.
+ * Version: 2.3.7
  * Author: Austin Passy
- * Author URI: http://austinpassy.com
+ * Author URI: http://austin.passy.co
  * Text Domain: custom-login
  *
- * @copyright 2012 - 2013
+ * @copyright 2012 - 2014
  * @author Austin Passy
- * @link http://austinpassy.com/
+ * @link http://austin.passy.co/
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * This program is distributed in the hope that it will be useful,
@@ -28,21 +28,19 @@ class Custom_Login {
 	private static $instance;
 	
 	/**
-	 * Version
-	 */
-	var $version = '2.1.6';
-	
-	/**
 	 * Plugin vars
+	 * @return string
 	 */
-	var $id,
-		$domain;
+	var $version = '2.3.7',
+		$domain,
+		$id;
 	
 	/**
 	 * Private settings
 	 */
-	private $settings_api;
-	private $sections;
+	private $settings_api,
+			$remote_install,
+			$sections;
 	
 	/**
 	 * Options page
@@ -57,7 +55,7 @@ class Custom_Login {
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {
-			self::$instance = new custom_login;
+			self::$instance = new self;
 			self::$instance->setup_constants();
 			self::$instance->plugin_textdomain();
 			self::$instance->required_functions();
@@ -72,27 +70,27 @@ class Custom_Login {
 	function init() {
 		
 		/* vars */
-		$this->id		= 'custom_login';
 		$this->domain	= 'custom-login';
+		$this->id		= 'custom_login';
 		
 		/* Constants */
 		add_action( 'admin_init',							array( $this, 'check_version' ), 1 );
 		
 		/* Constants */
-		add_action( 'init',									array( $this, 'setup_constants' ) );
+		add_action( 'init',								array( $this, 'setup_constants' ) );
 		
 		/* Scripts */
 		add_action( 'login_enqueue_scripts',				array( $this, 'enqueue_scripts' ) );
 		
 		/* Custom jQuery templates */
-		add_action( 'login_footer',							array( $this, 'login_footer_jquery' ) );
+		add_action( 'login_footer',						array( $this, 'login_footer_jquery' ) );
 		
 		/* Includes */
-		add_action( 'init',									array( $this, 'required_classes' ) );
-		add_action( 'init',									array( $this, 'required_functions' ) );
+		add_action( 'init',								array( $this, 'required_classes' ) );
+		add_action( 'init',								array( $this, 'required_functions' ) );
 		
 		/* Shortcodes */
-		add_action( 'init',									array( $this, 'add_shortcodes' ) );
+		add_action( 'init',								array( $this, 'add_shortcodes' ) );
 		
 		/* Settings */
 		add_action( 'admin_init',							array( $this, 'admin_init' ), 9 );
@@ -110,16 +108,16 @@ class Custom_Login {
 		add_action( 'admin_notices',						array( $this, 'admin_messages' ) );
 		
 		/* Add a settings page to the plugin menu */
-		add_filter( 'plugin_action_links',					array( $this, 'plugin_action_links' ), 10, 2 );
+		add_filter( 'plugin_action_links',				array( $this, 'plugin_action_links' ), 10, 2 );
 		
 		/* Filter in your URL */
-		add_filter( 'login_headerurl',						array( $this, 'login_url' ) );
+		add_filter( 'login_headerurl',					array( $this, 'login_url' ) );
 		
 		/* Filter in your description */
 		add_filter( 'login_headertitle',					array( $this, 'login_title' ) );			
 		
 		/* Custom HTML */
-		add_action( 'login_footer',							array( $this, 'login_footer_html' ) );
+		add_action( 'login_footer',						array( $this, 'login_footer_html' ) );
 	}
 	
 	/**
@@ -179,6 +177,10 @@ class Custom_Login {
 		// Plugin Root File
 		if ( ! defined( 'CUSTOM_LOGIN_FILE' ) )
 			define( 'CUSTOM_LOGIN_FILE', __FILE__ );
+		
+		// Plugin version
+		if ( ! defined( 'EXTENDD_API_URL' ) )
+			define( 'EXTENDD_API_URL', 'https://extendd.com' );
 	}
 	
 	/**
@@ -208,7 +210,8 @@ class Custom_Login {
 		
 		ob_start();
 			echo "<style type=\"text/css\">\n";
-				Custom_Login_Templates::get_template_part( 'wp-login', 'style' );
+				$login_template = new Custom_Login_Templates;
+				$login_template->get_template_part( 'wp-login', 'style' );
 			echo "\n</style>";
 		echo ob_get_clean();
 		
@@ -243,7 +246,8 @@ class Custom_Login {
 			
 			ob_start();
 				echo "<script type=\"text/javascript\">\n";
-					Custom_Login_Templates::get_template_part( 'wp-login', 'script' );
+					$login_template = new Custom_Login_Templates;
+					$login_template->get_template_part( 'wp-login', 'script' );
 				echo "\n</script>";				
 			echo ob_get_clean();
 			
@@ -255,15 +259,28 @@ class Custom_Login {
 	 *
 	 */
 	function required_classes() {
+		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/class.settings-api.php' );
+		$this->settings_api = EXTENDD_PLUGIN_SETTINGS_API();
+		
 		if ( is_admin() ) {
-			require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/class.settings-api.php' );
-			$this->settings_api = new Extendd_Plugin_Settings_API;
+			// Settings API
 			$this->settings_api->set_prefix( $this->id );
 			$this->settings_api->set_domain( $this->domain );
 			$this->settings_api->set_version( $this->version );
+			
+			// Welcome API
+			require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/welcome.php' );
+			
+			// Extensions install API
+			if ( $this->class_exists_require( 'Extendd_Remote_Install_Client', 'edd-remote-install-client/EDD_Remote_Install_Client.php' ) ) {
+				$this->remote_install = new Extendd_Remote_Install_Client( EXTENDD_API_URL, 'settings_page_' . $this->domain,
+					array( 'skipplugincheck' => false, )
+				);
+				add_action( 'eddri-install-complete-settings_page_' . $this->domain, array( $this, 'custom_login_extension_install_complete' ), 10, 1 );
+			}
 		}
 		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/templates.php' );
-		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/welcome.php' );
+		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/scripts-styles.php' );
 	}
 	
 	/**
@@ -273,9 +290,6 @@ class Custom_Login {
 	function required_functions() {
 		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'functions/upgrades/upgrade-functions.php' );
 		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'functions/upgrades/upgrades.php' );
-		//require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'functions/install.php' ); // Deprecated as of 2.0.3
-		//require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'functions/post-types.php' ); // Deprecated as of 2.0.3
-		require_once( trailingslashit( plugin_dir_path( __FILE__ ) ) . 'functions/scripts-styles.php' );
 	}
 	
 	/**
@@ -286,8 +300,13 @@ class Custom_Login {
 		if ( !class_exists( $class_name ) ) {
 			$dir_path = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'classes/' . $dir_path;
 			
-			if ( file_exists( $dir_path ) )	require_once( $dir_path );
+			if ( file_exists( $dir_path ) )	{
+				require_once( $dir_path );
+				return true;
+			}
+			return false;
 		}
+		return false;
 	}
 	
 	/**
@@ -295,7 +314,7 @@ class Custom_Login {
 	 *
 	 */
 	function add_shortcodes() {
-		add_shortcode( $this->domain, array( $this, 'login_shortcode' ) );
+		#add_shortcode( 'custom-login', array( $this, 'login_shortcode' ) );
 	}
 	
 	/**
@@ -374,7 +393,7 @@ class Custom_Login {
                 array(
                     'name' 		=> 'html_background_position',
                     'label' 	=> __( 'HTML Background Position', $this->domain ),
-                    'desc' 		=> sprintf( __( '<a href="%s">html background position</a>.', $this->domain ), 'http://www.w3schools.com/cssref/pr_background-position.asp' ),
+                    'desc' 		=> sprintf( __( '<a href="%s" target="_blank">html background position</a>.', $this->domain ), 'http://www.w3schools.com/cssref/pr_background-position.asp' ),
                     'type' 		=> 'select',
                     'options' 	=> array(
                         'left top'		=> 'left top',
@@ -436,9 +455,27 @@ class Custom_Login {
 					'sanitize_callback' => 'esc_url',
                 ),
                 array(
+                    'name' 		=> 'logo_background_size_width',
+                    'label' 	=> __( 'Logo Image width', $this->domain ),
+                    'desc' 		=> __( 'Enter your image size in "pixels" without the "px"', $this->domain ),
+                    'type' 		=> 'text',
+					'size'		=> 'small',
+                    'default' 	=> '',
+					'sanitize_callback' => 'absint',
+                ),
+                array(
+                    'name' 		=> 'logo_background_size_height',
+                    'label' 	=> __( 'Logo Image height', $this->domain ),
+                    'desc' 		=> __( 'Enter your image size in "pixels" without the "px"', $this->domain ),
+                    'type' 		=> 'text',
+					'size'		=> 'small',
+                    'default' 	=> '',
+					'sanitize_callback' => 'absint',
+                ),
+                array(
                     'name' 		=> 'logo_background_position',
                     'label' 	=> __( 'Logo Background Position', $this->domain ),
-                    'desc' 		=> sprintf( __( '<a href="%s">html background position</a>.', $this->domain ), 'http://www.w3schools.com/cssref/pr_background-position.asp' ),
+                    'desc' 		=> sprintf( __( '<a href="%s" target="_blank">html background position</a>.', $this->domain ), 'http://www.w3schools.com/cssref/pr_background-position.asp' ),
                     'type' 		=> 'select',
                     'options' 	=> array(
                         'left top'		=> 'left top',
@@ -474,7 +511,17 @@ class Custom_Login {
                         'cover' 	=> 'cover',
                         'contain' 	=> 'contain',
                         'flex' 		=> 'flex',
+                        'custom' 	=> 'custom',
                     )
+                ),
+                array(
+                    'name' 		=> 'logo_background_size_custom',
+                    'label' 	=> __( 'Logo Background size (custom)', $this->domain ),
+                    'desc' 		=> sprintf( __( 'Use size values in format "INT unit INT unit". Example: 10px 15px or 55px 55px etc. %sNote: Logo Background size MUST be set to none.%s', $this->domain ), '<strong>', '</strong>' ),
+                    'type' 		=> 'text',
+					'size'		=> 'medium',
+                    'default' 	=> '',
+					'sanitize_callback' => '',
                 ),
 				/** BREAK **/
                 array(
@@ -503,7 +550,7 @@ class Custom_Login {
                 array(
                     'name' 		=> 'login_form_background_position',
                     'label' 	=> __( 'Login Form Background Position', $this->domain ),
-                    'desc' 		=> sprintf( __( '<a href="%s">html background position</a>.', $this->domain ), 'http://www.w3schools.com/cssref/pr_background-position.asp' ),
+                    'desc' 		=> sprintf( __( '<a href="%s" target="_blank">html background position</a>.', $this->domain ), 'http://www.w3schools.com/cssref/pr_background-position.asp' ),
                     'type' 		=> 'select',
                     'options' 	=> array(
                         'left top'		=> 'left top',
@@ -569,7 +616,7 @@ class Custom_Login {
                 array(
                     'name' 		=> 'login_form_box_shadow',
                     'label' 	=> __( 'Login Form Box Shadow', $this->domain ),
-                    'desc' 		=> sprintf( __( 'Use <a href="%s">box shadow</a> syntax w/ out color. <code>inset h-shadow v-shadow blur spread</code>', $this->domain ), 'http://www.w3schools.com/cssref/css3_pr_box-shadow.asp' ),
+                    'desc' 		=> sprintf( __( 'Use <a href="%s" target="_blank">box shadow</a> syntax w/ out color. <code>inset h-shadow v-shadow blur spread</code>', $this->domain ), 'http://www.w3schools.com/cssref/css3_pr_box-shadow.asp' ),
                     'type' 		=> 'text',
 					'size'		=> 'medium',
                     'default' 	=> '5px 5px 10px'
@@ -643,16 +690,19 @@ class Custom_Login {
 				array(
 					'name' 		=> 'custom_css',
 					'label' 	=> __( 'Custom CSS', $this->domain ),
-					'desc' 		=> '',
+					'desc' 		=> sprintf( __( 'Use the "Tab" key to format your CSS.<br><strong>New:</strong> %sAllowed variables%s. %s', $this->domain ), '<a href="#" data-toggle="custom-css-variables">', '</a>', '<div id="custom-css-variables" style="display:none"><ul>
+					<li>%%BSLASH%% = "\" (backslash)</li>
+					<li><a href="http://wordpress.org/support/topic/quotes-in-custom-css-gets-replaced-with-useless-quote?replies=4">Request others</a></li>
+					</ul></div>' ),
 					'type' 		=> 'textarea',
-					'sanitize_callback' => 'esc_attr',
+					'sanitize_callback' => 'wp_filter_nohtml_kses',
 				),
 				array(
 					'name' 		=> 'custom_html',
 					'label' 	=> __( 'Custom HTML', $this->domain ),
 					'desc' 		=> '',
 					'type' 		=> 'textarea',
-					'sanitize_callback' => 'stripslashes_deep', //Allow HTML
+					'sanitize_callback' => 'wp_kses_post', //Allow HTML
 				),
 				array(
 					'name' 		=> 'custom_jquery',
@@ -671,7 +721,8 @@ class Custom_Login {
         //initialize them
         $this->settings_api->admin_init();
 		
-		add_action( $this->id . '_settings_sidebars', array( $this, 'sidebar' ) );
+		add_action( $this->id . '_settings_sidebars', array( $this, 'sidebar' ), 1 );
+		add_action( $this->id . '_settings_sidebars', array( $this, 'extensions' ), 12 );
 		
 		return $this;
 //		wp_die( "Bork! <br><pre>" . print_r( $this->settings_api, true ) . "</pre>" );
@@ -805,21 +856,54 @@ class Custom_Login {
 	 */
 	function sidebar( $args ) {
 		$content  = '<ul class="social">';
-		$content .= '<li class="donate genericon-user"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X4JPT57AWMTYW">' . __( 'Support this plugin and buy me a beer', $this->domain ) . '</a></li>';
-		$content .= '<li class="rate genericon-star"><a href="http://wordpress.org/extend/plugins/custom-login/">' . __( 'Rate this plugin on WordPress.org', $this->domain ) . '</a></li>';
-		$content .= '<li class="share genericon-share"><a href="http://www.flickr.com/groups/custom-login/">' . __( 'Share your designs on <strong style="color:#0066DC;">Flick</strong><strong style="color:#ff0084;">r</strong>', $this->domain ) . '</a></li>';
-		$content .= '<li class="support genericon-wordpress"><a href="http://wordpress.org/support/plugin/custom-login">' . __( 'Get support on WordPress.org', $this->domain ) . '</a></li>';
-		$content .= '<li class="contribute genericon-github"><a href="https://github.com/thefrosty/custom-login">' . __( 'Contribute development on GitHub', $this->domain ) . '</a></li>';
-		$content .= '<li class="addons genericon-link"><a href="http://extendd.com/plugins/tag/custom-login-extension/">' . __( 'Get Custom Login Add-ons', $this->domain ) . '</a></li>';
+		$content .= '<li><span class="genericon genericon-user"></span>&nbsp;<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=X4JPT57AWMTYW">' . __( 'Support this plugin and buy me a beer', $this->domain ) . '</a></li>';
+		$content .= '<li><span class="genericon genericon-star"></span>&nbsp;<a href="https://wordpress.org/extend/plugins/custom-login/">' . __( 'Rate this plugin on WordPress.org', $this->domain ) . '</a></li>';
+		$content .= '<li><span class="genericon genericon-share"></span>&nbsp;<a href="http://www.flickr.com/groups/custom-login/">' . __( 'Share your designs on <strong style="color:#0066DC;">Flick</strong><strong style="color:#ff0084;">r</strong>', $this->domain ) . '</a></li>';
+		$content .= '<li><span class="genericon genericon-wordpress"></span>&nbsp;<a href="https://wordpress.org/support/plugin/custom-login">' . __( 'Get support on WordPress.org', $this->domain ) . '</a></li>';
+		$content .= '<li><span class="genericon genericon-github"></span>&nbsp;<a href="https://github.com/thefrosty/custom-login">' . __( 'Contribute development on GitHub', $this->domain ) . '</a></li>';
+		$content .= '<li><span class="genericon genericon-link"></span>&nbsp;<a href="https://extendd.com/plugins/tag/custom-login-extension/">' . __( 'Get Custom Login Extensions', $this->domain ) . '</a></li>';
 		
 		if ( defined( 'WP_LOCAL_DEV' ) && WP_LOCAL_DEV ) {
-			$content .= '<li class="queries genericon-warning">' . $this->get_queries( true ) . '</li>';
+			$content .= '<li><span class="genericon genericon-warning"></span>&nbsp;' . $this->get_queries( true ) . '</li>';
 		}
 		
-		$content .= '<li class="delete genericon-warning">' . $this->delete_transient_button_link( '' ) . '</li>';
+		$content .= '<li><span class="genericon genericon-warning"></span>&nbsp;' . $this->delete_transient_button_link( '' ) . '</li>';
 
 		$content .= '</ul>';
-		$this->settings_api->postbox( $this->id . '_sidebar', sprintf( __( '<a href="%s">%s</a> | <code>version %s</code>', $this->domain ), 'http://extendd.com/plugin/custom-login', ucwords( str_replace( '-', ' ', $this->domain ) ), $this->version ), $content, true );
+		$this->settings_api->postbox( $this->id . '_sidebar', sprintf( __( '<a href="%s">%s</a> | <code>version %s</code>', $this->domain ), 'https://extendd.com/plugin/custom-login', ucwords( str_replace( '-', ' ', $this->domain ) ), $this->version ), $content, false );
+	}
+	
+	/**
+	 * Sidebar info to remote install extensions
+	 *
+	 * @since	2.2
+	 * @return	string
+	 */
+	function extensions( $args ) {
+		$content  = wpautop( __( '<a href="#" data-toggle="extendd-license">Please read!</a> | <a href="#" data-toggle="extendd-license-help">Help</a>', $this->domain ) );
+		
+		$content .= wpautop( sprintf( __( '<span id="extendd-license" style="display:none">Most of these extensions require a license key which can be purchased on <a href="%1$s" target="_blank">%2$s</a>. You\'ll have to have the key ready to install the extension.</span>', $this->domain ), 'https://extendd.com/plugins/tag/custom-login-extension/', 'Extendd.com' ) );
+		
+		$content .= wpautop( __( '<span id="extendd-license-help" style="display:none">Click "install" to auto-install the extension on your site (which will also auto-activate it).<br>Free extensions will auto-install, while paid extensions will need a valid license key. Prices subject to change. Clicking "Purchase License" will show a quick link to purchase the extension (license) directly through PayPal. Choose which license you\'d like and you\'ll receive an email with your license key.</span>', $this->domain ) );
+				
+		$transient	= $this->id . '_extensions';	
+		$old_html	= get_option( $transient . '_message' );
+		
+		$extensions = $this->settings_api->wp_remote_get_set_transient( 'https://raw.github.com/thefrosty/custom-login/master/extensions.json', $transient, 'html' );		
+		if ( false === $extensions ) {
+			// FIND THIS CODE in wp.dev (mu-plugins)
+			$content .= '<div class="eddri-addon"> <div class="eddri-addon-container"> <div class="eddri-img-wrap"> <a href="https://extendd.com/plugin/custom-login-stealth-login/?utm_source=wordpressorg&utm_medium=custom-login&utm_campaign=eddri" target="_blank"><img class="eddri-thumbnail" src="https://i.imgur.com/mhuymPG.jpg"></a> <p>Protect your wp-login.php page from brute force attacks.</p> </div> <h3>Stealth Login</h3> <span class="eddri-status">Not Installed</span> <a class="button" data-edd-install="Custom Login Stealth Login">Install</a> <a class="button show-if-not-purchased" data-toggle="purchase-links" style="display:none">Purchase License</a> <div id="purchase-links" style="display:none"> <ul> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=7819&edd_options[price_id]=0">Single site license ($25)</a></li> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=7819&edd_options[price_id]=1">Up to 5 site licenses ($70)</a></li> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=7819&edd_options[price_id]=2">Unlimited site licenses ($100)</a></li> </ul> </div> </div> </div><div class="eddri-addon"> <div class="eddri-addon-container"> <div class="eddri-img-wrap"> <a href="https://extendd.com/plugin/custom-login-page-template/?utm_source=wordpressorg&utm_medium=custom-login&utm_campaign=eddri" target="_blank"><img class="eddri-thumbnail" src="https://i.imgur.com/A0rzS9q.jpg"></a> <p>Add a login form to any WordPress page.</p> </div> <h3>Page Template</h3> <span class="eddri-status">Not Installed</span> <a class="button" data-edd-install="Custom Login Page Template">Install</a> <a class="button show-if-not-purchased" data-toggle="purchase-links" style="display:none">Purchase License</a> <div id="purchase-links" style="display:none"> <ul> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=13528">One price! ($35)</a></li> </ul> </div> </div> </div><div class="eddri-addon"> <div class="eddri-addon-container"> <div class="eddri-img-wrap"> <a href="https://extendd.com/plugin/wordpress-login-redirects/?utm_source=wordpressorg&utm_medium=custom-login&utm_campaign=eddri" target="_blank"><img class="eddri-thumbnail" src="https://i.imgur.com/aNGoyAa.jpg"></a> <p>Manage redirects after logging in.</p> </div> <h3>Login Redirects</h3> <span class="eddri-status">Not Installed</span> <a class="button" data-edd-install="WordPress Login Redirects">Install</a> <a class="button show-if-not-purchased" data-toggle="purchase-links" style="display:none">Purchase License</a> <div id="purchase-links" style="display:none"> <ul> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=14333&edd_options[price_id]=0">Single site license ($30)</a></li> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=14333&edd_options[price_id]=1">Up to 5 site licenses ($70)</a></li> <li><a href="https://extendd.com/checkout?edd_action=straight_to_gateway&download_id=14333&edd_options[price_id]=2">Unlimited site licenses ($150)</a></li> </ul> </div> </div> </div>';
+		}
+		else {
+			$content .= $extensions->html;
+			
+			if ( trim( $old_html ) !== trim( $extensions->html ) && !empty( $old_html ) ) {
+				delete_transient( $transient );
+				delete_option( $transient . '_message' );
+			}
+		}
+		
+		$this->settings_api->postbox( $this->id . '_extensions', __( 'Custom Login Extensions', $this->domain ), $content, false );
 	}
 	
 	/**
@@ -875,6 +959,23 @@ class Custom_Login {
 	 */
 	function get_queries( $display = false ) {
 		return sprintf( ( $display ? '' : '<div style="display:none">' ) . esc_attr__( '%s queries in %s seconds.', $this->domain ) . ( $display ? '' : '</div>' ), get_num_queries(), timer_stop() );
+	}
+	
+	/**
+	 * Activate the license key for the Extendd Settings API.
+	 *
+	 * Extendd settings format: 'extendd_' . 'plugin_folder_name'
+	 */
+	function custom_login_extension_install_complete( $args ) {
+		$plugin	= 'extendd_' . str_replace( '-', '_', $args['slug'] ); 
+		$option = get_option( $plugin, array() );
+		
+		if ( empty( $option ) || empty( $option['license_key'] ) ) {
+			$option['license_key']		= $args['license'];
+			$option['license_active']	= $args['license_active'];
+			// Update the settings
+			update_option( $plugin, $option );
+		}
 	}
 	
 }
