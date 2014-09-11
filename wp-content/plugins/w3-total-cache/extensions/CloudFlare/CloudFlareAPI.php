@@ -9,9 +9,9 @@ define('W3TC_CLOUDFLARE_IP4_URL', 'https://www.cloudflare.com/ips-v4');
 define('W3TC_CLOUDFLARE_IP6_URL', "https://www.cloudflare.com/ips-v6");
 
 /**
- * Class W3_CloudFlare
+ * Class CloudFlareAPI
  */
-class W3_CloudFlare {
+class CloudFlareAPI {
     /**
      * Config array
      *
@@ -40,9 +40,9 @@ class W3_CloudFlare {
         $this->_config = w3_instance('W3_Config');
         if (empty($config)) {
             $this->_cf_config = array(
-                        'email' => $this->_config->get_string('cloudflare.email'),
-                        'key' => $this->_config->get_string('cloudflare.key'),
-                        'zone' => $this->_config->get_string('cloudflare.zone'));
+                        'email' => w3tc_get_extension_config('cloudflare','email'),
+                        'key' => w3tc_get_extension_config('cloudflare','key'),
+                        'zone' => w3tc_get_extension_config('cloudflare','zone'));
         } else {
             $this->_cf_config = array_merge(array(
                 'email' => '',
@@ -62,14 +62,21 @@ class W3_CloudFlare {
      */
     function api_request($action, $value = null) {
         w3_require_once(W3TC_INC_DIR . '/functions/http.php');
-        if (empty($this->_cf_config['email']) || !filter_var($this->_cf_config['email'], FILTER_VALIDATE_EMAIL))
+        if (empty($this->_cf_config['email']) || !filter_var($this->_cf_config['email'], FILTER_VALIDATE_EMAIL)) {
+            $this->_set_last_error(__('CloudFlare requires "email" to be set.','w3-total-cache'));
             return false;
+        }
 
-        if (empty($this->_cf_config['key']) || !is_string($this->_cf_config['key']))
+        if (empty($this->_cf_config['key']) || !is_string($this->_cf_config['key'])) {
+            $this->_set_last_error(__('CloudFlare requires "API key" to be set.','w3-total-cache'));
             return false;
+        }
 
-        if (empty($this->_cf_config['zone']) || !is_string($this->_cf_config['zone']) || strpos($this->_cf_config['zone'], '.') === false)
+
+        if (empty($this->_cf_config['zone']) || !is_string($this->_cf_config['zone']) || strpos($this->_cf_config['zone'], '.') === false){
+            $this->_set_last_error(__('CloudFlare requires "domain" to be set.','w3-total-cache'));
             return false;
+        }
 
         $url = sprintf('%s?email=%s&tkn=%s&z=%s&a=%s', W3TC_CLOUDFLARE_API_URL, urlencode($this->_cf_config['email']), urlencode($this->_cf_config['key']), urlencode($this->_cf_config['zone']), urlencode($action));
 
@@ -132,7 +139,7 @@ class W3_CloudFlare {
         if (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && !empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
             w3_require_once(W3TC_INC_DIR . '/functions/ip_in_range.php');
             if (strpos($_SERVER["REMOTE_ADDR"], ":") === FALSE) {
-                $ip4_ranges = $this->_config->get_array('cloudflare.ips.ip4');
+                $ip4_ranges = w3tc_get_extension_config('cloudflare','ips.ip4', $this->_config, array());
                 foreach ($ip4_ranges as $range) {
                     if (w3_ipv4_in_range($_SERVER['REMOTE_ADDR'], $range)) {
                         $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
@@ -140,7 +147,7 @@ class W3_CloudFlare {
                     }
                 }
             } else {
-                $ip6_ranges = $this->_config->get_array('cloudflare.ips.ip6');
+                $ip6_ranges = w3tc_get_extension_config('cloudflare','ips.ip6', $this->_config, array());
                 $ip6 = w3_get_ipv6_full($_SERVER["REMOTE_ADDR"]);
                 foreach ($ip6_ranges as $range) {
                     if (w3_ipv6_in_range($ip6, $range)) {
@@ -172,25 +179,32 @@ class W3_CloudFlare {
     public function update_ip_ranges() {
         w3_require_once(W3TC_INC_DIR . '/functions/http.php');
         $ip4_diff = $ip6_diff = false;
-        $config_master = new W3_Config(true);
         $response =w3_http_get(W3TC_CLOUDFLARE_IP4_URL);
+        $extensions_settings = $this->_config->get_array('extensions.settings', array());
         if (!is_wp_error($response)) {
             $ip4_data = $response['body'];
             $ip4_data = explode("\n", $ip4_data);
-            $ip4_data_old = $this->_config->get_array('cloudflare.ips.ip4');
-            if ($ip4_diff = array_diff($ip4_data, $ip4_data_old))
-                $config_master->set('cloudflare.ips.ip4', $ip4_data);
+            $ip4_data_old = w3tc_get_extension_config('cloudflare','ips.ip4', $this->_config, array());
+            if ($ip4_diff = array_diff($ip4_data, $ip4_data_old)) {
+                $extensions_settings['cloudflare']['ips.ip4'] = $ip4_data;
+                $this->_config->set('extensions.settings', $extensions_settings);
+            }
         }
         $response =w3_http_get(W3TC_CLOUDFLARE_IP6_URL);
         if (!is_wp_error($response)) {
             $ip6_data = $response['body'];
             $ip6_data = explode("\n", $ip6_data);
-            $ip6_data_old = $this->_config->get_array('cloudflare.ips.ip6');
-            if ($ip6_diff = array_diff($ip6_data, $ip6_data_old))
-                $config_master->set('cloudflare.ips.ip6', $ip6_data);
+            $ip6_data_old =  w3tc_get_extension_config('cloudflare','ips.ip6', $this->_config, array());
+            if ($ip6_diff = array_diff($ip6_data, $ip6_data_old)) {
+                $extensions_settings['cloudflare']['ips.ip6'] = $ip6_data;
+                $this->_config->set('extensions.settings', $extensions_settings);
+            }
         }
         if ($ip4_diff || $ip6_diff)
-            $config_master->save();
+            try {
+                $this->_config->save();
+                $this->_config->refresh_cache();
+            } catch(Exception $ex){}
     }
 
     // Report spam.
@@ -253,7 +267,7 @@ class W3_CloudFlare {
 
 
     function check_lasterror() {
-        if ($this->_config->get_boolean('cloudflare.enabled') && self::get_last_error()) {
+        if (w3tc_get_extension_config('cloudflare','enabled') && self::get_last_error()) {
             if (!$this->_fault_signaled) {
                 $this->_fault_signaled = true;
                 return sprintf('Unable to communicate with CloudFlare API: %s.', self::get_last_error());
@@ -309,7 +323,7 @@ class W3_CloudFlare {
      * @return mixed
      */
     public function purge() {
-        @set_time_limit($this->_config->get_integer('timelimit.cloudflare_api_request'));
+        @set_time_limit(w3tc_get_extension_config('cloudflare','timelimit.api_request', null, 180));
         delete_transient('w3tc_cloudflare_settings');
         return $this->api_request('fpurge_ts', 1);
     }
@@ -328,7 +342,7 @@ class W3_CloudFlare {
      * @return bool
      */
     public function save_settings($cf_values) {
-        @set_time_limit($this->_config->get_integer('timelimit.cloudflare_api_request'));
+        @set_time_limit(w3tc_get_extension_config('cloudflare','timelimit.api_request', null, 180));
         ksort($cf_values);
         $cf_values = $this->_cleanup_settings($cf_values);
         foreach ($cf_values as $key => $settings) {
