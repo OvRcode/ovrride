@@ -37,21 +37,31 @@ if ( file_exists( ABSPATH . 'wp-config.php') ) {
 
 	// A config file doesn't exist
 
-	// Set a path for the link to the installer
-	if ( strpos($_SERVER['PHP_SELF'], 'wp-admin') !== false )
-		$path = 'setup-config.php';
-	else
-		$path = 'wp-admin/setup-config.php';
-
 	define( 'WPINC', 'wp-includes' );
-	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
 	require_once( ABSPATH . WPINC . '/load.php' );
+
+	// Standardize $_SERVER variables across setups.
+	wp_fix_server_vars();
+
+	require_once( ABSPATH . WPINC . '/functions.php' );
+
+	$path = wp_guess_url() . '/wp-admin/setup-config.php';
+
+	/*
+	 * We're going to redirect to setup-config.php. While this shouldn't result
+	 * in an infinite loop, that's a silly thing to assume, don't you think? If
+	 * we're traveling in circles, our last-ditch effort is "Need more help?"
+	 */
+	if ( false === strpos( $_SERVER['REQUEST_URI'], 'setup-config' ) ) {
+		header( 'Location: ' . $path );
+		exit;
+	}
+
+	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
 	require_once( ABSPATH . WPINC . '/version.php' );
 
 	wp_check_php_mysql_versions();
 	wp_load_translations_early();
-
-	require_once( ABSPATH . WPINC . '/functions.php' );
 
 	// Die with an error message
 	$die  = __( "There doesn't seem to be a <code>wp-config.php</code> file. I need this before we can get started." ) . '</p>';

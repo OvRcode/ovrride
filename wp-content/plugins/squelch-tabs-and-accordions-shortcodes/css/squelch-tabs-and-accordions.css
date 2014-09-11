@@ -51,6 +51,17 @@
     padding-left: 16px;
 }
 
+/* Tabs */
+.squelch-taas-tab-group .ui-tabs-panel:after {
+    content: ".";
+    display: block;
+    height: 0;
+    line-height: 0;
+    clear: both;
+    visibility: hidden;
+    zoom: 1;
+}
+
 /* Basic theme */
 .squelch-taas-toggle.basic {
 }

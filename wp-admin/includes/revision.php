@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Administration Revisions API.
+ * WordPress Administration Revisions API
  *
  * @package WordPress
  * @subpackage Administration
@@ -11,12 +11,12 @@
  *
  * @since 3.6.0
  *
- * @param object $post The post object.
- * @param int $compare_from The revision id to compare from.
- * @param int $compare_to The revision id to come to.
+ * @param object|int $post         The post object. Also accepts a post ID.
+ * @param int        $compare_from The revision ID to compare from.
+ * @param int        $compare_to   The revision ID to come to.
  *
  * @return array|bool Associative array of a post's revisioned fields and their diffs.
- * 	Or, false on failure.
+ *                    Or, false on failure.
  */
 function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 	if ( ! $post = get_post( $post ) )
@@ -55,7 +55,22 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 	$return = array();
 
 	foreach ( _wp_post_revision_fields() as $field => $name ) {
+		/**
+		 * Contextually filter a post revision field.
+		 *
+		 * The dynamic portion of the hook name, $field, corresponds to each of the post
+		 * fields of the revision object being iterated over in a foreach statement.
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param string  $compare_from->$field The current revision field to compare to or from.
+		 * @param string  $field                The current revision field.
+		 * @param WP_Post $compare_from         The revision post object to compare to or from.
+		 * @param string  null                  The context of whether the current revision is the old or the new one. Values are 'to' or 'from'.
+		 */
 		$content_from = $compare_from ? apply_filters( "_wp_post_revision_field_$field", $compare_from->$field, $field, $compare_from, 'from' ) : '';
+
+		/** This filter is documented in wp-admin/includes/revision.php */
 		$content_to = apply_filters( "_wp_post_revision_field_$field", $compare_to->$field, $field, $compare_to, 'to' );
 
 		$diff = wp_text_diff( $content_from, $content_to, array( 'show_split_view' => true ) );
@@ -85,15 +100,15 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
  *
  * @since 3.6.0
  *
- * @param object $post The post object.
- * @param int $selected_revision_id The selected revision id.
- * @param int $from (optional) The revision id to compare from.
+ * @param object|int $post                 The post object. Also accepts a post ID.
+ * @param int        $selected_revision_id The selected revision ID.
+ * @param int        $from                 Optional. The revision ID to compare from.
  *
  * @return array An associative array of revision data and related settings.
  */
 function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null ) {
 	$post = get_post( $post );
-	$revisions = $authors = array();
+	$authors = array();
 	$now_gmt = time();
 
 	$revisions = wp_get_post_revisions( $post->ID, array( 'order' => 'ASC', 'check_enabled' => false ) );
@@ -111,6 +126,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 	cache_users( wp_list_pluck( $revisions, 'post_author' ) );
 
 	$can_restore = current_user_can( 'edit_post', $post->ID );
+	$current_id = false;
 
 	foreach ( $revisions as $revision ) {
 		$modified = strtotime( $revision->post_modified );
@@ -161,8 +177,11 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 		);
 	}
 
-	// If a post has been saved since the last revision (no revisioned fields were changed)
-	// we may not have a "current" revision. Mark the latest revision as "current".
+	/*
+	 * If a post has been saved since the last revision (no revisioned fields
+	 * were changed), we may not have a "current" revision. Mark the latest
+	 * revision as "current".
+	 */
 	if ( empty( $current_id ) ) {
 		if ( $revisions[ $revision->ID ]['autosave'] ) {
 			$revision = end( $revisions );
@@ -176,7 +195,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 		$revisions[ $current_id ]['current'] = true;
 	}
 
-	// Now, grab the initial diff
+	// Now, grab the initial diff.
 	$compare_two_mode = is_numeric( $from );
 	if ( ! $compare_two_mode ) {
 		$found = array_search( $selected_revision_id, array_keys( $revisions ) );

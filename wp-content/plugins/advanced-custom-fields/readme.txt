@@ -1,12 +1,12 @@
 === Advanced Custom Fields ===
-Contributors: Elliot Condon
+Contributors: elliotcondon
 Tags: custom, field, custom field, advanced, simple fields, magic fields, more fields, repeater, matrix, post, type, text, textarea, file, image, edit, admin
 Requires at least: 3.5.0
-Tested up to: 3.6.0
+Tested up to: 3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerfull API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
+Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerful API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
 
 
 == Description ==
@@ -21,7 +21,6 @@ Advanced Custom Fields is the perfect solution for any wordpress website which n
 * Uses the native WordPress metadata for ease of use and fast processing
 
 = Field Types =
-* Tab (Group fields into tabs)
 * Text (type text, api returns text)
 * Text Area (type text, api returns text with `<br />` tags)
 * Number (type number, api returns integer)
@@ -39,8 +38,11 @@ Advanced Custom Fields is the perfect solution for any wordpress website which n
 * Relationship (search, select and order post objects with a tidy interface, api returns the selected post objects)
 * Taxonomy (select taxonomy terms with options to load, display and save, api returns the selected term objects)
 * User (select 1 or more WP users, api returns the selected user objects)
+* Google Maps (interactive map, api returns lat,lng,address data)
 * Date Picker (jquery date picker, options for format, api returns string)
-* Color Picker (Farbtastic!)
+* Color Picker (WP color swatch picker)
+* Tab (Group fields into tabs)
+* Message (Render custom messages into the fields)
 * Repeater (ability to create repeatable blocks of fields!)
 * Flexible Content (ability to create flexible blocks of fields!)
 * Gallery (Add, edit and order multiple images in 1 simple field)
@@ -104,6 +106,99 @@ http://support.advancedcustomfields.com/
 
 
 == Changelog ==
+
+= 4.3.8 =
+* Validation: Fixed disabled button issue in WP 3.9
+
+= 4.3.7 =
+* WYSIWYG field: Fixed missing tinyMCE buttons in WP 3.9
+
+= 4.3.6 =
+* Core: Improved efficiency and speed when saving values by removing ACF meta from the native WP postmeta box
+* Field Group: Fixed cache issue causing field settings to not update
+* WYSIWYG field: Added support for new tinymce 4 in WP 3.9
+* Number field: Fixed bug causing blank values to save as 0
+* Google Maps field: Fixed JS bug causing google maps to not render when Google library is already loaded
+* Validation: Fixed JS bug where hidden field groups's fields were being validated
+
+= 4.3.5 =
+* Textarea field: Added new `rows` setting
+* API: Added `$format_value` parameter to the `get_fields` function
+* Core: Improved conditional logic & tab JS performance
+* Core: Removed changelog anouncement in plugins update list
+* Core: Fixed anoying `wp is not defined` JS error
+* Core: Added logic to load full or minified scripts using the `SCRIPT_DEBUG` constant
+* Core: Improved loading structure to better allow ACF functions within the functions.php file
+* Core: Fixed revisions bug causing sub field data to not restore
+* Core: Made use of WP datepicker UI
+* Field Group: Changed post location rule to show all post types
+* Field Group: Changed page location rule to show only page post type
+* Field Group: Added new filter for meta box priority `acf/input/meta_box_priority`
+* Language: Added missing translation support in multiple fields
+* Language: Added Hebrew translation - Thanks to Erez Lieberman
+* Language: Updating Czech translations - Thanks to webeescz
+
+= 4.3.4 =
+* Post Object field: Fixed get_pages bug cuasing 'pages' to not appear
+* Page Link field: Fixed get_pages bug cuasing 'pages' to not appear
+* Tab field: Fixed JS bug causing multiple tab groups on page to render incorrectly
+* Language: Updated Russian translation - Thanks to Alex Torscho
+
+= 4.3.3 =
+* Core: Updated styling to suit WP 3.8
+* Core: Added new logic to set 'autoload' to 'off' on all values saved to the wp_options table to help improve load speed
+* API: Added new logic to the $post_id parameter to accept an object of type post, user or taxonomy term
+* Tab field: Added compatibility with taxonomy term and user edit screens (table layout)
+* Tab field: Fixed JS bug causing incorrect tab to show when validation fails
+* Text field: Fixed bug causing append setting of '+50' to appear as '50'
+
+= 4.3.2 =
+* Color Picker field: Fixed JS bug preventing wpColorPicker from updating value correctly
+* Google Map field: Added new setting for initial zoom level
+* Relationship field: minor update to fix compatibility issue with Polylang plugin
+* Relationship field: Fixed bug causing filters / actions using $field['name'] to not fire correctly
+* API: Fixed bug with have_rows/has_sub_field function where looping through multiple posts each containing nested repeater fields would result in an endless loop
+* Export: Fixed bug causing exported XML fields to become corrupt due to line breaks
+* Core: Fixed bug where duplicating a field would cause conditional logic to appear blank
+* Core: Added Conditional Logic support to hide entire column of a repeater field where max_row is 1.
+* Core: Added new field group 'hide on screen' option for 'permalink' which hides the permalink URL and buttons below the post title
+
+= 4.3.1 =
+* API: Fixed bug with has_sub_field and have_rows functions causing complicated nested loops to produce incorrect results
+* API: Fixed bug with get_fields function preventing values to be returned from options page and taxonomy terms
+* Core: Fixed bug causing some SQL LIKE statements to not work correctly on windows servers
+* Core: Removed __() wrappers from PHP export, as these did not work as expected
+* Core: Fixed bug with get_pages() causing sort order issue in child page location rule
+* Core: Added specific position to ACF menu item to reduce conflicts with 3rd party plugins
+* JS: Fixed bug where conditional logic rules did not save when added using a '+' button above the last rule
+* Radio field: Fixed bug where 'other' would be selected when no value exists
+* WYSIWYG field: Added support for users with disabled visual editor setting
+* JS: Improved validation for fields that are hidden by a tab
+* Google maps field: Add refresh action when hidden / shown by a tab
+
+= 4.3.0 =
+* Core: get_field can now be used within the functions.php file
+* Core: Added new Google maps field
+* Core: Added conditional logic support for sub fields - will also require an update to the repeater / flexible content field add-on to work
+* Core: Added required validation support for sub fields - will also require an update to the repeater / flexible content field add-on to work
+* API: Added new function have_rows()
+* API: Added new function the_row()
+* API: Fixed front end form upload issues when editing a user - http://support.advancedcustomfields.com/forums/topic/repeater-image-upload-failing/
+* API: Fixed front end form bug where the wrong post_id is being passed to JS - http://support.advancedcustomfields.com/forums/topic/attachments-parent-id/
+* Export: wrapped title and instructions in __() function - http://support.advancedcustomfields.com/forums/topic/wrap-labels-and-descriptions-with-__-in-the-php-export-file/
+* Core: Filter out ACF fields from the native custom field dropdown - http://support.advancedcustomfields.com/forums/topic/meta-key-instead-of-name-on-add-new-custom-field-instead-of-name/ - http://support.advancedcustomfields.com/forums/topic/odd-sub-field-names-in-custom-fields/
+* Revisions: Improved save functionality to detect post change when custom fields are edited - http://support.advancedcustomfields.com/forums/topic/wordpress-3-6-revisions-custom-fields-no-longer-tracked/
+* Core: Add field group title for user edit screen - http://support.advancedcustomfields.com/forums/topic/can-you-add-a-title-or-hr-tag-when-using-acf-in-taxonomy-edit-screen/
+* Field group: Add 'toggle all' option to hide from screen - http://support.advancedcustomfields.com/forums/topic/hidecheck-all-single-checkbox-when-hiding-items-from-pagepost-edit-screen/
+* Taxonomy field: Add new filter for wp_list_categories args - http://support.advancedcustomfields.com/forums/topic/taxonomy-field-type-filter-to-only-show-parents/
+* Taxonomy field: Fixed JS bug causing attachment field groups to disappear due to incorrect AJAX location data - http://support.advancedcustomfields.com/forums/topic/taxonomy-checkboxes/
+* WYSIWYG field: Fixed JS bug where formatting is removed when drag/drop it's repeater row
+* Tab field: Corrected minor JS bugs with conditional logic - http://support.advancedcustomfields.com/forums/topic/tabs-logic-hide-issue/
+* Relationship field: Values now save correctly as an array of strings (for LIKE querying)
+* Post object field: Values now save correctly as an array of strings (for LIKE querying)
+* Image field: Added mime_type data to returned value
+* Field field: Added mime_type data to returned value
+* Core: Lots of minor improvements
 
 = 4.2.2 =
 * Field group: Added 'High (after title)' position for a metabox - http://support.advancedcustomfields.com/forums/topic/position-after-title-solution-inside/

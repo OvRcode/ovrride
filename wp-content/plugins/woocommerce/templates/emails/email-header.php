@@ -13,12 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $bg 		= get_option( 'woocommerce_email_background_color' );
 $body		= get_option( 'woocommerce_email_body_background_color' );
 $base 		= get_option( 'woocommerce_email_base_color' );
-$base_text 	= woocommerce_light_or_dark( $base, '#202020', '#ffffff' );
+$base_text 	= wc_light_or_dark( $base, '#202020', '#ffffff' );
 $text 		= get_option( 'woocommerce_email_text_color' );
 
-$bg_darker_10 = woocommerce_hex_darker( $bg, 10 );
-$base_lighter_20 = woocommerce_hex_lighter( $base, 20 );
-$text_lighter_20 = woocommerce_hex_lighter( $text, 20 );
+$bg_darker_10 = wc_hex_darker( $bg, 10 );
+$base_lighter_20 = wc_hex_lighter( $base, 20 );
+$text_lighter_20 = wc_hex_lighter( $text, 20 );
 
 // For gmail compatibility, including CSS styles in head/body are stripped out therefore styles need to be inline. These variables contain rules which are added to the template inline. !important; is a gmail hack to prevent styles being stripped if it doesn't like something.
 $wrapper = "
@@ -29,20 +29,15 @@ $wrapper = "
 	padding: 70px 0 70px 0;
 ";
 $template_container = "
-	-webkit-box-shadow:0 0 0 3px rgba(0,0,0,0.025) !important;
 	box-shadow:0 0 0 3px rgba(0,0,0,0.025) !important;
-	-webkit-border-radius:6px !important;
 	border-radius:6px !important;
 	background-color: " . esc_attr( $body ) . ";
 	border: 1px solid $bg_darker_10;
-	-webkit-border-radius:6px !important;
 	border-radius:6px !important;
 ";
 $template_header = "
 	background-color: " . esc_attr( $base ) .";
 	color: $base_text;
-	-webkit-border-top-left-radius:6px !important;
-	-webkit-border-top-right-radius:6px !important;
 	border-top-left-radius:6px !important;
 	border-top-right-radius:6px !important;
 	border-bottom: 0;
@@ -53,7 +48,6 @@ $template_header = "
 ";
 $body_content = "
 	background-color: " . esc_attr( $body ) . ";
-	-webkit-border-radius:6px !important;
 	border-radius:6px !important;
 ";
 $body_content_inner = "
@@ -80,18 +74,20 @@ $header_content_h1 = "
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title><?php echo get_bloginfo('name'); ?></title>
+        <title><?php echo get_bloginfo( 'name' ); ?></title>
 	</head>
     <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
     	<div style="<?php echo $wrapper; ?>">
         	<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
             	<tr>
                 	<td align="center" valign="top">
-                		<?php
-                			if ( $img = get_option( 'woocommerce_email_header_image' ) ) {
-                				echo '<p style="margin-top:0;"><img src="' . esc_url( $img ) . '" alt="' . get_bloginfo( 'name' ) . '" /></p>';
-                			}
-                		?>
+						<div id="template_header_image">
+	                		<?php
+	                			if ( $img = get_option( 'woocommerce_email_header_image' ) ) {
+	                				echo '<p style="margin-top:0;"><img src="' . esc_url( $img ) . '" alt="' . get_bloginfo( 'name' ) . '" /></p>';
+	                			}
+	                		?>
+						</div>
                     	<table border="0" cellpadding="0" cellspacing="0" width="600" id="template_container" style="<?php echo $template_container; ?>">
                         	<tr>
                             	<td align="center" valign="top">

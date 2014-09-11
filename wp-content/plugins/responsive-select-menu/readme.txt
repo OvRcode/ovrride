@@ -2,9 +2,9 @@
 Contributors: sevenspark
 Donate link: http://bit.ly/DonateResponsiveSelect
 Tags: responsive, menu, select, drop down, 
-Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 1.5.2
+Requires at least: 3.6
+Tested up to: 4.0
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,7 @@ This section describes how to install the plugin and get it working.
 1. Upload the plugin zip through your WordPress admin
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Navigate to Appearance > Responsive Select to configure your menu
+1. If you are using UberMenu 3, disable the Responsive Toggle setting in the UberMenu Control Panel > Main UberMenu Configuration > Responsive & Mobile > Responsive Toggle.
 
 
 == Frequently Asked Questions ==
@@ -70,6 +71,15 @@ If your theme creates a menu the standard way with wp_nav_menu, it should work. 
 2. Responsive select menu Control Panel
 
 == Changelog ==
+
+= 1.6 =
+
+* Added UberMenu 3 compatibility
+* Added Cyrillic characters fix (experimental)
+
+= 1.5.3 =
+* Added UberMenu Conditionals compatibility
+* Added filterable first menu item names
 
 = 1.5.2 =
 * Resolved WordPress 3.6 Strict Warnings
