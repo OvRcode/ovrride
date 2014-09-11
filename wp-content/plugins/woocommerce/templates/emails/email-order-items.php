@@ -4,97 +4,66 @@
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates/Emails
- * @version     2.0.3
+ * @version     2.1.2
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
-global $woocommerce;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 foreach ( $items as $item ) :
+	$_product     = apply_filters( 'woocommerce_order_item_product', $order->get_product_from_item( $item ), $item );
+	$item_meta    = new WC_Order_Item_Meta( $item['item_meta'], $_product );
+	?>
+	<tr>
+		<td style="text-align:left; vertical-align:middle; border: 1px solid #eee; word-wrap:break-word;"><?php
 
-	// Get/prep product data
-	$_product = $order->get_product_from_item( $item );
-	$item_meta = new WC_Order_Item_Meta( $item['item_meta'] );
+			// Show title/image etc
+			if ( $show_image ) {
+				echo apply_filters( 'woocommerce_order_item_thumbnail', '<img src="' . ( $_product->get_image_id() ? current( wp_get_attachment_image_src( $_product->get_image_id(), 'thumbnail') ) : wc_placeholder_img_src() ) .'" alt="' . __( 'Product Image', 'woocommerce' ) . '" height="' . esc_attr( $image_size[1] ) . '" width="' . esc_attr( $image_size[0] ) . '" style="vertical-align:middle; margin-right: 10px;" />', $item );
+			}
 
-	// Handle products that was removed from store
-	if ( ! is_object( $_product ) ) :
-		?>
-		<tr>
-			<td style="text-align:left; vertical-align:middle; border: 1px solid #eee; word-wrap:break-word;">
-			<?php
+			// Product name
+			echo apply_filters( 'woocommerce_order_item_name', $item['name'], $item );
 
-				// Show title/image etc
-				echo 	apply_filters( 'woocommerce_order_product_image', '', null, $show_image);
+			// SKU
+			if ( $show_sku && is_object( $_product ) && $_product->get_sku() ) {
+				echo ' (#' . $_product->get_sku() . ')';
+			}
 
-				// Product name
-				echo 	apply_filters( 'woocommerce_order_product_title', $item['name'], $_product );
+			// File URLs
+			if ( $show_download_links && is_object( $_product ) && $_product->exists() && $_product->is_downloadable() ) {
 
-				// Product not available anymore message
-				echo '<br/><small>(' . __( 'This product is no longer available', 'woocommerce' ) . ')</small>';
+				$download_files = $order->get_item_downloads( $item );
+				$i              = 0;
 
-				// Variation
-				echo 	($item_meta->meta) ? '<br/><small>' . nl2br( $item_meta->display( true, true ) ) . '</small>' : '';
+				foreach ( $download_files as $download_id => $file ) {
+					$i++;
 
-			?>
-			</td>
-			<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo $item['qty'] ;?></td>
-			<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo $order->get_formatted_line_subtotal( $item ); ?></td>
-		</tr>
-		<?php
-	else :
-		$attachment_image_src = wp_get_attachment_image_src( get_post_thumbnail_id( $_product->id ), 'thumbnail' );
-		$image = ( $show_image ) ? '<img src="' . current( $attachment_image_src ) . '" alt="Product Image" height="' . $image_size[1] . '" width="' . $image_size[0] . '" style="vertical-align:middle; margin-right: 10px;" />' : '';
-
-		?>
-		<tr>
-			<td style="text-align:left; vertical-align:middle; border: 1px solid #eee; word-wrap:break-word;"><?php
-
-				// Show title/image etc
-				echo 	apply_filters( 'woocommerce_order_product_image', $image, $_product, $show_image);
-
-				// Product name
-				echo 	apply_filters( 'woocommerce_order_product_title', $item['name'], $_product );
-
-
-				// SKU
-				echo 	($show_sku && $_product->get_sku()) ? ' (#' . $_product->get_sku() . ')' : '';
-
-				// File URLs
-				if ( $show_download_links && $_product->exists() && $_product->is_downloadable() ) {
-
-					$download_file_urls = $order->get_downloadable_file_urls( $item['product_id'], $item['variation_id'], $item );
-
-					$i = 0;
-
-					foreach ( $download_file_urls as $file_url => $download_file_url ) {
-						echo '<br/><small>';
-
-						$filename = woocommerce_get_filename_from_url( $file_url );
-
-						if ( count( $download_file_urls ) > 1 ) {
-							echo sprintf( __('Download %d:', 'woocommerce' ), $i + 1 );
-						} elseif ( $i == 0 )
-							echo __( 'Download:', 'woocommerce' );
-
-						echo ' <a href="' . $download_file_url . '" target="_blank">' . $filename . '</a></small>';
-
-						$i++;
+					if ( count( $download_files ) > 1 ) {
+						$prefix = sprintf( __( 'Download %d', 'woocommerce' ), $i );
+					} elseif ( $i == 1 ) {
+						$prefix = __( 'Download', 'woocommerce' );
 					}
+
+					echo '<br/><small>' . $prefix . ': <a href="' . esc_url( $file['download_url'] ) . '" target="_blank">' . esc_html( $file['name'] ) . '</a></small>';
 				}
+			}
 
-				// Variation
-				echo 	($item_meta->meta) ? '<br/><small>' . nl2br( $item_meta->display( true, true ) ) . '</small>' : '';
+			// Variation
+			if ( $item_meta->meta ) {
+				echo '<br/><small>' . nl2br( $item_meta->display( true, true ) ) . '</small>';
+			}
 
-			?></td>
-			<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo $item['qty'] ;?></td>
-			<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo $order->get_formatted_line_subtotal( $item ); ?></td>
+		?></td>
+		<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo $item['qty'] ;?></td>
+		<td style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo $order->get_formatted_line_subtotal( $item ); ?></td>
+	</tr>
+
+	<?php if ( $show_purchase_note && is_object( $_product ) && $purchase_note = get_post_meta( $_product->id, '_purchase_note', true ) ) : ?>
+		<tr>
+			<td colspan="3" style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo wpautop( do_shortcode( $purchase_note ) ); ?></td>
 		</tr>
-
-		<?php if ($show_purchase_note && $purchase_note = get_post_meta( $_product->id, '_purchase_note', true)) : ?>
-			<tr>
-				<td colspan="3" style="text-align:left; vertical-align:middle; border: 1px solid #eee;"><?php echo apply_filters('the_content', $purchase_note); ?></td>
-			</tr>
-		<?php endif; ?>
 	<?php endif; ?>
+
 <?php endforeach; ?>
