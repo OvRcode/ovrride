@@ -1,4 +1,4 @@
-jQuery(document).ready(function(){
+jQuery(function(){
     jQuery('#the-list').on('click', '.editinline', function(){
 
 		inlineEditPost.revert();
@@ -22,6 +22,9 @@ jQuery(document).ready(function(){
 		var featured	 		= $wc_inline_data.find('.featured').text();
 		var manage_stock		= $wc_inline_data.find('.manage_stock').text();
 		var menu_order			= $wc_inline_data.find('.menu_order').text();
+		var tax_status			= $wc_inline_data.find('.tax_status').text();
+		var tax_class			= $wc_inline_data.find('.tax_class').text();
+		var backorders			= $wc_inline_data.find('.backorders').text();
 
 		jQuery('input[name="_sku"]', '.inline-edit-row').val(sku);
 		jQuery('input[name="_regular_price"]', '.inline-edit-row').val(regular_price);
@@ -33,10 +36,14 @@ jQuery(document).ready(function(){
 		jQuery('input[name="_stock"]', '.inline-edit-row').val(stock);
 		jQuery('input[name="menu_order"]', '.inline-edit-row').val(menu_order);
 
-		jQuery('select[name="_visibility"] option, select[name="_stock_status"] option').removeAttr('selected');
+		jQuery('select[name="_tax_status"] option[value="' + tax_status + '"]', '.inline-edit-row').attr('selected', 'selected');
+		jQuery('select[name="_tax_class"] option[value="' + tax_class + '"]', '.inline-edit-row').attr('selected', 'selected');
+
+		jQuery('select[name="_visibility"] option, select[name="_stock_status"] option, select[name="_backorders"] option').removeAttr('selected');
 
 		jQuery('select[name="_visibility"] option[value="' + visibility + '"]', '.inline-edit-row').attr('selected', 'selected');
 		jQuery('select[name="_stock_status"] option[value="' + stock_status + '"]', '.inline-edit-row').attr('selected', 'selected');
+		jQuery('select[name="_backorders"] option[value="' + backorders + '"]', '.inline-edit-row').attr('selected', 'selected');
 
 		if (featured=='yes') {
 			jQuery('input[name="_featured"]', '.inline-edit-row').attr('checked', 'checked');
@@ -86,14 +93,12 @@ jQuery(document).ready(function(){
     });
 
     jQuery('#wpbody').on('click', '#doaction, #doaction2', function(){
-
-        jQuery('input.text', '.inline-edit-row').val('');
-        jQuery('#woocommerce-fields select').prop('selectedIndex',0);
-        jQuery('#woocommerce-fields-bulk .inline-edit-group .alignright').hide();
-
+		jQuery('input.text', '.inline-edit-row').val('');
+		jQuery('#woocommerce-fields select').prop('selectedIndex',0);
+		jQuery('#woocommerce-fields-bulk .inline-edit-group .alignright').hide();
 	});
 
-	jQuery('#wpbody').on('change', '#woocommerce-fields-bulk .inline-edit-group .change_to', function(){
+	 jQuery('#wpbody').on('change', '#woocommerce-fields-bulk .inline-edit-group .change_to', function(){
 
     	if (jQuery(this).val() > 0) {
     		jQuery(this).closest('div').find('.alignright').show();
