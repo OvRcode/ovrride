@@ -3,7 +3,7 @@
 /**
  * Disable error reporting
  *
- * Set this to error_reporting( E_ALL ) or error_reporting( E_ALL | E_STRICT ) for debugging
+ * Set this to error_reporting( -1 ) for debugging.
  */
 error_reporting(0);
 
@@ -119,7 +119,7 @@ if ( is_array( $load ) )
 	$load = implode( '', $load );
 
 $load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
-$load = explode(',', $load);
+$load = array_unique( explode( ',', $load ) );
 
 if ( empty($load) )
 	exit;

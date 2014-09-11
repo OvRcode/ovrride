@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Official StatCounter Plugin
- * Version: 1.6.5
+ * Version: 1.6.7
  * Plugin URI: http://statcounter.com/
  * Description: Adds the StatCounter tracking code to your blog. <br>To get setup: 1) Activate this plugin  2) Enter your StatCounter Project ID and Security Code in the <a href="options-general.php?page=StatCounter-Wordpress-Plugin.php"><strong>options page</strong></a>.
  * Author: Aodhan Cullen
@@ -21,9 +21,9 @@ define("sc_security_default", "" , true);
 define("sc_position_default", "footer", true);
 
 // Create the default key and status
-add_option(key_sc_project, sc_project_default, 'Your StatCounter Project ID.');
-add_option(key_sc_security, sc_security_default, 'Your StatCounter Security String.');
-add_option("sc_invisible", "0", 'Force invisibility.');
+add_option(key_sc_project, sc_project_default);
+add_option(key_sc_security, sc_security_default);
+add_option("sc_invisible", "0");
 
 // Create a option page for settings
 add_action('admin_menu' , 'add_sc_option_page' );
@@ -50,9 +50,9 @@ function statcounter_reports_head() {
 function statcounter_reports_page() {
     $sc_project = get_option(key_sc_project);
     if($sc_project==0) {
-			$sc_link = 'http://statcounter.com/';
+			$sc_link = '//statcounter.com/';
     } else {
-			$sc_link = 'http://statcounter.com/p'.$sc_project.'/?source=wordpress';
+			$sc_link = '//statcounter.com/p'.$sc_project.'/?source=wordpress';
     }
     	
         echo '<iframe id="statcounter_frame" src="'.$sc_link.'" width="100%" height="2000">
@@ -66,7 +66,7 @@ function statcounter_reports_page() {
 // Hook in the options page function
 function add_sc_option_page() {
 	global $wpdb;
-	add_options_page('StatCounter Options', 'StatCounter', 8, basename(__FILE__), 'sc_options_page');
+	add_options_page('StatCounter Options', 'StatCounter', "edit_plugins", basename(__FILE__), 'sc_options_page');
 }
 
 function sc_options_page() {

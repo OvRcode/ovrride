@@ -1,27 +1,18 @@
 <?php
-function woo_ce_clean_html( $content ) {
+function woo_ce_file_encoding( $content = '' ) {
+
+	global $export;
 
 	if( function_exists( 'mb_convert_encoding' ) ) {
-		$output_encoding = 'ISO-8859-1';
-		$content = mb_convert_encoding( trim( $content ), 'UTF-8', $output_encoding );
-	} else {
-		$content = trim( $content );
+		$to_encoding = $export->encoding;
+		$from_encoding = 'auto';
+		if( !empty( $to_encoding ) )
+			$content = mb_convert_encoding( trim( $content ), $to_encoding, $from_encoding );
+		if( $to_encoding <> 'UTF-8' )
+			$content = utf8_encode( $content );
 	}
-	// $content = str_replace( ',', '&#44;', $content );
-	// $content = str_replace( "\n", '<br />', $content );
-
 	return $content;
 
-}
-
-if( !function_exists( 'escape_csv_value' ) ) {
-	function escape_csv_value( $value ) {
-
-		$value = str_replace( '"', '""', $value ); // First off escape all " and make them ""
-		$value = str_replace( PHP_EOL, ' ', $value );
-		return '"' . $value . '"'; // If I have new lines or commas escape them
-
-	}
 }
 
 function woo_ce_display_memory( $memory = 0 ) {
@@ -49,35 +40,31 @@ function woo_ce_display_time_elapsed( $from, $to ) {
 	foreach ($tokens as $unit => $text) {
 		if ($time < $unit) continue;
 		$numberOfUnits = floor($time / $unit);
-		$output = $numberOfUnits.' '.$text.(($numberOfUnits>1)?'s':'');
+		$output = $numberOfUnits . ' ' . $text . ( ( $numberOfUnits > 1 ) ? 's' : '' );
 	}
 	return $output;
 
 }
 
 // This function escapes all cells in 'Excel' CSV escape formatting of a CSV file, also converts HTML entities to plain-text
-function woo_ce_escape_csv_value( $value = '', $delimiter = ',', $format = 'all' ) {
+function woo_ce_escape_csv_value( $string = '', $delimiter = ',', $format = 'all' ) {
 
-	$output = $value;
-	if( !empty( $output ) ) {
-		$output = str_replace( '"', '""', $output );
-		// output = str_replace( PHP_EOL, ' ', $output );
-		$output = wp_specialchars_decode( $output );
-		$output = str_replace( PHP_EOL, "\r\n", $output );
-		switch( $format ) {
-	
-			case 'all':
-				$output = '"' . $output . '"';
-				break;
+	$string = str_replace( '"', '""', $string );
+	$string = wp_specialchars_decode( $string );
+	$string = str_replace( PHP_EOL, "\r\n", $string );
+	switch( $format ) {
 
-			case 'excel':
-				if( strstr( $output, $delimiter ) !== false || strstr( $output, "\r\n" ) !== false )
-					$output = '"' . $output . '"';
-				break;
-	
-		}
+		case 'all':
+			$string = '"' . $string . '"';
+			break;
+
+		case 'excel':
+			if( strpos( $string, '"' ) !== false or strpos( $string, ',' ) !== false or strpos( $string, "\r" ) !== false or strpos( $string, "\n" ) !== false )
+				$string = '"' . $string . '"';
+			break;
+
 	}
-	return $output;
+	return $string;
 
 }
 
@@ -92,8 +79,10 @@ function woo_ce_count_object( $object = 0, $exclude_post_types = array() ) {
 					unset( $object->$exclude_post_types[$i] );
 			}
 		}
-		foreach( $object as $key => $item )
-			$count = $item + $count;
+		if( !empty( $object ) ) {
+			foreach( $object as $key => $item )
+				$count = $item + $count;
+		}
 	} else {
 		$count = $object;
 	}
@@ -148,7 +137,27 @@ function woo_ce_format_visibility( $visibility = '' ) {
 
 }
 
-function woo_ce_format_product_status( $product_status ) {
+function woo_ce_format_download_type( $download_type = '' ) {
+
+	$output = __( 'Standard', 'woo_ce' );
+	if( $download_type ) {
+		switch( $download_type ) {
+
+			case 'application':
+				$output = __( 'Application', 'woo_ce' );
+				break;
+
+			case 'music':
+				$output = __( 'Music', 'woo_ce' );
+				break;
+
+		}
+	}
+	return $output;
+
+}
+
+function woo_ce_format_product_status( $product_status = '' ) {
 
 	$output = $product_status;
 	switch( $product_status ) {
@@ -251,9 +260,15 @@ function woo_ce_format_switch( $input = '', $output_format = 'answer' ) {
 
 }
 
-function woo_ce_format_stock_status( $stock_status = '' ) {
+function woo_ce_format_stock_status( $stock_status = '', $stock = '' ) {
 
 	$output = '';
+	if( empty( $stock_status ) && !empty( $stock ) ) {
+		if( $stock )
+			$stock_status = 'instock';
+		else
+			$stock_status = 'outofstock';
+	}
 	if( $stock_status ) {
 		switch( $stock_status ) {
 
@@ -326,9 +341,34 @@ function woo_ce_format_product_filters( $product_filters = array() ) {
 
 	$output = array();
 	if( !empty( $product_filters ) ) {
-		foreach( $product_filters as $product_filter ) {
+		foreach( $product_filters as $product_filter )
 			$output[] = $product_filter;
-		}
+	}
+	return $output;
+
+}
+
+function woo_ce_format_user_role_filters( $user_role_filters = array() ) {
+
+	$output = array();
+	if( !empty( $user_role_filters ) ) {
+		foreach( $user_role_filters as $user_role_filter )
+			$output[] = $user_role_filter;
+	}
+	return $output;
+
+}
+
+function woo_ce_format_user_role_label( $user_role = '' ) {
+
+	global $wp_roles;
+
+	$output = $user_role;
+	if( $user_role ) {
+		$user_roles = woo_ce_get_user_roles();
+		if( isset( $user_roles[$user_role] ) )
+			$output = ucfirst( $user_roles[$user_role]['name'] );
+		unset( $user_roles );
 	}
 	return $output;
 
@@ -339,12 +379,12 @@ function woo_ce_format_product_type( $type_id = '' ) {
 	$output = $type_id;
 	if( $output ) {
 		$product_types = apply_filters( 'woo_ce_format_product_types', array(
-			'simple' => __( 'Simple', 'woocommerce' ),
+			'simple' => __( 'Simple Product', 'woocommerce' ),
 			'downloadable' => __( 'Downloadable', 'woocommerce' ),
-			'grouped' => __( 'Grouped', 'woocommerce' ),
+			'grouped' => __( 'Grouped Product', 'woocommerce' ),
 			'virtual' => __( 'Virtual', 'woocommerce' ),
 			'variable' => __( 'Variable', 'woocommerce' ),
-			'external' => __( 'External / Affiliate', 'woocommerce' ),
+			'external' => __( 'External/Affiliate Product', 'woocommerce' ),
 			'variation' => __( 'Variation', 'woo_ce' )
 		) );
 		if( isset( $product_types[$type_id] ) )
@@ -354,11 +394,40 @@ function woo_ce_format_product_type( $type_id = '' ) {
 
 }
 
+function woo_ce_format_price( $price = '' ) {
+
+	// Check that a valid price has been provided and that wc_format_localized_price() exists
+	if( isset( $price ) && $price != '' && function_exists( 'wc_format_localized_price' ) )
+		return wc_format_localized_price( $price );
+	else
+		return $price;
+
+}
+
 function woo_ce_format_sale_price_dates( $sale_date = '' ) {
 
 	$output = $sale_date;
 	if( $sale_date )
-		$output = date( 'd/m/Y', $sale_date );
+		$output = woo_ce_format_date( date( 'Y-m-d H:i:s', $sale_date ) );
+	return $output;
+
+}
+
+function woo_ce_format_date( $date = '' ) {
+
+	$output = $date;
+	$date_format = woo_ce_get_option( 'date_format', 'd/m/Y' );
+	if( !empty( $date ) && $date_format != '' )
+		$output = mysql2date( $date_format, $date );
+	return $output;
+
+}
+
+function woo_ce_format_product_category_label( $product_category = '', $parent_category = '' ) {
+
+	$output = $product_category;
+	if( !empty( $parent_category ) )
+		$output .= ' &raquo; ' . $parent_category;
 	return $output;
 
 }
@@ -366,12 +435,17 @@ function woo_ce_format_sale_price_dates( $sale_date = '' ) {
 if( !function_exists( 'woo_ce_expand_state_name' ) ) {
 	function woo_ce_expand_state_name( $country_prefix = '', $state_prefix = '' ) {
 
+		global $woocommerce;
+
 		$output = $state_prefix;
 		if( $output ) {
-			$countries = new WC_Countries();
-			$states = $countries->get_states( $country_prefix );
-			if( $state = $states[$state_prefix] )
-				$output = $state;
+			if( isset( $woocommerce->countries ) ) {
+				if( $states = $woocommerce->countries->get_states( $country_prefix ) ) {
+					if( isset( $states[$state_prefix] ) )
+						$output = $states[$state_prefix];
+				}
+				unset( $states );
+			}
 		}
 		return $output;
 
@@ -381,11 +455,14 @@ if( !function_exists( 'woo_ce_expand_state_name' ) ) {
 if( !function_exists( 'woo_ce_expand_country_name' ) ) {
 	function woo_ce_expand_country_name( $country_prefix = '' ) {
 
+		global $woocommerce;
+
 		$output = $country_prefix;
-		if( $output ) {
-			$countries = new WC_Countries();
-			if( $country = $countries->countries[$country_prefix] )
-				$output = $country;
+		if( $output && method_exists( $woocommerce, 'countries' ) ) {
+			$countries = $woocommerce->countries;
+			if( isset( $countries[$country_prefix] ) )
+				$output = $countries[$country_prefix];
+			unset( $countries );
 		}
 		return $output;
 
