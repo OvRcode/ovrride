@@ -1,0 +1,86 @@
+.ei_block {
+	display:table; 
+	width:100%;
+	}
+.ei_left_block {
+	display:block;
+	float:left; 
+	width:280px;
+	}
+.ei_hard_block {
+	display:block; 
+	float:none;
+	}
+.ei_twitter_block {
+	display:inline-block; 
+	float:left; 
+	margin-top:6px; 
+	}
+.ei_facebook_block {
+	display:inline-block; 
+	float:right; 
+	}
+#buy_me_a_coffee {
+	background-repeat:no-repeat; 
+	border-left: 4px solid #7ad03a;
+	-webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+	display:block; 
+	float:right; 
+	}
+.pad_coffee {
+	display:block; 
+	float:none; 
+	margin-left:90px; 
+	width:235px; 
+	padding:8px;
+	}
+.coffee_title {
+	font-size:0.8;
+	}
+
+
+#enjoy_user_profile {
+		width:124px;
+		padding-top:3px;
+		margin-right:25px;
+		text-align:center;
+		display:inline-block;
+		float:left;
+	}
+.ei_top{
+		margin-top:30px;
+	}
+
+.enjoy_user_profile {
+	border-radius: 50%;
+	width:120px;
+	height:120px;
+	margin:auto 0; 
+    border: 2px solid #e2e2e2;
+	margin-bottom:12px;
+ 
+}
+
+ 
+
+	
+ 
+.desc {
+	padding: 15px;
+	}
+.enfasi {
+	font-size:1rem;
+	}
+.ei_settings_float_block{
+	display:inline-block;
+	float:left;
+	margin-right:1.5rem;
+	}
+.ei_fixed {
+	width:240px;
+	}
+.ei_sel {
+	width: 75px;
+	}
+	
