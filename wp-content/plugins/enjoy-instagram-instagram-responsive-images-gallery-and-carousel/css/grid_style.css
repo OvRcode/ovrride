@@ -1,5 +1,5 @@
 .ri-grid{
-	margin: 30px auto 30px;
+	margin: 10px auto;
 	position: relative;
 	height: auto;
 }
@@ -41,6 +41,8 @@
 	display: block;
 	overflow: hidden;
 	background: #000;
+	border: 3px solid #474747;
+	border-radius: 15px;
 }
 
 .ri-grid ul li a{
