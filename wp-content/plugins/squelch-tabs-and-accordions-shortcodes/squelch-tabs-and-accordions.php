@@ -3,7 +3,7 @@
 Plugin Name: Squelch Tabs and Accordions Shortcodes
 Plugin URI: http://squelchdesign.com/wordpress-plugin-squelch-tabs-accordions-shortcodes/
 Description: Provides shortcodes for adding tabs and accordions to your website
-Version: 0.3.1
+Version: 0.3.4
 Author: Matt Lowe
 Author URI: http://squelchdesign.com/matt-lowe
 License: GPL2
@@ -27,7 +27,7 @@ License: GPL2
 */
 
 
-$taas_plugin_ver    = '0.3.1';
+$taas_plugin_ver    = '0.3.4'; 
 
 
 
@@ -152,7 +152,7 @@ function squelch_taas_accordions_shortcode( $atts, $content ) {
 
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
+    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -201,7 +201,7 @@ function squelch_taas_accordion_shortcode( $atts, $content ) {
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( $content ) ) );
+    $content = do_shortcode( shortcode_unautop( $content ) );
     $rv  = '';
 
     $id = "squelch-taas-header-$taas_accordion_content_counter";
@@ -272,7 +272,7 @@ function squelch_taas_haccordions_shortcode( $atts, $content ) {
     $atts = wp_parse_args( $atts, $defaults );
     $atts['active'] = $atts['active'] + 1;
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
+    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -335,7 +335,7 @@ function squelch_taas_haccordion_shortcode( $atts, $content ) {
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( $content ) ) );
+    $content = do_shortcode( shortcode_unautop( $content ) );
     $rv  = '';
 
     $id = "squelch-taas-header-$taas_haccordion_content_counter";
@@ -392,7 +392,7 @@ function squelch_taas_tabs_shortcode( $atts, $content ) {
 
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
+    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -446,16 +446,24 @@ add_shortcode( 'subsubtabs', 'squelch_taas_tabs_shortcode' );
  *
  * Attributes:
  *   title      The title shown in the tab
+ *   icon       URL to an icon to add to the tab
+ *   iconalt    Alternative text for the icon
+ *   iconw      Width of the icon
+ *   iconh      Height of the icon
  */
 function squelch_taas_tab_shortcode( $atts, $content ) {
     global $taas_current_tab_group, $taas_tabs, $taas_tab_content_counter;
 
     $defaults = array(
-        'title' => ' &nbsp; &nbsp; &nbsp; '
+        'title'     => ' &nbsp; &nbsp; &nbsp; ',
+        'icon'      => '',
+        'iconw'     => '',
+        'iconh'     => '',
+        'iconalt'   => '',
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( $content ) ) );
+    $content = do_shortcode( shortcode_unautop( $content ) );
 
     $id = "squelch-taas-header-$taas_tab_content_counter";
 
@@ -465,6 +473,18 @@ function squelch_taas_tab_shortcode( $atts, $content ) {
     $rv  = '';
     $rv .= '<li class="squelch-taas-tab">';
     $rv .= '<a href="#squelch-taas-tab-content-'.$taas_current_tab_group.'-'.$taas_tab_content_counter.'">';
+
+    if (!empty($atts['icon'])) {
+        if (empty($atts['iconalt'])) $atts['iconalt'] = $atts['title'];
+
+        $rv .= '<img src="'.$atts['icon'].'" alt="'.$atts['iconalt'].'" class="squelch-taas-tab-icon" ';
+
+        if (!empty($atts['iconw'])) $rv .= 'width="'.$atts['iconw'].'" ';
+        if (!empty($atts['iconh'])) $rv .= 'height="'.$atts['iconh'].'" ';
+
+        $rv .= '/> &nbsp;';
+    }
+
     $rv .= $atts['title'];
     $rv .= '</a>';
     $rv .= '</li>';
@@ -478,8 +498,8 @@ function squelch_taas_tab_shortcode( $atts, $content ) {
     $tab_arr['content'] = $rv;
 
     // Push onto the tab stack
-    $tabs_array = $taas_tabs[$taas_current_tab_group];
-    if (! $tabs_array) $tabs_array = array();
+    $tabs_array = array();
+    if (!empty($taas_tabs[$taas_current_tab_group])) $tabs_array = $taas_tabs[$taas_current_tab_group];
     array_push( $tabs_array, $tab_arr );
     $taas_tabs[$taas_current_tab_group] = $tabs_array;
 
@@ -518,7 +538,7 @@ function squelch_taas_toggles_shortcode( $atts, $content ) {
     // If shortcode has style set instead of theme then use that value for style
     if (array_key_exists( 'style', $atts )) $atts['theme'] = $atts['style'];
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
+    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -567,7 +587,7 @@ function squelch_taas_toggle_shortcode( $atts, $content ) {
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( tidy_up_content( shortcode_unautop( $content ) ) );
+    $content = do_shortcode( shortcode_unautop( $content ) );
     $rv  = '';
 
     $id = "squelch-taas-header-$taas_toggle_content_counter";
@@ -660,8 +680,7 @@ add_action( 'wp_enqueue_scripts', 'squelch_taas_enqueue_scripts', 20 );
  * Returns the URL of the dashboard, for creating links in messages.
  */
 function squelch_taas_get_plugin_admin_url() {
-    $scheme = $atts['scheme'];
-    return get_site_url( null, '', $scheme ).'/wp-admin/themes.php?page=squelch-tabs-and-accordions-shortcodes/squelch-tabs-and-accordions.php';
+    return get_site_url().'/wp-admin/themes.php?page=squelch-tabs-and-accordions-shortcodes/squelch-tabs-and-accordions.php';
 }
 
 
@@ -673,27 +692,6 @@ if (!function_exists( 'tidy_up_shortcodes' )) :
         $rv = trim( $content );
         $rv = preg_replace( '/\]<br \/>/i',     ']', $rv );
         $rv = preg_replace( '/<br \/>\n\[/i',   '[', $rv );
-
-        return $rv;
-    }
-endif;
-
-
-/* Useful function for stripping superfluous crap from the start and end of a 
- * shortcode's content as inserted by wp_autop().
- */
-if (!function_exists( 'tidy_up_content' )) :
-    function tidy_up_content( $content ) {
-        $rv = trim( $content );
-        $rv = preg_replace( '/^<br \/>/i',          '',         $rv );
-        $rv = preg_replace( '/<br \/>$/i',          '',         $rv );
-        $rv = preg_replace( '/\n/i',                '',         $rv );
-        $rv = preg_replace( '/^<p><\/p>/i',         '',         $rv );
-        $rv = preg_replace( '/<p><\/p>$/i',         '',         $rv );
-        $rv = preg_replace( '/^<\/p>/i',            '',         $rv );
-        $rv = preg_replace( '/<p>$/i',              '',         $rv );
-        $rv = preg_replace( '/<p><div/i',           '<div',     $rv );
-        $rv = preg_replace( '/<\/div>(\s*)<\/p>/i', '</div>',   $rv );
 
         return $rv;
     }
@@ -758,6 +756,8 @@ add_action('admin_menu', 'squelch_taas_admin_menu');
  * Enqueue scripts for the admin interface.
  */
 function squelch_taas_admin_scripts() {
+    global $taas_plugin_ver;
+
     wp_enqueue_script( 'media-upload' );
     wp_enqueue_script( 'thickbox' );
     wp_enqueue_script(
@@ -810,4 +810,14 @@ function squelch_taas_deactivate() {
     delete_option( 'squelch_taas_showmessage'       );
 }
 register_deactivation_hook( __FILE__, 'squelch_taas_deactivate' );
+
+
+
+/* =Deprecated
+---------------------------------------------------------------------------- */
+
+/* Nothing but trouble. Had enough of chasing bugs in this function.
+ */
+if (!function_exists( 'tidy_up_content' )) : function tidy_up_content( $content, $inline = 'auto' ) { return $content; } endif;
+
 

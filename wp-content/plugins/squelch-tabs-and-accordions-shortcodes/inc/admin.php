@@ -7,38 +7,13 @@ if (!current_user_can( 'manage_options' )) exit;
 $theme = get_option( 'squelch_taas_jquery_ui_theme' );
 
 
-/* "Option is Selected": Echoes selected="selected" if $t is the active theme
- */
-function ois( $t ) {
-    $theme = get_option( 'squelch_taas_jquery_ui_theme' );
-
-    if ($t == $theme) {
-        echo 'selected="selected"';
-    }
-}
-
-
-/* "Option Is Checked": Echoes checked="checked" if $t is true
- */
-function oic( $t ) {
-    if ($t) {
-        echo 'checked="checked"';
-    }
-}
-
-
 /* Save changes
  */
-if ($_POST['submit'] == "Save Changes") {
+if (!empty($_POST['submit']) && $_POST['submit'] == "Save Changes") {
     $valid = true;
 
     $new_theme      = $_POST['jquery_ui_theme'];
     ////$custom_css     = $_POST['custom_css_url'];
-    $jquery_ver     = $_POST['jquery_ver'];
-    $load_jquery    =($_POST['load_jquery']     == 'yes') ? true : false;
-    $load_jquery_ui =($_POST['load_jquery_ui']  == 'yes') ? true : false;
-    $jquery_ui_ver  = $_POST['jquery_ui_ver'];
-
     ////if (('custom' == $new_theme) && (empty($custom_css))) {
     ////    $GLOBALS['squelch_taas_admin_msg'] .= '<div class="error"><p>Custom CSS URL cannot be empty, please enter a URL or upload a stylesheet.</p></div>';
     ////    $valid = false;
@@ -48,7 +23,9 @@ if ($_POST['submit'] == "Save Changes") {
         update_option( 'squelch_taas_jquery_ui_theme',  $new_theme      );
         ////update_option( 'squelch_taas_custom_css_url',   $custom_css );
 
-        $GLOBALS['squelch_taas_admin_msg'] .= '<div class="updated"><p>Changes saved.</p></div>';
+        $msg  = isset($GLOBALS['squelch_taas_admin_msg']) ? $GLOBALS['squelch_taas_admin_msg'] : '';
+        $msg .= '<div class="updated"><p>Changes saved.</p></div>';
+        $GLOBALS['squelch_taas_admin_msg'] = $msg;
     }
 }
 
@@ -78,33 +55,33 @@ $custom_css = get_option('squelch_taas_custom_css_url'          );
                         </th>
                         <td valign="top">
                             <select id="jquery_ui_theme" name="jquery_ui_theme">
-                                <option <?php ois('none'); ?>value="none">No jQuery UI theme</option>
-                                <!-- option <?php /*ois('custom');*/ ?>value="custom">Use your own custom CSS</option -->
-                                <option <?php ois('base'); ?>value="base">jQuery Base Styles Only</option>
-                                <option <?php ois('ui-lightness'); ?>value="ui-lightness">Lightness</option>
-                                <option <?php ois('ui-darkness'); ?>value="ui-darkness">Darkness</option>
-                                <option <?php ois('smoothness'); ?>value="smoothness">Smoothness</option>
-                                <option <?php ois('start'); ?>value="start">Start</option>
-                                <option <?php ois('redmond'); ?>value="redmond">Redmond</option>
-                                <option <?php ois('sunny'); ?>value="sunny">Sunny</option>
-                                <option <?php ois('overcast'); ?>value="overcast">Overcast</option>
-                                <option <?php ois('le-frog'); ?>value="le-frog">Le Frog</option>
-                                <option <?php ois('flick'); ?>value="flick">Flick</option>
-                                <option <?php ois('pepper-grinder'); ?>value="pepper-grinder">Pepper Grinder</option>
-                                <option <?php ois('eggplant'); ?>value="eggplant">Eggplant</option>
-                                <option <?php ois('dark-hive'); ?>value="dark-hive">Dark Hive</option>
-                                <option <?php ois('cupertino'); ?>value="cupertino">Cupertino</option>
-                                <option <?php ois('south-street'); ?>value="south-street">South Street</option>
-                                <option <?php ois('blitzer'); ?>value="blitzer">Blitzer</option>
-                                <option <?php ois('humanity'); ?>value="humanity">Humanity</option>
-                                <option <?php ois('hot-sneaks'); ?>value="hot-sneaks">Hot Sneaks</option>
-                                <option <?php ois('excite-bike'); ?>value="excite-bike">Excite Bike</option>
-                                <option <?php ois('vader'); ?>value="vader">Vader</option>
-                                <option <?php ois('dot-luv'); ?>value="dot-luv">Dot Luv</option>
-                                <option <?php ois('mint-choc'); ?>value="mint-choc">Mint Choc</option>
-                                <option <?php ois('black-tie'); ?>value="black-tie">Black Tie</option>
-                                <option <?php ois('trontastic'); ?>value="trontastic">Trontastic</option>
-                                <option <?php ois('swanky-purse'); ?>value="swanky-purse">Swanky Purse</option>
+                                <option<?php selected($theme, 'none'); ?> value="none">No jQuery UI theme</option>
+                                <!-- option <?php /*selected($theme, 'custom');*/ ?> value="custom">Use your own custom CSS</option -->
+                                <option<?php selected($theme, 'base'); ?> value="base">jQuery Base Styles Only</option>
+                                <option<?php selected($theme, 'ui-lightness'); ?> value="ui-lightness">Lightness</option>
+                                <option<?php selected($theme, 'ui-darkness'); ?> value="ui-darkness">Darkness</option>
+                                <option<?php selected($theme, 'smoothness'); ?> value="smoothness">Smoothness</option>
+                                <option<?php selected($theme, 'start'); ?> value="start">Start</option>
+                                <option<?php selected($theme, 'redmond'); ?> value="redmond">Redmond</option>
+                                <option<?php selected($theme, 'sunny'); ?> value="sunny">Sunny</option>
+                                <option<?php selected($theme, 'overcast'); ?> value="overcast">Overcast</option>
+                                <option<?php selected($theme, 'le-frog'); ?> value="le-frog">Le Frog</option>
+                                <option<?php selected($theme, 'flick'); ?> value="flick">Flick</option>
+                                <option<?php selected($theme, 'pepper-grinder'); ?> value="pepper-grinder">Pepper Grinder</option>
+                                <option<?php selected($theme, 'eggplant'); ?> value="eggplant">Eggplant</option>
+                                <option<?php selected($theme, 'dark-hive'); ?> value="dark-hive">Dark Hive</option>
+                                <option<?php selected($theme, 'cupertino'); ?> value="cupertino">Cupertino</option>
+                                <option<?php selected($theme, 'south-street'); ?> value="south-street">South Street</option>
+                                <option<?php selected($theme, 'blitzer'); ?> value="blitzer">Blitzer</option>
+                                <option<?php selected($theme, 'humanity'); ?> value="humanity">Humanity</option>
+                                <option<?php selected($theme, 'hot-sneaks'); ?> value="hot-sneaks">Hot Sneaks</option>
+                                <option<?php selected($theme, 'excite-bike'); ?> value="excite-bike">Excite Bike</option>
+                                <option<?php selected($theme, 'vader'); ?> value="vader">Vader</option>
+                                <option<?php selected($theme, 'dot-luv'); ?> value="dot-luv">Dot Luv</option>
+                                <option<?php selected($theme, 'mint-choc'); ?> value="mint-choc">Mint Choc</option>
+                                <option<?php selected($theme, 'black-tie'); ?> value="black-tie">Black Tie</option>
+                                <option<?php selected($theme, 'trontastic'); ?> value="trontastic">Trontastic</option>
+                                <option<?php selected($theme, 'swanky-purse'); ?> value="swanky-purse">Swanky Purse</option>
                             </select>
                         </td>
                     </tr>
