@@ -3,7 +3,7 @@
  * Plugin Name: QuickShare
  * Plugin URI: http://celloexpressions.com/plugins/quickshare/
  * Description: Add quick social sharing functions to your content. Challenge social sharing norms with a flexible design and fast performance.
- * Version: 1.4
+ * Version: 1.5
  * Author: Nick Halsey
  * Author URI: http://celloexpressions.com/
  * Tags: Social, Share, Sharing, Social Sharing, Social Media, Quick, Easy, Lightweight, No JS, Flexible, Customizable, Responsive, Facebook, Twitter, Pinterest, Linkedin, Google+, Tumblr, Email, Reddit, StumbleUpon
@@ -77,6 +77,7 @@ function cxnh_quickshare_add_defaults() {
 			
 			'facebook' => 1,
 			'twitter' => 1,
+			'twitter_user' => '', // Needed to optimize Twitter's interactions
 			'pintrest' => 1,
 			'linkedin' => 1,
 			'googleplus' => 1,
@@ -216,6 +217,10 @@ function cxnh_quickshare_render_form(){
 	// added in 1.4
 	if(!array_key_exists('excluded_ids',$options))
 		$options['excluded_ids'] = '';
+	
+	// added in 1.5
+	if(!array_key_exists('twitter_user',$options))
+		$options['twitter_user'] = '';
 ?>
 <div class="wrap">
 	<h2 class="nav-tab-wrapper">
@@ -232,9 +237,10 @@ function cxnh_quickshare_render_form(){
 				<label class="display-option"><input name="cxnh_quickshare_options[posts]" type="checkbox" value="1" <?php if (isset($options['posts'])) { checked('1', $options['posts']); } ?> /> Posts</label><br class="display-option"/>
 				<label class="display-option"><input name="cxnh_quickshare_options[pages]" type="checkbox" value="1" <?php if (isset($options['pages'])) { checked('1', $options['pages']); } ?> /> Pages</label><br class="display-option"/>
 				<label class="display-option"><input name="cxnh_quickshare_options[attachments]" type="checkbox" value="1" <?php if (isset($options['attachments'])) { checked('1', $options['attachments']); } ?> /> Media Attachments <span style="font-style: italics;">(may not display in some themes if the description field is empty)</span></label>
+				<p>Use the <code>[quickshare]</code> shortcode to display QuickShare in custom places; for example, on only one specific page.</p>
 				<p>If you want to display the QuickShare links anywhere else, use <code>&lt;?php do_quickshare_output( $url, $title, $source, $description, $imgurl ); ?&gt;</code> in your templates.</p>
 				<h5>Excluded Posts/Pages:</h5>
-				<label><input name="cxnh_quickshare_options[excluded_ids]" type="text" value="<?php echo $options['excluded_ids']; ?>" /> Enter a comma-separated list of post IDs (of any type) that QuickShare won't display on.</label>				
+				<label><input name="cxnh_quickshare_options[excluded_ids]" type="text" value="<?php echo $options['excluded_ids']; ?>" /> Enter a comma-separated list of post IDs (of any type) that QuickShare won't display on.</label>
 			</td>
 		</tr>
 		<tr>
@@ -247,13 +253,14 @@ function cxnh_quickshare_render_form(){
 			<th scope="row">Share Types</th>
 			<td style="column-count: 2; -webkit-column-count: 2; -moz-column-count: 2;">
 				<label><input name="cxnh_quickshare_options[facebook]" type="checkbox" value="1" <?php if (isset($options['facebook'])) { checked('1', $options['facebook']); } ?> /> Facebook</label><br/>
-				<label><input name="cxnh_quickshare_options[twitter]" type="checkbox" value="1" <?php if (isset($options['twitter'])) { checked('1', $options['twitter']); } ?> /> Twitter</label><br/>
+				<label><input name="cxnh_quickshare_options[twitter]" type="checkbox" value="1" <?php if (isset($options['twitter'])) { checked('1', $options['twitter']); } ?> /> Twitter</label>
+					@<input name="cxnh_quickshare_options[twitter_user]" type="text" value="<?php echo $options['twitter_user']; ?>" placeholder="username (optional)"/><br/>
 				<label><input name="cxnh_quickshare_options[pintrest]" type="checkbox" value="1" <?php if (isset($options['pintrest'])) { checked('1', $options['pintrest']); } ?> /> Pinterest</label><br/>
 				<label><input name="cxnh_quickshare_options[linkedin]" type="checkbox" value="1" <?php if (isset($options['linkedin'])) { checked('1', $options['linkedin']); } ?> /> Linkedin</label><br/>
 				<label><input name="cxnh_quickshare_options[googleplus]" type="checkbox" value="1" <?php if (isset($options['googleplus'])) { checked('1', $options['googleplus']); } ?> /> Google+</label><br/>
 				<label><input name="cxnh_quickshare_options[tumblr]" type="checkbox" value="1" <?php if (isset($options['tumblr'])) { checked('1', $options['tumblr']); } ?> /> Tumblr</label><br/>
-				<label class="n-genericons-option"><input name="cxnh_quickshare_options[reddit]" type="checkbox" value="1" <?php if (isset($options['reddit'])) { checked('1', $options['reddit']); } ?> /> Reddit</label><br class="n-genericons-option"/>
-				<label class="n-genericons-option"><input name="cxnh_quickshare_options[stumbleupon]" type="checkbox" value="1" <?php if (isset($options['stumbleupon'])) { checked('1', $options['stumbleupon']); } ?> /> Stumbleupon</label><br class="n-genericons-option"/>
+				<label><input name="cxnh_quickshare_options[reddit]" type="checkbox" value="1" <?php if (isset($options['reddit'])) { checked('1', $options['reddit']); } ?> /> Reddit</label><br/>
+				<label><input name="cxnh_quickshare_options[stumbleupon]" type="checkbox" value="1" <?php if (isset($options['stumbleupon'])) { checked('1', $options['stumbleupon']); } ?> /> Stumbleupon</label><br/>
 				<label><input name="cxnh_quickshare_options[email]" type="checkbox" value="1" <?php if (isset($options['email'])) { checked('1', $options['email']); } ?> /> Email</label><br/>
 			</td>
 		</tr>
@@ -393,8 +400,9 @@ function cxnh_quickshare_validate_options($input) {
 	// sanitize img url
 	$input['imgurl'] = esc_url($input['customcss']);
 	
-	// sanitize text field
+	// sanitize text fields
 	$input['sharelabel'] = sanitize_text_field($input['sharelabel']); // not allowing html here because it should be a plaintext label and can be formated with custom css (it's already in an <li>)
+	$input['twitter_user'] = sanitize_text_field($input['twitter_user']);
 	
 	// sanitize numeric inputs
 	$input['borderradius'] = absint($input['borderradius']);
@@ -613,7 +621,7 @@ function cxnh_quickshare_makeOutput( $url=null, $title=null, $source=null, $desc
 	<ul class="<?php echo cxnh_quickshare_get_ulclass(); ?>">
 		<li class="quickshare-share"><?php echo cxnh_quickshare_getOption('sharelabel',$options); ?></li> 
 		<?php if(cxnh_quickshare_getOption('facebook',$options)){ ?><li><a href="https://facebook.com/sharer.php?u=<?php echo $url; ?>&amp;t=<?php echo $title.'+<+'.$source; ?>" target="_blank" title="Share on Facebook"><span class="quickshare-facebook">Facebook</span></a></li><?php } ?>
-		<?php if(cxnh_quickshare_getOption('twitter',$options)){ ?><li><a href="https://twitter.com/share?url=<?php echo $url; ?>" target="_blank" title="Share on Twitter"><span class="quickshare-twitter">Twitter</span></a></li><?php } ?>
+		<?php if(cxnh_quickshare_getOption('twitter',$options)){ ?><li><a href="https://twitter.com/intent/tweet?url=<?php echo $url; ?>&amp;text=<?php echo $title.'+<+'.$source; if( cxnh_quickshare_getOption( 'twitter_user' ) ) { echo '&amp;via=' . cxnh_quickshare_getOption( 'twitter_user' ); } ?>" target="_blank" title="Share on Twitter"><span class="quickshare-twitter">Twitter</span></a></li><?php } ?>
 		<?php if(cxnh_quickshare_getOption('pintrest',$options) && ($imgurl != urlencode(cxnh_quickshare_getOption('image',$options)) || !cxnh_quickshare_getOption('hidepintrest',$options))){ ?><li><a href="http://pinterest.com/pin/create/button/?url=<?php echo $url; ?>&amp;media=<?php echo $imgurl; ?>&amp;description=<?php echo $description; ?>" target="_blank" title="Share on Pinterest"><span class="quickshare-pinterest">Pinterest</span></a></li><?php } ?>
 		<?php if(cxnh_quickshare_getOption('linkedin',$options)){ ?><li><a href="http://linkedin.com/shareArticle?mini=true&amp;url=<?php echo $url; ?>&amp;title=<?php echo $title; ?>&amp;source=<?php echo $source; ?>&amp;summary=<?php echo $description; ?>" title="Share on Linkedin" target="_blank"><span class="quickshare-linkedin">Linkedin</span></a></li><?php } ?>
 		<?php if(cxnh_quickshare_getOption('googleplus',$options)){ ?><li><a href="https://plus.google.com/share?url=<?php echo $url; ?>" target="_blank" title="Share on Google+"><span class="quickshare-googleplus">Google+</span></a></li><?php } ?>
