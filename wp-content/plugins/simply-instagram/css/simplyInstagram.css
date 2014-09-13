@@ -1,0 +1,118 @@
+.simplyInstagram-profile
+{
+	overflow: auto;
+}
+
+.profile-data
+{
+	width: inherit;
+	border: none;
+	text-align: center;
+	margin: 10px;
+	display: block !important;
+}
+
+.profile-data img
+{
+	border: none;
+	text-align: center;
+	padding: 2px;
+	margin-right: 4px;
+	background-color: white;
+	border: 1px solid #999;
+	border-radius: 5px;
+}
+
+.profile-data h1
+{
+	font-size: 1.5em;
+	padding: 0 1.45833em 0 0;
+}
+
+.front-photo
+{
+	border: none;
+	padding: 2px;
+	margin-right: 4px;
+	background-color: white;
+	border: 1px solid #999;
+	border-radius: 5px;	
+	vertical-align: middle;
+}
+
+.content-info
+{
+	float: left;
+	padding: 3px;
+	margin-left: 5px;
+	border: 1px solid #999;
+	border-radius: 5px;
+	background-color: #666;
+	color: #fff;
+}
+
+#profile-bio
+{
+	text-align: justify !important;
+}
+
+.profile-media
+{
+	float: left;
+	display: table-cell !important;	
+	width: 60px;
+	margin: 2px;
+	text-align: center;
+	padding: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background: #EFEFEF;
+	font-size: 22px !important;
+	color: #00BFFF;
+}
+
+.data-holder
+{
+	text-align: center;
+	margin: 0px auto;
+	display: table !important;
+	overflow: auto;
+}
+
+.profile-media-content
+{
+	font-size: 12px;
+	color: #000;
+}
+
+#sInst-admin-left
+{
+	width: 45%;
+	padding: 2px;
+}
+
+#sInst-admin-right
+{
+	width: 25%;
+	padding: 2px;
+}
+
+#sInts-welcome
+{
+	color: #333;
+	background-color: #eee;
+	border: 1px solid;
+	margin: 10px 0px;
+	padding: 8px 10px 8px 40px;
+	width: 570px;
+	border-radius: 3px 3px 3px 3px;
+	float: left;
+}
+
+.sInt-logo{
+	background: url("../images/logo-32.jpg") no-repeat scroll 0 0 transparent;
+	margin-bottom: 20px;
+	padding-left: 40px;
+	margin-top: 20px;
+	padding-top: 0px;
+}
