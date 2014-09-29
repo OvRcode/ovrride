@@ -268,14 +268,14 @@ function get_woocommerce_currencies() {
 				'NPR' => __( 'Nepali Rupee', 'woocommerce' ),
 				'ILS' => __( 'Israeli Shekel', 'woocommerce' ),
 				'JPY' => __( 'Japanese Yen', 'woocommerce' ),
-				'KIP'	=> __( 'Lao Kip', 'woocommerce' ),
+				'KIP' => __( 'Lao Kip', 'woocommerce' ),
 				'KRW' => __( 'South Korean Won', 'woocommerce' ),
 				'MYR' => __( 'Malaysian Ringgits', 'woocommerce' ),
 				'MXN' => __( 'Mexican Peso', 'woocommerce' ),
 				'NGN' => __( 'Nigerian Naira', 'woocommerce' ),
 				'NOK' => __( 'Norwegian Krone', 'woocommerce' ),
 				'NZD' => __( 'New Zealand Dollar', 'woocommerce' ),
-                		'PYG' => __( 'Paraguayan Guaraní', 'woocommerce' ),
+				'PYG' => __( 'Paraguayan Guaraní', 'woocommerce' ),
 				'PHP' => __( 'Philippine Pesos', 'woocommerce' ),
 				'PLN' => __( 'Polish Zloty', 'woocommerce' ),
 				'GBP' => __( 'Pounds Sterling', 'woocommerce' ),
@@ -322,6 +322,7 @@ function get_woocommerce_currency_symbol( $currency = '' ) {
 		case 'AUD' :
 		case 'CAD' :
 		case 'CLP' :
+		case 'COP' :
 		case 'MXN' :
 		case 'NZD' :
 		case 'HKD' :
@@ -351,7 +352,7 @@ function get_woocommerce_currency_symbol( $currency = '' ) {
 		case 'HUF' : $currency_symbol = '&#70;&#116;'; break;
 		case 'IDR' : $currency_symbol = 'Rp'; break;
 		case 'INR' : $currency_symbol = 'Rs.'; break;
-		case 'NRP' : $currency_symbol = 'Rs.'; break;
+		case 'NPR' : $currency_symbol = 'Rs.'; break;
 		case 'ISK' : $currency_symbol = 'Kr.'; break;
 		case 'ILS' : $currency_symbol = '&#8362;'; break;
 		case 'PHP' : $currency_symbol = '&#8369;'; break;
@@ -402,7 +403,7 @@ function wc_get_image_size( $image_size ) {
 		$size           = get_option( $image_size . '_image_size', array() );
 		$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
 		$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
-		$size['crop']   = isset( $size['crop'] ) ? $size['crop'] : 1;
+		$size['crop']   = isset( $size['crop'] ) ? 1 : 0;
 	} else {
 		$size = array(
 			'width'  => '300',
@@ -462,7 +463,8 @@ function wc_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	if ( ! headers_sent() ) {
 		setcookie( $name, $value, $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
 	} elseif ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-		trigger_error( "Cookie cannot be set - headers already sent", E_USER_NOTICE );
+		headers_sent( $file, $line );
+		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE );
 	}
 }
 

@@ -3,7 +3,7 @@ Contributors: lgrandicelli
 Tags: recent posts, recent, post, wordpress, plugin, thumbnail, thumbnails, widget, pagination, custom post type, taxonomy, taxonomies, featured image, featured, home page, preview, categories, tags, content, filter, comment, most commented
 Requires at least: 3.0.1
 Tested up to: 4.0
-Stable tag: 2.0.2
+Stable tag: 2.0.4
 License: GPLv3 or later
 
 The most beautiful and powerful way to display your Wordpress posts with thumbnails.
@@ -57,6 +57,14 @@ The automatic plugin installer should work for most people. Manual installation 
 If you need to use the Special Recent Posts FREE Edition in another part of your theme which is not widget-handled, **you need shortcodes or PHP code**. Please refer to the [online documentation](http://www.specialrecentposts.com/docs/ "The Special Recent Posts Online Documentation") to know how to use them.
 
 == Changelog ==
+= 2.0.4 =
+* Added compatibility check for the PHPThumbFactory Class.
+* Fixed issue that prevented correct assets loading in some Wordpress themes.
+* Bug Fixing.
+
+= 2.0.3 =
+* Fixed URF-8 Encoding on &nbsp; characters added by Wordpress.
+
 = 2.0.2 =
 * Improved CSS compatibility with old browsers.
 * Fixed wrong characters cut and words count for Cyrillic charset.
@@ -91,7 +99,7 @@ If you need to use the Special Recent Posts FREE Edition in another part of your
 * Modified: CSS class 'srp-widget-stringbreak-link' has become 'srp-post-stringbreak-link'.
 * Modified: CSS class 'srp-widget-thmblink' has become 'srp-post-thumbnail-link'.
 * Modified: CSS class 'srp-post-thmb' has become 'srp-post-thumbnail'.
-# Fixed long filenames encryption failure. Now thumbnails are cached with a new nomenclature that prevents issues with encryption length.
+* Fixed long filenames encryption failure. Now thumbnails are cached with a new nomenclature that prevents issues with encryption length.
 * Fixed issue that prevented correct display of thumbnails with the Jetpack plugin Photon Module installed.
 * Fixed little bug that made the accordion tab re-fold if clicked more than once.
 * Fixed issue that rendered shrinked images on Google Chrome.

@@ -1,6 +1,8 @@
 <?php
 function woo_ce_get_subscription_fields( $format = 'full' ) {
 
+	$export_type = 'subscription';
+
 	$fields = array();
 	$fields[] = array(
 		'name' => 'key',
@@ -21,6 +23,10 @@ function woo_ce_get_subscription_fields( $format = 'full' ) {
 	$fields[] = array(
 		'name' => 'user_id',
 		'label' => __( 'User ID', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'email',
+		'label' => __( 'E-mail Address', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'order_id',
@@ -85,16 +91,18 @@ function woo_ce_get_subscription_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional Subscription columns
-	$fields = apply_filters( 'woo_ce_subscription_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
 	switch( $format ) {
 
 		case 'summary':
 			$output = array();
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
-				$output[$fields[$i]['name']] = 'on';
+			for( $i = 0; $i < $size; $i++ ) {
+				if( isset( $fields[$i] ) )
+					$output[$fields[$i]['name']] = 'on';
+			}
 			return $output;
 			break;
 

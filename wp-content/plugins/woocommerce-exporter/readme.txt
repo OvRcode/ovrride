@@ -5,7 +5,7 @@ Donate link: http://www.visser.com.au/#donations
 Tags: e-commerce, woocommerce, shop, cart, ecommerce, export, csv, xml, xls, excel, customers, products, sales, orders, coupons, users, attributes, subscriptions
 Requires at least: 2.9.2
 Tested up to: 4.0
-Stable tag: 1.7.8
+Stable tag: 1.8.2
 
 == Description ==
 
@@ -30,6 +30,8 @@ Features include:
 * Export Users
 * Export Coupons (*)
 * Export Subscriptions (*)
+* Export Product Vendors (*)
+* Export Shipping Classes (*)
 * Export Attributes (*)
 * Toggle and save export fields
 * Field label editor (*)
@@ -37,6 +39,10 @@ Features include:
 * Export to CSV file
 * Export to XML file (*)
 * Export to Excel 2007 (XLS) file (*)
+* Export to WordPress Media
+* Export to e-mail addresses (*)
+* Export to remote POST (*)
+* Export to remote FTP (*)
 * Supports external CRON commands (*)
 * Supports scheduled exports (*)
 
@@ -61,6 +67,8 @@ Just a few of the features unlocked in the Pro upgrade of Product Importer inclu
 - Export Currency Switcher
 - Export WooCommerce PDF Invoices & Packing Slips
 - Export WooCommerce Checkout Add-ons
+- Export Product Vendors
+
 ... and more free and Premium extensions for WooCommerce.
 
 For more information visit: http://www.visser.com.au/woocommerce/
@@ -96,9 +104,37 @@ http://www.visser.com.au/woocommerce/forums/
 4. A range of export options can be adjusted to suit different languages and file formatting requirements.
 5. Export a list of WooCommerce Product Categories into a CSV file.
 6. Export a list of WooCommerce Product Tags into a CSV file.
-7. Download achived copies of previous exports
+7. Download archived copies of previous exports
+8. Use the Field Editor to relabel export fields to your preferred names
+9. Drag-and-drop export fields to your preferred ordering, sorting is saved between screen refreshes.
 
 == Changelog ==
+
+= 1.8.2 =
+* Added: Order support for Extra Product Options
+* Fixed: Detect corrupted Date Format
+* Added: Detection of corrupted WordPress options at export time
+* Added: Total Sales to Products export
+* Fixed: Advanced Google Product Feed not being included in Products export
+* Added: Custom User meta to Customers export
+* Added: Support for exporting Shipping Classes
+* Changed: Product URL is now External URL
+* Added: Product URL is the absolute URL to the Product
+* Added: Support for custom User fields
+* Fixed: Admin notice not showing for saving custom fields
+
+= 1.8.1 =
+* Adeded: Export modules to the Export screen
+
+= 1.8 =
+* Fixed: Up-sells formatting not saving between screen refreshes
+* Fixed: Cross-sells formatting not saving between screen refreshes
+* Fixed: PHP 5.2 compatibility for anonymous functions
+* Added: Admin notice for PHP 5.2 users to update to supported releases of PHP
+
+= 1.7.9 =
+* Changed: Moved Up-sells formatting option to products.php
+* Changed: Moved Cross-sells formatting option to products.php
 
 = 1.7.8 =
 * Added: Gravity Form ID to Orders export

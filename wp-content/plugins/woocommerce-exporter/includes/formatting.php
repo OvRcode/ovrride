@@ -197,6 +197,51 @@ function woo_ce_format_comment_status( $comment_status ) {
 
 }
 
+function woo_ce_format_gpf_availability( $availability = null ) {
+
+	$output = '';
+	if( $availability ) {
+		switch( $availability ) {
+
+			case 'in stock':
+				$output = __( 'In Stock', 'woo_ce' );
+				break;
+
+			case 'available for order':
+				$output = __( 'Available For Order', 'woo_ce' );
+				break;
+
+			case 'preorder':
+				$output = __( 'Pre-order', 'woo_ce' );
+				break;
+
+		}
+	}
+	return $output;
+
+}
+
+function woo_ce_format_gpf_condition( $condition ) {
+
+	switch( $condition ) {
+
+		case 'new':
+			$output = __( 'New', 'woo_ce' );
+			break;
+
+		case 'refurbished':
+			$output = __( 'Refurbished', 'woo_ce' );
+			break;
+
+		case 'used':
+			$output = __( 'Used', 'woo_ce' );
+			break;
+
+	}
+	return $output;
+
+}
+
 function woo_ce_format_switch( $input = '', $output_format = 'answer' ) {
 
 	$input = strtolower( $input );

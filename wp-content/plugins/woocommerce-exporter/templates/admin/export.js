@@ -137,6 +137,8 @@ $j(function() {
 	$j('#export-user').hide();
 	$j('#export-coupon').hide();
 	$j('#export-subscription').hide();
+	$j('#export-product_vendor').hide();
+	$j('#export-shipping_class').hide();
 	$j('#export-attribute').hide();
 
 	$j('#products-filters-categories').click(function(){
@@ -245,6 +247,20 @@ $j(function() {
 		$j('.export-options').hide();
 		$j('.subscription-options').show();
 	});
+	$j('#product_vendor').click(function(){
+		$j('.export-types').hide();
+		$j('#export-product_vendor').show();
+
+		$j('.export-options').hide();
+		$j('.product_vendor-options').show();
+	});
+	$j('#shipping_class').click(function(){
+		$j('.export-types').hide();
+		$j('#export-shipping_class').show();
+
+		$j('.export-options').hide();
+		$j('.shipping_class-options').show();
+	});
 	$j('#attribute').click(function(){
 		$j('.export-types').hide();
 		$j('#export-attribute').show();
@@ -281,14 +297,26 @@ $j(function() {
 	$j('#export_subscription').click(function(){
 		$j('input:radio[name=dataset]:nth(8)').attr('checked',true);
 	});
-	$j('#export_attribute').click(function(){
+	$j('#export_product_vendor').click(function(){
 		$j('input:radio[name=dataset]:nth(9)').attr('checked',true);
+	});
+	$j('#export_shipping_class').click(function(){
+		$j('input:radio[name=dataset]:nth(10)').attr('checked',true);
+	});
+	$j('#export_attribute').click(function(){
+		$j('input:radio[name=dataset]:nth(11)').attr('checked',true);
 	});
 
 	$j("#auto_type").change(function () {
 		var type = $j('select[name=auto_type]').val();
-		$j('.export-options').hide();
-		$j('.'+type+'-options').show();
+		$j('.auto_type_options .export-options').hide();
+		$j('.auto_type_options .'+type+'-options').show();
+	});
+
+	$j("#auto_method").change(function () {
+		var type = $j('select[name=auto_method]').val();
+		$j('.auto_method_options .export-options').hide();
+		$j('.auto_method_options .'+type+'-options').show();
 	});
 
 	$j(document).ready(function() {
@@ -308,6 +336,7 @@ $j(function() {
 			}
 		} else if (href.toLowerCase().indexOf('tab=settings') >= 0) {
 			$j("#auto_type").trigger("change");
+			$j("#auto_method").trigger("change");
 		} else {
 			// This auto-selects the last known export type based on stored WordPress option, defaults to Products
 			var type = $j('input:radio[name=dataset]:checked').val();

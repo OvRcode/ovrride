@@ -92,17 +92,20 @@ class WC_Post_types {
 				'update_count_callback' => '_wc_term_recount',
 				'label'                 => __( 'Product Tags', 'woocommerce' ),
 				'labels'                => array(
-						'name'              => __( 'Product Tags', 'woocommerce' ),
-						'singular_name'     => __( 'Product Tag', 'woocommerce' ),
-						'menu_name'         => _x( 'Tags', 'Admin menu name', 'woocommerce' ),
-						'search_items'      => __( 'Search Product Tags', 'woocommerce' ),
-						'all_items'         => __( 'All Product Tags', 'woocommerce' ),
-						'parent_item'       => __( 'Parent Product Tag', 'woocommerce' ),
-						'parent_item_colon' => __( 'Parent Product Tag:', 'woocommerce' ),
-						'edit_item'         => __( 'Edit Product Tag', 'woocommerce' ),
-						'update_item'       => __( 'Update Product Tag', 'woocommerce' ),
-						'add_new_item'      => __( 'Add New Product Tag', 'woocommerce' ),
-						'new_item_name'     => __( 'New Product Tag Name', 'woocommerce' )
+						'name'                       => __( 'Product Tags', 'woocommerce' ),
+						'singular_name'              => __( 'Product Tag', 'woocommerce' ),
+						'menu_name'                  => _x( 'Tags', 'Admin menu name', 'woocommerce' ),
+						'search_items'               => __( 'Search Product Tags', 'woocommerce' ),
+						'all_items'                  => __( 'All Product Tags', 'woocommerce' ),
+						'edit_item'                  => __( 'Edit Product Tag', 'woocommerce' ),
+						'update_item'                => __( 'Update Product Tag', 'woocommerce' ),
+						'add_new_item'               => __( 'Add New Product Tag', 'woocommerce' ),
+						'new_item_name'              => __( 'New Product Tag Name', 'woocommerce' ),
+						'popular_items'              => __( 'Popular Product Tags', 'woocommerce' ),
+						'separate_items_with_commas' => __( 'Separate Product Tags with commas', 'woocommerce'  ),
+						'add_or_remove_items'        => __( 'Add or remove Product Tags', 'woocommerce' ),
+						'choose_from_most_used'      => __( 'Choose from the most used Product tags', 'woocommerce' ),
+						'not_found'                  => __( 'No Product Tags found', 'woocommerce' ),
 					),
 				'show_ui'               => true,
 				'query_var'             => true,
@@ -263,12 +266,6 @@ class WC_Post_types {
 			)
 		);
 
-		$menu_name = _x( 'Orders', 'Admin menu name', 'woocommerce' );
-
-		if ( $order_count = wc_processing_order_count() ) {
-			$menu_name .= ' <span class="awaiting-mod update-plugins count-' . $order_count . '"><span class="processing-count">' . number_format_i18n( $order_count ) . '</span></span>';
-		}
-
 		wc_register_order_type(
 			'shop_order',
 			apply_filters( 'woocommerce_register_post_type_shop_order',
@@ -287,7 +284,7 @@ class WC_Post_types {
 							'not_found'          => __( 'No Orders found', 'woocommerce' ),
 							'not_found_in_trash' => __( 'No Orders found in trash', 'woocommerce' ),
 							'parent'             => __( 'Parent Orders', 'woocommerce' ),
-							'menu_name'          => $menu_name
+							'menu_name'          => _x( 'Orders', 'Admin menu name', 'woocommerce' )
 						),
 					'description'         => __( 'This is where store orders are stored.', 'woocommerce' ),
 					'public'              => false,
