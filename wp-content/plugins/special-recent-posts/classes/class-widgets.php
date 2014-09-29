@@ -7,7 +7,7 @@
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @access public
  */
 class WDG_SpecialRecentPostsFree extends WP_Widget {
@@ -23,7 +23,7 @@ class WDG_SpecialRecentPostsFree extends WP_Widget {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 * @return boolean true
 	 */
@@ -56,7 +56,7 @@ class WDG_SpecialRecentPostsFree extends WP_Widget {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 * @param  array $instance The current widget values set by the user.
 	 * @return boolean true
@@ -75,7 +75,7 @@ class WDG_SpecialRecentPostsFree extends WP_Widget {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 * @global $srp_default_widget_values The global plugin values.
 	 * @param  array $new_instance The new widget values to be saved.
@@ -156,7 +156,7 @@ class WDG_SpecialRecentPostsFree extends WP_Widget {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 * @param  array $args The option values args.
 	 * @param  array $instance The current widget instance.
@@ -218,7 +218,7 @@ class WDG_SpecialRecentPostsFree extends WP_Widget {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 * @global  $srp_default_widget_values The default widget presets.
 	 * @param  array $instance The current widget instance.
@@ -1482,7 +1482,7 @@ class WDG_SpecialRecentPostsFree extends WP_Widget {
 							<li>
 								<strong><?php _e( 'Latest update:', SRP_TRANSLATION_ID); ?></strong>
 								<br />
-								<?php _e( 'September 10, 2014', SRP_TRANSLATION_ID ); ?>
+								<?php _e( 'September 27, 2014', SRP_TRANSLATION_ID ); ?>
 							</li>
 							
 							<li>

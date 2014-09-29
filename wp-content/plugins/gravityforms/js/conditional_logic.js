@@ -67,23 +67,30 @@ function gf_get_field_action(formId, conditionalLogic){
 }
 
 function gf_is_match(formId, rule){
-    
+
     var isMatch = false;
     var inputs = jQuery("#input_" + formId + "_" + rule["fieldId"] + " input");
-
+    var fieldValue;
     if(inputs.length > 0){
-        //handling checkboxes/radio
+    	//handling checkboxes/radio
+
         for(var i=0; i< inputs.length; i++){
-            var fieldValue = gf_get_value(jQuery(inputs[i]).val());
+            fieldValue = gf_get_value(jQuery(inputs[i]).val());
 
             //find specific checkbox/radio item. Skip if this is not the specific item and the operator is not one that targets a range of values (i.e. greater than and less than)
-            var isRangeOperator = jQuery.inArray(rule["operator"], ["<", ">"]) >= 0;
-            if(fieldValue != rule["value"] && !isRangeOperator)
+            var isRangeOperator = jQuery.inArray(rule["operator"], ["<", ">", "contains", "starts_with", "ends_with"]) >= 0;
+            if(fieldValue != rule["value"] && !isRangeOperator) {
                 continue;
+			}
 
             //blank value if item isn't checked
-            if(!jQuery(inputs[i]).is(":checked"))
+            if(!jQuery(inputs[i]).is(":checked")) {
                 fieldValue = "";
+			}
+			else if (fieldValue == "gf_other_choice"){
+				//get the value from the associated text box
+				fieldValue = jQuery("#input_" + formId + "_" + rule["fieldId"] + "_other").val();
+			}
 
             if(gf_matches_operation(fieldValue, rule["value"], rule["operator"]))
                 isMatch = true;
@@ -97,8 +104,41 @@ function gf_is_match(formId, rule){
         var values = (val instanceof Array) ? val : [val];
 
         var matchCount = 0;
+
+        var fieldNumberFormat = window['gf_global'] && gf_global.number_formats && gf_global.number_formats[formId] && gf_global.number_formats[formId][rule["fieldId"]] ? gf_global.number_formats[formId][rule["fieldId"]] : false;
+
         for(var i=0; i < values.length; i++){
-            var fieldValue = gf_get_value(values[i]);
+
+            //fields with pipes in the value will use the label for conditional logic comparison
+            var hasLabel = values[i] ? values[i].indexOf("|") >= 0 : true;
+
+            fieldValue = gf_get_value(values[i]);
+
+            var decimalSeparator = ".";
+            if( fieldNumberFormat && !hasLabel){
+
+                if( fieldNumberFormat == "currency" )
+                    decimalSeparator = gformGetDecimalSeparator('currency');
+                else if( fieldNumberFormat == "decimal_comma")
+                    decimalSeparator = ",";
+                else if( fieldNumberFormat == "decimal_dot")
+                    decimalSeparator = ".";
+
+                //transform to a decimal dot number
+                fieldValue = gformCleanNumber( fieldValue, '', '', decimalSeparator);
+
+                //now transform to number specified by locale
+                if(window['gf_number_format'] && window['gf_number_format'] == "decimal_comma")
+                    fieldValue = gformFormatNumber(fieldValue, -1, ",", ".");
+
+                if( ! fieldValue )
+                    fieldValue = 0;
+
+                fieldValue = fieldValue.toString();
+            }
+
+
+
             if(gf_matches_operation(fieldValue, rule["value"], rule["operator"])){
                 matchCount++;
             }
@@ -106,7 +146,7 @@ function gf_is_match(formId, rule){
         //If operator is Is Not, none of the value can match
         isMatch = rule["operator"] == "isnot" ? matchCount == values.length : matchCount > 0;
     }
-    
+
     return gform.applyFilters( 'gform_is_value_match', isMatch, formId, rule );
 }
 
@@ -138,14 +178,14 @@ function gf_matches_operation(val1, val2, operation){
             val1 = gf_try_convert_float(val1);
             val2 = gf_try_convert_float(val2);
 
-            return val1 > val2;
+            return gformIsNumber(val1) && gformIsNumber(val2) ? val1 > val2 : false;
         break;
 
         case "<" :
             val1 = gf_try_convert_float(val1);
             val2 = gf_try_convert_float(val2);
 
-            return val1 < val2;
+            return gformIsNumber(val1) && gformIsNumber(val2) ? val1 < val2 : false;
         break;
 
         case "contains" :
@@ -198,41 +238,44 @@ function gf_do_next_button_action(formId, action, fieldId, isInit){
 }
 
 function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, callback){
-    if(action == "show"){
-        if(useAnimation && !isInit){
-            if(jQuery(targetId).length > 0)
-                jQuery(targetId).slideDown(callback);
-            else if(callback)
-                callback();
+	var $target = jQuery(targetId);
+	if(action == "show"){
+		if(useAnimation && !isInit){
+			if($target.length > 0){
+				$target.slideDown(callback);
+			} else if(callback){
+				callback();
+			}
+		}
+		else{
+			$target.show();
+			if(callback){
+				callback();
+			}
+		}
+	}
+	else{
+		//if field is not already hidden, reset its values to the default
+		var child = $target.children().first();
+		if (child.length > 0){
+			if(!gformIsHidden(child)){
+				gf_reset_to_default(targetId, defaultValues);
+			}
+		}
 
-        }
-        else{
-            jQuery(targetId).show();
-            if(callback)
-                callback();
-
-        }
-    }
-    else{
-        //if field is not already hidden, reset its values to the default
-        var child = jQuery(targetId).children().first();
-
-        if(!gformIsHidden(child)){
-            gf_reset_to_default(targetId, defaultValues);
-        }
-
-        if(useAnimation && !isInit){
-            if(jQuery(targetId).length > 0)
-                jQuery(targetId).slideUp(callback);
-            else if(callback)
-                callback();
-        }
-        else{
-            jQuery(targetId).hide();
-            if(callback)
-                callback();
-        }
-    }
+		if(useAnimation && !isInit){
+			if($target.length > 0 && $target.is(":visible")) {
+				$target.slideUp(callback);
+			} else if(callback) {
+				callback();
+			}
+		} else{
+			$target.hide();
+			if(callback){
+				callback();
+			}
+		}
+	}
 }
 
 function gf_reset_to_default(targetId, defaultValue){
@@ -249,10 +292,15 @@ function gf_reset_to_default(targetId, defaultValue){
                 val = "";
             }
 
-            if(jQuery(this).prop("tagName") == "SELECT")
+            var element = jQuery(this);
+            if(element.prop("tagName") == "SELECT")
                 val = parseInt(val);
 
-            jQuery(this).val(val).trigger("change");
+
+            if(element.val() != val)
+                element.val(val).trigger("change");
+            else
+                element.val(val);
 
         });
 
@@ -268,27 +316,34 @@ function gf_reset_to_default(targetId, defaultValue){
     target.each(function(){
         var val = "";
 
-        if(jQuery(this).is('select:not([multiple])')){
-            val = jQuery(this).find('option').eq(0).val();
+        var element = jQuery(this);
+        if(element.is('select:not([multiple])')){
+            val = element.find('option' ).not( ':disabled' ).eq(0).val();
         }
 
         //get name of previous input field to see if it is the radio button which goes with the "Other" text box
         //otherwise field is populated with input field name
-        var radio_button_name = jQuery(this).prev("input").attr("value");
+        var radio_button_name = element.prev("input").attr("value");
         if(radio_button_name == "gf_other_choice"){
-        	val = jQuery(this).attr("value");
+        	val = element.attr("value");
         }
         else if(jQuery.isArray(defaultValue)){
             val = defaultValue[target_index];
         }
         else if(jQuery.isPlainObject(defaultValue)){
-            val = defaultValue[jQuery(this).attr("name")];
+            val = defaultValue[element.attr("name")];
         }
         else if(defaultValue){
+
             val = defaultValue;
+
         }
 
-        jQuery(this).val(val).trigger('change');
+        if(element.val() != val)
+            element.val(val).trigger('change');
+        else
+            element.val(val);
+
         target_index++;
     });
 
@@ -306,11 +361,18 @@ function gf_reset_to_default(targetId, defaultValue){
         //if value changed, trigger click event
         if(isChecked != doCheck){
             //setting input as checked or unchecked appropriately
-            jQuery(this).prop("checked", doCheck);
 
-            //need to set the prop again after the click is triggered
-            jQuery(this).trigger('click').prop('checked', doCheck);
+            if(jQuery(this).attr("type") == "checkbox"){
+                jQuery(this).trigger('click');
+            }
+            else{
+                jQuery(this).prop("checked", doCheck);
+
+                //need to set the prop again after the click is triggered
+                jQuery(this).trigger('click').prop('checked', doCheck);
+            }
+
         }
     });
-}
 
+}

@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce - Store Exporter
 Plugin URI: http://www.visser.com.au/woocommerce/plugins/exporter/
 Description: Export store details out of WooCommerce into simple formatted files (e.g. CSV, XML, Excel 2007 XLS, etc.).
-Version: 1.7.8
+Version: 1.8.2
 Author: Visser Labs
 Author URI: http://www.visser.com.au/about/
 License: GPL2
@@ -49,6 +49,11 @@ if( is_admin() ) {
 			include_once( WOO_CE_PATH . 'includes/install.php' );
 			woo_ce_deactivate_ce();
 		}
+		// Detect if WooCommerce Subscriptions Exporter is activated
+		if( function_exists( 'wc_subs_exporter_admin_init' ) ) {
+			$message = sprintf( __( 'We have detected a WooCommerce Plugin that is activated and known to conflict with Store Exporter, please de-activate WooCommerce Subscriptions Exporter to resolve export issues. <a href="%s" target="_blank">Need help?</a>', 'woo_ce' ), $troubleshooting_url );
+			woo_cd_admin_notice( $message, 'error', array( 'plugins.php', 'admin.php' ) );
+		}
 
 		// Check that we are on the Store Exporter screen
 		$page = ( isset($_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : false );
@@ -68,6 +73,12 @@ if( is_admin() ) {
 		add_action( 'woo_ce_export_category_options_after_table', 'woo_ce_category_order_sorting' );
 		add_action( 'woo_ce_export_tag_options_after_table', 'woo_ce_tag_order_sorting' );
 		add_action( 'woo_ce_export_user_options_after_table', 'woo_ce_users_user_sorting' );
+		add_action( 'woo_ce_export_shipping_class_options_after_table', 'woo_ce_shipping_class_order_sorting' );
+		add_action( 'woo_ce_export_options', 'woo_ce_products_upsells_formatting' );
+		add_action( 'woo_ce_export_options', 'woo_ce_products_crosssells_formatting' );
+		add_action( 'woo_ce_export_after_form', 'woo_ce_products_custom_fields' );
+		add_action( 'woo_ce_export_after_form', 'woo_ce_users_custom_fields' );
+		add_action( 'woo_ce_export_after_form', 'woo_ce_customers_custom_fields' );
 
 		// Add Store Exporter Deluxe widgets to Export screen
 		add_action( 'woo_ce_export_brand_options_before_table', 'woo_ce_brands_brand_sorting' );
@@ -84,7 +95,6 @@ if( is_admin() ) {
 		add_action( 'woo_ce_export_options', 'woo_ce_orders_items_formatting' );
 		add_action( 'woo_ce_export_options', 'woo_ce_orders_max_order_items' );
 		add_action( 'woo_ce_export_options', 'woo_ce_orders_items_types' );
-		add_action( 'woo_ce_export_after_form', 'woo_ce_products_custom_fields' );
 		add_action( 'woo_ce_export_after_form', 'woo_ce_orders_custom_fields' );
 		add_action( 'woo_ce_export_options', 'woo_ce_export_options_export_format' );
 		add_action( 'woo_ce_export_options', 'woo_ce_export_options_gallery_format' );
@@ -100,6 +110,14 @@ if( is_admin() ) {
 			// Prompt on Export screen when insufficient memory (less than 64M is allocated)
 			case 'dismiss_memory_prompt':
 				woo_ce_update_option( 'dismiss_memory_prompt', 1 );
+				$url = add_query_arg( 'action', null );
+				wp_redirect( $url );
+				exit();
+				break;
+
+			// Prompt on Export screen when insufficient memory (less than 64M is allocated)
+			case 'dismiss_php_legacy':
+				woo_ce_update_option( 'dismiss_php_legacy', 1 );
 				$url = add_query_arg( 'action', null );
 				wp_redirect( $url );
 				exit();
@@ -129,16 +147,36 @@ if( is_admin() ) {
 				$export->idle_memory_start = woo_ce_current_memory_usage();
 				$export->delete_file = woo_ce_get_option( 'delete_file', 0 );
 				$export->encoding = woo_ce_get_option( 'encoding', get_option( 'blog_charset', 'UTF-8' ) );
-				// Check for bad encoding
-				if( $export->encoding == '' || $export->encoding == false || $export->encoding == 'System default' )
+				// Reset the Encoding if corrupted
+				if( $export->encoding == '' || $export->encoding == false || $export->encoding == 'System default' ) {
 					$export->encoding = 'UTF-8';
+					woo_ce_update_option( 'encoding', 'UTF-8' );
+				}
 				$export->delimiter = woo_ce_get_option( 'delimiter', ',' );
+				// Reset the Delimiter if corrupted
+				if( $export->delimiter == '' || $export->delimiter == false ) {
+					$export->delimiter = ',';
+					woo_ce_update_option( 'delimiter', ',' );
+				}
 				$export->category_separator = woo_ce_get_option( 'category_separator', '|' );
+				// Reset the Category Separator if corrupted
+				if( $export->category_separator == '' || $export->category_separator == false ) {
+					$export->category_separator = '|';
+					woo_ce_update_option( 'category_separator', '|' );
+				}
 				$export->bom = woo_ce_get_option( 'bom', 1 );
 				$export->escape_formatting = woo_ce_get_option( 'escape_formatting', 'all' );
+				// Reset the Escape Formatting if corrupted
+				if( $export->escape_formatting == '' || $export->escape_formatting == false ) {
+					$export->escape_formatting = 'all';
+					woo_ce_update_option( 'escape_formatting', 'all' );
+				}
 				$export->date_format = woo_ce_get_option( 'date_format', 'd/m/Y' );
-				if( $export->date_format == 1 || $export->date_format == '' )
+				// Reset the Date Format if corrupted
+				if( $export->date_format == '1' || $export->date_format == '' || $export->date_format == false ) {
 					$export->date_format = 'd/m/Y';
+					woo_ce_update_option( 'date_format', 'd/m/Y' );
+				}
 
 				// Save export option changes made on the Export screen
 				$export->limit_volume = ( isset( $_POST['limit_volume'] ) ? sanitize_text_field( $_POST['limit_volume'] ) : '' );
@@ -152,6 +190,7 @@ if( is_admin() ) {
 
 				// Set default values for all export options to be later passed onto the export process
 				$export->fields = false;
+				$export->fields_order = false;
 				$export->export_format = 'csv';
 
 				// Product sorting
@@ -379,7 +418,7 @@ if( is_admin() ) {
 				if( $_POST['date_format'] == 'custom' && !empty( $_POST['date_format_custom'] ) )
 					woo_ce_update_option( 'date_format', sanitize_text_field( (string)$_POST['date_format_custom'] ) );
 				else
-				woo_ce_update_option( 'date_format', sanitize_text_field( (string)$_POST['date_format'] ) );
+					woo_ce_update_option( 'date_format', sanitize_text_field( (string)$_POST['date_format'] ) );
 
 				$message = __( 'Changes have been saved.', 'woo_ce' );
 				woo_ce_admin_notice( $message );
@@ -471,36 +510,8 @@ if( is_admin() ) {
 					}
 				}
 
-				// Save Custom Order Meta
-				if( isset( $_POST['custom_orders'] ) ) {
-					$custom_orders = $_POST['custom_orders'];
-					$custom_orders = explode( "\n", trim( $custom_orders ) );
-					$size = count( $custom_orders );
-					if( $size ) {
-						for( $i = 0; $i < $size; $i++ )
-							$custom_orders[$i] = sanitize_text_field( trim( $custom_orders[$i] ) );
-						woo_ce_update_option( 'custom_orders', $custom_orders );
-					}
-				}
-
-				// Save Custom Order Item Meta
-				if( isset( $_POST['custom_order_items'] ) ) {
-					$custom_order_items = $_POST['custom_order_items'];
-					if( !empty( $custom_order_items ) ) {
-						$custom_order_items = explode( "\n", trim( $custom_order_items ) );
-						$size = count( $custom_order_items );
-						if( $size ) {
-							for( $i = 0; $i < $size; $i++ )
-								$custom_order_items[$i] = sanitize_text_field( trim( $custom_order_items[$i] ) );
-							woo_ce_update_option( 'custom_order_items', $custom_order_items );
-						}
-					} else {
-						woo_ce_update_option( 'custom_order_items', '' );
-					}
-				}
-
 				$message = __( 'Custom Fields saved.', 'woo_ce' );
-				woo_ce_admin_notice( $message );
+				woo_ce_admin_notice_html( $message );
 				woo_ce_manage_form();
 				break;
 

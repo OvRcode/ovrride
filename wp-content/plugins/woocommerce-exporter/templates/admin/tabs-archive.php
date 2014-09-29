@@ -9,6 +9,8 @@
 	<li><a href="<?php echo add_query_arg( 'filter', 'user' ); ?>"<?php woo_ce_archives_quicklink_current( 'user' ); ?>><?php _e( 'Users', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'user' ); ?>)</span></a> |</li>
 	<li><?php _e( 'Coupon', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'coupon' ); ?>)</span> |</li>
 	<li><?php _e( 'Subscriptions', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'subscription' ); ?>)</span></li>
+	<li><?php _e( 'Product Vendors', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'product_vendor' ); ?>)</span> |</li>
+	<li><?php _e( 'Shipping Classes', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'shipping_class' ); ?>)</span> |</li>
 	<!-- <li><?php _e( 'Attributes', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'attribute' ); ?>)</span></li> -->
 </ul>
 <!-- .subsubsub -->

@@ -9,7 +9,7 @@
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  *
  * @global array $srp_default_widget_values
  * @global array $srp_default_plugin_values

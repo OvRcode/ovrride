@@ -7,7 +7,7 @@
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @access public
  */
 class SpecialRecentPostsFree {
@@ -56,7 +56,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 * @global $srp_default_widget_values The global default widget presets.
 	 * @global $post The global $post WP object.
@@ -68,7 +68,7 @@ class SpecialRecentPostsFree {
 
 		// Setting up uploads dir for multi-site hack.
 		$this->uploads_dir = wp_upload_dir();
-
+		
 		// Including global default widget values.
 		global $srp_default_widget_values;
 		
@@ -109,7 +109,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 */
 	public function __deconstruct() {}
@@ -122,7 +122,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 */
 	static function install_plugin() {
@@ -139,7 +139,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access public
 	 */
 	static function uninstall_plugin() {
@@ -156,7 +156,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @global $srp_default_widget_values the global default plugin presets.
 	 * @access public
 	 * @return It returns true if the widget is allowed to be displayed on the current page/post. Otherwise false.
@@ -198,7 +198,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @global $srp_default_widget_values the global default plugin presets.
 	 * @access public
 	 * @return boolean true.
@@ -253,7 +253,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @global $srp_version_map The global version map super array.
 	 * @access public
 	 * @return array $oldargs The updated plugin values.
@@ -300,7 +300,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @param $post The global WP post object
 	 * @param $image_origin The original image source.
 	 * @param $image_to_render The final image to be rendered and saved.
@@ -416,7 +416,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @param $thumb_width The thumbnail width.
 	 * @param $thumb_height The thumbnail height.
 	 * @access private
@@ -439,7 +439,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @param $post The global WP post object.
 	 * @param $thumb_width The thumbnail width.
 	 * @param $thumb_height The thumbnail height.
@@ -521,7 +521,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @param $post The global WP post object.
 	 * @access private
 	 * @return mixed It could return the HTML code for the post thumbnail or false in case of some error.
@@ -536,7 +536,7 @@ class SpecialRecentPostsFree {
 			
 			// Checking if current featured thumbnail comes from the NExtGen Plugin.
 			if( stripos( $thumbnail_id, 'ngg-' ) !== false && class_exists( 'nggdb' ) ) {
-
+			
 				try {
 				
 					// Creating New NextGen Class instance.
@@ -579,19 +579,15 @@ class SpecialRecentPostsFree {
 
 			// Checking if the thumbnail already exists. In this case, simply render it. Otherwise generate it.
 			if ( ( file_exists( SRP_PLUGIN_DIR . $featured_thumb_cache ) ) || ( $this->generate_gd_image( $post, 'featured', $featured_physical_path, SRP_PLUGIN_DIR . $featured_thumb_cache, $this->widget_args['thumbnail_width'], $this->widget_args['thumbnail_height'], $this->widget_args['thumbnail_rotation'] ) ) ) {
-
+			
 				// Return cached image as source (URL path).
 				$featured_thumb_src = SRP_PLUGIN_URL . $featured_thumb_cache;
 				
 				// Generating Image HTML Tag.
 				$featured_htmltag = '<img src="' . $featured_thumb_src . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
 
-			} elseif ( $featured_thumb_url ) {
-				// S3 Image
-				$extension = strrpos($featured_thumb_url, '.');
-				$s3_thumb_url = substr_replace($featured_thumb_url,"-150x150", $extension, 0);
-				$featured_htmltag = '<img src="' . $s3_thumb_url . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
 			} else {
+			
 				// No featured image has been found. Trying to fetch the first image tag from the post content.
 				$featured_htmltag = $this->get_first_image_url( $post, $this->widget_args['thumbnail_width'], $this->widget_args['thumbnail_height'], $post->post_title );
 			}
@@ -646,7 +642,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @param $post The global WP post object.
 	 * @param $content_type The type of post content to display.
 	 * @param $post_global_counter The global post counter.
@@ -745,7 +741,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @param $post The global WP post object.
 	 * @access private
 	 * @return string The post title text.
@@ -793,7 +789,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @return string It returns the widget title.
 	 */
@@ -862,7 +858,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param  object $post The current WP post object.
 	 * @return string It returns the post title.
@@ -894,7 +890,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param  object $post The current WP post object.
 	 * @return string It returns the post date.
@@ -916,7 +912,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param  object $post The current WP post object.
 	 * @return string It returns the post content text.
@@ -980,7 +976,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @return object It returns the WP_query object containing the fetched posts.
 	 */
@@ -1144,7 +1140,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param  string $widget_call This variable determines how the SRP engine is invoked.
 	 * @param  string $return_mode This variable determines how the SRP output should be rendered.
@@ -1205,9 +1201,6 @@ class SpecialRecentPostsFree {
 				// Opening single post container.
 				$srp_content .= '<div id="' . $srp_post_id . '" class="srp-widget-singlepost">';
 
-				// Generating the post title.
-				$srp_content .= $this->generate_post_title( $recent_posts->post );
-				
 				$srp_content .= '<div class="srp-post-content-container">';
 
 				// Checking if thumbnail option is on.
@@ -1224,7 +1217,7 @@ class SpecialRecentPostsFree {
 					$srp_content .= '<div class="srp-content-box">';
 					
 					// Generating the post title.
-					//$srp_content .= $this->generate_post_title( $recent_posts->post );
+					$srp_content .= $this->generate_post_title( $recent_posts->post );
 					
 					// Checking if "post_date" option is on.
 					if ( 'yes' == $this->widget_args['post_date'] ) {
@@ -1306,7 +1299,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param string $tagname The HTML tag name.
 	 * @param string $tag_content The HTML tag content
@@ -1356,7 +1349,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param string $string The string to sanitize.
 	 * @return string It returns a sanitized string.
@@ -1368,8 +1361,8 @@ class SpecialRecentPostsFree {
 		if ( 'no' == $this->widget_args['ext_shortcodes_compatibility'] ) $string = strip_shortcodes( $string );
 		
 		// We need to remove all the exceeding stuff. Removing shortcodes and slashes.
-		$temp_output = trim( html_entity_decode( stripslashes( $string ) ) );
-		
+		$temp_output = trim( stripslashes( $string ) );
+
 		// Checking for the qTranslate filter.
 		if ( function_exists( 'qtrans_useCurrentLanguageIfNotFoundShowAvailable' ) ) {
 
@@ -1401,7 +1394,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param string $string The string to search in
 	 * @param int $n A counter.
@@ -1472,7 +1465,7 @@ class SpecialRecentPostsFree {
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 * @access private
 	 * @param string $text The text to be truncated.
 	 * @param int $length The desired text length.

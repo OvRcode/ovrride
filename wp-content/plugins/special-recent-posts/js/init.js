@@ -1,7 +1,7 @@
 /**
 * SRP INIT JS
 * Package: special-recent-posts-free
-* Version: 2.0.2
+* Version: 2.0.4
 * Author: Luca Grandicelli <lgrandicelli@gmail.com>
 * Copyright (C) 2011-2014 Luca Grandicelli
 * The SRP jQuery init file.
@@ -21,7 +21,7 @@
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
 	 * @param {jQuery Object} tab The menu tab.
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 */
 	function srpInitAdminSettingsTabs( tab ) {
 		
@@ -59,7 +59,7 @@
 	 * @author Luca Grandicelli <lgrandicelli@gmail.com>
 	 * @copyright (C) 2011-2014 Luca Grandicelli
 	 * @package special-recent-posts-free
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 */
 	function srpInitAccordion() {
 
@@ -101,7 +101,7 @@
 	 * @package special-recent-posts-free
 	 * @param {event} event The on widgets update event.
 	 * @param {Object} widget The current widget instance.
-	 * @version 2.0.2
+	 * @version 2.0.4
 	 */
 	function srpOnWidgetUpdate( event, widget ) {
 

@@ -4,6 +4,8 @@
 	<?php do_action( 'woo_ce_export_settings_top' ); ?>
 </ul>
 <!-- .subsubsub -->
+<br class="clear" />
+
 <form method="post">
 	<table class="form-table">
 		<tbody>
@@ -12,14 +14,15 @@
 
 			<tr id="general-settings">
 				<td colspan="2" style="padding:0;">
-					<h3><?php _e( 'General Settings', 'woo_ce' ); ?></h3>
+					<h3><div class="dashicons dashicons-admin-settings"></div>&nbsp;<?php _e( 'General Settings', 'woo_ce' ); ?></h3>
+					<p class="description"><?php _e( 'Manage export options across Store Exporter from this screen.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
 
 			<tr valign="top">
 				<th scope="row"><label for="export_filename"><?php _e( 'Export filename', 'woo_ce' ); ?></label></th>
 				<td>
-					<input type="text" name="export_filename" id="export_filename" value="<?php echo esc_attr( $export_filename ); ?>" class="regular-text code" />
+					<input type="text" name="export_filename" id="export_filename" value="<?php echo esc_attr( $export_filename ); ?>" class="large-text code" />
 					<p class="description"><?php _e( 'The filename of the exported export type. Tags can be used: ', 'woo_ce' ); ?> <code>%dataset%</code>, <code>%date%</code>, <code>%time%</code>, <code>%store_name%</code>.</p>
 				</td>
 			</tr>
@@ -36,7 +39,6 @@
 					<p class="description"><?php _e( 'Save copies of exports to the WordPress Media for later downloading. By default this option is turned on.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
-
 			<tr>
 				<th>
 					<label for="encoding"><?php _e( 'Character encoding', 'woo_ce' ); ?></label>
@@ -54,7 +56,6 @@
 <?php } ?>
 				</td>
 			</tr>
-
 			<tr>
 				<th><?php _e( 'Date format', 'woo_ce' ); ?></th>
 				<td>
@@ -63,15 +64,12 @@
 						<label title="Y/m/d"><input type="radio" name="date_format" value="Y/m/d"<?php checked( $date_format, 'Y/m/d' ); ?>> <span><?php echo date( 'Y/m/d' ); ?></span></label><br>
 						<label title="m/d/Y"><input type="radio" name="date_format" value="m/d/Y"<?php checked( $date_format, 'm/d/Y' ); ?>> <span><?php echo date( 'm/d/Y' ); ?></span></label><br>
 						<label title="d/m/Y"><input type="radio" name="date_format" value="d/m/Y"<?php checked( $date_format, 'd/m/Y' ); ?>> <span><?php echo date( 'd/m/Y' ); ?></span></label><br>
-<!--
-						<label><input type="radio" name="date_format" id="date_format_custom_radio" value="\c\u\s\t\o\m"> Custom: </label><input type="text" name="date_format_custom" value="F j, Y" class="small-text"> <span class="example"> January 6, 2014</span> <span class="spinner"></span>
-						<p><a href="http://codex.wordpress.org/Formatting_Date_and_Time"><?php _e( 'Documentation on date and time formatting', 'woo_ce' ); ?></a>.</p>
--->
+						<label><input type="radio" name="date_format" value="custom"<?php checked( in_array( $date_format, array( 'F j, Y', 'Y/m/d', 'm/d/Y', 'd/m/Y' ) ), false ); ?>/> <?php _e( 'Custom', 'woo_ce' ); ?>: </label><input type="text" name="date_format_custom" value="<?php echo sanitize_text_field( $date_format ); ?>" class="text" />
+						<p><a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank"><?php _e( 'Documentation on date and time formatting', 'woo_ce' ); ?></a>.</p>
 					</fieldset>
 					<p class="description"><?php _e( 'The date format option affects how date\'s are presented within your export file. Default is set to DD/MM/YYYY.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
-
 <?php if( !ini_get( 'safe_mode' ) ) { ?>
 			<tr>
 				<th>
@@ -94,10 +92,9 @@
 			<tr id="csv-settings">
 				<td colspan="2" style="padding:0;">
 					<hr />
-					<h3><?php _e( 'CSV Settings', 'woo_ce' ); ?></h3>
+					<h3><div class="dashicons dashicons-media-spreadsheet"></div>&nbsp;<?php _e( 'CSV Settings', 'woo_ce' ); ?></h3>
 				</td>
 			</tr>
-
 			<tr>
 				<th>
 					<label for="delimiter"><?php _e( 'Field delimiter', 'woo_ce' ); ?></label>
@@ -107,7 +104,6 @@
 					<p class="description"><?php _e( 'The field delimiter is the character separating each cell in your CSV. This is typically the \',\' (comma) character.', 'woo_pc' ); ?></p>
 				</td>
 			</tr>
-
 			<tr>
 				<th>
 					<label for="category_separator"><?php _e( 'Category separator', 'woo_ce' ); ?></label>
@@ -117,7 +113,6 @@
 					<p class="description"><?php _e( 'The Product Category separator allows you to assign individual Products to multiple Product Categories/Tags/Images at a time. It is suggested to use the \'|\' (vertical pipe) character between each item. For instance: <code>Clothing|Mens|Shirts</code>.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
-
 			<tr>
 				<th>
 					<label for="bom"><?php _e( 'Add BOM character', 'woo_ce' ); ?></label>
@@ -130,7 +125,6 @@
 					<p class="description"><?php _e( 'Mark the CSV file as UTF8 by adding a byte order mark (BOM) to the export, useful for non-English character sets.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
-
 			<tr>
 				<th>
 					<label for="escape_formatting"><?php _e( 'Field escape formatting', 'woo_ce' ); ?></label>
@@ -146,10 +140,10 @@
 
 		</tbody>
 	</table>
+	<!-- .form-table -->
 	<p class="submit">
 		<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Save Changes', 'woo_ce' ); ?>" />
 	</p>
-
 	<input type="hidden" name="action" value="save-settings" />
 </form>
 <?php do_action( 'woo_ce_export_settings_bottom' ); ?>

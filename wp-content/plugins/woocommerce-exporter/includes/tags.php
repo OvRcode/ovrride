@@ -57,6 +57,8 @@ function woo_ce_get_product_tags( $args = array() ) {
 // Returns a list of Product Tag export columns
 function woo_ce_get_tag_fields( $format = 'full' ) {
 
+	$export_type = 'tag';
+
 	$fields = array();
 	$fields[] = array(
 		'name' => 'term_id',
@@ -78,10 +80,10 @@ function woo_ce_get_tag_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional Product Tag columns
-	$fields = apply_filters( 'woo_ce_tag_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
-	if( $remember = woo_ce_get_option( 'tag_fields', array() ) ) {
+	if( $remember = woo_ce_get_option( $export_type . '_fields', array() ) ) {
 		$remember = maybe_unserialize( $remember );
 		$size = count( $fields );
 		for( $i = 0; $i < $size; $i++ ) {
@@ -97,19 +99,40 @@ function woo_ce_get_tag_fields( $format = 'full' ) {
 		case 'summary':
 			$output = array();
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
-				$output[$fields[$i]['name']] = 'on';
+			for( $i = 0; $i < $size; $i++ ) {
+				if( isset( $fields[$i] ) )
+					$output[$fields[$i]['name']] = 'on';
+			}
 			return $output;
 			break;
 
 		case 'full':
 		default:
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
+			$size = count( $fields );
+			for( $i = 0; $i < $size; $i++ )
+				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
+			usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
 	}
 
 }
+
+function woo_ce_override_tag_field_labels( $fields = array() ) {
+
+	$labels = woo_ce_get_option( 'tag_labels', array() );
+	if( !empty( $labels ) ) {
+		foreach( $fields as $key => $field ) {
+			if( isset( $labels[$field['name']] ) )
+				$fields[$key]['label'] = $labels[$field['name']];
+		}
+	}
+	return $fields;
+
+}
+add_filter( 'woo_ce_tag_fields', 'woo_ce_override_tag_field_labels', 11 );
 
 // Returns the export column header label based on an export column slug
 function woo_ce_get_tag_field( $name = null, $format = 'name' ) {

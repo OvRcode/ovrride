@@ -324,6 +324,9 @@ if( is_admin() ) {
 	// HTML template for disabled Custom Orders widget on Store Exporter screen
 	function woo_ce_orders_custom_fields() {
 
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
 		$custom_orders = '-';
 		$custom_order_items = '-';
 
@@ -345,6 +348,7 @@ if( is_admin() ) {
 						</th>
 						<td>
 							<textarea name="custom_orders" rows="5" cols="70" disabled="disabled"><?php echo esc_textarea( $custom_orders ); ?></textarea>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
 							<p class="description"><?php _e( 'Include additional custom Order meta in your export file by adding each custom Order meta name to a new line above.<br />For example: <code>Customer UA, Customer IP Address</code>', 'woo_ce' ); ?></p>
 						</td>
 					</tr>
@@ -355,13 +359,14 @@ if( is_admin() ) {
 						</th>
 						<td>
 							<textarea name="custom_order_items" rows="5" cols="70" disabled="disabled"><?php echo esc_textarea( $custom_order_items ); ?></textarea>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
 							<p class="description"><?php _e( 'Include additional custom Order Item meta in your export file by adding each custom Order Item meta name to a new line above.<br />For example: <code>Personalized Message</code>.', 'woo_ce' ); ?></p>
 						</td>
 					</tr>
 
 				</table>
 				<p class="submit">
-					<input type="submit" value="<?php _e( 'Save Custom Fields', 'woo_ce' ); ?>" class="button-primary" />
+					<input type="button" class="button button-disabled" value="<?php _e( 'Save Custom Fields', 'woo_ce' ); ?>" />
 				</p>
 				<p class="description"><?php printf( __( 'For more information on custom Order and Order Item meta consult our <a href="%s" target="_blank">online documentation</a>.', 'woo_ce' ), $troubleshooting_url ); ?></p>
 			</div>
@@ -385,6 +390,8 @@ if( is_admin() ) {
 
 // Returns a list of Order export columns
 function woo_ce_get_order_fields( $format = 'full' ) {
+
+	$export_type = 'order';
 
 	$fields = array();
 	$fields[] = array(
@@ -691,8 +698,8 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional Order columns
-	$fields = apply_filters( 'woo_ce_order_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
 	switch( $format ) {
 
@@ -708,12 +715,31 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 
 		case 'full':
 		default:
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
+			$size = count( $fields );
+			for( $i = 0; $i < $size; $i++ )
+				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
+			usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
 	}
 
 }
+
+function woo_ce_override_order_field_labels( $fields = array() ) {
+
+	$labels = woo_ce_get_option( 'order_labels', array() );
+	if( !empty( $labels ) ) {
+		foreach( $fields as $key => $field ) {
+			if( isset( $labels[$field['name']] ) )
+				$fields[$key]['label'] = $labels[$field['name']];
+		}
+	}
+	return $fields;
+
+}
+add_filter( 'woo_ce_order_fields', 'woo_ce_override_order_field_labels', 11 );
 
 // Adds custom Order and Order Item columns to the Order fields list
 function woo_ce_extend_order_fields( $fields = array() ) {
@@ -939,6 +965,14 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 		);
 	}
 
+	// Product Vendors - http://www.woothemes.com/products/product-vendors/
+	if( class_exists( 'WooCommerce_Product_Vendors' ) ) {
+		$fields[] = array(
+			'name' => 'order_items_vendor',
+			'label' => __( 'Order Items: Product Vendor', 'woo_ce' )
+		);
+	}
+
 	// Cost of Goods - http://www.skyverge.com/product/woocommerce-cost-of-goods-tracking/
 	if( class_exists( 'WC_COG' ) ) {
 		$fields[] = array(
@@ -1074,7 +1108,7 @@ function woo_ce_get_order_statuses() {
 	$terms = false;
 	// Check if this is a WooCommerce 2.2+ instance (new Post Status)
 	$woocommerce_version = woo_get_woo_version();
-	if( version_compare( $woocommerce_version, '2.2', '>=' ) ) {
+	if( version_compare( $woocommerce_version, '2.2' ) >= 0 ) {
 		// Convert Order Status array into our magic sauce
 		$order_statuses = ( function_exists( 'wc_get_order_statuses' ) ? wc_get_order_statuses() : false );
 		if( !empty( $order_statuses ) ) {

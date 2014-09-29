@@ -7,7 +7,7 @@
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @return boolean true
  */
 function srp_widgets_init() {
@@ -27,7 +27,7 @@ function srp_widgets_init() {
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @return boolean true
  */
 function srp_check_plugin_compatibility() {
@@ -121,7 +121,7 @@ function srp_check_plugin_compatibility() {
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @return boolean true
  */
 function srp_admin_menu() {
@@ -144,7 +144,7 @@ function srp_admin_menu() {
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @param string $hook The current viewed page hook.
  * @return boolean true
  */
@@ -204,7 +204,7 @@ function srp_admin_enqueue_scripts( $hook ) {
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @return boolean true
  */
 function srp_wp_head() {
@@ -245,7 +245,7 @@ function srp_wp_head() {
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @return boolean true
  */
 function srp_admin_menu_options() {
@@ -633,7 +633,7 @@ function srp_admin_menu_options() {
 							<?php _e( 'Latest update:', SRP_TRANSLATION_ID ); ?>
 						</dt>
 						<dd>
-							<?php _e( 'September 10, 2014', SRP_TRANSLATION_ID ); ?>
+							<?php _e( 'September 27, 2014', SRP_TRANSLATION_ID ); ?>
 						</dd>
 						<!-- BEGIN Latest update -->
 
@@ -734,7 +734,7 @@ function srp_admin_menu_options() {
  * @author Luca Grandicelli <lgrandicelli@gmail.com>
  * @copyright (C) 2011-2014 Luca Grandicelli
  * @package special-recent-posts-free
- * @version 2.0.2
+ * @version 2.0.4
  * @global $srp_default_plugin_values The default plugin presets.
  * @param array $data The $_POST data.
  * @return boolean true

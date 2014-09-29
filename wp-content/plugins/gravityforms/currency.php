@@ -1,4 +1,9 @@
 <?php
+
+if(!class_exists('GFForms')){
+    die();
+}
+
 if(!class_exists("RGCurrency")){
 
 class RGCurrency{
@@ -95,7 +100,7 @@ class RGCurrency{
         "BRL" => array("name" => __("Brazilian Real", "gravityforms"), "symbol_left" => 'R$', "symbol_right" => "", "symbol_padding" => " ", "thousand_separator" => '.', "decimal_separator" => ',', "decimals" => 2),
         "CAD" => array("name" => __("Canadian Dollar", "gravityforms"), "symbol_left" => '$', "symbol_right" => "CAD", "symbol_padding" => " ", "thousand_separator" => ',', "decimal_separator" => '.', "decimals" => 2),
         "CZK" => array("name" => __("Czech Koruna", "gravityforms"), "symbol_left" => '', "symbol_right" => "&#75;&#269;", "symbol_padding" => " ", "thousand_separator" => ' ', "decimal_separator" => ',', "decimals" => 2),
-        "DKK" => array("name" => __("Danish Krone", "gravityforms"), "symbol_left" => 'Kr', "symbol_right" => "", "symbol_padding" => " ", "thousand_separator" => '.', "decimal_separator" => ',', "decimals" => 2),
+        "DKK" => array("name" => __("Danish Krone", "gravityforms"), "symbol_left" => '', "symbol_right" => "kr.", "symbol_padding" => " ", "thousand_separator" => '.', "decimal_separator" => ',', "decimals" => 2),
         "EUR" => array("name" => __("Euro", "gravityforms"), "symbol_left" => '', "symbol_right" => "&#8364;", "symbol_padding" => " ", "thousand_separator" => '.', "decimal_separator" => ',', "decimals" => 2),
         "HKD" => array("name" => __("Hong Kong Dollar", "gravityforms"), "symbol_left" => 'HK$', "symbol_right" => "", "symbol_padding" => "", "thousand_separator" => ',', "decimal_separator" => '.', "decimals" => 2),
         "HUF" => array("name" => __("Hungarian Forint", "gravityforms"), "symbol_left" => '', "symbol_right" => "Ft", "symbol_padding" => " ", "thousand_separator" => '.', "decimal_separator" => ',', "decimals" => 2),
@@ -121,4 +126,3 @@ class RGCurrency{
 }
 
 }
-?>

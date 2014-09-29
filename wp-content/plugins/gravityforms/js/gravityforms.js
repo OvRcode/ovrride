@@ -1,14 +1,8 @@
-// "prop" method fix for previous versions of jQuery
-var originalPropMethod = jQuery.fn.prop;
 
-jQuery.fn.prop = function() {
-    if(typeof originalPropMethod == 'undefined') {
-        return jQuery.fn.attr.apply(this, arguments);
-    } else {
-        return originalPropMethod.apply(this, arguments);
-    }
+// "prop" method fix for previous versions of jQuery (1.5 and below)
+if( typeof jQuery.fn.prop === 'undefined' ) {
+    jQuery.fn.prop = jQuery.fn.attr;
 }
-
 
 //Formatting free form currency fields to currency
 jQuery(document).ready(function(){
@@ -24,7 +18,6 @@ function gformBindFormatPricingFields(){
         gformFormatPricingField(this);
     });
 }
-
 
 
 //------------------------------------------------
@@ -168,6 +161,22 @@ function gformCleanNumber(text, symbol_right, symbol_left, decimal_separator){
     return gformIsNumber(float_number) ? parseFloat(float_number) : false;
 }
 
+function gformGetDecimalSeparator(numberFormat){
+    var s;
+    switch (numberFormat){
+        case 'currency' :
+            var currency = new Currency(gf_global.gf_currency_config);
+            s = currency.currency["decimal_separator"];
+            break;
+        case 'decimal_comma' :
+            s = ',';
+            break;
+        default :
+            s = "."
+     }
+    return s;
+}
+
 function gformIsNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
@@ -191,13 +200,14 @@ function gformIsNumeric(value, number_format){
 //------------------------------------------------
 //---------- MULTI-PAGE --------------------------
 //------------------------------------------------
-function gformDeleteUploadedFile(formId, fieldId){
+function gformDeleteUploadedFile(formId, fieldId, deleteButton){
     var parent = jQuery("#field_" + formId + "_" + fieldId);
 
-    //hiding preview
-    parent.find(".ginput_preview").hide();
+    var fileIndex = jQuery(deleteButton).parent().index();
 
-    //displaying file upload field
+    parent.find(".ginput_preview").eq(fileIndex).remove();
+
+    //displaying single file upload field
     parent.find("input[type=\"file\"]").removeClass("gform_hidden");
 
     //displaying post image label
@@ -209,7 +219,20 @@ function gformDeleteUploadedFile(formId, fieldId){
     //removing file from uploaded meta
     var files = jQuery.secureEvalJSON(jQuery('#gform_uploaded_files_' + formId).val());
     if(files){
-        files["input_" + fieldId] = null;
+        var inputName = "input_" + fieldId;
+        var $multfile = parent.find("#gform_multifile_upload_" + formId + "_" + fieldId );
+        if( $multfile.length > 0 ) {
+            files[inputName].splice(fileIndex, 1);
+            var settings = $multfile.data('settings');
+            var max = settings.gf_vars.max_files;
+            jQuery("#" + settings.gf_vars.message_id).html('');
+            if(files[inputName].length < max)
+                gfMultiFileUploader.toggleDisabled(settings, false);
+
+        } else {
+            files[inputName] = null;
+        }
+
         jQuery('#gform_uploaded_files_' + formId).val(jQuery.toJSON(files));
     }
 }
@@ -248,6 +271,9 @@ function gformCalculateTotalPrice(formId){
     if(window["gform_product_total"])
         price = window["gform_product_total"](formId, price);
 
+
+    price = gform.applyFilters('gform_product_total', price, formId);
+
     //updating total
     var totalElement = jQuery(".ginput_total_" + formId);
     if(totalElement.length > 0){
@@ -280,40 +306,55 @@ function gformGetFieldId(element){
 
 }
 
-function gformCalculateProductPrice(formId, productFieldId){
-    var price = gformGetBasePrice(formId, productFieldId);
+function gformCalculateProductPrice(form_id, productFieldId){
 
-    var suffix = "_" + formId + "_" + productFieldId;
+    var price = gformGetBasePrice(form_id, productFieldId);
+
+    var suffix = "_" + form_id + "_" + productFieldId;
+
 
     //Drop down auto-calculating labels
-    jQuery(".gfield_option" + suffix + ", .gfield_shipping_" + formId).find("select").each(function(){
-        var selected_price = gformGetPrice(jQuery(this).val());
-        var fieldId = gformGetFieldId(this);
-        jQuery(this).children("option").each(function(){
-            var label = gformGetOptionLabel(this, jQuery(this).val(), selected_price, formId, fieldId);
-            jQuery(this).html(label);
+    jQuery(".gfield_option" + suffix + ", .gfield_shipping_" + form_id).find("select").each(function(){
+
+        var dropdown_field = jQuery(this);
+        var selected_price = gformGetPrice(dropdown_field.val());
+        var field_id = dropdown_field.attr("id").split("_")[2];
+        dropdown_field.children("option").each(function(){
+            var choice_element = jQuery(this);
+            var label = gformGetOptionLabel(choice_element, choice_element.val(), selected_price, form_id, field_id);
+            choice_element.html(label);
         });
     });
 
+
     //Checkboxes labels with prices
     jQuery(".gfield_option" + suffix).find(".gfield_checkbox").find("input").each(function(){
-        var fieldId = gformGetFieldId(jQuery(this).parents(".gfield_checkbox"));
-        var element = jQuery(this).next();
-        var label = gformGetOptionLabel(element, jQuery(this).val(), 0, formId, fieldId);
-        element.html(label);
+        var checkbox_item = jQuery(this);
+        var id = checkbox_item.attr("id");
+        var field_id = id.split("_")[2];
+        var label_id = id.replace("choice_", "#label_");
+        var label_element = jQuery(label_id);
+        var label = gformGetOptionLabel(label_element, checkbox_item.val(), 0, form_id, field_id);
+        label_element.html(label);
     });
 
+
     //Radio button auto-calculating lables
-    jQuery(".gfield_option" + suffix + ", .gfield_shipping_" + formId).find(".gfield_radio").each(function(){
+    jQuery(".gfield_option" + suffix + ", .gfield_shipping_" + form_id).find(".gfield_radio").each(function(){
         var selected_price = 0;
-        var selected_value = jQuery(this).find("input:checked").val();
-        var fieldId = gformGetFieldId(this);
+        var radio_field = jQuery(this);
+        var id = radio_field.attr("id");
+        var fieldId = id.split("_")[2];
+        var selected_value = radio_field.find("input:checked").val();
+
         if(selected_value)
             selected_price = gformGetPrice(selected_value);
 
         jQuery(this).find("input").each(function(){
-            var label_element = jQuery(this).next();
-            var label = gformGetOptionLabel(label_element, jQuery(this).val(), selected_price, formId, fieldId);
+            var radio_item = jQuery(this);
+            var label_id = radio_item.attr("id").replace("choice_", "#label_");
+            var label_element = jQuery(label_id);
+            var label = gformGetOptionLabel(label_element, radio_item.val(), selected_price, form_id, fieldId);
             label_element.html(label);
         });
     });
@@ -323,25 +364,7 @@ function gformCalculateProductPrice(formId, productFieldId){
             price += gformGetPrice(jQuery(this).val());
     });
 
-    var quantity;
-    var quantityInput = jQuery("#ginput_quantity_" + formId + "_" + productFieldId);
-    if(quantityInput.length > 0){
-        quantity = !gformIsNumber(quantityInput.val()) ? 0 : quantityInput.val();
-    }
-    else{
-        quantityElement = jQuery(".gfield_quantity_" + formId + "_" + productFieldId);
-
-        quantity = 1;
-        if (quantityElement.find("select").length > 0)
-            quantity = quantityElement.find("select").val();
-        else if(quantityElement.find("input").length > 0)
-            quantity = quantityElement.find("input").val();
-
-        if(!gformIsNumber(quantity))
-            quantity = 0;
-
-    }
-    quantity = parseFloat(quantity);
+    var quantity = gformGetProductQuantity( form_id, productFieldId );
 
     //setting global variable if quantity is more than 0 (a product was selected). Will be used when calculating total
     if(quantity > 0)
@@ -351,6 +374,36 @@ function gformCalculateProductPrice(formId, productFieldId){
     price = Math.round(price * 100) / 100;
 
     return price;
+}
+
+function gformGetProductQuantity( formId, productFieldId ) {
+
+    var quantity,
+        quantityInput = jQuery( '#ginput_quantity_' + formId + '_' + productFieldId);
+
+    if( quantityInput.length > 0 ) {
+
+        quantity = ! gformIsNumber( quantityInput.val() ) ? 0 : quantityInput.val();
+
+    } else {
+
+        quantityElement = jQuery( '.gfield_quantity_' + formId + '_' + productFieldId);
+        quantity = 1;
+
+        if( quantityElement.find( 'select' ).length > 0 ) {
+            quantity = quantityElement.find( 'select' ).val();
+        } else if( quantityElement.find( 'input' ).length > 0 ) {
+            quantity = quantityElement.find( 'input' ).val();
+        }
+
+        if( ! gformIsNumber( quantity ) )
+            quantity = 0;
+
+    }
+
+    quantity = parseFloat( quantity );
+
+    return quantity;
 }
 
 function gformGetBasePrice(formId, productFieldId){
@@ -500,8 +553,14 @@ function gformInitPriceFields(){
 
     });
 
-    for(formId in _gformPriceFields)
+    for(formId in _gformPriceFields){
+
+        //needed when implementing for in loops
+        if(!_gformPriceFields.hasOwnProperty(formId))
+            continue;
+
         gformCalculateTotalPrice(formId);
+    }
 
 }
 
@@ -567,7 +626,7 @@ function gformAddListItem(element, max){
     if(jQuery(element).hasClass("gfield_icon_disabled"))
         return;
 
-    var tr = jQuery(element).parent().parent();
+    var tr = jQuery(element).closest('tr');
     var clone = tr.clone();
     clone.find("input, select").val("").attr("tabindex", clone.find('input:last').attr("tabindex"));
     tr.after(clone);
@@ -641,7 +700,16 @@ function gformFindCardType(value) {
     var validCardTypes = new Array();
 
     for(type in rules) {
+
+        //needed when implementing for in loops
+        if(!rules.hasOwnProperty(type))
+            continue;
+
+
         for(i in rules[type]) {
+
+            if(!rules[type].hasOwnProperty(i))
+                continue;
 
             if(rules[type][i].indexOf(value.substring(0, rules[type][i].length)) === 0) {
                 validCardTypes[validCardTypes.length] = type;
@@ -672,12 +740,25 @@ function gformInitChosenFields(fieldList, noResultsText){
         var element = jQuery(this);
 
         //only initialize once
-        if( element.is(":visible") && element.siblings(".chzn-container").length == 0 ){
+        if( element.is(":visible") && element.siblings(".chosen-container").length == 0 ){
             var options = gform.applyFilters( 'gform_chosen_options', { no_results_text: noResultsText }, element );
             element.chosen( options );
         }
 
     });
+}
+
+//----------------------------------------
+//--- CURRENCY FORMAT NUMBER FIELD -------
+//----------------------------------------
+
+function gformInitCurrencyFormatFields(fieldList){
+    jQuery(fieldList).each(function(){
+        var $this = jQuery(this);
+        $this.val( gformFormatMoney( jQuery(this).val() ) );
+    }).change( function( event ) {
+            jQuery(this).val( gformFormatMoney( jQuery(this).val() ) );
+        });
 }
 
 
@@ -693,6 +774,7 @@ var GFCalc = function(formId, formulaFields){
     this.isCalculating = {};
 
     this.init = function(formId, formulaFields) {
+
         var calc = this;
         jQuery(document).bind("gform_post_conditional_logic", function(){
             for(var i=0; i<formulaFields.length; i++) {
@@ -711,15 +793,13 @@ var GFCalc = function(formId, formulaFields){
 
     this.runCalc = function(formulaField, formId) {
 
-        var calcObj = this;
-        var formulaInput, expr;
-
-        var field = jQuery('#field_' + formId + '_' + formulaField.field_id);
-        formulaInput = jQuery('#input_' + formId + '_' + formulaField.field_id);
-        var previous_val = formulaInput.val();
-
-        expr = calcObj.replaceFieldTags( formId, formulaField.formula, formulaField.numberFormat );
-        result = '';
+        var calcObj      = this,
+            field        = jQuery('#field_' + formId + '_' + formulaField.field_id),
+            formulaInput = jQuery('#input_' + formId + '_' + formulaField.field_id),
+            previous_val = formulaInput.val(),
+            formula      = gform.applyFilters( 'gform_calculation_formula', formulaField.formula, formulaField, formId, calcObj ),
+            expr         = calcObj.replaceFieldTags( formId, formula, formulaField ).replace(/(\r\n|\n|\r)/gm,""),
+            result       = '';
 
         if(calcObj.exprPatt.test(expr)) {
             try {
@@ -727,39 +807,56 @@ var GFCalc = function(formId, formulaFields){
                 //run calculation
                 result = eval(expr);
 
-            } catch (e) {}
+            } catch( e ) { }
         }
-        
+
+        // if result is postive infinity, negative infinity or a NaN, defaults to 0
+        if( ! isFinite( result ) )
+            result = 0;
+
         // allow users to modify result with their own function
-        if(window["gform_calculation_result"])
+        if( window["gform_calculation_result"] ) {
             result = window["gform_calculation_result"](result, formulaField, formId, calcObj);
+            if( window.console )
+                console.log( '"gform_calculation_result" function is deprecated since version 1.8! Use "gform_calculation_result" JS hook instead.' );
+        }
+
+        // allow users to modify result with their own function
+        result = gform.applyFilters( 'gform_calculation_result', result, formulaField, formId, calcObj );
+
+        // allow result to be custom formatted
+        var formattedResult = gform.applyFilters( 'gform_calculation_format_result', false, result, formulaField, formId, calcObj );
+
+        var numberFormat = gf_global.number_formats[formId][formulaField.field_id];
 
         //formatting number
-        if(field.hasClass('gfield_price')) {
+        if( formattedResult !== false) {
+            result = formattedResult;
+        }
+        else if( field.hasClass( 'gfield_price' ) || numberFormat == "currency") {
+
             result = gformFormatMoney(result ? result : 0);
         }
-        else{
+        else {
 
-            var decimalSeparator, thousandSeparator;
-            if(formulaField.numberFormat == "decimal_comma"){
+            var decimalSeparator = ".";
+            var thousandSeparator = ",";
+
+            if(numberFormat == "decimal_comma"){
                 decimalSeparator = ",";
                 thousandSeparator = ".";
             }
-            else if(formulaField.numberFormat == "decimal_dot"){
-                decimalSeparator = ".";
-                thousandSeparator = ",";
-            }
+
             result = gformFormatNumber(result, !gformIsNumber(formulaField.rounding) ? -1 : formulaField.rounding, decimalSeparator, thousandSeparator);
         }
 
         //If value doesn't change, abort.
         //This is needed to prevent an infinite loop condition with conditional logic
-        if(result == previous_val)
+        if( result == previous_val )
             return;
 
-        // if this is a calucation product, handle differently
+        // if this is a calculation product, handle differently
         if(field.hasClass('gfield_price')) {
-
             formulaInput.text(result);
             jQuery('#ginput_base_price_' + formId + '_' + formulaField.field_id).val(result).trigger('change');
             gformCalculateTotalPrice(formId);
@@ -769,6 +866,7 @@ var GFCalc = function(formId, formulaFields){
 
     }
 
+
     this.bindCalcEvents = function(formulaField, formId) {
 
         var calcObj = this;
@@ -777,7 +875,10 @@ var GFCalc = function(formId, formulaFields){
 
         calcObj.isCalculating[formulaFieldId] = false;
 
-        for(i in matches) {
+        for(var i in matches) {
+
+            if(! matches.hasOwnProperty(i))
+                continue;
 
             var inputId = matches[i][1];
             var fieldId = parseInt(inputId);
@@ -820,12 +921,15 @@ var GFCalc = function(formId, formulaFields){
 
     }
 
-    this.replaceFieldTags = function( formId, expr, parentNumberFormat ) {
+    this.replaceFieldTags = function( formId, expr, formulaField ) {
 
         var matches = getMatchGroups(expr, this.patt);
         var origExpr = expr;
 
         for(i in matches) {
+
+            if(! matches.hasOwnProperty(i))
+                continue;
 
             var inputId = matches[i][1];
             var fieldId = parseInt(inputId);
@@ -850,22 +954,23 @@ var GFCalc = function(formId, formulaFields){
                 } else {
                     value = input.val();
                 }
-                
+
             }
-            
+
             var numberFormat = gf_global.number_formats[formId][fieldId];
             if( ! numberFormat )
-                numberFormat = parentNumberFormat;
-            
-            var decimalSeparator = numberFormat == 'decimal_dot' ? '.' : ',';
-            
+                numberFormat = gf_global.number_formats[formId][formulaField.field_id];
+
+            var decimalSeparator = gformGetDecimalSeparator(numberFormat);
+
+
             value = gformCleanNumber( value, '', '', decimalSeparator );
             if( ! value )
                 value = 0;
 
             expr = expr.replace( matches[i][0], value );
         }
-        
+
         return expr;
     }
 
@@ -919,7 +1024,11 @@ function getMatchGroups(expr, patt) {
     return matches;
 }
 
-//javascript hook functions
+
+//----------------------------------------
+//------ JAVASCRIPT HOOK FUNCTIONS -------
+//----------------------------------------
+
 var gform = {
 	hooks: { action: {}, filter: {} },
 	addAction: function( action, callable, priority, tag ) {
@@ -985,4 +1094,300 @@ var gform = {
 		}
 	}
 };
-//end of javascript hook functions
+
+
+//----------------------------------------
+//------ MULTIFILE UPLOAD FUNCTIONS ------
+//----------------------------------------
+
+(function (gfMultiFileUploader, $) {
+    gfMultiFileUploader.uploaders = {};
+    var strings = typeof gform_gravityforms != 'undefined' ? gform_gravityforms.strings : {};
+    var imagesUrl = typeof gform_gravityforms != 'undefined' ? gform_gravityforms.vars.images_url : "";
+
+    $(document).ready(function () {
+        if((typeof adminpage !== 'undefined' && adminpage === 'toplevel_page_gf_edit_forms')|| typeof plupload == 'undefined'){
+            $(".gform_button_select_files").prop("disabled", true);
+        } else if (typeof adminpage !== 'undefined'){
+            $(".gform_fileupload_multifile").each(function(){
+                setup(this);
+            });
+        } else {
+            $(document).bind('gform_post_render', function(e, formID){
+
+                $("form#gform_" + formID + " .gform_fileupload_multifile").each(function(){
+                    setup(this);
+                });
+                var $form = $("form#gform_" + formID);
+                if($form.length > 0){
+                    $form.submit(function(){
+                        var pendingUploads = false;
+                        $.each(gfMultiFileUploader.uploaders, function(i, uploader){
+                            if(uploader.total.queued>0){
+                                pendingUploads = true;
+                                return false;
+                            }
+                        });
+                    if(pendingUploads){
+                        alert(strings.currently_uploading);
+                        window["gf_submitting_" + formID] = false;
+                        return false;
+                    }
+                    });
+                }
+
+            });
+            $(document).bind("gform_post_conditional_logic", function(e,formID, fields, isInit){
+                if(!isInit){
+                    $.each(gfMultiFileUploader.uploaders, function(i, uploader){
+                        uploader.refresh();
+                    });
+                }
+            });
+        }
+    });
+
+    function setup(uploadElement){
+        var settings = $(uploadElement).data('settings');
+
+        var uploader = new plupload.Uploader(settings);
+        formID = uploader.settings.multipart_params.form_id;
+        gfMultiFileUploader.uploaders[settings.container] = uploader;
+        var formID;
+        var uniqueID;
+
+        uploader.bind('Init', function(up, params) {
+            if(!up.features.dragdrop)
+                $(".gform_drop_instructions").hide();
+            var fieldID = up.settings.multipart_params.field_id;
+            var maxFiles = parseInt(up.settings.gf_vars.max_files);
+            var initFileCount = countFiles(fieldID);
+            if(maxFiles > 0 && initFileCount >= maxFiles){
+                gfMultiFileUploader.toggleDisabled(up.settings, true);
+            }
+
+        });
+
+        gfMultiFileUploader.toggleDisabled = function (settings, disabled){
+
+            var button = typeof settings.browse_button == "string" ? $("#" + settings.browse_button) : $(settings.browse_button);
+            button.prop("disabled", disabled);
+        }
+
+        function addMessage(messagesID, message){
+            $("#" + messagesID).prepend("<li>" + message + "</li>");
+        }
+
+        uploader.init();
+
+        uploader.bind('FilesAdded', function(up, files) {
+            var max = parseInt(up.settings.gf_vars.max_files),
+                fieldID = up.settings.multipart_params.field_id,
+                totalCount = countFiles(fieldID),
+                disallowed = up.settings.gf_vars.disallowed_extensions,
+                extension;
+
+            if( max > 0 && totalCount >= max){
+                $.each(files, function(i, file) {
+                    up.removeFile(file);
+                    return;
+                })
+                return;
+            }
+            $.each(files, function(i, file) {
+
+                extension = file.name.split('.').pop();
+
+                if($.inArray(extension, disallowed) > -1){
+                    addMessage(up.settings.gf_vars.message_id, file.name + " - " + strings.illegal_extension);
+                    up.removeFile(file);
+                    return;
+                }
+
+                if ((file.status == plupload.FAILED) || (max > 0 && totalCount >= max)){
+                    up.removeFile(file);
+                    return;
+                }
+
+                var size = typeof file.size !== 'undefined' ? plupload.formatSize(file.size) : strings.in_progress;
+                var status = '<div id="'
+                    + file.id
+                    + '" class="ginput_preview">'
+                    + file.name
+                    + ' (' + size + ') <b></b> '
+                    + '<a href="javascript:void(0)" title="' + strings.cancel_upload + '" onclick=\'$this=jQuery(this); var uploader = gfMultiFileUploader.uploaders.' + up.settings.container + ';uploader.stop();uploader.removeFile(uploader.getFile("' + file.id +'"));$this.after("' + strings.cancelled + '"); uploader.start();$this.remove();\'>' + strings.cancel + '</a>'
+                    + '</div>';
+                $('#' + up.settings.filelist).prepend(status);
+                totalCount++;
+
+            });
+
+            up.refresh(); // Reposition Flash
+
+            var formElementID = "form#gform_" + formID;
+            var uidElementID = "input:hidden[name='gform_unique_id']";
+            var uidSelector = formElementID + " " + uidElementID;
+            var $uid = $(uidSelector);
+            if($uid.length==0){
+                $uid = $(uidElementID);
+            }
+
+            uniqueID = $uid.val();
+            if('' === uniqueID){
+                uniqueID = generateUniqueID();
+                $uid.val(uniqueID);
+            }
+
+            if(max > 0 && totalCount >= max){
+                addMessage(up.settings.gf_vars.message_id, strings.max_reached)
+                gfMultiFileUploader.toggleDisabled(up.settings, true);
+            }
+
+            up.settings.multipart_params.gform_unique_id = uniqueID;
+            up.start();
+
+        });
+
+        uploader.bind('UploadProgress', function(up, file) {
+            var html = file.percent + "%";
+            $('#' + file.id + " b").html(html);
+        });
+
+        uploader.bind('Error', function(up, err) {
+            if(err.code === plupload.FILE_EXTENSION_ERROR){
+                var extensions = typeof up.settings.filters.mime_types != 'undefined' ? up.settings.filters.mime_types[0].extensions /* plupoad 2 */ : up.settings.filters[0].extensions;
+                addMessage(up.settings.gf_vars.message_id, err.file.name + " - " + strings.invalid_file_extension + " " + extensions);
+            } else if (err.code === plupload.FILE_SIZE_ERROR) {
+                addMessage(up.settings.gf_vars.message_id, err.file.name + " - " + strings.file_exceeds_limit);
+            } else {
+                var m = "<li>Error: " + err.code +
+                    ", Message: " + err.message +
+                    (err.file ? ", File: " + err.file.name : "") +
+                    "</li>";
+
+				addMessage(up.settings.gf_vars.message_id, m);
+            }
+			$('#' + err.file.id ).html('');
+
+            up.refresh(); // Reposition Flash
+        });
+
+        uploader.bind('FileUploaded', function(up, file, result) {
+            var response = $.secureEvalJSON(result.response);
+            if(response.status == "error"){
+				addMessage(up.settings.gf_vars.message_id, file.name + " - " + response.error.message);
+				$('#' + file.id ).html('');
+				return;
+            }
+
+            var html = '<strong>' + file.name + '</strong>';
+            var formId = up.settings.multipart_params.form_id;
+            var fieldId = up.settings.multipart_params.field_id;
+            html = "<img "
+                + "class='gform_delete' "
+                + "src='" + imagesUrl + "/delete.png' "
+                + "onclick='gformDeleteUploadedFile(" + formId + "," + fieldId + ", this);' "
+                + "alt='"+ strings.delete_file + "' "
+                + "title='" + strings.delete_file
+                + "' /> "
+                + html;
+
+            $('#' + file.id ).html(html);
+
+            var fieldID = up.settings.multipart_params["field_id"];
+
+            if(file.percent == 100){
+                if(response.status && response.status == 'ok'){
+                    addFile(fieldID, response.data);
+                }  else {
+                    addMessage(up.settings.gf_vars.message_id, strings.unknown_error);
+                }
+            }
+
+        });
+
+
+
+        function getAllFiles(){
+            var selector = '#gform_uploaded_files_' + formID,
+                $uploadedFiles = $(selector), files;
+            files = $uploadedFiles.val();
+            files = '' === files ? {} : $.parseJSON(files);
+            return files;
+        }
+
+        function getFiles(fieldID){
+            var allFiles = getAllFiles();
+            var inputName = getInputName(fieldID);
+
+            if(typeof allFiles[inputName] == 'undefined')
+                allFiles[inputName] = [];
+            return allFiles[inputName];
+        }
+
+        function countFiles(fieldID){
+            var files = getFiles(fieldID);
+            return files.length;
+        }
+
+        function addFile(fieldID, fileInfo){
+
+            var files = getFiles(fieldID);
+
+            files.unshift(fileInfo);
+            setUploadedFiles(fieldID, files);
+        }
+
+        function setUploadedFiles(fieldID, files){
+            var allFiles = getAllFiles();
+            var $uploadedFiles = $('#gform_uploaded_files_' + formID);
+            var inputName = getInputName(fieldID);
+            allFiles[inputName] = files;
+            $uploadedFiles.val($.toJSON(allFiles));
+        }
+
+        function getInputName(fieldID){
+            return "input_" + fieldID;
+        }
+
+        // fixes drag and drop in IE10
+        $("#" + settings.drop_element).on({
+            "dragenter": ignoreDrag,
+            "dragover": ignoreDrag
+        });
+
+        function ignoreDrag( e ) {
+            e.preventDefault();
+        }
+    }
+
+
+    function generateUniqueID() {
+        return 'xxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
+            return v.toString(16);
+        });
+    }
+
+
+}(window.gfMultiFileUploader = window.gfMultiFileUploader || {}, jQuery));
+
+
+
+//----------------------------------------
+//------ GENERAL FUNCTIONS -------
+//----------------------------------------
+
+function gformInitSpinner( formId, spinnerUrl ) {
+
+    if( typeof spinnerUrl == 'undefined' || ! spinnerUrl )
+        spinnerUrl = gform.applyFilters( "gform_spinner_url", gf_global.spinnerUrl, formId );
+
+	jQuery('#gform_' + formId).submit(function () {
+		if (jQuery('#gform_ajax_spinner_' + formId).length == 0) {
+			jQuery('#gform_submit_button_' + formId + ', #gform_wrapper_' + formId + ' .gform_next_button')
+				.after('<img id="gform_ajax_spinner_' + formId + '"  class="gform_ajax_spinner" src="' + spinnerUrl + '" alt="" />');
+		}
+	});
+
+}

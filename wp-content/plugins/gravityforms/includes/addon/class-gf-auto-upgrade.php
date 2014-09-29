@@ -1,4 +1,9 @@
 <?php
+
+if(!class_exists('GFForms')){
+    die();
+}
+
 class GFAutoUpgrade{
     protected $_version;
     protected $_min_gravityforms_version;
@@ -47,9 +52,9 @@ class GFAutoUpgrade{
             $message = sprintf(__("Gravity Forms " . $this->_min_gravityforms_version . " is required. Activate it now or %spurchase it today!%s", "gravityforms"), "<a href='http://www.gravityforms.com'>", "</a>");
             GFAddOn::display_plugin_message($message, true);
         } else {
-            $version_info = $this->get_version_info($this->_slug, $this->get_key(), $this->_version);
+            $version_info = $this->get_version_info($this->_slug);
 
-            if (!$version_info["is_valid_key"]) {
+            if (!rgar($version_info, "is_valid_key")) {
                 $title       = $this->_title;
                 $new_version = version_compare($this->_version, $version_info["version"], '<') ? __("There is a new version of {$title} available.", 'gravityforms') . " <a class='thickbox' title='{$title}' href='plugin-install.php?tab=plugin-information&plugin=" . $this->_slug . "&TB_iframe=true&width=640&height=808'>" . sprintf(__('View version %s Details', 'gravityforms'), $version_info["version"]) . '</a>. ' : '';
                 $message     = $new_version . sprintf(__('%sRegister%s your copy of Gravity Forms to receive access to automatic upgrades and support. Need a license key? %sPurchase one now%s.', 'gravityforms'), '<a href="admin.php?page=gf_settings">', '</a>', '<a href="http://www.gravityforms.com">', '</a>') . '</div></td>';
@@ -64,8 +69,8 @@ class GFAutoUpgrade{
         if (!function_exists('get_plugin_data'))
             include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
-        $update = GFCommon::get_version_info();
-        if ($update["is_valid_key"] == true && version_compare($this->_version, $update["version"], '<')) {
+        $update = $this->get_version_info($this->_slug);
+        if (rgar($update, "is_valid_key") == true && version_compare($this->_version, $update["version"], '<')) {
             $plugin_data                = get_plugin_data($this->_full_path);
             $plugin_data['type']        = 'plugin';
             $plugin_data['slug']        = $this->_path;
@@ -82,8 +87,8 @@ class GFAutoUpgrade{
         if (!function_exists('get_plugin_data'))
             include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
-        $update = GFCommon::get_version_info();
-        if ($update["is_valid_key"] == true && version_compare($this->_version, $update["version"], '<')) {
+        $update = $this->get_version_info($this->_slug);
+        if (rgar($update, "is_valid_key") == true && version_compare($this->_version, $update["version"], '<')) {
             $plugin_data         = get_plugin_data($this->_full_path);
             $plugin_data['slug'] = $this->_path;
             $plugin_data['type'] = 'plugin';
@@ -110,16 +115,16 @@ class GFAutoUpgrade{
 
         $key = $this->get_key();
 
-        $version_info = $this->get_version_info($this->_slug, $key, $this->_version, true);
+        $version_info = $this->get_version_info($this->_slug);
 
-        if ($version_info == -1)
+        if ( rgar($version_info, "is_error") == "1")
             return $option;
 
         if(empty($option->response[$this->_path]))
             $option->response[$this->_path] = new stdClass();
 
         //Empty response means that the key is invalid. Do not queue for upgrade
-        if(!$version_info["is_valid_key"] || version_compare($this->_version, $version_info["version"], '>=')){
+        if(!rgar($version_info, "is_valid_key") || version_compare($this->_version, $version_info["version"], '>=')){
             unset($option->response[$this->_path]);
         }
         else{
@@ -153,8 +158,7 @@ class GFAutoUpgrade{
             'Referer' => get_bloginfo("url")
         );
 
-        $raw_response = wp_remote_request(GRAVITY_MANAGER_URL . "/changelog.php?" . $this->get_remote_request_params($this->_slug, $key, $this->_version), $options);
-
+        $raw_response = GFCommon::post_to_manager("changelog.php", $this->get_remote_request_params($this->_slug, $key, $this->_version), $options);
         if ( is_wp_error( $raw_response ) || 200 != $raw_response['response']['code']){
             $page_text = sprintf(__("Oops!! Something went wrong.%sPlease try again or %scontact us%s.", 'gravityforms'), "<br/>", "<a href='http://www.gravityforms.com'>", "</a>");
         }
@@ -168,35 +172,14 @@ class GFAutoUpgrade{
         exit;
     }
 
-    private function get_version_info($offering, $key, $version, $use_cache=true){
+    private function get_version_info($offering, $use_cache=true){
 
-        $version_info = function_exists('get_site_transient') ? get_site_transient($this->_slug . "_version") : get_transient($this->_slug . "_version");
-        if(!$version_info || !$use_cache){
+        $version_info = GFCommon::get_version_info($use_cache);
+        $is_valid_key = rgar($version_info, "is_valid_key") && rgars($version_info, "offerings/{$offering}/is_available");
 
-            $body = "key=$key";
-            $options = array('method' => 'POST', 'timeout' => 3, 'body' => $body);
-            $options['headers'] = array(
-                'Content-Type' => 'application/x-www-form-urlencoded; charset=' . get_option('blog_charset'),
-                'Content-Length' => strlen($body),
-                'User-Agent' => 'WordPress/' . get_bloginfo("version"),
-                'Referer' => get_bloginfo("url")
-            );
-            $url = GRAVITY_MANAGER_URL . "/version.php?" . $this->get_remote_request_params($offering, $key, $version);
-            $raw_response = wp_remote_request($url, $options);
+        $info = array("is_valid_key" => $is_valid_key, "version" => rgars($version_info, "offerings/{$offering}/version"), "url" => rgars($version_info, "offerings/{$offering}/url"));
 
-            if ( is_wp_error( $raw_response ) || 200 != $raw_response['response']['code'])
-                $version_info = -1;
-            else
-            {
-                $ary = explode("||", $raw_response['body']);
-                $version_info = array("is_valid_key" => $ary[0], "version" => $ary[1], "url" => $ary[2]);
-            }
-
-            $this->set_version_info($this->_slug, $version_info);
-
-        }
-
-        return $version_info;
+        return $info;
     }
 
     private function get_remote_request_params($offering, $key, $version){
