@@ -21,7 +21,7 @@ define('WP_CACHE', true); // Added by W3 Total Cache
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', ( getenv('OPENSHIFT_APP_NAME') ?: 'ovrridec_ovrride' ) );
+define('DB_NAME', ( getenv('AMAZON_RDS_DB_NAME') ?: 'ovrridec_ovrride' ) );
 
 /** MySQL database username */
 define('DB_USER', ( getenv('AMAZON_RDS_USER') ?: 'ovrridec_ovrride' ) );
