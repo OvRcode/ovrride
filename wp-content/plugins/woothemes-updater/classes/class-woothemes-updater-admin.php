@@ -44,8 +44,10 @@ class WooThemes_Updater_Admin {
 	private $menu_label;
 	private $page_slug;
 	private $plugin_path;
+	private $plugin_url;
 	private $screens_path;
 	private $classes_path;
+	private $assets_url;
 
 	private $installed_products;
 	private $pending_products;
@@ -58,28 +60,119 @@ class WooThemes_Updater_Admin {
 	 * @return    void
 	 */
 	public function __construct ( $file ) {
-		$this->token = 'woothemes-updater';
+		$this->token = 'woothemes-updater'; // Don't ever change this, as it will mess with the data stored of which products are activated, etc.
+
+		// Load in the class to use for the admin screens.
+		require_once( 'class-woothemes-updater-screen.php' );
 
 		// Load the API.
 		require_once( 'class-woothemes-updater-api.php' );
 		$this->api = new WooThemes_Updater_API();
 
-		$this->name = __( 'WooThemes Licenses', 'woothemes-updater' );
-		$this->menu_label = __( 'WooThemes Licenses', 'woothemes-updater' );
-		$this->page_slug = 'woothemes-licenses';
+		$this->name = __( 'The WooThemes Helper', 'woothemes-updater' );
+		$this->menu_label = __( 'WooThemes Helper', 'woothemes-updater' );
+		$this->page_slug = 'woothemes-helper';
 		$this->plugin_path = trailingslashit( plugin_dir_path( $file ) );
+		$this->plugin_url = trailingslashit( plugin_dir_url( $file ) );
 		$this->screens_path = trailingslashit( $this->plugin_path . 'screens' );
 		$this->classes_path = trailingslashit( $this->plugin_path . 'classes' );
+		$this->assets_url = trailingslashit( $this->plugin_url . 'assets' );
 
 		$this->installed_products = array();
 		$this->pending_products = array();
 
 		// Load the updaters.
-		add_action( 'admin_init', array( $this, 'load_updater_instances') ); //$this->load_updater_instances();
+		add_action( 'admin_init', array( $this, 'load_updater_instances' ) ); //$this->load_updater_instances();
 
 		$menu_hook = is_multisite() ? 'network_admin_menu' : 'admin_menu';
 		add_action( $menu_hook, array( $this, 'register_settings_screen' ) );
+
+		// Display an admin notice, if there are Woo products, eligible for licenses, that are not activated.
+		add_action( 'network_admin_notices', array( $this, 'maybe_display_activation_notice' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_display_activation_notice' ) );
+		if( is_multisite() && ! is_network_admin() ) remove_action( 'admin_notices', array( $this, 'maybe_display_activation_notice' ) );
+
+		// Process the 'Dismiss' link, if valid.
+		add_action( 'admin_init', array( $this, 'maybe_process_dismiss_link' ) );
+
+		add_action( 'admin_footer', array( $this, 'theme_upgrade_form_adjustments' ) );
+
+		add_action( 'woothemes_updater_license_screen_before', array( $this, 'ensure_keys_are_actually_active' ) );
 	} // End __construct()
+
+	/**
+	 * If the nonce is valid and the action is "woothemes-helper-dismiss", process the dismissal.
+	 * @access  public
+	 * @since   1.2.1
+	 * @return  void
+	 */
+	public function maybe_process_dismiss_link () {
+		if ( isset( $_GET['action'] ) && ( 'woothemes-helper-dismiss' == $_GET['action'] ) && isset( $_GET['nonce'] ) && check_admin_referer( 'woothemes-helper-dismiss', 'nonce' ) ) {
+			update_site_option( 'woothemes_helper_dismiss_activation_notice', true );
+
+			$redirect_url = remove_query_arg( 'action', remove_query_arg( 'nonce', $_SERVER['REQUEST_URI'] ) );
+
+			wp_safe_redirect( $redirect_url );
+			exit;
+		}
+	} // End maybe_process_dismiss_link()
+
+	/**
+	 * Display an admin notice, if there are licenses that are not yet activated.
+	 * @access  public
+	 * @since   1.2.1
+	 * @return  void
+	 */
+	public function maybe_display_activation_notice () {
+		if ( isset( $_GET['page'] ) && 'woothemes-helper' == $_GET['page'] ) return;
+		if ( ! current_user_can( 'manage_options' ) ) return; // Don't show the message if the user isn't an administrator.
+		if ( is_multisite() && ! is_super_admin() ) return; // Don't show the message if on a multisite and the user isn't a super user.
+		if ( true == get_site_option( 'woothemes_helper_dismiss_activation_notice', false ) ) return; // Don't show the message if the user dismissed it.
+
+		$products = $this->get_detected_products();
+		$has_inactive_products = false;
+		if ( 0 < count( $products ) ) {
+			foreach ( $products as $k => $v ) {
+				if ( isset( $v['product_status'] ) && 'inactive' == $v['product_status'] ) {
+					$has_inactive_products = true; // We know we have inactive product licenses, so break out of the loop.
+					break;
+				}
+			}
+
+			if ( $has_inactive_products ) {
+				$url = add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) );
+				$dismiss_url = add_query_arg( 'action', 'woothemes-helper-dismiss', add_query_arg( 'nonce', wp_create_nonce( 'woothemes-helper-dismiss' ) ) );
+				echo '<div class="updated fade"><p class="alignleft">' . sprintf( __( '%sYour WooThemes products are almost ready.%s To get started, %sactivate your product licenses%s.', 'woothemes-updater' ), '<strong>', '</strong>', '<a href="' . esc_url( $url ) . '">', '</a>' ) . '</p><p class="alignright"><a href="' . esc_url( $dismiss_url ) . '">' . __( 'Dismiss', 'woothemes-updater' ) . '</a></p><div class="clear"></div></div>' . "\n";
+			}
+		}
+	} // End maybe_display_activation_notice()
+
+	/**
+	 * Run a small snippet of JavaScript to highlight the "you will lose all your changes" text on the theme updates screen.
+	 * Be sure to add a confirmation dialog box to the "Update Themes" button as well.
+	 *
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function theme_upgrade_form_adjustments () {
+		global $pagenow;
+		if ( 'update-core.php' != $pagenow ) return;
+?>
+<script type="text/javascript">
+/* <![CDATA[ */
+if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
+	jQuery( 'form[name=upgrade-themes]' ).prev( 'p' ).wrap( '<div class="error fade"></div>' );
+
+	jQuery( 'form[name=upgrade-themes]' ).find( 'input.button[name=upgrade]' ).click( function ( e ) {
+		var response = confirm( '<?php _e( 'Any customizations you have made to theme files will be lost. Are you sure you would like to update?', 'woothemes-updater' ); ?>' );
+		if ( false == response ) return false;
+	});
+}
+/*]]>*/
+</script>
+<?php
+	} // End theme_upgrade_form_adjustments()
 
 	/**
 	 * Register the admin screen.
@@ -92,6 +185,8 @@ class WooThemes_Updater_Admin {
 		$hook = add_dashboard_page( $this->name, $this->menu_label, 'manage_options', $this->page_slug, array( $this, 'settings_screen' ) );
 
 		add_action( 'load-' . $hook, array( $this, 'process_request' ) );
+		add_action( 'admin_print_styles-' . $hook, array( $this, 'enqueue_styles' ) );
+		add_action( 'admin_print_scripts-' . $hook, array( $this, 'enqueue_scripts' ) );
 	} // End register_settings_screen()
 
 	/**
@@ -102,15 +197,170 @@ class WooThemes_Updater_Admin {
 	 * @return   void
 	 */
 	public function settings_screen () {
-		$this->installed_products = $this->get_detected_products();
-		$this->pending_products = $this->get_pending_products();
+		?>
+		<div id="welcome-panel" class="wrap about-wrap woothemes-updater-wrap">
+			<h1><?php _e( 'Welcome to the WooThemes Helper', 'woothemes-updater' ); ?></h1>
 
-		if( $this->api->ping() ){
-			require_once( $this->screens_path . 'screen-manage.php' );
-		}else{
-			require_once( $this->screens_path . 'woothemes-api-unreachable.php' );
+			<div class="about-text woothemes-helper-about-text">
+				<?php
+					_e( 'Looking for a hand with activating your licenses, or have questions about your WooThemes products? We\'ve got you covered.', 'woothemes-updater' );
+				?>
+			</div>
+		</div><!--/#welcome-panel .welcome-panel-->
+		<?php
+
+		Woothemes_Updater_Screen::get_header();
+
+		$screen = Woothemes_Updater_Screen::get_current_screen();
+
+		switch ( $screen ) {
+			// Help screen.
+			case 'help':
+				do_action( 'woothemes_updater_help_screen_before' );
+				$this->load_help_screen_boxes();
+				require_once( $this->screens_path . 'screen-help.php' );
+				do_action( 'woothemes_updater_help_screen_after' );
+			break;
+
+			// Licenses screen.
+			case 'license':
+			default:
+				if ( $this->api->ping() ) {
+					$this->installed_products = $this->get_detected_products();
+					$this->pending_products = $this->get_pending_products();
+
+					do_action( 'woothemes_updater_license_screen_before' );
+					require_once( $this->screens_path . 'screen-manage.php' );
+					do_action( 'woothemes_updater_license_screen_after' );
+				} else {
+					do_action( 'woothemes_updater_api_unreachable_screen_before' );
+					require_once( $this->screens_path . 'woothemes-api-unreachable.php' );
+					do_action( 'woothemes_updater_api_unreachable_screen_after' );
+				}
+			break;
 		}
+
+		Woothemes_Updater_Screen::get_footer();
 	} // End settings_screen()
+
+	/**
+	 * Load the boxes for the "Help" screen.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function load_help_screen_boxes () {
+		add_action( 'woothemes_helper_column_left', array( $this, 'display_general_links' ) );
+		add_action( 'woothemes_helper_column_left', array( $this, 'display_sensei_links' ) );
+		add_action( 'woothemes_helper_column_middle', array( $this, 'display_woocommerce_links' ) );
+		add_action( 'woothemes_helper_column_middle', array( $this, 'display_themes_links' ) );
+		// add_action( 'woothemes_helper_column_right', array( $this, 'display_panic_button' ) );
+	} // End load_help_screen_boxes()
+
+	/**
+	 * Display rendered HTML markup containing general support links.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function display_general_links () {
+		$links = array(
+			'http://docs.woothemes.com/' => __( 'Documentation Portal', 'woothemes-updater' ),
+			'http://support.woothemes.com/' => __( 'Knowledgebase', 'woothemes-updater' ),
+			'http://www.woothemes.com/support-faq/' => __( 'FAQ', 'woothemes-updater' ),
+			'http://www.woothemes.com/blog/' => __( 'Blog', 'woothemes-updater' )
+			);
+		echo '<img src="' . esc_url( $this->assets_url . 'images/getting-started.png' ) . '" alt="' . __( 'Getting Started', 'woothemes-updater' ) . '" />' . "\n";
+		echo '<h4>' . __( 'Getting Started', 'woothemes-updater' ) . '</h4>' . "\n";
+		echo '<ul>' . $this->_generate_link_list( $links ) . "\n";
+		echo '<li><em><a href="' . esc_url( 'https://twitter.com/WooSupport/' ) . '" title="' . esc_attr__( 'Follow the WooThemes Support Twitter', 'woothemes-updater' ) . '">' . __( 'Follow the WooThemes Support Twitter', 'woothemes-updater' ) . '</a></em></li>' . "\n";
+		echo '</ul>' . "\n";
+	} // End display_general_links()
+
+	/**
+	 * Display rendered HTML markup containing WooCommerce support links.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function display_woocommerce_links () {
+		$links = array(
+			'http://docs.woothemes.com/documentation/plugins/woocommerce/' => __( 'Getting Started', 'woothemes-updater' ),
+			'http://docs.woothemes.com/document/third-party-custom-theme-compatibility/' => __( 'Theme Compatibility', 'woothemes-updater' ),
+			'http://docs.woothemes.com/document/product-variations/' => __( 'Product Variations', 'woothemes-updater' ),
+			'http://docs.woothemes.com/document/woocommerce-self-service-guide/' => __( 'WooCommerce Self Service Guide', 'woothemes-updater' )
+			);
+		echo '<img src="' . esc_url( $this->assets_url . 'images/woocommerce.png' ) . '" alt="' . __( 'WooCommerce', 'woothemes-updater' ) . '" />' . "\n";
+		echo '<h4>' . __( 'WooCommerce', 'woothemes-updater' ) . '</h4>' . "\n";
+		echo '<ul>' . $this->_generate_link_list( $links ) . "\n";
+		echo '<li><em><a href="' . esc_url( 'http://woothemes.com/products/woocommerce/?utm_source=helper' ) . '" title="' . esc_attr__( 'Find out more about WooCommerce', 'woothemes-updater' ) . '">' . __( 'Find out more about WooCommerce', 'woothemes-updater' ) . '</a></em></li>' . "\n";
+		echo '</ul>' . "\n";
+	} // End display_woocommerce_links()
+
+	/**
+	 * Display rendered HTML markup containing Sensei support links.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function display_sensei_links () {
+		$links = array(
+			'http://docs.woothemes.com/document/sensei/' => __( 'Getting Started', 'woothemes-updater' ),
+			'http://docs.woothemes.com/document/sensei-theming/' => __( 'Theming Sensei', 'woothemes-updater' ),
+			'http://docs.woothemes.com/document/importing-sensei-dummy-data/' => __( 'Import Sensei Dummy Data', 'woothemes-updater' )
+			);
+		echo '<img src="' . esc_url( $this->assets_url . 'images/sensei.png' ) . '" alt="' . __( 'Sensei', 'woothemes-updater' ) . '" />' . "\n";
+		echo '<h4>' . __( 'Sensei', 'woothemes-updater' ) . '</h4>' . "\n";
+		echo '<ul>' . $this->_generate_link_list( $links ) . "\n";
+		echo '<li><em><a href="' . esc_url( 'http://woothemes.com/products/sensei/?utm_source=helper' ) . '" title="' . esc_attr__( 'Find out more about Sensei', 'woothemes-updater' ) . '">' . __( 'Find out more about Sensei', 'woothemes-updater' ) . '</a></em></li>' . "\n";
+		echo '</ul>' . "\n";
+	} // End display_sensei_links()
+
+	/**
+	 * Display rendered HTML markup containing Themes support links.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function display_themes_links () {
+		$links = array(
+			'http://docs.woothemes.com/documentation/themes/' => __( 'Getting Started', 'woothemes-updater' ),
+			'http://docs.woothemes.com/document/canvas/' => __( 'Setting up Canvas', 'woothemes-updater' ),
+			'http://docs.woothemes.com/documentation/woocodex/' => __( 'WooCodex', 'woothemes-updater' )
+			);
+		echo '<img src="' . esc_url( $this->assets_url . 'images/themes.png' ) . '" alt="' . __( 'Themes', 'woothemes-updater' ) . '" />' . "\n";
+		echo '<h4>' . __( 'Themes', 'woothemes-updater' ) . '</h4>' . "\n";
+		echo '<ul>' . $this->_generate_link_list( $links ) . "\n";
+		echo '<li><em><a href="' . esc_url( 'http://woothemes.com/product-category/themes/?utm_source=helper' ) . '" title="' . esc_attr__( 'Find out more about our Themes', 'woothemes-updater' ) . '">' . __( 'Find out more about our Themes', 'woothemes-updater' ) . '</a></em></li>' . "\n";
+		echo '</ul>' . "\n";
+	} // End display_themes_links()
+
+	/**
+	 * Display rendered HTML markup containing a panic button.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function display_panic_button () {
+		echo '<div class="panic-button-wrap"><a href="' . esc_url( 'http://www.woothemes.com/contact-us/?utm_source=helper' ) . '" title="' . esc_attr__( 'Help!', 'woothemes-updater' ) . '" class="panic-button" target="_blank">' . '<strong>' . __( 'Panic Button', 'woothemes-updater' ) . '</strong> <em>' . __( 'For when all else fails', 'woothemes-updater' ) . '</em>' . '</a></div>' . "\n";
+	} // End display_panic_button()
+
+	/**
+	 * Generate the HTML for a given array of links.
+	 * @access  private
+	 * @since   1.2.0
+	 * @param   array  $links Links with the key as the URL and the value as the title.
+	 * @return  string Rendered HTML for the links.
+	 */
+	private function _generate_link_list ( $links = array() ) {
+		if ( 0 >= count( $links ) ) return;
+		$html = '';
+		foreach ( $links as $k => $v ) {
+			$html .= '<li><a href="' . esc_url( trailingslashit( $k ) . '?utm_source=helper' ) . '" title="' . esc_attr( $v ) . '">' . esc_html( $v ) . '</a></li>' . "\n";
+		}
+
+		return $html;
+	} // End _generate_link_list()
 
 	/**
 	 * Returns the action value to use.
@@ -126,7 +376,27 @@ class WooThemes_Updater_Admin {
 			return $_GET['action'];
 
 		return false;
-	}
+	} // End get_post_or_get_action()
+
+	/**
+	 * Enqueue admin styles.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function enqueue_styles () {
+		wp_enqueue_style( 'woothemes-updater-admin', esc_url( $this->assets_url . 'css/admin.css' ), array(), '1.0.0', 'all' );
+	} // End enqueue_styles()
+
+	/**
+	 * Enqueue admin scripts.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function enqueue_scripts () {
+		wp_enqueue_script( 'post' );
+	} // End enqueue_scripts()
 
 	/**
 	 * Process the action for the admin screen.
@@ -234,7 +504,7 @@ class WooThemes_Updater_Admin {
 				}
 
 				$response .= '<div class="error fade">' . "\n";
-				$response .= $message;
+				$response .= make_clickable( $message );
 				$response .= '</div>' . "\n";
 
 				// Clear the error log.
@@ -288,6 +558,14 @@ class WooThemes_Updater_Admin {
 	protected function get_detected_products () {
 		$response = array();
 		$products = get_plugins();
+
+		$themes = wp_get_themes();
+		if ( 0 < count( $themes ) ) {
+			foreach ( $themes as $k => $v ) {
+				$filepath = basename( $v->__get( 'stylesheet_dir' ) ) . '/style.css';
+				$products[$filepath] = array( 'Name' => $v->__get( 'name' ), 'Version' => $v->__get( 'version' ) );
+			}
+		}
 
 		if ( is_array( $products ) && ( 0 < count( $products ) ) ) {
 			$reference_list = $this->get_product_reference_list();
@@ -377,10 +655,11 @@ class WooThemes_Updater_Admin {
 	/**
 	 * Deactivate a given product key.
 	 * @since    1.0.0
-	 * @param   string $filename File name of the to deactivate plugin licence
-	 * @return boolean      Whether or not the deactivation was successful.
+	 * @param    string $filename File name of the to deactivate plugin licence
+	 * @param    bool $local_only Deactivate the product locally without pinging WooThemes.com.
+	 * @return   boolean          Whether or not the deactivation was successful.
 	 */
-	protected function deactivate_product ( $filename ) {
+	protected function deactivate_product ( $filename, $local_only = false ) {
 		$response = false;
 		$already_active = $this->get_activated_products();
 
@@ -390,7 +669,9 @@ class WooThemes_Updater_Admin {
 			if ( isset( $already_active[ $filename ][0] ) ) {
 				$key = $already_active[ $filename ][2];
 
-				$deactivated = $this->api->deactivate( $key );
+				if ( false == $local_only ) {
+					$deactivated = $this->api->deactivate( $key );
+				}
 			}
 
 			if ( $deactivated ) {
@@ -406,6 +687,7 @@ class WooThemes_Updater_Admin {
 
 	/**
 	 * Load an instance of the updater class for each activated WooThemes Product.
+	 * @access public
 	 * @since  1.0.0
 	 * @return void
 	 */
@@ -414,15 +696,39 @@ class WooThemes_Updater_Admin {
 		$activated_products = $this->get_activated_products();
 		if ( 0 < count( $products ) ) {
 			require_once( 'class-woothemes-updater-update-checker.php' );
+			require_once( 'class-woothemes-updater-theme-update-checker.php' );
 			foreach ( $products as $k => $v ) {
 				if ( isset( $v['product_id'] ) && isset( $v['file_id'] ) ) {
-
 					$license_hash = isset( $activated_products[ $k ][2] ) ? $activated_products[ $k ][2] : '';
-					new WooThemes_Updater_Update_Checker( $k, $v['product_id'], $v['file_id'], $license_hash );
 
+					// If it's a theme, use the theme update checker. Otherwise, use the plugin update checker.
+					if ( strpos( $k, 'style.css' ) ) {
+						new WooThemes_Updater_Theme_Update_Checker( $k, $v['product_id'], $v['file_id'], $license_hash );
+					} else {
+						new WooThemes_Updater_Update_Checker( $k, $v['product_id'], $v['file_id'], $license_hash );
+					}
 				}
 			}
 		}
 	} // End load_updater_instances()
+
+	/**
+	 * Run checks against the API to ensure the product keys are actually active on WooThemes.com. If not, deactivate them locally as well.
+	 * @access public
+	 * @since  1.3.0
+	 * @return void
+	 */
+	public function ensure_keys_are_actually_active () {
+		$products = (array)$this->get_activated_products();
+
+		if ( 0 < count( $products ) ) {
+			foreach ( $products as $k => $v ) {
+				$status = $this->api->product_active_status_check( $k, $v[0], $v[1], $v[2] );
+				if ( false == $status ) {
+					$this->deactivate_product( $k, true );
+				}
+			}
+		}
+	} // End ensure_keys_are_actually_active()
 } // End Class
 ?>
