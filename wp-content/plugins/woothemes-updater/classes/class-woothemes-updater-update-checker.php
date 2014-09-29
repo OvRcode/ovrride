@@ -25,11 +25,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * - request()
  */
 class WooThemes_Updater_Update_Checker {
-	private $file;
-	private $api_url;
-	private $product_id;
-	private $file_id;
-	//private $license_hash;
+	protected $file;
+	protected $api_url;
+	protected $product_id;
+	protected $file_id;
+	protected $license_hash;
 
 	/**
 	 * Constructor.
@@ -39,18 +39,28 @@ class WooThemes_Updater_Update_Checker {
 	 * @return void
 	 */
 	public function __construct ( $file, $product_id, $file_id, $license_hash = '' ) {
-		$this->api_url = 'http://www.woothemes.com/?wc-api=woothemes-installer-api&';
+		$this->api_url = 'http://www.woothemes.com/wc-api/woothemes-installer-api';
 		$this->file = $file;
 		$this->product_id = $product_id;
 		$this->file_id = $file_id;
 		$this->license_hash = $license_hash;
+		$this->init();
+	} // End __construct()
 
+	/**
+	 * Initialise the update check process.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function init () {
 		// Check For Updates
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'update_check' ) );
 
 		// Check For Plugin Information
 		add_filter( 'plugins_api', array( $this, 'plugin_information' ), 10, 3 );
-	} // End __construct()
+	} // End init()
+
 
 	/**
 	 * Check for updates against the remote server.
@@ -85,7 +95,7 @@ class WooThemes_Updater_Update_Checker {
 	    // If response is false, don't alter the transient
 	    if( false !== $response ) {
 
-	    	if( isset( $response->errors ) && isset ( $response->errors->woo_updater_api_license_deactivated ) ){
+	    	if( isset( $response->errors ) && isset ( $response->errors->woo_updater_api_license_deactivated ) ) {
 
 	    		add_action('admin_notices', array( $this, 'error_notice_for_deactivated_plugin') );
 
@@ -105,7 +115,7 @@ class WooThemes_Updater_Update_Checker {
 	 * @param  strin $message The message
 	 * @return void
 	 */
-	public function error_notice_for_deactivated_plugin( $message ) {
+	public function error_notice_for_deactivated_plugin ( $message ) {
 
 		$plugins = get_plugins();
 
@@ -125,7 +135,7 @@ class WooThemes_Updater_Update_Checker {
 		$transient = get_site_transient( 'update_plugins' );
 
 		// Check if this plugins API is about this plugin
-		if( $args->slug != $this->file ) {
+		if( ! isset( $args->slug ) || ( $args->slug != $this->file ) ) {
 			return $false;
 		}
 
@@ -160,12 +170,12 @@ class WooThemes_Updater_Update_Checker {
 	/**
 	 * Generic request helper.
 	 *
-	 * @access private
+	 * @access protected
 	 * @since  1.0.0
 	 * @param  array $args
 	 * @return object $response or boolean false
 	 */
-	private function request ( $args ) {
+	protected function request ( $args ) {
 	    // Send request
 	    $request = wp_remote_post( $this->api_url, array(
 			'method' => 'POST',
@@ -173,7 +183,7 @@ class WooThemes_Updater_Update_Checker {
 			'redirection' => 5,
 			'httpversion' => '1.0',
 			'blocking' => true,
-			'headers' => array( 'user-agent' => 'WooThemesUpdater/1.1.0' ),
+			'headers' => array( 'user-agent' => 'WooThemesUpdater/1.3.0' ),
 			'body' => $args,
 			'cookies' => array(),
 			'sslverify' => false
@@ -196,6 +206,6 @@ class WooThemes_Updater_Update_Checker {
 	        // Unexpected response
 	        return false;
 	    }
-	} // End prepare_request()
+	} // End request()
 } // End Class
 ?>

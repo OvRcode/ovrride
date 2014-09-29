@@ -24,6 +24,9 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 
 		$this->data = array();
 
+		// Make sure this file is loaded, so we have access to plugins_api(), etc.
+		require_once( ABSPATH . '/wp-admin/includes/plugin-install.php' );
+
 	    parent::__construct( $args );
 	} // End __construct()
 
@@ -87,6 +90,16 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	} // End column_product_name()
 
 	/**
+     * Content for the "product_version" column.
+     * @param  array  $item The current item.
+     * @since  1.0.0
+     * @return string       The content of this column.
+     */
+	public function column_product_version ( $item ) {
+		return wpautop( $item['product_version'] );
+	} // End column_product_version()
+
+	/**
      * Content for the "status" column.
      * @param  array  $item The current item.
      * @since  1.0.0
@@ -95,10 +108,10 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	public function column_product_status ( $item ) {
 		$response = '';
 		if ( 'active' == $item['product_status'] ) {
-			$deactivate_url = wp_nonce_url( add_query_arg( 'action', 'deactivate-product', add_query_arg( 'filepath', $item['product_file_path'], add_query_arg( 'page', 'woothemes-licenses', network_admin_url( 'index.php' ) ) ) ), 'bulk-licenses' );
+			$deactivate_url = wp_nonce_url( add_query_arg( 'action', 'deactivate-product', add_query_arg( 'filepath', $item['product_file_path'], add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) ) ) ), 'bulk-licenses' );
 			$response = '<a href="' . esc_url( $deactivate_url ) . '">' . __( 'Deactivate', 'woothemes-updater' ) . '</a>' . "\n";
 		} else {
-			$response .= '<input name="license_keys[' . esc_attr( $item['product_file_path'] ) . ']" id="license_keys-' . esc_attr( $item['product_file_path'] ) . '" type="text" value="" size="40" aria-required="true" placeholder="' . esc_attr( sprintf( __( 'Place %s license key here', 'woothemes-updater' ), $item['product_name'] ) ) . '" />' . "\n";
+			$response .= '<input name="license_keys[' . esc_attr( $item['product_file_path'] ) . ']" id="license_keys-' . esc_attr( $item['product_file_path'] ) . '" type="text" value="" size="37" aria-required="true" placeholder="' . esc_attr( sprintf( __( 'Place %s license key here', 'woothemes-updater' ), $item['product_name'] ) ) . '" />' . "\n";
 		}
 
 		return $response;
