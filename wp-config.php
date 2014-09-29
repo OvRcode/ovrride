@@ -30,7 +30,7 @@ define('DB_USER', ( getenv('AMAZON_RDS_USER') ?: '***REMOVED***' ) );
 define('DB_PASSWORD', ( getenv('AMAZON_RDS_PASS') ?: '***REMOVED***' ) );
 
 /** MySQL hostname */
-define('DB_HOST' ( getenv('AMAZON_RDS_HOST') ?: '***REMOVED***'));
+define('DB_HOST', ( getenv('AMAZON_RDS_HOST') ?: '***REMOVED***'));
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
