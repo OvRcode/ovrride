@@ -24,16 +24,13 @@ define('WP_CACHE', true); // Added by W3 Total Cache
 define('DB_NAME', ( getenv('OPENSHIFT_APP_NAME') ?: 'ovrridec_ovrride' ) );
 
 /** MySQL database username */
-define('DB_USER', ( getenv('OPENSHIFT_MYSQL_DB_USERNAME') ?: 'ovrridec_ovrride' ) );
+define('DB_USER', ( getenv('AMAZON_RDS_USER') ?: 'ovrridec_ovrride' ) );
 
 /** MySQL database password */
-define('DB_PASSWORD', ( getenv('OPENSHIFT_MYSQL_DB_PASSWORD') ?: 'PmInUbYv12BuNiMo' ) );
+define('DB_PASSWORD', ( getenv('AMAZON_RDS_PASS') ?: 'PmInUbYv12BuNiMo' ) );
 
 /** MySQL hostname */
-if ( getenv('OPENSHIFT_MYSQL_DB_HOST') )
-  define('DB_HOST', getenv('OPENSHIFT_MYSQL_DB_HOST') . ":" . getenv('OPENSHIFT_MYSQL_DB_PORT') );
-else
-  define('DB_HOST', 'localhost');
+define('DB_HOST' ( getenv('AMAZON_RDS_HOST') ?: 'localhost'));
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
