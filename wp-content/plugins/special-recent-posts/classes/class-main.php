@@ -588,6 +588,7 @@ class SpecialRecentPostsFree {
 
 			} elseif ( $featured_thumb_url ) {
 				// S3 Image
+				error_log('Featured URL:'.$featured_thumb_url);
 				$extension = strrpos($featured_thumb_url, '.');
 				$s3_thumb_url = substr_replace($featured_thumb_url,"-150x150", $extension, 0);
 				$featured_htmltag = '<img src="' . $s3_thumb_url . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
