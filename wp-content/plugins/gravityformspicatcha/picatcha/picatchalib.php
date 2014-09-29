@@ -103,23 +103,25 @@ function _picatcha_http_post($host, $path, $data, $port = 80) {
  * @return
  *   The HTML to be embedded in the user's form (string)
  */
-function picatcha_get_html($form_id, $pubkey, $error = NULL, $format='2', $style='#2a1f19', $link = '1', $IMG_SIZE = '75', $NOISE_LEVEL = 0, $NOISE_TYPE = 0, $lang = 'en', $langOverride = '0') {
-
-      $elm_id = 'picatcha';
-
-      $script = 'Picatcha.PUBLIC_KEY="'.$pubkey.'";' .
-            'Picatcha.setCustomization({"format":"'.$format.'","color":"'.$style.'","link":"'.$link.'","image_size":"'.$IMG_SIZE.'","lang":"'.$lang.'","langOverride":"'.$langOverride.'","noise_level":"'.$NOISE_LEVEL.'","noise_type":"'.$NOISE_TYPE.'"});'.
-            'Picatcha.create("'.$elm_id.'",{});';
-
-      GFFormDisplay::add_init_script($form_id, "picatcha", GFFormDisplay::ON_PAGE_RENDER, $script);
-
-      $html = '';
-      if ( $error != NULL ) {
+function picatcha_get_html($pubkey, $error = NULL, $format='2', $style='#2a1f19', $link = '1', $IMG_SIZE = '75', $NOISE_LEVEL = 0, $NOISE_TYPE = 0, $use_ssl=false) {
+    if($use_ssl){
+        $api_server = "https://".PICATCHA_API_SERVER;
+    }else{
+        $api_server = "http://".PICATCHA_API_SERVER;
+    }
+    $elm_id = 'picatcha';
+    $html = '';
+    $html .= '<script type="text/javascript" src="' . $api_server . '/static/client/jquery.min.js"></script>';
+    $html .= '<script type="text/javascript" src="' . $api_server . '/static/client/picatcha.js"></script>';
+    $html .= '<link href="' . $api_server . '/static/client/picatcha.css" rel="stylesheet" type="text/css">';
+    $html .= '<script type="text/javascript">Picatcha.PUBLIC_KEY="' . $pubkey . '"; Picatcha.STYLE="'.$style.'"; Picatcha.FORMAT="'.$format.'"; Picatcha.LINK="'.$link.'"; Picatcha.IMG_SIZE="'.$IMG_SIZE.'"; Picatcha.NOISE_LEVEL='.$NOISE_LEVEL.'; Picatcha.NOISE_TYPE='.$NOISE_TYPE.'; window.onload=function(){Picatcha.create("' . $elm_id . '", {});};</script>';
+    if ( $error != NULL ) {
         $html .= '<div id="' . $elm_id . '_error">' . $error . '</div>';
-      }
-      $html .= '<div id="' . $elm_id . '"></div>';
-      return $html;
+    }
+    $html .= '<div id="' . $elm_id . '"></div>';
+    return $html;
 }
+
 
 
 /**

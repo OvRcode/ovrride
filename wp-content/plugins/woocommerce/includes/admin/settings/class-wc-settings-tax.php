@@ -60,14 +60,15 @@ class WC_Settings_Tax extends WC_Settings_Page {
 	 * @return array
 	 */
 	public function get_settings() {
-
-		$tax_classes = array_filter( array_map( 'trim', explode( "\n", get_option( 'woocommerce_tax_classes' ) ) ) );
+		$tax_classes     = array_filter( array_map( 'trim', explode( "\n", get_option( 'woocommerce_tax_classes' ) ) ) );
 		$classes_options = array();
-		if ( $tax_classes )
-			foreach ( $tax_classes as $class )
+		if ( $tax_classes ) {
+			foreach ( $tax_classes as $class ) {
 				$classes_options[ sanitize_title( $class ) ] = esc_html( $class );
+			}
+		}
 
-		return apply_filters('woocommerce_tax_settings', array(
+		$settings = apply_filters('woocommerce_tax_settings', array(
 
 			array( 'title' => __( 'Tax Options', 'woocommerce' ), 'type' => 'title','desc' => '', 'id' => 'tax_options' ),
 
@@ -189,7 +190,9 @@ class WC_Settings_Tax extends WC_Settings_Page {
 
 			array( 'type' => 'sectionend', 'id' => 'tax_options' ),
 
-		)); // End tax settings
+		) );
+
+		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings );
 	}
 
 	/**
@@ -480,7 +483,7 @@ class WC_Settings_Tax extends WC_Settings_Page {
 				var availableCountries = [<?php
 					$countries = array();
 					foreach ( WC()->countries->get_allowed_countries() as $value => $label )
-						$countries[] = '{ label: "' . $label . '", value: "' . $value . '" }';
+						$countries[] = '{ label: "' . esc_attr( $label ) . '", value: "' . $value . '" }';
 					echo implode( ', ', $countries );
 				?>];
 
@@ -488,7 +491,7 @@ class WC_Settings_Tax extends WC_Settings_Page {
 					$countries = array();
 					foreach ( WC()->countries->get_allowed_country_states() as $value => $label )
 						foreach ( $label as $code => $state )
-							$countries[] = '{ label: "' . $state . '", value: "' . $code . '" }';
+							$countries[] = '{ label: "' . esc_attr( $state ) . '", value: "' . $code . '" }';
 					echo implode( ', ', $countries );
 				?>];
 

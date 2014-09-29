@@ -32,25 +32,10 @@ function wc_get_order_statuses() {
 }
 
 /**
- * Get the order status label.
- *
- * @since  2.2
- * @param  string $status
- * @return string
- */
-function wc_get_order_status_label( $status ) {
-	$order_statuses = wc_get_order_statuses();
-
-	$status = str_replace( 'wc-', '', $status );
-	$status = isset( $order_statuses[ 'wc-' . $status ] ) ? $order_statuses[ 'wc-' . $status ] : $status;
-
-	return $status;
-}
-
-/**
  * Main function for returning orders, uses the WC_Order_Factory class.
  *
- * @param mixed $the_order Post object or post ID of the order.
+ * @since  2.2
+ * @param  mixed $the_order Post object or post ID of the order.
  * @return WC_Order
  */
 function wc_get_order( $the_order = false ) {
@@ -58,13 +43,18 @@ function wc_get_order( $the_order = false ) {
 }
 
 /**
- * Get the nice name for an orer status
+ * Get the nice name for an order status
+ *
+ * @since  2.2
  * @param  string $status
  * @return string
  */
 function wc_get_order_status_name( $status ) {
 	$statuses = wc_get_order_statuses();
-	return isset( $statuses[ $status ] ) ? $statuses[ $status ] : $status;
+	$status   = 'wc-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status;
+	$status   = isset( $statuses[ 'wc-' . $status ] ) ? $statuses[ 'wc-' . $status ] : $status;
+
+	return strtolower( $status );
 }
 
 /**
@@ -78,7 +68,7 @@ function wc_get_order_id_by_order_key( $order_key ) {
 	global $wpdb;
 
 	// Faster than get_posts()
-	$order_id = $wpdb->get_var( "SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = '_order_key' AND meta_value = '{$order_key}'" );
+	$order_id = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = '_order_key' AND meta_value = %s", $order_key ) );
 
 	return $order_id;
 }

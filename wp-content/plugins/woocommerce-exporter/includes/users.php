@@ -34,12 +34,65 @@ if( is_admin() ) {
 
 	}
 
+	// HTML template for disabled Custom Users widget on Store Exporter screen
+	function woo_ce_users_custom_fields() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		$custom_users = ' - ';
+
+		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter-deluxe/usage/';
+
+		ob_start(); ?>
+<form method="post" id="export-users-custom-fields" class="export-options user-options">
+	<div id="poststuff">
+
+		<div class="postbox" id="export-options user-options">
+			<h3 class="hndle"><?php _e( 'Custom User Fields', 'woo_ce' ); ?></h3>
+			<div class="inside">
+				<p class="description"><?php _e( 'To include additional custom User meta in the Export Users table above fill the Users text box then click Save Custom Fields.', 'woo_ce' ); ?></p>
+				<table class="form-table">
+
+					<tr>
+						<th>
+							<label><?php _e( 'User meta', 'woo_ce' ); ?></label>
+						</th>
+						<td>
+							<textarea name="custom_users" rows="5" cols="70"><?php echo esc_textarea( $custom_users ); ?></textarea>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
+							<p class="description"><?php _e( 'Include additional custom User meta in your export file by adding each custom User meta name to a new line above.<br />For example: <code>Customer UA, Customer IP Address</code>', 'woo_ce' ); ?></p>
+						</td>
+					</tr>
+
+				</table>
+				<p class="submit">
+					<input type="button" class="button button-disabled" value="<?php _e( 'Save Custom Fields', 'woo_ce' ); ?>" />
+				</p>
+				<p class="description"><?php printf( __( 'For more information on custom User meta consult our <a href="%s" target="_blank">online documentation</a>.', 'woo_ce' ), $troubleshooting_url ); ?></p>
+			</div>
+			<!-- .inside -->
+		</div>
+		<!-- .postbox -->
+
+	</div>
+	<!-- #poststuff -->
+	<input type="hidden" name="action" value="update" />
+</form>
+<!-- #export-users-custom-fields -->
+<?php
+		ob_end_flush();
+
+	}
+
 	/* End of: WordPress Administration */
 
 }
 
 // Returns a list of User export columns
 function woo_ce_get_user_fields( $format = 'full' ) {
+
+	$export_type = 'user';
 
 	$fields = array();
 	$fields[] = array(
@@ -90,10 +143,10 @@ function woo_ce_get_user_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional User columns
-	$fields = apply_filters( 'woo_ce_user_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
-	if( $remember = woo_ce_get_option( 'user_fields', array() ) ) {
+	if( $remember = woo_ce_get_option( $export_type . '_fields', array() ) ) {
 		$remember = maybe_unserialize( $remember );
 		$size = count( $fields );
 		for( $i = 0; $i < $size; $i++ ) {
@@ -118,17 +171,31 @@ function woo_ce_get_user_fields( $format = 'full' ) {
 
 		case 'full':
 		default:
-			$sorting = woo_ce_get_option( 'user_sorting', array() );
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
 			for( $i = 0; $i < $size; $i++ )
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, 'woo_ce_sort_fields' );
+			usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
 	}
 
 }
+
+function woo_ce_override_user_field_labels( $fields = array() ) {
+
+	$labels = woo_ce_get_option( 'user_labels', array() );
+	if( !empty( $labels ) ) {
+		foreach( $fields as $key => $field ) {
+			if( isset( $labels[$field['name']] ) )
+				$fields[$key]['label'] = $labels[$field['name']];
+		}
+	}
+	return $fields;
+
+}
+add_filter( 'woo_ce_user_fields', 'woo_ce_override_user_field_labels', 11 );
 
 // Returns the export column header label based on an export column slug
 function woo_ce_get_user_field( $name = null, $format = 'name' ) {
@@ -180,20 +247,6 @@ function woo_ce_extend_user_fields( $fields = array() ) {
 }
 add_filter( 'woo_ce_user_fields', 'woo_ce_extend_user_fields' );
 
-function woo_ce_override_user_field_labels( $fields = array() ) {
-
-	$labels = woo_ce_get_option( 'user_labels', array() );
-	if( !empty( $labels ) ) {
-		foreach( $fields as $key => $field ) {
-			if( isset( $labels[$field['name']] ) )
-				$fields[$key]['label'] = $labels[$field['name']];
-		}
-	}
-	return $fields;
-
-}
-add_filter( 'woo_ce_user_fields', 'woo_ce_override_user_field_labels', 11 );
-
 // Returns a list of User IDs
 function woo_ce_get_users( $args = array() ) {
 
@@ -230,8 +283,6 @@ function woo_ce_get_users( $args = array() ) {
 }
 
 function woo_ce_get_user_data( $user_id = 0, $args = array() ) {
-
-	global $export;
 
 	$defaults = array();
 	$args = wp_parse_args( $args, $defaults );

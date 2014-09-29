@@ -31,12 +31,65 @@ if( is_admin() ) {
 
 	}
 
+	// HTML template for disabled Custom Customers widget on Store Exporter screen
+	function woo_ce_customers_custom_fields() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		$custom_customers = '-';
+
+		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter-deluxe/usage/';
+
+		ob_start(); ?>
+<form method="post" id="export-customers-custom-fields" class="export-options customer-options">
+	<div id="poststuff">
+
+		<div class="postbox" id="export-options customer-options">
+			<h3 class="hndle"><?php _e( 'Custom Customer Fields', 'woo_ce' ); ?></h3>
+			<div class="inside">
+				<p class="description"><?php _e( 'To include additional custom Customer meta in the Export Customers table above fill the Customers text box then click Save Custom Fields.', 'woo_ce' ); ?></p>
+				<table class="form-table">
+
+					<tr>
+						<th>
+							<label><?php _e( 'Customer meta', 'woo_ce' ); ?></label>
+						</th>
+						<td>
+							<textarea name="custom_customers" rows="5" cols="70" disabled="disabled"><?php echo esc_textarea( $custom_customers ); ?></textarea>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
+							<p class="description"><?php _e( 'Include additional custom Customer meta in your export file by adding each custom Customer meta name to a new line above.<br />For example: <code>Customer UA, Customer IP Address</code>', 'woo_ce' ); ?></p>
+						</td>
+					</tr>
+
+				</table>
+				<p class="submit">
+					<input type="button" class="button button-disabled" value="<?php _e( 'Save Custom Fields', 'woo_ce' ); ?>" />
+				</p>
+				<p class="description"><?php printf( __( 'For more information on custom Customer meta consult our <a href="%s" target="_blank">online documentation</a>.', 'woo_ce' ), $troubleshooting_url ); ?></p>
+			</div>
+			<!-- .inside -->
+		</div>
+		<!-- .postbox -->
+
+	</div>
+	<!-- #poststuff -->
+	<input type="hidden" name="action" value="update" />
+</form>
+<!-- #export-customers-custom-fields -->
+<?php
+		ob_end_flush();
+
+	}
+
 	/* End of: WordPress Administration */
 
 }
 
 // Returns a list of Customer export columns
 function woo_ce_get_customer_fields( $format = 'full' ) {
+
+	$export_type = 'customer';
 
 	$fields = array();
 	$fields[] = array(
@@ -163,8 +216,8 @@ function woo_ce_get_customer_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional Customer columns
-	$fields = apply_filters( 'woo_ce_customer_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
 	switch( $format ) {
 
@@ -180,10 +233,29 @@ function woo_ce_get_customer_fields( $format = 'full' ) {
 
 		case 'full':
 		default:
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
+			$size = count( $fields );
+			for( $i = 0; $i < $size; $i++ )
+				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
+			usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
 	}
 
 }
+
+function woo_ce_override_customer_field_labels( $fields = array() ) {
+
+	$labels = woo_ce_get_option( 'customer_labels', array() );
+	if( !empty( $labels ) ) {
+		foreach( $fields as $key => $field ) {
+			if( isset( $labels[$field['name']] ) )
+				$fields[$key]['label'] = $labels[$field['name']];
+		}
+	}
+	return $fields;
+
+}
+add_filter( 'woo_ce_customer_fields', 'woo_ce_override_customer_field_labels', 11 );
 ?>

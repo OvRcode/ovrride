@@ -161,6 +161,46 @@ if( is_admin() ) {
 
 	}
 
+	// HTML template for Up-sells formatting on Store Exporter screen
+	function woo_ce_products_upsells_formatting() {
+
+		$upsell_formatting = woo_ce_get_option( 'upsell_formatting', 1 );
+
+		ob_start(); ?>
+					<tr class="export-options product-options">
+						<th><label for=""><?php _e( 'Up-sells formatting', 'woo_ce' ); ?></label></th>
+						<td>
+							<label><input type="radio" name="product_upsell_formatting" value="0"<?php checked( $upsell_formatting, 0 ); ?> />&nbsp;<?php _e( 'Export Up-Sells as Product ID', 'woo_ce' ); ?></label><br />
+							<label><input type="radio" name="product_upsell_formatting" value="1"<?php checked( $upsell_formatting, 1 ); ?> />&nbsp;<?php _e( 'Export Up-Sells as Product SKU', 'woo_ce' ); ?></label>
+							<p class="description"><?php _e( 'Choose the up-sell formatting that is accepted by your WooCommerce import Plugin (e.g. Product Importer Deluxe, Product Import Suite, etc.).', 'woo_ce' ); ?></p>
+						</td>
+					</tr>
+
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for Cross-sells formatting on Store Exporter screen
+	function woo_ce_products_crosssells_formatting() {
+
+		$crosssell_formatting = woo_ce_get_option( 'crosssell_formatting', 1 );
+
+		ob_start(); ?>
+					<tr class="export-options product-options">
+						<th><label for=""><?php _e( 'Cross-sells formatting', 'woo_ce' ); ?></label></th>
+						<td>
+							<label><input type="radio" name="product_crosssell_formatting" value="0"<?php checked( $crosssell_formatting, 0 ); ?> />&nbsp;<?php _e( 'Export Cross-Sells as Product ID', 'woo_ce' ); ?></label><br />
+							<label><input type="radio" name="product_crosssell_formatting" value="1"<?php checked( $crosssell_formatting, 1 ); ?> />&nbsp;<?php _e( 'Export Cross-Sells as Product SKU', 'woo_ce' ); ?></label>
+							<p class="description"><?php _e( 'Choose the cross-sell formatting that is accepted by your WooCommerce import Plugin (e.g. Product Importer Deluxe, Product Import Suite, etc.).', 'woo_ce' ); ?></p>
+						</td>
+					</tr>
+
+<?php
+		ob_end_flush();
+
+	}
+
 	// HTML template for Custom Products widget on Store Exporter screen
 	function woo_ce_products_custom_fields() {
 
@@ -290,16 +330,18 @@ function woo_ce_get_products( $args = array() ) {
 	if( $product_ids->posts ) {
 		foreach( $product_ids->posts as $product_id ) {
 			$product = get_post( $product_id );
+			// Filter out variations that don't have a Parent Product that exists
 			if( $product->post_type == 'product_variation' ) {
 				// Check if Parent exists
 				if( $product->post_parent ) {
 					if( !get_post( $product->post_parent ) ) {
-						unset( $product );
+						unset( $product_id, $product );
 						continue;
 					}
 				}
 			}
-			$products[] = $product_id;
+			if( isset( $product_id ) )
+				$products[] = $product_id;
 		}
 		unset( $product_ids, $product_id );
 	}
@@ -330,6 +372,7 @@ function woo_ce_get_product_data( $product_id = 0, $args = array() ) {
 	$product->sku = get_post_meta( $product->ID, '_sku', true );
 	$product->name = get_the_title( $product->ID );
 	$product->permalink = get_permalink( $product->ID );
+	$product->product_url = get_permalink( $product->ID );
 	$product->slug = $product->post_name;
 	$product->description = $product->post_content;
 	$product->excerpt = $product->post_excerpt;
@@ -378,7 +421,7 @@ function woo_ce_get_product_data( $product_id = 0, $args = array() ) {
 	$product->image = woo_ce_get_product_assoc_featured_image( $product->ID );
 	$product->tax_status = woo_ce_format_tax_status( get_post_meta( $product->ID, '_tax_status', true ) );
 	$product->tax_class = woo_ce_format_tax_class( get_post_meta( $product->ID, '_tax_class', true ) );
-	$product->product_url = get_post_meta( $product->ID, '_product_url', true );
+	$product->external_url = get_post_meta( $product->ID, '_product_url', true );
 	$product->button_text = get_post_meta( $product->ID, '_button_text', true );
 	$product->file_download = woo_ce_get_product_assoc_file_downloads( $product->ID );
 	$product->download_limit = get_post_meta( $product->ID, '_download_limit', true );
@@ -392,8 +435,20 @@ function woo_ce_get_product_data( $product_id = 0, $args = array() ) {
 	// Attributes
 	if( $attributes = woo_ce_get_product_attributes() ) {
 		if( $product->post_type == 'product_variation' ) {
-			foreach( $attributes as $attribute )
-				$product->{'attribute_' . $attribute->attribute_name} = get_post_meta( $product->ID, sprintf( 'attribute_pa_%s', $attribute->attribute_name ), true );
+			foreach( $attributes as $attribute ) {
+				$attribute_value = get_post_meta( $product->ID, sprintf( 'attribute_pa_%s', $attribute->attribute_name ), true );
+				if( !empty( $attribute_value ) ) {
+					$term_id = term_exists( $attribute_value, sprintf( 'pa_%s', $attribute->attribute_name ) );
+					if( $term_id !== 0 && $term_id !== null && !is_wp_error( $term_id ) ) {
+						$term = get_term( $term_id['term_id'], sprintf( 'pa_%s', $attribute->attribute_name ) );
+						$attribute_value = $term->name;
+						unset( $term );
+					}
+					unset( $term_id );
+				}
+				$product->{'attribute_' . $attribute->attribute_name} = $attribute_value;
+				unset( $attribute_value );
+			}
 		} else {
 			$product->attributes = maybe_unserialize( get_post_meta( $product->ID, '_product_attributes', true ) );
 			if( !empty( $product->attributes ) ) {
@@ -417,7 +472,7 @@ function woo_ce_get_product_data( $product_id = 0, $args = array() ) {
 
 	// Advanced Google Product Feed - http://plugins.leewillis.co.uk/downloads/wp-e-commerce-product-feeds/
 	if( function_exists( 'woocommerce_gpf_install' ) ) {
-		$product->gpf_data = get_post_meta( $product->ID, '_wpec_gpf_data', true );
+		$product->gpf_data = get_post_meta( $product->ID, '_woocommerce_gpf_data', true );
 		$product->gpf_availability = ( isset( $product->gpf_data['availability'] ) ? woo_ce_format_gpf_availability( $product->gpf_data['availability'] ) : '' );
 		$product->gpf_condition = ( isset( $product->gpf_data['condition'] ) ? woo_ce_format_gpf_condition( $product->gpf_data['condition'] ) : '' );
 		$product->gpf_brand = ( isset( $product->gpf_data['brand'] ) ? $product->gpf_data['brand'] : '' );
@@ -682,6 +737,8 @@ function woo_ce_get_product_assoc_file_downloads( $product_id = 0 ) {
 // Returns a list of Product export columns
 function woo_ce_get_product_fields( $format = 'full' ) {
 
+	$export_type = 'product';
+
 	$fields = array();
 	$fields[] = array(
 		'name' => 'parent_id',
@@ -710,6 +767,10 @@ function woo_ce_get_product_fields( $format = 'full' ) {
 	$fields[] = array(
 		'name' => 'permalink',
 		'label' => __( 'Permalink', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'product_url',
+		'label' => __( 'Product URL', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'description',
@@ -857,6 +918,11 @@ function woo_ce_get_product_fields( $format = 'full' ) {
 		'label' => __( 'Sold Individually', 'woo_ce' )
 	);
 	$fields[] = array(
+		'name' => 'total_sales',
+		'label' => __( 'Total Sales', 'woo_ce' ),
+		'disabled' => 1
+	);
+	$fields[] = array(
 		'name' => 'upsell_ids',
 		'label' => __( 'Up-Sells', 'woo_ce' )
 	);
@@ -865,8 +931,8 @@ function woo_ce_get_product_fields( $format = 'full' ) {
 		'label' => __( 'Cross-Sells', 'woo_ce' )
 	);
 	$fields[] = array(
-		'name' => 'product_url',
-		'label' => __( 'Product URL', 'woo_ce' )
+		'name' => 'external_url',
+		'label' => __( 'External URL', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'button_text',
@@ -896,10 +962,10 @@ function woo_ce_get_product_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional Product columns
-	$fields = apply_filters( 'woo_ce_product_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
-	if( $remember = woo_ce_get_option( 'product_fields', array() ) ) {
+	if( $remember = woo_ce_get_option( $export_type . '_fields', array() ) ) {
 		$remember = maybe_unserialize( $remember );
 		$size = count( $fields );
 		for( $i = 0; $i < $size; $i++ ) {
@@ -924,17 +990,31 @@ function woo_ce_get_product_fields( $format = 'full' ) {
 
 		case 'full':
 		default:
-			$sorting = woo_ce_get_option( 'product_sorting', array() );
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
 			for( $i = 0; $i < $size; $i++ )
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, 'woo_ce_sort_fields' );
+			usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
 	}
 
 }
+
+function woo_ce_override_product_field_labels( $fields = array() ) {
+
+	$labels = woo_ce_get_option( 'product_labels', array() );
+	if( !empty( $labels ) ) {
+		foreach( $fields as $key => $field ) {
+			if( isset( $labels[$field['name']] ) )
+				$fields[$key]['label'] = $labels[$field['name']];
+		}
+	}
+	return $fields;
+
+}
+add_filter( 'woo_ce_product_fields', 'woo_ce_override_product_field_labels', 11 );
 
 function woo_ce_extend_product_fields( $fields ) {
 
@@ -1114,6 +1194,25 @@ function woo_ce_extend_product_fields( $fields ) {
 		);
 	}
 
+	// Product Vendors - http://www.woothemes.com/products/product-vendors/
+	if( class_exists( 'WooCommerce_Product_Vendors' ) ) {
+		$fields[] = array(
+			'name' => 'vendors',
+			'label' => __( 'Product Vendors', 'woo_ce' ),
+			'disabled' => 1
+		);
+		$fields[] = array(
+			'name' => 'vendor_ids',
+			'label' => __( 'Product Vendor ID\'s', 'woo_ce' ),
+			'disabled' => 1
+		);
+		$fields[] = array(
+			'name' => 'vendor_commission',
+			'label' => __( 'Vendor Commission', 'woo_ce' ),
+			'disabled' => 1
+		);
+	}
+
 	// Advanced Custom Fields - http://www.advancedcustomfields.com
 	if( class_exists( 'acf' ) ) {
 		if( $custom_fields = woo_ce_get_acf_product_fields() ) {
@@ -1128,6 +1227,7 @@ function woo_ce_extend_product_fields( $fields ) {
 		}
 	}
 
+	// Custom Product meta
 	$custom_products = woo_ce_get_option( 'custom_products', '' );
 	if( !empty( $custom_products ) ) {
 		foreach( $custom_products as $custom_product ) {
@@ -1145,20 +1245,6 @@ function woo_ce_extend_product_fields( $fields ) {
 
 }
 add_filter( 'woo_ce_product_fields', 'woo_ce_extend_product_fields' );
-
-function woo_ce_override_product_field_labels( $fields = array() ) {
-
-	$labels = woo_ce_get_option( 'product_labels', array() );
-	if( !empty( $labels ) ) {
-		foreach( $fields as $key => $field ) {
-			if( isset( $labels[$field['name']] ) )
-				$fields[$key]['label'] = $labels[$field['name']];
-		}
-	}
-	return $fields;
-
-}
-add_filter( 'woo_ce_product_fields', 'woo_ce_override_product_field_labels', 11 );
 
 // Returns the export column header label based on an export column slug
 function woo_ce_get_product_field( $name = null, $format = 'name' ) {
@@ -1236,7 +1322,7 @@ function woo_ce_get_product_attributes() {
 	$attributes_sql = "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies";
 	$attributes = $wpdb->get_results( $attributes_sql );
 	$wpdb->flush();
-	if( $attributes )
+	if( !empty( $attributes ) )
 		$output = $attributes;
 	unset( $attributes );
 	return $output;

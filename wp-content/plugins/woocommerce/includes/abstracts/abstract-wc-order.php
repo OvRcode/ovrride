@@ -95,7 +95,7 @@ abstract class WC_Abstract_Order {
 	 */
 	public function set_address( $address, $type = 'billing' ) {
 
-		foreach( $address as $key => $value ) {
+		foreach ( $address as $key => $value ) {
 			update_post_meta( $this->id, "_{$type}_" . $key, $value );
 		}
 	}
@@ -2062,17 +2062,22 @@ abstract class WC_Abstract_Order {
 	 */
 	public function update_status( $new_status, $note = '' ) {
 
-		$old_status = $this->get_status();
-		$new_status = 'wc-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
+		if ( ! $this->id ) {
+			return;
+		}
 
-		// Only update if they differ
-		if ( $this->id && $new_status !== $old_status ) {
+		// Standardise status names.
+		$new_status = 'wc-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
+		$old_status = $this->get_status();
+
+		// Only update if they differ - and ensure post_status is a 'wc' status.
+		if ( $new_status !== $old_status || ! in_array( $this->post_status, array_keys( wc_get_order_statuses() ) ) ) {
 
 			// Update the order
 			wp_update_post( array( 'ID' => $this->id, 'post_status' => 'wc-' . $new_status ) );
 			$this->post_status = 'wc-' . $new_status;
 
-			$this->add_order_note( trim( $note . ' ' . sprintf( __( 'Order status changed from %s to %s.', 'woocommerce' ), strtolower( wc_get_order_status_label( $old_status ) ), strtolower( wc_get_order_status_label( $new_status ) ) ) ) );
+			$this->add_order_note( trim( $note . ' ' . sprintf( __( 'Order status changed from %s to %s.', 'woocommerce' ), wc_get_order_status_name( $old_status ), wc_get_order_status_name( $new_status ) ) ) );
 
 			// Status was changed
 			do_action( 'woocommerce_order_status_' . $new_status, $this->id );
@@ -2434,10 +2439,9 @@ abstract class WC_Abstract_Order {
 	/**
 	 * Checks if an order needs display the shipping address, based on shipping method
 	 *
-	 * @return boolean|null
+	 * @return boolean
 	 */
 	public function needs_shipping_address() {
-
 		$hide  = apply_filters( 'woocommerce_order_hide_shipping_address', array( 'local_pickup' ), $this );
 		$needs = false;
 
@@ -2448,6 +2452,8 @@ abstract class WC_Abstract_Order {
 				break;
 			}
 		}
+
+		return $needs;
 	}
 
 	/**

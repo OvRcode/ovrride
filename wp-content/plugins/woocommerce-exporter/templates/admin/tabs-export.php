@@ -1,14 +1,17 @@
 <ul class="subsubsub">
 	<li><a href="#export-type"><?php _e( 'Export Type', 'woo_ce' ); ?></a> |</li>
 	<li><a href="#export-options"><?php _e( 'Export Options', 'woo_ce' ); ?></a></li>
+	<li>| <a href="#export-modules"><?php _e( 'Export Modules', 'woo_ce' ); ?></a></li>
 	<?php do_action( 'woo_ce_export_quicklinks' ); ?>
 </ul>
+<!-- .subsubsub -->
 <br class="clear" />
-<p><?php _e( 'Select an export type from the list below to export entries. Once you have selected an export type you may select the fields you would like to export and optional filters available for each export type. When you click the export button below, Store Exporter will create an export file for you to save to your computer.', 'woo_ce' ); ?></p>
-<form method="post" action="<?php echo add_query_arg( array( 'failed' => null, 'empty' => null, 'message' => null ) ); ?>" id="postform">
-	<div id="poststuff">
 
-		<div class="postbox" id="export-type">
+<p><?php _e( 'Select an export type from the list below to export entries. Once you have selected an export type you may select the fields you would like to export and optional filters available for each export type. When you click the export button below, Store Exporter will create an export file for you to save to your computer.', 'woo_ce' ); ?></p>
+<div id="poststuff">
+	<form method="post" action="<?php echo add_query_arg( array( 'failed' => null, 'empty' => null, 'message' => null ) ); ?>" id="postform">
+
+		<div id="export-type" class="postbox">
 			<h3 class="hndle"><?php _e( 'Export Type', 'woo_ce' ); ?></h3>
 			<div class="inside">
 				<p class="description"><?php _e( 'Select the data type you want to export.', 'woo_ce' ); ?></p>
@@ -109,6 +112,28 @@
 						</td>
 					</tr>
 
+					<tr>
+						<th>
+							<input type="radio" id="product_vendor" name="dataset" value="product_vendor"<?php disabled( $product_vendors, 0 ); ?><?php checked( $export_type, 'product_vendor' ); ?> />
+							<label for="product_vendor"><?php _e( 'Product Vendors', 'woo_ce' ); ?></label>
+						</th>
+						<td>
+							<span class="description">(<?php echo $product_vendors; ?>)</span>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
+						</td>
+					</tr>
+
+					<tr>
+						<th>
+							<input type="radio" id="shipping_class" name="dataset" value="shipping_class"<?php disabled( $shipping_classes, 0 ); ?><?php checked( $export_type, 'shipping_class' ); ?> />
+							<label for="shipping_class"><?php _e( 'Shipping Classes', 'woo_ce' ); ?></label>
+						</th>
+						<td>
+							<span class="description">(<?php echo $shipping_classes; ?>)</span>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
+						</td>
+					</tr>
+
 <!--
 					<tr>
 						<th>
@@ -142,14 +167,14 @@
 					<p><a href="javascript:void(0)" id="product-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="product-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
 					<table id="product-fields" class="ui-sortable">
 
-		<?php foreach( $product_fields as $key => $product_field ) { ?>
+		<?php foreach( $product_fields as $product_field ) { ?>
 						<tr>
 							<td>
 								<label>
 									<input type="checkbox" name="product_fields[<?php echo $product_field['name']; ?>]" class="product_field"<?php ( isset( $product_field['default'] ) ? checked( $product_field['default'], 1 ) : '' ); ?><?php disabled( $product_field['disabled'], 1 ); ?> />
 									<?php echo $product_field['label']; ?>
 									<?php if( $product_field['disabled'] ) { ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span><?php } ?>
-									<input type="hidden" name="product_fields_order[<?php echo $product_field['name']; ?>]" class="field_order" value="" />
+									<input type="hidden" name="product_fields_order[<?php echo $product_field['name']; ?>]" class="field_order" value="<?php echo $product_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -310,7 +335,7 @@
 				<div class="inside">
 	<?php if( $brands ) { ?>
 					<p class="description"><?php _e( 'Select the Brand fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="brands-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="brands-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p><a href="javascript:void(0)" id="brand-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="brand-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
 					<table id="brand-fields" class="ui-sortable">
 
 		<?php foreach( $brand_fields as $brand_field ) { ?>
@@ -604,7 +629,7 @@
 				<div class="inside">
 	<?php if( $subscriptions ) { ?>
 					<p class="description"><?php _e( 'Select the Subscription fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="subscriptions-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="subscriptions-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p><a href="javascript:void(0)" id="subscription-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="subscription-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
 					<table id="subscription-fields" class="ui-sortable">
 
 		<?php foreach( $subscription_fields as $subscription_field ) { ?>
@@ -632,7 +657,109 @@
 			<!-- .postbox -->
 		</div>
 		<!-- #export-subscription -->
+
 <?php } ?>
+<?php if( $product_vendor_fields ) { ?>
+		<div id="export-product_vendor" class="export-types">
+
+			<div class="postbox">
+				<h3 class="hndle">
+					<?php _e( 'Product Vendor Fields', 'woo_ce' ); ?>
+				</h3>
+				<div class="inside">
+	<?php if( $product_vendors ) { ?>
+					<p class="description"><?php _e( 'Select the Product Vendor fields you would like to export.', 'woo_ce' ); ?></p>
+					<p><a href="javascript:void(0)" id="product_vendor-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="product_vendor-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<table id="product_vendor-fields" class="ui-sortable">
+
+		<?php foreach( $product_vendor_fields as $product_vendor_field ) { ?>
+						<tr>
+							<td>
+								<label>
+									<input type="checkbox" name="product_vendor_fields[<?php echo $product_vendor_field['name']; ?>]" class="product_vendor_field"<?php ( isset( $product_vendor_field['default'] ) ? checked( $product_vendor_field['default'], 1 ) : '' ); ?> disabled="disabled" />
+									<?php echo $product_vendor_field['label']; ?>
+								</label>
+							</td>
+						</tr>
+
+		<?php } ?>
+					</table>
+					<p class="submit">
+						<input type="button" class="button button-disabled" value="<?php _e( 'Export Product Vendors', 'woo_ce' ); ?>" />
+					</p>
+					<p class="description"><?php _e( 'Can\'t find a particular Product Vendor field in the above export list?', 'woo_ce' ); ?> <a href="<?php echo $troubleshooting_url; ?>" target="_blank"><?php _e( 'Get in touch', 'woo_ce' ); ?></a>.</p>
+	<?php } else { ?>
+					<p><?php _e( 'No Product Vendors were found.', 'woo_ce' ); ?></p>
+	<?php } ?>
+				</div>
+				<!-- .inside -->
+			</div>
+			<!-- .postbox -->
+
+		</div>
+		<!-- #export-product_vendor -->
+
+<?php } ?>
+<?php if( $shipping_class_fields ) { ?>
+		<div id="export-shipping_class" class="export-types">
+
+			<div class="postbox">
+				<h3 class="hndle">
+					<?php _e( 'Shipping Class Fields', 'woo_ce' ); ?>
+				</h3>
+				<div class="inside">
+	<?php if( $shipping_classes ) { ?>
+					<p class="description"><?php _e( 'Select the Shipping Class fields you would like to export.', 'woo_ce' ); ?></p>
+					<p><a href="javascript:void(0)" id="shipping_class-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="shipping_class-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<table id="shipping_class-fields" class="ui-sortable">
+
+		<?php foreach( $shipping_class_fields as $shipping_class_field ) { ?>
+						<tr>
+							<td>
+								<label>
+									<input type="checkbox" name="shipping_class_fields[<?php echo $shipping_class_field['name']; ?>]" class="shipping_class_field"<?php ( isset( $shipping_class_field['default'] ) ? checked( $shipping_class_field['default'], 1 ) : '' ); ?> disabled="disabled" />
+									<?php echo $shipping_class_field['label']; ?>
+								</label>
+							</td>
+						</tr>
+
+		<?php } ?>
+					</table>
+					<p class="submit">
+						<input type="button" class="button button-disabled" value="<?php _e( 'Export Shipping Classes', 'woo_ce' ); ?>" />
+					</p>
+					<p class="description"><?php _e( 'Can\'t find a particular Shipping Class field in the above export list?', 'woo_ce' ); ?> <a href="<?php echo $troubleshooting_url; ?>" target="_blank"><?php _e( 'Get in touch', 'woo_ce' ); ?></a>.</p>
+	<?php } else { ?>
+					<p><?php _e( 'No Shipping Classes were found.', 'woo_ce' ); ?></p>
+	<?php } ?>
+				</div>
+				<!-- .inside -->
+			</div>
+			<!-- .postbox -->
+
+			<div id="export-shipping-classes-filters" class="postbox">
+				<h3 class="hndle"><?php _e( 'Shipping Class Filters', 'woo_ce' ); ?></h3>
+				<div class="inside">
+
+					<?php do_action( 'woo_ce_export_shipping_class_options_before_table' ); ?>
+
+					<table class="form-table">
+						<?php do_action( 'woo_ce_export_shipping_class_options_table' ); ?>
+					</table>
+
+					<?php do_action( 'woo_ce_export_shipping_class_options_after_table' ); ?>
+
+				</div>
+				<!-- .inside -->
+			</div>
+			<!-- .postbox -->
+
+		</div>
+		<!-- #export-shipping_class -->
+
+<?php } ?>
+		<?php do_action( 'woo_ce_before_options' ); ?>
+
 		<div class="postbox" id="export-options">
 			<h3 class="hndle"><?php _e( 'Export Options', 'woo_ce' ); ?></h3>
 			<div class="inside">
@@ -643,24 +770,6 @@
 				<table class="form-table">
 
 					<?php do_action( 'woo_ce_export_options' ); ?>
-
-					<tr class="export-options product-options">
-						<th><label for=""><?php _e( 'Up-sells formatting', 'woo_ce' ); ?></label></th>
-						<td>
-							<label><input type="radio" name="product_upsell_formatting" value="0"<?php checked( $upsell_formatting, 0 ); ?> />&nbsp;<?php _e( 'Export Up-Sells as Product ID', 'woo_ce' ); ?></label><br />
-							<label><input type="radio" name="product_upsell_formatting" value="1"<?php checked( $upsell_formatting, 1 ); ?> />&nbsp;<?php _e( 'Export Up-Sells as Product SKU', 'woo_ce' ); ?></label>
-							<p class="description"><?php _e( 'Choose the up-sell formatting that is accepted by your WooCommerce import Plugin (e.g. Product Importer Deluxe, Product Import Suite, etc.).', 'woo_ce' ); ?></p>
-						</td>
-					</tr>
-
-					<tr class="export-options product-options">
-						<th><label for=""><?php _e( 'Cross-sells formatting', 'woo_ce' ); ?></label></th>
-						<td>
-							<label><input type="radio" name="product_crosssell_formatting" value="0"<?php checked( $crosssell_formatting, 0 ); ?> />&nbsp;<?php _e( 'Export Cross-Sells as Product ID', 'woo_ce' ); ?></label><br />
-							<label><input type="radio" name="product_crosssell_formatting" value="1"<?php checked( $crosssell_formatting, 1 ); ?> />&nbsp;<?php _e( 'Export Cross-Sells as Product SKU', 'woo_ce' ); ?></label>
-							<p class="description"><?php _e( 'Choose the cross-sell formatting that is accepted by your WooCommerce import Plugin (e.g. Product Importer Deluxe, Product Import Suite, etc.).', 'woo_ce' ); ?></p>
-						</td>
-					</tr>
 
 					<tr>
 						<th>
@@ -682,9 +791,56 @@
 		</div>
 		<!-- .postbox -->
 
-	</div>
-	<!-- #poststuff -->
-	<input type="hidden" name="action" value="export" />
-</form>
+		<?php do_action( 'woo_ce_after_options' ); ?>
 
-<?php do_action( 'woo_ce_export_after_form' ); ?>
+		<input type="hidden" name="action" value="export" />
+	</form>
+
+	<?php do_action( 'woo_ce_export_after_form' ); ?>
+
+	<?php do_action( 'woo_ce_before_modules' ); ?>
+
+	<div id="export-modules" class="postbox">
+		<h3 class="hndle"><?php _e( 'Export Modules', 'woo_ce' ); ?></h3>
+		<div class="inside">
+			<p><?php _e( 'Export store details from other WooCommerce and WordPress Plugins, simply install and activate one of the below Plugins to enable those additional export options.', 'woo_ce' ); ?></p>
+<?php if( $modules ) { ?>
+			<div class="table table_content">
+				<table class="woo_vm_version_table">
+	<?php foreach( $modules as $module ) { ?>
+					<tr>
+						<td class="export_module">
+		<?php if( $module['description'] ) { ?>
+							<strong><?php echo $module['title']; ?></strong>: <span class="description"><?php echo $module['description']; ?></span>
+		<?php } else { ?>
+							<strong><?php echo $module['title']; ?></strong>
+		<?php } ?>
+						</td>
+						<td class="status">
+							<div class="<?php woo_ce_modules_status_class( $module['status'] ); ?>">
+		<?php if( $module['status'] == 'active' ) { ?>
+								<div class="dashicons dashicons-yes" style="color:#008000;"></div><?php woo_ce_modules_status_label( $module['status'] ); ?>
+		<?php } else { ?>
+			<?php if( $module['url'] ) { ?>
+								<?php if( isset( $module['slug'] ) ) { echo '<div class="dashicons dashicons-download" style="color:#0074a2;"></div>'; } else { echo '<div class="dashicons dashicons-admin-links"></div>'; } ?>&nbsp;<a href="<?php echo $module['url']; ?>" target="_blank"<?php if( isset( $module['slug'] ) ) { echo ' title="' . __( 'Install via WordPress Plugin Directory', 'woo_ce' ) . '"'; } else { echo ' title="' . __( 'Visit the Plugin website', 'woo_ce' ) . '"'; } ?>><?php woo_ce_modules_status_label( $module['status'] ); ?></a>
+			<?php } ?>
+		<?php } ?>
+							</div>
+						</td>
+					</tr>
+	<?php } ?>
+				</table>
+			</div>
+			<!-- .table -->
+<?php } else { ?>
+			<p><?php _e( 'No export modules are available at this time.', 'woo_ce' ); ?></p>
+<?php } ?>
+		</div>
+		<!-- .inside -->
+	</div>
+	<!-- .postbox -->
+
+	<?php do_action( 'woo_ce_after_modules' ); ?>
+
+</div>
+<!-- #poststuff -->

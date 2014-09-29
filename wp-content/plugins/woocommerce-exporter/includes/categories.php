@@ -31,38 +31,10 @@ if( is_admin() ) {
 
 }
 
-// Returns a list of WooCommerce Product Categories to export process
-function woo_ce_get_product_categories( $args = array() ) {
-
-	$term_taxonomy = 'product_cat';
-	$defaults = array(
-		'orderby' => 'name',
-		'order' => 'ASC',
-		'hide_empty' => 0
-	);
-	$args = wp_parse_args( $args, $defaults );
-	$categories = get_terms( $term_taxonomy, $args );
-	if( !empty( $categories ) && is_wp_error( $categories ) == false ) {
-		foreach( $categories as $key => $category ) {
-			$categories[$key]->parent_name = '';
-			if( $categories[$key]->parent_id = $category->parent ) {
-				if( $parent_category = get_term( $categories[$key]->parent_id, $term_taxonomy ) ) {
-					$categories[$key]->parent_name = $parent_category->name;
-				}
-				unset( $parent_category );
-			} else {
-				$categories[$key]->parent_id = '';
-			}
-			$categories[$key]->image = woo_ce_get_category_thumbnail_url( $category->term_id );
-			$categories[$key]->display_type = get_woocommerce_term_meta( $category->term_id, 'display_type', true );
-		}
-		return $categories;
-	}
-
-}
-
 // Returns a list of Category export columns
 function woo_ce_get_category_fields( $format = 'full' ) {
+
+	$export_type = 'category';
 
 	$fields = array();
 	$fields[] = array(
@@ -101,10 +73,10 @@ function woo_ce_get_category_fields( $format = 'full' ) {
 	);
 */
 
-	// Allow Plugin/Theme authors to add support for additional Category columns
-	$fields = apply_filters( 'woo_ce_category_fields', $fields );
+	// Allow Plugin/Theme authors to add support for additional columns
+	$fields = apply_filters( 'woo_ce_' . $export_type . '_fields', $fields, $export_type );
 
-	if( $remember = woo_ce_get_option( 'category_fields', array() ) ) {
+	if( $remember = woo_ce_get_option( $export_type . '_fields', array() ) ) {
 		$remember = maybe_unserialize( $remember );
 		$size = count( $fields );
 		for( $i = 0; $i < $size; $i++ ) {
@@ -129,11 +101,11 @@ function woo_ce_get_category_fields( $format = 'full' ) {
 
 		case 'full':
 		default:
-			$sorting = woo_ce_get_option( 'category_sorting', array() );
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
 			for( $i = 0; $i < $size; $i++ )
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, 'woo_ce_sort_fields' );
+			usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
@@ -180,6 +152,36 @@ function woo_ce_get_category_field( $name = null, $format = 'name' ) {
 		}
 	}
 	return $output;
+
+}
+
+// Returns a list of WooCommerce Product Categories to export process
+function woo_ce_get_product_categories( $args = array() ) {
+
+	$term_taxonomy = 'product_cat';
+	$defaults = array(
+		'orderby' => 'name',
+		'order' => 'ASC',
+		'hide_empty' => 0
+	);
+	$args = wp_parse_args( $args, $defaults );
+	$categories = get_terms( $term_taxonomy, $args );
+	if( !empty( $categories ) && is_wp_error( $categories ) == false ) {
+		foreach( $categories as $key => $category ) {
+			$categories[$key]->parent_name = '';
+			if( $categories[$key]->parent_id = $category->parent ) {
+				if( $parent_category = get_term( $categories[$key]->parent_id, $term_taxonomy ) ) {
+					$categories[$key]->parent_name = $parent_category->name;
+				}
+				unset( $parent_category );
+			} else {
+				$categories[$key]->parent_id = '';
+			}
+			$categories[$key]->image = woo_ce_get_category_thumbnail_url( $category->term_id );
+			$categories[$key]->display_type = get_woocommerce_term_meta( $category->term_id, 'display_type', true );
+		}
+		return $categories;
+	}
 
 }
 
