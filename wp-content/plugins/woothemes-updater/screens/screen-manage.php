@@ -1,10 +1,8 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 
-<div id="woothemes-updater" class="wrap">
-	<?php screen_icon( 'index' ); ?><div class="wrap"><h2><?php echo $this->name; ?></h2>
-<div id="col-container">
+<div id="col-container" class="about-wrap">
 	<?php
-	echo '<div class="updated fade">' . wpautop( __( 'See below for a list of the WooThemes products active on this installation. You can <a href="https://www.woothemes.com/my-account/my-licenses">view your licenses here</a>, as well as our <a href="https://www.woothemes.com/my-account/my-licenses/#faq">FAQ</a> on how this works.', 'woothemes-updater' ) ) . '</div>' . "\n";
+	echo '<div class="updated">' . wpautop( sprintf( __( 'See below for a list of the WooThemes products active on %s. You can %s, as well as our %s on how this works. %s', 'woothemes-updater' ), get_bloginfo( 'name' ), '<a href="https://www.woothemes.com/my-account/my-licenses">view your licenses here</a>', '<a href="http://docs.woothemes.com/document/woothemes-helper/?utm_source=helper">documentation</a>', '&nbsp;&nbsp;<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '" class="button">' . __( 'Check for Updates', 'woothemes-updater' ) . '</a>' ) ) . '</div>' . "\n";
 	?>
 		<div class="col-wrap">
 			<form id="activate-products" method="post" action="" class="validate">
@@ -21,4 +19,3 @@
 			</form>
 		</div><!--/.col-wrap-->
 </div><!--/#col-container-->
-</div><!--/#woothemes-updater-->

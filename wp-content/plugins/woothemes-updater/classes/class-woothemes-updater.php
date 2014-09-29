@@ -80,14 +80,16 @@ class WooThemes_Updater {
 			require_once( 'class-woothemes-updater-admin.php' );
 			$this->admin = new WooThemes_Updater_Admin( $file );
 
-			// Get queued plugin updates
-			add_action( 'plugins_loaded', array( $this, 'load_queued_updates' ) );
+			// Look for enabled updates across all themes (active or otherwise). If they are available, queue them.
+			add_action( 'init', array( $this, 'maybe_queue_theme_updates' ), 1 );
+
+			// Get queued plugin updates - Run on init so themes are loaded as well as plugins.
+			add_action( 'init', array( $this, 'load_queued_updates' ), 2 );
 		}
 
 		$this->add_notice_unlicensed_product();
 
 		add_filter( 'site_transient_' . 'update_plugins', array( $this, 'change_update_information' ) );
-
 	} // End __construct()
 
 	/**
@@ -137,6 +139,64 @@ class WooThemes_Updater {
 	} // End register_plugin_version()
 
 	/**
+	 * Queue updates for any themes that have valid update credentials.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function maybe_queue_theme_updates () {
+		$themes = wp_get_themes();
+		if ( is_array( $themes ) && 0 < count( $themes ) ) {
+			foreach ( $themes as $k => $v ) {
+				// Search for the text file.
+				$file = $this->_maybe_find_theme_info_file( $v );
+				if ( ! is_wp_error( $file ) ) {
+					$parsed = $this->_parse_theme_info_file( $file );
+					if ( ! is_wp_error( $parsed ) ) {
+						$this->add_product( $parsed[2], $parsed[1], $parsed[0] ); // 0: file, 1: file_id, 2: product_id.
+					}
+				}
+			}
+		}
+	} // End maybe_queue_theme_updates()
+
+	/**
+	 * Maybe find the theme_info.txt file.
+	 * @access  private
+	 * @since   1.2.0
+	 * @param   object $theme WP_Theme instance.
+	 * @return  object/string WP_Error object if not found, path to the file, if it exists.
+	 */
+	private function _maybe_find_theme_info_file ( $theme ) {
+		$response = new WP_Error( 404, __( 'Theme Information File Not Found.', 'woothemes-updater' ) );
+		$txt_files = $theme->get_files( 'txt', 0 );
+		if ( isset( $txt_files['theme_info.txt'] ) ) {
+			$response = $txt_files['theme_info.txt'];
+		}
+		return $response;
+	} // End _maybe_find_theme_info_file()
+
+	/**
+	 * Parse a given theme_info.txt file.
+	 * @access  private
+	 * @since   1.2.0
+	 * @param   string $file The path to the file to be parsed.
+	 * @return  object/array WP_Error object if the data is incorrect, array, if it is accurate.
+	 */
+	private function _parse_theme_info_file ( $file ) {
+		$response = new WP_Error( 500, __( 'Theme Information File is Inaccurate. Please try again.', 'woothemes-updater' ) );
+		if ( is_string( $file ) && file_exists( $file ) ) {
+			$contents = file_get_contents( $file );
+			$contents = explode( "\n", $contents );
+			// Sanity check on the parsed array.
+			if ( ( 3 == count( $contents ) ) && stristr( $contents[2], '/style.css' ) ) {
+				$response = $contents;
+			}
+		}
+		return $response;
+	} // End _parse_theme_info_file()
+
+	/**
 	 * load_queued_updates function.
 	 *
 	 * @access public
@@ -150,8 +210,7 @@ class WooThemes_Updater {
 			foreach ( $woothemes_queued_updates as $plugin )
 				if ( is_object( $plugin ) && ! empty( $plugin->file ) && ! empty( $plugin->file_id ) && ! empty( $plugin->product_id ) )
 					$this->add_product( $plugin->file, $plugin->file_id, $plugin->product_id );
-
-	} // END load_queued_updates()
+	} // End load_queued_updates()
 
 	/**
 	 * Add a product to await a license key for activation.
@@ -199,14 +258,17 @@ class WooThemes_Updater {
 	} // End admin_notice_require_network_activation()
 
 	/**
-	 * Add action for queued products to display message for unlicensed products
+	 * Add action for queued products to display message for unlicensed products.
+	 * @access  public
+	 * @since   1.1.0
+	 * @return  void
 	 */
 	public function add_notice_unlicensed_product () {
 		global $woothemes_queued_updates;
 		if( !is_array( $woothemes_queued_updates ) || count( $woothemes_queued_updates ) < 0 ) return;
 
 		foreach ( $woothemes_queued_updates as $key => $update ) {
-			add_action( 'in_plugin_update_message-' . $update->file, array( $this, 'need_license_message'), 10, 2 );
+			add_action( 'in_plugin_update_message-' . $update->file, array( $this, 'need_license_message' ), 10, 2 );
 		}
 	} // End add_notice_unlicensed_product()
 
@@ -218,7 +280,7 @@ class WooThemes_Updater {
 	 */
 	public function need_license_message ( $plugin_data, $r ) {
 		if( empty( $r->package ) ) {
-			_e( ' To enable updates for this WooThemes product, please activate your license.', 'woothemes-updater' );
+			_e( ' To enable updates for this WooThemes product, please activate your license by visiting the Dashboard > WooThemes Helper screen.', 'woothemes-updater' );
 		}
 	} // End need_license_message()
 
@@ -236,9 +298,11 @@ class WooThemes_Updater {
 
 			if( empty( $woothemes_queued_updates ) ) return $transient;
 
+			$notice_text = __( 'To enable this update please activate your WooThemes license by visiting the Dashboard > WooThemes Helper screen.' , 'woothemes-updater' );
+
 			foreach ( $woothemes_queued_updates as $key => $value ) {
-				if( isset( $transient->response[ $value->file ] ) && isset( $transient->response[ $value->file ]->package ) && '' == $transient->response[ $value->file ]->package && ( FALSE === stristr($transient->response[ $value->file ]->upgrade_notice, 'To enable this update please activate your WooThemes license. ') ) ){
-					$message = __( 'To enable this update please activate your WooThemes license. ' . $transient->response[ $value->file ]->upgrade_notice , 'woothemes-updater' );//@WARREN - Fix this message
+				if( isset( $transient->response[ $value->file ] ) && isset( $transient->response[ $value->file ]->package ) && '' == $transient->response[ $value->file ]->package && ( FALSE === stristr($transient->response[ $value->file ]->upgrade_notice, $notice_text ) ) ){
+					$message = $notice_text . ' ' . $transient->response[ $value->file ]->upgrade_notice;
 					$transient->response[ $value->file ]->upgrade_notice = $message;
 				}
 			}
