@@ -9,7 +9,7 @@ return array(
 	'cluster.messagebus.sns.api_secret' => '',
 	'cluster.messagebus.sns.topic_arn' => '',
 	'dbcache.debug' => false,
-	'dbcache.enabled' => false,
+	'dbcache.enabled' => true,
 	'dbcache.engine' => 'file',
 	'dbcache.file.gc' => 3600,
 	'dbcache.file.locking' => false,
@@ -25,8 +25,10 @@ return array(
 		0 => 'gdsr_',
 		1 => 'wp_rg_',
 		2 => '_wp_session_',
+		3 => '_wc_session_',
 	),
 	'dbcache.reject.uri' => array(
+		0 => '',
 	),
 	'dbcache.reject.words' => array(
 		0 => '^\\s*insert\\b',
@@ -42,7 +44,7 @@ return array(
 		10 => '\\bfound_rows\\(\\)',
 		11 => '\\bw3tc_request_data\\b',
 	),
-	'objectcache.enabled' => false,
+	'objectcache.enabled' => true,
 	'objectcache.debug' => false,
 	'objectcache.engine' => 'file',
 	'objectcache.file.gc' => 3600,
