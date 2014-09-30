@@ -9,7 +9,7 @@ return array(
 	'cluster.messagebus.sns.api_secret' => '',
 	'cluster.messagebus.sns.topic_arn' => '',
 	'dbcache.debug' => false,
-	'dbcache.enabled' => true,
+	'dbcache.enabled' => false,
 	'dbcache.engine' => 'file',
 	'dbcache.file.gc' => 3600,
 	'dbcache.file.locking' => false,
