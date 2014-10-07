@@ -19,16 +19,16 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', ( getenv('AMAZON_RDS_DB_NAME') ?: '***REMOVED***' ) );
+define('DB_NAME', getenv('MYSQL_DB') );
 
 /** MySQL database username */
-define('DB_USER', ( getenv('AMAZON_RDS_USER') ?: '***REMOVED***' ) );
+define('DB_USER', getenv('MYSQL_USER') );
 
 /** MySQL database password */
-define('DB_PASSWORD', ( getenv('AMAZON_RDS_PASS') ?: '***REMOVED***' ) );
+define('DB_PASSWORD', getenv('MYSQL_PASS') );
 
 /** MySQL hostname */
-define('DB_HOST', ( getenv('AMAZON_RDS_HOST') ?: 'localhost'));
+define('DB_HOST', getenv('MYSQL_HOST') );
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
