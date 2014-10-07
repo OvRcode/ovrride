@@ -579,13 +579,14 @@ class SpecialRecentPostsFree {
 
 			// Checking if the thumbnail already exists. In this case, simply render it. Otherwise generate it.
 			if ( ( file_exists( SRP_PLUGIN_DIR . $featured_thumb_cache ) ) || ( $this->generate_gd_image( $post, 'featured', $featured_physical_path, SRP_PLUGIN_DIR . $featured_thumb_cache, $this->widget_args['thumbnail_width'], $this->widget_args['thumbnail_height'], $this->widget_args['thumbnail_rotation'] ) ) ) {
-
+			
 				// Return cached image as source (URL path).
 				$featured_thumb_src = SRP_PLUGIN_URL . $featured_thumb_cache;
 				
 				// Generating Image HTML Tag.
 				$featured_htmltag = '<img src="' . $featured_thumb_src . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
 
+<<<<<<< HEAD
 			} elseif ( $featured_thumb_url ) {
 				// S3 Image
 				// Some posts where getting size of image attached to name
@@ -593,7 +594,10 @@ class SpecialRecentPostsFree {
 				$extension = strrpos($strip_size, '.');
 				$s3_thumb_url = substr_replace($strip_size,"-150x150", $extension, 0);
 				$featured_htmltag = '<img src="' . $s3_thumb_url . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
+=======
+>>>>>>> parent of ac4d512... Reapplied S3 fix to special recent posts
 			} else {
+			
 				// No featured image has been found. Trying to fetch the first image tag from the post content.
 				$featured_htmltag = $this->get_first_image_url( $post, $this->widget_args['thumbnail_width'], $this->widget_args['thumbnail_height'], $post->post_title );
 			}
