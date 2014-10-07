@@ -38,10 +38,6 @@ define('DB_CHARSET', 'utf8');
 /** The Database Collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 
-/* AWS KEYS */
-define( 'AWS_ACCESS_KEY_ID', getenv('AMAZON_AWS_ACCESS_KEY') );
-define( 'AWS_SECRET_ACCESS_KEY', getenv('AMAZON_AWS_SECRET_KEY'));
-
 /**#@+
  * Authentication Unique Keys and Salts.
  *
