@@ -586,15 +586,6 @@ class SpecialRecentPostsFree {
 				// Generating Image HTML Tag.
 				$featured_htmltag = '<img src="' . $featured_thumb_src . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
 
-<<<<<<< HEAD
-			} elseif ( $featured_thumb_url ) {
-				// S3 Image
-				error_log('Featured URL:'.$featured_thumb_url);
-				$extension = strrpos($featured_thumb_url, '.');
-				$s3_thumb_url = substr_replace($featured_thumb_url,"-150x150", $extension, 0);
-				$featured_htmltag = '<img src="' . $s3_thumb_url . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
-=======
->>>>>>> parent of ac4d512... Reapplied S3 fix to special recent posts
 			} else {
 			
 				// No featured image has been found. Trying to fetch the first image tag from the post content.
