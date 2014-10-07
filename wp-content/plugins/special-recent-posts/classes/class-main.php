@@ -589,10 +589,9 @@ class SpecialRecentPostsFree {
 <<<<<<< HEAD
 			} elseif ( $featured_thumb_url ) {
 				// S3 Image
-				// Some posts where getting size of image attached to name
-				$strip_size = preg_replace("/-\d{3,}x\d{3,}/", "", $featured_thumb_url);
-				$extension = strrpos($strip_size, '.');
-				$s3_thumb_url = substr_replace($strip_size,"-150x150", $extension, 0);
+				error_log('Featured URL:'.$featured_thumb_url);
+				$extension = strrpos($featured_thumb_url, '.');
+				$s3_thumb_url = substr_replace($featured_thumb_url,"-150x150", $extension, 0);
 				$featured_htmltag = '<img src="' . $s3_thumb_url . '" class="srp-post-thumbnail" alt="' . esc_attr( $post->post_title ) . '" />';
 =======
 >>>>>>> parent of ac4d512... Reapplied S3 fix to special recent posts
@@ -1210,9 +1209,7 @@ class SpecialRecentPostsFree {
 				
 				// Opening single post container.
 				$srp_content .= '<div id="' . $srp_post_id . '" class="srp-widget-singlepost">';
-				// Generating the post title.
-				$srp_content .= $this->generate_post_title( $recent_posts->post );
-				
+
 				$srp_content .= '<div class="srp-post-content-container">';
 
 				// Checking if thumbnail option is on.
@@ -1229,7 +1226,7 @@ class SpecialRecentPostsFree {
 					$srp_content .= '<div class="srp-content-box">';
 					
 					// Generating the post title.
-					//$srp_content .= $this->generate_post_title( $recent_posts->post );
+					$srp_content .= $this->generate_post_title( $recent_posts->post );
 					
 					// Checking if "post_date" option is on.
 					if ( 'yes' == $this->widget_args['post_date'] ) {
