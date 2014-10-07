@@ -1,3 +1,4 @@
+TODO: Readme is not up to date. Setting up new Dev Environment then updating readme
 ## OvRride.com
 
 OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
