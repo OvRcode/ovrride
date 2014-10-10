@@ -80,13 +80,10 @@ class TripList{
     }
     function tripData($tripId){
         // Select ALL orders for trip regardless of status, statuses will be sorted in JavaScript
-        $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`, `wp_terms`.`name`
+        $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`, `wp_posts`.`post_status`
             FROM `wp_posts`
             INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
             INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
-            INNER JOIN `wp_term_relationships` ON `wp_posts`.`id` = `wp_term_relationships`.`object_id`
-            INNER JOIN `wp_term_taxonomy` ON `wp_term_relationships`.`term_taxonomy_id` = `wp_term_taxonomy`.`term_taxonomy_id`
-            INNER JOIN `wp_terms` on `wp_term_taxonomy`.`term_id` = `wp_terms`.`term_id`
             WHERE `wp_posts`.`post_type` =  'shop_order'
             AND `wp_woocommerce_order_items`.`order_item_type` =  'line_item'
             AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
@@ -94,7 +91,7 @@ class TripList{
         $result = $this->dbQuery($sql);
         $this->orders = array();
         while($row = $result->fetch_assoc()){
-            $this->orders[$row['ID']][$row['order_item_id']] = $row['name'];
+            $this->orders[$row['ID']][$row['order_item_id']] = substr($row['post_status'],3);
         }
         $result->free();
 
