@@ -7,8 +7,8 @@
  */
 
 # MySQL Database Connection
-define("DB_HOST", "***REMOVED***");
-define("DB_USER", "***REMOVED***");
-define("DB_PASS", "***REMOVED***");
-define("DB_NAME", "***REMOVED***");
+define("DB_HOST", getenv('MYSQL_HOST'));
+define("DB_USER", getenv('MYSQL_USER'));
+define("DB_PASS", getenv('MYSQL_PASS'));
+define("DB_NAME", getenv('MYSQL_DB'));
 ?>
