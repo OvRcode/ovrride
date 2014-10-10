@@ -28,8 +28,8 @@ class TripList{
         }
         $this->destinations = array("Asbury Park","Breckenridge","Camelbeach","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
                                     "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paintball","Rockaway Beach",
-                                    "Sky Diving","Snowbird","Southern Argentina","Southern Chile","Stowe",
-                                    "Stratton","Sugarbush","Tap New York","Whistler","Whitewater Weekend","Windham");
+                                    "Skydiving","Snowbird","Southern Argentina","Southern Chile","Stowe",
+                                    "Stratton","Sugarbush","Tap New York","Tough Mudder","Whistler","Whitewater Weekend","Windham");
 
         $this->checkboxes = array("AM","PM","Waiver","Product");
     }
