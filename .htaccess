@@ -21,6 +21,8 @@ RewriteRule . /index.php [L]
 # Rewrite WordPress /login to /wp-login.php
 RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
 
+RewriteRule ^mail$ http://ovrride.com/mail.html [NC,L]
+
 # Prevent indexing of directories without an index file
 Options -Indexes
 
