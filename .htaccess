@@ -18,10 +18,11 @@ RewriteRule . /index.php [L]
 
 # END WordPress
 
+#Mail Redirect
+RewriteRule ^mail$ http://198.57.212.116/mail
+
 # Rewrite WordPress /login to /wp-login.php
 RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
-
-RewriteRule ^mail$ http://ovrride.com/mail.html [NC,L]
 
 # Prevent indexing of directories without an index file
 Options -Indexes
