@@ -5,10 +5,12 @@
 </FilesMatch>
 
 # RewriteEngine on - must be declared at least once before any Rewrites rules
+RewriteEngine On
+#Mail Redirect
+RewriteRule ^mail$ http://198.57.212.116/mail [L]
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
-RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -17,9 +19,6 @@ RewriteRule . /index.php [L]
 </IfModule>
 
 # END WordPress
-
-#Mail Redirect
-RewriteRule ^mail$ http://198.57.212.116/mail
 
 # Rewrite WordPress /login to /wp-login.php
 RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
