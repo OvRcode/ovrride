@@ -22,9 +22,9 @@ Text Domain: quark
 /* Using rem font sizing (Root em’s) with fallback to px for ie8 and below - http://snook.ca/archives/html_and_css/font-size-with-rem */
 body { margin: 0; font-size: 16px; font-size: 1rem; line-height: 1.5; }
 
-::-webkit-selection { background: #0099ff; color: #fff; text-shadow: none; }
-::-moz-selection { background: #0099ff; color: #fff; text-shadow: none; }
-::selection { background: #0099ff; color: #fff; text-shadow: none; }
+::-webkit-selection { background: #09bdeb; color: #fff; text-shadow: none; }
+::-moz-selection { background: #09bdeb; color: #fff; text-shadow: none; }
+::selection { background: #09bdeb; color: #fff; text-shadow: none; }
 
 a { color: #333; text-decoration: underline; }
 a:visited { color: #333; }
@@ -345,12 +345,12 @@ a:visited {
 
 a:focus { 
 	outline: thin dotted;
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 a:hover, a:active { 
 	outline: 0;
-	color: #0099ff;
+	color: #09bdeb;
 	text-decoration:underline;
 }
 
@@ -439,7 +439,7 @@ blockquote.pull-right p, blockquote.pull-right small {
 	height:10px;
 }
 .gfield_select:focus{
-	border:1px solid #0099ff;
+	border:1px solid #09bdeb;
 }
 .ui-tabs-panel {
         padding: .8em .4em !important;
@@ -515,16 +515,17 @@ blockquote.pull-right p, blockquote.pull-right small {
 
 .seats-left p {
   margin: 0px;
-  color: #0099ff;
+  color: #09bdeb;
   font-size: 17px;
 }
 .calnk a {
-	background-color:#0099ff !important;
+	background-color:#09bdeb !important;
 }
 
 .seats-left a {
-  color: #0099ff;
+  color: #09bdeb;
   font-weight: bold;
+  text-shadow:1px 1px 1px #333;
 }
 
 .minitweets {
@@ -964,7 +965,7 @@ div.kjo-link p{
 	display:none;
 }
 .calnk a:hover span {
-	background:#0099ff !important; 
+	background:#09bdeb !important; 
 }
 
 
@@ -993,12 +994,12 @@ payment_methods methods {
 	width: 48%;
 }
 .myaccount_user a{
-	color: #0099ff;
+	color: #09bdeb;
 	font-weight: bold;
 	text-decoration: underline;
 }
 .myaccount_user a:hover{
-	color: #0099ff;
+	color: #09bdeb;
 	font-weight: bold;
 	text-decoration: none;
 }
@@ -1202,12 +1203,12 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #30acff, #0099ff);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#30acff), to(#0099ff));
-	background-image: -webkit-linear-gradient(top, #30acff, #0099ff);
-	background-image: -o-linear-gradient(top, #30acff, #0099ff);
-	background-image: linear-gradient(top, #30acff, #0099ff);
-	background-image: -moz-linear-gradient(top, #30acff, #0099ff);
+	background-image: -ms-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2bc9f1), to(#09bdeb));
+	background-image: -webkit-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -o-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -moz-linear-gradient(top, #2bc9f1, #09bdeb);
 	background-repeat: repeat-x;
 	border: 1px solid #CCC;
 	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
@@ -1225,8 +1226,8 @@ payment_methods methods {
 .book-btn:hover {
 	color: #333333;
 	text-decoration: none;
-	background-color: #51b9ff;
-	*background-color: #51b9ff; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-color: #3cd4fb;
+	*background-color: #3cd4fb; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1235,8 +1236,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn:active {
-	background-color: #0099ff;
-	background-color: #0099ff \9;
+	background-color: #09bdeb;
+	background-color: #09bdeb \9;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1259,12 +1260,12 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #30acff, #0099ff);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#30acff), to(#0099ff));
-	background-image: -webkit-linear-gradient(top, #30acff, #0099ff);
-	background-image: -o-linear-gradient(top, #30acff, #0099ff);
-	background-image: linear-gradient(top, #30acff, #0099ff);
-	background-image: -moz-linear-gradient(top, #30acff, #0099ff);
+	background-image: -ms-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2bc9f1), to(#09bdeb));
+	background-image: -webkit-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -o-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -moz-linear-gradient(top, #2bc9f1, #09bdeb);
 	background-repeat: repeat-x;
 	border: 1px solid #CCC;
 	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
@@ -1282,8 +1283,8 @@ payment_methods methods {
 .book-btn-smll:hover {
 	color: #333333;
 	text-decoration: none;
-	background-color: #51b9ff;
-	*background-color: #51b9ff; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-color: #3cd4fb;
+	*background-color: #3cd4fb; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1292,8 +1293,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn-smll:active {
-	background-color: #0099ff;
-	background-color: #0099ff \9;
+	background-color: #09bdeb;
+	background-color: #09bdeb \9;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1345,7 +1346,7 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	color:#FFF;
 }
 .eventful {
-	background:#0099ff;
+	background:#09bdeb;
 	border:1px solid #CCC !important;
 }
    
@@ -2763,7 +2764,7 @@ p.srp-widget-date {
 	width: 100%;
 }
 a.read-more {
-	color:#0099ff;
+	color:#09bdeb;
 	text-decoration:none;
 }
 a.read-more:hover {
@@ -2939,7 +2940,7 @@ a.read-more:hover {
 }
 
 .social-media-icons a:hover, .social-media-icons a:active { 
-	color: #0099ff;
+	color: #09bdeb;
 	text-decoration:underline;
 }
 
@@ -2982,7 +2983,7 @@ iframe ul {
 }
 
 .entry-header h1 a:hover {
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 article.sticky .featured-post {
@@ -3027,7 +3028,7 @@ article.sticky {
 }
 
 .header-meta a:hover {
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 .entry-content {
@@ -3056,7 +3057,7 @@ article.sticky {
 
 .post-categories a:hover,
 .post-tags a:hover {
-	background-color: #0099ff;
+	background-color: #09bdeb;
 	color: #fff;
 }
 
@@ -3109,7 +3110,7 @@ article.sticky {
 }
 
 .page-links a:hover .page-numbers {
-	background-color: #0099ff;
+	background-color: #09bdeb;
 	color: #fff;
 }
 
@@ -3302,7 +3303,7 @@ article.sticky {
 .author-link a:hover,
 .author-link a:active { 
 	outline: 0;
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 .author.archive .author-info {
@@ -3661,7 +3662,7 @@ form label.error {
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 }
 #footercontainer a {
-	color:#0099ff;
+	color:#09bdeb;
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 	text-decoration:none;
 	text-transform:uppercase;
@@ -3702,7 +3703,7 @@ form label.error {
 }
 
 .site-footer a:hover { 
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 .site-footer a:focus { 
@@ -3735,7 +3736,7 @@ form label.error {
 }
 
 .smallprint a:hover { 
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 
@@ -3915,14 +3916,14 @@ li a:visited.page-numbers {
 }
 
 li a:hover.page-numbers {
-	background-color: #0099ff;
+	background-color: #09bdeb;
 	color: #fff;
 }
 
 li a:hover.prev,
 li a:hover.next {
 	background-color: transparent;
-	color: #0099ff;
+	color: #09bdeb;
 }
 
 .page-numbers li {
@@ -4076,7 +4077,7 @@ li span.dots {
 .main-navigation .current-menu-ancestor > a,
 .main-navigation .current_page_item > a,
 .main-navigation .current_page_ancestor > a {
-	color: #0099ff; /* Nav bar link color for current menu item or ancestor */
+	color: #09bdeb; /* Nav bar link color for current menu item or ancestor */
 }
 
 .main-navigation ul .divider {
