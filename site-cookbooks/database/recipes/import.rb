@@ -12,10 +12,11 @@ mysql_connection_info = {
 
 mysql_database 'ovrride' do
   connection mysql_connection_info
+  action :drop
   action :create
 end
 
 execute 'import' do
-  command "mysql -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/testDB.sql"
+  command "mysql -f -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/testDB.sql"
   action :run
 end
