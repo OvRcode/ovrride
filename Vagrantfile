@@ -7,20 +7,10 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # ubuntu 14.04 64bit base
   config.vm.box = "ubuntu/trusty64"
-
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
-
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  config.vm.network "private_network", ip: "172.16.0.1"
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
   config.vm.host_name = "local.ovrride.com"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
+  config.vm.network "private_network", ip: "192.168.50.4"
   config.vm.network "public_network"
 
   config.vm.provider "virtualbox" do |vb|
@@ -32,14 +22,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # some recipes and/or roles.
   #
   config.vm.provision "chef_solo" do |chef|
-    chef.cookbooks_path = "cookbooks"
+    chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
     chef.roles_path = "roles"
     chef.data_bags_path = "data_bags"
-    chef.add_recipe "mysql"
     chef.add_role "ovr-dev-box"
- 
-    # You may also specify custom JSON attributes:
-    chef.json = { mysql_password: "foo" }
   end
 
   # Enable provisioning with chef server, specifying the chef server URL,
