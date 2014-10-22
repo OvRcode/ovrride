@@ -8,6 +8,6 @@ web_app "ovr" do
   server_name "local.ovrride.com"
   server_aliases ["http://local.ovrride.com"]
   directory_index "index.php"
-  allow_ovrride "all"
-  docroot "/vagrant/"
+  docroot "/var/www/"
+  allow_override "All"
 end
