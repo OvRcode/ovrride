@@ -3,6 +3,10 @@
 
 site 'https://supermarket.getchef.com/api/v1'
 
+cookbook 'apache2'
+cookbook 'mysql'
+cookbook 'php'
+
 # cookbook 'chef-client'
 
 # cookbook 'apache2', '>= 1.0.0'
