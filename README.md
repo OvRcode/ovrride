@@ -24,10 +24,16 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
     - ```gem install librarian-chef —-no-ri —-no-rdoc```
   - vagrant-hostmanager - lets vagrant write to /etc/hosts
     - ```vagrant plugin install vagrant-hostmanager```
-  
-2. Start virtual machine
+2. Clone repository to your machine
+  - if you have a copy of the wp-content/uploads directory then copy it to the correct location
+  - if you don't it could take up to 40min to download from amazon, it is automated by chef during the vagrant up/provision process
+3. Change permissions on special recent posts
+  - ```chmod -R 777 wp-content/plugins/special-recent-posts/cache/```
+  - without this step you will get errors from the plugin
+ 
+4. Start virtual machine
   - ```vagrant up``` this needs to be run in terminal from inside the project folder
-  - Grab a beer if you don't already have the images folder, it's going to take a while to sync
+
   - The VM looks at the project directory for files so changes will show up immediatley
   - checkout http://local.ovrride.com to see your local copy of the site
   - ```vagrant provision``` (run on first vagrant up) will pull most recent backup of production DB and sync images from S3
