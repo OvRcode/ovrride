@@ -17,6 +17,7 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 	 - used by RVM to install versions of ruby
   - [RVM](http://rvm.io) - Ruby Version Manager
     - once rvm is installed ```rvm install 2.1```
+  - [Chef](https://downloads.getchef.com/chef-dk/mac/#/)
   - [Vagrant](http://vagrantup.com) - Virtual machine manager
   - [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
   - Kife solo gem - part of chef solo which is used to configure the virtual machine the development environment runs on
