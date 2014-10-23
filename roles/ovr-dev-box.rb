@@ -23,11 +23,13 @@ run_list(
   "recipe[apache2]",
   "recipe[apache2::mod_php5]",
   "recipe[apache2::mod_env]",
+  "recipe[apache2::mod_rewrite]",
+  "recipe[apache2::mod_ssl]",
   "recipe[mysql::server]",
   "recipe[php]",
   "recipe[php::module_mysql]",
-  "recipe[apache2::vhosts]",
   "recipe[mysql-chef_gem::default]",
   "recipe[database::mysql]",
-  "recipe[database::import]"
+  "recipe[database::import]",
+  "recipe[apache2::ovrconfig]"
 )
