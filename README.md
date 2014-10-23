@@ -1,4 +1,3 @@
-TODO: Readme is not up to date. Setting up new Dev Environment then updating readme
 ## OvRride.com
 
 OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
@@ -38,7 +37,8 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
   - The VM looks at the project directory for files so changes will show up immediatley
   - checkout http://local.ovrride.com to see your local copy of the site
 
-
+####SSL isn't working yet
+Haven't setup SSL yet in dev env
 **NOTES:**
 
 - If you'll need to test the Payment Gateway, make sure to (Enable PayPal Sandbox/Test Mode](http://docs.woothemes.com/document/paypal-pro/)
