@@ -14,6 +14,10 @@ override_attributes(
   },
   "apache" => {
     "allow_override" => 'All'
+  },
+  "s3cmd" => {
+    "access_key" => "***REMOVED***",
+    "secret_key" => "***REMOVED***"
   }
 )
 run_list(
@@ -30,6 +34,7 @@ run_list(
   "recipe[php::module_mysql]",
   "recipe[mysql-chef_gem::default]",
   "recipe[database::mysql]",
+  "recipe[s3cmd]",
   "recipe[database::import]",
   "recipe[apache2::ovrconfig]"
 )
