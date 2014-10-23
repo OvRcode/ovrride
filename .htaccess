@@ -7,7 +7,7 @@
 # RewriteEngine on - must be declared at least once before any Rewrites rules
 RewriteEngine On
 #Mail Redirect
-Redirect 302 /mail http://ovrride.net/mail
+Redirect 302 /mail http://webmail.ovrride.com
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
 RewriteBase /
