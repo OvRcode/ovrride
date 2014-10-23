@@ -17,6 +17,12 @@ mysql_database 'ovrride' do
 end
 
 execute 'import' do
-  command "mysql -f -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/testDB.sql"
+  command "mysql -f -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/ovrride.sql"
   action :run
+end
+
+mysql_database 'update' do
+  connection mysql_connection_info
+  sql { ::File.open('dev.sql').read }
+  action :query
 end
