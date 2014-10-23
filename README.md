@@ -14,6 +14,7 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 1. Download and install:
   - [Homebrew](http://brew.sh)
      - package manager for OS X, this will make installing some programs easier
+	 - used by RVM to install versions of ruby
   - [RVM](http://rvm.io) - Ruby Version Manager
   - [Vagrant](http://vagrantup.com) - Virtual machine manager
   - [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
@@ -23,24 +24,18 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
     - ```gem install librarian-chef —-no-ri —-no-rdoc```
   - vagrant-hostmanager - lets vagrant write to /etc/hosts
     - ```vagrant plugin install vagrant-hostmanager```
-  - s3cmd - allows commandline access to amazon web services
-  	- ```brew install s3cmd```
   
-2. Download a copy of the database
-  - options:
-    - log into database server and export through commandline
-	- use s3cmd to get a copy from the backup bucket
-	  - ```s3cmd get S3://ovrdatabase/latest/ovrride*```
-	  - uncompress and rename to ovrride.sql
-3. Start virtual machine
+2. Start virtual machine
   - ```vagrant up``` this needs to be run in terminal from inside the project folder
+  - Grab a beer if you don't already have the images folder, it's going to take a while to sync
   - The VM looks at the project directory for files so changes will show up immediatley
   - checkout http://local.ovrride.com to see your local copy of the site
+  - ```vagrant provision``` (run on first vagrant up) will pull most recent backup of production DB and sync images from S3
+    - if you need to update DB/images run the provision command from the root of the project directory
 
-####SSL isn't working yet
-Haven't setup SSL yet in dev env
+
 **NOTES:**
-
+- Email hasn't been setup yet for dev system, creating user accounts/orders will not send any emails right now, will just error out on the backend
 - If you'll need to test the Payment Gateway, make sure to (Enable PayPal Sandbox/Test Mode](http://docs.woothemes.com/document/paypal-pro/)
 
 ### OvR Lists:
