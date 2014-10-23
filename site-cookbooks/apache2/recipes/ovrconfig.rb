@@ -24,10 +24,6 @@ execute "install imagemagic" do
   command "sudo apt-get install -y php5-gd"
 end
 
-execute "make sure srp cache is available" do
-  command "sudo chmod -R 777 /vagrant/wp-content/plugins/special-recent-posts/cache/"
-end
-
 execute "sync images from S3" do
   command "/vagrant/chef/getImages.sh"
 end
