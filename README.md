@@ -12,43 +12,36 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 
 ### Running a local development copy of ovrride.com on Mac OS X:
 
-1. Download and install [MAMP](http://www.mamp.info/en/index.html)
-
-2. Configure MAMP Preferences:  
-      Ports: PHP = port 80, MySQL = port 3306  
-      Document Root = /path_to/public_html  
-      [Increase MAMP's php.ini memory limits:](http://blog-en.mamp.info/2009/09/increase-php-memory-limit-with-mamp-pro.html)  
-      - post_max_size = 256M  
-      - memory_limit = 256M   
-      - upload_max_filesize = 256M  
-      - max_input_vars = 5000
-      
-3. Export and download a copy of the remote database in SQL format from cPanel phpMyAdmin.
-
-4. Create a local database and database user with the values in wp-config.php using [phpMyAdmin](http://localhost/MAMP/?language=English)
-
-5. Run [these](https://gist.github.com/AJ-Acevedo/0b09bedc776895fb6f93) SQL queries on the new local database:
-
-6. Download a local copy of the OvRride codebase from bluehost. Here are two options:
-
-    Transfer the contents of the remote directory `public_html` to a local directory  
-    `rsync -avz -e ssh ovrridec@ovrride.com:public_html/ ~/public_html`
-
-    or  
-
-    Transfer the directory `public_html` to your home directory  
-    `rsync -avz -e ssh ovrridec@ovrride.com:public_html/ ~`
-
-    And there's always sftp.
+1. Download and install:
+  - [Homebrew](http://brew.sh)
+     - package manager for OS X, this will make installing some programs easier
+  - [RVM](http://rvm.io) - Ruby Version Manager
+  - [Vagrant](http://vagrantup.com) - Virtual machine manager
+  - [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
+  - Kife solo gem - part of chef solo which is used to configure the virtual machine the development environment runs on
+    - ```gem install knife-solo --no-ri --no-rdoc```
+  - librian-chef - helps manage chef cookbooks
+    - ```gem install librarian-chef —-no-ri —-no-rdoc```
+  - vagrant-hostmanager - lets vagrant write to /etc/hosts
+    - ```vagrant plugin install vagrant-hostmanager```
+  - s3cmd - allows commandline access to amazon web services
+  	- ```brew install s3cmd```
+  
+2. Download a copy of the database
+  - options:
+    - log into database server and export through commandline
+	- use s3cmd to get a copy from the backup bucket
+	  - ```s3cmd get S3://ovrdatabase/latest/ovrride*```
+	  - uncompress and rename to ovrride.sql
+3. Start virtual machine
+  - ```vagrant up``` this needs to be run in terminal from inside the project folder
+  - The VM looks at the project directory for files so changes will show up immediatley
+  - checkout http://local.ovrride.com to see your local copy of the site
 
 
 **NOTES:**
 
-- The .htaccess file may cause issues with a local install. Comment out every line outside of the BEGIN and END WordPress comments. Please DO NOT commit your local version of the .htaccess file to the repo.
-
 - If you'll need to test the Payment Gateway, make sure to (Enable PayPal Sandbox/Test Mode](http://docs.woothemes.com/document/paypal-pro/)
-
-- If your development environment is not setup to use SSL, comment out the 'Force Login page and Admin Dashboard to require SSL' options in wp-config.php. Should be lines 84 and 85.
 
 ### OvR Lists:
 
