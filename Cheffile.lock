@@ -54,6 +54,7 @@ SITE
 DEPENDENCIES
   apache2 (>= 0)
   apt (>= 0)
+  aws (>= 0)
   database (>= 0)
   mysql (= 5.5.3)
   mysql-chef_gem (= 0.0.4)
