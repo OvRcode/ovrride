@@ -20,6 +20,17 @@ execute "link config" do
   EOT
 end
 
+execute "install imagemagic" do
+  command "sudo apt-get install -y php5-gd"
+end
+
+execute "make sure srp cache is available" do
+  command "sudo chmod -R 777 /vagrant/wp-content/plugins/special-recent-posts/cache/"
+end
+
+execute "sync images from S3" do
+  command "/vagrant/chef/getImages.sh"
+end
 execute "reboot apache" do
   command "sudo service apache2 restart"
 end
