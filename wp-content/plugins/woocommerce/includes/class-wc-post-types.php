@@ -308,16 +308,18 @@ class WC_Post_types {
 			'shop_order_refund',
 			apply_filters( 'woocommerce_register_post_type_shop_order_refund',
 				array(
-					'label'                      => __( 'Refunds', 'woocommerce' ),
-					'capability_type'            => 'shop_order',
-					'public'                     => false,
-					'hierarchical'               => false,
-					'supports'                   => false,
-					'exclude_from_orders_screen' => false,
-					'add_order_meta_boxes'       => false,
-					'exclude_from_order_count'   => true,
-					'exclude_from_order_views'   => false,
-					'class_name'                 => 'WC_Order_Refund'
+					'label'                            => __( 'Refunds', 'woocommerce' ),
+					'capability_type'                  => 'shop_order',
+					'public'                           => false,
+					'hierarchical'                     => false,
+					'supports'                         => false,
+					'exclude_from_orders_screen'       => false,
+					'add_order_meta_boxes'             => false,
+					'exclude_from_order_count'         => true,
+					'exclude_from_order_views'         => false,
+					'exclude_from_order_reports'       => false,
+					'exclude_from_order_sales_reports' => true,
+					'class_name'                       => 'WC_Order_Refund'
 				)
 			)
 		);
@@ -389,7 +391,7 @@ class WC_Post_types {
 	public static function register_post_status() {
 		register_post_status( 'wc-pending', array(
 			'label'                     => _x( 'Pending payment', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
@@ -397,7 +399,7 @@ class WC_Post_types {
 		) );
 		register_post_status( 'wc-processing', array(
 			'label'                     => _x( 'Processing', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
@@ -405,7 +407,7 @@ class WC_Post_types {
 		) );
 		register_post_status( 'wc-on-hold', array(
 			'label'                     => _x( 'On hold', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
@@ -413,7 +415,7 @@ class WC_Post_types {
 		) );
 		register_post_status( 'wc-completed', array(
 			'label'                     => _x( 'Completed', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
@@ -421,7 +423,7 @@ class WC_Post_types {
 		) );
 		register_post_status( 'wc-cancelled', array(
 			'label'                     => _x( 'Cancelled', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
@@ -429,7 +431,7 @@ class WC_Post_types {
 		) );
 		register_post_status( 'wc-refunded', array(
 			'label'                     => _x( 'Refunded', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
@@ -437,7 +439,7 @@ class WC_Post_types {
 		) );
 		register_post_status( 'wc-failed', array(
 			'label'                     => _x( 'Failed', 'Order status', 'woocommerce' ),
-			'public'                    => true,
+			'public'                    => false,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,

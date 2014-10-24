@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, affiliate
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@woothemes.com&item_name=Donation+for+WooCommerce
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 2.2.4
+Stable tag: 2.2.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -129,6 +129,66 @@ Yes you can! Join in on our [GitHub repository](http://github.com/woothemes/wooc
 6. A product archive (grid).
 
 == Changelog ==
+
+= 2.2.7 - 22/10/2014 =
+* Fix - Fix refund date.
+* Fix - Fixed various notices.
+* Fix - Make updater set parent backorder status.
+* Fix - In the US address format, use state code rather than the full state name.
+* Fix - Use mb_strtolower to prevent issues with unicode chars.
+* Fix - Introduced the wc_strtolower() function
+* Fix - Make cart total consider taxes when saving an order.
+* Fix - Fix /shop/ base URL Non Latin issue with url decode.
+* Fix - Correct report handling for full and partial refunds.
+* Fix - Update jquery payment to prevent autocomplete issues.
+* Fix - Coupon API: Don't return current timestamp when expiry_date is not set.
+* Fix - wc_update_product_stock should update stock regardless, if the meta data doesn't currently exist.
+* Fix - Added wp_kses_post to purchase note
+* Fix - Fixed edit account page fields #6577.
+* Fix - Fix stock report queries #6565.
+* Fix - Fix error message with maximum amount in coupon class.
+* Fix - Fix nonce usage during checkout/account pages.
+* Fix - Incorrect conversion of Unicode characters in order status names.
+* Fix - Edit Account fields order.
+* Fix - Shipping address values on checkout page.
+* Fix - Enforce slug format of translated edit-address-slugs.
+* Tweak - Allow for non-integer stock quantities.
+* Tweak - Update simplify commerce to use new $order->get_status().
+* Tweak - Only show integrations subnav when there are multiple integrations.
+
+= 2.2.6 - 08/10/2014 =
+* Fix - Notices in the cache helper.
+* Fix - Prevent bulk edit from breaking sale price scheduled dates.
+* Fix - Prevent address fields being empty when editing an address within an order.
+* Fix - Removed save_post remove_action call which breaks 3rd party plugins. See ticket #6376 and #6485 for details.
+* Fix - Prevent warnings when set "Specific Countries" empty in shipping methods.
+* Tweak - Added woocommerce_product_subcategories_hide_empty filter.
+* Tweak - Added filter for shipping tax.
+* Tweak - Product attribute shortcode should return columns css class.
+
+= 2.2.5 - 07/10/2014 =
+* Fix - Filters in admin screen for coupons and orders.
+* Fix - When bulk editing, don't allow sale price to be negative.
+* Fix - When manually adding items to an order, show tax columns.
+* Fix - When manually adding items to an order, include variation data.
+* Fix - Prevent errors when constructing WC_Order without an ID.
+* Fix - Item_id notices in email templates.
+* Fix - Use variation get_stock_quantity() for variation max_qty.
+* Fix - Prevent bulk edit cancel from clearing options when bulk editing variations.
+* Fix - Use term_taxonomy_id for transient names - fixes counts in layered nav.
+* Fix - Use wc_get_order in simplify-commerce.
+* Fix - Use 'no' instead of boolean to disable PayPal gateway.
+* Fix - Do not escape redirect url in form handler - fixes malformed URLs.
+* Fix - Prevented non-existant pages from breaking cache helper.
+* Fix - Prevent sale prices showing errors in admin wrongly.
+* Fix - Prevent order statuses affecting other queries.
+* Fix - Removed deprecated get_page() functions.
+* Fix - Category archives. WP core still has issues dealing with pad_counts + parent when getting categories. Workaround by not hiding empty cats, then filtering the returned list using wp_list_filter.
+* Fix - When formatting meta data for display, suffix items to prevent issues when there are multiple values for the same meta key.
+* Fix - Unhook save_meta_boxes after first successful run to prevent race conditions.
+* Tweak - Added refunds to Sales by Date report.
+* Tweak - Tweak load_plugin_textdomain to be relative - this falls back to WP_LANG_DIR automatically. Can prevent "open_basedir restriction in effect".
+* Tweak - Added acceptance marks to PayPal Standard where applicable to replace generic PayPal icon.
 
 = 2.2.4 - 18/09/2014 =
 * Fix - Prevent errors when adding 'zero-rated' tax on checkout.
