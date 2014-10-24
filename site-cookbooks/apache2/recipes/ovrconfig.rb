@@ -31,5 +31,5 @@ execute "reboot apache" do
   command "sudo service apache2 restart"
 end
 execute "setup wp cron" do
-  command 'sudo crontab -r;echo "*/1 * * * * wget -q -O - http://local.ovrride.com/wp-cron.php?doing_wp_cron=1 >/dev/null 2>&1" | sudo crontab -'
+  command 'sudo crontab -r;echo "*/15 * * * * wget -q -O - http://local.ovrride.com/wp-cron.php?doing_wp_cron >/dev/null 2>&1" | sudo crontab -'
 end
