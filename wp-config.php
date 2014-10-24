@@ -36,6 +36,10 @@ define('DB_CHARSET', 'utf8');
 /** The Database Collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
 
+//Disable internal Wp-Cron function
+define('DISABLE_WP_CRON', true);
+//Setup a cronjob on server to refresh cron on a schedule instead of by page load
+
 /**#@+
  * Authentication Unique Keys and Salts.
  *
