@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Official StatCounter Plugin
- * Version: 1.6.7
+ * Version: 1.6.8
  * Plugin URI: http://statcounter.com/
  * Description: Adds the StatCounter tracking code to your blog. <br>To get setup: 1) Activate this plugin  2) Enter your StatCounter Project ID and Security Code in the <a href="options-general.php?page=StatCounter-Wordpress-Plugin.php"><strong>options page</strong></a>.
  * Author: Aodhan Cullen
@@ -213,31 +213,33 @@ if ($sc_position=="header") {
 
 // The guts of the StatCounter script
 function add_statcounter() {
-	global $user_level;
-	$sc_project = get_option(key_sc_project);
-	$sc_security = get_option(key_sc_security);
-	$sc_invisible = 0;
-	$sc_invisible = get_option('sc_invisible');
-	if (
-		( $sc_project > 0 )
-	 ) {
+    global $user_level;
+    $sc_project = get_option(key_sc_project);
+    $sc_security = get_option(key_sc_security);
+    $sc_invisible = 0;
+    $sc_invisible = get_option('sc_invisible');
+    if (
+        ( $sc_project > 0 )
+     ) {
 ?>
-	<!-- Start of StatCounter Code -->
-	<script type="text/javascript">
-	<!-- 
-		var sc_project=<?php echo $sc_project; ?>; 
-		var sc_security="<?php echo $sc_security; ?>"; 
+    <!-- Start of StatCounter Code -->
+    <script type="text/javascript">
+    <!-- 
+        var sc_project=<?php echo $sc_project; ?>; 
+        var sc_security="<?php echo $sc_security; ?>"; 
 <?php 
 if($sc_invisible==1) {
-	echo "		var sc_invisible=1;\n"; 
+    echo "      var sc_invisible=1;\n"; 
 }?>
-	//-->
-	</script>
-	<script type="text/javascript" src="http://www.statcounter.com/counter/counter_xhtml.js"></script>
-<noscript><div class="statcounter"><a title="web analytics" href="http://statcounter.com/"><img class="statcounter" src="http://c.statcounter.com/<?php echo $sc_project; ?>/0/<?php echo $sc_security; ?>/<?php echo $sc_invisible; ?>/" alt="web analytics" /></a></div></noscript>	
-	<!-- End of StatCounter Code -->
+        var scJsHost = (("https:" == document.location.protocol) ?
+        "https://secure." : "http://www.");
+    //-->
+document.write("<sc"+"ript type='text/javascript' src='" +scJsHost +"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="web analytics" href="http://statcounter.com/"><img class="statcounter" src="http://c.statcounter.com/<?php echo $sc_project; ?>/0/<?php echo $sc_security; ?>/<?php echo $sc_invisible; ?>/" alt="web analytics" /></a></div></noscript>   
+    <!-- End of StatCounter Code -->
 <?php
-	}
+    }
 }
 
 ?>
