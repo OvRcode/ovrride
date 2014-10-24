@@ -5,3 +5,6 @@ wp-content/plugins/special-recent-posts/cache/*
 !wp-content/plugins/special-recent-posts/cache/.placeholder
 error_log
 .DS_Store
+/tmp/librarian/
+.vagrant
+!dev.sql
