@@ -1054,16 +1054,18 @@ abstract class WC_Abstract_Order {
 			$items[ $item->order_item_id ]['item_meta'] = $this->get_item_meta( $item->order_item_id );
 
 			// Expand meta data into the array
-			foreach ( $items[ $item->order_item_id ]['item_meta'] as $name => $value ) {
+			if ( $items[ $item->order_item_id ]['item_meta'] ) {
+				foreach ( $items[ $item->order_item_id ]['item_meta'] as $name => $value ) {
 
-				if ( in_array( $name, $reserved_item_meta_keys ) ) {
-					continue;
-				}
+					if ( in_array( $name, $reserved_item_meta_keys ) ) {
+						continue;
+					}
 
-				if ( '_' === substr( $name, 0, 1 ) ) {
-					$items[ $item->order_item_id ][ substr( $name, 1 ) ] = $value[0];
-				} elseif ( ! in_array( $name, $reserved_item_meta_keys ) ) {
-					$items[ $item->order_item_id ][ $name ] = $value[0];
+					if ( '_' === substr( $name, 0, 1 ) ) {
+						$items[ $item->order_item_id ][ substr( $name, 1 ) ] = $value[0];
+					} elseif ( ! in_array( $name, $reserved_item_meta_keys ) ) {
+						$items[ $item->order_item_id ][ $name ] = $value[0];
+					}
 				}
 			}
 		}
@@ -1239,7 +1241,7 @@ abstract class WC_Abstract_Order {
 	}
 
 	/**
-	 * Gets shipping tax amount.
+	 * Gets cart tax amount.
 	 *
 	 * @return float
 	 */
@@ -1487,10 +1489,7 @@ abstract class WC_Abstract_Order {
 	 * @return string
 	 */
 	public function get_order_currency() {
-
-		$currency = $this->order_currency;
-
-		return apply_filters( 'woocommerce_get_order_currency', $currency, $this );
+		return apply_filters( 'woocommerce_get_order_currency', $this->order_currency, $this );
 	}
 
 	/**
@@ -1499,8 +1498,7 @@ abstract class WC_Abstract_Order {
 	 * @return string
 	 */
 	public function get_formatted_order_total() {
-
-		$formatted_total = wc_price( $this->order_total , array('currency' => $this->get_order_currency()));
+		$formatted_total = wc_price( $this->get_total(), array( 'currency' => $this->get_order_currency() ) );
 
 		return apply_filters( 'woocommerce_get_formatted_order_total', $formatted_total, $this );
 	}

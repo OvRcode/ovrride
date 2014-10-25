@@ -393,7 +393,7 @@ class WC_Countries {
 				'ES' => "{name}\n{company}\n{address_1}\n{address_2}\n{postcode} {city}\n{state}\n{country}",
 				'SE' => $postcode_before_city,
 				'TR' => "{name}\n{company}\n{address_1}\n{address_2}\n{postcode} {city} {state}\n{country}",
-				'US' => "{name}\n{company}\n{address_1}\n{address_2}\n{city}, {state} {postcode}\n{country}",
+				'US' => "{name}\n{company}\n{address_1}\n{address_2}\n{city}, {state_code} {postcode}\n{country}",
 				'VN' => "{name}\n{company}\n{address_1}\n{city}\n{country}",
 			));
 		endif;
@@ -450,6 +450,7 @@ class WC_Countries {
 			'{address_2_upper}'  => strtoupper( $address_2 ),
 			'{city_upper}'       => strtoupper( $city ),
 			'{state_upper}'      => strtoupper( $full_state ),
+			'{state_code}'       => strtoupper( $state ),
 			'{postcode_upper}'   => strtoupper( $postcode ),
 			'{country_upper}'    => strtoupper( $full_country ),
 		), $args ) );
@@ -905,10 +906,11 @@ class WC_Countries {
 	 * @param string $type (default: 'billing_')
 	 * @return array
 	 */
-	public function get_address_fields( $country, $type = 'billing_' ) {
+	public function get_address_fields( $country = '', $type = 'billing_' ) {
 
-		if (!$country)
+		if ( ! $country ) {
             $country = $this->get_base_country();
+		}
 
 		$fields     = $this->get_default_address_fields();
 		$locale		= $this->get_country_locale();

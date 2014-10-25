@@ -182,13 +182,13 @@ class WC_Product {
 			// Update stock in DB directly
 			switch ( $mode ) {
 				case 'add' :
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = meta_value + %d WHERE post_id = %d AND meta_key='_stock'", $amount, $this->id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = meta_value + %f WHERE post_id = %d AND meta_key='_stock'", $amount, $this->id ) );
 				break;
 				case 'subtract' :
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = meta_value - %d WHERE post_id = %d AND meta_key='_stock'", $amount, $this->id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = meta_value - %f WHERE post_id = %d AND meta_key='_stock'", $amount, $this->id ) );
 				break;
 				default :
-					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = %d WHERE post_id = %d AND meta_key='_stock'", $amount, $this->id ) );
+					$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = %f WHERE post_id = %d AND meta_key='_stock'", $amount, $this->id ) );
 				break;
 			}
 
@@ -627,8 +627,11 @@ class WC_Product {
 	public function is_visible() {
 		$visible = true;
 
+		if ( ! $this->post ) {
+			$visible = false;
+
 		// Published/private
-		if ( $this->post->post_status !== 'publish' && ! current_user_can( 'edit_post', $this->id ) ) {
+		} elseif ( $this->post->post_status !== 'publish' && ! current_user_can( 'edit_post', $this->id ) ) {
 			$visible = false;
 
 		// Out of stock visibility
