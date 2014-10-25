@@ -16,7 +16,6 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 	 * @return array
 	 */
 	public function get_chart_legend() {
-
 		$legend   = array();
 
 		$order_totals = $this->get_order_report_data( array(
@@ -32,6 +31,8 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 					'name'     => 'total_shipping'
 				)
 			),
+			'order_types'  => wc_get_order_types( 'sales-reports' ),
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 			'filter_range' => true
 		) );
 
@@ -47,7 +48,8 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			),
 			'query_type'   => 'get_var',
 			'filter_range' => true,
-			'order_types'  => wc_get_order_types( 'order-count' )
+			'order_types'  => wc_get_order_types( 'order-count' ),
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) ) );
 
 		$total_items    = absint( $this->get_order_report_data( array(
@@ -59,9 +61,10 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 					'name'            => 'order_item_qty'
 				)
 			),
-			'query_type' => 'get_var',
+			'query_type'   => 'get_var',
 			'order_types'  => wc_get_order_types( 'order-count' ),
-			'filter_range' => true
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
+			'filter_range' => true,
 		) ) );
 
 		// Get discount amounts in range
@@ -83,8 +86,37 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			),
 			'query_type'   => 'get_var',
 			'order_types'  => wc_get_order_types( 'order-count' ),
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
+			'filter_range' => true,
+		) );
+		$partial_refunds = $this->get_order_report_data( array(
+			'data' => array(
+				'_refund_amount' => array(
+					'type'     => 'meta',
+					'function' => 'SUM',
+					'name'     => 'total_refund'
+				)
+			),
+			'query_type'          => 'get_var',
+			'order_types'         => array( 'shop_order_refund' ),
+			'filter_range'        => true,
+			'order_status'        => false,
+			'parent_order_status' => array( 'completed', 'processing', 'on-hold' ),
+		) );
+		$full_refunds = $this->get_order_report_data( array(
+			'data' => array(
+				'_order_total' => array(
+					'type'     => 'meta',
+					'function' => 'SUM',
+					'name'     => 'total_sales'
+				),
+			),
+			'query_type'   => 'get_var',
+			'order_types'  => wc_get_order_types( 'sales-reports' ),
+			'order_status' => array( 'refunded' ),
 			'filter_range' => true
 		) );
+		$total_refunds = $partial_refunds + $full_refunds;
 
 		$this->average_sales = $total_sales / ( $this->chart_interval + 1 );
 
@@ -102,7 +134,7 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 		$legend[] = array(
 			'title' => sprintf( __( '%s sales in this period', 'woocommerce' ), '<strong>' . wc_price( $total_sales ) . '</strong>' ),
 			'color' => $this->chart_colours['sales_amount'],
-			'highlight_series' => 5
+			'highlight_series' => 6
 		);
 
 		$legend[] = array(
@@ -124,9 +156,15 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 		);
 
 		$legend[] = array(
+			'title' => sprintf( __( '%s in refunds', 'woocommerce' ), '<strong>' . wc_price( $total_refunds ) . '</strong>' ),
+			'color' => $this->chart_colours['refund_amount'],
+			'highlight_series' => 4
+		);
+
+		$legend[] = array(
 			'title' => sprintf( __( '%s charged for shipping', 'woocommerce' ), '<strong>' . wc_price( $total_shipping ) . '</strong>' ),
 			'color' => $this->chart_colours['shipping_amount'],
-			'highlight_series' => 4
+			'highlight_series' => 5
 		);
 
 		$legend[] = array(
@@ -156,7 +194,8 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			'order_count'  => '#b8c0c5',
 			'item_count'   => '#d4d9dc',
 			'coupon_amount' => '#e67e22',
-			'shipping_amount' => '#1abc9c'
+			'shipping_amount' => '#1abc9c',
+			'refund_amount' => '#c0392b'
 		);
 
 		$current_range = ! empty( $_GET['range'] ) ? sanitize_text_field( $_GET['range'] ) : '7day';
@@ -227,7 +266,9 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			'group_by'     => $this->group_by_query,
 			'order_by'     => 'post_date ASC',
 			'query_type'   => 'get_results',
-			'filter_range' => true
+			'filter_range' => true,
+			'order_types'  => wc_get_order_types( 'sales-reports' ),
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
 
 		// Order items
@@ -255,7 +296,9 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			'group_by'     => $this->group_by_query,
 			'order_by'     => 'post_date ASC',
 			'query_type'   => 'get_results',
-			'filter_range' => true
+			'filter_range' => true,
+			'order_types'  => wc_get_order_types( 'sales-reports' ),
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
 
 		// Get discount amounts in range
@@ -288,8 +331,51 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			'group_by'     => $this->group_by_query . ', order_item_name',
 			'order_by'     => 'post_date ASC',
 			'query_type'   => 'get_results',
-			'filter_range' => true
+			'filter_range' => true,
+			'order_types'  => wc_get_order_types( 'sales-reports' ),
+			'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 		) );
+
+		$partial_refunds = $this->get_order_report_data( array(
+			'data' => array(
+				'_refund_amount' => array(
+					'type'     => 'meta',
+					'function' => 'SUM',
+					'name'     => 'total_refund'
+				),
+				'post_date' => array(
+					'type'     => 'post_data',
+					'function' => '',
+					'name'     => 'post_date'
+				)
+			),
+			'group_by'            => $this->group_by_query,
+			'order_by'            => 'post_date ASC',
+			'query_type'          => 'get_results',
+			'filter_range'        => true,
+			'order_status'        => false,
+			'parent_order_status' => array( 'completed', 'processing', 'on-hold' ),
+		) );
+		$full_refunds = $this->get_order_report_data( array(
+			'data' => array(
+				'_order_total' => array(
+					'type'     => 'meta',
+					'function' => 'SUM',
+					'name'     => 'total_refund'
+				),
+				'post_date' => array(
+					'type'     => 'post_data',
+					'function' => '',
+					'name'     => 'post_date'
+				),
+			),
+			'group_by'       => $this->group_by_query,
+			'order_by'     => 'post_date ASC',
+			'query_type'   => 'get_results',
+			'filter_range' => true,
+			'order_status' => array( 'refunded' ),
+		) );
+		$refunds = array_merge($partial_refunds, $full_refunds);
 
 		// Prepare data for report
 		$order_counts      = $this->prepare_chart_data( $orders, 'post_date', 'total_orders', $this->chart_interval, $this->start_date, $this->chart_groupby );
@@ -297,6 +383,7 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 		$order_amounts     = $this->prepare_chart_data( $orders, 'post_date', 'total_sales', $this->chart_interval, $this->start_date, $this->chart_groupby );
 		$coupon_amounts    = $this->prepare_chart_data( $coupons, 'post_date', 'discount_amount', $this->chart_interval, $this->start_date, $this->chart_groupby );
 		$shipping_amounts  = $this->prepare_chart_data( $orders, 'post_date', 'total_shipping', $this->chart_interval, $this->start_date, $this->chart_groupby );
+		$refund_amounts    = $this->prepare_chart_data( $refunds, 'post_date', 'total_refund', $this->chart_interval, $this->start_date, $this->chart_groupby );
 
 		// Encode in json format
 		$chart_data = json_encode( array(
@@ -304,7 +391,8 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 			'order_item_counts' => array_values( $order_item_counts ),
 			'order_amounts'     => array_values( $order_amounts ),
 			'coupon_amounts'    => array_values( $coupon_amounts ),
-			'shipping_amounts'  => array_values( $shipping_amounts )
+			'shipping_amounts'  => array_values( $shipping_amounts ),
+			'refund_amounts'    => array_values( $refund_amounts )
 		) );
 		?>
 		<div class="chart-container">
@@ -349,6 +437,16 @@ class WC_Report_Sales_By_Date extends WC_Admin_Report {
 							data: order_data.coupon_amounts,
 							yaxis: 2,
 							color: '<?php echo $this->chart_colours['coupon_amount']; ?>',
+							points: { show: true, radius: 5, lineWidth: 3, fillColor: '#fff', fill: true },
+							lines: { show: true, lineWidth: 4, fill: false },
+							shadowSize: 0,
+							prepend_tooltip: "<?php echo get_woocommerce_currency_symbol(); ?>"
+						},
+						{
+							label: "<?php echo esc_js( __( 'Refund amount', 'woocommerce' ) ) ?>",
+							data: order_data.refund_amounts,
+							yaxis: 2,
+							color: '<?php echo $this->chart_colours['refund_amount']; ?>',
 							points: { show: true, radius: 5, lineWidth: 3, fillColor: '#fff', fill: true },
 							lines: { show: true, lineWidth: 4, fill: false },
 							shadowSize: 0,
