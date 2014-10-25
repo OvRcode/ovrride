@@ -8,6 +8,7 @@
  * @category Class
  * @author   WooThemes
  */
+
 class WC_Order_Refund extends WC_Abstract_Order {
 
 	/**

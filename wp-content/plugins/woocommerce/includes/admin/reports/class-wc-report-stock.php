@@ -1,12 +1,9 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) )
 	exit; // Exit if accessed directly
-}
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
+if ( ! class_exists( 'WP_List_Table' ) )
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
 
 /**
  * WC_Report_Stock

@@ -48,9 +48,7 @@ class WC_Form_Handler {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-edit_address' ) ) {
-			return;
-		}
+		wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-edit_address' );
 
 		$user_id = get_current_user_id();
 
@@ -58,7 +56,7 @@ class WC_Form_Handler {
 			return;
 		}
 
-		$load_address = isset( $wp->query_vars['edit-address'] ) ? wc_edit_address_i18n( sanitize_title( $wp->query_vars['edit-address'] ), true ) : 'billing';
+		$load_address = isset( $wp->query_vars['edit-address'] ) ? wc_edit_address_i18n( sanitize_key( $wp->query_vars['edit-address'] ), true ) : 'billing';
 
 		$address = WC()->countries->get_address_fields( esc_attr( $_POST[ $load_address . '_country' ] ), $load_address . '_' );
 
@@ -145,9 +143,11 @@ class WC_Form_Handler {
 			return;
 		}
 
-		if ( empty( $_POST[ 'action' ] ) || ( 'save_account_details' !== $_POST[ 'action' ] ) || empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'save_account_details' ) ) {
+		if ( empty( $_POST[ 'action' ] ) || ( 'save_account_details' !== $_POST[ 'action' ] ) || empty( $_POST['_wpnonce'] ) ) {
 			return;
 		}
+
+		wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-save_account_details' );
 
 		$update       = true;
 		$errors       = new WP_Error();
@@ -383,7 +383,7 @@ class WC_Form_Handler {
 
 			wc_add_notice( __( 'Cart updated.', 'woocommerce' ) );
 
-			$referer = wp_get_referer() ? remove_query_arg( array( 'add-to-cart', 'remove_item' ), wp_get_referer() ) : WC()->cart->get_cart_url();
+			$referer = wp_get_referer() ? remove_query_arg( 'add-to-cart', wp_get_referer() ) : WC()->cart->get_cart_url();
 			wp_safe_redirect( $referer );
 			exit;
 
@@ -395,13 +395,13 @@ class WC_Form_Handler {
 			$cart_updated = false;
 			$cart_totals  = isset( $_POST['cart'] ) ? $_POST['cart'] : '';
 
-			if ( sizeof( WC()->cart->get_cart() ) > 0 && is_array( $cart_totals ) ) {
+			if ( sizeof( WC()->cart->get_cart() ) > 0 ) {
 				foreach ( WC()->cart->get_cart() as $cart_item_key => $values ) {
 
 					$_product = $values['data'];
 
 					// Skip product if no updated quantity was posted
-					if ( ! isset( $cart_totals[ $cart_item_key ] ) || ! isset( $cart_totals[ $cart_item_key ]['qty'] ) ) {
+					if ( ! isset( $cart_totals[ $cart_item_key ]['qty'] ) ) {
 						continue;
 					}
 
@@ -727,7 +727,9 @@ class WC_Form_Handler {
 	 * Process the login form.
 	 */
 	public static function process_login() {
-		if ( ! empty( $_POST['login'] ) && ! empty( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-login' ) ) {
+		if ( ! empty( $_POST['login'] ) && ! empty( $_POST['_wpnonce'] ) ) {
+
+			wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-login' );
 
 			try {
 				$creds  = array();
@@ -770,11 +772,11 @@ class WC_Form_Handler {
 				} else {
 
 					if ( ! empty( $_POST['redirect'] ) ) {
-						$redirect = $_POST['redirect'];
+						$redirect = esc_url( $_POST['redirect'] );
 					} elseif ( wp_get_referer() ) {
-						$redirect = wp_get_referer();
+						$redirect = esc_url( wp_get_referer() );
 					} else {
-						$redirect = get_permalink( wc_get_page_id( 'myaccount' ) );
+						$redirect = esc_url( get_permalink( wc_get_page_id( 'myaccount' ) ) );
 					}
 
 					// Feedback
@@ -801,13 +803,14 @@ class WC_Form_Handler {
 		}
 
 		// process lost password form
-		if ( isset( $_POST['user_login'] ) && isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'lost_password' ) ) {
+		if ( isset( $_POST['user_login'] ) && isset( $_POST['_wpnonce'] ) ) {
+			wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-lost_password' );
 
 			WC_Shortcode_My_Account::retrieve_password();
 		}
 
 		// process reset password form
-		if ( isset( $_POST['password_1'] ) && isset( $_POST['password_2'] ) && isset( $_POST['reset_key'] ) && isset( $_POST['reset_login'] ) && isset( $_POST['_wpnonce'] ) &&  wp_verify_nonce( $_POST['_wpnonce'], 'reset_password' ) ) {
+		if ( isset( $_POST['password_1'] ) && isset( $_POST['password_2'] ) && isset( $_POST['reset_key'] ) && isset( $_POST['reset_login'] ) && isset( $_POST['_wpnonce'] ) ) {
 
 			// verify reset key again
 			$user = WC_Shortcode_My_Account::check_password_reset_key( $_POST['reset_key'], $_POST['reset_login'] );
@@ -817,6 +820,8 @@ class WC_Form_Handler {
 				// save these values into the form again in case of errors
 				$args['key']   = wc_clean( $_POST['reset_key'] );
 				$args['login'] = wc_clean( $_POST['reset_login'] );
+
+				wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-reset_password' );
 
 				if ( empty( $_POST['password_1'] ) || empty( $_POST['password_2'] ) ) {
 					wc_add_notice( __( 'Please enter your password.', 'woocommerce' ), 'error' );
@@ -854,7 +859,9 @@ class WC_Form_Handler {
 	 * Process the registration form.
 	 */
 	public static function process_registration() {
-		if ( ! empty( $_POST['register'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'woocommerce-register' ) ) {
+		if ( ! empty( $_POST['register'] ) ) {
+
+			wp_verify_nonce( $_POST['register'], 'woocommerce-register' );
 
 			if ( 'no' === get_option( 'woocommerce_registration_generate_username' ) ) {
 				$_username = $_POST['username'];
