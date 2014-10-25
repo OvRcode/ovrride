@@ -9,9 +9,7 @@
  * @extends 	WC_Widget
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class WC_Widget_Layered_Nav extends WC_Widget {
 
@@ -182,7 +180,7 @@ class WC_Widget_Layered_Nav extends WC_Widget {
 							continue;
 
 						// Get count based on current view - uses transients
-						$transient_name = 'wc_ln_count_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $term->term_taxonomy_id ) );
+						$transient_name = 'wc_ln_count_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $term->term_id ) );
 
 						if ( false === ( $_products_in_term = get_transient( $transient_name ) ) ) {
 
@@ -239,7 +237,7 @@ class WC_Widget_Layered_Nav extends WC_Widget {
 				foreach ( $terms as $term ) {
 
 					// Get count based on current view - uses transients
-					$transient_name = 'wc_ln_count_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $term->term_taxonomy_id ) );
+					$transient_name = 'wc_ln_count_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $term->term_id ) );
 
 					if ( false === ( $_products_in_term = get_transient( $transient_name ) ) ) {
 
