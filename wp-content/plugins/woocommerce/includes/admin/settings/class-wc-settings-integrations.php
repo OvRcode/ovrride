@@ -8,9 +8,7 @@
  * @version     2.1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if ( ! class_exists( 'WC_Settings_Integrations' ) ) :
 
@@ -51,12 +49,10 @@ class WC_Settings_Integrations extends WC_Settings_Page {
 			$current_section = current( $integrations )->id;
 		}
 
-		if ( sizeof( $integrations ) > 1 ) {
-			foreach ( $integrations as $integration ) {
-				$title = empty( $integration->method_title ) ? ucfirst( $integration->id ) : $integration->method_title;
+		foreach ( $integrations as $integration ) {
+			$title = empty( $integration->method_title ) ? ucfirst( $integration->id ) : $integration->method_title;
 
-				$sections[ strtolower( $integration->id ) ] = esc_html( $title );
-			}
+			$sections[ strtolower( $integration->id ) ] = esc_html( $title );
 		}
 
 		return apply_filters( 'woocommerce_get_sections_' . $this->id, $sections );

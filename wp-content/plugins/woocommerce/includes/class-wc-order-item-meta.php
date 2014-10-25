@@ -139,15 +139,7 @@ class WC_Order_Item_Meta {
 					}
 				}
 
-				// Unique key required
-				$formatted_meta_key = $meta_key;
-				$loop               = 0;
-				while ( isset( $formatted_meta[ $formatted_meta_key ] ) ) {
-					$loop ++;
-					$formatted_meta_key = $meta_key . '-' . $loop;
-				}
-
-				$formatted_meta[ $formatted_meta_key ] = array(
+				$formatted_meta[ $meta_key ] = array(
 					'label'     => wc_attribute_label( $attribute_key ),
 					'value'     => apply_filters( 'woocommerce_order_item_display_meta_value', $meta_value ),
 				);

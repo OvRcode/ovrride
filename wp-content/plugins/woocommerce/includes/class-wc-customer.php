@@ -27,14 +27,24 @@ class WC_Customer {
 		$this->_data = WC()->session->get( 'customer' );
 
 		if ( empty( $this->_data ) ) {
+
+			$default = apply_filters( 'woocommerce_customer_default_location', get_option( 'woocommerce_default_country' ) );
+
+        	if ( strstr( $default, ':' ) ) {
+        		list( $country, $state ) = explode( ':', $default );
+        	} else {
+        		$country = $default;
+        		$state   = '';
+        	}
+
 			$this->_data = array(
-				'country' 				=> esc_html( $this->get_default_country() ),
+				'country' 				=> esc_html( $country ),
 				'state' 				=> '',
 				'postcode' 				=> '',
 				'city'					=> '',
 				'address' 				=> '',
 				'address_2' 			=> '',
-				'shipping_country' 		=> esc_html( $this->get_default_country() ),
+				'shipping_country' 		=> esc_html( $country ),
 				'shipping_state' 		=> '',
 				'shipping_postcode' 	=> '',
 				'shipping_city'			=> '',
@@ -46,7 +56,7 @@ class WC_Customer {
 		}
 
 		// When leaving or ending page load, store data
-		add_action( 'shutdown', array( $this, 'save_data' ), 10 );
+    	add_action( 'shutdown', array( $this, 'save_data' ), 10 );
 	}
 
 	/**
@@ -66,66 +76,32 @@ class WC_Customer {
 	 * @param mixed $property
 	 * @return bool
 	 */
-	public function __isset( $property ) {
-		return isset( $this->_data[ $property ] );
-	}
+    public function __isset( $property ) {
+        return isset( $this->_data[ $property ] );
+    }
 
-	/**
-	 * __get function.
-	 *
-	 * @access public
-	 * @param string $property
-	 * @return string
-	 */
-	public function __get( $property ) {
-		return isset( $this->_data[ $property ] ) ? $this->_data[ $property ] : '';
-	}
+    /**
+     * __get function.
+     *
+     * @access public
+     * @param string $property
+     * @return string
+     */
+    public function __get( $property ) {
+        return isset( $this->_data[ $property ] ) ? $this->_data[ $property ] : '';
+    }
 
-	/**
-	 * __set function.
-	 *
-	 * @access public
-	 * @param mixed $property
-	 * @param mixed $value
-	 */
-	public function __set( $property, $value ) {
-		$this->_data[ $property ] = $value;
-		$this->_changed = true;
-	}
-
-	/**
-	 * Get default country for a customer
-	 * @return string
-	 */
-	public function get_default_country() {
-		$default = apply_filters( 'woocommerce_customer_default_location', get_option( 'woocommerce_default_country' ) );
-
-		if ( strstr( $default, ':' ) ) {
-			list( $country, $state ) = explode( ':', $default );
-		} else {
-			$country = $default;
-			$state   = '';
-		}
-
-		return $country;
-	}
-
-	/**
-	 * Get default state for a customer
-	 * @return string
-	 */
-	public function get_default_state() {
-		$default = apply_filters( 'woocommerce_customer_default_location', get_option( 'woocommerce_default_country' ) );
-
-		if ( strstr( $default, ':' ) ) {
-			list( $country, $state ) = explode( ':', $default );
-		} else {
-			$country = $default;
-			$state   = '';
-		}
-
-		return $state;
-	}
+    /**
+     * __set function.
+     *
+     * @access public
+     * @param mixed $property
+     * @param mixed $value
+     */
+    public function __set( $property, $value ) {
+        $this->_data[ $property ] = $value;
+        $this->_changed = true;
+    }
 
 	/**
 	 * has_calculated_shipping function.
@@ -143,10 +119,17 @@ class WC_Customer {
 	 * @access public
 	 */
 	public function set_to_base() {
-		$this->country  = $this->get_default_country();
-		$this->state    = $this->get_default_state();
-		$this->postcode = '';
-		$this->city     = '';
+		$default = apply_filters( 'woocommerce_customer_default_location', get_option('woocommerce_default_country') );
+    	if ( strstr( $default, ':' ) ) {
+    		list( $country, $state ) = explode( ':', $default );
+    	} else {
+    		$country = $default;
+    		$state = '';
+    	}
+    	$this->country  = $country;
+    	$this->state    = $state;
+    	$this->postcode = '';
+    	$this->city     = '';
 	}
 
 	/**
@@ -155,10 +138,17 @@ class WC_Customer {
 	 * @access public
 	 */
 	public function set_shipping_to_base() {
-		$this->shipping_country  = $this->get_default_country();
-		$this->shipping_state    = $this->get_default_state();
-		$this->shipping_postcode = '';
-		$this->shipping_city     = '';
+		$default = get_option('woocommerce_default_country');
+    	if ( strstr( $default, ':' ) ) {
+    		list( $country, $state ) = explode( ':', $default );
+    	} else {
+    		$country = $default;
+    		$state = '';
+    	}
+    	$this->shipping_country  = $country;
+    	$this->shipping_state    = $state;
+    	$this->shipping_postcode = '';
+    	$this->shipping_city     = '';
 	}
 
 	/**
@@ -174,12 +164,12 @@ class WC_Customer {
 
 			$default = get_option('woocommerce_default_country');
 
-			if ( strstr( $default, ':' ) ) {
-				list( $default_country, $default_state ) = explode( ':', $default );
-			} else {
-				$default_country = $default;
-				$default_state = '';
-			}
+        	if ( strstr( $default, ':' ) ) {
+	    		list( $default_country, $default_state ) = explode( ':', $default );
+	    	} else {
+	    		$default_country = $default;
+	    		$default_state = '';
+	    	}
 
 			if ( $default_country !== $country ) return true;
 			if ( $default_state && $default_state !== $state ) return true;
@@ -348,12 +338,12 @@ class WC_Customer {
 		if ( $tax_based_on == 'base' ) {
 
 			$default = get_option( 'woocommerce_default_country' );
-			if ( strstr( $default, ':' ) ) {
-				list( $country, $state ) = explode( ':', $default );
-			} else {
-				$country = $default;
-				$state = '';
-			}
+	    	if ( strstr( $default, ':' ) ) {
+	    		list( $country, $state ) = explode( ':', $default );
+	    	} else {
+	    		$country = $default;
+	    		$state = '';
+	    	}
 
 			$postcode   = '';
 			$city   	= '';

@@ -13,9 +13,7 @@
  * @since       2.1
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 require_once ABSPATH . 'wp-admin/includes/admin.php';
 

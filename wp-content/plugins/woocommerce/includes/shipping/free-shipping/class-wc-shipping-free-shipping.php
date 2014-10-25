@@ -1,8 +1,6 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  * Free Shipping Method
@@ -180,7 +178,7 @@ class WC_Shipping_Free_Shipping extends WC_Shipping_Method {
 			}
 		}
 
-		if ( in_array( $this->requires, array( 'min_amount', 'either', 'both' ) ) && isset( WC()->cart->cart_contents_total ) ) {
+		if ( in_array( $this->requires, array( 'min_amount', 'either', 'both' ) ) && isset( WC()->cart->cart_contents_total ) ) {	
 
 			if ( WC()->cart->prices_include_tax )
 				$total = WC()->cart->cart_contents_total + array_sum( WC()->cart->taxes );

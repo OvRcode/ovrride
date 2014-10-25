@@ -9,6 +9,7 @@
  * @package 	WooCommerce/Shortcodes/Checkout
  * @version     2.0.0
  */
+
 class WC_Shortcode_Checkout {
 
 	/**
