@@ -8,3 +8,4 @@ error_log
 /tmp/librarian/
 .vagrant
 !dev.sql
+Gemfile.lock

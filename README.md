@@ -1,6 +1,6 @@
 ## OvRride.com
 
-OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
+OvRride.com is built using WordPress 4.0, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
 
 
 ### Dependancies:
@@ -14,16 +14,15 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 1. Download and install:
   - [Homebrew](http://brew.sh)
      - package manager for OS X, this will make installing some programs easier
-	 - used by RVM to install versions of ruby
+     - used by RVM to install versions of ruby
   - [RVM](http://rvm.io) - Ruby Version Manager
     - once rvm is installed ```rvm install 2.1```
   - [Chef](https://downloads.getchef.com/chef-dk/mac/#/)
   - [Vagrant](http://vagrantup.com) - Virtual machine manager
   - [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
   - Kife solo gem - part of chef solo which is used to configure the virtual machine the development environment runs on
-    - ```gem install knife-solo --no-ri --no-rdoc```
   - librian-chef - helps manage chef cookbooks
-    - ```gem install librarian-chef —-no-ri —-no-rdoc```
+  - Both can be installed by running ```bundle install```
   - vagrant-hostmanager - lets vagrant write to /etc/hosts
     - ```vagrant plugin install vagrant-hostmanager```
 2. Clone repository to your machine
@@ -36,7 +35,7 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 4. Start virtual machine
   - ```vagrant up``` this needs to be run in terminal from inside the project folder
 
-  - The VM looks at the project directory for files so changes will show up immediatley
+  - The VM looks at the project directory for files so changes will show up immediately
   - checkout http://local.ovrride.com to see your local copy of the site
   - ```vagrant provision``` (run on first vagrant up) will pull most recent backup of production DB and sync images from S3
     - if you need to update DB/images run the provision command from the root of the project directory
@@ -51,11 +50,10 @@ OvRride.com is built using WordPress 3.5.2, and the WooCommerce plugin. The OvRr
 OvR Lists can be accessed via http://lists.ovrride.com.  
 The files are located in the lists directory found in the root of this repo.
 
-Authentication is currently using .htpasswd, This will be changed to utilize [php-login.net](http://php-login.net)
+Authentication is utilizing [php-login.net](http://php-login.net)
 
 ### OvR Lists Dependancies:
 
-[Color Me Sass v1.3](http://www.richbray.me/cms/)  
 [Bootstrap Sass v3.0.2](https://github.com/jlong/sass-bootstrap)  
 [Grunt JS v0.4.1](http://gruntjs.com)  
 [jQuery 1.10.2](http://jquery.com)  
