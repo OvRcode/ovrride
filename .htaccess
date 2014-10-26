@@ -1,5 +1,5 @@
 # Protect system files from peeping eyes
-<FilesMatch "php.ini|error_log|README.md|readme.html|register.php">
+<FilesMatch "dev.sql|Gruntfile.js|package.json|ovrride.sql|README.md|register.php|Vagrantfile">
   Order allow,deny
   Deny from all
 </FilesMatch>
@@ -25,8 +25,13 @@ RewriteRule ^login$ https://ovrride.com/wp-login.php [NC,L]
 # Prevent indexing of directories without an index file
 Options -Indexes
 
-# Protect the .git directory from peeping eyes
+# Protect the development directories from peeping eyes
+RedirectMatch 404 /\.chef
 RedirectMatch 404 /\.git
+RedirectMatch 404 /\.vagrant
+RedirectMatch 404 /chef
+RedirectMatch 404 /roles
+RedirectMatch 404 /site-cookbooks
 
 # Rewrite ovrride.net to ovrride.com
 RewriteCond %{HTTP_HOST} ^ovrride\.net$ [OR]
