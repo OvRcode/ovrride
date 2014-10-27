@@ -64,10 +64,12 @@
         <a href="/faq/">FAQ</a>
         <span> | </span>
         <a href="/contact-us/">Contact Us</a>
+        <span> | </span>
+        <span><a href="/terms-and-conditions/">Terms &amp; Conditions</a></span>
         <br>
         <span>&copy; COPYRIGHT <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a> - ALL RIGHTS RESERVED</span>
         <br>
-        <span><a href="/terms-and-conditions/">Terms &amp; Conditions</a></span>
+        <span><a href="https://www.digitalocean.com/?refcode=4ea7265a5e45" target="_blank">Hosted by Digital Ocean</a></span>
       </div>
 
       <div style="text-align:right;" class="col grid_3_of_12">
