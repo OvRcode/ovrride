@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Official StatCounter Plugin
- * Version: 1.6.8
+ * Version: 1.6.9
  * Plugin URI: http://statcounter.com/
  * Description: Adds the StatCounter tracking code to your blog. <br>To get setup: 1) Activate this plugin  2) Enter your StatCounter Project ID and Security Code in the <a href="options-general.php?page=StatCounter-Wordpress-Plugin.php"><strong>options page</strong></a>.
  * Author: Aodhan Cullen
@@ -66,13 +66,12 @@ function statcounter_reports_page() {
 // Hook in the options page function
 function add_sc_option_page() {
 	global $wpdb;
-	add_options_page('StatCounter Options', 'StatCounter', "edit_plugins", basename(__FILE__), 'sc_options_page');
+	add_options_page('StatCounter Options', 'StatCounter', "manage_options", basename(__FILE__), 'sc_options_page');
 }
 
 function sc_options_page() {
 	// If we are a postback, store the options
- 	if ( isset( $_POST['info_update'] ) ) {
-		check_admin_referer();
+ 	if ( isset( $_POST['info_update'] ) && check_admin_referer( 'update_sc_project_nonce', 'sc_project_nonce' ) ) {
 		
 		// Update the Project ID
 		$sc_project = trim($_POST[key_sc_project]);
@@ -112,6 +111,7 @@ function sc_options_page() {
 	?>
 
 		<form method="post" action="options-general.php?page=StatCounter-Wordpress-Plugin.php">
+		<?php wp_nonce_field( 'update_sc_project_nonce', 'sc_project_nonce' ); ?>
 		<div class="wrap">
 			<?php if (get_option( key_sc_project ) == "0") { ?>
 				<div style="margin:10px auto; border:3px #f00 solid; background-color:#fdd; color:#000; padding:10px; text-align:center;">
