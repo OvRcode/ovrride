@@ -1,4 +1,36 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.8.19
+	- Fixed Notices
+	- Fixed issue where entry exports were saved with a .txt extension in Safari
+	- Fixed issue when exporting custom post fields of type "checkbox".
+	- AF: Fixed issue where feed saved successfully message still displayed when fields failed validation.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.8.18
+
+	- Added filters on entry detail to support editing payment related data in the payment info box.
+    - Added the parameter name as a third parameter to the "gform_field_value" filter.
+    - Added "gform_entry_detail_grid_display_empty_fields" filter to allow displaying empty fields even if option is not checked (i.e. print view).
+        add_filter( 'gform_entry_detail_grid_display_empty_fields', '__return_true' );
+	- Added filter to get_form_meta() to allow forms to be filtered globally.
+	- Updated localization of certain strings.
+    - Updated POT file.
+	- Updated the order of marking an entry as spam so that it is done before the gform_entry_created and gform_entry_post_save hooks.
+
+	- Fixed issue with PayPal fulfillment not going through when entry was marked as Paid in the entry detail page.
+    - Fixed issue with trial period amount (fixed amount entered on subscription feed) for currencies other than Dollar.
+	- Fixed issue with Chrome on Android for drop downs with conditional logic.
+    - Fixed an issue with the field filters on the entry list, export entries and results pages where product fields couldn't be filtered.
+	- Fixed issue with complex fields not being properly loaded into array.
+	- Fixed issue where List fields in notifications sometimes displayed incorrectly due to max line size being exceeded.
+	- Fixed issue with quantity fields not defaulting to correct value after being hidden by conditional logic.
+	- Fixed an issue with the single file upload field where validation fails if the max file size is set higher than 2047MB.
+
+	- AF: Added check to framework to prevent sending spam entries to non-payment feeds. This will take effect in feeds as they are migrated to the Add-On Framework.
+	- AF: Fixed issue with feeds not getting executed when configured for delayed payment and the payment amount ends up being $0.00.
+	- AF: Fixed issue with feed addons not preserving current feed when a new feed was getting created.
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.8.17
 	- Added form specific version of 'gform_entry_is_spam' filter.
 	- Added "gform_entry_is_spam" filter.
