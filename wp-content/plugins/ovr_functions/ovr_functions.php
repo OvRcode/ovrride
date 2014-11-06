@@ -39,6 +39,25 @@ add_filter('woocommerce_get_availability', 'availability_filter_func');
   return $availability;
   }
 
+// Change order status to completed when payment is complete
+// found instructions
+// http://www.rcorreia.com/woocommerce/woocommerce-automatically-set-order-status-payment-received/
+
+add_filter( 'woocommerce_payment_complete_order_status', 'ovr_update_order_status', 10, 2 );
+ 
+function ovr_update_order_status( $order_status, $order_id ) {
+ 
+ $order = new WC_Order( $order_id );
+ 
+ if ( 'processing' == $order_status && ( 'on-hold' == $order->status || 'pending' == $order->status || 'failed' == $order->status ) ) {
+ 
+ return 'completed';
+ 
+ }
+ 
+ return $order_status;
+}
+
 // Adds Google Analytics to the footer
 add_action('wp_footer', 'add_google_analytics');
   function add_google_analytics() { ?>
