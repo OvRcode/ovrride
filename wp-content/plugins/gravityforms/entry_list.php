@@ -44,6 +44,7 @@ class GFEntryList{
         $star = $filter == "star" ? 1 : null;
         $read = $filter == "unread" ? 0 : null;
         $status = in_array($filter, array("trash", "spam")) ? $filter : "active";
+	    $form = RGFormsModel::get_form_meta( $form_id );
 
         $search_criteria["status"] = $status;
 
@@ -67,9 +68,20 @@ class GFEntryList{
             if("entry_id" == $key){
                 $key = "id";
             }
+
+	        $filter_operator = empty( $search_operator ) ? 'is' : $search_operator;
+
+	        $field = GFFormsModel::get_field( $form, $key );
+	        if ( $field ) {
+		        $input_type = GFFormsModel::get_input_type( $field );
+		        if ( $field['type'] == 'product' && in_array( $input_type, array( 'radio', 'select' ) ) ) {
+			        $filter_operator = 'contains';
+		        }
+	        }
+
             $search_criteria["field_filters"][] = array(
                 "key" => $key,
-                "operator" => rgempty("operator", $_GET) ? "is" : rgget("operator"),
+                "operator" => $filter_operator,
                 "value" => $val
             );
         }

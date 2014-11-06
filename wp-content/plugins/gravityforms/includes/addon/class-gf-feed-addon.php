@@ -21,6 +21,7 @@ abstract class GFFeedAddOn extends GFAddOn {
      */
     private $_feed_version = "0.11";
     private $_feed_settings_fields = array();
+	private $_current_feed_id = false;
 
     public function init_frontend() {
 
@@ -128,6 +129,11 @@ abstract class GFFeedAddOn extends GFAddOn {
 			return $entry;
 		}
 
+		if ( $entry['status'] == 'spam' ){
+			$this->log_debug('Entry #' . $entry['id'] . ' is marked as spam.' );
+			return $entry;
+		}
+
 		//get paypal feed to pass for delay check, must be done per add-on
 		$paypal_feeds = $this->get_feeds_by_slug( 'gravityformspaypal', $form['id'] );
 		$active_paypal_feed = '';
@@ -140,7 +146,7 @@ abstract class GFFeedAddOn extends GFAddOn {
 		}
 
 		$is_delayed = false;
-		if ( ! empty( $active_paypal_feed ) && $this->is_delayed( $active_paypal_feed ) ) {
+		if ( ! empty( $active_paypal_feed ) && $this->is_delayed( $active_paypal_feed ) && $this->has_paypal_payment( $active_paypal_feed, $form, $entry ) ) {
 			$this->log_debug( 'Feed processing is delayed pending payment, not processing feed for entry #' . $entry['id'] . ' for ' . $this->_slug );
 			$is_delayed = true;
 		}
@@ -226,8 +232,70 @@ abstract class GFFeedAddOn extends GFAddOn {
         return $feed;
     }
 
+	public function has_paypal_payment( $feed, $form, $entry ){
 
-    //--------  Feed data methods  -------------------------
+		$products = GFCommon::get_product_fields( $form, $entry );
+
+		$payment_field   = $feed['meta']['transactionType'] == 'product' ? $feed['meta']['paymentAmount'] : $feed['meta']['recurringAmount'];
+		$setup_fee_field = rgar( $feed['meta'], 'setupFee_enabled' ) ? $feed['meta']['setupFee_product'] : false;
+		$trial_field     = rgar( $feed['meta'], 'trial_enabled' ) ? rgars( $feed, 'meta/trial_product' ) : false;
+
+		$amount       = 0;
+		$line_items   = array();
+		$discounts    = array();
+		$fee_amount   = 0;
+		$trial_amount = 0;
+		foreach ( $products['products'] as $field_id => $product ) {
+
+			$quantity      = $product['quantity'] ? $product['quantity'] : 1;
+			$product_price = GFCommon::to_number( $product['price'] );
+
+			$options = array();
+			if ( is_array( rgar( $product, 'options' ) ) ) {
+				foreach ( $product['options'] as $option ) {
+					$options[] = $option['option_name'];
+					$product_price += $option['price'];
+				}
+			}
+
+			$is_trial_or_setup_fee = false;
+
+			if ( ! empty( $trial_field ) && $trial_field == $field_id ) {
+
+				$trial_amount = $product_price * $quantity;
+				$is_trial_or_setup_fee = true;
+
+			} else if ( ! empty( $setup_fee_field ) && $setup_fee_field == $field_id ) {
+
+				$fee_amount = $product_price * $quantity;
+				$is_trial_or_setup_fee = true;
+			}
+
+			//Do not add to line items if the payment field selected in the feed is not the current field.
+			if ( is_numeric( $payment_field ) && $payment_field != $field_id ) {
+				continue;
+			}
+
+			//Do not add to line items if the payment field is set to "Form Total" and the current field was used for trial or setup fee.
+			if ( $is_trial_or_setup_fee && ! is_numeric( $payment_field ) ){
+				continue;
+			}
+
+			$amount += $product_price * $quantity;
+
+		}
+
+
+		if ( ! empty( $products['shipping']['name'] ) && ! is_numeric( $payment_field ) ) {
+			$line_items[] = array( 'id' => '', 'name' => $products['shipping']['name'], 'description' => '', 'quantity' => 1, 'unit_price' => GFCommon::to_number( $products['shipping']['price'] ), 'is_shipping' => 1 );
+			$amount += $products['shipping']['price'];
+		}
+
+		return $amount > 0;
+	}
+
+
+	//--------  Feed data methods  -------------------------
 
     public function get_feeds( $form_id = null ){
         global $wpdb;
@@ -267,7 +335,15 @@ abstract class GFFeedAddOn extends GFAddOn {
     }
 
     public function get_current_feed_id(){
-        return rgempty('gf_feed_id') ? rgget("fid") : rgpost('gf_feed_id');
+		if ( $this->_current_feed_id ){
+			return $this->_current_feed_id;
+		}
+		else if ( ! rgempty('gf_feed_id') ){
+			return rgpost('gf_feed_id');
+		}
+		else{
+			return rgget('fid');
+		}
     }
 
     public function get_feed( $id ) {
@@ -382,13 +458,15 @@ abstract class GFFeedAddOn extends GFAddOn {
     }
 
     public function form_settings_title(){
-        return $this->_title . " " . __("Feeds", "gravityforms");
+        return sprintf( __("%s Feeds", "gravityforms"), $this->_title );
     }
 
     protected function feed_edit_page($form, $feed_id) {
 
         // Save feed if appropriate
         $feed_id = $this->maybe_save_feed_settings( $feed_id, $form['id'] );
+
+		$this->_current_feed_id = $feed_id;
 
         ?>
 
@@ -400,6 +478,7 @@ abstract class GFFeedAddOn extends GFAddOn {
 
         $feed = $this->get_feed( $feed_id );
         $this->set_settings( $feed['meta'] );
+
 
         GFCommon::display_admin_message();
 
@@ -464,7 +543,7 @@ abstract class GFFeedAddOn extends GFAddOn {
 
     public function feed_list_title(){
         $url = add_query_arg(array("fid" => "0"));
-        return $this->get_short_title() . " " . __("Feeds", "gravityforms") . " <a class='add-new-h2' href='{$url}'>" . __("Add New", "gravityforms") . "</a>";
+        return sprintf( __("%s Feeds", "gravityforms"), $this->get_short_title() ) . " <a class='add-new-h2' href='{$url}'>" . __("Add New", "gravityforms") . "</a>";
     }
 
     protected function maybe_save_feed_settings( $feed_id, $form_id ){
@@ -483,18 +562,18 @@ abstract class GFFeedAddOn extends GFAddOn {
         $is_valid = $this->validate_settings( $sections, $settings );
         $result = false;
 
-        if( $is_valid )
-            $result = $this->save_feed_settings( $feed_id, $form_id, $settings );
-
-        if( $result ) {
-            GFCommon::add_message( $this->get_save_success_message($sections) );
-        } else {
-            GFCommon::add_error_message( $this->get_save_error_message($sections) );
-        }
-
-        // if no $feed_id is passed, assume that a new feed was created and return new $feed_id
-        if( ! $feed_id )
-            $feed_id = $result;
+		if ( $is_valid ) {
+			$feed_id = $this->save_feed_settings( $feed_id, $form_id, $settings );
+			if ( $feed_id ){
+				GFCommon::add_message( $this->get_save_success_message( $sections ) );
+			}
+			else{
+				GFCommon::add_error_message( $this->get_save_error_message( $sections ) );
+			}
+		}
+		else{
+			GFCommon::add_error_message( $this->get_save_error_message( $sections ) );
+		}
 
         return $feed_id;
     }
@@ -523,7 +602,7 @@ abstract class GFFeedAddOn extends GFAddOn {
 
         if( $feed_id ) {
             $this->update_feed_meta( $feed_id, $settings );
-            $result = true;
+            $result = $feed_id;
         } else {
             $result = $this->insert_feed( $form_id, true, $settings );
         }
@@ -734,12 +813,13 @@ abstract class GFFeedAddOn extends GFAddOn {
         $this->delayed_payment_integration = $options;
 
         if( is_admin() ) {
-            add_action( 'gform_paypal_action_fields', array( $this, 'add_paypal_settings' ), 10, 2);
+
+			add_action( 'gform_paypal_action_fields', array( $this, 'add_paypal_settings' ), 10, 2);
             add_filter( 'gform_paypal_save_config', array( $this, 'save_paypal_settings' ) );
-        } else {
-            add_action( 'gform_paypal_fulfillment', array( $this, 'paypal_fulfillment' ), 10, 4 );
+
         }
 
+		add_action( 'gform_paypal_fulfillment', array( $this, 'paypal_fulfillment' ), 10, 4 );
     }
 
     public function add_paypal_settings( $feed, $form ) {
@@ -828,30 +908,6 @@ abstract class GFFeedAddOn extends GFAddOn {
 		gform_update_meta( $entry['id'], "{$this->_slug}_is_fulfilled", true );
     }
 
-    public static function get_paypal_payment_amount($form, $entry, $paypal_config){
-
-        $products = GFCommon::get_product_fields($form, $entry, true);
-        $recurring_field = rgar($paypal_config["meta"], "recurring_amount_field");
-        $total = 0;
-        foreach($products["products"] as $id => $product){
-
-            if($paypal_config["meta"]["type"] != "subscription" || $recurring_field == $id || $recurring_field == "all"){
-                $price = GFCommon::to_number($product["price"]);
-                if(is_array(rgar($product,"options"))){
-                    foreach($product["options"] as $option){
-                        $price += GFCommon::to_number($option["price"]);
-                    }
-                }
-
-                $total += $price * $product['quantity'];
-            }
-        }
-
-        if($recurring_field == "all" && !empty($products["shipping"]["price"]))
-            $total += floatval($products["shipping"]["price"]);
-
-        return $total;
-    }
 
     protected function has_feed( $form_id, $meets_conditional_logic = null ) {
 
@@ -875,22 +931,6 @@ abstract class GFFeedAddOn extends GFAddOn {
         //does not require that feed meets conditional logic. return true since there are feeds
         return true;
     }
-    
-    protected function is_delayed_payment( $entry, $form, $is_delayed ) {
-		if ( $this->_slug == 'gravityformspaypal' ) {
-			return false;
-		}
-
-		$paypal_feed = $this->get_paypal_feed( $form['id'], $entry );
-		if ( ! $paypal_feed ) {
-			return false;
-		}
-
-		$has_payment = self::get_paypal_payment_amount( $form, $entry, $paypal_feed ) > 0;
-
-		return rgar( $paypal_feed['meta'], "delay_{$this->_slug}" ) && $has_payment && ! $is_delayed;
-	}
-
 }
 
 
