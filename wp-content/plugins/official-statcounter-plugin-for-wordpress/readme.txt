@@ -4,7 +4,7 @@ Donate link: http://statcounter.com/
 Tags: web, statistics, stats, hit, counter, visitor, ip, tracker, analytics
 Requires at least: 2.0.2
 Tested up to: 4.0
-Stable tag: 1.6.8
+Stable tag: 1.6.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,9 @@ To activate the StatCounter service for your WordPress site:
 
 == Changelog ==
 
+= 1.6.9 =
+Fixed small bug with form
+
 = 1.6.8 =
 Addd StatCounter https compatible code
 
@@ -114,6 +117,9 @@ Improved UI to give error message in dashboard when no project id has been set
 * Added ability to view StatCounter Stats from within the Wordpress Admin.
 
 == Upgrade Notice ==
+
+= 1.6.9 =
+Fixed small bug with form
 
 = 1.6.8 =
 Addd StatCounter https compatible code
