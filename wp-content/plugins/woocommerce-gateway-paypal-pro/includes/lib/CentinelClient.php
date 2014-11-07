@@ -38,7 +38,7 @@
 
 
 		function getValue($name) {
-			return $this->response[$name];
+			return isset( $this->response[$name] ) ? $this->response[$name] : '';
 		}
 
 
@@ -180,7 +180,6 @@
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,  2);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-				curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 				curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);  // CURLOPT_TIMEOUT_MS can also be used
 
