@@ -58,6 +58,37 @@ function ovr_update_order_status( $order_status, $order_id ) {
  return $order_status;
 }
 
+// Add no-show status
+function register_no_show_order_status() {
+    register_post_status( 'wc-no-show', array(
+        'label'                     => 'No Show',
+        'public'                    => true,
+        'exclude_from_search'       => false,
+        'show_in_admin_all_list'    => true,
+        'show_in_admin_status_list' => true,
+        'label_count'               => _n_noop( 'No Show <span class="count">(%s)</span>', 'No Show <span class="count">(%s)</span>' )
+    ) );
+}
+add_action( 'init', 'register_no_show_order_status' );
+// Add to list of WC Order statuses
+function add_no_show_to_order_statuses( $order_statuses ) {
+  
+    $new_order_statuses = array();
+  
+    // add new order status after processing
+    foreach ( $order_statuses as $key => $status ) {
+  
+        $new_order_statuses[ $key ] = $status;
+  
+        if ( 'wc-processing' === $key ) {
+            $new_order_statuses['wc-no-show'] = 'No Show';
+        }
+    }
+  
+    return $new_order_statuses;
+}
+add_filter( 'wc_order_statuses', 'add_no_show_to_order_statuses' );
+
 // Adds Google Analytics to the footer
 add_action('wp_footer', 'add_google_analytics');
   function add_google_analytics() { ?>
