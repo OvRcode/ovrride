@@ -26,8 +26,9 @@ class TripList{
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        $this->destinations = array("Asbury Park","Breckenridge","Camelbeach","Camelback MT","Hunter MT","Jackson Hole","Japan","Jay Peak","Killington",
-                                    "Lake Tahoe","MT Snow","Northern Argentina","Northern Chile","Paintball","Rockaway Beach",
+        $this->destinations = array("Asbury Park","Austria","Breckenridge","Camelbeach","Camelback MT","Hunter MT","Jackson Hole",
+                                    "Japan","Jay Peak","Killington","Lake Tahoe","MT Snow","Northern Argentina",
+                                    "Northern Chile","Okemo","Paintball","Rockaway Beach",
                                     "Skydiving","Snowbird","Southern Argentina","Southern Chile","Stowe",
                                     "Stratton","Sugarbush","Tap New York","Tough Mudder","Whistler","Whitewater Weekend","Windham");
 
