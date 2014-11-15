@@ -326,7 +326,7 @@ function quark_scripts_styles() {
 	}
 
 	// Enqueue the default WordPress stylesheet
-	wp_enqueue_style( 'style', get_stylesheet_uri(), array(), '1.2.5', 'all' );
+	wp_enqueue_style( 'style', get_stylesheet_uri(), array(), '1.2.6', 'all' );
 
 
 	/**

@@ -4477,6 +4477,10 @@ and (device-height: 1024px) {
         font-size: .8em;
     }
 
+    .feedbar > .grid_12_of_12 .grid_12_of_12 {
+        margin-left: -3px;
+    }
+
     #upcoming-trips h2 {
         font-size: 28px;
         padding: 8px 4px;
