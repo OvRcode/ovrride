@@ -4453,3 +4453,149 @@ li span.dots {
 .page-id-15241 .entry-title {
 	display: none;
 }
+
+
+
+/*
+--------------------------------------------
+iPad 1,2,mini,3,4 (portrait and landscape)
+-------------------------------------------- */
+
+@media only screen
+and (device-width: 768px)
+and (device-height: 1024px) {
+
+    .home .site-content {
+        width: 100%;
+    }
+
+    .feedbar {
+        padding: 0 0 0 2px;
+    }
+
+    .feedbar .col:first-child h1 {
+        font-size: .8em;
+    }
+
+    .feedbar > .grid_12_of_12 .grid_12_of_12 {
+        margin-left: -3px;
+    }
+
+    #upcoming-trips h2 {
+        font-size: 28px;
+        padding: 8px 4px;
+        width: 100%;
+    }
+
+    .book-this-btn, .seats-left {
+        float: none;
+        width: 100%;
+    }
+
+    .book-this-btn a {
+        width: 100%;
+    }
+
+    .upcoming-title {
+        width: 75%;
+    }
+
+    .calendar-month {
+        line-height: 14px;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .alignleft, .alignright {
+        float: none;
+        display: block;
+        margin: 10px auto;
+    }
+
+    .alignleft {
+        float: left;
+        margin: 10px 20px 0 0;
+    }
+
+    .alignright {
+        float: right;
+        margin: 10px 0 0 20px;
+    }
+
+    .single-post .grid_4_of_12 {
+        display: none;
+    }
+    .single-post .grid_8_of_12 {
+        width: 100%;
+    }
+}
+
+
+
+
+/* iPad 1 & 2 in landscape */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape)
+and (-webkit-min-device-pixel-ratio: 1)  {
+    .home .site-content {
+        width: 100%;
+    }
+
+    .feedbar {
+        padding: 0 0 0 2px;
+    }
+
+    .feedbar .col:first-child h1 {
+        font-size: .8em;
+    }
+
+    #upcoming-trips h2 {
+        font-size: 28px;
+        padding: 8px 4px;
+        width: 100%;
+    }
+
+    .book-this-btn, .seats-left {
+        float: none;
+        width: 100%;
+    }
+
+    .book-this-btn a {
+        width: 100%;
+    }
+
+    .upcoming-title {
+        width: 75%;
+    }
+
+    .calendar-month {
+        line-height: 14px;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .alignleft, .alignright {
+        float: none;
+        display: block;
+        margin: 10px auto;
+    }
+
+    .alignleft {
+        float: left;
+        margin: 10px 20px 0 0;
+    }
+
+    .alignright {
+        float: right;
+        margin: 10px 0 0 20px;
+    }
+
+    .single-post .grid_4_of_12 {
+        display: none;
+    }
+    .single-post .grid_8_of_12 {
+        width: 100%;
+    }
+}
