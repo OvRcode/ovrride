@@ -12,3 +12,23 @@
    */
   
   if ( ! defined( 'ABSPATH' ) ) exit; //Exit if accessed directly
+
+  /**
+   * Add a custom email to the list of WooCommerce Emails
+   *
+   * @since 0.1
+   * @param array $email_classes availble email classes
+   * @return array filtered available email classes
+   *
+   */
+  function add_customer_note_woocommerce_email( $email_classes ){
+    
+    //include custom email class
+    require( 'includes/class-wc-customer-note-email.php' );
+    
+    // add the email class to the WooCommerce email class list
+    $email_classes['WC_Customer_Note_Email'] = new WC_Customer_Note_Email();
+    
+    return $email_classes;
+  }
+  add_filter( 'woocommerce_email_classes', 'add_customer_note_woocommerce_email' );
