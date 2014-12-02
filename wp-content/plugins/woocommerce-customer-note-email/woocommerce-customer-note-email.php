@@ -24,7 +24,7 @@
   function add_customer_note_woocommerce_email( $email_classes ){
     
     //include custom email class
-    require( 'includes/class-wc-customer-note-email.php' );
+    require_once( 'includes/class-wc-customer-note-email.php' );
     
     // add the email class to the WooCommerce email class list
     $email_classes['WC_Customer_Note_Email'] = new WC_Customer_Note_Email();
