@@ -1,15 +1,17 @@
 #!/bin/bash
 sudo apt-get -y install gzip
-if [ -f /vagrant/ovrride.sql ]; then
-  echo 'Removing old copy of db'
+LOCALFILE=$(ls /vagrant | egrep 'ovrride.*\.sql\.gz')
+REMOTEFILE=$(s3cmd -c /vagrant/chef/s3cfg ls S3://ovrdatabase/latest/ | egrep '(ovrride.{19}(Mon|Tues|Wednes|Thurs|Fri|Sat|Sun)day.*)' | cut -c54-95)
+
+if [ $LOCALFILE != $REMOTEFILE ];then
+  echo 'Different file on server, delete local copy'
+  rm /vagrant/$LOCALFILE
   rm /vagrant/ovrride.sql
+  echo 'Download new compressed database from server'
+  s3cmd -c /vagrant/chef/s3cfg get S3://ovrdatabase/latest/$REMOTEFILE /vagrant/
+  echo 'Decompress database'
+  zcat /vagrant/$REMOTEFILE > /vagrant/ovrride.sql
+else
+  echo 'File is the same'
 fi
-echo 'Identify Latest DB Snapshot'
-# s3cmd lists files, egrep searches for correct snapshot, cut drops extra data from s3cmd
-DBFILE=$(s3cmd -c /vagrant/chef/s3cfg ls S3://ovrdatabase/latest/ | egrep '(ovrride.{19}(Mon|Tues|Wednes|Thurs|Fri|Sat|Sun)day.*)' | cut -c54-95)
-echo 'Downloading compressed DB'
-s3cmd -c /vagrant/chef/s3cfg get S3://ovrdatabase/latest/$DBFILE /vagrant/ovrride.sql.gz
-#s3cmd -c /vagrant/chef/s3cfg get S3://ovrdatabase/latest/ovrride* /vagrant/ovrride.sql.gz 
-echo 'Decompressing archive'
-gzip -d /vagrant/ovrride.sql.gz
-echo 'DB is ready to import'
+echo 'Database ready to import!'
