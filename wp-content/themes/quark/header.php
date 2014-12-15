@@ -49,6 +49,18 @@
   <?php } ?>
 
 	<?php wp_head(); ?>
+  <!-- Pingdom Real User Monitoring Script -->
+  <script>
+  var _prum = [['id', '54885757abe53d7d3d2bdebd'],
+               ['mark', 'firstbyte', (new Date()).getTime()]];
+  (function() {
+      var s = document.getElementsByTagName('script')[0]
+        , p = document.createElement('script');
+      p.async = 'async';
+      p.src = '//rum-static.pingdom.net/prum.min.js';
+      s.parentNode.insertBefore(p, s);
+  })();
+  </script>
 </head>
 
 <body <?php body_class(); ?>>
