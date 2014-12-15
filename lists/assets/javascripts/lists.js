@@ -323,6 +323,7 @@ function parsePackage(packageText, addSubtract, outputType) {
   var progLesson    = new RegExp(/prog.* lesson/i);
   var ski           = new RegExp(/ski rental/i);
   var brd           = new RegExp(/board rental/i);
+  var lunch         = new RegExp(/.*lunch.*/i);
   // Beach / Waterpark Specific packages
   var allMountainCoaster = new RegExp(/mountain coaster/i);
   var waterPark          = new RegExp(/all area waterpark/i);
@@ -395,6 +396,11 @@ function parsePackage(packageText, addSubtract, outputType) {
   } else if ( brd.test(packageText) && !ltr.test(packageText) ) {
     define(output, "Board Rental");
     addOrSubtract(output, "Board Rental", addSubtract);
+  }
+  // REI Lunch Vouchers
+  if ( lunch.test(packageText) ) {
+    define(output, "Lunch Voucher");
+    addOrSubtract(output, "Lunch Voucher", addSubtract);
   }
 }
 $.fn.buildTable = function(){
