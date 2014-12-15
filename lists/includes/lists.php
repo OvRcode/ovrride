@@ -47,7 +47,7 @@ class TripList{
         $sql = "SELECT DISTINCT `id`, `post_title`
                 FROM `wp_posts`
                 INNER JOIN `wp_postmeta` ON `wp_posts`.`id` = `wp_postmeta`.`post_id`
-                WHERE  (`post_status` =  'publish' OR (`post_status` = 'draft' AND `wp_postmeta`.`meta_value` = 'visible'))
+                WHERE  `post_status` =  'publish'
                 AND `post_type` =  'product'
                 AND `post_title` NOT LIKE  '%High Five%'
                 AND `post_title` NOT LIKE  '%Gift%'
