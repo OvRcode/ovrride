@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>OvR Trip Lists</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <!-- Font Awesome TODO:Download and replace with local copy -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                  <a>Menu</a>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info"><i class="fa fa-sliders"></i>&nbsp;Settings</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info active"><i class="fa fa-list"></i>&nbsp;List</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info"><i class="fa fa-table"></i>&nbsp;Summary</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info"><i class="fa fa-pencil-square-o"></i>&nbsp;Notes</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info"><i class="fa fa-exclamation-triangle"></i>&nbsp;Message</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-info"><i class="fa fa-download"></i>&nbsp;Export</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-danger"><i class="fa fa-power-off"></i>&nbsp;Log Out</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-warning" id="hide"><i class="fa fa-arrow-left"></i>&nbsp;Hide Menu</button>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+          <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
+            <div class="container">
+              <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
+              <a class="navbar-brand">OvR Trip Lists</a>
+            </div>
+          </nav>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-1">
+                      <select id="AMPM" class="input-sm">
+                          <option value="AM">AM</option>
+                          <option value="PM">PM</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <h4>Trip: Killington Day Trip 12/13</h4>
+                    </div>
+                    <div class="col-lg-4">
+                        <h4>Bus: 1</h4>
+                    </div>
+                </div>
+              </div>
+              <div class="row-fluid">
+                <div class="col-sm-12 col-lg-12">
+                    <!-- TEST-->
+                  <div class="row listButton bg-none">
+                    <div class="buttonCell col-xs-4 col-md-2">FFFFFFFF FFFFFFF</div>
+                    <div class="buttonCell col-xs-4 col-md-2">LLLLLLLLL LLLLLLLLL</div>
+                    <div class="buttonCell col-md-2 visible-md visible-lg">Order: 34200</div>
+                    <div class="buttonCell col-xs-4 col-md-3">Blades Downtown</div>
+                    <div class="buttonCell col-xs-4 col-md-3 visible-md visible-lg">Learn To Ski</div>
+                  </div>
+                  <div class="row listButton bg-warning">
+                    <div class="buttonCell col-xs-4 col-md-2">FFFFFFFF FFFFFFF</div>
+                    <div class="buttonCell col-xs-4 col-md-2">LLLLLLLLL LLLLLLLLL</div>
+                    <div class="buttonCell col-md-2 visible-md visible-lg">Order: 29812</div>
+                    <div class="buttonCell col-xs-4 col-md-3">Skate Brooklyn</div>
+                    <div class="buttonCell col-xs-4 col-md-3 visible-md visible-lg">Learn To Ride</div>
+                  </div>
+                  <div class="row listButton bg-success">
+                    <div class="buttonCell col-xs-4 col-md-2">FFFFFFFF FFFFFFF</div>
+                    <div class="buttonCell col-xs-4 col-md-2">LLLLLLLLL LLLLLLLLL</div>
+                    <div class="buttonCell col-md-2 visible-md visible-lg">Order: 12345</div>
+                    <div class="buttonCell col-xs-4 col-md-3">Union Square</div>
+                    <div class="buttonCell col-xs-4 col-md-3 visible-md visible-lg">All Area & Bus</div>
+                  </div>
+                  <div class="row listButton bg-info">
+                    <div class="buttonCell col-xs-4 col-md-2">FFFFFFFF FFFFFFF</div>
+                    <div class="buttonCell col-xs-4 col-md-2">LLLLLLLLL LLLLLLLLL</div>
+                    <div class="buttonCell col-md-2 visible-md visible-lg">Order: 12345</div>
+                    <div class="buttonCell col-xs-4 col-md-3">Union Square</div>
+                    <div class="buttonCell col-xs-4 col-md-3 visible-md visible-lg">All Area & Bus</div>
+                  </div>
+                  <div class="row listButton bg-info">
+                    <div class="row">
+                      <div class="buttonCell col-xs-4 col-md-2">FFFFFFFF FFFFFFF</div>
+                      <div class="buttonCell col-xs-4 col-md-2">LLLLLLLLL LLLLLLLLL</div>
+                      <div class="buttonCell col-md-2 visible-md visible-lg">Order: 12345</div>
+                      <div class="buttonCell col-xs-4 col-md-3">Union Square</div>
+                      <div class="buttonCell col-xs-4 col-md-3 visible-md visible-lg">All Area & Bus</div>
+                    </div>
+                    <div class="row">
+                      <div class="buttonCell col-xs-6">Order: 123456</div>
+                      <div class="buttonCell col-xs-6">Phone: 555-867-5309</div>
+                    </div>
+                    <div class="row">
+                      <div class="buttonCell col-xs-12">
+                        Email: <a href="mailto:customeremail@gmail.com">CustomerEmail@gmail.com</a>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <br />
+                      <div class="buttonCell col-xs-6"><button class="btn btn-warning">Reset</button></div>
+                      <div class="buttonCell col-xs-6"><button class="btn btn-danger">No Show</button></div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    $("#hide").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+</body>
+
+</html>
