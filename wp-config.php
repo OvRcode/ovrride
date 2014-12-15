@@ -17,6 +17,11 @@
  * @package WordPress
  */
 
+// Get Real IP's instead of loadbalancer ip
+if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $xffaddrs = explode(',',$_SERVER['HTTP_X_FORWARDED_FOR']);
+    $_SERVER['REMOTE_ADDR'] = $xffaddrs[0];
+}
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', getenv('MYSQL_DB') );
