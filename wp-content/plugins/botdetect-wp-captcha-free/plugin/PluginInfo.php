@@ -2,7 +2,7 @@
 class BDWP_PluginInfo {
 
     public static function GetVersion() {
-    	return '3.0.Beta3.5';
+    	return '3.0.0.0';
     }
 
     public static function License() {

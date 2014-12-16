@@ -9,9 +9,13 @@ class BDWP_BackwardCompatibility {
 			"3.0.Beta3.2" => "MigrateTo_3_0_Beta3_2",
 			"3.0.Beta3.3" => "MigrateTo_3_0_Beta3_3",
 			"3.0.Beta3.4" => "MigrateTo_3_0_Beta3_4",
-            "3.0.Beta3.5" => "MigrateTo_3_0_Beta3_5"
+            "3.0.Beta3.5" => "MigrateTo_3_0_Beta3_5",
+            "3.0.0.0" => "MigrateTo_3_0_0_0"
 		);
 	}
+
+    // RBC: 3.0.Beta3.5 => 3.0.0.0
+    public static function MigrateTo_3_0_0_0() {}
 
     // RBC: 3.0.Beta3.4 => 3.0.Beta3.5
     public static function MigrateTo_3_0_Beta3_5() {}
@@ -95,15 +99,15 @@ class BDWP_BackwardCompatibility {
 
 		if ($p_LastInstalledVersion == $p_CurrentVersion) return;
 
-		$flag = false;
+		$migrationApplicable = false;
 		foreach (self::PluginVersions() as $v => $f) {
 
 			if ($p_LastInstalledVersion == $v) { 
-				$flag = true;
+				$migrationApplicable = true;
 				continue;
 			}
 
-			if ($flag && $f != null) {
+			if ($migrationApplicable && $f != null) {
 				call_user_func(array('BDWP_BackwardCompatibility', $f));
 			}
 		}

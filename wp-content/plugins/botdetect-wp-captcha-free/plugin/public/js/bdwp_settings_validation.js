@@ -1,10 +1,10 @@
-$(document).ready(function(){
+jQuery(document).ready(function(){
 
     if ( typeof(BDWP_SettingsValidation) == "undefined" ) {
 
         var BDWP_SettingsValidation = function () {
-            this.minCodeLength = $('#min_code_length');
-            this.maxCodeLength = $('#max_code_length');
+            this.minCodeLength = jQuery('#min_code_length');
+            this.maxCodeLength = jQuery('#max_code_length');
             this._minLengthDefault = 3;
             this._maxLengthDefault = 5;
             this._minLength = 1;
@@ -13,7 +13,7 @@ $(document).ready(function(){
 
         BDWP_SettingsValidation.prototype.IsSubmit = function() {
 
-            $('#btnBDSettingsSaveChanges').click(function() {
+            jQuery('#btnBDSettingsSaveChanges').click(function() {
                 var self = BDWP_SettingsValidation.prototype.Init.call(this);
                 var minTextBox = BDWP_SettingsValidation.prototype.IsCorrectMinCodeLength.call(this, self);
                 var maxTextBox = BDWP_SettingsValidation.prototype.IsCorrectMaxCodeLength.call(this, self);
@@ -47,11 +47,11 @@ $(document).ready(function(){
             /**
              * Number of characters: __A__ -  __B__
              */
-            var minValue = $.trim(self.minCodeLength.val());
-            var maxValue  = $.trim(self.maxCodeLength.val());
+            var minValue = jQuery.trim(self.minCodeLength.val());
+            var maxValue  = jQuery.trim(self.maxCodeLength.val());
             var flag = true;
 
-            if (!$.isNumeric(minValue)) {
+            if (!jQuery.isNumeric(minValue)) {
                 if (self._minLengthDefault > parseInt(maxValue)) {
                     self.minCodeLength.prop('value', parseInt(maxValue)); // Ex: default A = 1, B = 2 . After set A = abc
                 } else {
@@ -90,11 +90,11 @@ $(document).ready(function(){
             /**
              * Number of characters: __A__ -  __B__
              */
-            var minValue = $.trim(self.minCodeLength.val());
-            var maxValue  = $.trim(self.maxCodeLength.val());
+            var minValue = jQuery.trim(self.minCodeLength.val());
+            var maxValue  = jQuery.trim(self.maxCodeLength.val());
             var flag = true;
 
-            if (!$.isNumeric(maxValue)) {
+            if (!jQuery.isNumeric(maxValue)) {
                 if (self._maxLengthDefault < parseInt(minValue)) {
                     self.maxCodeLength.prop('value', parseInt(minValue)); // Ex: default A = 12, B = 15 . After set B = abc
                 } else {

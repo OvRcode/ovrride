@@ -32,7 +32,6 @@ class WP_BotDetect_Plugin {
 		if ($this->IsBDWPSettingsPage()) {
 			$this->Hook('admin_init', 'BDWP_BackwardCompatibility', 'ResolveBackwardCompatibility');
 			$this->Hook('admin_print_styles', $this, 'RegisterUserStylesheet');
-			$this->Hook('admin_print_scripts', $this, 'JqueryLibraryScripts');
 			$this->Hook('admin_footer', $this, 'SettingsPageScripts');
 			$this->Hook('admin_init', $this, 'AddIntegrationOptions');
 		}
@@ -46,7 +45,12 @@ class WP_BotDetect_Plugin {
 		add_filter('plugin_action_links', array($this, 'PluginActionLinks'), 10, 2);
 
 		// GENERATOR NOTICES
-		if (!BDWP_InstallCaptchaProvider::LibraryIsInstalled() || !BDWP_InstallCaptchaProvider::IsRegsiterUser()) {
+		if (!$this->CheckUpgrade()) {
+			$this->hook('admin_notices', $this, 'UpgradeInstructions');
+			return;
+		}
+		
+		if (!BDWP_InstallCaptchaProvider::LibraryIsInstalled() || !BDWP_InstallCaptchaProvider::IsRegisteredUser()) {
 			$this->hook('admin_notices', $this, 'RegisterUserMissingNotice');
 			return;
 		}
@@ -100,13 +104,25 @@ class WP_BotDetect_Plugin {
 	}
 
 	/**
+	 * Check upgrade from bdwp 3.0.beta3.3 -> bdwp free 3.0.0.0+ (overwrite files)
+	 */
+	public function CheckUpgrade() {
+		$pluginFolder = dirname($this->m_PluginInfo['plugin_basename']);
+		return ($pluginFolder != 'botdetect-wp-captcha')? true : false;
+	}
+
+	public function UpgradeInstructions() {
+		echo '<div class="error"><p>' . __( 'When upgrading from BotDetect WP CAPTCHA Plugin v3.0.Beta3.3 or earlier to v3.0.Beta3.4 or higher, you should follow this procedure:<br><br>1) delete the BotDetect WordPress CAPTCHA Plugin (Deactivate/Delete)<br>2) install the BotDetect WordPress CAPTCHA Plugin by using the \'Add New/Upload Plugin\'<br><br>Please note this is an one time procedure. Further upgrades will be one-click procedure.', 'botdetect-wp-captcha') . '</p></div>';
+	}
+
+	/**
 	 * Admin notices
 	 */
 	public function RegisterUserMissingNotice() {
         if ($this->IsBDWPSettingsPage()) {
             echo '<div class="error" id="notice-captcha-library"><p>' . sprintf(__( '<strong>You are almost done!</strong> BotDetect WordPress Captcha Plugin requires you to register.', 'botdetect-wp-captcha'), BDWP_HttpHelpers::GetProtocol(), BDWP_PluginInfo::GetVersion()) .'</p></div>';
         } else {
-	  		echo '<div class="error" id="notice-captcha-library"><p>' . sprintf(__( '<strong>You are almost done!</strong>  BotDetect WordPress Captcha Plugin requires you to register. Please go to the <a href="%s">plugin settings</a> to do it.', 'botdetect-wp-captcha'), admin_url('options-general.php?page='.plugin_basename(__FILE__))) . '</p></div>';
+	  		echo '<div class="error" id="notice-captcha-library"><p>' . sprintf(__( '<strong>You are almost done!</strong> BotDetect WordPress Captcha Plugin requires you to register. Please go to the <a href="%s">plugin settings</a> to do it.', 'botdetect-wp-captcha'), admin_url('options-general.php?page='.plugin_basename(__FILE__))) . '</p></div>';
 	  	}
 	}
 
@@ -227,10 +243,6 @@ class WP_BotDetect_Plugin {
 	public function RenderOptionsPage() {
 		$settings_page = new BDWP_Settings($this->m_Options);
 		$settings_page->RenderOptions();
-	}
-
-	public function JqueryLibraryScripts() {
-		wp_enqueue_script( 'bdwp-jquery-library', plugin_dir_url(__FILE__) . 'public/js/jquery.min.js' );
 	}
 
 	public function SettingsPageScripts() {

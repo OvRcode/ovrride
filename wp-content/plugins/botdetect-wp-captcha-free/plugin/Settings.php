@@ -6,7 +6,7 @@ class BDWP_Settings {
 
 	public function __construct($p_Options) {
 		$this->m_BotDetectOptions = $p_Options;
-		$this->m_IsRegisteredUser = BDWP_InstallCaptchaProvider::IsRegsiterUser();
+		$this->m_IsRegisteredUser = BDWP_InstallCaptchaProvider::IsRegisteredUser();
 	}
 
 	public function RenderOptions() {

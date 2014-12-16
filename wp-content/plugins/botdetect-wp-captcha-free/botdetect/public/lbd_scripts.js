@@ -273,7 +273,7 @@
                   var sound = document.getElementById('LBD_CaptchaSoundAudio_' + self.Id);
                   sound.play();
                 },
-                this.SoundStartDelay
+                self.SoundStartDelay
               );
             }
           },
