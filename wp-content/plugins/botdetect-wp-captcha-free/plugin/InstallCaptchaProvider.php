@@ -113,7 +113,7 @@ class BDWP_InstallCaptchaProvider {
         return $customerEmail;
 	}
 
-	public static function IsRegsiterUser() {
+	public static function IsRegisteredUser() {
 		$email = self::GetCustomerEmail();
 		return (!empty($email))? true : false;
 	}
@@ -153,6 +153,6 @@ class BDWP_InstallCaptchaProvider {
 	 * Hidden notice captcha library after installation
 	 */
 	public static function HiddenNoticeCaptchaLibrary() {
-		echo '<script> $(document).ready(function(){ document.getElementById("notice-captcha-library").style.cssText= "display:none!important;"  }); </script>';
+		echo '<script> jQuery(document).ready(function(){ document.getElementById("notice-captcha-library").style.cssText= "display:none!important;"  }); </script>';
 	}
 }

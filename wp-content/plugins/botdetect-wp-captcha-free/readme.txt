@@ -3,7 +3,7 @@ Contributors: botdetect.support@captcha.com
 Donate link: http://captcha.com/doc/php/wordpress-captcha.html
 Tags: captcha, wordpress captcha, comment, comments, form, forms, lost password, register, registration, login, spam, multilingual
 Requires at least: 3.3
-Tested up to: 3.9
+Tested up to: 4.0.1
 Stable tag: trunk
 License: This Plugin and each software packaged with this Plugin comes under its own license (license.txt in subfolders of the Plugin's root)
 License url: none
@@ -59,11 +59,15 @@ Please contact us using the form here:
 
 == Changelog ==
 
+= 3.0.0.0 =
+* UPDATE: Captchas are generated with the newest BotDetect PHP Captcha library (v3.0.0)
+* UPDATE: Plugin uses jQuery version that ships with WordPress
+* UPDATE: Upgrade procedure is improved
+
 = 3.0.Beta3.5 =
 * BUGFIX: Fixed breaking of WP4.0 procedure for getting a plugin list from a WordPress.org website (and making installing new plugins on WP4.0 impossible)
 
 = 3.0.Beta3.4 =
-
 * NEW: BotDetect Captcha WP Plugin is dependent of and packaged with the BotDetect PHP CAPTCHA library
 * NEW: BotDetect Captcha WP Plugin is updated from captcha.com website
 * UPDATE: If there are issues with persisting data in PHP Session, login form Captcha is initially disabled

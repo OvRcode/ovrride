@@ -1,16 +1,16 @@
-$(document).ready(function (){
+jQuery(document).ready(function (){
 
     if ( typeof(BDWP_CaptchaImageRenderCheck) == "undefined" ) {
 
     	var BDWP_CaptchaImageRenderCheck = function () {
-    		this.urlCaptchaImage	= $('#BDUrlCaptchaImage').val();
-    		this.pluginFolder		= $('#BDPluginFolder').val();
-    		this.loading       = '<div class="updated" style="border: none"><p><img src="' + this.pluginFolder +'public/images/loading.gif"> ' + $('#BDMsgLoadingRenderCheck').val() + '</p></div>';
+    		this.urlCaptchaImage	= jQuery('#BDUrlCaptchaImage').val();
+    		this.pluginFolder		= jQuery('#BDPluginFolder').val();
+    		this.loading       = '<div class="updated" style="border: none"><p><img src="' + this.pluginFolder +'public/images/loading.gif"> ' + jQuery('#BDMsgLoadingRenderCheck').val() + '</p></div>';
     	}
 
     	BDWP_CaptchaImageRenderCheck.prototype.CaptchaImageRenderCheck = function () {
     		var progressUrl = this.pluginFolder + 'handlers/captcha_provider_installation_handler.php';
-    		$('#lblMessageStatus').html(this.loading);
+    		jQuery('#lblMessageStatus').html(this.loading);
 
 	        var request = jQuery.ajax({
 	            type  : 'GET',
@@ -42,7 +42,7 @@ $(document).ready(function (){
 	            url   : progressUrl,
 	            data  : {
 	            	bdwpProgress : 'disable_login_form',
-	            	bdwpOptions : $('#BDOptions').val()
+	            	bdwpOptions : jQuery('#BDOptions').val()
 	            },
 	            async : true,
 	            cache : false
@@ -52,16 +52,16 @@ $(document).ready(function (){
 	        	if (data != '') {
 		            var jsonData = jQuery.parseJSON(data);
 		            if (jsonData.status == 'LOGIN_DISABLED') {
-		                var msg = '<div class="error"><p><strong>' + $('#BDMsgImageRenderError').val() + '</strong></p></div>';
-		                $('#lblMessageStatus').html(msg);
-		                $('input[name="botdetect_options[on_login]"]').prop('checked', false);
+		                var msg = '<div class="error"><p><strong>' + jQuery('#BDMsgImageRenderError').val() + '</strong></p></div>';
+		                jQuery('#lblMessageStatus').html(msg);
+		                jQuery('input[name="botdetect_options[on_login]"]').prop('checked', false);
 		            }
 		        } else {
-		        	 $('#lblMessageStatus').html('');
+		        	 jQuery('#lblMessageStatus').html('');
 		        }
 	        });
 			
-			request.fail(function (xhr, textStatus) { $('#lblMessageStatus').html('') });
+			request.fail(function (xhr, textStatus) { jQuery('#lblMessageStatus').html('') });
     	}
 
     	BDWP_CaptchaImageRenderCheck.prototype.SessionAndQueryStringsWokingCheck = function (progressUrl) {
@@ -70,7 +70,7 @@ $(document).ready(function (){
 	            url   : progressUrl,
 	            data  : { 
 	            	bdwpProgress : 'session_and_query_string_check',
-	            	bdwpOptions : $('#BDOptions').val()
+	            	bdwpOptions : jQuery('#BDOptions').val()
 	            },
 	            async : true,
 	            cache : false
@@ -82,24 +82,24 @@ $(document).ready(function (){
 	            	var msg = '';
 
 		            if (jsonData.status == 'ERROR_OPTIONS_QUERY_STRING_IS_ENABLED') {
-		                msg = $('#BDMsgDisableSuspiciousQueryStrings').val();
+		                msg = jQuery('#BDMsgDisableSuspiciousQueryStrings').val();
 		                
 		            } else if (jsonData.status == 'ERROR_SESSION_IS_DISABLED') {
-		            	msg = $('#BDMsgSessionIsDisabled').val();
+		            	msg = jQuery('#BDMsgSessionIsDisabled').val();
 		            }
 
 		            if (msg == '') {
-		            	$('#lblMessageStatus').html('');
+		            	jQuery('#lblMessageStatus').html('');
 		            } else {
-		            	$('input[name="botdetect_options[on_login]"]').prop('checked', false);
-	                	$('#lblMessageStatus').html('<div class="error"><p><strong>' + msg +'</strong></p></div>');
+		            	jQuery('input[name="botdetect_options[on_login]"]').prop('checked', false);
+	                	jQuery('#lblMessageStatus').html('<div class="error"><p><strong>' + msg +'</strong></p></div>');
 	                }
 	        	} else {
-	        		 $('#lblMessageStatus').html('');
+	        		 jQuery('#lblMessageStatus').html('');
 	        	}
 	        });
 
-	        request.fail(function (xhr, textStatus) {  $('#lblMessageStatus').html('') });
+	        request.fail(function (xhr, textStatus) {  jQuery('#lblMessageStatus').html('') });
     	}
 
     	BDWP_CaptchaImageRenderCheck.prototype.IsCaptchaImage = function (statusCode, contentLength, contentType) {
