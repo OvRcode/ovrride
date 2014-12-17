@@ -202,9 +202,17 @@ class WC_API_Orders extends WC_API_Resource {
 		);
 
 		// add line items
-		foreach( $order->get_items() as $item_id => $item ) {
+		foreach ( $order->get_items() as $item_id => $item ) {
 
-			$product = $order->get_product_from_item( $item );
+			$product     = $order->get_product_from_item( $item );
+			$product_id  = null;
+			$product_sku = null;
+
+			// Check if the product exists.
+			if ( is_object( $product ) ) {
+				$product_id  = ( isset( $product->variation_id ) ) ? $product->variation_id : $product->id;
+				$product_sku = $product->get_sku();
+			}
 
 			$meta = new WC_Order_Item_Meta( $item['item_meta'], $product );
 
@@ -230,8 +238,8 @@ class WC_API_Orders extends WC_API_Resource {
 				'quantity'     => (int) $item['qty'],
 				'tax_class'    => ( ! empty( $item['tax_class'] ) ) ? $item['tax_class'] : null,
 				'name'         => $item['name'],
-				'product_id'   => ( isset( $product->variation_id ) ) ? $product->variation_id : $product->id,
-				'sku'          => is_object( $product ) ? $product->get_sku() : null,
+				'product_id'   => $product_id,
+				'sku'          => $product_sku,
 				'meta'         => $item_meta,
 			);
 		}
@@ -441,7 +449,7 @@ class WC_API_Orders extends WC_API_Resource {
 
 			wc_delete_shop_order_transients( $order->id );
 
-			do_action( 'woocommerce_api_create_order', $order->id, $this );
+			do_action( 'woocommerce_api_create_order', $order->id, $data, $this );
 
 			return $this->get_order( $order->id );
 
@@ -593,7 +601,7 @@ class WC_API_Orders extends WC_API_Resource {
 
 			wc_delete_shop_order_transients( $order->id );
 
-			do_action( 'woocommerce_api_edit_order', $order->id, $this );
+			do_action( 'woocommerce_api_edit_order', $order->id, $data, $this );
 
 			return $this->get_order( $id );
 
@@ -864,22 +872,22 @@ class WC_API_Orders extends WC_API_Resource {
 
 		// total
 		if ( isset( $item['total'] ) ) {
-			$item_args['totals']['line_total'] = floatval( $item['total'] );
+			$item_args['totals']['total'] = floatval( $item['total'] );
 		}
 
 		// total tax
 		if ( isset( $item['total_tax'] ) ) {
-			$item_args['totals']['line_tax'] = floatval( $item['total_tax'] );
+			$item_args['totals']['tax'] = floatval( $item['total_tax'] );
 		}
 
 		// subtotal
 		if ( isset( $item['subtotal'] ) ) {
-			$item_args['totals']['line_subtotal'] = floatval( $item['subtotal'] );
+			$item_args['totals']['subtotal'] = floatval( $item['subtotal'] );
 		}
 
 		// subtotal tax
 		if ( isset( $item['subtotal_tax'] ) ) {
-			$item_args['totals']['line_subtotal_tax'] = floatval( $item['subtotal_tax'] );
+			$item_args['totals']['subtotal_tax'] = floatval( $item['subtotal_tax'] );
 		}
 
 		if ( $creating ) {
@@ -987,7 +995,17 @@ class WC_API_Orders extends WC_API_Resource {
 
 				$order_fee->taxable   = true;
 				$order_fee->tax_class = $fee['tax_class'];
-				$order_fee->tax       = isset( $fee['total_tax'] ) ? floatval( $fee['total_tax'] ) : 0;
+				$order_fee->tax       = 0;
+				$order_fee->tax_data  = array();
+
+				if ( isset( $fee['total_tax'] ) ) {
+					$order_fee->tax = isset( $fee['total_tax'] ) ? wc_format_refund_total( $fee['total_tax'] ) : 0;
+				}
+
+				if ( isset( $fee['tax_data'] ) ) {
+					$order_fee->tax      = wc_format_refund_total( array_sum( $fee['tax_data'] ) );
+					$order_fee->tax_data = array_map( 'wc_format_refund_total', $fee['tax_data'] );
+				}
 			}
 
 			$fee_id = $order->add_fee( $order_fee );

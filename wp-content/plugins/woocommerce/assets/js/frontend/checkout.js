@@ -3,8 +3,9 @@ jQuery( function( $ ) {
 	$.blockUI.defaults.overlayCSS.cursor = 'default';
 
 	// wc_checkout_params is required to continue, ensure the object exists
-	if ( typeof wc_checkout_params === 'undefined' )
+	if ( 'undefined' === typeof wc_checkout_params ) {
 		return false;
+	}
 
 	var updateTimer,
 		dirtyInput = false,
@@ -12,7 +13,9 @@ jQuery( function( $ ) {
 
 	function update_checkout() {
 
-		if ( xhr ) xhr.abort();
+		if ( xhr ) {
+			xhr.abort();
+		}
 
 		var shipping_methods = [];
 
@@ -76,12 +79,51 @@ jQuery( function( $ ) {
 			type:		'POST',
 			url:		wc_checkout_params.ajax_url,
 			data:		data,
-			success:	function( response ) {
-				if ( response ) {
-					$( '#order_review' ).html( $.trim( response ) );
-					$( '#order_review' ).find( 'input[name=payment_method]:checked' ).trigger('click');
-					$( 'body' ).trigger('updated_checkout' );
+			success: function ( response ) {
+
+				// Remove old AJAX errors
+				$( '.woocommerce-error-ajax' ).remove();
+
+				// Check reponse
+				if ( '-1' === response ) {
+					var $form = $( 'form.checkout' );
+
+					$form.prepend( wc_checkout_params.session_expired_message );
+
+					// Scroll to top
+					$( 'html, body' ).animate( {
+						scrollTop: ( $( 'form.checkout' ).offset().top - 100 )
+					}, 1000 );
+
+				} else if ( response ) {
+
+					// Check the response result
+					if ( 'failure' == response.result ) {
+
+						// Form object
+						var $form = $( 'form.checkout' );
+
+						if ( response.messages ) {
+							$form.prepend( response.messages );
+						} else {
+							$form.prepend( response );
+						}
+
+						// Lose focus for all fields
+						$form.find( '.input-text, select' ).blur();
+
+						// Scroll to top
+						$( 'html, body' ).animate( {
+							scrollTop: ( $( 'form.checkout' ).offset().top - 100 )
+						}, 1000 );
+
+					}
+
+					$( '#order_review' ).html( $.trim( response.html ) );
+					$( '#order_review' ).find( 'input[name=payment_method]:checked' ).trigger( 'click' );
+					$( 'body' ).trigger( 'updated_checkout' );
 				}
+
 			}
 		});
 
