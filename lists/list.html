@@ -35,31 +35,47 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                  <a>Menu</a>
+
                 </li>
                 <li>
-                    <button type="button" class="btn btn-info"><i class="fa fa-sliders"></i>&nbsp;Settings</button>
+                    <button class="btn btn-info" id="btn-settings">
+                      <i class="fa fa-sliders"></i>&nbsp;Settings
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-info active"><i class="fa fa-list"></i>&nbsp;List</button>
+                    <button type="button" class="btn btn-info disabled" id="btn-list">
+                      <i class="fa fa-list"></i>&nbsp;List
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-info"><i class="fa fa-table"></i>&nbsp;Summary</button>
+                    <button type="button" class="btn btn-info" id="btn-summary">
+                        <i class="fa fa-table"></i>&nbsp;Summary
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-info"><i class="fa fa-pencil-square-o"></i>&nbsp;Notes</button>
+                    <button type="button" class="btn btn-info" id="btn-notes">
+                        <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-info"><i class="fa fa-exclamation-triangle"></i>&nbsp;Message</button>
+                    <button type="button" class="btn btn-info" id="btn-message">
+                        <i class="fa fa-exclamation-triangle"></i>&nbsp;Message
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-info"><i class="fa fa-download"></i>&nbsp;Export</button>
+                    <button type="button" class="btn btn-info" id="btn-message">
+                        <i class="fa fa-download"></i>&nbsp;Export
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-danger"><i class="fa fa-power-off"></i>&nbsp;Log Out</button>
+                    <button type="button" class="btn btn-danger" id="btn-logout">
+                        <i class="fa fa-power-off"></i>&nbsp;Log Out
+                    </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-warning" id="hide"><i class="fa fa-arrow-left"></i>&nbsp;Hide Menu</button>
+                    <button type="button" class="btn btn-warning" id="btn-hide">
+                        <i class="fa fa-arrow-left"></i>&nbsp;Hide Menu
+                    </button>
                 </li>
             </ul>
         </div>
@@ -159,16 +175,7 @@
     <script src="js/bootstrap.min.js"></script>
 
     <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    $("#hide").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    </script>
+    <script src="js/lists.js"></script>
 
 </body>
 
