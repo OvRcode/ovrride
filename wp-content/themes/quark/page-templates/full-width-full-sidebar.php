@@ -52,7 +52,7 @@ get_header(); ?>
                         $trip_titles[] = get_the_title();
                         $trip_links[] = get_permalink();
                         $trip_thumbs[] = $alt_thumb[0];
-                        $spots_left[] = get_post_meta( $post->ID, '_stock', true);
+                        $spots_left[] = intval(get_post_meta( $post->ID, '_stock', true));
                         }
                 
                         array_multisort($trip_dates, $trip_titles, $trip_links, $trip_thumbs, $spots_left);
