@@ -161,8 +161,16 @@ class WC_AJAX {
 		}
 
 		if ( 0 == sizeof( WC()->cart->get_cart() ) ) {
-			echo '<div class="woocommerce-error">' . __( 'Sorry, your session has expired.', 'woocommerce' ) . ' <a href="' . home_url() . '" class="wc-backward">' . __( 'Return to homepage', 'woocommerce' ) . '</a></div>';
-			die();
+			ob_start();
+
+			$data = array(
+				'result'   => 'failure',
+				'messages' => '<div class="woocommerce-error">' . __( 'Sorry, your session has expired.', 'woocommerce' ) . ' <a href="' . home_url() . '" class="wc-backward">' . __( 'Return to homepage', 'woocommerce' ) . '</a></div>',
+				'html'     => ''
+			);
+
+			// Send JSON
+			wp_send_json( $data );
 		}
 
 		do_action( 'woocommerce_checkout_update_order_review', $_POST['post_data'] );
@@ -256,9 +264,33 @@ class WC_AJAX {
 
 		WC()->cart->calculate_totals();
 
-		do_action( 'woocommerce_checkout_order_review', true ); // Display review order table
+		// Get the review order table
+		ob_start();
+		do_action( 'woocommerce_checkout_order_review', true );
+		$woocommerce_checkout_order_review = ob_get_clean();
 
-		die();
+		// Get messages if reload checkout is not true
+		$messages = '';
+		if ( ! isset( WC()->session->reload_checkout ) ) {
+			ob_start();
+			wc_print_notices();
+			$messages = ob_get_clean();
+
+			// Wrap messages if not empty
+			if ( ! empty( $messages ) ) {
+				$messages = '<div class="woocommerce-error-ajax">' . $messages . '</div>';
+			}
+		}
+
+		// Setup data
+		$data = array(
+			'result'   => empty( $messages ) ? 'success' : 'failure',
+			'messages' => $messages,
+			'html'     => $woocommerce_checkout_order_review
+		);
+
+		// Send JSON
+		wp_send_json( $data );
 	}
 
 	/**
@@ -1083,7 +1115,7 @@ class WC_AJAX {
 
 		$order_id = absint( $_POST['order_id'] );
 		$rate_id  = absint( $_POST['rate_id'] );
-		$order    = new WC_Order( $order_id );
+		$order    = wc_get_order( $order_id );
 		$data     = get_post_meta( $order_id );
 
 		// Add new tax
@@ -1129,7 +1161,7 @@ class WC_AJAX {
 		wc_delete_order_item( $rate_id );
 
 		// Return HTML items
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
 		$data  = get_post_meta( $order_id );
 		include( 'admin/meta-boxes/views/html-order-items.php' );
 
@@ -1290,6 +1322,9 @@ class WC_AJAX {
 		}
 		$items['order_taxes'] = array();
 
+		// Action
+		$items = apply_filters( 'woocommerce_ajax_calc_line_taxes', $items, $order_id, $country, $_POST );
+
 		// Get items and fees taxes
 		if ( isset( $items['order_item_id'] ) ) {
 
@@ -1399,7 +1434,7 @@ class WC_AJAX {
 		wc_save_order_items( $order_id, $items );
 
 		// Return HTML items
-		$order = new WC_Order( $order_id );
+		$order = wc_get_order( $order_id );
 		$data  = get_post_meta( $order_id );
 		include( 'admin/meta-boxes/views/html-order-items.php' );
 
@@ -1423,7 +1458,7 @@ class WC_AJAX {
 			wc_save_order_items( $order_id, $items );
 
 			// Return HTML items
-			$order = new WC_Order( $order_id );
+			$order = wc_get_order( $order_id );
 			$data  = get_post_meta( $order_id );
 			include( 'admin/meta-boxes/views/html-order-items.php' );
 		}
@@ -1439,7 +1474,7 @@ class WC_AJAX {
 
 		// Return HTML items
 		$order_id = absint( $_POST['order_id'] );
-		$order    = new WC_Order( $order_id );
+		$order    = wc_get_order( $order_id );
 		$data     = get_post_meta( $order_id );
 		include( 'admin/meta-boxes/views/html-order-items.php' );
 

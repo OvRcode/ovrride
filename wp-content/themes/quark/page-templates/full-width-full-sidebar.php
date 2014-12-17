@@ -84,7 +84,8 @@ get_header(); ?>
                                         </div>
                                         
                                         <div class="seats-left">
-                                           <p><a href="<?php echo $trip_links[$i]; ?>">Space Available <?php echo $spots_left[$i]; ?></a></p>
+                                           <p><a href="<?php echo $trip_links[$i]; ?>">Space Available 
+                                             <?php if($spots_left[$i] !== '') echo intval($spots_left[$i]); ?></a></p>
                                         </div>
                                     <?php endif; ?>
                                     
