@@ -58,5 +58,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 <?php endif; ?>
 
 <?php woocommerce_get_template('emails/email-addresses.php', array( 'order' => $order )); ?>
-
+<p>To make things faster on the day of your trip, please download and print out a copy of our waiver. Bring a filled out and signed copy to your trip leader.</p>
+<a href="<?php echo get_site_url();?>/OvR 2014-15WAIVER.pdf.zip">Download Waiver Here</a>
 <?php do_action('woocommerce_email_footer'); ?>
