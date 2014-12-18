@@ -16,13 +16,6 @@ class Lists {
         }
         
     }
-    private function dbQuery($sql){
-        if ( !$result = $this->dbConnect->query($sql)) {
-            die('There was an error running the query [' . $this->dbConnect->error . ']');
-        } else {
-          return $result;
-        }
-    }
     function destinationDropdown(){
         $sql = "SELECT `destination` FROM `ovr_lists_destinations` WHERE `enabled` = 'Y'";
         $result = $this->dbQuery($sql);
@@ -88,11 +81,98 @@ class Lists {
                         AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$tripId'";
                 $result = $this->dbQuery($sql);
                 while($row = $result->fetch_assoc()){
-                    echo $row['ID']." ". $row['order_item_id'] . " " . $row['post_status'] . "<br >";
-                    # NEST PHONE AND META DATA QUERIES!!
+                    $orderData = [];
+                    $orderData['num'] = $row['ID'];
+                    $orderData['item_num'] = $row['order_item_id'];
+                    $order = $row['ID'];
+                    $orderItem = $row['order_item_id'];
+                    # Get phone number
+                    $phoneSql = "SELECT  `meta_value` AS  `Phone`
+                            FROM wp_postmeta
+                            WHERE meta_key =  '_billing_phone'
+                            AND post_id =  '$order'";
+                    $phoneResult = $this->dbQuery($phoneSql);
+                    $phoneRow = $phoneResult->fetch_assoc();
+                    $orderData['phone'] = $this->reformatPhone($phoneRow['Phone']);
+                    # Get meta details
+                    $detailSql = "SELECT `meta_key`, `meta_value` 
+                            FROM `wp_woocommerce_order_itemmeta`
+                            WHERE ( `meta_key` = 'Name'
+                            OR `meta_key` = 'Email'
+                            OR `meta_key` = 'Package'
+                            OR `meta_key` = 'Pickup'
+                            OR `meta_key` = 'Pickup Location'
+                            OR `meta_key` = 'Transit To Rockaway'
+                            OR `meta_key` = 'Transit From Rockaway')
+                            AND `order_item_id` = '$orderItem'";
+                    $detailResult = $this->dbQuery($detailSql);
+                    while($detailRow = $detailResult->fetch_assoc()){
+                        if ( $detailRow['meta_key'] == 'Package' ) {
+                            $orderData['Package'] = ucwords(strtolower($this->removePackagePrice($detailRow['meta_value'])));
+                        } else if ( $detailRow['meta_key'] == 'Pickup' || $detailRow['meta_key'] == 'Pickup Location') {
+                            $orderData['Pickup'] = ucwords(strtolower($this->stripTime($detailRow['meta_value'])));
+                        } else if ( $detailRow['meta_key'] == 'Transit To Rockaway' || $detailRow['meta_key'] == 'Transit From Rockaway') {
+                            $orderData[$detailRow['meta_key']] = ucwords(strtolower($detailRow['meta_value']));
+                        } else if ( $detailRow['meta_key'] == 'Name' ) {
+                            $names = $this->splitName($detailRow['meta_value']);
+                            $orderData['First'] = stripcslashes(ucwords(strtolower($names['First'])));
+                            $orderData['Last']  = stripcslashes(ucwords(strtolower($names['Last'])));
+                        } else {
+                            $orderData[$detailRow['meta_key']] = trim($detailRow['meta_value']);
+                        }
+                    }
+                    // Assemble output HTML HERE
+                    foreach($orderData as $key => $value){
+                        echo $key . ": " . $value . " ";
+                    }
+                    echo "<br />";
+                    //echo $row['ID']." ". $row['order_item_id'] . " " . $row['post_status'] . " " . $phone . "<br >";
                 }
             }
         }
+    }
+    private function dbQuery($sql){
+        if ( !$result = $this->dbConnect->query($sql)) {
+            die('There was an error running the query [' . $this->dbConnect->error . ']');
+        } else {
+          return $result;
+        }
+    }
+    private function reformatPhone($phone){
+
+        # Strip all formatting
+        $phone = str_replace('-','',$phone);
+        $phone = str_replace('(','',$phone);
+        $phone = str_replace(')','',$phone);
+        $phone = str_replace(' ','',$phone);
+        $phone = str_replace('.','',$phone);
+        if(strlen($phone) == 11)
+            $phone = substr($phone,1,10);
+        # Add formatting to raw phone num
+        $phone = substr_replace($phone,'(',0,0);
+        $phone = substr_replace($phone,') ',4,0);
+        $phone = substr_replace($phone,'-',9,0);
+
+        return $phone;
+    }
+    private function removePackagePrice($package){
+        return preg_replace('/\(\$\S*\)/', "", $package);
+    }
+    private function stripTime($pickup){
+      # Remove dash and time from pickup
+      preg_match("/(.*).-.*/", $pickup, $matched);
+      if ( isset($matched[1]) ) {
+          return $matched[1];
+      } else {
+          return $pickup;
+      }
+    }
+    private function splitName($name){
+        $parts = explode(" ", $name);
+        $last = array_pop($parts);
+        $first = implode(" ", $parts);
+
+        return array("First" => $first, "Last" => $last); 
     }
     // TODO: Need to finish tripData function, working on settings page right now
 }
