@@ -3,6 +3,7 @@ wp-content/uploads/20*
 wp-content/cache/*
 wp-content/plugins/special-recent-posts/cache/*
 !wp-content/plugins/special-recent-posts/cache/.placeholder
+!OvR 2014-15WAIVER.pdf.zip
 error_log
 .DS_Store
 /tmp/librarian/
