@@ -16,28 +16,24 @@ function saveOptions(){
     window.settings.set('tripNum', $('#trip').val());
     window.settings.set('tripName', $('#trip option:selected').text());
     window.settings.set('bus', $('#bus').val());
-    // All Checkboxes on settings page w/selectors
-    var checkBoxes = {
-        "balance":    $("#balance"),
-        "cancelled":  $("#cancelled"),
-        "completed":  $("#completed"),
-        "failed":     $("#failed"),
-        "finalized":  $("#finalized"),
-        "no-show":    $("#no-show"),
-        "on-hold":    $("#on-hold"),
-        "processing": $("#processing"),
-        "pending":    $("#pending"),
-        "refunded":   $("#refunded"),
-        "walk-on":    $("#walk-on")
-    };
+    
     // Array to be filled with active checkbox values then concatenated with , seperator
     window.activeBoxes = []
-    jQuery.each(checkBoxes, function(index, value){
+    jQuery.each(window.checkBoxes, function(index, value){
         if ( value.prop('checked') ){
             window.activeBoxes[window.activeBoxes.length] = value.val();
         }
     });
     window.settings.set('status', window.activeBoxes.join());
+}
+function resetStatuses(type){
+    jQuery.each(window.checkBoxes, function(index,value){
+        if ( type == 'All' || (type == 'Default' && (index != 'completed' && index != 'processing' && index != 'walk-on'))){
+            value.prop('checked','');
+        } else if ( type == 'Default'){
+            value.prop('checked', 'checked');
+        }
+    });
 }
 /* Menu JS */
 $("#menu-toggle").click(function(e) {
@@ -56,6 +52,20 @@ $('#btn-list').click(function(){
 })
 /* End Menu JS */
 /* Setup Namespace storage */
+// All Checkboxes on settings page w/selectors
+window.checkBoxes = {
+    "balance":    $("#balance"),
+    "cancelled":  $("#cancelled"),
+    "completed":  $("#completed"),
+    "failed":     $("#failed"),
+    "finalized":  $("#finalized"),
+    "no-show":    $("#no-show"),
+    "on-hold":    $("#on-hold"),
+    "processing": $("#processing"),
+    "pending":    $("#pending"),
+    "refunded":   $("#refunded"),
+    "walk-on":    $("#walk-on")
+};
 window.dropDown = $.initNamespaceStorage('dropdown');
 window.dd = dropDown.localStorage; 
 window.options = $.initNamespaceStorage('settings');
