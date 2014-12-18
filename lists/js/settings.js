@@ -1,3 +1,17 @@
+// All Checkboxes on settings page w/selectors
+window.checkBoxes = {
+    "balance":    $("#balance"),
+    "cancelled":  $("#cancelled"),
+    "completed":  $("#completed"),
+    "failed":     $("#failed"),
+    "finalized":  $("#finalized"),
+    "no-show":    $("#no-show"),
+    "on-hold":    $("#on-hold"),
+    "processing": $("#processing"),
+    "pending":    $("#pending"),
+    "refunded":   $("#refunded"),
+    "walk-on":    $("#walk-on")
+};
 function tripDropdown(){
     $.get("/api/dropdown/trip", function(data){
             $('#trip').append(data); 
@@ -50,22 +64,11 @@ $('#btn-settings').click(function(){
 $('#btn-list').click(function(){
    window.location.href='list.html';
 })
+$('#default').click(function(){resetStatuses("Default")});
+$('#clear').click(function(){resetStatuses("All")});
+$('#settings_save').click(function(){saveOptions()});
 /* End Menu JS */
 /* Setup Namespace storage */
-// All Checkboxes on settings page w/selectors
-window.checkBoxes = {
-    "balance":    $("#balance"),
-    "cancelled":  $("#cancelled"),
-    "completed":  $("#completed"),
-    "failed":     $("#failed"),
-    "finalized":  $("#finalized"),
-    "no-show":    $("#no-show"),
-    "on-hold":    $("#on-hold"),
-    "processing": $("#processing"),
-    "pending":    $("#pending"),
-    "refunded":   $("#refunded"),
-    "walk-on":    $("#walk-on")
-};
 window.dropDown = $.initNamespaceStorage('dropdown');
 window.dd = dropDown.localStorage; 
 window.options = $.initNamespaceStorage('settings');
