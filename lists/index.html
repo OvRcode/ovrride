@@ -108,15 +108,11 @@
                     <div class="col-lg-12">
                         <h3>List Settings</h3>
                         <select id="destination" class="form-control input-sm">
-                            <option value="none">Select a destination</option>
-                            <option value="Camelback MT">Camelback MT</option>
-                            <option value="Hunter MT">Hunter MT</option>
-                            <option value="Jackson Hole">Jackson Hole</option>
+                            <option value="none" class="none">Select a destination</option>
                         </select>
                         <br />
                         <select id="trip" class="form-control input-sm">
-                            <option value="none">Select a trip</option>
-                            <option value="32769">Thur. Feb. 26th - Mon. Mar. 2nd</option>
+                            <option value="none" class="none">Trip: Select destination first</option>
                         </select>
                         <br />
                         <select id="bus" class="form-control input-sm">
@@ -130,25 +126,26 @@
                             <option value="8">Bus 8</option>
                             <option value="9">Bus 9</option>
                             <option value="10">Bus 10</option>
+                            <option value="All">All Buses: Admin ONLY</option>
                         </select>
                         <br />
                         <div class="row">
                           <div class="checkbox">
                             Order Statuses:<br />
                             <div class="col-xs-5 col-sm-2 col-md-2 col-lg-2">
-                                <label><input type="checkbox" value="Balance Due">Balance Due</label><br />
-                                <label><input type="checkbox" value="Cancelled">Cancelled</label><br />
-                                <label><input type="checkbox" value="Completed" checked>Completed</label><br />
-                                <label><input type=checkbox value="Failed">Failed</label><br />
-                                <label><input type="checkbox" value="Finalized">Finalized</label><br />
-                                <label><input type="checkbox" value="No Show">No Show</label><br />
+                                <label><input type="checkbox" value="wc-balance-due"  id="balance">Balance Due</label><br />
+                                <label><input type="checkbox" value="wc-cancelled"  id="cancelled">Cancelled</label><br />
+                                <label><input type="checkbox" value="wc-completed"  id="completed" checked>Completed</label><br />
+                                <label><input type=checkbox value="wc-failed"  id="failed">Failed</label><br />
+                                <label><input type="checkbox" value="wc-finalized" id="finalized">Finalized</label><br />
+                                <label><input type="checkbox" value="wc-no-show" id="no-show">No Show</label><br />
                             </div>
                             <div class="col-xs-4 col-sm-2 col-md-2 col-lg-2">
-                                <label><input type="checkbox" value="On-hold">On Hold</label><br />
-                                <label><input type="checkbox" value="Processing" checked>Processing</label><br />
-                                <label><input type="checkbox" value="Pending"> Pending</label><br />
-                                <label><input type="checkbox" value="Refunded">Refunded</label><br />
-                                <label><input type="checkbox" value="Walk On" checked>Walk On</label><br />
+                                <label><input type="checkbox" value="wc-on-hold" id="on-hold">On Hold</label><br />
+                                <label><input type="checkbox" value="wc-processing" id="processing" checked>Processing</label><br />
+                                <label><input type="checkbox" value="wc-pending" id="pending"> Pending</label><br />
+                                <label><input type="checkbox" value="wc-refunded" id="refunded">Refunded</label><br />
+                                <label><input type="checkbox" value="walk-on" id="walk-on" checked>Walk On</label><br />
                             </div> 
                             <div class="col-xs-3 col-sm-8 col-md-8 col-lg-8"> </div>
                           </div>
@@ -170,13 +167,14 @@
 
     </div>
     <!-- /#wrapper -->
-
+    <!-- TODO: setup grunt task for concat/minify JS-->
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
-
+    <script src="js/jquery.chained.js"></script>
+    <script src="js/jquery.storageapi.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/lists.js"></script>
+    <script src="js/settings.js"></script>
 
 </body>
 
