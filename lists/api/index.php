@@ -2,7 +2,7 @@
 class Lists {
     var $dbConnect;
     var $destinations;
-    
+    var $orders;
     function __construct(){
         // Setup DB Connection and check that it works
         $this->dbConnect = new mysqli(getenv('MYSQL_HOST'), getenv('MYSQL_USER'), getenv('MYSQL_PASS'), getenv('MYSQL_DB'));
@@ -93,7 +93,7 @@ class Lists {
                             AND post_id =  '$order'";
                     $phoneResult = $this->dbQuery($phoneSql);
                     $phoneRow = $phoneResult->fetch_assoc();
-                    $orderData['phone'] = $this->reformatPhone($phoneRow['Phone']);
+                    $orderData['Phone'] = $this->reformatPhone($phoneRow['Phone']);
                     # Get meta details
                     $detailSql = "SELECT `meta_key`, `meta_value` 
                             FROM `wp_woocommerce_order_itemmeta`
@@ -122,14 +122,54 @@ class Lists {
                         }
                     }
                     // Assemble output HTML HERE
-                    foreach($orderData as $key => $value){
-                        echo $key . ": " . $value . " ";
-                    }
-                    echo "<br />";
-                    //echo $row['ID']." ". $row['order_item_id'] . " " . $row['post_status'] . " " . $phone . "<br >";
+                    $this->listHTML($orderData);
+                    $this->customerData($orderData);
                 }
             }
         }
+        return $this->orders;
+    }
+    private function customerData($orderData){
+        $orderNum = array_shift($orderData);
+        $orderItemNum = array_shift($orderData);
+        $this->orders[$orderNum.":".$orderItemNum]['Data'] = $orderData;
+    }
+    private function listHTML($orderData){
+        $output = <<<EOT
+            <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
+              <div class="row primary">
+                <div class="buttonCell col-xs-4 col-md-2">{$orderData['First']}</div>
+                <div class="buttonCell col-xs-4 col-md-2">{$orderData['Last']}</div>
+                <div class="noClick buttonCell col-md-2 visible-md visible-lg">
+                    Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
+                </div>
+                <div class="buttonCell col-xs-4 col-md-3 flexPickup">{$orderData['Pickup']}</div>
+                <div class="buttonCell col-xs-4 col-md-3 flexPackage visible-md visible-lg">{$orderData['Package']}</div>
+              </div>
+              <div class="expanded hidden">
+              <div class="row">
+                <div class="buttonCell col-xs-6">
+                     Order:<a class="noClick" href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
+                </div>
+                <div class="buttonCell col-xs-6">
+                    Phone:<a class="noClick" href="tel:{$orderData['Phone']}">{$orderData['Phone']}</a>
+                </div>
+              </div>
+              <div class="row">
+                <div class="buttonCell col-xs-12">
+                  Email: <a class="noClick" href="mailto:{$orderData['Email']}">{$orderData['Email']}</a>
+                </div>
+              </div>
+              <div class="row">
+                <br />
+                <div class="buttonCell col-xs-6"><button class="noClick btn btn-warning">Reset</button></div>
+                <div class="buttonCell col-xs-6"><button class="noClick btn btn-danger">No Show</button></div>
+              </div>
+              </div>
+            </div>
+EOT;
+        $ID = $orderData['num'].":".$orderData['item_num'];
+        $this->orders[$ID]['HTML'] = $output;
     }
     private function dbQuery($sql){
         if ( !$result = $this->dbConnect->query($sql)) {
@@ -138,6 +178,7 @@ class Lists {
           return $result;
         }
     }
+    
     private function reformatPhone($phone){
 
         # Strip all formatting
@@ -192,7 +233,7 @@ Flight::route('/dropdown/trip', function(){
 });
 Flight::route('/trip/@tripId/@status', function($tripId,$status){ 
     $list = Flight::Lists();
-    $list->tripData($tripId, $status);
+    echo json_encode($list->tripData($tripId, $status));
 });
 Flight::start();
 ?>
