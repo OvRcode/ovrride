@@ -134,8 +134,13 @@
 
 .ovr {
   background-color:#25AEE6;
+  position:fixed;
+  top:0px;
+  width:100%;
 }
-
+.pad {
+    padding-top:60px;
+}
 #menu-toggle {
   position: relative;
   top:9px;
@@ -153,6 +158,10 @@
   padding-right:15px;
   padding-bottom:3px;
   margin-bottom: 10px;
+  margin-left:3px;
+  margin-right:3px;
+  -webkit-box-shadow: 3px 3px 1px 1px #ccc;
+  box-shadow:3px 3px 1px 1px #ccc;
 }
 
 .buttonCell {
