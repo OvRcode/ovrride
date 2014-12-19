@@ -76,9 +76,7 @@ get_header(); ?>
                                 </div>
 
                                 <div class="upcoming-info"> 
-                                    <?php if ( $spots_left[$i] === '0' || $spots_left[$i] == 0 ): ?>
-                                        <p class="stock out-of-stock">SOLD OUT</p>
-                                    <?php else: ?>
+                                    <?php if ($spots_left[$i] == '' || $spots_left[$i] > 0): ?>
                                         <div class="book-this-btn">
                                             <a class="book-btn-smll" href="<?php echo $trip_links[$i]; ?>">BOOK THIS TRIP</a>
                                         </div>
@@ -87,6 +85,8 @@ get_header(); ?>
                                            <p><a href="<?php echo $trip_links[$i]; ?>">Space Available 
                                              <?php if($spots_left[$i] !== '') echo intval($spots_left[$i]); ?></a></p>
                                         </div>
+                                    <?php else: ?>
+                                        <p class="stock out-of-stock">SOLD OUT</p>
                                     <?php endif; ?>
                                     
                                 </div>	
