@@ -30,7 +30,13 @@ function noShow(element) {
     element.addClass('bg-danger');
 }
 function changeStatus(element){
-    //NEED TO SAVE STATE TO LOCAL STORAGE!
+    if ( $('#AMPM').val() == 'PM' ) {
+        element.removeClass('bg-info');
+        element.addClass('bg-pm');
+        var PM = element.attr('id')+":PM";
+        tripData.set(PM, 1);
+    }
+    
     if ( element.hasClass('bg-none') && ! element.hasClass('bg-danger')) {
         // Customer Checked in
         console.log(element.attr('id'));
@@ -88,3 +94,10 @@ $('#btn-settings').click(function(){
 $('#btn-list').click(function(){
    window.location.href='list.html';
 })
+$('#AMPM').change(function(){
+    if ( $(this).val() == 'PM' ) {
+        $('.listButton.bg-none').addClass('hidden');
+    } else if ( $(this).val() == 'AM' ) {
+        $('.listButton.bg-none').removeClass('hidden');
+    }
+});
