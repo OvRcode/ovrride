@@ -76,7 +76,7 @@ get_header(); ?>
                                 </div>
 
                                 <div class="upcoming-info"> 
-                                    <?php if ( $spots_left[$i] === '0' ): ?>
+                                    <?php if ( $spots_left[$i] === '0' || $spots_left[$i] == 0 ): ?>
                                         <p class="stock out-of-stock">SOLD OUT</p>
                                     <?php else: ?>
                                         <div class="book-this-btn">
