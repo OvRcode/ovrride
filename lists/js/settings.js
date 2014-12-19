@@ -1,17 +1,43 @@
-// All Checkboxes on settings page w/selectors
-window.checkBoxes = {
-    "balance":    $("#balance"),
-    "cancelled":  $("#cancelled"),
-    "completed":  $("#completed"),
-    "failed":     $("#failed"),
-    "finalized":  $("#finalized"),
-    "no-show":    $("#no-show"),
-    "on-hold":    $("#on-hold"),
-    "processing": $("#processing"),
-    "pending":    $("#pending"),
-    "refunded":   $("#refunded"),
-    "walk-on":    $("#walk-on")
-};
+$(function(){
+    /* Setup Namespace storage */
+    window.dropDown = $.initNamespaceStorage('dropdown');
+    window.dd = dropDown.localStorage; 
+    window.options = $.initNamespaceStorage('settings');
+    window.settings = options.localStorage; 
+    window.orderData = $.initNamespaceStorage('orders');
+    window.orders = orderData.localStorage;
+    window.outputHTML = $.initNamespaceStorage('initialHTML');
+    window.initialHTML = outputHTML.localStorage;  
+    window.data =$.initNamespaceStorage('data');
+    window.tripData = data.localStorage;  
+    /* Start Drop Down population */
+    $.get("api/dropdown/destination", function(data, dd){
+            $('#destination').append(data); 
+        })
+        .done(function(data){
+            window.dd.set('destination', data);
+            // Download trips data if destinations load
+            tripDropdown();
+        })
+        .fail(function(){
+            alert('Destination data failed to load, please refresh page');
+        }); 
+        // All Checkboxes on settings page w/selectors
+        window.checkBoxes = {
+            "balance":    $("#balance"),
+            "cancelled":  $("#cancelled"),
+            "completed":  $("#completed"),
+            "failed":     $("#failed"),
+            "finalized":  $("#finalized"),
+            "no-show":    $("#no-show"),
+            "on-hold":    $("#on-hold"),
+            "processing": $("#processing"),
+            "pending":    $("#pending"),
+            "refunded":   $("#refunded"),
+            "walk-on":    $("#walk-on")
+        };
+}); 
+
 function tripDropdown(){
     $.get("/api/dropdown/trip", function(data){
             $('#trip').append(data); 
@@ -71,12 +97,16 @@ function resetStatuses(type){
 function getTripData(){
     var trip = settings.get('tripNum');
     var statuses = settings.get('status');
+    //Start with a clean slate
+    window.orders.removeAll();
+    window.initialHTML.removeAll();
+    window.tripData.removeAll();
     $.get("/api/trip/"+trip+"/"+statuses, function(data){
         var apiData = jQuery.parseJSON(data);
         jQuery.each(apiData, function(id,dataObject){
             jQuery.each(dataObject, function(key, value){
                 if ( key == 'Data' )
-                    order.set(id,value);
+                    orders.set(id,value);
                 else
                     initialHTML.set(id,value);
             });
@@ -106,25 +136,3 @@ $('#settings_save').click(function(){
     getTripData();
 });
 /* End Menu JS */
-/* Setup Namespace storage */
-window.dropDown = $.initNamespaceStorage('dropdown');
-window.dd = dropDown.localStorage; 
-window.options = $.initNamespaceStorage('settings');
-window.settings = options.localStorage; 
-window.orderData = $.initNamespaceStorage('orders');
-window.order = orderData.localStorage;
-window.outputHTML = $.initNamespaceStorage('initialHTML');
-window.initialHTML = outputHTML.localStorage;
-/* Start Drop Down population */
-$.get("api/dropdown/destination", function(data, dd){
-        $('#destination').append(data); 
-    })
-    .done(function(data){
-        window.dd.set('destination', data);
-        // Download trips data if destinations load
-        tripDropdown();
-    })
-    .fail(function(){
-        alert('Destination data failed to load, please refresh page');
-    });
-    
