@@ -6,8 +6,11 @@ $(function() {
     window.orderData = $.initNamespaceStorage('orders');
     window.orders = orderData.localStorage;
     window.outputHTML = $.initNamespaceStorage('initialHTML');
-    window.initialHTML = outputHTML.localStorage;    
+    window.initialHTML = outputHTML.localStorage;  
+    window.data =$.initNamespaceStorage('data');
+    window.tripData = data.localStorage;  
     setupPage();
+    setupListeners();
 });
 function setupPage(){
     if ( window.settings.isSet('tripName') ) {
@@ -22,20 +25,29 @@ function setupPage(){
     });
 }
 function noShow(element) {
-    //NEED TO SAVE STATE TO LOCAL STORAGE!
+    var NoShow = element.attr('id')+":NoShow";
+    tripData.set(NoShow, 1);
     element.addClass('bg-danger');
 }
 function changeStatus(element){
     //NEED TO SAVE STATE TO LOCAL STORAGE!
     if ( element.hasClass('bg-none') && ! element.hasClass('bg-danger')) {
+        // Customer Checked in
+        console.log(element.attr('id'));
+        var AM = element.attr('id') + ":AM";
+        tripData.set(AM, 1 );
         element.removeClass('bg-none');
         element.addClass('bg-warning');        
         element.find('.flexPackage').removeClass('visible-md visible-lg');
         element.find('.flexPickup').addClass('visible-md visible-lg');
     } else if ( element.hasClass('bg-warning') ) {
+        var Waiver = element.attr('id')+":Waiver";
+        tripData.set(Waiver, 1);
         element.removeClass('bg-warning');
         element.addClass('bg-success');
     } else if ( element.hasClass('bg-success') ) {
+        var Product = element.attr('id')+":Product";
+        tripData.set(Product, 1);
         element.removeClass('bg-success');
         element.addClass('bg-info');
         element.find('.flexPackage').addClass('visible-md visible-lg');
