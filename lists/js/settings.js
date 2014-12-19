@@ -19,10 +19,29 @@ function tripDropdown(){
     .done(function(data){
         $('#trip').chained("#destination");
         window.dd.set('trip',data);
+        checkSettings();
     })
     .fail(function(){
         alert('Trip dropdown failed to load, please refresh page');
     });
+}
+function checkSettings(){
+    if ( settings.isSet('destination') ) {
+        $('#destination').val(settings.get('destination')).trigger('change');
+        if ( settings.isSet('tripNum') ) {
+            $('#trip').val(settings.get('tripNum'));
+        }
+    }
+    if ( settings.isSet('status') ) {
+        var status = settings.get('status');
+        var statusList = status.split(",");
+        jQuery.each(statusList, function(index,value){
+            $("input:checkbox[value="+value+"]").prop('checked','checked');
+        });
+    }
+    if ( settings.isSet('bus') ) {
+        $('#bus').val(settings.get('bus'));
+    }
 }
 function saveOptions(){
     window.settings.set('destination', $('#destination').val());
@@ -49,6 +68,22 @@ function resetStatuses(type){
         }
     });
 }
+function getTripData(){
+    var trip = settings.get('tripNum');
+    var statuses = settings.get('status');
+    $.get("/api/trip/"+trip+"/"+statuses, function(data){
+        var apiData = jQuery.parseJSON(data);
+        jQuery.each(apiData, function(id,dataObject){
+            jQuery.each(dataObject, function(key, value){
+                if ( key == 'Data' )
+                    order.set(id,value);
+                else
+                    initialHTML.set(id,value);
+            });
+        });
+        //console.log(apiData);
+    });
+}
 /* Menu JS */
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
@@ -66,13 +101,20 @@ $('#btn-list').click(function(){
 })
 $('#default').click(function(){resetStatuses("Default")});
 $('#clear').click(function(){resetStatuses("All")});
-$('#settings_save').click(function(){saveOptions()});
+$('#settings_save').click(function(){
+    saveOptions();
+    getTripData();
+});
 /* End Menu JS */
 /* Setup Namespace storage */
 window.dropDown = $.initNamespaceStorage('dropdown');
 window.dd = dropDown.localStorage; 
 window.options = $.initNamespaceStorage('settings');
 window.settings = options.localStorage; 
+window.orderData = $.initNamespaceStorage('orders');
+window.order = orderData.localStorage;
+window.outputHTML = $.initNamespaceStorage('initialHTML');
+window.initialHTML = outputHTML.localStorage;
 /* Start Drop Down population */
 $.get("api/dropdown/destination", function(data, dd){
         $('#destination').append(data); 
@@ -85,3 +127,4 @@ $.get("api/dropdown/destination", function(data, dd){
     .fail(function(){
         alert('Destination data failed to load, please refresh page');
     });
+    
