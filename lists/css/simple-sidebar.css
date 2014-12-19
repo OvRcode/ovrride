@@ -164,6 +164,9 @@
 .bg-none {
   border:1px solid black;
 }
+.bg-pm {
+    background-color: #FF9900;
+}
 #default{
     margin-left:10px;
 }
