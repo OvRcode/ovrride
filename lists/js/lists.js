@@ -27,11 +27,20 @@ function setupPage(){
 function noShow(element) {
     var NoShow = element.attr('id')+":NoShow";
     tripData.set(NoShow, 1);
-    element.addClass('bg-danger');
+    element.addClass('bg-noshow');
+}
+function resetGuest(element){
+    var ID = element.attr('id');
+    var clearVars = [ ID + ":AM", ID + ":PM", ID + ":Waiver", ID + ":Product", ID + ":NoShow" ];
+    element.removeClass();
+    element.addClass("row listButton bg-none");
+    jQuery.each(clearVars, function(key,value){
+        tripData.remove(value);
+    });
 }
 function changeStatus(element){
     if ( $('#AMPM').val() == 'PM' ) {
-        element.removeClass('bg-info');
+        element.removeClass('bg-productrec');
         element.addClass('bg-pm');
         var PM = element.attr('id')+":PM";
         tripData.set(PM, 1);
@@ -43,19 +52,19 @@ function changeStatus(element){
         var AM = element.attr('id') + ":AM";
         tripData.set(AM, 1 );
         element.removeClass('bg-none');
-        element.addClass('bg-warning');        
+        element.addClass('bg-am');        
         element.find('.flexPackage').removeClass('visible-md visible-lg');
         element.find('.flexPickup').addClass('visible-md visible-lg');
-    } else if ( element.hasClass('bg-warning') ) {
+    } else if ( element.hasClass('bg-am') ) {
         var Waiver = element.attr('id')+":Waiver";
         tripData.set(Waiver, 1);
-        element.removeClass('bg-warning');
-        element.addClass('bg-success');
-    } else if ( element.hasClass('bg-success') ) {
+        element.removeClass('bg-am');
+        element.addClass('bg-waiver');
+    } else if ( element.hasClass('bg-waiver') ) {
         var Product = element.attr('id')+":Product";
         tripData.set(Product, 1);
-        element.removeClass('bg-success');
-        element.addClass('bg-info');
+        element.removeClass('bg-waiver');
+        element.addClass('bg-productrec');
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
     }
@@ -64,18 +73,23 @@ function changeStatus(element){
 function setupListeners(){
     jQuery.each(orders.keys(), function(key, value){
         var split = value.split(":");
+        $("#" + split[0] + "\\:" + split[1] + "\\:Reset").click(function(){
+            resetGuest($(this).parents().eq(3));
+        });
+        $("#" + split[0] + "\\:" + split[1] + "\\:NoShow").click(function(){
+            noShow($(this).parents().eq(3));
+        });
         if ($(window).width() < 970) {
             $("#" + split[0] + "\\:" + split[1])
             .click(function(){
                 changeStatus($(this));
             });
         } else {
-            //
             $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick")
             .click(function(){
                 changeStatus($(this).parent().parent());
-                //alert($(this).parent().parent().attr('id'));
             });
+            
         }
         
     });

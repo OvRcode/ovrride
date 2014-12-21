@@ -143,31 +143,43 @@ class Lists {
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
                     Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
                 </div>
-                <div class="buttonCell col-xs-4 col-md-3 flexPickup">{$orderData['Pickup']}</div>
+EOT;
+        if ( isset($orderData['Pickup']) ) {
+            $output .= '<div class="buttonCell col-xs-4 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
+        }
+        $output .= <<<TEXT
                 <div class="buttonCell col-xs-4 col-md-3 flexPackage visible-md visible-lg">{$orderData['Package']}</div>
               </div>
               <div class="expanded hidden">
               <div class="row">
                 <div class="buttonCell col-xs-6">
-                     Order:<a class="noClick" href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
+                     Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
                 </div>
                 <div class="buttonCell col-xs-6">
-                    Phone:<a class="noClick" href="tel:{$orderData['Phone']}">{$orderData['Phone']}</a>
+                    Phone:<a href="tel:{$orderData['Phone']}">{$orderData['Phone']}</a>
                 </div>
               </div>
               <div class="row">
                 <div class="buttonCell col-xs-12">
-                  Email: <a class="noClick" href="mailto:{$orderData['Email']}">{$orderData['Email']}</a>
+                  Email: <a href="mailto:{$orderData['Email']}">{$orderData['Email']}</a>
                 </div>
               </div>
               <div class="row">
                 <br />
-                <div class="buttonCell col-xs-6"><button class="noClick btn btn-warning">Reset</button></div>
-                <div class="buttonCell col-xs-6"><button class="noClick btn btn-danger">No Show</button></div>
+                <div class="buttonCell col-xs-6">
+                    <button class="btn btn-warning" id="{$orderData['num']}:{$orderData['item_num']}:Reset">
+                        Reset
+                    </button>
+                </div>
+                <div class="buttonCell col-xs-6">
+                    <button class="btn btn-danger" id="{$orderData['num']}:{$orderData['item_num']}:NoShow">
+                        No Show
+                    </button>
+                </div>
               </div>
               </div>
             </div>
-EOT;
+TEXT;
         $ID = $orderData['num'].":".$orderData['item_num'];
         $this->orders[$ID]['HTML'] = $output;
     }
