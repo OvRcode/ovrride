@@ -164,6 +164,10 @@
   box-shadow:3px 3px 1px 1px #ccc;
 }
 
+.listButton a {
+    color:#666666;
+    
+}
 .buttonCell {
   display: block;
   overflow:none;
@@ -175,6 +179,27 @@
 }
 .bg-pm {
     background-color: #FF9900;
+    border: 1px solid #333333;
+}
+.bg-am {
+    background-color:#FAE92A;
+    border:1px solid #333333;
+}
+.bg-waiver {
+    background-color:#5CB85C;
+    border: 1px solid #333333;
+}
+.bg-productrec {
+    background-color:#5BC0DE;
+    border: 1px solid #333333;
+}
+.bg-noshow {
+    background-color: #FA2A2A;
+    border: 1px solid #333333;
+    color: white;
+}
+.bg-noshow a{
+    color:#111111;
 }
 #default{
     margin-left:10px;
