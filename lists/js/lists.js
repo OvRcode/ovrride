@@ -40,6 +40,7 @@ function resetGuest(element){
 }
 function changeStatus(element){
     if ( $('#AMPM').val() == 'PM' ) {
+        // Customer checked in at end of day
         element.removeClass('bg-productrec');
         element.addClass('bg-pm');
         var PM = element.attr('id')+":PM";
@@ -48,7 +49,6 @@ function changeStatus(element){
     
     if ( element.hasClass('bg-none') && ! element.hasClass('bg-danger')) {
         // Customer Checked in
-        console.log(element.attr('id'));
         var AM = element.attr('id') + ":AM";
         tripData.set(AM, 1 );
         element.removeClass('bg-none');
@@ -56,11 +56,13 @@ function changeStatus(element){
         element.find('.flexPackage').removeClass('visible-md visible-lg');
         element.find('.flexPickup').addClass('visible-md visible-lg');
     } else if ( element.hasClass('bg-am') ) {
+        // Waiver Received from Customer
         var Waiver = element.attr('id')+":Waiver";
         tripData.set(Waiver, 1);
         element.removeClass('bg-am');
         element.addClass('bg-waiver');
     } else if ( element.hasClass('bg-waiver') ) {
+        // Customer received product
         var Product = element.attr('id')+":Product";
         tripData.set(Product, 1);
         element.removeClass('bg-waiver');
