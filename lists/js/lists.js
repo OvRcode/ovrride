@@ -75,12 +75,16 @@ function changeStatus(element){
 function setupListeners(){
     jQuery.each(orders.keys(), function(key, value){
         var split = value.split(":");
+        // Click events for noshow/reset buttons
         $("#" + split[0] + "\\:" + split[1] + "\\:Reset").click(function(){
             resetGuest($(this).parents().eq(3));
         });
         $("#" + split[0] + "\\:" + split[1] + "\\:NoShow").click(function(){
             noShow($(this).parents().eq(3));
         });
+        
+        /* Click events for listButton
+            on small screens noClick class is ignored because links are not shown on button in regular list mode */
         if ($(window).width() < 970) {
             $("#" + split[0] + "\\:" + split[1])
             .click(function(){
