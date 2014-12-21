@@ -10,8 +10,29 @@ $(function() {
     window.data =$.initNamespaceStorage('data');
     window.tripData = data.localStorage;  
     setupPage();
-    setupListeners();
+    //setupListeners();
 });
+function hammerTest(){
+    var myElement = $("#32763\\:15652");
+    var mc = new Hammer.Manager(myElement[0]);
+    mc.add(new Hammer.Swipe({
+            event: 'swipe',
+            velocity: 0.001
+    }));
+    mc.on("swipe", function(ev){
+        console.log(ev);
+        //toggleExpanded(myElement);
+        //toggleExpanded($(ev).siblings());
+    });
+    //$("#32763\\:15652 div.row.primary").hammer(new Hammer.Swipe({event: 'swipe',velocity: 0.001})).bind("swipe", function(){toggleExpanded($(this).siblings('div.row.expanded'))});
+    /*jQuery.each(orders.keys(), function(key, value){
+        var split = value.split(":");
+        $("#" + split[0] + "\\:" + split[1]).hammer({event:'swipe', threshold:5, velocity: 0.02}).bind("swiperight", function(){
+            toggleExpanded($(this).children('div.expanded'))
+        });
+    });*/
+    //$("#32763\\:15652").hammer().bind("pan", function(){$(this).children('div.expanded').removeClass('hidden')});
+}
 function setupPage(){
     if ( window.settings.isSet('tripName') ) {
         $('#tripName').text(window.settings.get('tripName'));
@@ -72,6 +93,19 @@ function changeStatus(element){
     }
 
 }
+function toggleExpanded(element){
+    if ( element.hasClass('hidden') ) {
+        element.removeClass('hidden');
+    } else {
+        element.addClass('hidden');
+    }
+}
+function showExpanded(element){
+    element.removeClass('hidden');
+}
+function removeExpanded(element){
+    element.addClass('hidden');
+}
 function setupListeners(){
     jQuery.each(orders.keys(), function(key, value){
         var split = value.split(":");
@@ -94,8 +128,7 @@ function setupListeners(){
             $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick")
             .click(function(){
                 changeStatus($(this).parent().parent());
-            });
-            
+            });    
         }
         
     });
