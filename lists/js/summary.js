@@ -3,7 +3,9 @@ $(function(){
     if ( ! jQuery.isEmptyObject(pickups) ) {
         outputPickups();
     }
-    outputPackages();
+    if ( tripData.keys() != '' ) {
+        outputPackages();
+    }
 })
 function parseData(){
     window.packages = {};

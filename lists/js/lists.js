@@ -34,7 +34,7 @@ function noShow(element) {
 }
 function resetGuest(element){
     var ID = element.attr('id');
-    var clearVars = [ ID + ":AM", ID + ":PM", ID + ":Waiver", ID + ":Product", ID + ":NoShow" ];
+    var clearVars = [ ID + ":AM", ID + ":PM", ID + ":Waiver", ID + ":Product", ID + ":NoShow", ID + ":Bus" ];
     element.removeClass();
     element.addClass("row listButton bg-none");
     jQuery.each(clearVars, function(key,value){
