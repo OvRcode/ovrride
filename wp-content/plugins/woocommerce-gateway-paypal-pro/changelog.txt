@@ -1,5 +1,9 @@
 *** PayPal Pro Changelog ***
 
+2014.10.27 - version 4.2.0
+* Added test credit card number on checkout when in test/sandbox mode.
+* Added refund capability to PayPal Pro classic.
+
 2014.10.27 - version 4.1.1
 * Updated 3DSecure thin client.
 
