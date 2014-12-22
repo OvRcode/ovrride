@@ -1,27 +1,7 @@
 $(function() {
-    window.dropDown = $.initNamespaceStorage('dropdown');
-    window.dd = dropDown.localStorage; 
-    window.options = $.initNamespaceStorage('settings');
-    window.settings = options.localStorage; 
-    window.orderData = $.initNamespaceStorage('orders');
-    window.orders = orderData.localStorage;
-    window.outputHTML = $.initNamespaceStorage('initialHTML');
-    window.initialHTML = outputHTML.localStorage;  
-    window.data =$.initNamespaceStorage('data');
-    window.tripData = data.localStorage; 
-    // Menu JS
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    $("#btn-hide").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
+    // Turn off tap event when taphold is triggered;
+    $.event.special.tap.emitTapOnTaphold = false; 
     
-    $( '#btn-settings' ).click(function(){ window.location.href='index.html' });
-    $( '#btn-list' ).click(function(){ window.location.href='list.html' });
-    $( '#btn-summary' ).on("tap", function(){ window.location.href = 'summary.html' });
     $('#AMPM').change(function(){
         if ( $(this).val() == 'PM' ) {
             $('.listButton.bg-none').addClass('hidden');
@@ -29,9 +9,8 @@ $(function() {
             $('.listButton.bg-none').removeClass('hidden');
         }
     });
-    // Turn off tap event when taphold is triggered;
-    $.event.special.tap.emitTapOnTaphold = false; 
     setupPage();
+    checkData();
     setupListeners();
 });
 function setupPage(){
@@ -135,4 +114,39 @@ function setupListeners(){
         }
         
     });
+}
+function setState(element, state){
+    if ( state == 'AM' ){
+        element.addClass('bg-am');
+        element.removeClass('bg-none');
+    } else if ( state == 'Waiver' ) {
+        element.addClass('bg-waiver');
+        element.removeClass('bg-none');
+    } else if ( state == 'Product' ) {
+        element.addClass('bg-productrec');
+        element.removeClass('bg-none');
+    } else if ( state == 'PM' ) {
+        element.addClass('bg-pm');
+        element.removeClass('bg-none');
+    }
+}
+function checkData(){
+    var localData = {};
+    var states = { AM: 1, BUS: 0, Waiver: 2, Product: 3, PM: 4};
+    if ( ! jQuery.isEmptyObject(tripData) ) {
+        jQuery.each(tripData.keys(), function(key, value){
+            var split = value.split(":");
+            var ID = split[0] + ":" + split[1];
+
+            if ( jQuery.isEmptyObject(localData[ID])) {
+                localData[ID] = split[2];
+            } else if ( states[localData[ID]] < states[split[2]] ) {
+                localData[ID] = split[2];
+            }
+        });
+        jQuery.each(localData, function(key, value){
+            var selector = key.split(":");
+            setState($("#" + selector[0] + "\\:" + selector[1]), value);
+        });
+    }
 }
