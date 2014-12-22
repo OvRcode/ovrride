@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
 Plugin URI: http://woothemes.com/woocommerce
 Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
-Version: 4.1.1
+Version: 4.2.0
 Author: WooThemes
 Author URI: http://woothemes.com/
 
