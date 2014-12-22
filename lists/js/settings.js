@@ -102,6 +102,7 @@ function getTripData(){
     window.initialHTML.removeAll();
     window.tripData.removeAll();
     $.get("/api/trip/"+trip+"/"+statuses, function(data){
+        alert('please wait while you trip is downloaded');
         var apiData = jQuery.parseJSON(data);
         jQuery.each(apiData, function(id,dataObject){
             jQuery.each(dataObject, function(key, value){
@@ -112,6 +113,9 @@ function getTripData(){
             });
         });
         //console.log(apiData);
+    })
+    .done(function(){
+        alert('Trip download complete');
     });
 }
 /* Menu JS */
