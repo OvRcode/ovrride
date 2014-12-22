@@ -102,7 +102,6 @@ function getTripData(){
     window.initialHTML.removeAll();
     window.tripData.removeAll();
     $.get("/api/trip/"+trip+"/"+statuses, function(data){
-        alert('please wait while you trip is downloaded');
         var apiData = jQuery.parseJSON(data);
         jQuery.each(apiData, function(id,dataObject){
             jQuery.each(dataObject, function(key, value){
@@ -112,10 +111,9 @@ function getTripData(){
                     initialHTML.set(id,value);
             });
         });
-        //console.log(apiData);
     })
     .done(function(){
-        alert('Trip download complete');
+        window.location.href= "list.html";
     });
 }
 /* Menu JS */
