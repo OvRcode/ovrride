@@ -1,15 +1,5 @@
 $(function(){
-    /* Setup Namespace storage */
-    window.dropDown = $.initNamespaceStorage('dropdown');
-    window.dd = dropDown.localStorage; 
-    window.options = $.initNamespaceStorage('settings');
-    window.settings = options.localStorage; 
-    window.orderData = $.initNamespaceStorage('orders');
-    window.orders = orderData.localStorage;
-    window.outputHTML = $.initNamespaceStorage('initialHTML');
-    window.initialHTML = outputHTML.localStorage;  
-    window.data =$.initNamespaceStorage('data');
-    window.tripData = data.localStorage;  
+  
     /* Start Drop Down population */
     $.get("api/dropdown/destination", function(data, dd){
             $('#destination').append(data); 

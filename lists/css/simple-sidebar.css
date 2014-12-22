@@ -213,3 +213,19 @@
 .ui-loader {
   display:none !important;
 }
+.summary {
+    border-collapse:collapse;
+    text-align: center;
+}
+.summary th {
+    border: 3px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #D1D1D1;
+}
+.summary td {
+    border: 1px solid grey;
+}
+.ui-shadow span {
+    visibility: hidden;
+}
