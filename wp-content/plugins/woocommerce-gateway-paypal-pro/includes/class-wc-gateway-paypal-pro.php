@@ -15,6 +15,10 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		$this->method_description 	= __( 'PayPal Pro works by adding credit card fields on the checkout and then sending the details to PayPal for verification.', 'woocommerce-gateway-paypal-pro' );
 		$this->icon 				= apply_filters('woocommerce_paypal_pro_icon', WP_PLUGIN_URL . "/" . plugin_basename( dirname( dirname( __FILE__ ) ) ) . '/assets/images/cards.png' );
 		$this->has_fields 			= true;
+		$this->supports 			= array(
+			'products',
+			'refunds'
+		);
 		$this->liveurl				= 'https://api-3t.paypal.com/nvp';
 		$this->testurl				= 'https://api-3t.sandbox.paypal.com/nvp';
 		$this->liveurl_3ds			= 'https://paypal.cardinalcommerce.com/maps/txns.asp';
@@ -298,7 +302,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
      */
 	public function payment_fields() {
 		if ( $this->description ) {
-			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST MODE/SANDBOX ENABLED', 'woocommerce-gateway-paypal-pro') : '' ) . '</p>';
+			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.', 'woocommerce-gateway-paypal-pro') : '' ) . '</p>';
 		}
 		$this->credit_card_form();
 	}
@@ -504,6 +508,74 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		// Do payment with paypal
 		return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc );
+	}
+
+	/**
+	 * Process a refund if supported
+	 * @param  int $order_id
+	 * @param  float $amount
+	 * @param  string $reason
+	 * @return  bool|wp_error True or false based on success, or a WP_Error object
+	 */
+	public function process_refund( $order_id, $amount = null, $reason = '' ) {
+		$order = wc_get_order( $order_id );
+
+		$url = $this->testmode ? $this->testurl : $this->liveurl;
+
+		if ( ! $order || ! $order->get_transaction_id() || ! $this->api_username || ! $this->api_password || ! $this->api_signature ) {
+			return false;
+		}
+
+		$post_data = array(
+			'VERSION'       => '59.0',
+			'SIGNATURE'     => $this->api_signature,
+			'USER'          => $this->api_username,
+			'PWD'           => $this->api_password,
+			'METHOD'        => 'RefundTransaction',
+			'TRANSACTIONID' => $order->get_transaction_id(),
+			'REFUNDTYPE'    => is_null( $amount ) ? 'Full' : 'Partial'
+		);
+
+		if ( ! is_null( $amount ) ) {
+			$post_data['AMT']          = number_format( $amount, 2, '.', '' );
+			$post_data['CURRENCYCODE'] = $order->get_order_currency();
+		}
+
+		if ( $reason ) {
+			if ( 255 < strlen( $reason ) ) {
+				$reason = substr( $reason, 0, 252 ) . '...';
+			}
+
+			$post_data['NOTE'] = html_entity_decode( $reason, ENT_NOQUOTES, 'UTF-8' );
+		}
+
+		$response = wp_remote_post( $url, array(
+			'method'		=> 'POST',
+			'headers'       => array( 'PAYPAL-NVP' => 'Y' ),
+			'body' 			=> $post_data,
+			'timeout' 		=> 70,
+			'sslverify' 	=> false,
+			'user-agent' 	=> 'WooCommerce',
+			'httpversion'   => '1.1'
+		));
+
+		if ( is_wp_error( $response ) ) {
+			$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
+
+			throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
+		}
+
+		parse_str( $response['body'], $parsed_response );
+
+		switch ( strtolower( $parsed_response['ACK'] ) ) {
+			case 'success':
+			case 'successwithwarning':
+				$order->add_order_note( sprintf( __( 'Refunded %s - Refund ID: %s', 'woocommerce-gateway-paypal-pro' ), $parsed_response['GROSSREFUNDAMT'], $parsed_response['REFUNDTRANSACTIONID'] ) );
+				return true;
+			break;
+		}
+
+		return false;
 	}
 
 	/**
@@ -795,7 +867,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 					$order->add_order_note( sprintf(__('PayPal Pro payment completed (Transaction ID: %s, Correlation ID: %s)', 'woocommerce-gateway-paypal-pro'), $parsed_response['TRANSACTIONID'], $parsed_response['CORRELATIONID'] ) );
 
 					// Payment complete
-					$order->payment_complete();
+					$txn_id = ( ! empty( $parsed_response['TRANSACTIONID'] ) ) ? wc_clean( $parsed_response['TRANSACTIONID'] ) : '';
+					$order->payment_complete( $txn_id );
 
 					// Remove cart
 					WC()->cart->empty_cart();
