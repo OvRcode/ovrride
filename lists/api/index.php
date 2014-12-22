@@ -35,7 +35,7 @@ class Lists {
     }
     function tripDropdown(){
         $options = "";
-        # Find trips for the Select a Trip drop down
+        # Find trips for the trip drop down
         $sql = "SELECT DISTINCT `id`, `post_title`
                 FROM `wp_posts`
                 INNER JOIN `wp_postmeta` ON `wp_posts`.`id` = `wp_postmeta`.`post_id`
@@ -135,33 +135,48 @@ class Lists {
         $this->orders[$orderNum.":".$orderItemNum]['Data'] = $orderData;
     }
     private function listHTML($orderData){
-        $output = <<<EOT
+        $output = <<<AAA
             <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
                 <div class="buttonCell col-xs-4 col-md-2">{$orderData['First']}</div>
                 <div class="buttonCell col-xs-4 col-md-2">{$orderData['Last']}</div>
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
-                    Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
+                    Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">       
+                            {$orderData['num']}</a>
                 </div>
-EOT;
+AAA;
         if ( isset($orderData['Pickup']) ) {
             $output .= '<div class="buttonCell col-xs-4 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
         }
-        $output .= <<<TEXT
-                <div class="buttonCell col-xs-4 col-md-3 flexPackage visible-md visible-lg">{$orderData['Package']}</div>
+        $output .=<<<BBB
+                <div class="buttonCell col-xs-4 col-md-3 flexPackage visible-md visible-lg"> {$orderData['Package']}</div>
               </div>
-              <div class="expanded hidden">
+              <div class="expanded">
               <div class="row">
-                <div class="buttonCell col-xs-6">
-                     Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">{$orderData['num']}</a>
+                  <div class="buttonCell col-xs-12 col-md-6">
+                      <strong>Package:</strong> {$orderData['Package']}
+                  </div>
+BBB;
+        if ( isset($orderData['Pickup']) ) {
+            $output .= '<div class="buttonCell col-xs-12 col-md-6">';
+            $output .= '<strong>Pickup:</strong> ' . $orderData['Pickup'] . '</div>';
+        }
+        $output .=<<<CCC
+              </div>
+              <div class="row">
+                <div class="buttonCell col-xs-12 col-md-6">
+                     <strong>Order:</strong> 
+                     <a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">
+                         {$orderData['num']}
+                     </a>
                 </div>
-                <div class="buttonCell col-xs-6">
-                    Phone:<a href="tel:{$orderData['Phone']}">{$orderData['Phone']}</a>
+                <div class="buttonCell col-xs-12 col-md-6">
+                    <strong>Phone:</strong> <a href="tel:{$orderData['Phone']}">{$orderData['Phone']}</a>
                 </div>
               </div>
               <div class="row">
-                <div class="buttonCell col-xs-12">
-                  Email: <a href="mailto:{$orderData['Email']}">{$orderData['Email']}</a>
+                <div class="buttonCell col-xs-12 col-md-6">
+                  <strong>Email:</strong> <a href="mailto:{$orderData['Email']}">{$orderData['Email']}</a>
                 </div>
               </div>
               <div class="row">
@@ -179,7 +194,7 @@ EOT;
               </div>
               </div>
             </div>
-TEXT;
+CCC;
         $ID = $orderData['num'].":".$orderData['item_num'];
         $this->orders[$ID]['HTML'] = $output;
     }
@@ -189,8 +204,7 @@ TEXT;
         } else {
           return $result;
         }
-    }
-    
+    }  
     private function reformatPhone($phone){
 
         # Strip all formatting
@@ -227,7 +241,8 @@ TEXT;
 
         return array("First" => $first, "Last" => $last); 
     }
-    // TODO: Need to finish tripData function, working on settings page right now
+    // TODO: Need to finish tripData function, needs walk-on data and save
+    // TODO: Offline functionality
 }
 require 'flight/Flight.php';
 

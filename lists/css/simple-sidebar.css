@@ -125,57 +125,63 @@
 
 /* Start OvR Lists CSS */
 .sidebar-nav .btn {
-  width:80%;
+    width:80%;
 }
 .center {
-  margin-left: auto; 
-  margin-right: auto;
+    margin-left: auto; 
+    margin-right: auto;
 }
-
 .ovr {
-  background-color:#25AEE6;
-  position:fixed;
-  top:0px;
-  width:100%;
+    background-color:#09BDEB;
+    position:fixed;
+    top:0px;
+    width:100%;
 }
 .pad {
     padding-top:60px;
 }
 #menu-toggle {
-  position: relative;
-  top:9px;
-  float: right;
+    position: relative;
+    top:9px;
+    float: right;
 }
-
 #settings_save {
-  margin-top:20px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */
 }
-
 .listButton {
-  border-radius:10px;
-  padding-top:3px;
-  padding-left:15px;
-  padding-right:15px;
-  padding-bottom:3px;
-  margin-bottom: 10px;
-  margin-left:3px;
-  margin-right:3px;
-  -webkit-box-shadow: 3px 3px 1px 1px #ccc;
-  box-shadow:3px 3px 1px 1px #ccc;
+    border-radius:10px;
+    padding-top:3px;
+    padding-left:15px;
+    padding-right:15px;
+    padding-bottom:3px;
+    margin-bottom: 10px;
+    margin-left:3px;
+    margin-right:3px;
+    -webkit-box-shadow: 3px 3px 1px 1px #ccc;
+    box-shadow: 3px 3px 1px 1px #ccc;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-
 .listButton a {
-    color:#666666;
-    
+    color:#777777;
+    text-decoration: underline;   
+}
+.listButton a:hover {
+    color:black;
 }
 .buttonCell {
-  display: block;
-  overflow:none;
-  padding-bottom:5px;
+    display: block;
+    overflow:none;
+    padding-bottom:5px;
 }
-
 .bg-none {
-  border:1px solid black;
+    border:1px solid black;
 }
 .bg-pm {
     background-color: #FF9900;
@@ -203,4 +209,7 @@
 }
 #default{
     margin-left:10px;
+}
+.ui-loader {
+  display:none !important;
 }
