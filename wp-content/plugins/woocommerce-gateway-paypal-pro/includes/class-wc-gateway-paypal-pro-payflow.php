@@ -595,7 +595,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
      */
 	public function payment_fields() {
 		if ( $this->description ) {
-			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __('TEST MODE/SANDBOX ENABLED', 'woocommerce-gateway-paypal-pro') : '' ) . '</p>';
+			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __('TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.', 'woocommerce-gateway-paypal-pro') : '' ) . '</p>';
 		}
 		if ( ! $this->transparent_redirect ) {
 			$this->credit_card_form();
