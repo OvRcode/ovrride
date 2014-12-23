@@ -1,14 +1,30 @@
-// Number padding for timestamp generation
-Number.prototype.pad = function(size) {
-      var s = String(this);
-      while (s.length < (size || 2)) {s = "0" + s;}
-      return s;
-    }
 $(function(){
     //add check for online/offline when offline is implemented
-    //getNotes();
+    refreshNotes();
+    $("#saveNote").click(function(){ saveNote() });
+    $("#refreshNotes").click(function(){ refreshNotes() });
 });
-function timestamp(){
+function saveNote(){
+    var note = $("#newNote").val();
+    var bus = settings.get('bus');
+    var trip = settings.get('tripNum');
+    var url = "/api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
+    $.get(url, function(data){
+        if ( data == 'success' ) {
+            var timestamp = timeStamp();
+            $("#notesContent").append(timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after();
+            $("#newNote").val('');
+        } else {
+            alert("Note Save failed, try again");
+        }
+    });
+    
+}
+function refreshNotes(){
+    getNotes();
+    setTimeout(outputNotes, 50);
+}
+function timeStamp(){
     var date    = new Date();
     var year    = date.getFullYear();
     var month   = date.getMonth().pad();
@@ -20,6 +36,7 @@ function timestamp(){
     return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
 }
 function outputNotes(){
+    $("#notesContent").empty();
     if (! jQuery.isEmptyObject(notes.keys()) ){
         var output = "";
         var allNotes = notes.keys();
