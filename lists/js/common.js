@@ -9,6 +9,8 @@ $(function() {
     window.initialHTML = outputHTML.localStorage;  
     window.data =$.initNamespaceStorage('data');
     window.tripData = data.localStorage; 
+    window.notespace = $.initNamespaceStorage('notes');
+    window.notes = notespace.localStorage;
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
