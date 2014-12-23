@@ -28,6 +28,24 @@ $(function() {
     $( '#btn-message' ).on("tap", function(){ window.location.href = 'message.html' });
     $( '#btn-export' ).on("tap", function(){ window.location.href = 'export.html' });
     $( '#btn-logout' ).on("tap", function(){ /*TODO: implement login/logout */ });
+    
+    // Monitor onLine status and flip navbar indicator
+    setInterval(function () {
+        var statusIcon = $("#status");
+        if (window.navigator.onLine) {
+            if ( statusIcon.hasClass('btn-danger') ) {
+                statusIcon.removeClass('btn-danger')
+                    .addClass('btn-success')
+                    .html('<i class="fa fa-signal"></i>');
+            }
+        } else if (!window.navigator.onLine) {
+            if ( statusIcon.hasClass('btn-success') ) {
+                statusIcon.removeClass('btn-success')
+                    .addClass('btn-danger')
+                    .html('<i class="fa fa-plane"></i>');
+            }
+        }
+    }, 250);
 });
 
 function getNotes(){
