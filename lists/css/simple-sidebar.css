@@ -140,7 +140,7 @@
 .pad {
     padding-top:60px;
 }
-#menu-toggle {
+#menu-toggle, #status {
     position: relative;
     top:9px;
     float: right;
