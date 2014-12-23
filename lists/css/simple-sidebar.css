@@ -233,3 +233,10 @@
     margin-top:20px;
     margin-bottom:10px;
 }    
+#notesContent p {
+    width:100%;
+    border:1px solid grey;
+    border-radius: 10px;
+    padding: 10px;
+    background: #D1D1D1;
+}
