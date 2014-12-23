@@ -29,3 +29,14 @@ $(function() {
     $( '#btn-export' ).on("tap", function(){ window.location.href = 'export.html' });
     $( '#btn-logout' ).on("tap", function(){ /*TODO: implement login/logout */ });
 });
+
+function getNotes(){
+    notes.removeAll();
+    var trip = settings.get('tripNum');
+    $.get("/api/notes/"+trip, function(data){
+        var parsed = jQuery.parseJSON(data);
+        jQuery.each(parsed, function(key,value){
+            notes.set(key, value);
+        });
+    });
+}
