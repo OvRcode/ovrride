@@ -106,6 +106,16 @@ function getTripData(){
         window.location.href= "list.html";
     });
 }
+function getNotes(){
+    notes.removeAll();
+    var trip = settings.get('tripNum');
+    $.get("/api/notes/"+trip, function(data){
+        var parsed = jQuery.parseJSON(data);
+        jQuery.each(parsed, function(key,value){
+            notes.set(key, value);
+        });
+    });
+}
 /* Menu JS */
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
