@@ -99,7 +99,27 @@
           </nav>
             <div class="container-fluid pad" id="content">
                 <!-- content here -->
-                
+                <h2>Notes</h2>
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <textarea rows="8" class="form-control" id="newNote" placeholder="Add note here"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn btn-success" id="saveNote">
+                            <i class="fa fa-floppy-o"></i>&nbsp;Save Note
+                        </button>
+                        <button class="btn btn-info" id="refreshNotes">
+                            <i class="fa fa-refresh"></i>&nbsp;Refresh Notes
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="notesContent"></div>
+                    </div>
+                </div>
         </div>
         <!-- /#page-content-wrapper -->
 

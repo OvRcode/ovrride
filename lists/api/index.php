@@ -134,12 +134,12 @@ class Lists {
         $sql = "SELECT * FROM `ovr_lists_notes` WHERE `Trip` ='" . $tripId . "'";
         $result = $this->dbQuery($sql);
         while( $row = $result->fetch_assoc() ){
-            $notes[$row['Time']]=$row['Note'];
+            $notes[$row['Time']]="Bus " . $row['Bus'] . ": " .$row['Note'];
         }
         return $notes;
     }
-    function addNote($tripId, $note){
-        $sql = "INSERT INTO `ovr_lists_notes` (Trip, Note) VALUES('".$tripId."', '".urldecode($note)."')";
+    function addNote($bus, $tripId, $note){
+        $sql = "INSERT INTO `ovr_lists_notes` (Bus, Trip, Note) VALUES('" . $bus . "','" . $tripId . "', '" . urldecode($note) . "')";
         if ( $this->dbQuery($sql) )
             return "success";
         else
@@ -282,9 +282,9 @@ Flight::route('/notes/@tripId', function($tripId){
     $list = Flight::Lists();
     echo json_encode($list->getNotes($tripId));
 });
-Flight::route('/notes/add/@tripId/@note', function($tripId, $note){
+Flight::route('/notes/add/@bus/@tripId/@note', function($bus,$tripId, $note){
     $list = Flight::Lists();
-    echo $list->addNote($tripId, $note);
+    echo $list->addNote($bus, $tripId, $note);
 });
 Flight::start();
 ?>
