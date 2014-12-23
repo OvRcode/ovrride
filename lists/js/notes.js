@@ -3,7 +3,22 @@ $(function(){
     refreshNotes();
     $("#saveNote").click(function(){ saveNote() });
     $("#refreshNotes").click(function(){ refreshNotes() });
+    $("#bus").click(function(){ toggleBus() });
 });
+function toggleBus(){
+    var bus = settings.get('bus');
+    var selector = "div#notesContent :not(p:contains('Bus " + bus +"'))";
+    var buttonValue = $("#bus").val();
+    if ( buttonValue == "show" ) {
+        $(selector).hide();
+        $("#bus").val('hide');
+        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;Show All Buses');
+    } else {
+        $(selector).show();
+        $("#bus").val("show");
+        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;This Bus Only');
+    }
+}
 function saveNote(){
     var note = $("#newNote").val();
     var bus = settings.get('bus');
