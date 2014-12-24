@@ -154,18 +154,20 @@ class Lists {
         $output = <<<AAA
             <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
-                <div class="buttonCell col-xs-4 col-md-2">{$orderData['First']}</div>
-                <div class="buttonCell col-xs-4 col-md-2">{$orderData['Last']}</div>
+                  <div class="buttonCell col-xs-6 col-md-4">
+                      <span class="first">{$orderData['First']}</span>
+                      <span class="last">{$orderData['Last']}</span>
+                  </div>
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
                     Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">       
                             {$orderData['num']}</a>
                 </div>
 AAA;
         if ( isset($orderData['Pickup']) ) {
-            $output .= '<div class="buttonCell col-xs-4 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
+            $output .= '<div class="buttonCell col-xs-6 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
         }
         $output .=<<<BBB
-                <div class="buttonCell col-xs-4 col-md-3 flexPackage visible-md visible-lg"> {$orderData['Package']}</div>
+                <div class="buttonCell col-xs-6 col-md-3 flexPackage visible-md visible-lg"> {$orderData['Package']}</div>
               </div>
               <div class="expanded">
               <div class="row">
