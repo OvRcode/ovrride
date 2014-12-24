@@ -46,6 +46,7 @@ function changeStatus(element){
         // Customer checked in at end of day
         element.removeClass('bg-productrec');
         element.addClass('bg-pm');
+        element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
         var PM = element.attr('id')+":PM";
         tripData.set(PM, 1);
     }
@@ -57,7 +58,8 @@ function changeStatus(element){
         tripData.set(AM, 1 );
         tripData.set(Bus, settings.get('bus'));
         element.removeClass('bg-none');
-        element.addClass('bg-am');        
+        element.addClass('bg-am');
+        element.find("span.icon").html('<i class="fa fa-sun-o fa-lg"></i>');
         element.find('.flexPackage').removeClass('visible-md visible-lg');
         element.find('.flexPickup').addClass('visible-md visible-lg');
     } else if ( element.hasClass('bg-am') ) {
@@ -66,22 +68,28 @@ function changeStatus(element){
         tripData.set(Waiver, 1);
         element.removeClass('bg-am');
         element.addClass('bg-waiver');
+        element.find("span.icon").html('<i class="fa fa-file-word-o fa-lg"></i>');
     } else if ( element.hasClass('bg-waiver') ) {
         // Customer received product
         var Product = element.attr('id')+":Product";
         tripData.set(Product, 1);
         element.removeClass('bg-waiver');
         element.addClass('bg-productrec');
+        element.find('span.icon').html('<i class="fa fa-ticket fa-lg"></i>');
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
     }
 
 }
 function toggleExpanded(element){
-    if ( element.is(':visible') ){
-        element.hide(600);
+    if ( element.children('div.expanded').is(':visible') ){
+        element.children('div.expanded').hide(600);
+        element.children("div.row.primary").children().not(".noClick").on("tap", function(){
+        changeStatus($(this).parents().eq(1));
+        });
     } else {
-        element.show(600);
+        element.children('div.expanded').show(600);
+        element.children("div.row.primary").children().not(".noClick").unbind("tap");
     }
 }
 function setupListeners(){
@@ -98,35 +106,39 @@ function setupListeners(){
         
        // Expand list entry by pressing and holding on entry (works on mobile and desktop)
         $( selectorID ).on("taphold", function(){
-            toggleExpanded( $(this).children('div.expanded') );
+            toggleExpanded( $(this) );
         });
         
         /* Click events for listButton
             on small screens noClick class is ignored because links are not shown on button in regular list mode */
-        if ($(window).width() < 970) {
+        /*if ($(window).width() < 970) {
             $("#" + split[0] + "\\:" + split[1]).on("tap", function(){
                 changeStatus($(this));
             });
-        } else {
+        } else {*/
             $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
                 changeStatus($(this).parents().eq(1));
             });
-        }
+            //}
         
     });
 }
 function setState(element, state){
     if ( state == 'AM' ){
         element.addClass('bg-am');
+        element.find("span.icon").html('<i class="fa fa-sun-o fa-lg"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'Waiver' ) {
         element.addClass('bg-waiver');
+        element.find("span.icon").html('<i class="fa fa-file-word-o fa-lg"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'Product' ) {
         element.addClass('bg-productrec');
+        element.find('span.icon').html('<i class="fa fa-ticket fa-lg"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'PM' ) {
         element.addClass('bg-pm');
+        element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
         element.removeClass('bg-none');
     }
 }

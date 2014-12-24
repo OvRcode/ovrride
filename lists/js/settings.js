@@ -35,7 +35,7 @@ $(function(){
 }); 
 
 function tripDropdown(){
-    $.get("/api/dropdown/trip", function(data){
+    $.get("api/dropdown/trip", function(data){
             $('#trip').append(data); 
     })
     .done(function(data){
@@ -97,7 +97,7 @@ function getTripData(){
     window.orders.removeAll();
     window.initialHTML.removeAll();
     window.tripData.removeAll();
-    $.get("/api/trip/"+trip+"/"+statuses, function(data){
+    $.get("api/trip/"+trip+"/"+statuses, function(data){
         var apiData = jQuery.parseJSON(data);
         jQuery.each(apiData, function(id,dataObject){
             jQuery.each(dataObject, function(key, value){
