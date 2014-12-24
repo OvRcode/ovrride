@@ -163,10 +163,10 @@
 }
 .listButton {
     border-radius:10px;
-    padding-top:3px;
+    padding-top:7px;
     padding-left:15px;
     padding-right:15px;
-    padding-bottom:3px;
+    padding-bottom:7px;
     margin-bottom: 10px;
     margin-left:3px;
     margin-right:3px;
@@ -197,6 +197,7 @@
 .bg-pm {
     background-color: #FF9900;
     border: 1px solid #333333;
+    color: #FFFFFF;
 }
 .bg-am {
     background-color:#FAE92A;
@@ -205,18 +206,26 @@
 .bg-waiver {
     background-color:#5CB85C;
     border: 1px solid #333333;
+    color: #FFFFFF;
 }
 .bg-productrec {
     background-color:#5BC0DE;
     border: 1px solid #333333;
+    color: #FFFFFF;
 }
 .bg-noshow {
     background-color: #FA2A2A;
     border: 1px solid #333333;
-    color: white;
+    color: #FFFFFF;
 }
 .bg-noshow a{
     color:#111111;
+}
+.btn-black {
+    background-color:#000000;
+    color:#FFFFFF;
+    border: 1px solid #D1D1D1;
+    
 }
 #default{
     margin-left:10px;
