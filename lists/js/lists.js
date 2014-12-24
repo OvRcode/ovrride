@@ -2,13 +2,6 @@ $(function() {
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
     
-    /*$('#AMPM').change(function(){
-        if ( $(this).val() == 'PM' ) {
-            $('.listButton.bg-none').addClass('hidden');
-        } else if ( $(this).val() == 'AM' ) {
-            $('.listButton.bg-none').removeClass('hidden');
-        }
-    });*/
     $("#AMPM").on("click", function(){
         if ( $(this).val() == "AM") {
             $('.listButton.bg-none').addClass('hidden');
@@ -17,6 +10,7 @@ $(function() {
             <i class="fa fa-moon-o fa-lg"></i>';
             $(this).val("PM");
             $(this).html(html);
+            $(this).addClass('btn-black').removeClass('btn-default');
         } else {
             $('.listButton.bg-none').removeClass('hidden');
             $(this).val("AM");
@@ -24,6 +18,7 @@ $(function() {
                             <i class="fa fa-toggle-off fa-lg"></i>&nbsp;\
             <i class="fa fa-moon-o fa-lg"></i>';
             $(this).html(html);
+            $(this).addClass('btn-default').removeClass('btn-black');
         }
     });
     setupPage();
