@@ -227,9 +227,10 @@
     border: 1px solid #D1D1D1;
     
 }
-.btn-black:hover {
+.btn-black:hover, .btn-black:active {
     color:#FFFFFF;
 }
+
 #default{
     margin-left:10px;
 }

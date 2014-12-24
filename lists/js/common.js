@@ -26,7 +26,7 @@ $(function() {
     $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.html' });
     $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.html' });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.html' });
-    $( '#btn-export' ).on("click", function(){ window.location.href = 'export.html' });
+    $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.html' });
     $( '#btn-logout' ).on("click", function(){ /*TODO: implement login/logout */ });
     
     // Monitor onLine status and flip navbar indicator
