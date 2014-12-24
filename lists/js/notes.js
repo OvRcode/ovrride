@@ -27,7 +27,7 @@ function saveNote(){
     $.get(url, function(data){
         if ( data == 'success' ) {
             var timestamp = timeStamp();
-            $("#notesContent").append(timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after();
+            $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
             $("#newNote").val('');
         } else {
             alert("Note Save failed, try again");
