@@ -154,9 +154,9 @@ class Lists {
         $output = <<<AAA
             <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
-                  <div class="buttonCell col-xs-6 col-md-4">
+                  <div class="buttonCell col-xs-7 col-md-4">
                   <span class="icon"></span>
-                      <span class="first">&nbsp;&nbsp;{$orderData['First']}</span>
+                      <span class="first">&nbsp;{$orderData['First']}</span>
                       <span class="last">{$orderData['Last']}</span>
                   </div>
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
@@ -165,14 +165,14 @@ class Lists {
                 </div>
 AAA;
         if ( isset($orderData['Pickup']) ) {
-            $output .= '<div class="buttonCell col-xs-6 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
+            $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
         }
         $output .=<<<BBB
-                <div class="buttonCell col-xs-6 col-md-3 flexPackage visible-md visible-lg"> {$orderData['Package']}</div>
+                <div class="buttonCell col-xs-5 col-md-3 flexPackage visible-md visible-lg"> {$orderData['Package']}</div>
               </div>
               <div class="expanded">
               <div class="row">
-                  <div class="buttonCell col-xs-12 col-md-6">
+                  <div class="buttonCell col-xs-5 col-md-6">
                       <strong>Package:</strong> {$orderData['Package']}
                   </div>
 BBB;

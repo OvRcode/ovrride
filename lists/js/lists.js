@@ -31,12 +31,14 @@ function noShow(element) {
     var NoShow = element.attr('id')+":NoShow";
     tripData.set(NoShow, 1);
     element.addClass('bg-noshow');
+    element.find("span.icon").html('<i class="fa fa-exclamation-triangle fa-lg"></i>');
 }
 function resetGuest(element){
     var ID = element.attr('id');
     var clearVars = [ ID + ":AM", ID + ":PM", ID + ":Waiver", ID + ":Product", ID + ":NoShow", ID + ":Bus" ];
     element.removeClass();
     element.addClass("row listButton bg-none");
+    element.find("span.icon").html('');
     jQuery.each(clearVars, function(key,value){
         tripData.remove(value);
     });
