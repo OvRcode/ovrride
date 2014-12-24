@@ -43,7 +43,12 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-
+                    <button class="btn btn-success" id="status"><i class="fa fa-signal"></i> Online</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-warning" id="btn-hide">
+                        <i class="fa fa-arrow-left"></i>&nbsp;Hide Menu
+                    </button>
                 </li>
                 <li>
                     <button class="btn btn-info" id="btn-settings">
@@ -54,6 +59,11 @@
                     <button type="button" class="btn btn-info disabled" id="btn-list">
                       <i class="fa fa-list"></i>&nbsp;List
                     </button>
+                </li>
+                <li class="half">
+                    <button type="button" class="btn btn-success" id="saveList">
+                        <i class="fa fa-floppy-o"></i>&nbsp;Save List
+                    </button><br />
                 </li>
                 <li>
                     <button type="button" class="btn btn-info" id="btn-summary">
@@ -80,21 +90,15 @@
                         <i class="fa fa-power-off"></i>&nbsp;Log Out
                     </button>
                 </li>
-                <li>
-                    <button type="button" class="btn btn-warning" id="btn-hide">
-                        <i class="fa fa-arrow-left"></i>&nbsp;Hide Menu
-                    </button>
-                </li>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
-        <div id="page-content-wrapper container">
+        <div>
           <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
             <div class="container-fluid">
                 <button class="btn btn-link navbar-brand" id="brand">OvR Trip Lists</button>
-              <button class="btn btn-success" id="status"><i class="fa fa-signal"></i></button>
               <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
             </div>
           </nav>
@@ -106,7 +110,7 @@
                           <option value="PM">PM</option>
                       </select>
                     </div>
-                    <div class="col-xs-10 col-md-8">
+                    <div class="col-md-8">
                         <h4>Trip: <span id="tripName"></span></h4>
                     </div>
                     <div class="col-xs-4 col-md-4">

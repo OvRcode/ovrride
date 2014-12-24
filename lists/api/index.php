@@ -155,7 +155,8 @@ class Lists {
             <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
                   <div class="buttonCell col-xs-6 col-md-4">
-                      <span class="first">{$orderData['First']}</span>
+                  <span class="icon"></span>
+                      <span class="first">&nbsp;&nbsp;{$orderData['First']}</span>
                       <span class="last">{$orderData['Last']}</span>
                   </div>
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">

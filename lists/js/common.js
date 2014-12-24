@@ -36,13 +36,13 @@ $(function() {
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
                     .addClass('btn-success')
-                    .html('<i class="fa fa-signal"></i>');
+                    .html('<i class="fa fa-signal"></i> Online');
             }
         } else if (!window.navigator.onLine) {
             if ( statusIcon.hasClass('btn-success') ) {
                 statusIcon.removeClass('btn-success')
                     .addClass('btn-danger')
-                    .html('<i class="fa fa-plane"></i>');
+                    .html('<i class="fa fa-plane"></i> Offline');
             }
         }
     }, 250);

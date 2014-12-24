@@ -127,6 +127,13 @@
 .sidebar-nav .btn {
     width:80%;
 }
+.sidebar-nav .half {
+    width: 75%;
+        margin-bottom: 10px;
+    margin-right: auto;
+    margin-left: auto;
+
+    }
 .center {
     margin-left: auto; 
     margin-right: auto;
@@ -139,11 +146,12 @@
 }
 #brand {
     color:white;
+    left:1%;
 }
 .pad {
     padding-top:60px;
 }
-#menu-toggle, #status {
+#menu-toggle, #saveList {
     position: relative;
     top:9px;
     float: right;
