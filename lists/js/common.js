@@ -20,14 +20,14 @@ $(function() {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-    
-    $( '#btn-settings' ).on("tap", function(){ window.location.href='index.html' });
-    $( '#btn-list' ).on("tap", function(){ window.location.href='list.html' });
-    $( '#btn-summary' ).on("tap", function(){ window.location.href = 'summary.html' });
-    $( '#btn-notes' ).on("tap", function(){ window.location.href = 'notes.html' });
-    $( '#btn-message' ).on("tap", function(){ window.location.href = 'message.html' });
-    $( '#btn-export' ).on("tap", function(){ window.location.href = 'export.html' });
-    $( '#btn-logout' ).on("tap", function(){ /*TODO: implement login/logout */ });
+    $( '#brand' ).on("click", function(){ window.location.href='index.html' });
+    $( '#btn-settings' ).on("click", function(){ window.location.href='index.html' });
+    $( '#btn-list' ).on("click", function(){ window.location.href='list.html' });
+    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.html' });
+    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.html' });
+    $( '#btn-message' ).on("click", function(){ window.location.href = 'message.html' });
+    $( '#btn-export' ).on("click", function(){ window.location.href = 'export.html' });
+    $( '#btn-logout' ).on("click", function(){ /*TODO: implement login/logout */ });
     
     // Monitor onLine status and flip navbar indicator
     setInterval(function () {

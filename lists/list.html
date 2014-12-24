@@ -93,23 +93,23 @@
         <div id="page-content-wrapper container">
           <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
             <div class="container-fluid">
-              <a href="index.html" class="navbar-brand">OvR Trip Lists</a>
+                <button class="btn btn-link navbar-brand" id="brand">OvR Trip Lists</button>
               <button class="btn btn-success" id="status"><i class="fa fa-signal"></i></button>
               <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
             </div>
           </nav>
             <div class="container-fluid pad">
                 <div class="row">
-                    <div class="col-lg-1">
+                    <div class="col-xs-2 col-md-1">
                       <select id="AMPM" class="input-sm">
                           <option value="AM">AM</option>
                           <option value="PM">PM</option>
                       </select>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-xs-10 col-md-8">
                         <h4>Trip: <span id="tripName"></span></h4>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-xs-4 col-md-4">
                         <h4>Bus: <span id="bus"></span></h4>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
     <script src="js/jquery.mobile-1.4.5.js"></script>
     <!-- TODO: Minify Assets -->
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.js"></script>
     <script src="js/common.js"></script>
     <script src="js/lists.js"></script>
 </body>

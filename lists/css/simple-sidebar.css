@@ -137,6 +137,9 @@
     top:0px;
     width:100%;
 }
+#brand {
+    color:white;
+}
 .pad {
     padding-top:60px;
 }
