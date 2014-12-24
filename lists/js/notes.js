@@ -23,7 +23,7 @@ function saveNote(){
     var note = $("#newNote").val();
     var bus = settings.get('bus');
     var trip = settings.get('tripNum');
-    var url = "/api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
+    var url = "api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
     $.get(url, function(data){
         if ( data == 'success' ) {
             var timestamp = timeStamp();

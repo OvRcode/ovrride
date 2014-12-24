@@ -51,12 +51,13 @@ $(function() {
 function getNotes(){
     notes.removeAll();
     var trip = settings.get('tripNum');
-    $.get("/api/notes/"+trip, function(data){
+    $.get("api/notes/"+trip, function(data){
         var parsed = jQuery.parseJSON(data);
         jQuery.each(parsed, function(key,value){
             notes.set(key, value);
         });
-    });
+    }).done(function(){})
+    .fail(function(){ /* fail function here*/});
 }
 // Number padding for timestamp generation
 Number.prototype.pad = function(size) {
