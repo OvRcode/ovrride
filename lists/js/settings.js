@@ -11,21 +11,27 @@ $(function(){
         })
         .fail(function(){
             alert('Destination data failed to load, please refresh page');
-        }); 
-        // All Checkboxes on settings page w/selectors
-        window.checkBoxes = {
-            "balance":    $("#balance"),
-            "cancelled":  $("#cancelled"),
-            "completed":  $("#completed"),
-            "failed":     $("#failed"),
-            "finalized":  $("#finalized"),
-            "no-show":    $("#no-show"),
-            "on-hold":    $("#on-hold"),
-            "processing": $("#processing"),
-            "pending":    $("#pending"),
-            "refunded":   $("#refunded"),
-            "walk-on":    $("#walk-on")
-        };
+    }); 
+    // All Checkboxes on settings page w/selectors
+    window.checkBoxes = {
+        "balance":    $("#balance"),
+        "cancelled":  $("#cancelled"),
+        "completed":  $("#completed"),
+        "failed":     $("#failed"),
+        "finalized":  $("#finalized"),
+        "no-show":    $("#no-show"),
+        "on-hold":    $("#on-hold"),
+        "processing": $("#processing"),
+        "pending":    $("#pending"),
+        "refunded":   $("#refunded"),
+        "walk-on":    $("#walk-on")
+    };
+    $('#default').click(function(){resetStatuses("Default")});
+    $('#clear').click(function(){resetStatuses("All")});
+    $('#settings_save').click(function(){
+        saveOptions();
+        getTripData();
+    });
 }); 
 
 function tripDropdown(){
@@ -108,24 +114,6 @@ function getTripData(){
 }
 
 /* Menu JS */
-$("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
-});
-$("#btn-hide").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
-});
-$('#btn-settings').click(function(){
-   window.location.href='index.html';
-})
-$('#btn-list').click(function(){
-   window.location.href='list.html';
-})
-$('#default').click(function(){resetStatuses("Default")});
-$('#clear').click(function(){resetStatuses("All")});
-$('#settings_save').click(function(){
-    saveOptions();
-    getTripData();
-});
+
+
 /* End Menu JS */
