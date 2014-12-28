@@ -126,10 +126,11 @@
 /* Start OvR Lists CSS */
 .sidebar-nav .btn {
     width:80%;
+    padding-right: 10px;
 }
 .sidebar-nav .half {
     width: 75%;
-        margin-bottom: 10px;
+    margin-bottom: 10px;
     margin-right: auto;
     margin-left: auto;
 
@@ -151,10 +152,16 @@
 .pad {
     padding-top:60px;
 }
-#menu-toggle, #saveList {
+#menu-toggle, #addWalkOn {
     position: relative;
     top:9px;
     float: right;
+}
+#saveList {
+    position: relative;
+    top: 15px;
+    float: right;
+    margin-bottom: 20px;
 }
 #settings_save {
     margin-top: 20px;

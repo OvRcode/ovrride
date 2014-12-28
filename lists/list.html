@@ -61,6 +61,27 @@
                     </button>
                 </li>
                 <li class="half">
+                    <button type="button" class="btn btn-primary" id="addWalkOn"
+                        data-toggle="popover"
+                        data-html="true"
+                        data-content="<div id='walkon'>
+                                        <input type='text' class='form-control' id='first' placeholder='Enter Fist Name'><br />
+                                        <input type='text' class='form-control' id='last' placeholder='Enter Last Name'><br />
+                                        <input type='text' class='form-control' id='phone' placeholder='Enter Phone Number'><br />
+                                        <input type='radio' name='package' value='dropdown' checked>
+                                          <select class='input-sm'><option>Select Package</option><option>test2</option></select><br />
+                                        <input type='radio' name='package' value='input'>
+                                        <input type='text' class='input-sm' placeholder='or type package'><br /><br />
+                                        <button type='button' class='btn btn-success' id='saveWalkon'>
+                                          <i class='fa fa-floppy-o'></i>&nbsp;Save
+                                       </button>
+                                   </div>"
+                        title="Walk-on Order"
+                        data-placement="bottom">
+                        <i class="fa fa-plus"></i>&nbsp;<i class="fa fa-male"></i>&nbsp;Add Walk On
+                    </button>
+                </li>
+                <li class="half">
                     <button type="button" class="btn btn-success" id="saveList">
                         <i class="fa fa-floppy-o"></i>&nbsp;Save List
                     </button><br />
