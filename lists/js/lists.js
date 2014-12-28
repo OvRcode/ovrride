@@ -1,6 +1,14 @@
 $(function() {
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
+    // Initialize Bootstrap popover function
+    $("[data-toggle=popover]").popover();
+    // Zoom to popover when shown
+    $('[data-toggle="popover"]').on('shown.bs.popover', function(){
+        $("#sidebar-wrapper").animate({
+            scrollTop: $("#walkon").offset().top
+        },1000);
+    });
     
     $("#AMPM").on("click", function(){
         if ( $(this).val() == "AM") {
