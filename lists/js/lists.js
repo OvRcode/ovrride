@@ -104,6 +104,8 @@ function searchList(searchType, text){
             search = $(".listButton span.email:contains('" + text + "')");
         } else if ( searchType == "Phone" ) {
             search = $(".listButton span.phone:contains('" + text + "')");
+        } else if ( searchType == "Order" ) {
+            search = $(".listButton span.orderNum:contains('" + text + "')");
         }
         showSearchResults(search);
         // END OF SEARCH TYPES
