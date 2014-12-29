@@ -1,15 +1,33 @@
 $(function() {
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
+    
     // Initialize Bootstrap popover function
     $("[data-toggle=popover]").popover();
+    
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
+        $("#walkonPackage").append(settings.get('packages'));
+        // WalkOn Order listeners
+        $("#first").change(function(){packageSaveButton()});
+        $("#last").change(function(){packageSaveButton()});
+        $("#phone").change(function(){packageSaveButton()});
+        $("#walkonPackage").change(function(){packageSaveButton()});
+        $("#pickup").change(function(){packageSaveButton()});
         $("#sidebar-wrapper").animate({
             scrollTop: $("#walkon").offset().top
         },1000);
     });
     
+    // Unbind change listeners when popover is hidden
+    $('[data-toggle="popover"]').on('hide.bs.modal', function(){
+        $("#first").unbind("change");
+        $("#last").unbind("change");
+        $("#phone").unbind("change");
+        $("#walkonPackage").unbind("change");
+        $("#otherPackage").unbind("change");
+    });
+    // Show/Hide Records with AM/PM Toggle button
     $("#AMPM").on("click", function(){
         if ( $(this).val() == "AM") {
             $('.listButton.bg-none').addClass('hidden');
@@ -29,9 +47,11 @@ $(function() {
             $(this).addClass('btn-default').removeClass('btn-black');
         }
     });
+
     setupPage();
     checkData();
     setupListeners();
+    packageList();
 });
 function setupPage(){
     if ( window.settings.isSet('tripName') ) {
@@ -183,4 +203,59 @@ function checkData(){
             setState($("#" + selector[0] + "\\:" + selector[1]), value);
         });
     }
+}
+function packageList(){
+    window.packageList = [];
+    var output = "<option value='none' selected>Select Package</option>";
+    // Identify unique package values
+    jQuery.each(orders.keys(), function(key,value){
+        var currentOrder = orders.get(value);
+        if ( packageList.indexOf(currentOrder.Package) == -1 ) packageList.push(currentOrder.Package);
+    });
+    packageList.push("Other");
+    // Output entries for select
+    jQuery.each(packageList, function(key,value){
+        output = output.concat("<option value='" + value + "'>" + value + "</option>");
+    });
+    settings.set('packages',output);
+}
+function packageSaveButton(){
+    var walkonPackage = $("#walkonPackage").val();
+    if ( walkonPackage == "Other" && $("#otherPackage").val() === undefined ) {
+        var html = "<div id='otherDiv'><input id='otherPackage' type='text' class='input-sm' placeholder='Input Package'></input><br /><br /></div>";
+        $(html).insertBefore("#saveWalkon");
+        $("#otherPackage").change(function(){packageSaveButton()});
+    } else if ( walkonPackage !== "Other" && $("#otherPackage").val() !== undefined ) {
+        $("#otherPackage").unbind("change");
+        $("#otherDiv").remove();
+    }
+    var first         = $("#first").val();
+    var last          = $("#last").val();
+    var phone         = $("#phone").val();
+    var pickup        = $("#pickup").val();
+    var otherPackage  = $("#otherPackage").val();
+    if ( first != "" && last != "" && phone != "" && pickup != "" && walkonPackage != "none" && ( otherPackage !== undefined && otherPackage !== "")) {
+        $("#saveWalkon").removeClass('disabled');
+    } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
+        $("#saveWalkon").addClass('disabled');
+    }
+    
+}
+function saveWalkOn(){
+    var walkonPackage = $("#walkonPackage");
+    if ( walkonPackage.val() == "Other" ) {
+        walkonPackage = $("#otherPackage").val();
+    } else {
+        walkonPackage = walkonPackage.val();
+    }
+    var walkOn = {First: $("#first").val(),
+                  Last: $("#last").val(),
+                  Phone: $("#phone").val(),
+                  Package: walkonPackage};
+   var orderNum = Math.floor((Math.random() * 9999) + 1);
+   orderNum = "WO" + String(orderNum.pad(4));
+   var orderItem = Math.floor((Math.random() * 9999) + 1);
+   orderItem = orderItem.pad(4);
+   var ID = orderNum + ":" + orderItem;
+   
 }

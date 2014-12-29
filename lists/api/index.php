@@ -289,5 +289,10 @@ Flight::route('/notes/add/@bus/@tripId/@note', function($bus,$tripId, $note){
     $list = Flight::Lists();
     echo $list->addNote($bus, $tripId, $note);
 });
+Flight::route('POST /save/tripdata', function(){
+    foreach($_POST as $key => $value){
+        error_log($key . ":" . $value);
+    }
+});
 Flight::start();
 ?>
