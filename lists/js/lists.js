@@ -55,7 +55,11 @@ $(function() {
             $(this).addClass('btn-default').removeClass('btn-black');
         }
     });
-
+    
+    // List sorting dropdown
+    $("#sortBy").on("change", function(){
+        sortList($(this).val());
+    });
     setupPage();
     checkData();
     setupAllListeners();
@@ -284,7 +288,7 @@ function listHTML(ID, order){
                               <span class='last'>" + order.Last + "</span>\
                           </div>\
                           <div class='noClick buttonCell col-md-2 visible-md visible-lg'>\
-                            Order:" + split[0] + "</div>";
+                            Order: <span class='orderNum'>" + split[0] + "</span></div>";
     if( settings.isSet('Pickup') ) {
         var pickupHTML = '<div class="buttonCell col-xs-5 col-md-3 flexPickup">' + order.Pickup + '</div>';
         output = output.concat(pickupHTML);
@@ -331,4 +335,48 @@ function listHTML(ID, order){
     setupListener(ID);
     // Hide expanded area of reservation
     $("div.expanded").hide();
+}
+function sortList(value){
+    switch(value){
+        case "Faz":
+            // First Name Ascending
+            $(".listButton").tsort('span.first',{order: 'asc'});
+            break;
+        case "Fza":
+            // First Name Descending
+            $(".listButton").tsort('span.first',{order:'desc'});
+            break;
+        case "Laz":
+            // Last Name Ascending
+            $(".listButton").tsort('span.last',{order: 'asc'});
+            break;
+        case "Lza":
+            // Last Name Descending
+            $(".listButton").tsort('span.first',{order: 'desc'});
+            break;
+        case "Paz":
+            // Package Ascending
+            $(".listButton").tsort('div.flexPackage',{order:'asc'});
+            break;
+        case "Pza":
+            // Package Descending
+            $(".listButton").tsort('div.flexPackage',{order:'desc'});
+            break;
+        case "Piaz":
+            // Pickup Ascending
+            $(".listButton").tsort('div.flexPickup',{order:'asc'});
+            break;
+        case "Piza":
+            // Pickup Descending
+            $(".listButton").tsort('div.flexPickup',{order:'desc'});
+            break;
+        case "Oza":
+            // Order Descending
+            $(".listButton").tsort('span.orderNum', {order:'desc'});
+            break;
+        default:
+            // Order Ascending
+            $(".listButton").tsort('span.orderNum', {order:'asc'});
+            break;
+    }
 }

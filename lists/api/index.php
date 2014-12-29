@@ -161,7 +161,7 @@ class Lists {
                   </div>
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
                     Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">       
-                            {$orderData['num']}</a>
+                            <span class="orderNum">{$orderData['num']}</span></a>
                 </div>
 AAA;
         if ( isset($orderData['Pickup']) ) {
