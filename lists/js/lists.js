@@ -60,6 +60,23 @@ $(function() {
     $("#sortBy").on("change", function(){
         sortList($(this).val());
     });
+    
+    // Search Type listener
+    $("#searchType li a").on("click", function(){
+        var value = $(this).text();
+        var placeholder = "";
+        var target = $("#searchButton");
+        if ( value == "Clear Search" ) {
+            value = "Search By:";
+            placeholder = "Choose Search field first";
+            $("#searchField").va('');
+        } else {
+            placeholder = "Search here";
+        }
+        target.val(value).text(value);
+        $("#searchField").prop('placeholder', placeholder);
+    });
+    
     setupPage();
     checkData();
     setupAllListeners();
