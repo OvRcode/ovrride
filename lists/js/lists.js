@@ -60,11 +60,65 @@ $(function() {
     $("#sortBy").on("change", function(){
         sortList($(this).val());
     });
+    
+    // Search Type listener
+    $("#searchType li a").on("click", function(){
+        var value = $(this).text();
+        var placeholder = "";
+        var target = $("#searchButton");
+        if ( value == "Clear Search" ) {
+            value = "Search By:";
+            placeholder = "Choose Search field first";
+            $("#searchField").val('');
+        } else {
+            placeholder = "Search here";
+        }
+        target.val(value).text(value);
+        $("#searchField").prop('placeholder', placeholder);
+        
+        // show any hidden entries
+        $(".listButton").show();
+    });
+    $("#searchField").on("keyup", function(){
+        var button = $("#searchButton").val();
+        if ( button !== "" && button !== "Search By:"){
+            searchList(button, $(this).val());
+        } else {
+            alert("Choose search type first");
+        }
+    });
     setupPage();
     checkData();
     setupAllListeners();
     packageList();
 });
+function searchList(searchType, text){
+    //TODO: Look at options for case insensitivity 
+    var match;
+    var search;
+    // Skip blank searches
+    if ( text !== ""){
+        if ( searchType == "Name" ){
+            search = $(".listButton div.name:contains('" + text + "')");
+        } else if ( searchType == "Email" ) {
+            search = $(".listButton span.email:contains('" + text + "')");
+        } else if ( searchType == "Phone" ) {
+            search = $(".listButton span.phone:contains('" + text + "')");
+        } else if ( searchType == "Order" ) {
+            search = $(".listButton span.orderNum:contains('" + text + "')");
+        } else if ( searchType == "Package" ){
+            search = $(".listButton div.flexPackage:contains('" + text + "')");
+        }
+        showSearchResults(search);
+        // END OF SEARCH TYPES
+    } else {
+        $(".listButton").show();
+    }
+}
+function showSearchResults(targets){
+    $(".listButton").hide();
+    targets.parents('.listButton').show();
+}
 function setupPage(){
     if ( window.settings.isSet('tripName') ) {
         $('#tripName').text(window.settings.get('tripName'));
@@ -282,7 +336,7 @@ function listHTML(ID, order){
     var split = ID.split(":");
     var output = "<div class='row listButton bg-none' id='" + ID + "'>\
                       <div class='row primary'>\
-                          <div class='buttonCell col-xs-7 col-md-4'>\
+                          <div class='buttonCell name col-xs-7 col-md-4'>\
                               <span class='icon'></span>\
                               <span class='first'>&nbsp;" + order.First + "</span>\
                               <span class='last'>" + order.Last + "</span>\
@@ -311,7 +365,7 @@ function listHTML(ID, order){
                     <div class='buttonCell col-xs-12 col-md-6'>\
                         <strong>Order:</strong>" + split[0] + " </div>\
                     <div class='buttonCell col-xs-12 col-md-6'>\
-                    <strong>Phone:</strong> <a href='tel:" + order.Phone + "'>" + order.Phone + "</a> \
+                    <strong>Phone:</strong> <a href='tel:" + order.Phone + "'><span class='phone'>" + order.Phone + "</span></a> \
                 </div>\
               </div>\
               <div class='row'>\
