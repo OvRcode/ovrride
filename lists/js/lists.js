@@ -7,13 +7,20 @@ $(function() {
     
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
-        $("#walkonPackage").append(settings.get('packages'));
+        $("#walkonPackage").append(dd.get('packages'));
+        if ( !settings.isSet('Pickup') ){
+            $("#pickupDiv").remove();
+        } else {
+            $("#pickup").change(function(){ addWalkonButton() });
+        }
         // WalkOn Order listeners
-        $("#first").change(function(){packageSaveButton()});
-        $("#last").change(function(){packageSaveButton()});
-        $("#phone").change(function(){packageSaveButton()});
-        $("#walkonPackage").change(function(){packageSaveButton()});
-        $("#pickup").change(function(){packageSaveButton()});
+        $("#first").change(function(){ addWalkonButton() });
+        $("#last").change(function(){ addWalkonButton() });
+        $("#phone").change(function(){ addWalkonButton() });
+        $("#walkonPackage").change(function(){ addWalkonButton() });
+        $("#saveWalkOn").on("click", function(){
+            saveWalkOn();
+        });
         $("#sidebar-wrapper").animate({
             scrollTop: $("#walkon").offset().top
         },1000);
@@ -26,6 +33,7 @@ $(function() {
         $("#phone").unbind("change");
         $("#walkonPackage").unbind("change");
         $("#otherPackage").unbind("change");
+        $("#saveWalkon").unbind("click");
     });
     // Show/Hide Records with AM/PM Toggle button
     $("#AMPM").on("click", function(){
@@ -50,7 +58,7 @@ $(function() {
 
     setupPage();
     checkData();
-    setupListeners();
+    setupAllListeners();
     packageList();
 });
 function setupPage(){
@@ -134,35 +142,29 @@ function toggleExpanded(element){
         element.children("div.row.primary").children().not(".noClick").unbind("tap");
     }
 }
-function setupListeners(){
+function setupAllListeners(){
     jQuery.each(orders.keys(), function(key, value){
-        var split = value.split(":");
-        var selectorID = "#" + split[0] + "\\:" + split[1];
-        // Click events for noshow/reset buttons
-        $(selectorID + "\\:Reset").click(function(){
-            resetGuest($(this).parents().eq(3));
-        });
-        $(selectorID + "\\:NoShow").click(function(){
-            noShow($(this).parents().eq(3));
-        });
-        
-       // Expand list entry by pressing and holding on entry (works on mobile and desktop)
-        $( selectorID ).on("taphold", function(){
-            toggleExpanded( $(this) );
-        });
-        
-        /* Click events for listButton
-            on small screens noClick class is ignored because links are not shown on button in regular list mode */
-        /*if ($(window).width() < 970) {
-            $("#" + split[0] + "\\:" + split[1]).on("tap", function(){
-                changeStatus($(this));
-            });
-        } else {*/
-            $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
-                changeStatus($(this).parents().eq(1));
-            });
-            //}
-        
+        setupListener(value);
+    });
+}
+function setupListener(ID){
+    var split = ID.split(":");
+    var selectorID = "#" + split[0] + "\\:" + split[1];
+    // Click events for noshow/reset buttons
+    $(selectorID + "\\:Reset").click(function(){
+        resetGuest($(this).parents().eq(3));
+    });
+    $(selectorID + "\\:NoShow").click(function(){
+        noShow($(this).parents().eq(3));
+    });
+    
+   // Expand list entry by pressing and holding on entry (works on mobile and desktop)
+    $( selectorID ).on("taphold", function(){
+        toggleExpanded( $(this) );
+    });
+
+    $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
+        changeStatus($(this).parents().eq(1));
     });
 }
 function setState(element, state){
@@ -217,14 +219,14 @@ function packageList(){
     jQuery.each(packageList, function(key,value){
         output = output.concat("<option value='" + value + "'>" + value + "</option>");
     });
-    settings.set('packages',output);
+    dd.set('packages',output);
 }
-function packageSaveButton(){
+function addWalkonButton(){
     var walkonPackage = $("#walkonPackage").val();
     if ( walkonPackage == "Other" && $("#otherPackage").val() === undefined ) {
         var html = "<div id='otherDiv'><input id='otherPackage' type='text' class='input-sm' placeholder='Input Package'></input><br /><br /></div>";
-        $(html).insertBefore("#saveWalkon");
-        $("#otherPackage").change(function(){packageSaveButton()});
+        $(html).insertBefore("#saveWalkOn");
+        $("#otherPackage").change(function(){ addWalkonButton()});
     } else if ( walkonPackage !== "Other" && $("#otherPackage").val() !== undefined ) {
         $("#otherPackage").unbind("change");
         $("#otherDiv").remove();
@@ -232,14 +234,19 @@ function packageSaveButton(){
     var first         = $("#first").val();
     var last          = $("#last").val();
     var phone         = $("#phone").val();
-    var pickup        = $("#pickup").val();
     var otherPackage  = $("#otherPackage").val();
+    if ( settings.isSet('Pickup') ) {
+        var pickup = $("#pickup").val();
+    } else {
+        var pickup = "none";
+    }
+
     if ( first != "" && last != "" && phone != "" && pickup != "" && 
         ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) 
         || ( walkonPackage !== "Other" && walkonPackage !== "none"))) {
-        $("#saveWalkon").removeClass('disabled');
+        $("#saveWalkOn").removeClass('disabled');
     } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
-        $("#saveWalkon").addClass('disabled');
+        $("#saveWalkOn").addClass('disabled');
     }
     
 }
@@ -250,14 +257,77 @@ function saveWalkOn(){
     } else {
         walkonPackage = walkonPackage.val();
     }
+    var orderNum = Math.floor((Math.random() * 9999) + 1);
+    orderNum = "WO" + String(orderNum.pad(4));
+    var orderItem = Math.floor((Math.random() * 9999) + 1);
+    orderItem = orderItem.pad(4);
+    var ID = orderNum + ":" + orderItem;
     var walkOn = {First: $("#first").val(),
                   Last: $("#last").val(),
                   Phone: $("#phone").val(),
                   Package: walkonPackage};
-   var orderNum = Math.floor((Math.random() * 9999) + 1);
-   orderNum = "WO" + String(orderNum.pad(4));
-   var orderItem = Math.floor((Math.random() * 9999) + 1);
-   orderItem = orderItem.pad(4);
-   var ID = orderNum + ":" + orderItem;
-   
+    if( settings.isSet('Pickup') ) {
+        walkOn.Pickup = $("#pickup").val();
+    }
+    listHTML(ID, walkOn);
+    orders.set(ID,walkOn);
+    $("#addWalkOn").popover('toggle');
+}
+function listHTML(ID, order){
+    var split = ID.split(":");
+    var output = "<div class='row listButton bg-none' id='" + ID + "'>\
+                      <div class='row primary'>\
+                          <div class='buttonCell col-xs-7 col-md-4'>\
+                              <span class='icon'></span>\
+                              <span class='first'>&nbsp;" + order.First + "</span>\
+                              <span class='last'>" + order.Last + "</span>\
+                          </div>\
+                          <div class='noClick buttonCell col-md-2 visible-md visible-lg'>\
+                            Order:" + split[0] + "</div>";
+    if( settings.isSet('Pickup') ) {
+        var pickupHTML = '<div class="buttonCell col-xs-5 col-md-3 flexPickup">' + order.Pickup + '</div>';
+        output = output.concat(pickupHTML);
+    }
+    var packageHTML = "<div class='buttonCell col-xs-5 col-md-3 flexPackage visible-md visible-lg'>\
+                        " + order.Package + "</div>\
+                    </div>\
+                    <div class='expanded'>\
+                        <div class='row'>\
+                            <div class='buttonCell col-xs-5 col-md-6'>\
+                            <strong>Package:</strong> " + order.Package + "</div>";
+    output = output.concat(packageHTML);
+    if ( settings.isSet('Pickup') ) {
+        var packageHTML2 = "<div class='buttonCell col-xs-12 col-md-6'>\
+                            <strong>Pickup:</strong> " + order.Pickup + "</div>";
+        output = output.concat(packageHTML2);
+    }
+    var expandedRemainder = "</div>\
+                <div class='row'>\
+                    <div class='buttonCell col-xs-12 col-md-6'>\
+                        <strong>Order:</strong>" + split[0] + " </div>\
+                    <div class='buttonCell col-xs-12 col-md-6'>\
+                    <strong>Phone:</strong> <a href='tel:" + order.Phone + "'>" + order.Phone + "</a> \
+                </div>\
+              </div>\
+              <div class='row'>\
+                <br />\
+                <div class='buttonCell col-xs-6'>\
+                    <button class='btn btn-warning' id='" + ID +":Reset'>\
+                        Reset\
+                    </button>\
+                </div>\
+                <div class='buttonCell col-xs-6'>\
+                    <button class='btn btn-danger' id='" + ID + ":NoShow'>\
+                        No Show\
+                    </button>\
+                </div>\
+              </div>\
+              </div>\
+    </div>";
+    output = output.concat(expandedRemainder);
+    $("#content").append(output);
+    initialHTML.set(ID, output);
+    setupListener(ID);
+    // Hide expanded area of reservation
+    $("div.expanded").hide();
 }
