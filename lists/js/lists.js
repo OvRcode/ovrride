@@ -234,7 +234,9 @@ function packageSaveButton(){
     var phone         = $("#phone").val();
     var pickup        = $("#pickup").val();
     var otherPackage  = $("#otherPackage").val();
-    if ( first != "" && last != "" && phone != "" && pickup != "" && walkonPackage != "none" && ( otherPackage !== undefined && otherPackage !== "")) {
+    if ( first != "" && last != "" && phone != "" && pickup != "" && 
+        ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) 
+        || ( walkonPackage !== "Other" && walkonPackage !== "none"))) {
         $("#saveWalkon").removeClass('disabled');
     } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
         $("#saveWalkon").addClass('disabled');
