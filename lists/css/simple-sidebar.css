@@ -307,3 +307,8 @@
         top:-20px;
     }
 }*/
+
+#destTable td,th{
+    padding: 3px;
+    text-align: center;
+}
