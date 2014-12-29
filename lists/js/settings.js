@@ -66,6 +66,7 @@ function checkSettings(){
     }
 }
 function saveOptions(){
+    settings.removeAll();
     window.settings.set('destination', $('#destination').val());
     var trip = $('#trip');
     window.settings.set('tripNum', $('#trip').val());
@@ -101,10 +102,13 @@ function getTripData(){
         var apiData = jQuery.parseJSON(data);
         jQuery.each(apiData, function(id,dataObject){
             jQuery.each(dataObject, function(key, value){
-                if ( key == 'Data' )
+                if ( key == 'Data' ){
                     orders.set(id,value);
-                else
+                    if ( 'Pickup' in value )
+                        settings.set('Pickup', 1);
+                } else {
                     initialHTML.set(id,value);
+                }
             });
         });
     })
