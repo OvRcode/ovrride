@@ -300,9 +300,10 @@
     background: #D1D1D1;
 }
 /* Move sort drop down up, was dropping down into next row on xs only */
+/* Not sure on this one, might be an ios simulator bug
 @media(max-width:768px){
     #sortBy {
         position:relative;
         top:-20px;
     }
-}
+}*/
