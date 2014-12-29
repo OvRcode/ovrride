@@ -251,6 +251,7 @@ function addWalkonButton(){
     
 }
 function saveWalkOn(){
+    // Saves to local storage
     var walkonPackage = $("#walkonPackage");
     if ( walkonPackage.val() == "Other" ) {
         walkonPackage = $("#otherPackage").val();
