@@ -102,6 +102,8 @@ function searchList(searchType, text){
             search = $(".listButton div.name:contains('" + text + "')");
         } else if ( searchType == "Email" ) {
             search = $(".listButton span.email:contains('" + text + "')");
+        } else if ( searchType == "Phone" ) {
+            search = $(".listButton span.phone:contains('" + text + "')");
         }
         showSearchResults(search);
         // END OF SEARCH TYPES
@@ -359,7 +361,7 @@ function listHTML(ID, order){
                     <div class='buttonCell col-xs-12 col-md-6'>\
                         <strong>Order:</strong>" + split[0] + " </div>\
                     <div class='buttonCell col-xs-12 col-md-6'>\
-                    <strong>Phone:</strong> <a href='tel:" + order.Phone + "'>" + order.Phone + "</a> \
+                    <strong>Phone:</strong> <a href='tel:" + order.Phone + "'><span class='phone'>" + order.Phone + "</span></a> \
                 </div>\
               </div>\
               <div class='row'>\
