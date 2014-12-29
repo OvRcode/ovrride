@@ -145,6 +145,16 @@ class Lists {
         else
             return "fail";
     }
+    function getAllDestinations(){
+        // returns array of destinations with status
+        $sql = "SELECT * FROM `ovr_lists_destinations`";
+        $result = $this->dbQuery($sql);
+        $destination = [];
+        while( $row = $result->fetch_assoc()){
+            $destination[$row['destination']] = $row['enabled'];
+        }
+        return $destination;
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -276,6 +286,10 @@ Flight::route('/dropdown/trip', function(){
     $list = Flight::Lists();
     $list->destinationDropdown();
     $list->tripDropdown();
+});
+Flight::route('/dropdown/destination/all', function(){
+    $list = Flight::Lists();
+    echo json_encode($list->getAllDestinations());
 });
 Flight::route('/trip/@tripId/@status', function($tripId,$status){ 
     $list = Flight::Lists();
