@@ -106,6 +106,8 @@ function searchList(searchType, text){
             search = $(".listButton span.phone:contains('" + text + "')");
         } else if ( searchType == "Order" ) {
             search = $(".listButton span.orderNum:contains('" + text + "')");
+        } else if ( searchType == "Package" ){
+            search = $(".listButton div.flexPackage:contains('" + text + "')");
         }
         showSearchResults(search);
         // END OF SEARCH TYPES

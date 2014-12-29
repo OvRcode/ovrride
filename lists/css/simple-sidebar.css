@@ -299,3 +299,10 @@
     padding: 10px;
     background: #D1D1D1;
 }
+/* Move sort drop down up, was dropping down into next row on xs only */
+@media(max-width:768px){
+    #sortBy {
+        position:relative;
+        top:-20px;
+    }
+}
