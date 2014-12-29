@@ -190,7 +190,7 @@ BBB;
                      </a>
                 </div>
                 <div class="buttonCell col-xs-12 col-md-6">
-                    <strong>Phone:</strong> <a href="tel:{$orderData['Phone']}">{$orderData['Phone']}</a>
+                    <strong>Phone:</strong> <a href="tel:{$orderData['Phone']}"><span class="phone">{$orderData['Phone']}</span></a>
                 </div>
               </div>
               <div class="row">
