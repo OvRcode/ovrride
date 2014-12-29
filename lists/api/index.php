@@ -154,7 +154,7 @@ class Lists {
         $output = <<<AAA
             <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
-                  <div class="buttonCell col-xs-7 col-md-4">
+                  <div class="buttonCell name col-xs-7 col-md-4">
                   <span class="icon"></span>
                       <span class="first">&nbsp;{$orderData['First']}</span>
                       <span class="last">{$orderData['Last']}</span>
@@ -195,7 +195,7 @@ BBB;
               </div>
               <div class="row">
                 <div class="buttonCell col-xs-12 col-md-6">
-                  <strong>Email:</strong> <a href="mailto:{$orderData['Email']}">{$orderData['Email']}</a>
+                  <strong>Email:</strong> <a href="mailto:{$orderData['Email']}"><span class="email">{$orderData['Email']}</span></a>
                 </div>
               </div>
               <div class="row">
