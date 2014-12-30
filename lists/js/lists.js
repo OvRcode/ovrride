@@ -92,6 +92,45 @@ $(function() {
     setupAllListeners();
     packageList();
 });
+function saveData(){
+    // get state data from localstorage
+    var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4};
+    var allDataKeys = tripData.keys();
+    var orderLocalData = {};
+    jQuery.each(allDataKeys, function(key,value){
+        var split = value.split(":");
+        var ID = split[0] + ":" + split[1];
+        var valueName = split[2];
+        // Check if object is setup
+        if ( jQuery.isEmptyObject(orderLocalData[ID]) ) {
+            orderLocalData[ID] = { Trip: settings.get('tripNum'), Bus: "", Data:""};
+        }
+        if ( valueName == "Bus" ){
+            orderLocalData[ID].Bus = tripData.get(value);
+        } else if ( orderLocalData[ID].Data === "" || packageWeight[valueName] > packageWeight[orderLocalData[ID].Data]) {
+            orderLocalData[ID].Data = valueName;
+        }
+    });
+    // POST to api/save/data
+    console.log(orderLocalData);
+    // clear data after save
+    
+    // get walkon data if not previously saved
+    if ( newWalkon.keys().length > 0 ){
+        var busNum = settings.get('bus');
+        var tripNum = settings.get('tripNum');
+        var walkonData = {};
+        jQuery.each(newWalkon.keys(), function(key,value){
+             walkonData[value]= orders.get(value);
+            walkonData[value].Bus = busNum;
+            walkonData[value].Trip = tripNum;
+        });
+        // POST to api/save/walkons
+        console.log(walkonData);
+        // unset from newWalkons after save
+    }
+    // trigger reload from server after save
+}
 function searchList(searchType, text){
     //TODO: Look at options for case insensitivity 
     var match;
@@ -330,6 +369,7 @@ function saveWalkOn(){
     }
     listHTML(ID, walkOn);
     orders.set(ID,walkOn);
+    newWalkon.set(ID,"unsaved");
     $("#addWalkOn").popover('toggle');
 }
 function listHTML(ID, order){

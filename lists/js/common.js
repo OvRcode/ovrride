@@ -11,6 +11,8 @@ $(function() {
     window.tripData = data.localStorage; 
     window.notespace = $.initNamespaceStorage('notes');
     window.notes = notespace.localStorage;
+    window.walkonspace = $.initNamespaceStorage('newWalkon');
+    window.newWalkon = walkonspace.localStorage;
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
