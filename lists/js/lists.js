@@ -196,8 +196,6 @@ function toggleExpanded(element){
         changeStatus($(this).parents().eq(1));
         });
     } else {
-        // Hide other expanded entries
-        $("div.expanded :visible").hide();
         element.children('div.expanded').show(600);
         element.children("div.row.primary").children().not(".noClick").unbind("tap");
     }
