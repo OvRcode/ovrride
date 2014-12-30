@@ -158,12 +158,14 @@
     padding-top:60px;
 }
 
-#menu-toggle, #addWalkOn {
+#menu-toggle, #addWalkOn, #addDestination {
     position: relative;
     top:9px;
     float: right;
 }
-
+#addDestination {
+    margin-bottom: 15px;
+}
 #saveList {
     position: relative;
     top: 15px;
@@ -307,3 +309,8 @@
         top:-20px;
     }
 }*/
+
+#destTable td,th{
+    padding: 3px;
+    text-align: center;
+}
