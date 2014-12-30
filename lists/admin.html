@@ -81,7 +81,17 @@
                     </button>
                 </li>
                 <li class="half">
-                    <button type="button" class="btn btn-primary" id="addDestination">
+                    <button type="button" class="btn btn-primary" id="addDestination"
+                        data-toggle="popover"
+                        data-html="true"
+                        data-content="<div id='addDestWindow'>
+                                        <input type='text' class='form-control' id='destName' placeholder='Enter New Destination'><br />
+                                        <button type='button' class='btn btn-success' id='addDestBtn'>
+                                            <i class='fa fa-floppy-o'></i>&nbsp;Save Destination
+                                        </button>
+                                    </div>"
+                        title="Add Destination"
+                        data-placement="bottom">
                         <i class="fa fa-bus"></i>&nbsp;Add Destination
                     </button>
                 </li>
