@@ -156,10 +156,14 @@ class Lists {
         return $destination;
     }
     function updateDestinations($destination, $enabled){
-        $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled) 
-                VALUES('" . $destination . "', '" . $enabled ."')
-                ON DUPLICATE KEY UPDATE
-                enabled=VALUES(enabled)";
+        if ( $enabled == "Delete" ) {
+            $sql = "DELETE FROM `ovr_lists_destinations` WHERE `destination` = '" . $destination . "'";
+        } else {
+            $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled) 
+                    VALUES('" . $destination . "', '" . $enabled ."')
+                    ON DUPLICATE KEY UPDATE
+                    enabled=VALUES(enabled)";
+        }
         $this->dbQuery($sql);
     }
     private function customerData($orderData){
