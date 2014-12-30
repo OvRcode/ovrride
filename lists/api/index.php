@@ -155,6 +155,13 @@ class Lists {
         }
         return $destination;
     }
+    function updateDestinations($destination, $enabled){
+        $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled) 
+                VALUES('" . $destination . "', '" . $enabled ."')
+                ON DUPLICATE KEY UPDATE
+                enabled=VALUES(enabled)";
+        $this->dbQuery($sql);
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -290,6 +297,10 @@ Flight::route('/dropdown/trip', function(){
 Flight::route('/dropdown/destination/all', function(){
     $list = Flight::Lists();
     echo json_encode($list->getAllDestinations());
+});
+Flight::route('POST /dropdown/destination/update', function(){
+    $list = Flight::Lists();
+    $list->updateDestinations($_POST['destination'], $_POST['enabled']);
 });
 Flight::route('/trip/@tripId/@status', function($tripId,$status){ 
     $list = Flight::Lists();

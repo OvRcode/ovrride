@@ -1,7 +1,4 @@
 $(function(){
-    //window.administration = $.initNamespaceStorage('admin');
-    //window.admin = administration.localStorage;
-
     getDestinations();
 });
 function getDestinations(){
@@ -11,7 +8,7 @@ function getDestinations(){
                 <tbody>";
         jQuery.each(data, function(key,value){
             //console.log("Key: " + key + " Value: " + value);
-            var row = "<tr><td>" + key + " </td>";
+            var row = "<tr class='" + key +"'><td>" + key + " </td>";
             if ( value == "Y" ){
                 row = row.concat('<td><input type="radio" value="Y" name="' + key + '" checked></td>');
             } else {
@@ -33,5 +30,17 @@ function getDestinations(){
                     </table>";
                     destOutput = destOutput.concat(foot);
         $("#content").append(destOutput);
+        $("#saveDest").on("click", function(){ 
+            console.log("clicked");
+            updateDestinations() 
+        });
+    });
+}
+function updateDestinations(){
+    var destinations = $("#destTable tbody tr");
+    jQuery.each(destinations, function(key, value){
+        var thisClass = $(this).attr('class');
+        var radioValue = $("tr[class='" + thisClass + "'] input:radio:checked").val();
+        $.post("api/dropdown/destination/update", { destination: thisClass, enabled: radioValue});
     });
 }
