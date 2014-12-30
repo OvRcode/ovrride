@@ -1,6 +1,8 @@
 $(function(){
     // Enable popovers
     $("[data-toggle=popover]").popover();
+    
+    // Add listeners when popover is shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         checkDestPopover();
         $("#destName").on("keyup", function(){
@@ -8,6 +10,7 @@ $(function(){
         });
         $("#addDestBtn").on("click",function(){ saveDestination() });
     });
+    // unbind popover listeners when closed
     $('[data-toggle="popover"]').on('hide.bs.modal', function(){
         $("#destName").unbind("keyup");
         $("#addDestBtn").unbind("click");
@@ -55,7 +58,7 @@ function getDestinations(){
                     </tfoot>\
                     </table>";
                     destOutput = destOutput.concat(foot);
-        $("#content").append(destOutput);
+        $("#destinations").append(destOutput);
         $("#saveDest").on("click", function(){ 
             console.log("clicked");
             updateDestinations() 
