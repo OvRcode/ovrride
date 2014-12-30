@@ -116,8 +116,3 @@ function getTripData(){
         window.location.href= "list.html";
     });
 }
-
-/* Menu JS */
-
-
-/* End Menu JS */
