@@ -1,0 +1,184 @@
+.sidebar-nav .btn {
+    width:80%;
+    padding-right: 10px;
+}
+
+.sidebar-nav .half {
+    width: 75%;
+    margin-bottom: 10px;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+.center {
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.ovr {
+    background-color:#09BDEB;
+    position:fixed;
+    top:0px;
+    width:100%;
+}
+
+#brand {
+    color:white;
+    left:1%;
+}
+
+.pad {
+    padding-top:60px;
+}
+
+#menu-toggle, #addWalkOn, #addDestination {
+    position: relative;
+    top:9px;
+    float: right;
+}
+#addDestination {
+    margin-bottom: 15px;
+}
+#saveList {
+    position: relative;
+    top: 15px;
+    float: right;
+    margin-bottom: 20px;
+}
+
+#settings_save {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */
+}
+
+.listButton {
+    border-radius:10px;
+    padding-top:7px;
+    padding-left:15px;
+    padding-right:15px;
+    padding-bottom:7px;
+    margin-bottom: 10px;
+    margin-left:3px;
+    margin-right:3px;
+    -webkit-box-shadow: 3px 3px 1px 1px #ccc;
+    box-shadow: 3px 3px 1px 1px #ccc;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.listButton a {
+    color:#777777;
+    text-decoration: underline;   
+}
+
+.listButton a:hover {
+    color:black;
+}
+
+.buttonCell {
+    display: block;
+    overflow:none;
+    padding-bottom:5px;
+}
+
+.bg-none {
+    border:1px solid black;
+}
+
+.bg-pm {
+    background-color: #FF9900;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-am {
+    background-color:#FAE92A;
+    border:1px solid #333333;
+}
+
+.bg-waiver {
+    background-color:#5CB85C;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-productrec {
+    background-color:#5BC0DE;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-noshow {
+    background-color: #FA2A2A;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-noshow a{
+    color:#111111;
+}
+
+.btn-black {
+    background-color:#000000;
+    color:#FFFFFF;
+    border: 1px solid #D1D1D1;
+    
+}
+
+.btn-black:hover, .btn-black:active {
+    color:#FFFFFF;
+}
+
+#default{
+    margin-left:10px;
+}
+
+.ui-loader {
+  display:none !important;
+}
+
+.summary {
+    border-collapse:collapse;
+    text-align: center;
+}
+
+.summary th {
+    border: 3px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #D1D1D1;
+}
+
+.summary td {
+    border: 1px solid grey;
+}
+
+.ui-shadow span {
+    visibility: hidden;
+}
+
+.notes button {
+    margin-top:20px;
+    margin-bottom:10px;
+}    
+
+#notesContent p {
+    width:100%;
+    border:1px solid grey;
+    border-radius: 10px;
+    padding: 10px;
+    background: #D1D1D1;
+}
+#destTable td,th{
+    padding: 3px;
+    text-align: center;
+}
+#content {
+    margin-left:5px;
+}
