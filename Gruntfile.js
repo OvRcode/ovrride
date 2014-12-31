@@ -65,6 +65,7 @@ module.exports = function(grunt){
     uglify: {
       admin: {
         options: {
+          mangle: false,
           preserveComments: false
         },
         files: {
@@ -73,6 +74,7 @@ module.exports = function(grunt){
       },
       lists: {
         options: {
+          mangle: false,
           preserveComments: false
         },
         files: {
@@ -81,6 +83,7 @@ module.exports = function(grunt){
       },
       message: {
         options: {
+          mangle: false,
           preserveComments: false
         },
         files: {
@@ -89,6 +92,7 @@ module.exports = function(grunt){
       },
       notes: {
         options: {
+          mangle: false,
           preserveComments: false
         },
         files: {
@@ -97,6 +101,7 @@ module.exports = function(grunt){
       },
       settings: {
         options: {
+          mangle: false,
           preserveComments: false
         },
         files: {
@@ -105,6 +110,7 @@ module.exports = function(grunt){
       },
       summary: {
         options: {
+          mangle: false,
           preserveComments: false
         },
         files: {
@@ -120,6 +126,6 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   // Tasks
-  grunt.registerTask('default', ['jshint','concat','uglify']);
+  grunt.registerTask('default', ['concat','uglify']);
 
 };
