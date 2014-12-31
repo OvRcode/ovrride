@@ -68,7 +68,22 @@ class Lists {
         $statuses = explode(',',$status);
         foreach($statuses as $single){
             if ( $single == "walk-on" ) {
-                # Walkon logic here
+                $sql = "SELECT * FROM `ovr_lists_manual_orders` WHERE `Trip` = '" . $tripId . "'";
+                $result = $this->dbQuery($sql);
+                while($row = $result->fetch_assoc()){
+                    $walkOnOrder = [];
+                    $split = preg_split("/:/", $row['ID']);
+                    $walkOnOrder['num']      = $split[0];
+                    $walkOnOrder['item_num'] = $split[1];
+                    $walkOnOrder['First'] = $row['First'];
+                    $walkOnOrder['Last'] = $row['Last'];
+                    $walkOnOrder['Pickup'] = $row['Pickup'];
+                    $walkOnOrder['Phone'] = $row['Phone'];
+                    $walkOnOrder['Package'] = $row['Package'];
+                    $walkOnOrder['Bus'] = $row['Bus'];
+                    $this->listHTML($walkOnOrder);
+                    $this->customerData($walkOnOrder);
+                }
             } else {
                 $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`, `wp_posts`.`post_status`
                         FROM `wp_posts`
@@ -80,8 +95,8 @@ class Lists {
                         AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
                         AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$tripId'";
                 $result = $this->dbQuery($sql);
-                while($row = $result->fetch_assoc()){
-                    $orderData = [];
+                while($row = $result->fetch_assoc()){ 
+                    $orderData = [];   
                     $orderData['num'] = $row['ID'];
                     $orderData['item_num'] = $row['order_item_id'];
                     $order = $row['ID'];
@@ -121,7 +136,7 @@ class Lists {
                             $orderData[$detailRow['meta_key']] = trim($detailRow['meta_value']);
                         }
                     }
-                    // Assemble output HTML HERE
+                    
                     $this->listHTML($orderData);
                     $this->customerData($orderData);
                 }
@@ -179,6 +194,17 @@ class Lists {
             $this->dbQuery($sql);
         }
     }
+    function saveWalkOn(){
+        foreach( $_POST['walkon'] as $ID => $fields ) {
+            $sql = "INSERT INTO `ovr_lists_manual_orders` (ID, First, Last, Pickup, Phone, Package, Trip, Bus)
+                    VALUES('" . $ID . "', '" . $fields['First'] . "', '" . $fields['Last']. "', '" . $fields['Pickup']. "',
+                    '" . $fields['Phone']. "', '" . $fields['Package'] . "', '" . $fields['Trip']. "', '" . $fields['Bus'] . "')
+                    ON DUPLICATE KEY UPDATE
+                    First=VALUES(First), Last=VALUES(Last), Pickup=VALUES(Pickup), Phone=VALUES(Phone), Package=VALUES(Package),
+                    Trip=VALUES(Trip), Bus=VALUES(Bus)";
+            $this->dbQuery($sql);
+        }
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -194,10 +220,15 @@ class Lists {
                       <span class="last">{$orderData['Last']}</span>
                   </div>
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
-                    Order:<a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">       
-                            <span class="orderNum">{$orderData['num']}</span></a>
-                </div>
 AAA;
+        if ( substr($orderData['num'],0,2) == "WO" ) {
+            $output .= 'Order: <span class="orderNum">' . $orderData['num'] . '</span></a>';
+        } else {
+            $output .= 'Order:<a href="https://ovrride.com/wp-admin/post.php?post=' . $orderData['num'] . '&action=edit">';
+            $output .= '<span class="orderNum">' . $orderData['num'] . '</span></a>';
+        }
+        $output .= "</div>";
+
         if ( isset($orderData['Pickup']) ) {
             $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
         }
@@ -227,11 +258,17 @@ BBB;
                     <strong>Phone:</strong> <a href="tel:{$orderData['Phone']}"><span class="phone">{$orderData['Phone']}</span></a>
                 </div>
               </div>
-              <div class="row">
-                <div class="buttonCell col-xs-12 col-md-6">
-                  <strong>Email:</strong> <a href="mailto:{$orderData['Email']}"><span class="email">{$orderData['Email']}</span></a>
+CCC;
+        if ( isSet($orderData['Email']) ){
+            $output.=<<<DDD
+                <div class="row">
+                  <div class="buttonCell col-xs-12 col-md-6">
+                    <strong>Email:</strong> <a href="mailto:{$orderData['Email']}"><span class="email">{$orderData['Email']}</span></a>
+                  </div>
                 </div>
-              </div>
+DDD;
+        }
+        $output .=<<<EEE
               <div class="row">
                 <br />
                 <div class="buttonCell col-xs-6">
@@ -247,7 +284,8 @@ BBB;
               </div>
               </div>
             </div>
-CCC;
+EEE;
+//ADD DELETE BUTTON ON WALKON ORDERS
         $ID = $orderData['num'].":".$orderData['item_num'];
         $this->orders[$ID]['HTML'] = $output;
     }
@@ -294,8 +332,7 @@ CCC;
 
         return array("First" => $first, "Last" => $last); 
     }
-    // TODO: Need to finish tripData function, needs walk-on data and save
-    // TODO: Offline functionality
+    // TODO: Need to finish tripData function, needs walk-on data
 }
 require 'flight/Flight.php';
 
@@ -304,6 +341,10 @@ Flight::register('Lists', 'Lists');
 Flight::route('/save/data', function(){
     $list = Flight::Lists();
     $list->saveData();
+});
+Flight::route('/save/walkon', function(){
+    $list = Flight::Lists();
+    $list->saveWalkOn();
 });
 Flight::route('/dropdown/destination', function(){
     $list = Flight::Lists();
