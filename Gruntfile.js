@@ -12,15 +12,15 @@ module.exports = function(grunt){
         options: {
           separator: ';',
         },
-        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/dropdown.js','lists/js/vendor/jquery.mobile-1.4.5.js',
-              'lists/js/vendor/jquery.storageapi.min.js', 'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js'],
+        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/dropdown.js','lists/js/vendor/jquery.storageapi.min.js', 
+              'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js'],
         dest: 'lists/js/uncompressed/vendor.js',
       },
       lists: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_lists.js'],
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/vendor/jquery.mobile-1.4.5.js','lists/js/partials/_common.js', 'lists/js/partials/_lists.js'],
         dest: 'lists/js/uncompressed/lists.js',
       },
       message: {
