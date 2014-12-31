@@ -217,11 +217,41 @@ class Lists {
         $this->orders[$orderNum.":".$orderItemNum]['Data'] = $orderData;
     }
     private function listHTML($orderData){
+        $sql = "SELECT `Data` FROM `ovr_lists_data` WHERE ID='".$orderData['num'].":".$orderData['item_num']."'";
+        $result = $this->dbQuery($sql);
+        $row = $result->fetch_assoc();
+        $data = $row['Data'];
+        if ( $data == "" ){
+            $htmlClass = "bg-none";
+            $icon = "";
+            $pickupVisible = "";
+            $packageVisible = "visible-md visible-lg";
+        } else if ( $data == "AM" ) {
+            $htmlClass = "bg-am";
+            $icon = "<i class='fa fa-sun-o fa-lg'></i>";
+            $pickupVisible = "visible-md visible-lg";
+            $packageVisible = "";
+        } else if ( $data == "Waiver" ) {
+            $htmlClass = "bg-waiver";
+            $icon = "<i class='fa fa-file-word-o fa-lg'></i>";
+            $pickupVisible = "visible-md visible-lg";
+            $packageVisible = "";
+        } else if ( $data == "Product" ) {
+            $htmlClass = "bg-productrec";
+            $icon = "<i class='fa fa-ticket fa-lg'></i>";
+            $pickupVisible = "";
+            $packageVisible = "visible-md visible-lg";
+        } else if ( $data == "PM" ) {
+            $htmlClass = "bg-pm";
+            $icon = "<i class='fa fa-moon-o fa-lg'></i>";
+            $pickupVisible = "";
+            $packageVisible = "visible-md visible-lg";
+        }
         $output = <<<AAA
-            <div class="row listButton bg-none" id="{$orderData['num']}:{$orderData['item_num']}">
+            <div class="row listButton {$htmlClass}" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
                   <div class="buttonCell name col-xs-7 col-md-4">
-                  <span class="icon"></span>
+                  <span class="icon">{$icon}</span>
                       <span class="first">&nbsp;{$orderData['First']}</span>
                       <span class="last">{$orderData['Last']}</span>
                   </div>
@@ -236,10 +266,10 @@ AAA;
         $output .= "</div>";
 
         if ( isset($orderData['Pickup']) ) {
-            $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup">'.$orderData['Pickup'].'</div>';
+            $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup ' . $pickupVisible . '">'.$orderData['Pickup'].'</div>';
         }
         $output .=<<<BBB
-                <div class="buttonCell col-xs-5 col-md-3 flexPackage visible-md visible-lg"> {$orderData['Package']}</div>
+                <div class="buttonCell col-xs-5 col-md-3 flexPackage {$packageVisible}"> {$orderData['Package']}</div>
               </div>
               <div class="expanded">
               <div class="row">
