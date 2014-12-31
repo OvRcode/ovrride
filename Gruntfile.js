@@ -59,14 +59,17 @@ module.exports = function(grunt){
         dest: 'lists/js/admin.js',
       },
     },
+    jshint: {
+      files: ['Gruntfile.js', 'package.json', 'lists/js/partials/*.js'],
+    },
   });
 
 
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   // Tasks
-  grunt.registerTask('default', ['concat']);
+  grunt.registerTask('default', ['jshint','concat']);
 
 };
