@@ -1,4 +1,7 @@
 $(function() {
+    $("#saveList").on("tap", function(){
+        saveData();
+    })
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
     
@@ -111,10 +114,6 @@ function saveData(){
             orderLocalData[ID].Data = valueName;
         }
     });
-    // POST to api/save/data
-    $.post("api/save/data", {data: orderLocalData});
-    console.log(orderLocalData);
-    // clear data after save
     
     // get walkon data if not previously saved
     if ( newWalkon.keys().length > 0 ){
@@ -126,11 +125,14 @@ function saveData(){
             walkonData[value].Bus = busNum;
             walkonData[value].Trip = tripNum;
         });
-        // POST to api/save/walkons
-        console.log(walkonData);
-        // unset from newWalkons after save
+        $.post("api/save/walkon", {walkon: walkonData}, function(){
+            newWalkon.removeAll();
+        });
     }
-    // trigger reload from server after save
+    $.post("api/save/data", {data: orderLocalData}, function(){
+        tripData.removeAll();
+        getTripData();
+    });
 }
 function searchList(searchType, text){
     //TODO: Look at options for case insensitivity 
@@ -359,9 +361,9 @@ function saveWalkOn(){
     } else {
         walkonPackage = walkonPackage.val();
     }
-    var orderNum = Math.floor((Math.random() * 9999) + 1);
+    var orderNum = Math.floor((Math.random() * 99999) + 1);
     orderNum = "WO" + String(orderNum.pad(4));
-    var orderItem = Math.floor((Math.random() * 9999) + 1);
+    var orderItem = Math.floor((Math.random() * 99999) + 1);
     orderItem = orderItem.pad(4);
     var ID = orderNum + ":" + orderItem;
     var walkOn = {First: $("#first").val(),

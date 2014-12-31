@@ -61,6 +61,31 @@ function getNotes(){
     }).done(function(){})
     .fail(function(){ /* fail function here*/});
 }
+function getTripData(){
+    var trip = settings.get('tripNum');
+    var statuses = settings.get('status');
+    //Start with a clean slate
+    window.orders.removeAll();
+    window.initialHTML.removeAll();
+    window.tripData.removeAll();
+    $.get("api/trip/"+trip+"/"+statuses, function(data){
+        var apiData = jQuery.parseJSON(data);
+        jQuery.each(apiData, function(id,dataObject){
+            jQuery.each(dataObject, function(key, value){
+                if ( key == 'Data' ){
+                    orders.set(id,value);
+                    if ( 'Pickup' in value )
+                        settings.set('Pickup', 1);
+                } else {
+                    initialHTML.set(id,value);
+                }
+            });
+        });
+    })
+    .done(function(){
+        window.location.href= "list.html";
+    });
+}
 // Number padding for timestamp generation
 Number.prototype.pad = function(size) {
       var s = String(this);
