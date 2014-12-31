@@ -329,7 +329,6 @@ FFF;
         }
         $output .= "</div></div></div>";
 
-//ADD DELETE BUTTON ON WALKON ORDERS
         $ID = $orderData['num'].":".$orderData['item_num'];
         $this->orders[$ID]['HTML'] = $output;
     }
