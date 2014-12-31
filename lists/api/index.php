@@ -346,7 +346,6 @@ FFF;
 
         return array("First" => $first, "Last" => $last); 
     }
-    // TODO: Need to finish tripData function, needs walk-on data
 }
 require 'flight/Flight.php';
 
