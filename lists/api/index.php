@@ -166,6 +166,19 @@ class Lists {
         }
         $this->dbQuery($sql);
     }
+    function saveData(){
+        foreach( $_POST['data'] as $ID => $field ) {
+            if ( $field['Data'] == "Delete" ) {
+                $sql = "DELETE FROM `ovr_lists_data` WHERE `ID` ='" . $ID . "'";
+            } else {
+            $sql = "INSERT INTO `ovr_lists_data` (ID, Trip, Bus, Data)
+                    VALUES( '" .$ID . "', '" . $field['Trip'] ."', '" . $field['Bus'] . "', '" . $field['Data'] . "')
+                    ON DUPLICATE KEY UPDATE
+                    Bus=VALUES(Bus), Data=VALUES(Data)";
+            }
+            $this->dbQuery($sql);
+        }
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -288,7 +301,10 @@ require 'flight/Flight.php';
 
 
 Flight::register('Lists', 'Lists');
-
+Flight::route('/save/data', function(){
+    $list = Flight::Lists();
+    $list->saveData();
+});
 Flight::route('/dropdown/destination', function(){
     $list = Flight::Lists();
     echo $list->destinationDropdown();

@@ -94,7 +94,7 @@ $(function() {
 });
 function saveData(){
     // get state data from localstorage
-    var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4};
+    var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4, Delete: 5};
     var allDataKeys = tripData.keys();
     var orderLocalData = {};
     jQuery.each(allDataKeys, function(key,value){
@@ -112,6 +112,7 @@ function saveData(){
         }
     });
     // POST to api/save/data
+    $.post("api/save/data", {data: orderLocalData});
     console.log(orderLocalData);
     // clear data after save
     
@@ -187,6 +188,7 @@ function resetGuest(element){
     jQuery.each(clearVars, function(key,value){
         tripData.remove(value);
     });
+    tripData.set(ID + ":Delete", 1);
 }
 function changeStatus(element){
     if ( $('#AMPM').val() == 'PM' ) {
@@ -201,8 +203,10 @@ function changeStatus(element){
     if ( element.hasClass('bg-none') && ! element.hasClass('bg-danger')) {
         // Customer Checked in
         var AM = element.attr('id') + ":AM";
+        var Delete = element.attr('id') + ":Delete";
         var Bus = element.attr('id')+":Bus";
         tripData.set(AM, 1 );
+        tripData.remove(Delete);
         tripData.set(Bus, settings.get('bus'));
         element.removeClass('bg-none');
         element.addClass('bg-am');
