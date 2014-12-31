@@ -205,6 +205,12 @@ class Lists {
             $this->dbQuery($sql);
         }
     }
+    function deleteOrder($tripId){
+        $sqlManual = "DELETE FROM `ovr_lists_manual_orders` WHERE `ID`='" . $tripId . "'";
+        $sqlData = "DELETE FROM `ovr_lists_data` WHERE `ID`='" . $tripId . "'";
+        $this->dbQuery($sqlManual);
+        $this->dbQuery($sqlData);
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -271,20 +277,28 @@ DDD;
         $output .=<<<EEE
               <div class="row">
                 <br />
-                <div class="buttonCell col-xs-6">
-                    <button class="btn btn-warning" id="{$orderData['num']}:{$orderData['item_num']}:Reset">
+                <div class="buttonCell col-xs-4">
+                    <button class="btn btn-info" id="{$orderData['num']}:{$orderData['item_num']}:Reset">
                         Reset
                     </button>
                 </div>
-                <div class="buttonCell col-xs-6">
-                    <button class="btn btn-danger" id="{$orderData['num']}:{$orderData['item_num']}:NoShow">
+                <div class="buttonCell col-xs-4">
+                    <button class="btn btn-warning" id="{$orderData['num']}:{$orderData['item_num']}:NoShow">
                         No Show
                     </button>
                 </div>
-              </div>
-              </div>
-            </div>
 EEE;
+        if ( substr($orderData['num'],0,2) == "WO" ) {
+            $output .=<<<FFF
+                <div class="buttonCell col-xs-4">
+                    <button class="btn btn-danger" id="{$orderData['num']}:{$orderData['item_num']}:Delete">
+                        Remove Order
+                    </button>
+                </div>
+FFF;
+        }
+        $output .= "</div></div></div>";
+
 //ADD DELETE BUTTON ON WALKON ORDERS
         $ID = $orderData['num'].":".$orderData['item_num'];
         $this->orders[$ID]['HTML'] = $output;
@@ -345,6 +359,10 @@ Flight::route('/save/data', function(){
 Flight::route('/save/walkon', function(){
     $list = Flight::Lists();
     $list->saveWalkOn();
+});
+Flight::route('/walkon/delete/@tripId', function($tripId){
+    $list = Flight::Lists();
+    $list->deleteOrder($tripId);
 });
 Flight::route('/dropdown/destination', function(){
     $list = Flight::Lists();
