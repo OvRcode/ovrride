@@ -104,6 +104,10 @@ function saveData(){
         var split = value.split(":");
         var ID = split[0] + ":" + split[1];
         var valueName = split[2];
+        // Check for delete walkon
+        if ( value.substring(0,2) == "WO" && valueName == "Delete" && tripData.get(value) == "Delete" ) {
+            $.post("api/walkon/delete/"+ID);
+        }
         // Check if object is setup
         if ( jQuery.isEmptyObject(orderLocalData[ID]) ) {
             orderLocalData[ID] = { Trip: settings.get('tripNum'), Bus: "", Data:""};
@@ -117,13 +121,11 @@ function saveData(){
     
     // get walkon data if not previously saved
     if ( newWalkon.keys().length > 0 ){
-        var busNum = settings.get('bus');
-        var tripNum = settings.get('tripNum');
         var walkonData = {};
         jQuery.each(newWalkon.keys(), function(key,value){
              walkonData[value]= orders.get(value);
-            walkonData[value].Bus = busNum;
-            walkonData[value].Trip = tripNum;
+            walkonData[value].Bus = settings.get('bus');;
+            walkonData[value].Trip = settings.get('tripNum');
         });
         $.post("api/save/walkon", {walkon: walkonData}, function(){
             newWalkon.removeAll();
@@ -253,6 +255,12 @@ function setupAllListeners(){
 function setupListener(ID){
     var split = ID.split(":");
     var selectorID = "#" + split[0] + "\\:" + split[1];
+    if ( ID.substring(0,2) == "WO" ){
+        $(selectorID + "\\:Delete").click(function(){
+            tripData.set(split[0]+":"+split[1]+":Delete", "Delete");
+            $(this).parents('.listButton').remove();
+        });
+    }
     // Click events for noshow/reset buttons
     $(selectorID + "\\:Reset").click(function(){
         resetGuest($(this).parents().eq(3));
@@ -416,19 +424,20 @@ function listHTML(ID, order){
               </div>\
               <div class='row'>\
                 <br />\
-                <div class='buttonCell col-xs-6'>\
-                    <button class='btn btn-warning' id='" + ID +":Reset'>\
+                <div class='buttonCell col-xs-4'>\
+                    <button class='btn btn-info' id='" + ID +":Reset'>\
                         Reset\
                     </button>\
                 </div>\
-                <div class='buttonCell col-xs-6'>\
-                    <button class='btn btn-danger' id='" + ID + ":NoShow'>\
+                <div class='buttonCell col-xs-4'>\
+                    <button class='btn btn-warning' id='" + ID + ":NoShow'>\
                         No Show\
                     </button>\
-                </div>\
-              </div>\
-              </div>\
-    </div>";
+                </div>";
+    if ( ID.substring(0,2) == "WO" ) {
+        expandedRemainder = expandedRemainder.concat('<div class="buttonCell col-xs-4"><button class="btn btn-danger" id="' + ID + ':Delete">Remove Order</button></div>');
+    }
+    expandedRemainder = expandedRemainder.concat("</div></div></div>");
     output = output.concat(expandedRemainder);
     $("#content").append(output);
     initialHTML.set(ID, output);

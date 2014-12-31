@@ -35,12 +35,15 @@ $(function() {
     setInterval(function () {
         var statusIcon = $("#status");
         if (window.navigator.onLine) {
+            toggleMenuButtons("online");
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
                     .addClass('btn-success')
                     .html('<i class="fa fa-signal"></i> Online');
             }
         } else if (!window.navigator.onLine) {
+            toggleMenuButtons("offline");
+            
             if ( statusIcon.hasClass('btn-success') ) {
                 statusIcon.removeClass('btn-success')
                     .addClass('btn-danger')
@@ -49,7 +52,30 @@ $(function() {
         }
     }, 250);
 });
-
+function toggleMenuButtons(onlineOffline){
+    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout"];
+    if ( onlineOffline == "offline" ) {
+        jQuery.each(buttons, function(key,value){
+            if ( ! $(value).hasClass('disabled') ){
+                $(value).addClass('disabled');
+            }
+        });
+    } else {
+        var currentPage = location.pathname.split('/').slice(-1)[0];
+        currentPage = currentPage.split(".");
+        currentPage = currentPage[0];
+        jQuery.each(buttons, function(key,value){
+            if ( $(value).hasClass('disabled') ) {
+                $(value).removeClass('disabled');
+                if ( (value == "#btn-settings" && (currentPage == "index" || currentPage == "")) ||
+                     (value == "#btn-message" && currentPage == "message") ||
+                     (value == "#btn-admin" && currentPage == "admin")){
+                         $(value).addClass('disabled');
+                }
+            }
+        });
+    }
+}
 function getNotes(){
     notes.removeAll();
     var trip = settings.get('tripNum');
@@ -68,6 +94,7 @@ function getTripData(){
     window.orders.removeAll();
     window.initialHTML.removeAll();
     window.tripData.removeAll();
+    window.newWalkon.removeAll();
     $.get("api/trip/"+trip+"/"+statuses, function(data){
         var apiData = jQuery.parseJSON(data);
         jQuery.each(apiData, function(id,dataObject){
