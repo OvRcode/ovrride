@@ -190,33 +190,28 @@ module.exports = function(grunt){
       },
     },
     watch: {
-      options: {
-        title: 'Watch Complete',
-        option: 'watch concat/uglify complete',
-      },
       grunt: {
         files: ['Gruntfile.js'],
-        tasks: ['jshint:grunt']
+      },
+      admin: {
+        files: ['lists/js/partials/_admin.js'],
+        tasks: ['jshint:admin','concat:admin', 'uglify:admin','manifest'],
       },
       api: {
         files: ['lists/api/index.php'],
         tasks: ['phplint','manifest'],
       },
-      css: {
-        files: ['lists/css/*.css'],
-        tasks: ['csslint','concat:css', 'cssmin','manifest'],
-      },
-      vendor: {
-        files: ['lists/js/vendor/*.js'],
-        tasks: ['concat:vendor', 'uglify:vendor'],
-      },
       common: {
         files: ['lists/js/partials/_common.js'],
-        tasks: ['jshint','concat','uglify','manifest'],
+        tasks: ['jshint:common', 'concat', 'uglify'],
       },
-      admin: {
-        files: ['lists/js/partials/_admin.js'],
-        tasks: ['jshint:admin','concat:admin', 'uglify:admin','manifest'],
+      css: {
+        files: ['lists/css/lists.css'],
+        tasks: ['csslint','concat:css', 'cssmin','manifest'],
+      },
+      html: {
+        files: ['lists/*.html','lists.*.php'],
+        tasks: ['manifest'],
       },
       lists: {
         files: ['lists/js/partials/_lists.js'],
@@ -238,9 +233,9 @@ module.exports = function(grunt){
         files: ['lists/js/partials/_summary.js'],
         tasks: ['jshint:summary','concat:summary', 'uglify:summary','manifest'],
       },
-      html: {
-        files: ['lists/*.html','lists.*.php'],
-        tasks: ['manifest'],
+      vendor: {
+        files: ['lists/js/vendor/*.js'],
+        tasks: ['concat:vendor', 'uglify:vendor'],
       },
     },
   });
