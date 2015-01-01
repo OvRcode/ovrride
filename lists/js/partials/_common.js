@@ -22,13 +22,13 @@ $(function() {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-    $( '#brand' ).on("click", function(){ window.location.href='index.html' });
-    $( '#btn-settings' ).on("click", function(){ window.location.href='index.html' });
-    $( '#btn-list' ).on("click", function(){ window.location.href='list.html' });
-    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.html' });
-    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.html' });
-    $( '#btn-message' ).on("click", function(){ window.location.href = 'message.html' });
-    $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.html' });
+    $( '#brand' ).on("click", function(){ window.location.href='index.html'; });
+    $( '#btn-settings' ).on("click", function(){ window.location.href='index.html'; });
+    $( '#btn-list' ).on("click", function(){ window.location.href='list.html'; });
+    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.html'; });
+    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.html'; });
+    $( '#btn-message' ).on("click", function(){ window.location.href = 'message.html'; });
+    $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.html'; });
     $( '#btn-logout' ).on("click", function(){ /*TODO: implement login/logout */ });
     
     // Monitor onLine status and flip navbar indicator
@@ -67,7 +67,7 @@ function toggleMenuButtons(onlineOffline){
         jQuery.each(buttons, function(key,value){
             if ( $(value).hasClass('disabled') ) {
                 $(value).removeClass('disabled');
-                if ( (value == "#btn-settings" && (currentPage == "index" || currentPage == "")) ||
+                if ( (value == "#btn-settings" && (currentPage == "index" || currentPage === "")) ||
                      (value == "#btn-message" && currentPage == "message") ||
                      (value == "#btn-admin" && currentPage == "admin")){
                          $(value).addClass('disabled');
@@ -118,4 +118,4 @@ Number.prototype.pad = function(size) {
       var s = String(this);
       while (s.length < (size || 2)) {s = "0" + s;}
       return s;
-    }
+    };

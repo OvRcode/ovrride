@@ -1,3 +1,4 @@
+/*jshint multistr: true */
 $(function(){
     // Enable popovers
     $("[data-toggle=popover]").popover();
@@ -8,7 +9,7 @@ $(function(){
         $("#destName").on("keyup", function(){
             checkDestPopover();
         });
-        $("#addDestBtn").on("click",function(){ saveDestination() });
+        $("#addDestBtn").on("click",function(){ saveDestination(); });
     });
     // unbind popover listeners when closed
     $('[data-toggle="popover"]').on('hide.bs.modal', function(){
@@ -23,7 +24,7 @@ function saveDestination(){
 }
 function checkDestPopover(){
     var destName = $("#destName").val();
-    if (  destName == "" ) {
+    if (  destName === "" ) {
         $("#addDestBtn").addClass('disabled');
     } else if ( $("#addDestBtn").hasClass('disabled') ) {
         $("#addDestBtn").removeClass('disabled');
@@ -61,7 +62,7 @@ function getDestinations(){
         $("#destinations").append(destOutput);
         $("#saveDest").on("click", function(){ 
             console.log("clicked");
-            updateDestinations() 
+            updateDestinations();
         });
     });
 }
