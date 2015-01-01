@@ -13,6 +13,8 @@ $(function() {
     window.notes = notespace.localStorage;
     window.walkonspace = $.initNamespaceStorage('newWalkon');
     window.newWalkon = walkonspace.localStorage;
+    window.noteSaveSpace = $.initNamespaceStorage('unsavedNotes');
+    window.unsavedNotes = noteSaveSpace.localStorage;
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
@@ -36,6 +38,9 @@ $(function() {
         var statusIcon = $("#status");
         if (window.navigator.onLine) {
             toggleMenuButtons("online");
+            if ( ! jQuery.isEmptyObject(unsavedNotes.keys()) ) {
+              saveOfflineNotes();
+            }
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
                     .addClass('btn-black')
@@ -53,7 +58,7 @@ $(function() {
     }, 250);
 });
 function toggleMenuButtons(onlineOffline){
-    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout"];
+    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshNotes"];
     if ( onlineOffline == "offline" ) {
         jQuery.each(buttons, function(key,value){
             if ( ! $(value).hasClass('disabled') ){
@@ -86,6 +91,26 @@ function getNotes(){
         });
     }).done(function(){})
     .fail(function(){ /* fail function here*/});
+}
+function onlineNoteSave(note,bus,trip){
+  var url = "api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
+  $.get(url, function(data){
+      if ( data != 'success' ) {
+          alert("Note Save failed, try again");
+      }
+  });
+}
+function saveOfflineNotes(){
+  jQuery.each(unsavedNotes.keys(), function(key,value){
+    var note = notes.get(value);
+    note = note.split(": ");
+    var bus = note[0];
+    bus = bus.split(" ");
+    bus = bus[1];
+    note = note[1];
+    onlineNoteSave(note,bus,settings.get('tripNum'));
+  });
+  unsavedNotes.removeAll();
 }
 function getTripData(){
     var trip = settings.get('tripNum');

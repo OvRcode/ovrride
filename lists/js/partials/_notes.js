@@ -23,18 +23,17 @@ function saveNote(){
     var note = $("#newNote").val();
     var bus = settings.get('bus');
     var trip = settings.get('tripNum');
-    var url = "api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
-    $.get(url, function(data){
-        if ( data == 'success' ) {
-            var timestamp = timeStamp();
-            /*jshint -W030 */
-            $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
-            $("#newNote").val('');
-        } else {
-            alert("Note Save failed, try again");
-        }
-    });
+    var timestamp = timeStamp();
     
+    if ( window.navigator.onLine ){
+      onlineNoteSave(note,bus,trip);
+    } else {
+      notes.set(timestamp, "Bus " + bus + ": " + note);
+      unsavedNotes.set(timestamp,1);
+    }
+    /*jshint -W030 */ 
+    $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
+    $("#newNote").val('');
 }
 function refreshNotes(){
     getNotes();
