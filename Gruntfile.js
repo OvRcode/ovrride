@@ -20,7 +20,9 @@ module.exports = function(grunt){
           hash: true,
         },
       src: ["js/*.min.js",
-            "images/*",
+            "images/*.gif",
+            "images/*.jpg",
+            "images/*.png",
             "images/ios/*",
             "fonts/*",
             "css/application.min.css",
@@ -210,7 +212,7 @@ module.exports = function(grunt){
       },
       common: {
         files: ['lists/js/partials/_common.js'],
-        tasks: ['jshint:common','concat','uglify','manifest'],
+        tasks: ['jshint','concat','uglify','manifest'],
       },
       admin: {
         files: ['lists/js/partials/_admin.js'],
@@ -234,7 +236,11 @@ module.exports = function(grunt){
       },
       summary: {
         files: ['lists/js/partials/_summary.js'],
-        tasks: ['jshint:summary','concat:settings', 'uglify:settings','manifest'],
+        tasks: ['jshint:summary','concat:summary', 'uglify:summary','manifest'],
+      },
+      html: {
+        files: ['lists/*.html','lists.*.php'],
+        tasks: ['manifest'],
       },
     },
   });

@@ -25,11 +25,16 @@ function parseData(){
                }
                // Add to pickup location
                pickups[pickup].Expected++;
-               if ( tripData.isSet(value + ":AM" ) ) {
+               if ( tripData.isSet(value + ":AM") ||
+               ( ! tripData.isSet(value + ":AM") && tripData.isSet(value + ":Waiver") ) ||
+               ( ! tripData.isSet(value + ":AM") && tripData.isSet(value + ":Product") ) ) {
                    pickups[pickup].AM++;
                }
                if ( tripData.isSet(value + ":PM" ) ) {
                    pickups[pickup].PM++;
+                   if ( ! tripData.isSet(value + ":AM") && ! tripData.isSet(value + ":Waiver") && ! tripData.isSet(value + ":Product")) {
+                     pickups[pickup].AM++;
+                   }
                }
         }
         if ( tripData.isSet(value+":AM") )

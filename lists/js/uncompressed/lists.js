@@ -17874,14 +17874,14 @@ $.widget( "ui.tabs", {
             toggleMenuButtons("online");
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
-                    .addClass('btn-success')
+                    .addClass('btn-black')
                     .html('<i class="fa fa-signal"></i> Online');
             }
         } else if (!window.navigator.onLine) {
             toggleMenuButtons("offline");
             
-            if ( statusIcon.hasClass('btn-success') ) {
-                statusIcon.removeClass('btn-success')
+            if ( statusIcon.hasClass('btn-black') ) {
+                statusIcon.removeClass('btn-black')
                     .addClass('btn-danger')
                     .html('<i class="fa fa-plane"></i> Offline');
             }
@@ -17939,8 +17939,10 @@ function getTripData(){
                     orders.set(id,value);
                     if ( 'Pickup' in value )
                         settings.set('Pickup', 1);
-                } else {
+                } else if ( key == 'HTML' ){
                     initialHTML.set(id,value);
+                } else if ( key == 'State' && value !== null) {
+                  tripData.set(id+":"+value, 1);
                 }
             });
         });

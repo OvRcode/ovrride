@@ -221,6 +221,9 @@ class Lists {
         $result = $this->dbQuery($sql);
         $row = $result->fetch_assoc();
         $data = $row['Data'];
+        if ( $data !== "" ) {
+            $this->orders[$orderData['num'].":".$orderData['item_num']]['State'] = $data;
+        }
         if ( $data == "" ){
             $htmlClass = "bg-none";
             $icon = "";
