@@ -10,6 +10,14 @@ module.exports = function(grunt){
         success: true
       }
     },
+    csslint: {
+      strict: {
+        options: {
+          ids: false
+        },
+        src: ['lists/css/lists.css', 'lists/css/simple-sidebar.css']
+      },
+    },
     concat: {
       css: {
         src: ['lists/css/bootstrap.css','lists/css/font-awesome.min.css','lists/css/simple-sidebar.css','lists/css/lists.css'],
@@ -157,7 +165,7 @@ module.exports = function(grunt){
       },
       css:{
         files: ['lists/css/*.css'],
-        tasks: ['concat:css'],
+        tasks: ['csslint','concat:css'],
       },
       vendor: {
         files: ['lists/js/vendor/*.js'],
@@ -196,12 +204,13 @@ module.exports = function(grunt){
 
 
   // Load plugins
+  grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
   // Tasks
-  grunt.registerTask('default', ['concat','uglify']);
+  grunt.registerTask('default', ['csslint','concat','uglify']);
 
 };
