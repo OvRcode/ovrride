@@ -3,6 +3,13 @@ module.exports = function(grunt){
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    notify_hooks: {
+      options: {
+        enabled: true,
+        title: "OvR Trip Lists",
+        success: true
+      }
+    },
     concat: {
       css: {
         src: ['lists/css/bootstrap.css','lists/css/font-awesome.min.css','lists/css/simple-sidebar.css','lists/css/lists.css'],
@@ -66,7 +73,9 @@ module.exports = function(grunt){
       admin: {
         options: {
           mangle: false,
-          preserveComments: false
+          preserveComments: false,
+          title: 'Admin Uglify',
+          message: 'admin uglify complete',
         },
         files: {
           'lists/js/admin.min.js': ['lists/js/uncompressed/admin.js']
@@ -119,6 +128,10 @@ module.exports = function(grunt){
       },
     },
     watch: {
+      options: {
+        title: 'Watch Complete',
+        option: 'watch concat/uglify complete',
+      },
       css:{
         files: ['lists/css/*.css'],
         tasks: ['concat:css'],
@@ -129,31 +142,31 @@ module.exports = function(grunt){
       },
       common: {
         files: ['lists/js/partials/_common.js'],
-        tasks: ['concat','uglify'],
+        tasks: ['jshint','concat','uglify'],
       },
       admin: {
         files: ['lists/js/partials/_admin.js'],
-        tasks: ['concat:admin', 'uglify:admin'],
+        tasks: ['jshint','concat:admin', 'uglify:admin'],
       },
       lists: {
         files: ['lists/js/partials/_lists.js'],
-        tasks: ['concat:lists', 'uglify:lists'],
+        tasks: ['jshint','concat:lists', 'uglify:lists'],
       },
       message: {
         files: ['lists/js/partials/_message.js'],
-        tasks: ['concat:message', 'uglify:message'],
+        tasks: ['jshint','concat:message', 'uglify:message'],
       },
       notes: {
         files: ['lists/js/partials/_notes.js'],
-        tasks: ['concat:notes', 'uglify:notes'],
+        tasks: ['jshint','concat:notes', 'uglify:notes'],
       },
       settings: {
         files: ['lists/js/partials/_settings.js'],
-        tasks: ['concat:settings', 'uglify:settings'],
+        tasks: ['jshint','concat:settings', 'uglify:settings'],
       },
       summary: {
         files: ['lists/js/partials/_summary.js'],
-        tasks: ['concat:settings', 'uglify:settings'],
+        tasks: ['jshint','concat:settings', 'uglify:settings'],
       },
     },
   });
