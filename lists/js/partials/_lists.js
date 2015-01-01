@@ -1,7 +1,8 @@
+/*jshint multistr: true */
 $(function() {
     $("#saveList").on("tap", function(){
         saveData();
-    })
+    });
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
     
@@ -14,13 +15,13 @@ $(function() {
         if ( !settings.isSet('Pickup') ){
             $("#pickupDiv").remove();
         } else {
-            $("#pickup").change(function(){ addWalkonButton() });
+            $("#pickup").change(function(){ addWalkonButton(); });
         }
         // WalkOn Order listeners
-        $("#first").change(function(){ addWalkonButton() });
-        $("#last").change(function(){ addWalkonButton() });
-        $("#phone").change(function(){ addWalkonButton() });
-        $("#walkonPackage").change(function(){ addWalkonButton() });
+        $("#first").change(function(){ addWalkonButton(); });
+        $("#last").change(function(){ addWalkonButton(); });
+        $("#phone").change(function(){ addWalkonButton(); });
+        $("#walkonPackage").change(function(){ addWalkonButton(); });
         $("#saveWalkOn").on("click", function(){
             saveWalkOn();
         });
@@ -39,10 +40,11 @@ $(function() {
         $("#saveWalkon").unbind("click");
     });
     // Show/Hide Records with AM/PM Toggle button
+    var html;
     $("#AMPM").on("click", function(){
         if ( $(this).val() == "AM") {
             $('.listButton.bg-none').addClass('hidden');
-            var html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
+            html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
                             <i class="fa fa-toggle-on fa-lg"></i>&nbsp;\
             <i class="fa fa-moon-o fa-lg"></i>';
             $(this).val("PM");
@@ -51,7 +53,7 @@ $(function() {
         } else {
             $('.listButton.bg-none').removeClass('hidden');
             $(this).val("AM");
-            var html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
+            html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
                             <i class="fa fa-toggle-off fa-lg"></i>&nbsp;\
             <i class="fa fa-moon-o fa-lg"></i>';
             $(this).html(html);
@@ -124,7 +126,7 @@ function saveData(){
         var walkonData = {};
         jQuery.each(newWalkon.keys(), function(key,value){
              walkonData[value]= orders.get(value);
-            walkonData[value].Bus = settings.get('bus');;
+            walkonData[value].Bus = settings.get('bus');
             walkonData[value].Trip = settings.get('tripNum');
         });
         $.post("api/save/walkon", {walkon: walkonData}, function(){
@@ -337,7 +339,7 @@ function addWalkonButton(){
     if ( walkonPackage == "Other" && $("#otherPackage").val() === undefined ) {
         var html = "<div id='otherDiv'><input id='otherPackage' type='text' class='input-sm' placeholder='Input Package'></input><br /><br /></div>";
         $(html).insertBefore("#saveWalkOn");
-        $("#otherPackage").change(function(){ addWalkonButton()});
+        $("#otherPackage").change(function(){ addWalkonButton(); });
     } else if ( walkonPackage !== "Other" && $("#otherPackage").val() !== undefined ) {
         $("#otherPackage").unbind("change");
         $("#otherDiv").remove();
@@ -346,15 +348,16 @@ function addWalkonButton(){
     var last          = $("#last").val();
     var phone         = $("#phone").val();
     var otherPackage  = $("#otherPackage").val();
+    var pickup;
     if ( settings.isSet('Pickup') ) {
-        var pickup = $("#pickup").val();
+        pickup = $("#pickup").val();
     } else {
-        var pickup = "none";
+        pickup = "none";
     }
 
-    if ( first != "" && last != "" && phone != "" && pickup != "" && 
-        ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) 
-        || ( walkonPackage !== "Other" && walkonPackage !== "none"))) {
+    if ( first !== "" && last !== "" && phone !== "" && pickup !== "" && 
+    ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) || 
+    ( walkonPackage !== "Other" && walkonPackage !== "none"))) {
         $("#saveWalkOn").removeClass('disabled');
     } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
         $("#saveWalkOn").addClass('disabled');

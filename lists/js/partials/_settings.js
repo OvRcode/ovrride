@@ -26,8 +26,8 @@ $(function(){
         "refunded":   $("#refunded"),
         "walk-on":    $("#walk-on")
     };
-    $('#default').click(function(){resetStatuses("Default")});
-    $('#clear').click(function(){resetStatuses("All")});
+    $('#default').click(function(){ resetStatuses("Default"); });
+    $('#clear').click(function(){ resetStatuses("All"); });
     $('#settings_save').click(function(){
         saveOptions();
         getTripData();
@@ -74,7 +74,7 @@ function saveOptions(){
     window.settings.set('bus', $('#bus').val());
     
     // Array to be filled with active checkbox values then concatenated with , seperator
-    window.activeBoxes = []
+    window.activeBoxes = [];
     jQuery.each(window.checkBoxes, function(index, value){
         if ( value.prop('checked') ){
             window.activeBoxes[window.activeBoxes.length] = value.val();

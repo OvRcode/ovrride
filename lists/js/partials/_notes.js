@@ -1,9 +1,9 @@
 $(function(){
     //add check for online/offline when offline is implemented
     refreshNotes();
-    $("#saveNote").click(function(){ saveNote() });
-    $("#refreshNotes").click(function(){ refreshNotes() });
-    $("#bus").click(function(){ toggleBus() });
+    $("#saveNote").click(function(){ saveNote(); });
+    $("#refreshNotes").click(function(){ refreshNotes(); });
+    $("#bus").click(function(){ toggleBus(); });
 });
 function toggleBus(){
     var bus = settings.get('bus');
@@ -27,6 +27,7 @@ function saveNote(){
     $.get(url, function(data){
         if ( data == 'success' ) {
             var timestamp = timeStamp();
+            /*jshint -W030 */
             $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
             $("#newNote").val('');
         } else {

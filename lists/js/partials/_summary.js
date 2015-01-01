@@ -1,20 +1,21 @@
+/*jshint multistr: true */
 $(function(){
     parseData();
     if ( ! jQuery.isEmptyObject(pickups) ) {
         outputPickups();
     }
-    if ( tripData.keys() != '' ) {
+    if ( tripData.keys() !== '' ) {
         outputPackages();
     }
-})
+});
 function parseData(){
     window.packages = {};
     window.pickups = {};
     jQuery.each(orders.keys(), function(key, value){
         var currentOrder = orders.get(value);
         // Check for pickup and save data
-        if ( typeof currentOrder['Pickup'] != 'undefined' ) {
-               var pickup = currentOrder['Pickup'].trim();
+        if ( typeof currentOrder.Pickup != 'undefined' ) {
+               var pickup = currentOrder.Pickup.trim();
                if ( typeof pickups[pickup] == 'undefined' ) {
                    // Define pickup location object if not set
                    pickups[pickup] = {};
@@ -32,12 +33,12 @@ function parseData(){
                }
         }
         if ( tripData.isSet(value+":AM") )
-            parsePackages(currentOrder['Package'].trim());
+            parsePackages(currentOrder.Package.trim());
     });
 }
 function addPackage(packageName){
     if ( typeof packages[packageName] == 'undefined' ) {
-        packages[packageName] = 0
+      packages[packageName] = 0;
     }
     packages[packageName]++;
 }
