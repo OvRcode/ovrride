@@ -10,6 +10,24 @@ module.exports = function(grunt){
         success: true
       }
     },
+    manifest: {
+      generate: {
+        options:{
+          basePath: "lists/",
+          network:["api/*","http://*","https://*"],
+          timestamp: true,
+          verbose: true,
+          hash: true,
+        },
+      src: ["js/*.min.js",
+            "images/*",
+            "images/ios/*",
+            "fonts/*",
+            "css/application.min.css",
+            "*.html"],
+      dest: "lists/manifest.appcache"
+      },
+    },
     csslint: {
       strict: {
         options: {
@@ -176,11 +194,11 @@ module.exports = function(grunt){
       },
       api: {
         files: ['lists/api/index.php'],
-        tasks: ['phplint'],
+        tasks: ['phplint','manifest'],
       },
       css: {
         files: ['lists/css/*.css'],
-        tasks: ['csslint','concat:css', 'cssmin'],
+        tasks: ['csslint','concat:css', 'cssmin','manifest'],
       },
       vendor: {
         files: ['lists/js/vendor/*.js'],
@@ -188,31 +206,31 @@ module.exports = function(grunt){
       },
       common: {
         files: ['lists/js/partials/_common.js'],
-        tasks: ['jshint:common','concat','uglify'],
+        tasks: ['jshint:common','concat','uglify','manifest'],
       },
       admin: {
         files: ['lists/js/partials/_admin.js'],
-        tasks: ['jshint:admin','concat:admin', 'uglify:admin'],
+        tasks: ['jshint:admin','concat:admin', 'uglify:admin','manifest'],
       },
       lists: {
         files: ['lists/js/partials/_lists.js'],
-        tasks: ['jshint:lists','concat:lists', 'uglify:lists'],
+        tasks: ['jshint:lists','concat:lists', 'uglify:lists','manifest'],
       },
       message: {
         files: ['lists/js/partials/_message.js'],
-        tasks: ['jshint:message','concat:message', 'uglify:message'],
+        tasks: ['jshint:message','concat:message', 'uglify:message','manifest'],
       },
       notes: {
         files: ['lists/js/partials/_notes.js'],
-        tasks: ['jshint:notes','concat:notes', 'uglify:notes'],
+        tasks: ['jshint:notes','concat:notes', 'uglify:notes','manifest'],
       },
       settings: {
         files: ['lists/js/partials/_settings.js'],
-        tasks: ['jshint:settings','concat:settings', 'uglify:settings'],
+        tasks: ['jshint:settings','concat:settings', 'uglify:settings','manifest'],
       },
       summary: {
         files: ['lists/js/partials/_summary.js'],
-        tasks: ['jshint:summary','concat:settings', 'uglify:settings'],
+        tasks: ['jshint:summary','concat:settings', 'uglify:settings','manifest'],
       },
     },
   });
@@ -227,7 +245,8 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-manifest');
   // Tasks
-  grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin','phplint']);
+  grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin','phplint', 'manifest']);
 
 };
