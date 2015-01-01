@@ -2395,6 +2395,8 @@ if (typeof jQuery === 'undefined') {
     window.notes = notespace.localStorage;
     window.walkonspace = $.initNamespaceStorage('newWalkon');
     window.newWalkon = walkonspace.localStorage;
+    window.noteSaveSpace = $.initNamespaceStorage('unsavedNotes');
+    window.unsavedNotes = noteSaveSpace.localStorage;
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
@@ -2418,6 +2420,9 @@ if (typeof jQuery === 'undefined') {
         var statusIcon = $("#status");
         if (window.navigator.onLine) {
             toggleMenuButtons("online");
+            if ( ! jQuery.isEmptyObject(unsavedNotes.keys()) ) {
+              saveOfflineNotes();
+            }
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
                     .addClass('btn-black')
@@ -2435,7 +2440,7 @@ if (typeof jQuery === 'undefined') {
     }, 250);
 });
 function toggleMenuButtons(onlineOffline){
-    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout"];
+    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshNotes"];
     if ( onlineOffline == "offline" ) {
         jQuery.each(buttons, function(key,value){
             if ( ! $(value).hasClass('disabled') ){
@@ -2468,6 +2473,26 @@ function getNotes(){
         });
     }).done(function(){})
     .fail(function(){ /* fail function here*/});
+}
+function onlineNoteSave(note,bus,trip){
+  var url = "api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
+  $.get(url, function(data){
+      if ( data != 'success' ) {
+          alert("Note Save failed, try again");
+      }
+  });
+}
+function saveOfflineNotes(){
+  jQuery.each(unsavedNotes.keys(), function(key,value){
+    var note = notes.get(value);
+    note = note.split(": ");
+    var bus = note[0];
+    bus = bus.split(" ");
+    bus = bus[1];
+    note = note[1];
+    onlineNoteSave(note,bus,settings.get('tripNum'));
+  });
+  unsavedNotes.removeAll();
 }
 function getTripData(){
     var trip = settings.get('tripNum');
@@ -2527,18 +2552,17 @@ function saveNote(){
     var note = $("#newNote").val();
     var bus = settings.get('bus');
     var trip = settings.get('tripNum');
-    var url = "api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
-    $.get(url, function(data){
-        if ( data == 'success' ) {
-            var timestamp = timeStamp();
-            /*jshint -W030 */
-            $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
-            $("#newNote").val('');
-        } else {
-            alert("Note Save failed, try again");
-        }
-    });
+    var timestamp = timeStamp();
     
+    if ( window.navigator.onLine ){
+      onlineNoteSave(note,bus,trip);
+    } else {
+      notes.set(timestamp, "Bus " + bus + ": " + note);
+      unsavedNotes.set(timestamp,1);
+    }
+    /*jshint -W030 */ 
+    $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
+    $("#newNote").val('');
 }
 function refreshNotes(){
     getNotes();
