@@ -38,7 +38,7 @@ module.exports = function(grunt){
     },
     jshint: {
       grunt: {
-        src: ['Gruntfile.js', 'package.json'],
+        src: ['Gruntfile.js'],
       },
       admin: {
         src: ['lists/js/partials/_admin.js'],
@@ -191,6 +191,10 @@ module.exports = function(grunt){
       options: {
         title: 'Watch Complete',
         option: 'watch concat/uglify complete',
+      },
+      grunt: {
+        files: ['Gruntfile.js'],
+        tasks: ['jshint:grunt']
       },
       api: {
         files: ['lists/api/index.php'],
