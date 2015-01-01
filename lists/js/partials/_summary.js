@@ -37,8 +37,12 @@ function parseData(){
                    }
                }
         }
-        if ( tripData.isSet(value+":AM") )
+        if ( tripData.isSet(value + ":AM") ||
+               ( ! tripData.isSet(value + ":AM") && tripData.isSet(value + ":Waiver") ) ||
+               ( ! tripData.isSet(value + ":AM") && tripData.isSet(value + ":Product") ) ||
+               ( ! tripData.isSet(value + ":AM") && ! tripData.isSet(value + ":Waiver") && tripData.isSet(value + ":PM"))) {
             parsePackages(currentOrder.Package.trim());
+          }
     });
 }
 function addPackage(packageName){
