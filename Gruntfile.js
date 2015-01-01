@@ -12,7 +12,7 @@ module.exports = function(grunt){
         options: {
           separator: ';',
         },
-        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/dropdown.js','lists/js/vendor/jquery.storageapi.min.js', 
+        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 
               'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js'],
         dest: 'lists/js/uncompressed/vendor.js',
       },
@@ -118,6 +118,44 @@ module.exports = function(grunt){
         }
       },
     },
+    watch: {
+      css:{
+        files: ['lists/css/*.css'],
+        tasks: ['concat:css'],
+      },
+      vendor: {
+        files: ['lists/js/vendor/*.js'],
+        tasks: ['concat:vendor', 'uglify:vendor'],
+      },
+      common: {
+        files: ['lists/js/partials/_common.js'],
+        tasks: ['concat','uglify'],
+      },
+      admin: {
+        files: ['lists/js/partials/_admin.js'],
+        tasks: ['concat:admin', 'uglify:admin'],
+      },
+      lists: {
+        files: ['lists/js/partials/_lists.js'],
+        tasks: ['concat:lists', 'uglify:admin'],
+      },
+      message: {
+        files: ['lists/js/partials/_message.js'],
+        tasks: ['concat:message', 'uglify:message'],
+      },
+      notes: {
+        files: ['lists/js/partials/_notes.js'],
+        tasks: ['concat:notes', 'uglify:notes'],
+      },
+      settings: {
+        files: ['lists/js/partials/_settings.js'],
+        tasks: ['concat:settings', 'uglify:settings'],
+      },
+      summary: {
+        files: ['lists/js/partials/_summary.js'],
+        tasks: ['concat:settings', 'uglify:settings'],
+      },
+    },
   });
 
 
@@ -125,6 +163,7 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   // Tasks
   grunt.registerTask('default', ['concat','uglify']);
 
