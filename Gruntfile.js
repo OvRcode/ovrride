@@ -218,6 +218,6 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
   // Tasks
-  grunt.registerTask('default', ['csslint','concat','uglify']);
+  grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin']);
 
 };
