@@ -18,6 +18,37 @@ module.exports = function(grunt){
         src: ['lists/css/lists.css', 'lists/css/simple-sidebar.css']
       },
     },
+    jshint: {
+      grunt: {
+        src: ['Gruntfile.js', 'package.json'],
+      },
+      admin: {
+        src: ['lists/js/partials/_admin.js'],
+      },
+      common: {
+        src: ['lists/js/partials/_common.js'],
+      },
+      lists: {
+        src: ['lists/js/partials/_lists.js'],
+      },
+      message: {
+        src: ['lists/js/partials/_message.js'],
+      },
+      notes: {
+        src: ['lists/js/partials/_notes.js'],
+      },
+      settings: {
+        src: ['lists/js/partials/_settings.js'],
+      },
+      summary: {
+        src: ['lists/js/partials/_summary.js'],
+      },
+    },
+    phplint: {
+      api: {
+        src: ['lists/api/index.php'],
+      },
+    },
     cssmin: {
       target: {
         src: ['lists/css/application.css'],
@@ -78,32 +109,6 @@ module.exports = function(grunt){
         },
         src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_admin.js'],
         dest: 'lists/js/uncompressed/admin.js',
-      },
-    },
-    jshint: {
-      grunt: {
-        src: ['Gruntfile.js', 'package.json'],
-      },
-      admin: {
-        src: ['lists/js/partials/_admin.js'],
-      },
-      common: {
-        src: ['lists/js/partials/_common.js'],
-      },
-      lists: {
-        src: ['lists/js/partials/_lists.js'],
-      },
-      message: {
-        src: ['lists/js/partials/_message.js'],
-      },
-      notes: {
-        src: ['lists/js/partials/_notes.js'],
-      },
-      settings: {
-        src: ['lists/js/partials/_settings.js'],
-      },
-      summary: {
-        src: ['lists/js/partials/_summary.js'],
       },
     },
     uglify: {
@@ -169,7 +174,11 @@ module.exports = function(grunt){
         title: 'Watch Complete',
         option: 'watch concat/uglify complete',
       },
-      css:{
+      api: {
+        files: ['lists/api/index.php'],
+        tasks: ['phplint'],
+      },
+      css: {
         files: ['lists/css/*.css'],
         tasks: ['csslint','concat:css', 'cssmin'],
       },
@@ -212,12 +221,13 @@ module.exports = function(grunt){
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks("grunt-phplint");
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
   // Tasks
-  grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin']);
+  grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin','phplint']);
 
 };
