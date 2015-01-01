@@ -2503,7 +2503,11 @@ Number.prototype.pad = function(size) {
       while (s.length < (size || 2)) {s = "0" + s;}
       return s;
     };;$(function(){
-  
+    if ( ! window.navigator.onLine && ! jQuery.isEmptyObject(orders.keys())) {
+      window.location.href = "list.html";
+    } else if ( ! window.navigator.onLine && jQuery.isEmptyObject(orders.keys())) {
+      alert ("No Local Data found, cannot download trips while offline");
+    }
     /* Start Drop Down population */
     $.get("api/dropdown/destination", function(data, dd){
             $('#destination').append(data); 
