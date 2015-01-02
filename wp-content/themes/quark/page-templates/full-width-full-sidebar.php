@@ -85,7 +85,7 @@ get_header(); ?>
                                         
                                         <div class="seats-left">
                                            <p><a href="<?php echo $trip_links[$i]; ?>">Space Available 
-                                             <?php if($spots_left[$i] <= 10 && $spots_left[$i] !== "") echo intval($spots_left[$i]); ?></a></p>
+                                             <?php if($spots_left[$i] !== '') echo intval($spots_left[$i]); ?></a></p>
                                         </div>
                                     <?php else: ?>
                                         <p class="stock out-of-stock">SOLD OUT</p>
