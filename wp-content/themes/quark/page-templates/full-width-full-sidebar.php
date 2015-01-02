@@ -52,12 +52,14 @@ get_header(); ?>
                         $trip_titles[] = get_the_title();
                         $trip_links[] = get_permalink();
                         $trip_thumbs[] = $alt_thumb[0];
-                        $spots_left[] = get_post_meta( $post->ID, '_stock', true);
+                        $product = wc_get_product( $post->ID );
+                        $spots_left[] = $product->get_stock_quantity();
+
                         }
                 
                         array_multisort($trip_dates, $trip_titles, $trip_links, $trip_thumbs, $spots_left);
                     endwhile;
-                
+                    
                     // count how many trips are listed, if less than 8 have date_picker fields set, set to that number
                     $max_trips = count($trip_dates) < 8 ? count($trip_dates) : 8;
                 
@@ -76,7 +78,7 @@ get_header(); ?>
                                 </div>
 
                                 <div class="upcoming-info"> 
-                                    <?php if ($spots_left[$i] == '' || $spots_left[$i] > 0): ?>
+                                    <?php if ($spots_left[$i] !== 0): ?>
                                         <div class="book-this-btn">
                                             <a class="book-btn-smll" href="<?php echo $trip_links[$i]; ?>">BOOK THIS TRIP</a>
                                         </div>
