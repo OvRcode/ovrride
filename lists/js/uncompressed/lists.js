@@ -18082,7 +18082,7 @@ $(function() {
 });
 function saveData(){
     // get state data from localstorage
-    var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4, Delete: 5};
+    var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4, NoShow: 5,Delete: 6};
     var allDataKeys = tripData.keys();
     var orderLocalData = {};
     jQuery.each(allDataKeys, function(key,value){
