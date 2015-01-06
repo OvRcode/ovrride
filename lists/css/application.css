@@ -6435,6 +6435,7 @@ button.close {
 .sidebar-nav li a:hover {
     text-decoration: none;
     color: #fff;
+    background: #ffffff;
     background: rgba(255,255,255,0.2);
 }
 
@@ -6555,12 +6556,12 @@ button.close {
 }
 
 .listButton a {
-    color:#777777;
+    color: #777777;
     text-decoration: underline;   
 }
 
 .listButton a:hover {
-    color:black;
+    color: #000000;
 }
 
 .buttonCell {

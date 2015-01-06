@@ -68,12 +68,12 @@
 }
 
 .listButton a {
-    color:#777777;
+    color: #777777;
     text-decoration: underline;   
 }
 
 .listButton a:hover {
-    color:black;
+    color: #000000;
 }
 
 .buttonCell {
