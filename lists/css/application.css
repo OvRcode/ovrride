@@ -6487,7 +6487,6 @@ button.close {
 }
 .sidebar-nav .btn {
     width:80%;
-    padding-right: 10px;
 }
 
 .sidebar-nav .half {
@@ -6506,7 +6505,7 @@ button.close {
 .ovr {
     background-color:#09BDEB;
     position:fixed;
-    top:0px;
+    top:0;
     width:100%;
 }
 
@@ -6542,14 +6541,10 @@ button.close {
 
 .listButton {
     border-radius:10px;
-    padding-top:7px;
-    padding-left:15px;
-    padding-right:15px;
-    padding-bottom:7px;
+    padding: 7px 15px 7px 15px;
     margin-bottom: 10px;
     margin-left:3px;
     margin-right:3px;
-    -webkit-box-shadow: 3px 3px 1px 1px #ccc;
     box-shadow: 3px 3px 1px 1px #ccc;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -6570,7 +6565,7 @@ button.close {
 
 .buttonCell {
     display: block;
-    overflow:none;
+    overflow: hidden;
     padding-bottom:5px;
 }
 

@@ -39,7 +39,8 @@ module.exports = function(grunt){
     csslint: {
       strict: {
         options: {
-          ids: false
+          ids: false,
+          important: false
         },
         src: ['lists/css/lists.css', 'lists/css/simple-sidebar.css']
       },
