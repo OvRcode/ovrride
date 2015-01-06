@@ -80,7 +80,7 @@ class Lists {
                     $walkOnOrder['Pickup'] = $row['Pickup'];
                     $walkOnOrder['Phone'] = $row['Phone'];
                     $walkOnOrder['Package'] = $row['Package'];
-                    $walkOnOrder['Bus'] = $row['Bus'];
+                    $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
                     $this->listHTML($walkOnOrder);
                     $this->customerData($walkOnOrder);
                 }
@@ -247,6 +247,11 @@ class Lists {
         } else if ( $data == "PM" ) {
             $htmlClass = "bg-pm";
             $icon = "<i class='fa fa-moon-o fa-lg'></i>";
+            $pickupVisible = "";
+            $packageVisible = "visible-md visible-lg";
+        } else if ( $data == "NoShow" ) {
+            $htmlClass = "bg-noshow";
+            $icon = "<i class='fa fa-exclamation-triangle fa-lg'></i>";
             $pickupVisible = "";
             $packageVisible = "visible-md visible-lg";
         }
