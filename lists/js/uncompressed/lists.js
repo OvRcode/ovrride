@@ -18099,11 +18099,9 @@ function saveData(){
         }
         // Check if object is setup
         if ( jQuery.isEmptyObject(orderLocalData[ID]) ) {
-            orderLocalData[ID] = { Trip: settings.get('tripNum'), Bus: "", Data:""};
+            orderLocalData[ID] = { Trip: settings.get('tripNum'), Bus: settings.get('bus'), Data:""};
         }
-        if ( valueName == "Bus" ){
-            orderLocalData[ID].Bus = tripData.get(value);
-        } else if ( orderLocalData[ID].Data === "" || packageWeight[valueName] > packageWeight[orderLocalData[ID].Data]) {
+        if ( orderLocalData[ID].Data === "" || packageWeight[valueName] > packageWeight[orderLocalData[ID].Data]) {
             orderLocalData[ID].Data = valueName;
         }
     });
