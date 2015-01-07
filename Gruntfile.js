@@ -33,7 +33,8 @@ module.exports = function(grunt){
             "fonts/*",
             "css/application.min.css",
             "*.html",
-            "*.php"],
+            "*.php",
+            "lists.version"],
       dest: "lists/manifest.appcache"
       },
     },
