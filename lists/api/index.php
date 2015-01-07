@@ -64,6 +64,61 @@ class Lists {
         }
         echo $options;
     }
+    function csv($type,$trip,$status){
+        $orders = $this->tripData("All",$trip,$status);
+        $output = "";
+        if ( $type == "list" ){
+            $header = "First, Last, Phone, Pickup, Package, Order, AM, Waiver, Product Rec, PM\n";
+            $output .= $header;
+            foreach ( $orders as $ID => $data ) {
+                $order = preg_split("/:/",$ID);
+                $order = $order[0];
+                $row = "\"" . $data['Data']['First'] . "\",\"" . $data['Data']['Last'] . "\",\"" . $data['Data']['Phone'] . "\"";
+                if ( isset($data['Data']['Pickup']) ){
+                    $row .= ",\"" . $data['Data']['Pickup'] . "\"";
+                } else{
+                    $row .= ",\"X\"";
+                }
+                $row .= ",\"" . $data['Data']['Package'] . "\",\"" . $order . "\"";
+                
+                if ( $data['State'] == "AM" ) {
+                    $state = ",\"X\",\"\",\"\",\"\"\n";
+                } else if ( $data['State'] == "Waiver" ) {
+                    $state = ",\"X\",\"X\",\"\",\"\"\n";
+                } else if ( $data['State'] == "Product" ) {
+                    $state = ",\"X\",\"X\",\"X\",\"\"\n";
+                } else if ( $data['State'] == "PM" ) {
+                    $state = ",\"X\",\"X\",\"X\",\"X\"\n";
+                } else {
+                    $state = ",\"\",\"\",\"\",\"\"\n";
+                }
+                $row .= $state;
+                $output .= $row;
+            }
+        } else if ( $type = "email" ) {
+            $header ="Email, First, Last, Package, Pickup\n";
+            $output .= $header;
+            foreach( $orders as $ID => $data ) {
+                $row = "";
+                if ( isset($data['Data']['Email']) ) {
+                    $row .= "\"" . $data['Data']['Email'] . "\"";
+                } else {
+                    $row .= "\"none\"";
+                }
+                $row .= ",\"" . $data['Data']['First'] . "\",\"" . $data['Data']['Last'] . "\",\"" . $data['Data']['Package'] . "\",\"" . $data['Data']['Pickup'] . "\"\n";
+                $output .= $row;
+            }
+        }
+        if ( $output !== "" ){
+            return $output;
+        }
+    }
+    function getTripName($trip){
+        $sql = "select post_title from wp_posts where ID = '" . $trip . "'";
+        $result = $this->dbQuery($sql);
+        $name = $result->fetch_assoc();
+        return $name['post_title'];
+    }
     function tripData($bus, $tripId, $status){
         /* Get saved trip data and sort into array based on bus # */
         $busSql = "select ID,Bus from ovr_lists_data where Trip='" . $tripId . "'";
@@ -459,6 +514,17 @@ Flight::route('POST /save/tripdata', function(){
     foreach($_POST as $key => $value){
         error_log($key . ":" . $value);
     }
+});
+Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
+    $list = Flight::Lists();
+    $tripName = $list->getTripName($trip);
+    $fileName = date("m-d-Y") . " - " . $tripName . " - " . $type . ".csv";
+    //Gets CSV data from POST and returns file download
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename=".$fileName);
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    echo $list->csv($type,$trip,$status);;
 });
 Flight::start();
 ?>
