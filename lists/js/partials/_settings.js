@@ -1,6 +1,6 @@
 $(function(){
     if ( ! window.navigator.onLine && ! jQuery.isEmptyObject(orders.keys())) {
-      window.location.href = "list.html";
+      window.location.href = "list.php";
     } else if ( ! window.navigator.onLine && jQuery.isEmptyObject(orders.keys())) {
       alert ("No Local Data found, cannot download trips while offline");
     }

@@ -64,25 +64,43 @@ class Lists {
         }
         echo $options;
     }
-    function tripData($tripId, $status){
+    function tripData($bus, $tripId, $status){
+        /* Get saved trip data and sort into array based on bus # */
+        $busSql = "select ID,Bus from ovr_lists_data where Trip='" . $tripId . "'";
+        $busResult = $this->dbQuery($busSql);
+        $busData = [];
+        $busData[$bus] = [];
+        $busData["Other"] = [];
+        while( $busRow = $busResult->fetch_assoc() ) {
+            if ( $busRow['Bus'] !== 0 ){
+                if ( $busRow['Bus'] == $bus ){
+                    $busData[$busRow['Bus']][] = $busRow['ID'];
+                } else {
+                    $busData["Other"][] = $busRow['ID'];
+                }
+            }
+        }
         $statuses = explode(',',$status);
         foreach($statuses as $single){
             if ( $single == "walk-on" ) {
                 $sql = "SELECT * FROM `ovr_lists_manual_orders` WHERE `Trip` = '" . $tripId . "'";
                 $result = $this->dbQuery($sql);
                 while($row = $result->fetch_assoc()){
-                    $walkOnOrder = [];
-                    $split = preg_split("/:/", $row['ID']);
-                    $walkOnOrder['num']      = $split[0];
-                    $walkOnOrder['item_num'] = $split[1];
-                    $walkOnOrder['First'] = $row['First'];
-                    $walkOnOrder['Last'] = $row['Last'];
-                    $walkOnOrder['Pickup'] = $row['Pickup'];
-                    $walkOnOrder['Phone'] = $row['Phone'];
-                    $walkOnOrder['Package'] = $row['Package'];
-                    $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
-                    $this->listHTML($walkOnOrder);
-                    $this->customerData($walkOnOrder);
+                    if ( $bus == "All" || array_search($row['ID'], $busData[$bus]) !== FALSE || 
+                        array_search($row['ID'], $busData['Other']) === FALSE) {
+                        $walkOnOrder = [];
+                        $split = preg_split("/:/", $row['ID']);
+                        $walkOnOrder['num']      = $split[0];
+                        $walkOnOrder['item_num'] = $split[1];
+                        $walkOnOrder['First'] = $row['First'];
+                        $walkOnOrder['Last'] = $row['Last'];
+                        $walkOnOrder['Pickup'] = $row['Pickup'];
+                        $walkOnOrder['Phone'] = $row['Phone'];
+                        $walkOnOrder['Package'] = $row['Package'];
+                        $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
+                        $this->listHTML($walkOnOrder);
+                        $this->customerData($walkOnOrder);
+                    }
                 }
             } else {
                 $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`, `wp_posts`.`post_status`
@@ -96,21 +114,26 @@ class Lists {
                         AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$tripId'";
                 $result = $this->dbQuery($sql);
                 while($row = $result->fetch_assoc()){ 
-                    $orderData = [];   
-                    $orderData['num'] = $row['ID'];
-                    $orderData['item_num'] = $row['order_item_id'];
-                    $order = $row['ID'];
-                    $orderItem = $row['order_item_id'];
-                    # Get phone number
-                    $phoneSql = "SELECT  `meta_value` AS  `Phone`
+                    $searchID = $row['ID'] . ":" . $row['order_item_id'];
+                    if ( $bus == "All" || array_search($searchID, $busData[$bus]) !== FALSE || 
+                        array_search($searchID, $busData['Other']) === FALSE) {
+                        
+                        $orderData = [];   
+                        $orderData['num'] = $row['ID'];
+                        $orderData['item_num'] = $row['order_item_id'];
+                        $order = $row['ID'];
+                        $orderItem = $row['order_item_id'];
+                    
+                        # Get phone number
+                        $phoneSql = "SELECT  `meta_value` AS  `Phone`
                             FROM wp_postmeta
                             WHERE meta_key =  '_billing_phone'
                             AND post_id =  '$order'";
-                    $phoneResult = $this->dbQuery($phoneSql);
-                    $phoneRow = $phoneResult->fetch_assoc();
-                    $orderData['Phone'] = $this->reformatPhone($phoneRow['Phone']);
-                    # Get meta details
-                    $detailSql = "SELECT `meta_key`, `meta_value` 
+                        $phoneResult = $this->dbQuery($phoneSql);
+                        $phoneRow = $phoneResult->fetch_assoc();
+                        $orderData['Phone'] = $this->reformatPhone($phoneRow['Phone']);
+                        # Get meta details
+                        $detailSql = "SELECT `meta_key`, `meta_value` 
                             FROM `wp_woocommerce_order_itemmeta`
                             WHERE ( `meta_key` = 'Name'
                             OR `meta_key` = 'Email'
@@ -120,25 +143,27 @@ class Lists {
                             OR `meta_key` = 'Transit To Rockaway'
                             OR `meta_key` = 'Transit From Rockaway')
                             AND `order_item_id` = '$orderItem'";
-                    $detailResult = $this->dbQuery($detailSql);
-                    while($detailRow = $detailResult->fetch_assoc()){
-                        if ( $detailRow['meta_key'] == 'Package' ) {
-                            $orderData['Package'] = ucwords(strtolower($this->removePackagePrice($detailRow['meta_value'])));
-                        } else if ( $detailRow['meta_key'] == 'Pickup' || $detailRow['meta_key'] == 'Pickup Location') {
-                            $orderData['Pickup'] = ucwords(strtolower($this->stripTime($detailRow['meta_value'])));
-                        } else if ( $detailRow['meta_key'] == 'Transit To Rockaway' || $detailRow['meta_key'] == 'Transit From Rockaway') {
-                            $orderData[$detailRow['meta_key']] = ucwords(strtolower($detailRow['meta_value']));
-                        } else if ( $detailRow['meta_key'] == 'Name' ) {
-                            $names = $this->splitName($detailRow['meta_value']);
-                            $orderData['First'] = stripcslashes(ucwords(strtolower($names['First'])));
-                            $orderData['Last']  = stripcslashes(ucwords(strtolower($names['Last'])));
-                        } else {
-                            $orderData[$detailRow['meta_key']] = trim($detailRow['meta_value']);
+                        $detailResult = $this->dbQuery($detailSql);
+                        while($detailRow = $detailResult->fetch_assoc()){
+                            if ( $detailRow['meta_key'] == 'Package' ) {
+                                $orderData['Package'] = ucwords(strtolower($this->removePackagePrice($detailRow['meta_value'])));
+                            } else if ( $detailRow['meta_key'] == 'Pickup' || $detailRow['meta_key'] == 'Pickup Location') {
+                                $orderData['Pickup'] = ucwords(strtolower($this->stripTime($detailRow['meta_value'])));
+                            } else if ( $detailRow['meta_key'] == 'Transit To Rockaway' || 
+                                        $detailRow['meta_key'] == 'Transit From Rockaway') {
+                                $orderData[$detailRow['meta_key']] = ucwords(strtolower($detailRow['meta_value']));
+                            } else if ( $detailRow['meta_key'] == 'Name' ) {
+                                $names = $this->splitName($detailRow['meta_value']);
+                                $orderData['First'] = stripcslashes(ucwords(strtolower($names['First'])));
+                                $orderData['Last']  = stripcslashes(ucwords(strtolower($names['Last'])));
+                            } else {
+                                $orderData[$detailRow['meta_key']] = trim($detailRow['meta_value']);
+                            }
                         }
-                    }
                     
-                    $this->listHTML($orderData);
-                    $this->customerData($orderData);
+                        $this->listHTML($orderData);
+                        $this->customerData($orderData);
+                    }
                 }
             }
         }
@@ -417,9 +442,10 @@ Flight::route('POST /dropdown/destination/update', function(){
     $list = Flight::Lists();
     $list->updateDestinations($_POST['destination'], $_POST['enabled']);
 });
-Flight::route('/trip/@tripId/@status', function($tripId,$status){ 
+Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
     $list = Flight::Lists();
-    echo json_encode($list->tripData($tripId, $status));
+    echo json_encode($list->tripData($bus, $tripId, $status));
+    //$list->tripData($bus, $tripId, $status);
 });
 Flight::route('/notes/@tripId', function($tripId){
     $list = Flight::Lists();
