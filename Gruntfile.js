@@ -14,7 +14,7 @@ module.exports = function(grunt){
       generate: {
         options:{
           basePath: "lists/",
-          network:["/api","http://*","https://*"],
+          network:["/api", "/login","http://*","https://*", "*"],
           fallback: [ 'fonts/fontawesome-webfont.woff fonts/fontawesome-webfont.woff',
                     'fonts/fontawesome-webfont.eot fonts/fontawesome-webfont.eot',
                     'fonts/fontawesome-webfont.svg fonts/fontawesome-webfont.svg',
@@ -32,7 +32,8 @@ module.exports = function(grunt){
             "images/ios/iconset/*.png",
             "fonts/*",
             "css/application.min.css",
-            "*.html"],
+            "*.html",
+            "*.php"],
       dest: "lists/manifest.appcache"
       },
     },
@@ -74,6 +75,9 @@ module.exports = function(grunt){
     phplint: {
       api: {
         src: ['lists/api/index.php'],
+      },
+      main: {
+        src: ['lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/notes.php', 'lists/summary.php'],
       },
     },
     cssmin: {
@@ -217,7 +221,7 @@ module.exports = function(grunt){
         tasks: ['csslint','concat:css', 'cssmin','manifest'],
       },
       html: {
-        files: ['lists/*.html','lists.*.php'],
+        files: ['lists/*.html'],
         tasks: ['manifest'],
       },
       lists: {
@@ -243,6 +247,10 @@ module.exports = function(grunt){
       vendor: {
         files: ['lists/js/vendor/*.js'],
         tasks: ['concat:vendor', 'uglify:vendor'],
+      },
+      mainPHP: {
+        files: ['lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/notes.php', 'lists/summary.php'],
+        tasks: ['phplint:main', 'manifest'],
       },
     },
   });

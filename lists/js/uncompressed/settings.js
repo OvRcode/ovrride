@@ -2406,13 +2406,13 @@ if (typeof jQuery === 'undefined') {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-    $( '#brand' ).on("click", function(){ window.location.href='index.html'; });
-    $( '#btn-settings' ).on("click", function(){ window.location.href='index.html'; });
-    $( '#btn-list' ).on("click", function(){ window.location.href='list.html'; });
-    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.html'; });
-    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.html'; });
-    $( '#btn-message' ).on("click", function(){ window.location.href = 'message.html'; });
-    $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.html'; });
+    $( '#brand' ).on("click", function(){ window.location.href='index.php'; });
+    $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
+    $( '#btn-list' ).on("click", function(){ window.location.href='list.php'; });
+    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
+    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
+    $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
+    $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
     $( '#btn-logout' ).on("click", function(){ /*TODO: implement login/logout */ });
     
     // Monitor onLine status and flip navbar indicator

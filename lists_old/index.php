@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * OvR Lists - The main template file for OvR Lists
  *
  *

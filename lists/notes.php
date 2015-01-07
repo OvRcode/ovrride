@@ -1,3 +1,32 @@
+<?php
+/**
+ * OvR Lists - The main template file for OvR Lists
+ *
+ *
+ * @package OvR Lists
+ * @since Version 0.0.1
+ */
+
+# Report all PHP errors
+# For Development use only
+# error_reporting(E_ALL|E_STRICT);
+# ini_set('display_errors','On');
+
+session_regenerate_id();
+session_start();
+
+# Start Session with a 1 day persistent session lifetime
+$cookieLifetime = 60 * 60 * 24 * 1;
+setcookie(session_name(),session_id(),time()+$cookieLifetime);
+
+# Session Validation - Is User logged in?
+# else redirect to login page
+if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
+  header ("Location: /login/index.php");
+
+# get version from file
+# $version = file_get_contents('lists.version');
+?>
 <!DOCTYPE html>
 <html lang="en"  manifest="/manifest.appcache">
 
@@ -61,12 +90,12 @@
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary" id="btn-notes">
+                    <button type="button" class="btn btn-primary disabled" id="btn-notes">
                         <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary disabled" id="btn-message">
+                    <button type="button" class="btn btn-primary" id="btn-message">
                         <i class="fa fa-exclamation-triangle"></i>&nbsp;Message
                     </button>
                 </li>
@@ -85,21 +114,45 @@
         <!-- /#sidebar-wrapper -->
 
         <!-- Page Content -->
-        <div>
+        <div id="page-content-wrapper container">
           <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
             <div class="container-fluid">
                 <button class="btn btn-link navbar-brand" id="brand">OvR Trip Lists</button>
-              <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
+                <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
             </div>
           </nav>
-            <div class="container-fluid pad">
-
+            <div class="container-fluid pad" id="content">
+                <!-- content here -->
+                <h2>Notes</h2>
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <textarea rows="8" class="form-control" id="newNote" placeholder="Add note here"></textarea>
+                    </div>
+                </div>
+                <div class="row notes">
+                    <div class="col-xs-12">
+                        <button class="btn btn-success" id="saveNote">
+                            <i class="fa fa-floppy-o"></i>&nbsp;Save Note
+                        </button>
+                        <button class="btn btn-info" id="refreshNotes">
+                            <i class="fa fa-refresh"></i>&nbsp;Refresh Notes
+                        </button>
+                        <button class="btn btn-warning" id="bus" value="show">
+                            <i class="fa fa-bus"></i>&nbsp;This Bus Only
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="notesContent"></div>
+                    </div>
+                </div>
         </div>
         <!-- /#page-content-wrapper -->
 
     </div>
     <!-- /#wrapper -->
-    <script src="js/message.min.js"></script>
+    <script src="js/notes.min.js"></script>
 </body>
 
 </html>
