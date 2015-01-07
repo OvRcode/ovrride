@@ -39,27 +39,31 @@ $(function() {
         $("#otherPackage").unbind("change");
         $("#saveWalkon").unbind("click");
     });
-    // Show/Hide Records with AM/PM Toggle button
-    var html;
-    $("#AMPM").on("click", function(){
-        if ( $(this).val() == "AM") {
-            $('.listButton.bg-none').addClass('hidden');
-            html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
+    
+    if ( settings.get('bus') !== "All" ){
+        // Show/Hide Records with AM/PM Toggle button
+        $("#AMPM").on("click", function(){
+            if ( $(this).val() == "AM") {
+                $('.listButton.bg-none').addClass('hidden');
+                html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
                             <i class="fa fa-toggle-on fa-lg"></i>&nbsp;\
-            <i class="fa fa-moon-o fa-lg"></i>';
-            $(this).val("PM");
-            $(this).html(html);
-            $(this).addClass('btn-black').removeClass('btn-default');
-        } else {
-            $('.listButton.bg-none').removeClass('hidden');
-            $(this).val("AM");
-            html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
+                      <i class="fa fa-moon-o fa-lg"></i>';
+                $(this).val("PM");
+                $(this).html(html);
+                $(this).addClass('btn-black').removeClass('btn-default');
+            } else {
+                $('.listButton.bg-none').removeClass('hidden');
+                $(this).val("AM");
+                html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
                             <i class="fa fa-toggle-off fa-lg"></i>&nbsp;\
-            <i class="fa fa-moon-o fa-lg"></i>';
-            $(this).html(html);
-            $(this).addClass('btn-default').removeClass('btn-black');
-        }
-    });
+                        <i class="fa fa-moon-o fa-lg"></i>';
+                $(this).html(html);
+                $(this).addClass('btn-default').removeClass('btn-black');
+            }
+        });
+    } else {
+      $("#AMPM").hide();
+    }
     
     // List sorting dropdown
     $("#sortBy").on("change", function(){
