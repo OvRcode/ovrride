@@ -2413,7 +2413,7 @@ if (typeof jQuery === 'undefined') {
     $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
     $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
-    $( '#btn-logout' ).on("click", function(){ /*TODO: implement login/logout */ });
+    $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
     
     // Monitor onLine status and flip navbar indicator
     setInterval(function () {
