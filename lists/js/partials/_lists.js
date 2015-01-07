@@ -197,11 +197,25 @@ function resetGuest(element){
 function changeStatus(element){
     if ( $('#AMPM').val() == 'PM' ) {
         // Customer checked in at end of day
-        element.removeClass('bg-productrec');
-        element.addClass('bg-pm');
-        element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
-        var PM = element.attr('id')+":PM";
-        tripData.set(PM, 1);
+      var foundClass = false;
+        if ( element.hasClass('bg-am') ) {
+          element.removeClass('bg-am');
+          foundClass = true;
+        }
+        if ( element.hasClass('bg-waiver') ) {
+          element.removeClass('bg-waiver');
+          foundClass = true;
+        }
+        if ( element.hasClass('bg-productrec') ) {
+          element.removeClass('bg-productrec');
+          foundClass = true;
+        }
+        if ( foundClass ){
+          element.addClass('bg-pm');
+          element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
+          var PM = element.attr('id')+":PM";
+          tripData.set(PM, 1);
+        }
     }
     
     if ( element.hasClass('bg-none') && ! element.hasClass('bg-danger')) {
@@ -283,19 +297,23 @@ function setupListener(ID){
 }
 function setState(element, state){
     if ( state == 'AM' ){
-        element.addClass('bg-am');
+        element.removeClass();
+        element.addClass('row listButton bg-am');
         element.find("span.icon").html('<i class="fa fa-sun-o fa-lg"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'Waiver' ) {
-        element.addClass('bg-waiver');
+        element.removeClass();
+        element.addClass('row listButton bg-waiver');
         element.find("span.icon").html('<i class="fa fa-file-word-o fa-lg"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'Product' ) {
-        element.addClass('bg-productrec');
+        element.removeClass();
+        element.addClass('row listButton bg-productrec');
         element.find('span.icon').html('<i class="fa fa-ticket fa-lg"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'PM' ) {
-        element.addClass('bg-pm');
+        element.removeClass();
+        element.addClass('row listButton bg-pm');
         element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
         element.removeClass('bg-none');
     }
