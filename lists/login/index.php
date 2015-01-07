@@ -30,8 +30,11 @@ if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     require_once("libraries/password_compatibility_library.php");
 }
 
-// include the configs / constants for the database connection
-require_once("../includes/config.php");
+// Constants for the database connection
+define("DB_HOST", getenv('MYSQL_HOST'));
+define("DB_USER", getenv('MYSQL_USER'));
+define("DB_PASS", getenv('MYSQL_PASS'));
+define("DB_NAME", getenv('MYSQL_DB'));
 
 // load the login class
 require_once("classes/Login.php");

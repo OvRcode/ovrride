@@ -1,3 +1,32 @@
+<?php
+/**
+ * OvR Lists - The main template file for OvR Lists
+ *
+ *
+ * @package OvR Lists
+ * @since Version 0.0.1
+ */
+
+# Report all PHP errors
+# For Development use only
+# error_reporting(E_ALL|E_STRICT);
+# ini_set('display_errors','On');
+
+session_regenerate_id();
+session_start();
+
+# Start Session with a 1 day persistent session lifetime
+$cookieLifetime = 60 * 60 * 24 * 1;
+setcookie(session_name(),session_id(),time()+$cookieLifetime);
+
+# Session Validation - Is User logged in?
+# else redirect to login page
+if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
+  header ("Location: /login/index.php");
+
+# get version from file
+# $version = file_get_contents('lists.version');
+?>
 <!DOCTYPE html>
 <html lang="en"  manifest="manifest.appcache">
 
