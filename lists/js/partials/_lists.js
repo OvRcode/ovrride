@@ -241,9 +241,11 @@ function changeStatus(element){
 function toggleExpanded(element){
     if ( element.children('div.expanded').is(':visible') ){
         element.children('div.expanded').hide(600);
-        element.children("div.row.primary").children().not(".noClick").on("tap", function(){
-        changeStatus($(this).parents().eq(1));
-        });
+        if ( settings.get('bus') !== "All" ){
+          element.children("div.row.primary").children().not(".noClick").on("tap", function(){
+            changeStatus($(this).parents().eq(1));
+          });
+        }
     } else {
         element.children('div.expanded').show(600);
         element.children("div.row.primary").children().not(".noClick").unbind("tap");
