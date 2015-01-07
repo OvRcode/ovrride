@@ -275,10 +275,11 @@ function setupListener(ID){
     $( selectorID ).on("taphold", function(){
         toggleExpanded( $(this) );
     });
-
-    $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
-        changeStatus($(this).parents().eq(1));
-    });
+    if ( settings.get('bus') != "All" ){
+        $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
+            changeStatus($(this).parents().eq(1));
+        });
+    }
 }
 function setState(element, state){
     if ( state == 'AM' ){

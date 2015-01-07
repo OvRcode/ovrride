@@ -17951,29 +17951,33 @@ function saveOfflineNotes(){
 function getTripData(){
     var trip = settings.get('tripNum');
     var statuses = settings.get('status');
+    var bus = settings.get('bus');
     //Start with a clean slate
     window.orders.removeAll();
     window.initialHTML.removeAll();
     window.tripData.removeAll();
     window.newWalkon.removeAll();
-    $.get("api/trip/"+trip+"/"+statuses, function(data){
+    $.get("api/trip/" + trip + "/" + bus + "/" + statuses, function(data){
         var apiData = jQuery.parseJSON(data);
-        jQuery.each(apiData, function(id,dataObject){
-            jQuery.each(dataObject, function(key, value){
-                if ( key == 'Data' ){
-                    orders.set(id,value);
-                    if ( 'Pickup' in value )
-                        settings.set('Pickup', 1);
-                } else if ( key == 'HTML' ){
-                    initialHTML.set(id,value);
-                } else if ( key == 'State' && value !== null) {
-                  tripData.set(id+":"+value, 1);
-                }
-            });
-        });
+        console.log(apiData);
+        if ( apiData ){
+          jQuery.each(apiData, function(id,dataObject){
+              jQuery.each(dataObject, function(key, value){
+                  if ( key == 'Data' ){
+                      orders.set(id,value);
+                      if ( 'Pickup' in value )
+                          settings.set('Pickup', 1);
+                    } else if ( key == 'HTML' ){
+                      initialHTML.set(id,value);
+                    } else if ( key == 'State' && value !== null) {
+                      tripData.set(id+":"+value, 1);
+                    }
+                  });
+                });
+        }
     })
     .done(function(){
-        window.location.href= "list.html";
+        window.location.href= "list.php";
     });
 }
 // Number padding for timestamp generation
@@ -18258,10 +18262,11 @@ function setupListener(ID){
     $( selectorID ).on("taphold", function(){
         toggleExpanded( $(this) );
     });
-
-    $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
-        changeStatus($(this).parents().eq(1));
-    });
+    if ( settings.get('bus') != "All" ){
+        $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
+            changeStatus($(this).parents().eq(1));
+        });
+    }
 }
 function setState(element, state){
     if ( state == 'AM' ){
