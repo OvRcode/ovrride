@@ -25,7 +25,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
   header ("Location: /login/index.php");
 
 # get version from file
-# $version = file_get_contents('lists.version');
+$version = file_get_contents('lists.version');
 ?>
 <!DOCTYPE html>
 <html lang="en"  manifest="manifest.appcache">
@@ -123,6 +123,9 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
                     <button type="button" class="btn btn-danger" id="btn-logout">
                         <i class="fa fa-power-off"></i>&nbsp;Log Out
                     </button>
+                </li>
+                <li>
+                    <span class="version">OvR Lists <?php echo $version; ?></span>
                 </li>
             </ul>
         </div>

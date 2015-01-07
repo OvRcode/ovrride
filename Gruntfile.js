@@ -249,8 +249,12 @@ module.exports = function(grunt){
         tasks: ['concat:vendor', 'uglify:vendor'],
       },
       mainPHP: {
-        files: ['lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/notes.php', 'lists/summary.php'],
+        files: ['lists/admin.php','lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/notes.php', 'lists/summary.php'],
         tasks: ['phplint:main', 'manifest'],
+      },
+      version: {
+        files: ['lists/lists.version'],
+        tasks: ['manifest'],
       },
     },
   });
