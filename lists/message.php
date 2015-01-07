@@ -125,7 +125,22 @@ $version = file_get_contents('lists.version');
             </div>
           </nav>
             <div class="container-fluid pad">
-
+                <h4>Message Guests</h4>
+                <input type="radio" name="messageType" value="Pickup">
+                    <select id="Pickups">
+                        <option value="none" selected>Pickup Location</option>
+                    </select>
+                </input>
+                <input type="radio" name="messageType" value="All">&nbsp;All Guests</input>
+                <input type="radio" name="messageType" value="Single">
+                    <select id="Guests">
+                        <option value="none" selected> Single Guest</option>
+                    </select>
+                </input>
+                <br />
+                <input type="textarea" id="messageText"></input>
+                <br />
+                <button type="button" class="btn btn-success"><i class="fa fa-mobile fa-lg"></i>&nbsp;Send Message</button>
         </div>
         <!-- /#page-content-wrapper -->
 
