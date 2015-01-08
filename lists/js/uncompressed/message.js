@@ -2532,7 +2532,10 @@ Number.prototype.pad = function(size) {
       while (s.length < (size || 2)) {s = "0" + s;}
       return s;
     };;$(function(){
-    
+  $("#messageText").on("keyup", function(){
+    var text = $(this).val().length + " /160 Characters";
+    $("span.charCount").text(text);
+  }); 
 });
 function getPhoneNumbers(){
   var phoneData = {};

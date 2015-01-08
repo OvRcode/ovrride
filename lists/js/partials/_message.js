@@ -1,5 +1,8 @@
 $(function(){
-    
+  $("#messageText").on("keyup", function(){
+    var text = $(this).val().length + " /160 Characters";
+    $("span.charCount").text(text);
+  }); 
 });
 function getPhoneNumbers(){
   var phoneData = {};

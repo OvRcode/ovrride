@@ -125,22 +125,41 @@ $version = file_get_contents('lists.version');
             </div>
           </nav>
             <div class="container-fluid pad">
-                <h4>Message Guests</h4>
-                <input type="radio" name="messageType" value="Pickup">
-                    <select id="Pickups">
-                        <option value="none" selected>Pickup Location</option>
-                    </select>
-                </input>
-                <input type="radio" name="messageType" value="All">&nbsp;All Guests</input>
-                <input type="radio" name="messageType" value="Single">
-                    <select id="Guests">
-                        <option value="none" selected> Single Guest</option>
-                    </select>
-                </input>
-                <br />
-                <input type="textarea" id="messageText"></input>
-                <br />
-                <button type="button" class="btn btn-success"><i class="fa fa-mobile fa-lg"></i>&nbsp;Send Message</button>
+                <div class="row">
+                    <h4>Message Guests</h4>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-2">
+                        <input type="radio" name="messageType" value="All" checked>&nbsp;All Guests</input>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <input type="radio" name="messageType" value="Pickup">
+                            <select id="Pickups" class="input-sm">
+                                <option value="none" selected>Pickup Location</option>
+                            </select>
+                        </input>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <input type="radio" name="messageType" value="Single">
+                            <select id="Guests" class="input-sm">
+                                <option value="none" selected> Single Guest</option>
+                            </select>
+                        </input>
+                    </div>
+                </div>
+                <div class ="row">
+                    <div class="col-xs-12 col-md-4">
+                        <br />
+                        <textarea rows="6" class="form-control" id="messageText" placeholder="Message Here" maxlength="160"></textarea>
+                        <span class="charCount">0/160 Characters</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <br />
+                        <button type="button" class="btn btn-success"><i class="fa fa-mobile fa-lg"></i>&nbsp;Send Message</button>
+                    </div>
+                </div>
         </div>
         <!-- /#page-content-wrapper -->
 
