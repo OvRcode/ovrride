@@ -2397,6 +2397,8 @@ if (typeof jQuery === 'undefined') {
     window.newWalkon = walkonspace.localStorage;
     window.noteSaveSpace = $.initNamespaceStorage('unsavedNotes');
     window.unsavedNotes = noteSaveSpace.localStorage;
+    window.messageSpace = $.initNamespaceStorage('messages');
+    window.messages = messageSpace.localStorage;
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
