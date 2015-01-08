@@ -2397,6 +2397,8 @@ if (typeof jQuery === 'undefined') {
     window.newWalkon = walkonspace.localStorage;
     window.noteSaveSpace = $.initNamespaceStorage('unsavedNotes');
     window.unsavedNotes = noteSaveSpace.localStorage;
+    window.messageSpace = $.initNamespaceStorage('messages');
+    window.messages = messageSpace.localStorage;
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
@@ -2536,7 +2538,34 @@ Number.prototype.pad = function(size) {
     var text = $(this).val().length + " /160 Characters";
     $("span.charCount").text(text);
   }); 
+  getPhoneNumbers();
+  if ( settings.get('Pickup') == "1" ) {
+    populatePickups();
+  } else {
+    $("#Pickups").append('<option value="none" selected>Pickups Disabled</option>');
+    $('input[name=messageType][value=Pickup]').prop('disabled','disabled');
+    $("#Pickups").prop('disabled','disabled');
+  }
 });
+function populatePickups(){
+  var htmlOutput = "<option value='none' selected>Pickup Location</option>";
+  var phoneData = messages.get('phoneData');
+  var pickups = {};
+  jQuery.each(phoneData, function(phone, data){
+    if ( pickups[data.Pickup] === undefined ) {
+      pickups[data.Pickup] = [];
+      htmlOutput = htmlOutput.concat("<option value='" + data.Pickup + "'>"+data.Pickup+"</option>");
+    }
+    if ( pickups[data.Pickup].indexOf(phone) == -1 ) {
+      pickups[data.Pickup].push(phone);
+    }
+  });
+  $("#Pickups").append(htmlOutput);
+  messages.set('pickups', pickups);
+  $("#Pickups").on("change", function(){
+    $("input[name=messageType][value=Pickup]").click();
+  });
+}
 function getPhoneNumbers(){
   var phoneData = {};
   jQuery.each(orders.keys(), function(key,value){
@@ -2550,5 +2579,5 @@ function getPhoneNumbers(){
       }
     }
   });
-  console.log(phoneData);
+  messages.set('phoneData', phoneData);
 }

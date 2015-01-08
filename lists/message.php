@@ -134,9 +134,7 @@ $version = file_get_contents('lists.version');
                     </div>
                     <div class="col-xs-12 col-md-2">
                         <input type="radio" name="messageType" value="Pickup">
-                            <select id="Pickups" class="input-sm">
-                                <option value="none" selected>Pickup Location</option>
-                            </select>
+                            <select id="Pickups" class="input-sm"></select>
                         </input>
                     </div>
                     <div class="col-xs-12 col-md-2">
