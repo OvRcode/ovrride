@@ -58,6 +58,19 @@ $(function() {
             }
         }
     }, 250);
+    
+    // Alert user about pending cache update
+    $(window.applicationCache).on("downloading", function(){
+      alert("Hang tight for a minute, downloading an update");
+    });
+    
+    // Notify user before reloading for update
+    $(window.applicationCache).on("updateready", function(){
+      var r = confirm("Reloading for update. Press cancel if you need to save changes, OK to reload");
+      if (r === true) {
+        window.location.reload();
+      }
+    });
 });
 function toggleMenuButtons(onlineOffline){
     var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshNotes"];
@@ -148,7 +161,7 @@ function getTripData(){
 }
 // Number padding for timestamp generation
 Number.prototype.pad = function(size) {
-      var s = String(this);
-      while (s.length < (size || 2)) {s = "0" + s;}
-      return s;
-    };
+  var s = String(this);
+  while (s.length < (size || 2)) {s = "0" + s;}
+  return s;
+};

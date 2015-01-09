@@ -38,6 +38,7 @@ $version = file_get_contents('lists.version');
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- favicon and apple-touch-icon --> 
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
