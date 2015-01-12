@@ -6682,7 +6682,7 @@ button.close {
   }
 }
 .iosFix {
-  margin-top:20px;
+  padding-top:20px;
 }
 
 @media (max-width: 767px) {
