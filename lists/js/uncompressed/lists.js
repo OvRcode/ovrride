@@ -18016,6 +18016,9 @@ $(function() {
     $("#saveList").on("tap", function(){
         saveData();
     });
+    if ( jQuery.browser.mobile ) {
+      $("#content").addClass("iosFix");
+    }
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
     
