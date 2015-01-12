@@ -6675,3 +6675,19 @@ button.close {
   padding-top: 10px;
   color: #FFFFFF;
 }
+@media (min-width: 768px) {
+  .login-window {
+    padding-top: 60px;
+    width: 60%;
+  }
+}
+
+@media (max-width: 767px) {
+  .login-window {
+    padding-top: 20px;
+    width: 100%;
+  }
+}
+.logo {
+  text-align: center;
+}

@@ -32,6 +32,7 @@ run_list(
   "recipe[mysql::server]",
   "recipe[php]",
   "recipe[php::module_mysql]",
+  "recipe[php::module_curl]",
   "recipe[mysql-chef_gem::default]",
   "recipe[database::mysql]",
   "recipe[s3cmd]",

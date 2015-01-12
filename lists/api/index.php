@@ -1,4 +1,7 @@
 <?php
+require 'flight/Flight.php';
+require 'twilio-php/Services/Twilio.php';
+
 class Lists {
     var $dbConnect;
     var $destinations;
@@ -291,6 +294,25 @@ class Lists {
         $this->dbQuery($sqlManual);
         $this->dbQuery($sqlData);
     }
+    function sendMessage(){
+        $AccountSid = getenv('TWILIO_SID');
+        $AuthToken = getenv('TWILIO_AUTH');
+ 
+        $client = new Services_Twilio($AccountSid, $AuthToken);
+        $postData = $_POST['message'];
+        $recipients = $postData['Recipients'];
+        $message = $postData['Message'];
+        foreach( $recipients as $phoneNum ) {
+            $message = $client->account->messages->create(array(
+                 "From" => "+16467629375",
+                 "To" => $phoneNum,
+                 "Body" => $message
+             ));
+ 
+             // Display a confirmation message on the screen
+             echo "Sent message {$message->sid}";
+        }
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -464,7 +486,6 @@ FFF;
         return array("First" => $first, "Last" => $last); 
     }
 }
-require 'flight/Flight.php';
 
 
 Flight::register('Lists', 'Lists');
@@ -525,6 +546,10 @@ Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
     header("Pragma: no-cache");
     header("Expires: 0");
     echo $list->csv($type,$trip,$status);;
+});
+Flight::route('/message', function(){
+    $lists = Flight::Lists();
+    $lists->sendMessage();
 });
 Flight::start();
 ?>
