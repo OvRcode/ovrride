@@ -14,7 +14,7 @@ module.exports = function(grunt){
       generate: {
         options:{
           basePath: "lists/",
-          network:["/api", "/login","http://*","https://*", "*"],
+          network:["/api", "/login","http://*","https://*"],
           fallback: [ 'fonts/fontawesome-webfont.woff fonts/fontawesome-webfont.woff',
                     'fonts/fontawesome-webfont.eot fonts/fontawesome-webfont.eot',
                     'fonts/fontawesome-webfont.svg fonts/fontawesome-webfont.svg',
