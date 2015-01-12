@@ -5,7 +5,8 @@ $(function(){
       alert ("No Local Data found, cannot download trips while offline");
     }
     /* Start Drop Down population */
-    $.get("api/dropdown/destination", function(data, dd){
+    if ( window.navigator.onLine ) {
+      $.get("api/dropdown/destination", function(data, dd){
             $('#destination').append(data); 
         })
         .done(function(data){
@@ -15,7 +16,8 @@ $(function(){
         })
         .fail(function(){
             alert('Destination data failed to load, please refresh page');
-    }); 
+        }); 
+    }
     // All Checkboxes on settings page w/selectors
     window.checkBoxes = {
         "balance":    $("#balance"),
