@@ -2426,7 +2426,7 @@ if (typeof jQuery === 'undefined') {
     $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
     if ( jQuery.browser.mobile ) {
       $(".navbar-static-top").addClass("iosFix");
-      $("#wrapper").addClass("iosFix");
+      $(".sidebar-nav").addClass("iosFix");
     }
     // Monitor onLine status and flip navbar indicator
     setInterval(function () {
