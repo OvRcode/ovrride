@@ -38,6 +38,7 @@ $version = file_get_contents('lists.version');
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- favicon and apple-touch-icon --> 
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
@@ -125,7 +126,39 @@ $version = file_get_contents('lists.version');
             </div>
           </nav>
             <div class="container-fluid pad">
-
+                <div class="row">
+                    <h4>Message Guests</h4>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-1 col-lg-1">
+                        <input type="radio" name="messageType" value="All" checked>&nbsp;All</input>
+                    </div>
+                    <div class="col-xs-12 col-md-4 col-lg-2">
+                        <input type="radio" name="messageType" value="Pickup">
+                            <select id="Pickups" class="input-sm"></select>
+                        </input>
+                    </div>
+                    <div class="col-xs-12 col-md-5 col-lg-3">
+                        <input type="radio" name="messageType" value="Single">
+                            <select id="Guests" class="input-sm"></select>
+                        </input>
+                    </div>
+                </div>
+                <div class ="row">
+                    <div class="col-xs-12 col-md-4">
+                        <br />
+                        <textarea rows="6" class="form-control" id="messageText" placeholder="Message Here" maxlength="160"></textarea>
+                        <span class="charCount">0/160 Characters</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <br />
+                        <button type="button" class="btn btn-success" id="sendMessage">
+                            <i class="fa fa-mobile fa-lg"></i>&nbsp;Send Message
+                        </button>
+                    </div>
+                </div>
         </div>
         <!-- /#page-content-wrapper -->
 

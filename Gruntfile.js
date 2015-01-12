@@ -215,10 +215,10 @@ module.exports = function(grunt){
       },
       common: {
         files: ['lists/js/partials/_common.js'],
-        tasks: ['jshint:common', 'concat', 'uglify'],
+        tasks: ['jshint:common', 'concat', 'uglify', 'manifest'],
       },
       css: {
-        files: ['lists/css/lists.css'],
+        files: ['lists/css/lists.css', 'lists/css/simple-sidebar.css'],
         tasks: ['csslint','concat:css', 'cssmin','manifest'],
       },
       html: {
