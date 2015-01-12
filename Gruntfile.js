@@ -97,7 +97,7 @@ module.exports = function(grunt){
           separator: ';',
         },
         src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 
-              'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js'],
+              'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js', 'lists/js/vendor/detectmobilebrowser.js'],
         dest: 'lists/js/uncompressed/vendor.js',
       },
       lists: {
@@ -247,7 +247,7 @@ module.exports = function(grunt){
       },
       vendor: {
         files: ['lists/js/vendor/*.js'],
-        tasks: ['concat:vendor', 'uglify:vendor'],
+        tasks: ['concat:vendor','concat', 'uglify', 'manifest'],
       },
       mainPHP: {
         files: ['lists/admin.php','lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/notes.php', 'lists/summary.php'],
