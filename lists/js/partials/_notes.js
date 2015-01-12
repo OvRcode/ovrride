@@ -37,7 +37,7 @@ function saveNote(){
 }
 function refreshNotes(){
     getNotes();
-    setTimeout(outputNotes, 50);
+    setTimeout(outputNotes, 300);
 }
 function timeStamp(){
     var date    = new Date();
