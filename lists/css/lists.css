@@ -193,6 +193,9 @@
     width: 60%;
   }
 }
+.iosFix {
+  margin-top:20px;
+}
 
 @media (max-width: 767px) {
   .login-window {

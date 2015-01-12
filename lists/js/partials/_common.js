@@ -36,7 +36,10 @@ $(function() {
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
     $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
     $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
-    
+    if ( jQuery.browser.mobile ) {
+      $(".navbar-static-top").addClass("iosFix");
+      $("#wrapper").addClass("iosFix");
+    }
     // Monitor onLine status and flip navbar indicator
     setInterval(function () {
         var statusIcon = $("#status");
