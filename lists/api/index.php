@@ -275,6 +275,10 @@ class Lists {
                     Bus=VALUES(Bus), Data=VALUES(Data)";
             }
             $this->dbQuery($sql);
+            if ( substr($ID,0,2) == "WO" ) {
+                $sql = "UPDATE `ovr_lists_manual_orders` SET `Bus` = '" . $field['Bus'] . "' WHERE ID ='" . $ID . "'";
+                $this->dbQuery($sql);
+            }
         }
     }
     function saveWalkOn(){
@@ -530,11 +534,6 @@ Flight::route('/notes/@tripId', function($tripId){
 Flight::route('/notes/add/@bus/@tripId/@note', function($bus,$tripId, $note){
     $list = Flight::Lists();
     echo $list->addNote($bus, $tripId, $note);
-});
-Flight::route('POST /save/tripdata', function(){
-    foreach($_POST as $key => $value){
-        error_log($key . ":" . $value);
-    }
 });
 Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
     $list = Flight::Lists();
