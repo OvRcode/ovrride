@@ -18017,7 +18017,7 @@ $(function() {
         saveData();
     });
     if ( jQuery.browser.mobile ) {
-      $("#content").addClass("iosFix");
+      $("#top").addClass("iosFix");
     }
     // Turn off tap event when taphold is triggered;
     $.event.special.tap.emitTapOnTaphold = false; 
