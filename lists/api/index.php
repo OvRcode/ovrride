@@ -304,9 +304,9 @@ class Lists {
         $message = $postData['Message'];
         foreach( $recipients as $phoneNum ) {
             $message = $client->account->messages->create(array(
-                 "From" => "+15005550006",
-                 "To" => "***REMOVED***",
-                 "Body" => "Test message!"
+                 "From" => "+16467629375",
+                 "To" => $phoneNum,
+                 "Body" => $message
              ));
  
              // Display a confirmation message on the screen
