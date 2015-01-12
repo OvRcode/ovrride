@@ -2588,19 +2588,24 @@ function sendMessage(){
   if ( target == "All" ) {
     jQuery.each(messages.get('phoneData'), function(Name, data){
       recipients.push(data.Phone);
+      messageData.Group = "All";
     });
   } else if ( target == "Pickup" ) {
     var pickup = $("#Pickups").val();
     jQuery.each(messages.get('phoneData'), function(Name, data){
       if ( data.Pickup == pickup) {
         recipients.push(data.Phone);
+        messageData.Group = pickup;
       }
     });
   } else if ( target == "Single" ) {
     var phoneData = messages.get('phoneData');
     recipients.push(phoneData[$("#Guests").val()].Phone);
+    messageData.Group = $("#Guests").val();
   }
   messageData.Recipients = recipients;
+  messageData.Bus = settings.get('bus');
+  messageData.Trip = settings.get('tripNum');
   console.log(messageData);
   $.post("api/message", {message: messageData});
 }

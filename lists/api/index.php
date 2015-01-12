@@ -559,6 +559,8 @@ else {
     Flight::route('/message', function(){
         $lists = Flight::Lists();
         $lists->sendMessage();
+        $note = "Message send to: " . $_POST['message']['Group'] .  " Text:" . $_POST['message']['Message'];
+        $lists->addNote($_POST['message']['Bus'], $_POST['message']['Trip'], $note );
     });
     Flight::start();
 }
