@@ -2561,18 +2561,20 @@ Number.prototype.pad = function(size) {
       alert ("No Local Data found, cannot download trips while offline");
     }
     /* Start Drop Down population */
-    if ( window.navigator.onLine ) {
+    if ( ! window.navigator.onLine ) {
+          window.location.href = "list.php";
+    } else {
       $.get("api/dropdown/destination", function(data, dd){
-            $('#destination').append(data); 
-        })
-        .done(function(data){
-            window.dd.set('destination', data);
-            // Download trips data if destinations load
-            tripDropdown();
-        })
-        .fail(function(){
-            alert('Destination data failed to load, please refresh page');
-        }); 
+        $('#destination').append(data); 
+      })
+      .done(function(data){
+        window.dd.set('destination', data);
+        // Download trips data if destinations load
+        tripDropdown();
+      })
+      .fail(function(){
+        alert('Destination data failed to load, please refresh page');
+      }); 
     }
     // All Checkboxes on settings page w/selectors
     window.checkBoxes = {
