@@ -2579,6 +2579,10 @@ $(function(){
       window.location.href = "api/csv/email/" + settings.get('tripNum') + "/" + settings.get("status");
     });
     getDestinations();
+    if ( jQuery.browser.mobile ) {
+      $("#exportList").hide();
+      $("#exportEmail").hide();
+    }
 });
 function saveDestination(){
     $.post("api/dropdown/destination/update", { destination: $("#destName").val(), enabled: "Y"});
