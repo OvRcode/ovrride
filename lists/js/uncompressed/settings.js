@@ -2595,7 +2595,7 @@ Number.prototype.pad = function(size) {
     };
     $('#default').click(function(){ resetStatuses("Default"); });
     $('#clear').click(function(){ resetStatuses("All"); });
-    $('#settings_save').click(function(){
+    $('#generate_list').click(function(){
         saveOptions();
         getTripData();
     });
