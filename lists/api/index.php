@@ -104,7 +104,7 @@ class Lists {
             foreach( $orders as $ID => $data ) {
                 $row = "";
                 if ( isset($data['Data']['Email']) ) {
-                    $row .= "\"" . $data['Data']['Email'] . "\"";
+                    $row .= "\"" . $data['Data']['Email'] . ",\"";
                 } else {
                     $row .= "\"none\"";
                 }
