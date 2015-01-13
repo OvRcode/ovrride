@@ -202,9 +202,65 @@ function setupPage(){
     jQuery.each(keys, function(key,value){
         $('#content').append(initialHTML.get(value));
     });
-
+    // Hide pickup select
+    if ( ! settings.isSet('Pickup') ) {
+      $("select.pickupList").hide();
+    } else {
+      getPickups();
+      $("select.pickupList").on("change", function(){
+        $("select.packageList").val('none');
+        $("div.listButton").show();
+        var value = $(this).val();
+        if ( value !== "none"){
+          var selector = "div.listButton:not(:contains('" + value + "'))";
+          $(selector).hide();
+        }
+        pageTotal();
+      });
+    }
+    // Setup package list
+    getPackages();
+    $("select.packageList").on("change", function(){
+      $("select.pickupList").val('none');
+      $("div.listButton").show();
+      var value = $(this).val();
+      if ( value !== "none"){
+        var selector = "div.listButton:not(:contains('" + value + "'))";
+        $(selector).hide();
+      }
+      pageTotal();
+    });
     // Hide expanded area of reservation
     $("div.expanded").hide();
+}
+function getPackages(){
+  var packages = {};
+  jQuery.each(orders.keys(), function(key,value){
+    var order = orders.get(value);
+    packages[order.Package] = order.Package;
+  });
+  var output = "<option value='none'>Package</option>";
+  jQuery.each(packages, function(key, value){
+    var row = "<option value='" + value + "'>" + value + "</option>";
+    output = output.concat(row);
+  });
+  $("select.packageList").append(output);
+}
+function getPickups(){
+  var pickups = {};
+  
+  jQuery.each(orders.keys(), function(key,value){
+    var order = orders.get(value);
+    pickups[order.Pickup] = order.Pickup;
+  });
+  
+  var output = "<option value='none'>Pickup</option>";
+  jQuery.each(pickups, function(key,value){
+    var row = "<option value='" + value + "'>" + value + "</option>";
+    output = output.concat(row);
+  });
+  
+  $("select.pickupList").append(output);
 }
 function noShow(element) {
     var NoShow = element.attr('id')+":NoShow";

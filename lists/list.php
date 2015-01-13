@@ -153,6 +153,12 @@ $version = file_get_contents('lists.version');
           </nav>
             <div class="container-fluid pad">
                 <div class="row" id="top">
+                    <div class="col-xs-9 col-md-8">
+                        <h4>Trip: <span id="destName"></span> <span id="tripName"></span></h4>
+                    </div>
+                    <div class="col-xs-4 col-md-4">
+                        <h4>Bus: <span id="bus"></span></h4>
+                    </div>
                     <div class="col-xs-12 col-md-6">
                         <button class="btn btn-default" id="AMPM" value="AM">
                             <i class="fa fa-sun-o fa-lg"></i>&nbsp;
@@ -205,16 +211,18 @@ $version = file_get_contents('lists.version');
                               <input type="text" id="searchField" class="form-control" placeholder="Choose Search field first">
                             </div><!-- /input-group -->
                     </div>
-                    <div class="col-xs-9 col-md-8">
-                        <h4>Trip: <span id="destName"></span> <span id="tripName"></span></h4>
-                    </div>
-                    <div class="col-xs-4 col-md-4">
-                        <h4>Bus: <span id="bus"></span></h4>
-                    </div>
                 </div>
               </div>
+              <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                      <select class="input-sm pickupList" data-role='none'></select>
+                  </div>
+                  <div class="col-xs-12 col-md-6">
+                      <select class="input-sm packageList" data-role='none'></select>
+                  </div>
+              </div>
               <div class="row-fluid">
-                <div class="col-sm-12 col-lg-12" id="content">
+                <div class="col-xs-12 col-lg-12" id="content">
                   <!-- List goes here -->    
                 </div>
               </div>
