@@ -209,3 +209,13 @@
 .mobileButtons .btn, #AMPM {
   margin-bottom: 5px;
 }
+
+.pickupList, .packageList {
+  position: relative;
+  top: 0;
+  width: 70%;
+  margin: 10px 0 5px;
+}
+.pickupList {
+  margin-left: 25px;
+}
