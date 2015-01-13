@@ -493,61 +493,49 @@ FFF;
     }
 }
 
-session_regenerate_id();
-session_start();
-
-# Start Session with a 1 day persistent session lifetime
-$cookieLifetime = 60 * 60 * 24 * 1;
-setcookie(session_name(),session_id(),time()+$cookieLifetime);
-
-# Session Validation - Is User logged in?
-# else redirect to login page
-if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
-  header ("Location: /login/index.php");
-else {
-    Flight::register('Lists', 'Lists');
-    Flight::route('/save/data', function(){
+Flight::register('Lists', 'Lists');
+Flight::route('/save/data', function(){
         $list = Flight::Lists();
         $list->saveData();
     });
-    Flight::route('/save/walkon', function(){
+Flight::route('/save/walkon', function(){
         $list = Flight::Lists();
         $list->saveWalkOn();
     });
-    Flight::route('/walkon/delete/@tripId', function($tripId){
+Flight::route('/walkon/delete/@tripId', function($tripId){
         $list = Flight::Lists();
         $list->deleteOrder($tripId);
     });
-    Flight::route('/dropdown/destination', function(){
+Flight::route('/dropdown/destination', function(){
         $list = Flight::Lists();
         echo $list->destinationDropdown();
     });
-    Flight::route('/dropdown/trip', function(){
+Flight::route('/dropdown/trip', function(){
         $list = Flight::Lists();
         $list->destinationDropdown();
         $list->tripDropdown();
     });
-    Flight::route('/dropdown/destination/all', function(){
+Flight::route('/dropdown/destination/all', function(){
         $list = Flight::Lists();
         echo json_encode($list->getAllDestinations());
     });
-    Flight::route('POST /dropdown/destination/update', function(){
+Flight::route('POST /dropdown/destination/update', function(){
         $list = Flight::Lists();
         $list->updateDestinations($_POST['destination'], $_POST['enabled']);
     });
-    Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
+Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
         $list = Flight::Lists();
         echo json_encode($list->tripData($bus, $tripId, $status));
     });
-    Flight::route('/notes/@tripId', function($tripId){
+Flight::route('/notes/@tripId', function($tripId){
         $list = Flight::Lists();
         echo json_encode($list->getNotes($tripId));
     });
-    Flight::route('/notes/add/@bus/@tripId/@note', function($bus,$tripId, $note){
+Flight::route('/notes/add/@bus/@tripId/@note', function($bus,$tripId, $note){
         $list = Flight::Lists();
         echo $list->addNote($bus, $tripId, $note);
     });
-    Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
+Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
         $list = Flight::Lists();
         $tripName = $list->getTripName($trip);
         $fileName = date("m-d-Y") . " - " . $tripName . " - " . $type . ".csv";
@@ -558,12 +546,11 @@ else {
         header("Expires: 0");
         echo $list->csv($type,$trip,$status);;
     });
-    Flight::route('/message', function(){
+Flight::route('/message', function(){
         $lists = Flight::Lists();
         $lists->sendMessage();
         $note = "Message send to: " . $_POST['message']['Group'] .  " Text:" . $_POST['message']['Message'];
         $lists->addNote($_POST['message']['Bus'], $_POST['message']['Trip'], $note );
     });
-    Flight::start();
-}
+Flight::start();
 ?>
