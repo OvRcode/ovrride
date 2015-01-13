@@ -2418,7 +2418,7 @@ if (typeof jQuery === 'undefined') {
     });
     $( '#brand' ).on("click", function(){ window.location.href='index.php'; });
     $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
-    $( '#btn-list' ).on("click", function(){ window.location.href='list.php'; });
+    $( 'button.btn-list' ).on("click", function(){ window.location.href='list.php'; });
     $( 'button.btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
     $( 'button.btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });

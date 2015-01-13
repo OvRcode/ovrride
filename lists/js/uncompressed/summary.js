@@ -2418,7 +2418,7 @@ if (typeof jQuery === 'undefined') {
     });
     $( '#brand' ).on("click", function(){ window.location.href='index.php'; });
     $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
-    $( '#btn-list' ).on("click", function(){ window.location.href='list.php'; });
+    $( 'button.btn-list' ).on("click", function(){ window.location.href='list.php'; });
     $( 'button.btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
     $( 'button.btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
@@ -2559,6 +2559,9 @@ Number.prototype.pad = function(size) {
   return s;
 };;/*jshint multistr: true */
 $(function(){
+  if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
+    $("div.mobileButtons").removeClass('hidden');
+  }
   if ( settings.isSet('tripName') ) {
       $('#tripName').text(settings.get('tripName'));
   }
@@ -2692,14 +2695,21 @@ function outputPickups(){
                         </tr>\
                     </thead>\
                     <tbody>";
+    window.expectedTotals = 0;
+    window.amTotals = 0;
+    window.pmTotals = 0;
     jQuery.each(pickups, function(pickup, object){
         var row = "<tr>\
                        <th>" + pickup + "</th><td>" + object.Expected + "</td><td>" + object.AM + "</td><td>" + object.PM + "</td>\
                   </tr>";
         output = output.concat(row);
+        window.expectedTotals = expectedTotals + object.Expected;
+        window.amTotals = amTotals + object.AM;
+        window.pmTotals = pmTotals + object.PM;
     });
+    output = output.concat("<tr><th>Totals:</th><td>" + expectedTotals + "</td><td>" + amTotals + "<td>" + pmTotals + "</tr>");
     output = output.concat("</tbody></table>");
-    $("#content").append(output);
+    $("div.pickupTotals").append(output);
 }
 function outputPackages(){
     var output = "<h3>Package Item Totals</h3>\
@@ -2716,6 +2726,6 @@ function outputPackages(){
             output = output.concat(row);
     });
     output = output.concat("</tbody></table>");
-    $("#content").append(output);
+    $("div.packageTotals").append(output);
 }
 // jQuery.isEmptyObject(pickups);

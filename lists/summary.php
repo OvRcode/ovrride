@@ -81,7 +81,7 @@ $version = file_get_contents('lists.version');
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary" id="btn-list">
+                    <button type="button" class="btn btn-primary btn-list" id="menuList">
                       <i class="fa fa-list"></i>&nbsp;List
                     </button>
                 </li>
@@ -126,9 +126,21 @@ $version = file_get_contents('lists.version');
             </div>
           </nav>
             <div class="container-fluid pad" id="content">
-                <h4>Trip: <span id="destName"></span> <span id="tripName"></span></h4>
-                <!-- content here -->
-                
+                <div class="row">
+                    <h4>Trip: <span id="destName"></span> <span id="tripName"></span></h4>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 packageTotals"></div>
+                    <div class="col-xs-12 col-md-6 pickupTotals"></div>      
+                </div>
+                <div class="row mobileButtons hidden">
+                    <div class="col-xs-4">
+                        <br />
+                        <button type="button" class="btn btn-primary btn-list">
+                            <i class="fa fa-arrow-left"></i>&nbsp;Back to List
+                        </button>
+                    </div>
+                </div>
         </div>
         <!-- /#page-content-wrapper -->
 
