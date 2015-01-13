@@ -17873,8 +17873,8 @@ $.widget( "ui.tabs", {
     $( '#brand' ).on("click", function(){ window.location.href='index.php'; });
     $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
     $( '#btn-list' ).on("click", function(){ window.location.href='list.php'; });
-    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
-    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
+    $( 'button.btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
+    $( 'button.btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
     $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
     $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
@@ -18013,7 +18013,7 @@ Number.prototype.pad = function(size) {
   return s;
 };;/*jshint multistr: true */
 $(function() {
-    $("#saveList").on("tap", function(){
+    $("button.saveList").on("tap", function(){
         saveData();
     });
     if ( jQuery.browser.mobile ) {
@@ -18112,6 +18112,18 @@ $(function() {
             alert("Choose search type first");
         }
     });
+    
+    // Show extra buttons for mobile
+    if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
+      $("div.mobileButtons").removeClass('hidden');
+      $("button.secondaryWalkOn").on("click", function(){
+        if ( ! $("#wrapper").hasClass("toggled") ){
+          $("#wrapper").addClass("toggled");
+        }
+        // Slight delay for opening drawer
+        setTimeout(function(){ $("#addWalkOn").trigger("click"); }, 300); 
+      });
+    }
     setupPage();
     checkData();
     setupAllListeners();
@@ -18237,6 +18249,9 @@ function changeStatus(element){
         if ( foundClass ){
           element.addClass('bg-pm');
           element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
+          // Double check that correct fields are visible on mobile
+          element.find('.flexPackage').addClass('visible-md visible-lg');
+          element.find('.flexPickup').removeClass('visible-md visible-lg');
           var PM = element.attr('id')+":PM";
           tripData.set(PM, 1);
         }
@@ -18339,6 +18354,8 @@ function setState(element, state){
         element.removeClass();
         element.addClass('row listButton bg-pm');
         element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
+        element.find('.flexPackage').addClass('visible-md visible-lg');
+        element.find('.flexPickup').removeClass('visible-md visible-lg');
         element.removeClass('bg-none');
     }
 }
@@ -18382,9 +18399,9 @@ function addWalkonButton(){
     if ( walkonPackage == "Other" && $("#otherPackage").val() === undefined ) {
         var html = "<div id='otherDiv'><input id='otherPackage' type='text' class='input-sm' placeholder='Input Package'></input><br /><br /></div>";
         $(html).insertBefore("#saveWalkOn");
-        $("#otherPackage").change(function(){ addWalkonButton(); });
+        $("#otherPackage").on("keyup", function(){ addWalkonButton(); });
     } else if ( walkonPackage !== "Other" && $("#otherPackage").val() !== undefined ) {
-        $("#otherPackage").unbind("change");
+        $("#otherPackage").unbind("keyup");
         $("#otherDiv").remove();
     }
     var first         = $("#first").val();

@@ -31,8 +31,8 @@ $(function() {
     $( '#brand' ).on("click", function(){ window.location.href='index.php'; });
     $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
     $( '#btn-list' ).on("click", function(){ window.location.href='list.php'; });
-    $( '#btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
-    $( '#btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
+    $( 'button.btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
+    $( 'button.btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
     $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
     $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
