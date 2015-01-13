@@ -126,6 +126,7 @@ $version = file_get_contents('lists.version');
             </div>
           </nav>
             <div class="container-fluid pad" id="content">
+                <h4>Trip: <span id="destName"></span> <span id="tripName"></span></h4>
                 <!-- content here -->
                 
         </div>
