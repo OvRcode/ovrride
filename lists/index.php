@@ -182,8 +182,8 @@ $version = file_get_contents('lists.version');
                           <button class="btn btn-warning" id="clear">Clear Statuses</button><button class="btn btn-warning" id="default">Reset Statuses</button>
                         </div>
                         <div class="row">
-                          <button class="btn btn-success" id="settings_save">
-                            <i class="fa fa-floppy-o"></i>&nbsp;Save Settings
+                          <button class="btn btn-success" id="generate_list">
+                            <i class="fa fa-floppy-o"></i>&nbsp;Generate List
                           </button>
                         </div>
                     </div>

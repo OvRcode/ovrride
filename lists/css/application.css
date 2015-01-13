@@ -6534,7 +6534,7 @@ button.close {
     margin-bottom: 20px;
 }
 
-#settings_save {
+#generate_list {
     margin-top: 20px;
     margin-bottom: 40px;
     /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */
