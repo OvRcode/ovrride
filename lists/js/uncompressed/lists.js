@@ -18076,6 +18076,7 @@ $(function() {
                 $(this).html(html);
                 $(this).addClass('btn-default').removeClass('btn-black');
             }
+            pageTotal();
         });
     } else {
       $("#AMPM").hide();
@@ -18128,7 +18129,12 @@ $(function() {
     checkData();
     setupAllListeners();
     packageList();
+    pageTotal();
 });
+function pageTotal(){
+  var totalGuests = $("div.listButton:visible").length;
+  $("span.listTotal").text(totalGuests + " Guests");
+}
 function saveData(){
     // get state data from localstorage
     var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4, NoShow: 5,Delete: 6};
