@@ -107,17 +107,17 @@ $version = file_get_contents('lists.version');
                     </button>
                 </li>
                 <li class="half">
-                    <button type="button" class="btn btn-success" id="saveList">
+                    <button type="button" class="btn btn-success saveList" id="menuSave">
                         <i class="fa fa-floppy-o"></i>&nbsp;Save List
                     </button><br />
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary" id="btn-summary">
+                    <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
                         <i class="fa fa-table"></i>&nbsp;Summary
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary" id="btn-notes">
+                    <button type="button" class="btn btn-primary btn-notes" id="notesMenu">
                         <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
                     </button>
                 </li>
@@ -153,14 +153,28 @@ $version = file_get_contents('lists.version');
           </nav>
             <div class="container-fluid pad">
                 <div class="row" id="top">
-                    <div class="col-xs-6 col-md-4">
+                    <div class="col-xs-12 col-md-6">
                         <button class="btn btn-default" id="AMPM" value="AM">
                             <i class="fa fa-sun-o fa-lg"></i>&nbsp;
                             <i class="fa fa-toggle-off fa-lg"></i>&nbsp;
                             <i class="fa fa-moon-o fa-lg"></i>
                         </button>
                     </div>
-                    <div class="col-xs-6 col-md-4">
+                    <div class="col-xs-12 mobileButtons hidden">
+                        <button class="btn btn-primary secondaryWalkOn">
+                            <i class="fa fa-plus"></i>&nbsp;<i class="fa fa-male"></i>&nbsp;Add Walk On
+                        </button>
+                        <button type="button" class="btn btn-primary btn-notes">
+                            <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
+                        </button>
+                        <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
+                            <i class="fa fa-table"></i>&nbsp;Summary
+                        </button>
+                        <button type="button" class="btn btn-success saveList">
+                            <i class="fa fa-floppy-o"></i>&nbsp;Save List
+                        </button>
+                    </div>
+                    <div class="col-xs-4 col-md-3">
                         <select id="sortBy" class="input-sm">
                             <option value="none">Sort By</option>
                             <option value="Faz">First&nbsp;&#8595;</option>
@@ -175,7 +189,7 @@ $version = file_get_contents('lists.version');
                             <option value="Oza">Order&nbsp;&#8593;</option>
                         </select>
                     </div>
-                    <div class="col-xs-12 col-md-4">
+                    <div class="col-xs-8 col-md-3">
                         <div class="input-group">
                               <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" id="searchButton" data-toggle="dropdown">Search By: <span class="caret"></span></button>

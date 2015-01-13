@@ -6527,7 +6527,7 @@ button.close {
 #addDestination {
     margin-bottom: 15px;
 }
-#saveList {
+#menuSave {
     position: relative;
     top: 15px;
     float: right;
@@ -6693,4 +6693,7 @@ button.close {
 }
 .logo {
   text-align: center;
+}
+.mobileButtons .btn, #AMPM {
+  margin-bottom: 5px;
 }
