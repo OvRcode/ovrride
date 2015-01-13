@@ -2559,6 +2559,12 @@ Number.prototype.pad = function(size) {
   return s;
 };;/*jshint multistr: true */
 $(function(){
+  if ( settings.isSet('tripName') ) {
+      $('#tripName').text(settings.get('tripName'));
+  }
+  if ( settings.isSet('destination') ) {
+    $("#destName").text(settings.get('destination'));
+  }
     parseData();
     if ( ! jQuery.isEmptyObject(pickups) ) {
         outputPickups();
