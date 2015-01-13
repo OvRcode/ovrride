@@ -215,9 +215,13 @@ $version = file_get_contents('lists.version');
               </div>
               <div class="row-fluid">
                 <div class="col-sm-12 col-lg-12" id="content">
-                  
-                  
+                  <!-- List goes here -->    
                 </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-2 col-xs-offset-5">
+                      <h4><span class="listTotal"></span></h4>
+                  </div>
               </div>
         </div>
         <!-- /#page-content-wrapper -->
