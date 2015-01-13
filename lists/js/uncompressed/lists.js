@@ -18184,16 +18184,20 @@ function showSearchResults(targets){
     targets.parents('.listButton').show();
 }
 function setupPage(){
-    if ( window.settings.isSet('tripName') ) {
-        $('#tripName').text(window.settings.get('tripName'));
+    if ( settings.isSet('tripName') ) {
+        $('#tripName').text(settings.get('tripName'));
     }
     if ( settings.isSet('bus') ) {
         $('#bus').text(settings.get('bus'));
+    }
+    if ( settings.isSet('destination') ) {
+      $("#destName").text(settings.get('destination'));
     }
     var keys = initialHTML.keys();
     jQuery.each(keys, function(key,value){
         $('#content').append(initialHTML.get(value));
     });
+
     // Hide expanded area of reservation
     $("div.expanded").hide();
 }

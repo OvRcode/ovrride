@@ -192,7 +192,7 @@ $version = file_get_contents('lists.version');
                             </div><!-- /input-group -->
                     </div>
                     <div class="col-xs-9 col-md-8">
-                        <h4>Trip: <span id="tripName"></span></h4>
+                        <h4>Trip: <span id="destName"></span> <span id="tripName"></span></h4>
                     </div>
                     <div class="col-xs-4 col-md-4">
                         <h4>Bus: <span id="bus"></span></h4>
