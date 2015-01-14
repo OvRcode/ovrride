@@ -320,10 +320,14 @@ class Lists {
         }
     }
     function getContactInfo($destination){
-        $sql = "SELECT `contact`, `phone` FROM `ovr_lists_destinations` WHERE `destination` ='" . $destination . "'";
+        $sql = "SELECT `contact`, `contactPhone`, `rep`, `repPhone` FROM `ovr_lists_destinations` WHERE `destination` ='" . $destination . "'";
         $result = $this->dbQuery($sql);
         $row = $result->fetch_assoc();
-        return array('contact' => $row['contact'], 'phone' => $row['phone']);
+        return array('contact'     => $row['contact'], 
+                    'contactPhone' => $row['contactPhone'],
+                    'rep'          => $row['rep'],
+                    'repPhone'     => $row['repPhone']
+                    );
     }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
