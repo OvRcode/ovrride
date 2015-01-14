@@ -28,7 +28,7 @@ if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
 $version = file_get_contents('lists.version');
 ?>
 <!DOCTYPE html>
-<html lang="en"  manifest="/manifest.appcache">
+<html lang="en"  manifest="manifest.appcache">
 
 <head>
 

@@ -2399,12 +2399,12 @@ if (typeof jQuery === 'undefined') {
     window.initialHTML = outputHTML.localStorage;  
     window.data =$.initNamespaceStorage('data');
     window.tripData = data.localStorage; 
-    window.notespace = $.initNamespaceStorage('notes');
-    window.notes = notespace.localStorage;
+    window.reportspace = $.initNamespaceStorage('reports');
+    window.reports = reportspace.localStorage;
     window.walkonspace = $.initNamespaceStorage('newWalkon');
     window.newWalkon = walkonspace.localStorage;
-    window.noteSaveSpace = $.initNamespaceStorage('unsavedNotes');
-    window.unsavedNotes = noteSaveSpace.localStorage;
+    window.reportSaveSpace = $.initNamespaceStorage('unsavedReports');
+    window.unsavedReports = reportSaveSpace.localStorage;
     window.messageSpace = $.initNamespaceStorage('messages');
     window.messages = messageSpace.localStorage;
     // Menu JS
@@ -2420,7 +2420,7 @@ if (typeof jQuery === 'undefined') {
     $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
     $( 'button.btn-list' ).on("click", function(){ window.location.href='list.php'; });
     $( 'button.btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
-    $( 'button.btn-notes' ).on("click", function(){ window.location.href = 'notes.php'; });
+    $( 'button.btn-reports' ).on("click", function(){ window.location.href = 'reports.php'; });
     $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
     $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
     $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
@@ -2433,8 +2433,8 @@ if (typeof jQuery === 'undefined') {
         var statusIcon = $("#status");
         if (window.navigator.onLine) {
             toggleMenuButtons("online");
-            if ( ! jQuery.isEmptyObject(unsavedNotes.keys()) ) {
-              saveOfflineNotes();
+            if ( ! jQuery.isEmptyObject(unsavedReports.keys()) ) {
+              saveOfflineReports();
             }
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
@@ -2466,7 +2466,7 @@ if (typeof jQuery === 'undefined') {
     });
 });
 function toggleMenuButtons(onlineOffline){
-    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshNotes"];
+    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];
     if ( onlineOffline == "offline" ) {
         jQuery.each(buttons, function(key,value){
             if ( ! $(value).hasClass('disabled') ){
@@ -2489,36 +2489,36 @@ function toggleMenuButtons(onlineOffline){
         });
     }
 }
-function getNotes(){
-    notes.removeAll();
+function getReports(){
+    reports.removeAll();
     var trip = settings.get('tripNum');
-    $.get("api/notes/"+trip, function(data){
+    $.get("api/reports/"+trip, function(data){
         var parsed = jQuery.parseJSON(data);
         jQuery.each(parsed, function(key,value){
-            notes.set(key, value);
+            reports.set(key, value);
         });
     }).done(function(){})
     .fail(function(){ /* fail function here*/});
 }
-function onlineNoteSave(note,bus,trip){
-  var url = "api/notes/add/" + bus + "/" + trip + "/" + encodeURIComponent(note);
+function onlineReportSave(report,bus,trip){
+  var url = "api/reports/add/" + bus + "/" + trip + "/" + encodeURIComponent(report);
   $.get(url, function(data){
       if ( data != 'success' ) {
-          alert("Note Save failed, try again");
+          alert("Report Save failed, try again");
       }
   });
 }
-function saveOfflineNotes(){
-  jQuery.each(unsavedNotes.keys(), function(key,value){
-    var note = notes.get(value);
-    note = note.split(": ");
-    var bus = note[0];
+function saveOfflineReports(){
+  jQuery.each(unsavedReports.keys(), function(key,value){
+    var report = reports.get(value);
+    report = report.split(": ");
+    var bus = report[0];
     bus = bus.split(" ");
     bus = bus[1];
-    note = note[1];
-    onlineNoteSave(note,bus,settings.get('tripNum'));
+    report = report[1];
+    onlineReportSave(report,bus,settings.get('tripNum'));
   });
-  unsavedNotes.removeAll();
+  unsavedReports.removeAll();
 }
 function getTripData(){
     var trip = settings.get('tripNum');
