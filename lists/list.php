@@ -117,8 +117,8 @@ $version = file_get_contents('lists.version');
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary btn-notes" id="notesMenu">
-                        <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
+                    <button type="button" class="btn btn-primary btn-reports" id="reportsMenu">
+                        <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
                     </button>
                 </li>
                 <li>
@@ -170,8 +170,8 @@ $version = file_get_contents('lists.version');
                         <button class="btn btn-primary secondaryWalkOn">
                             <i class="fa fa-plus"></i>&nbsp;<i class="fa fa-male"></i>&nbsp;Add Walk On
                         </button>
-                        <button type="button" class="btn btn-primary btn-notes">
-                            <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
+                        <button type="button" class="btn btn-primary btn-reports">
+                            <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
                         </button>
                         <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
                             <i class="fa fa-table"></i>&nbsp;Summary
