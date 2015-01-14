@@ -22,6 +22,7 @@ module.exports = function(grunt){
                     'fonts/FontAwesome.otf fonts/FontAwesome.otf'],
           timestamp: true,
           preferOnline: true,
+          
           verbose: true,
           hash: true,
         },
@@ -64,8 +65,8 @@ module.exports = function(grunt){
       message: {
         src: ['lists/js/partials/_message.js'],
       },
-      notes: {
-        src: ['lists/js/partials/_notes.js'],
+      reports: {
+        src: ['lists/js/partials/_reports.js'],
       },
       settings: {
         src: ['lists/js/partials/_settings.js'],
@@ -79,7 +80,7 @@ module.exports = function(grunt){
         src: ['lists/api/index.php'],
       },
       main: {
-        src: ['lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/notes.php', 'lists/summary.php'],
+        src: ['lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/reports.php', 'lists/summary.php'],
       },
     },
     cssmin: {
@@ -115,12 +116,12 @@ module.exports = function(grunt){
         src: ['lists/js/uncompressed/vendor.js','lists/js/partials/_common.js','lists/js/partials/_message.js'],
         dest: 'lists/js/uncompressed/message.js',
       },
-      notes: {
+      reports: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_notes.js'],
-        dest: 'lists/js/uncompressed/notes.js',
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_reports.js'],
+        dest: 'lists/js/uncompressed/reports.js',
       },
       settings: {
         options: {
@@ -174,13 +175,13 @@ module.exports = function(grunt){
           'lists/js/message.min.js': ['lists/js/uncompressed/message.js']
         }
       },
-      notes: {
+      reports: {
         options: {
           mangle: false,
           preserveComments: false
         },
         files: {
-          'lists/js/notes.min.js': ['lists/js/uncompressed/notes.js']
+          'lists/js/reports.min.js': ['lists/js/uncompressed/reports.js']
         }
       },
       settings: {
@@ -234,9 +235,9 @@ module.exports = function(grunt){
         files: ['lists/js/partials/_message.js'],
         tasks: ['jshint:message','concat:message', 'uglify:message','manifest'],
       },
-      notes: {
-        files: ['lists/js/partials/_notes.js'],
-        tasks: ['jshint:notes','concat:notes', 'uglify:notes','manifest'],
+      reports: {
+        files: ['lists/js/partials/_reports.js'],
+        tasks: ['jshint:reports','concat:reports', 'uglify:reports','manifest'],
       },
       settings: {
         files: ['lists/js/partials/_settings.js'],
