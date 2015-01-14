@@ -91,8 +91,8 @@ $version = file_get_contents('lists.version');
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary btn-notes" id="notesMenu">
-                        <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
+                    <button type="button" class="btn btn-primary btn-reports" id="reportsMenu">
+                        <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
                     </button>
                 </li>
                 <li>

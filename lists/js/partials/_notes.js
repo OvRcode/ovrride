@@ -3,14 +3,14 @@ $(function(){
     $("span.mobileButtons").removeClass('hidden');
   }
     //add check for online/offline when offline is implemented
-    refreshNotes();
-    $("#saveNote").click(function(){ saveNote(); });
-    $("#refreshNotes").click(function(){ refreshNotes(); });
+    refreshReports();
+    $("#saveReport").click(function(){ saveReport(); });
+    $("#refreshReports").click(function(){ refreshReports(); });
     $("#bus").click(function(){ toggleBus(); });
 });
 function toggleBus(){
     var bus = settings.get('bus');
-    var selector = "div#notesContent :not(p:contains('Bus " + bus +"'))";
+    var selector = "div#reportsContent :not(p:contains('Bus " + bus +"'))";
     var buttonValue = $("#bus").val();
     if ( buttonValue == "show" ) {
         $(selector).hide();
@@ -22,25 +22,25 @@ function toggleBus(){
         $("#bus").html('<i class="fa fa-bus"></i>&nbsp;This Bus Only');
     }
 }
-function saveNote(){
-    var note = $("#newNote").val();
+function saveReport(){
+    var report = $("#newReport").val();
     var bus = settings.get('bus');
     var trip = settings.get('tripNum');
     var timestamp = timeStamp();
     
     if ( window.navigator.onLine ){
-      onlineNoteSave(note,bus,trip);
+      onlineReportSave(report,bus,trip);
     } else {
-      notes.set(timestamp, "Bus " + bus + ": " + note);
-      unsavedNotes.set(timestamp,1);
+      reports.set(timestamp, "Bus " + bus + ": " + report);
+      unsavedReports.set(timestamp,1);
     }
     /*jshint -W030 */ 
-    $("#notesContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newNote").val()).after() + "</p>";
-    $("#newNote").val('');
+    $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newReport").val()).after() + "</p>";
+    $("#newReport").val('');
 }
-function refreshNotes(){
-    getNotes();
-    setTimeout(outputNotes, 300);
+function refreshReports(){
+    getReports();
+    setTimeout(outputReports, 300);
 }
 function timeStamp(){
     var date    = new Date();
@@ -53,15 +53,15 @@ function timeStamp(){
 
     return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
 }
-function outputNotes(){
-    $("#notesContent").empty();
-    if (! jQuery.isEmptyObject(notes.keys()) ){
+function outputReports(){
+    $("#reportsContent").empty();
+    if (! jQuery.isEmptyObject(reports.keys()) ){
         var output = "";
-        var allNotes = notes.keys();
-        jQuery.each(allNotes, function(key, value){
-            var note = notes.get(value);
-            output = output.concat("<p>" + value + ": " + note + "</p>");
+        var allReports = reports.keys();
+        jQuery.each(allReports, function(key, value){
+            var report = reports.get(value);
+            output = output.concat("<p>" + value + ": " + report + "</p>");
         });
-        $("#notesContent").append(output);
+        $("#reportsContent").append(output);
     }   
 }
