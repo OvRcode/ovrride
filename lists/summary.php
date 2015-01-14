@@ -134,21 +134,21 @@ $version = file_get_contents('lists.version');
                     <div class="col-xs-12 col-md-6 pickupTotals"></div>      
                 </div>
                 <div class="row">
-                    <div class="col-xs-3">
+                    <div class="col-xs-12 col-md-3">
                         <h4>Mountain Contact Info:</h4>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-3">
+                    <div class="col-xs-6 col-md-3">
                        <strong>Contact:</strong> <span class="contact"></span>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-6 col-md-3">
                         <strong>Phone:</strong> <span class="contactPhone"></span>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-6 col-md-3">
                         <strong>Rep:</strong> <span class="rep"></span>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-6 col-md-3">
                         <strong>Phone:</strong> <span class="repPhone"></span>
                     </div>
                 </div>

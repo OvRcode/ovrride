@@ -214,8 +214,5 @@
   position: relative;
   top: 0;
   width: 70%;
-  margin: 10px 0 5px;
-}
-.pickupList {
-  margin-left: 25px;
+  margin: 10px 25px 5px;
 }
