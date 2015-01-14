@@ -1,124 +1,279 @@
-module.exports = function(grunt) {
-
-  // Project configuration
+module.exports = function(grunt){
+  
+  // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-
-    // JSHint Gruntfile.js and any of the OvR Lists javascripts
-    jshint: {
-      files: ['Gruntfile.js', 'package.json', 'lists/assets/javascripts/lists.js'],
-    },
-
-    // Concatenate all OvR Lists javascripts except all.js
-    concat: {
+    notify_hooks: {
       options: {
-        separator: ';',
-      },
-      dist: {
-        src: ['lists/assets/javascripts/jquery.js', 'lists/assets/javascripts/bootstrap.js', 'lists/assets/tablesorter/js/jquery.tablesorter.min.js','lists/assets/tablesorter/js/jquery.tablesorter.widgets.min.js','lists/assets/tablesorter/js/widgets/widget-editable.js','lists/assets/javascripts/jquery.chained.js','lists/assets/tablesorter/addons/pager/jquery.tablesorter.pager.js','lists/assets/javascripts/jquery.storageapi.js','lists/assets/javascripts/lists.js'],
-        dest: 'lists/assets/javascripts/all.js',
-      },
+        enabled: true,
+        title: "OvR Trip Lists",
+        success: true
+      }
     },
-
-    // Compile Sass to CSS -  destination : source
-    // TODO: Add task to lint lists.scss
-    sass: {
-      compile: {
-        options: {
-          style: 'compressed',
-          banner: '/*!!!!!!!!!!!!!!DO NOT MAKE CHANGES TO THIS FILE. THIS FILE IS COMPILED FROM CSS AND SCSS FILES IN THIS FOLDER, CHANGES WILL BE OVER WRITTEN  !!!!!!!!!!!!!!!!!!!\n! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-        },
-        files: {
-          'lists/assets/stylesheets/all.css': 'lists/assets/stylesheets/lists.scss',
-        },
-      },
-    },
-
-    // Minify javascript with Uglify
-    uglify: {
-      options: {
-        banner: '/*!!!!!!!!!!!!!!DO NOT MAKE CHANGES TO THIS FILE. CHANGES ARE CONCATENATED AND MINIFIED USING GRUNT.JS !!!!!!!!!!!!!!!!!!!\n! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-        footer: '\n/*!!!!!!!!!!!!!!ANY CHANGES MADE TO THIS FILE WILL BE OVER WRITTEN, MAKE CHANGES TO SOURCE JAVASCRIPT FILES AND COMPILE WITH GRUNT JS !!!!!!!!!!!!!!*/',
-        mangle: false,
-      },
-      build: {
-        src: 'lists/assets/javascripts/all.js',
-        dest: 'lists/assets/javascripts/all.min.js',
-      },
-    },
-
-    // Generate/Update HTML 5 appcache so changes are loaded by browser
     manifest: {
       generate: {
-        options: {
+        options:{
           basePath: "lists/",
-          network: ["save.php","pull.php","csv.php","http://*", "https://*"],
-          exclude: ["js/jquery.min.js"],
-          timestamp: true
+          network:["/api", "/login","http://*","https://*"],
+          fallback: [ 'fonts/fontawesome-webfont.woff fonts/fontawesome-webfont.woff',
+                    'fonts/fontawesome-webfont.eot fonts/fontawesome-webfont.eot',
+                    'fonts/fontawesome-webfont.svg fonts/fontawesome-webfont.svg',
+                    'fonts/fontawesome-webfont.ttf fonts/fontawesome-webfont.ttf',
+                    'fonts/FontAwesome.otf fonts/FontAwesome.otf'],
+          timestamp: true,
+          preferOnline: true,
+          
+          verbose: true,
+          hash: true,
         },
-        src: [
-          "assets/images/logo.jpg",
-          "assets/images/touch-icon-ipad-retina.png",
-          "assets/images/touch-icon-ipad.png",
-          "assets/images/touch-icon-iphone-retina.png",
-          "assets/images/touch-icon-iphone.png",
-          "assets/images/loader.gif",
-          "assets/images/startup-320x460.png",
-          "assets/images/startup-640x920.png",
-          "assets/images/startup-640x1096.png",
-          "assets/images/startup-748x1024.png",
-          "assets/images/startup-768x1004.png",
-          "assets/images/startup-1496x2048.png",
-          "assets/images/startup-1536x2008.png",
-          "assets/javascripts/all.min.js",
-          "assets/stylesheets/all.css",
-          "assets/tablesorter/addons/pager/jquery.tablesorter.pager.css",
-          "assets/tablesorter/addons/pager/icons/*",
-          "assets/fonts/glyphicons-halflings-regular.eot",
-          "assets/fonts/glyphicons-halflings-regular.svg",
-          "assets/fonts/glyphicons-halflings-regular.ttf",
-          "assets/fonts/glyphicons-halflings-regular.woff",
-          "includes/lists.php",
-          "includes/config.php"
-        ],
-        dest: "lists/manifest.appcache"
+      src: ["js/*.js",
+            "images/*.gif",
+            "images/*.jpg",
+            "images/*.png",
+            "images/ios/*.png",
+            "images/ios/iconset/*.png",
+            "fonts/*",
+            "css/application.min.css",
+            "*.html",
+            "*.php",
+            "lists.version"],
+      dest: "lists/manifest.appcache"
       },
     },
-    // Simple config to run sass, jshint and uglify any time a js or sass file is added, modified or deleted
+    csslint: {
+      strict: {
+        options: {
+          ids: false,
+          important: false
+        },
+        src: ['lists/css/lists.css', 'lists/css/simple-sidebar.css']
+      },
+    },
+    jshint: {
+      grunt: {
+        src: ['Gruntfile.js'],
+      },
+      admin: {
+        src: ['lists/js/partials/_admin.js'],
+      },
+      common: {
+        src: ['lists/js/partials/_common.js'],
+      },
+      lists: {
+        src: ['lists/js/partials/_lists.js'],
+      },
+      message: {
+        src: ['lists/js/partials/_message.js'],
+      },
+      reports: {
+        src: ['lists/js/partials/_reports.js'],
+      },
+      settings: {
+        src: ['lists/js/partials/_settings.js'],
+      },
+      summary: {
+        src: ['lists/js/partials/_summary.js'],
+      },
+    },
+    phplint: {
+      api: {
+        src: ['lists/api/index.php'],
+      },
+      main: {
+        src: ['lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/reports.php', 'lists/summary.php'],
+      },
+    },
+    cssmin: {
+      target: {
+        src: ['lists/css/application.css'],
+        dest: 'lists/css/application.min.css',
+      }
+    },
+    concat: {
+      css: {
+        src: ['lists/css/bootstrap.css','lists/css/font-awesome.min.css','lists/css/simple-sidebar.css','lists/css/lists.css'],
+        dest: 'lists/css/application.css',
+      },
+      vendor: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 
+              'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js', 'lists/js/vendor/detectmobilebrowser.js'],
+        dest: 'lists/js/uncompressed/vendor.js',
+      },
+      lists: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/vendor/jquery.mobile-1.4.5.js','lists/js/partials/_common.js', 'lists/js/partials/_lists.js'],
+        dest: 'lists/js/uncompressed/lists.js',
+      },
+      message: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/uncompressed/vendor.js','lists/js/partials/_common.js','lists/js/partials/_message.js'],
+        dest: 'lists/js/uncompressed/message.js',
+      },
+      reports: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_reports.js'],
+        dest: 'lists/js/uncompressed/reports.js',
+      },
+      settings: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_settings.js'],
+        dest: 'lists/js/uncompressed/settings.js',
+      },
+      summary: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_summary.js'],
+        dest: 'lists/js/uncompressed/summary.js',
+      },
+      admin: {
+        options: {
+          separator: ';',
+        },
+        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_admin.js'],
+        dest: 'lists/js/uncompressed/admin.js',
+      },
+    },
+    uglify: {
+      admin: {
+        options: {
+          mangle: false,
+          preserveComments: false,
+          title: 'Admin Uglify',
+          message: 'admin uglify complete',
+        },
+        files: {
+          'lists/js/admin.min.js': ['lists/js/uncompressed/admin.js']
+        }
+      },
+      lists: {
+        options: {
+          mangle: false,
+          preserveComments: false
+        },
+        files: {
+          'lists/js/lists.min.js': ['lists/js/uncompressed/lists.js']
+        }
+      },
+      message: {
+        options: {
+          mangle: false,
+          preserveComments: false
+        },
+        files: {
+          'lists/js/message.min.js': ['lists/js/uncompressed/message.js']
+        }
+      },
+      reports: {
+        options: {
+          mangle: false,
+          preserveComments: false
+        },
+        files: {
+          'lists/js/reports.min.js': ['lists/js/uncompressed/reports.js']
+        }
+      },
+      settings: {
+        options: {
+          mangle: false,
+          preserveComments: false
+        },
+        files: {
+          'lists/js/settings.min.js': ['lists/js/uncompressed/settings.js']
+        }
+      },
+      summary: {
+        options: {
+          mangle: false,
+          preserveComments: false
+        },
+        files: {
+          'lists/js/summary.min.js': ['lists/js/uncompressed/summary.js']
+        }
+      },
+    },
     watch: {
-      sass: {
-        files: ['lists/assets/stylesheets/lists.scss'],
-        tasks: ['sass','manifest'],
+      grunt: {
+        files: ['Gruntfile.js'],
       },
-      jshint: {
-        files: ['<%= jshint.files %>'],
-        tasks: ['jshint'],
+      admin: {
+        files: ['lists/js/partials/_admin.js'],
+        tasks: ['jshint:admin','concat:admin', 'uglify:admin','manifest'],
       },
-      concat: {
-        files : ['<%= concat.dist.src %>'],
-        tasks: ['concat','manifest'],
+      api: {
+        files: ['lists/api/index.php'],
+        tasks: ['phplint','manifest'],
       },
-      uglify: {
-        files: ['lists/assets/javascripts/lists.js'],
-        tasks: ['uglify','manifest'],
+      common: {
+        files: ['lists/js/partials/_common.js'],
+        tasks: ['jshint:common', 'concat', 'uglify', 'manifest'],
       },
-      manifest: {
-        files: ['lists/index.php'],
+      css: {
+        files: ['lists/css/lists.css', 'lists/css/simple-sidebar.css'],
+        tasks: ['csslint','concat:css', 'cssmin','manifest'],
+      },
+      html: {
+        files: ['lists/*.html'],
+        tasks: ['manifest'],
+      },
+      lists: {
+        files: ['lists/js/partials/_lists.js'],
+        tasks: ['jshint:lists','concat:lists', 'uglify:lists','manifest'],
+      },
+      message: {
+        files: ['lists/js/partials/_message.js'],
+        tasks: ['jshint:message','concat:message', 'uglify:message','manifest'],
+      },
+      reports: {
+        files: ['lists/js/partials/_reports.js'],
+        tasks: ['jshint:reports','concat:reports', 'uglify:reports','manifest'],
+      },
+      settings: {
+        files: ['lists/js/partials/_settings.js'],
+        tasks: ['jshint:settings','concat:settings', 'uglify:settings','manifest'],
+      },
+      summary: {
+        files: ['lists/js/partials/_summary.js'],
+        tasks: ['jshint:summary','concat:summary', 'uglify:summary','manifest'],
+      },
+      vendor: {
+        files: ['lists/js/vendor/*.js'],
+        tasks: ['concat:vendor','concat', 'uglify', 'manifest'],
+      },
+      mainPHP: {
+        files: ['lists/admin.php','lists/index.php', 'lists/list.php', 'lists/message.php', 'lists/reports.php', 'lists/summary.php'],
+        tasks: ['phplint:main', 'manifest'],
+      },
+      version: {
+        files: ['lists/lists.version'],
         tasks: ['manifest'],
       },
     },
   });
 
-  // Load the plug-ins
-  grunt.loadNpmTasks('grunt-notify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-manifest');
 
-  // Default tasks
-  grunt.registerTask('default', ['jshint', 'concat', 'sass', 'uglify','manifest']);
+  // Load plugins
+  grunt.loadNpmTasks('grunt-contrib-csslint');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks("grunt-phplint");
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-manifest');
+  // Tasks
+  grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin','phplint', 'manifest']);
 
 };
