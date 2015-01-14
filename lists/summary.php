@@ -140,16 +140,16 @@ $version = file_get_contents('lists.version');
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
-                       Contact: <span class="contact"></span>
+                       <strong>Contact:</strong> <span class="contact"></span>
                     </div>
                     <div class="col-xs-3">
-                        Phone: <span class="contactPhone"></span>
+                        <strong>Phone:</strong> <span class="contactPhone"></span>
                     </div>
                     <div class="col-xs-3">
-                        Rep: <span class="rep"></span>
+                        <strong>Rep:</strong> <span class="rep"></span>
                     </div>
                     <div class="col-xs-3">
-                        Phone: <span class="repPhone"></span>
+                        <strong>Phone:</strong> <span class="repPhone"></span>
                     </div>
                 </div>
                 <div class="row mobileButtons hidden">
