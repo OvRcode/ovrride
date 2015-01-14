@@ -135,7 +135,7 @@ $version = file_get_contents('lists.version');
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
-                        <textarea rows="10" class="form-control" id="newNote" placeholder="Add note here"></textarea>
+                        <textarea rows="10" class="form-control" id="newReport" placeholder="Add note here"></textarea>
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <ol type="1">

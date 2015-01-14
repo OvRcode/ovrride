@@ -6708,3 +6708,6 @@ button.close {
   position: relative;
   top: -3px;
 }
+#newReport {
+  resize:vertical;
+}
