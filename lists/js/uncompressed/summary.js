@@ -2582,7 +2582,14 @@ $(function(){
     if ( tripData.keys() !== '' ) {
         outputPackages();
     }
+    getContactInfo();
 });
+function getContactInfo(){
+  $("span.contact").text(settings.get("contact"));
+  $("span.contactPhone").text(settings.get("contactPhone"));
+  $("span.rep").text(settings.get("rep"));
+  $("span.repPhone").text(settings.get("repPhone"));
+}
 function parseData(){
     window.packages = {};
     window.pickups = {};
@@ -2735,4 +2742,3 @@ function outputPackages(){
     output = output.concat("</tbody></table>");
     $("div.packageTotals").append(output);
 }
-// jQuery.isEmptyObject(pickups);
