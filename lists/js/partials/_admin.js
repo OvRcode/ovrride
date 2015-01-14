@@ -43,22 +43,26 @@ function checkDestPopover(){
 function getDestinations(){
     $.getJSON( "api/dropdown/destination/all", function(data){
         window.destOutput = "<table id='destTable'>\
-                <thead><tr><th></th><th>Enabled</th><th>Disabled</th><th>Remove</th></tr></thead>\
+                <thead><tr><th></th><th>Enabled</th><th>Disabled</th><th>Remove</th><th>Contact</th>\
+                <th>Contact Phone</th><th>Rep</th><th>Rep Phone</th></tr></thead>\
                 <tbody>";
         jQuery.each(data, function(key,value){
-            //console.log("Key: " + key + " Value: " + value);
             var row = "<tr class='" + key +"'><td>" + key + " </td>";
-            if ( value == "Y" ){
+            if ( value.enabled == "Y" ){
                 row = row.concat('<td><input type="radio" value="Y" name="' + key + '" checked></td>');
             } else {
                 row = row.concat('<td><input type="radio" value="Y" name="' + key + '"></td>');
             }
-            if ( value == "N" ){
+            if ( value.enabled == "N" ){
                 row = row.concat('<td><input type="radio" value="N" name="' + key + '" checked></td>');
             } else {
                 row = row.concat('<td><input type="radio" value="N" name="' + key + '"></td>');
             }
             row = row.concat('<td><input type="radio" value="Delete" name="' + key + '"></td>');
+            row = row.concat('<td><input type="text" size="15" class="contact" value="' + value.contact + '" placeholder="Contact"></td>');
+            row = row.concat('<td><input type="text" size="13" class="contactPhone" value="' + value.contactPhone + '" placeholder="Contact Phone"></td>');
+            row = row.concat('<td><input type="text" size="15" class="rep" value="' + value.rep + '" placeholder="Rep"></td>');
+            row = row.concat('<td><input type="text" size="13" class="repPhone" value ="' + value.repPhone + '" placeholder="Rep Phone"></td></tr>');
             destOutput = destOutput.concat(row);
         });
         var foot = "</tbody>\
@@ -71,17 +75,24 @@ function getDestinations(){
                     destOutput = destOutput.concat(foot);
         $("#destinations").append(destOutput);
         $("#saveDest").on("click", function(){ 
-            console.log("clicked");
             updateDestinations();
         });
     });
 }
 function updateDestinations(){
     var destinations = $("#destTable tbody tr");
+    window.destinationData = {};
     jQuery.each(destinations, function(key, value){
-        var thisClass = $(this).attr('class');
-        var radioValue = $("tr[class='" + thisClass + "'] input:radio:checked").val();
-        $.post("api/dropdown/destination/update", { destination: thisClass, enabled: radioValue});
+      var destination = $(this).attr('class'); 
+      destinationData[destination] = {};
+      destinationData[destination].enabled = $("tr[class='" + destination + "'] input:radio:checked").val();
+      destinationData[destination].contact = $(this).find("input.contact").val();
+      destinationData[destination].contactPhone = $(this).find("input.contactPhone").val();
+      destinationData[destination].rep = $(this).find("input.rep").val();
+      destinationData[destination].repPhone = $(this).find("input.repPhone").val();
     });
-    location.reload();
+    $.post("api/dropdown/destination/update", {data: destinationData})
+      .done(function(){
+        location.reload();
+      });
 }

@@ -251,18 +251,24 @@ class Lists {
         $result = $this->dbQuery($sql);
         $destination = [];
         while( $row = $result->fetch_assoc()){
-            $destination[$row['destination']] = $row['enabled'];
+            $destination[$row['destination']]['enabled']      = $row['enabled'];
+            $destination[$row['destination']]['contact']      = (isset($row['contact']) ? $row['contact'] : "");
+            $destination[$row['destination']]['contactPhone'] = (isset($row['contactPhone']) ? $row['contactPhone'] : "");
+            $destination[$row['destination']]['rep']          = (isset($row['rep']) ? $row['rep'] : "");
+            $destination[$row['destination']]['repPhone']     = (isset($row['repPhone']) ? $row['repPhone'] : "");
         }
         return $destination;
     }
-    function updateDestinations($destination, $enabled){
-        if ( $enabled == "Delete" ) {
+    function updateDestinations($destination, $data){
+        if ( $data['enabled'] == "Delete" ) {
             $sql = "DELETE FROM `ovr_lists_destinations` WHERE `destination` = '" . $destination . "'";
         } else {
-            $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled) 
-                    VALUES('" . $destination . "', '" . $enabled ."')
+            $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled, contact, contactPhone, rep, repPhone) 
+                    VALUES('" . $destination . "', '" . $data['enabled'] ."', '" . $data['contact']. "',
+                            '" . $data['contactPhone']. "', '" . $data['rep'] . "', '" . $data['repPhone']. "')
                     ON DUPLICATE KEY UPDATE
-                    enabled=VALUES(enabled)";
+                    enabled=VALUES(enabled), contact=VALUES(contact), contactPhone=VALUES(contactPhone), 
+                    rep=VALUES(rep), repPhone=VALUES(repPhone)";
         }
         $this->dbQuery($sql);
     }
@@ -535,7 +541,9 @@ Flight::route('/contact/destination/@destination', function($destination){
 });
 Flight::route('POST /dropdown/destination/update', function(){
         $list = Flight::Lists();
-        $list->updateDestinations($_POST['destination'], $_POST['enabled']);
+        foreach($_POST['data'] as $destination => $data){
+            $list->updateDestinations($destination, $data);
+        }
     });
 Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
         $list = Flight::Lists();
