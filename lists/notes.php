@@ -141,9 +141,16 @@ $version = file_get_contents('lists.version');
                         <button class="btn btn-info" id="refreshNotes">
                             <i class="fa fa-refresh"></i>&nbsp;Refresh Notes
                         </button>
+                    </div>
+                    <div class="col-xs-12">
                         <button class="btn btn-warning" id="bus" value="show">
                             <i class="fa fa-bus"></i>&nbsp;This Bus Only
                         </button>
+                        <span class="mobileButtons hidden">
+                            <button type="button" class="btn btn-primary btn-list" id="backMobile">
+                                <i class="fa fa-arrow-left"></i>&nbsp;Back to List
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

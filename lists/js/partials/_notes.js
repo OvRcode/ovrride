@@ -1,4 +1,7 @@
 $(function(){
+  if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
+    $("span.mobileButtons").removeClass('hidden');
+  }
     //add check for online/offline when offline is implemented
     refreshNotes();
     $("#saveNote").click(function(){ saveNote(); });
