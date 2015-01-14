@@ -15,6 +15,7 @@ if ($login->messages) {
 }
 
 ?>
+<html lang="en" manifest="manifest.appcache">
   <head>
     <title>OvR Trip Lists</title>
     <!-- Mobile view properties & enable iOS Web App-->

@@ -21,6 +21,7 @@ module.exports = function(grunt){
                     'fonts/fontawesome-webfont.ttf fonts/fontawesome-webfont.ttf',
                     'fonts/FontAwesome.otf fonts/FontAwesome.otf'],
           timestamp: true,
+          preferOnline: true,
           verbose: true,
           hash: true,
         },
