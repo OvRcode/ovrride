@@ -2554,7 +2554,9 @@ function getTripData(){
     });
     $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
       settings.set('contact', data.contact);
-      settings.set('phone', data.phone);
+      settings.set('contactPhone', data.contactPhone);
+      settings.set('rep', data.rep);
+      settings.set('repPhone', data.repPhone);
     });
 }
 // Number padding for timestamp generation
