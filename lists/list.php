@@ -181,7 +181,7 @@ $version = file_get_contents('lists.version');
                         </button>
                     </div>
                     <div class="col-xs-4 col-md-3">
-                        <select id="sortBy" class="input-sm">
+                        <select id="sortBy" class="input-sm" data-role='none'>
                             <option value="none">Sort By</option>
                             <option value="Faz">First&nbsp;&#8595;</option>
                             <option value="Fza">First&nbsp;&#8593;</option>
