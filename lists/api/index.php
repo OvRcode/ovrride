@@ -229,17 +229,17 @@ class Lists {
         }
         return $this->orders;
     }
-    function getNotes($tripId){
-        $notes = array();
-        $sql = "SELECT * FROM `ovr_lists_notes` WHERE `Trip` ='" . $tripId . "'";
+    function getReports($tripId){
+        $reports = array();
+        $sql = "SELECT * FROM `ovr_lists_reports` WHERE `Trip` ='" . $tripId . "'";
         $result = $this->dbQuery($sql);
         while( $row = $result->fetch_assoc() ){
-            $notes[$row['Time']]="Bus " . $row['Bus'] . ": " .$row['Note'];
+            $reports[$row['Time']]="Bus " . $row['Bus'] . ": " .$row['Report'];
         }
-        return $notes;
+        return $reports;
     }
-    function addNote($bus, $tripId, $note){
-        $sql = "INSERT INTO `ovr_lists_notes` (Bus, Trip, Note) VALUES('" . $bus . "','" . $tripId . "', '" . urldecode($note) . "')";
+    function addReport($bus, $tripId, $report){
+        $sql = "INSERT INTO `ovr_lists_reports` (Bus, Trip, Report) VALUES('" . $bus . "','" . $tripId . "', '" . urldecode($report) . "')";
         if ( $this->dbQuery($sql) )
             return "success";
         else
@@ -549,13 +549,13 @@ Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
         echo json_encode($list->tripData($bus, $tripId, $status));
     });
-Flight::route('/notes/@tripId', function($tripId){
+Flight::route('/reports/@tripId', function($tripId){
         $list = Flight::Lists();
-        echo json_encode($list->getNotes($tripId));
+        echo json_encode($list->getReports($tripId));
     });
-Flight::route('/notes/add/@bus/@tripId/@note', function($bus,$tripId, $note){
+Flight::route('/reports/add/@bus/@tripId/@report', function($bus,$tripId, $report){
         $list = Flight::Lists();
-        echo $list->addNote($bus, $tripId, $note);
+        echo $list->addReport($bus, $tripId, $report);
     });
 Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
         $list = Flight::Lists();
@@ -571,8 +571,8 @@ Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
 Flight::route('/message', function(){
         $lists = Flight::Lists();
         $lists->sendMessage();
-        $note = "Message send to: " . $_POST['message']['Group'] .  " Text:" . $_POST['message']['Message'];
-        $lists->addNote($_POST['message']['Bus'], $_POST['message']['Trip'], $note );
+        $report = "Message send to: " . $_POST['message']['Group'] .  " Text:" . $_POST['message']['Message'];
+        $lists->addReport($_POST['message']['Bus'], $_POST['message']['Trip'], $report );
     });
 Flight::start();
 ?>

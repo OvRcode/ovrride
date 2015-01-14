@@ -91,8 +91,8 @@ $version = file_get_contents('lists.version');
                     </button>
                 </li>
                 <li>
-                    <button type="button" class="btn btn-primary btn-notes disabled" id="notesMenu">
-                        <i class="fa fa-pencil-square-o"></i>&nbsp;Notes
+                    <button type="button" class="btn btn-primary btn-reports disabled" id="reportsMenu">
+                        <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
                     </button>
                 </li>
                 <li>
@@ -127,19 +127,38 @@ $version = file_get_contents('lists.version');
           </nav>
             <div class="container-fluid pad" id="content">
                 <!-- content here -->
-                <h2>Notes</h2>
+                <h2>Reports</h2>
                 <div class="row">
-                    <div class="col-xs-12 col-md-4">
-                        <textarea rows="8" class="form-control" id="newNote" placeholder="Add note here"></textarea>
+                    <div class="col-xs-12 col-md-12">
+                        <p>Please fill out each required field into the open area below with starting with the corresponding number, then that numbers info.</p>  <p>Each field should be saved as a separate note.  Use this reference key below.</p>
                     </div>
                 </div>
-                <div class="row notes">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <textarea rows="10" class="form-control" id="newNote" placeholder="Add note here"></textarea>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <ol type="1">
+                            <li>Trip Leaders </li>
+                            <li>Bus Info (Driver Name, Bus Company, Bus Number)</li>
+                            <li>Passenger Count (After your last Pickup to the Mountain = To, After you depart MT = From)</li>
+                            <li>Product Received (Hard Count of Product Received from Group Sales)</li>
+                            <li>Added Products Unpaid (Changes, Additions, etc)</li>
+                            <li>No Shows </li>
+                            <li>Bus Issues (Late, Faulty Equipment, etc.)</li>
+                            <li>Notable Injuries</li>
+                            <li>Guest Complaints </li>
+                            <li>General Additional Notes (How was the snow? Your day? Good crew? etc)</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="row reports">
                     <div class="col-xs-12">
-                        <button class="btn btn-success" id="saveNote">
-                            <i class="fa fa-floppy-o"></i>&nbsp;Save Note
+                        <button class="btn btn-success" id="saveReport">
+                            <i class="fa fa-floppy-o"></i>&nbsp;Save Report
                         </button>
-                        <button class="btn btn-info" id="refreshNotes">
-                            <i class="fa fa-refresh"></i>&nbsp;Refresh Notes
+                        <button class="btn btn-info" id="refreshReports">
+                            <i class="fa fa-refresh"></i>&nbsp;Refresh Reports
                         </button>
                     </div>
                     <div class="col-xs-12">
@@ -155,7 +174,7 @@ $version = file_get_contents('lists.version');
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div id="notesContent"></div>
+                        <div id="reportsContent"></div>
                     </div>
                 </div>
         </div>
@@ -163,7 +182,7 @@ $version = file_get_contents('lists.version');
 
     </div>
     <!-- /#wrapper -->
-    <script src="js/notes.min.js"></script>
+    <script src="js/reports.min.js"></script>
 </body>
 
 </html>

@@ -6646,12 +6646,12 @@ button.close {
     visibility: hidden;
 }
 
-.notes button {
+.reports button {
     margin-top:20px;
     margin-bottom:10px;
 }    
 
-#notesContent p {
+#reportsContent p {
     width:100%;
     border:1px solid grey;
     border-radius: 10px;
