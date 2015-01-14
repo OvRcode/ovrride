@@ -136,6 +136,7 @@ function getTripData(){
     var trip = settings.get('tripNum');
     var statuses = settings.get('status');
     var bus = settings.get('bus');
+    var destination = settings.get('destination');
     //Start with a clean slate
     window.orders.removeAll();
     window.initialHTML.removeAll();
@@ -162,6 +163,10 @@ function getTripData(){
     })
     .done(function(){
         window.location.href= "list.php";
+    });
+    $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
+      settings.set('contact', data.contact);
+      settings.set('phone', data.phone);
     });
 }
 // Number padding for timestamp generation
