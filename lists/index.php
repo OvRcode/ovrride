@@ -22,234 +22,179 @@ setcookie(session_name(),session_id(),time()+$cookieLifetime);
 # Session Validation - Is User logged in?
 # else redirect to login page
 if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
-  header ("Location: login/index.php");
+  header ("Location: /login/index.php");
 
 # get version from file
 $version = file_get_contents('lists.version');
 ?>
 <!DOCTYPE html>
-<html lang="en" manifest="manifest.appcache">
-  <head>
-    <meta charset="utf-8">
+<html lang="en"  manifest="manifest.appcache">
+
+<head>
     <title>OvR Trip Lists</title>
-
     <!-- Mobile view properties & enable iOS Web App-->
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    <!-- iOS splash screens -->
-    <!-- iOS 6 & 7 iPad (retina, portrait) -->
-    <link href="assets/images/startup-1536x2008.png"
-      media="(device-width: 768px) and (device-height: 1024px)
-        and (orientation: portrait)
-        and (-webkit-device-pixel-ratio: 2)"
-      rel="apple-touch-startup-image" />
-  
-    <!-- iOS 6 & 7 iPad (retina, landscape) -->
-    <link href="assets/images/startup-1496x2048.png"
-      media="(device-width: 768px) and (device-height: 1024px)
-        and (orientation: landscape)
-        and (-webkit-device-pixel-ratio: 2)"
-      rel="apple-touch-startup-image" />
- 
-    <!-- iOS 6 iPad (portrait) -->
-    <link href="assets/images/startup-768x1004.png"
-      media="(device-width: 768px) and (device-height: 1024px)
-        and (orientation: portrait)
-        and (-webkit-device-pixel-ratio: 1)"
-      rel="apple-touch-startup-image" />
-
-    <!-- iOS 6 iPad (landscape) -->
-    <link href="assets/images/startup-748x1024.png"
-      media="(device-width: 768px) and (device-height: 1024px)
-        and (orientation: landscape)
-        and (-webkit-device-pixel-ratio: 1)"
-      rel="apple-touch-startup-image" />
- 
-    <!-- iOS 6 & 7 iPhone 5 -->
-    <link href="assets/images/startup-640x1096.png"
-      media="(device-width: 320px) and (device-height: 568px)
-        and (-webkit-device-pixel-ratio: 2)"
-      rel="apple-touch-startup-image" />
- 
-    <!-- iOS 6 & 7 iPhone (retina) -->
-    <link href="assets/images/startup-640x920.png"
-      media="(device-width: 320px) and (device-height: 480px)
-        and (-webkit-device-pixel-ratio: 2)"
-      rel="apple-touch-startup-image" />
- 
-    <!-- iOS 6 iPhone -->
-    <link href="assets/images/startup-320x460.png"
-      media="(device-width: 320px) and (device-height: 480px)
-        and (-webkit-device-pixel-ratio: 1)"
-      rel="apple-touch-startup-image" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="OvR Lists">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- favicon and apple-touch-icon --> 
-    <link rel="apple-touch-icon" href="assets/images/touch-icon-iphone.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/images/touch-icon-ipad.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/images/touch-icon-iphone-retina.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/images/touch-icon-ipad-retina.png" />
-    <link rel="icon" type="image/png" href="http://ovrride.com/favicon.ico">
+    <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
+    <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="images/ios/iconset/Icon-76.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="images/ios/iconset/Icon-76@2x.png" />
+    <link rel="apple-touch-icon" sizes="58x58" href="images/ios/iconset/Icon-Small@2x.png" />
+    <!-- Apple Splash Screens -->
+    <!-- iPhone -->
+    <link href="images/startup-320x460.png"
+      media="(device-width: 320px) and (device-height: 480px)
+        and (-webkit-device-pixel-ratio: 1)"
+      rel="apple-touch-startup-image" />
+    
 
-    <!-- Include compiled and minified stylesheets -->
-    <link rel="stylesheet" href="assets/stylesheets/all.css">
+    <link href="css/application.min.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
-  <div id="container">
-    <div id="header">
-      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand logo-nav" href="/" id="logo">OvR Trip Lists&nbsp;&nbsp;<span class="status iphone glyphicon"></span></a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav nav-puller">
-            <li>
-              <button type="button" class="btn btn-default" id="save" name="save" title="Save changes">
-                <span class="glyphicon glyphicon-floppy-disk"></span> SAVE
-              </button>
-              <button type="button" class="btn btn-default" title="Export Table" id="csv_list" onclick="exportCsv('Export');">
-                <span class="glyphicon glyphicon-list-alt"></span> Export
-              </button> 
-              <button type="button" class="btn btn-default" id="csv_email" title="Email Export" onclick="exportCsv('Email');">
-                <span class="glyphicon glyphicon-envelope"></span> Export
-              </button>
-            </li>
-            <li class="hidden"><a href="login/register.php">Create New User</a></li>
-            <li><a href="login/logout.php" id="logout">Logout</a></li>
-            <li><a href=""><span class="status medLg glyphicon"></span></a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div><!-- /.container -->
-    </nav>
-    </div>
-    <div id="body">
-    <div class="container" id="mainBody">
-      <div class="col-md-5">
-      <section class="trip-select">
-          <label>Select a Destination:</label>
-            <select class="form-control input-sm" id="destination" name="destination">
-                <option class="none" value="none">Select a destination</option>
-            </select>
-        </label>
-        <label>Select a Trip:
-          <select class="form-control input-sm" id="trip" name="trip" id="trip">
-              <option class="none" value="none">Select a destination first</option>
-          </select>
-        </label>
-      </section>
-    </div>
-      <br>
 
-      <section class="order-status-select input-group">
-          <label>Order Status: </label>
-          <a onclick="javascript:checkAll('check');" href="javascript:void();"> Check All</a> &#47;
-          <a onclick="javascript:checkAll('uncheck');" href="javascript:void();">Uncheck All</a>
-          <br>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="processing" value="processing" checked>Processing</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="pending" value="pending" checked>Pending</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="walk-on" value="walk-on" checked>Walk On</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="completed" value="completed" checked>Completed</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="cancelled" value="cancelled" >Cancelled</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="failed" value="failed">Failed</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="on-hold" value="on-hold">On-hold</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="finalized" value="finalized" >Finalized</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="refunded" value="refunded">Refunded</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="balance-due" value="balance-due">Balance Due</input>
-          </label>
-          <label class="checkbox order-checkbox">
-            <input type="checkbox" class="order_status_checkbox" name="no-show" value="no-show">No Show</input>
-          </label>
-          <br>
-          <button type="button" class="btn btn-success generate-list" onclick="generateOnOff();" >Generate List</button>
-          <button type="button" class="reset btn btn-warning generate-list">Reset Table Filters </button>
-          <button type="button" onclick="formReset();" class="btn btn-danger generate-list">Clear Form</button>
-          
-      </section>
-      <br>
-      </div><!-- /.container -->
-      <div class="row text-center">
-        <img id="loader" src="assets/images/loader.gif" />
-      </div>
-      <!-- Lists table added here by jQuery -->
-      <div id="listTable">
-          
-      </div>
-      <div class="pager">
-        <button type="button" class="first btn btn-default">
-          <span class="glyphicon glyphicon-fast-backward"></span>
-        </button>
-        <button type="button" class="prev btn btn-default">
-          <span class="glyphicon glyphicon-backward"></span>
-        </button>
-        <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
-        <button type="button" class="next btn btn-default">
-          <span class="glyphicon glyphicon-forward"></span>
-        </button>
-        <button type="button" class="last btn btn-default">
-          <span class="glyphicon glyphicon-fast-forward"></span>
-        </button>
-        <select class="pagesize">
-          <option selected="selected" value="10">10</option>
-          <option value="20">20</option>
-          <option value="30">30</option>
-          <option value="40">40</option>
-          <option value="50">50</option>
-          <option value="500" id="viewAll">View All</option>
-        </select>
-      </div>
-      <div id="totals">
-      </div>
-    </div>
-    <div id="footer" >
-        <div class="page-header"></div><!-- inserts the line separator -->
-          <div class="container">
-            <div class="row">
-              <div class="col-md-4 text-center">
-                <h5><span>&copy; Copyright <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a></span></h5>
-              </div>
-              <div class="col-md-4 text-center footer-center">
-                <h5>For OvR Staff Use Only</h5>
-              </div>
-              <div class="col-md-4 text-center">
-                <h5>Version <?php echo $version; ?></h5>
-              </div>
-            </div>
-          </div>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <button class="btn btn-black" id="status"><i class="fa fa-signal"></i> Online</button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-warning" id="btn-hide">
+                        <i class="fa fa-arrow-left"></i>&nbsp;Hide Menu
+                    </button>
+                </li>
+                <li>
+                    <button class="btn btn-primary disabled" id="btn-settings">
+                      <i class="fa fa-sliders"></i>&nbsp;Settings
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary btn-list" id="menuList">
+                      <i class="fa fa-list"></i>&nbsp;List
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
+                        <i class="fa fa-table"></i>&nbsp;Summary
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary btn-reports" id="reportsMenu">
+                        <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" id="btn-message">
+                        <i class="fa fa-exclamation-triangle"></i>&nbsp;Message
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" id="btn-admin">
+                        <i class="fa fa-tachometer"></i>&nbsp;Admin
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-danger" id="btn-logout">
+                        <i class="fa fa-power-off"></i>&nbsp;Log Out
+                    </button>
+                </li>
+                <li>
+                    <span class="version">OvR Lists <?php echo $version; ?></span>
+                </li>
+            </ul>
         </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper container">
+          <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
+            <div class="container-fluid">
+                <button class="btn btn-link navbar-brand" id="brand">OvR Trip Lists</button>
+                <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
+            </div>
+          </nav>
+            <div class="container-fluid pad">
+                <div class="row-fluid">
+                    <div class="col-lg-12">
+                        <h3>List Settings</h3>
+                        <select id="destination" class="form-control input-sm">
+                            <option value="none" class="none">Select a destination</option>
+                        </select>
+                        <br />
+                        <select id="trip" class="form-control input-sm">
+                            <option value="none" class="none">Trip: Select destination first</option>
+                        </select>
+                        <br />
+                        <select id="bus" class="form-control input-sm">
+                            <option value="1">Bus 1</option>
+                            <option value="2">Bus 2</option>
+                            <option value="3">Bus 3</option>
+                            <option value="4">Bus 4</option>
+                            <option value="5">Bus 5</option>
+                            <option value="6">Bus 6</option>
+                            <option value="7">Bus 7</option>
+                            <option value="8">Bus 8</option>
+                            <option value="9">Bus 9</option>
+                            <option value="10">Bus 10</option>
+                            <option value="All">All Buses: Admin ONLY</option>
+                        </select>
+                        <br />
+                        <div class="row">
+                          <div class="checkbox">
+                            <h4>Order Statuses:</h4>
+                            <div class="col-xs-6 col-sm-2 col-md-2 col-lg-6">
+                                <label class="input-lg"><input type="checkbox" value="wc-balance-due" id="balance">Balance Due</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-cancelled"  id="cancelled">Cancelled</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-completed"  id="completed" checked>Completed</label><br />
+                                <label class="input-lg"><input type=checkbox value="wc-failed"  id="failed">Failed</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-finalized" id="finalized">Finalized</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-no-show" id="no-show">No Show</label><br />
+                            </div>
+                            <div class="col-xs-6 col-sm-2 col-md-2 col-lg-6">
+                                <label class="input-lg"><input type="checkbox" value="wc-on-hold" id="on-hold">On Hold</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-processing" id="processing" checked>Processing</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-pending" id="pending"> Pending</label><br />
+                                <label class="input-lg"><input type="checkbox" value="wc-refunded" id="refunded">Refunded</label><br />
+                                <label class="input-lg"><input type="checkbox" value="walk-on" id="walk-on" checked>Walk On</label><br />
+                            </div> 
+                          </div>
+                        </div>
+                        <div class="row">
+                          <br />
+                          <button class="btn btn-warning" id="clear">Clear Statuses</button><button class="btn btn-warning" id="default">Reset Statuses</button>
+                        </div>
+                        <div class="row">
+                          <button class="btn btn-success" id="generate_list">
+                            <i class="fa fa-floppy-o"></i>&nbsp;Generate List
+                          </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-      <!-- Include concatenated and minified javascripts -->
-      <script src="assets/javascripts/all.min.js"></script>
-  </div>
-  </body>
+    <!-- /#wrapper -->
+    <script src="js/settings.min.js"></script>
+</body>
+
 </html>

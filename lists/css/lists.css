@@ -1,0 +1,225 @@
+.sidebar-nav .btn {
+    width:80%;
+}
+
+.sidebar-nav .half {
+    width: 75%;
+    margin-bottom: 10px;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+.center {
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.ovr {
+    background-color:#09BDEB;
+    position:fixed;
+    top:0;
+    width:100%;
+}
+
+#brand {
+    color:white;
+    left:1%;
+}
+
+.pad {
+    padding-top:60px;
+}
+
+#menu-toggle, #addWalkOn, #addDestination {
+    position: relative;
+    top:9px;
+    float: right;
+}
+#addDestination {
+    margin-bottom: 15px;
+}
+#menuSave {
+    position: relative;
+    top: 15px;
+    float: right;
+    margin-bottom: 20px;
+}
+
+#generate_list {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */
+}
+
+.listButton {
+    border-radius:10px;
+    padding: 7px 15px 7px 15px;
+    margin-bottom: 10px;
+    margin-left:3px;
+    margin-right:3px;
+    box-shadow: 3px 3px 1px 1px #ccc;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.listButton a {
+    color: #777777;
+    text-decoration: underline;   
+}
+
+.listButton a:hover {
+    color: #000000;
+}
+
+.buttonCell {
+    display: block;
+    overflow: hidden;
+    padding-bottom:5px;
+}
+
+.bg-none {
+    border:1px solid black;
+}
+
+.bg-pm {
+    background-color: #FF9900;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-am {
+    background-color:#FAE92A;
+    border:1px solid #333333;
+}
+
+.bg-waiver {
+    background-color:#5CB85C;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-productrec {
+    background-color:#5BC0DE;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-noshow {
+    background-color: #FA2A2A;
+    border: 1px solid #333333;
+    color: #FFFFFF;
+}
+
+.bg-noshow a{
+    color:#111111;
+}
+
+.btn-black {
+    background-color:#000000;
+    color:#FFFFFF;
+    border: 1px solid #D1D1D1;
+    
+}
+
+.btn-black:hover, .btn-black:active {
+    color:#FFFFFF;
+}
+
+#default{
+    margin-left:10px;
+}
+
+.ui-loader {
+  display:none !important;
+}
+
+.summary {
+    border-collapse:collapse;
+    text-align: center;
+}
+
+.summary th {
+    border: 3px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #D1D1D1;
+}
+
+.summary td {
+    border: 1px solid grey;
+}
+
+.ui-shadow span {
+    visibility: hidden;
+}
+
+.reports button {
+    margin-top:20px;
+    margin-bottom:10px;
+}    
+
+#reportsContent p {
+    width:100%;
+    border:1px solid grey;
+    border-radius: 10px;
+    padding: 10px;
+    background: #D1D1D1;
+}
+#destTable td,th{
+    padding: 3px;
+    text-align: center;
+}
+#content {
+    margin-left:5px;
+}
+#walkonPackage { 
+  width: 190px;
+}
+#walkon {
+  width: 195px;
+}
+.version {
+  padding-top: 10px;
+  color: #FFFFFF;
+}
+@media (min-width: 768px) {
+  .login-window {
+    padding-top: 60px;
+    width: 60%;
+  }
+}
+.iosFix {
+  padding-top:20px;
+}
+
+@media (max-width: 767px) {
+  .login-window {
+    padding-top: 20px;
+    width: 100%;
+  }
+}
+.logo {
+  text-align: center;
+}
+.mobileButtons .btn, #AMPM {
+  margin-bottom: 5px;
+}
+
+.pickupList, .packageList {
+  position: relative;
+  top: 0;
+  width: 70%;
+  margin: 10px 25px 5px;
+}
+#backMobile { 
+  position: relative;
+  top: -3px;
+}
+#newReport {
+  resize:vertical;
+}
