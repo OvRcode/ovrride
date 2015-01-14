@@ -319,6 +319,12 @@ class Lists {
              echo "Sent message {$message->sid}";
         }
     }
+    function getContactInfo($destination){
+        $sql = "SELECT `contact`, `phone` FROM `ovr_lists_destinations` WHERE `destination` ='" . $destination . "'";
+        $result = $this->dbQuery($sql);
+        $row = $result->fetch_assoc();
+        return array('contact' => $row['contact'], 'phone' => $row['phone']);
+    }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
         $orderItemNum = array_shift($orderData);
@@ -519,6 +525,10 @@ Flight::route('/dropdown/destination/all', function(){
         $list = Flight::Lists();
         echo json_encode($list->getAllDestinations());
     });
+Flight::route('/contact/destination/@destination', function($destination){
+    $list = Flight::Lists();
+    echo json_encode($list->getContactInfo($destination));
+});
 Flight::route('POST /dropdown/destination/update', function(){
         $list = Flight::Lists();
         $list->updateDestinations($_POST['destination'], $_POST['enabled']);
