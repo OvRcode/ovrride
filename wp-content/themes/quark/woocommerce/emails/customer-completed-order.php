@@ -58,6 +58,21 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 <?php endif; ?>
 
 <?php woocommerce_get_template('emails/email-addresses.php', array( 'order' => $order )); ?>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <div>
+                    <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://litmus.com" style="height:36px;v-text-anchor:middle;width:150px;" arcsize="5%" strokecolor="#EB7035" fillcolor="#EB7035">
+                        <w:anchorlock/>
+                        <center style="color:#ffffff;font-family:Helvetica, Arial,sans-serif;font-size:16px;">I am a button &rarr;</center>
+                        </v:roundrect>
+                    <![endif]-->
+                    <a href="<?php echo get_site_url();?>/OvR%202014-15WAIVER.pdf.zip" style="background-color:#2BC9F1;border:1px solid ##2BC9F1;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">Download Waiver</a>
+                </div>
+            </td>
+        </tr>
+    </table>
 <p>To make things faster on the day of your trip, please download and print out a copy of our waiver. Bring a filled out and signed copy to your trip leader.</p>
-<a href="<?php echo get_site_url();?>/OvR 2014-15WAIVER.pdf.zip">Download Waiver Here</a>
+
 <?php do_action('woocommerce_email_footer'); ?>
