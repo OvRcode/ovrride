@@ -46,5 +46,6 @@ if ( $order->billing_phone )
 woocommerce_get_template( 'emails/plain/email-addresses.php', array( 'order' => $order ) );
 
 echo "\n****************************************************\n\n";
-
+echo "Download Waiver by visiting: " . get_site_url() . "/OvR%202014-15WAIVER.pdf.zip\n";
+echo "To make things faster on the day of your trip, please download and print out a copy of our waiver. Bring a filled out and signed copy to your trip leader.\n";
 echo apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) );
