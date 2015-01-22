@@ -1,7 +1,6 @@
 <?php
 require_once 'Mandrill.php';
 $mandrillAPI = new Mandrill(getenv('MANDRILL_API'));
-//$mandrillAPI = new Mandrill("ABkKB4T19IsJKn_UprmSdw");
 $mandrill = json_decode($_POST['mandrill_events'], true);
 foreach($mandrill as $key => $value){
 	if($key == "event"){
