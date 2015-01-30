@@ -2473,7 +2473,9 @@ function getReports(){
         jQuery.each(parsed, function(key,value){
             reports.set(key, value);
         });
-    }).done(function(){})
+    }).done(function(){
+      outputReports();
+    })
     .fail(function(){ /* fail function here*/});
 }
 function getTripData(){
@@ -2569,9 +2571,9 @@ Number.prototype.pad = function(size) {
     $("span.mobileButtons").removeClass('hidden');
   }
     //add check for online/offline when offline is implemented
-    refreshReports();
+    getReports();
     $("#saveReport").click(function(){ saveReport(); });
-    $("#refreshReports").click(function(){ refreshReports(); });
+    $("#refreshReports").click(function(){ getReports(); });
     $("#bus").click(function(){ toggleBus(); });
 });
 function outputReports(){
@@ -2585,10 +2587,6 @@ function outputReports(){
         });
         $("#reportsContent").append(output);
     }   
-}
-function refreshReports(){
-    getReports();
-    setTimeout(outputReports, 300);
 }
 function saveReport(){
     var report = $("#newReport").val().replace(/\n/g,"<br>");
