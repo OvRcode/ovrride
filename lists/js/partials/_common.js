@@ -77,30 +77,6 @@ $(function() {
       }
     });
 });
-function toggleMenuButtons(onlineOffline){
-    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];
-    if ( onlineOffline == "offline" ) {
-        jQuery.each(buttons, function(key,value){
-            if ( ! $(value).hasClass('disabled') ){
-                $(value).addClass('disabled');
-            }
-        });
-    } else {
-        var currentPage = location.pathname.split('/').slice(-1)[0];
-        currentPage = currentPage.split(".");
-        currentPage = currentPage[0];
-        jQuery.each(buttons, function(key,value){
-            if ( $(value).hasClass('disabled') ) {
-                $(value).removeClass('disabled');
-                if ( (value == "#btn-settings" && (currentPage == "index" || currentPage === "")) ||
-                     (value == "#btn-message" && currentPage == "message") ||
-                     (value == "#btn-admin" && currentPage == "admin")){
-                         $(value).addClass('disabled');
-                }
-            }
-        });
-    }
-}
 function getReports(){
     reports.removeAll();
     var trip = settings.get('tripNum');
@@ -111,26 +87,6 @@ function getReports(){
         });
     }).done(function(){})
     .fail(function(){ /* fail function here*/});
-}
-function onlineReportSave(report,bus,trip){
-  var url = "api/reports/add/" + bus + "/" + trip + "/" + encodeURIComponent(report);
-  $.get(url, function(data){
-      if ( data != 'success' ) {
-          alert("Report Save failed, try again");
-      }
-  });
-}
-function saveOfflineReports(){
-  jQuery.each(unsavedReports.keys(), function(key,value){
-    var report = reports.get(value);
-    report = report.split(": ");
-    var bus = report[0];
-    bus = bus.split(" ");
-    bus = bus[1];
-    report = report[1];
-    onlineReportSave(report,bus,settings.get('tripNum'));
-  });
-  unsavedReports.removeAll();
 }
 function getTripData(){
     var trip = settings.get('tripNum');
@@ -171,6 +127,51 @@ function getTripData(){
       settings.set('repPhone', data.repPhone);
     });
 }
+function onlineReportSave(report,bus,trip){
+  var url = "api/reports/add/" + bus + "/" + trip + "/" + encodeURIComponent(report);
+  $.get(url, function(data){
+      if ( data != 'success' ) {
+          alert("Report Save failed, try again");
+      }
+  });
+}
+function saveOfflineReports(){
+  jQuery.each(unsavedReports.keys(), function(key,value){
+    var report = reports.get(value);
+    report = report.split(": ");
+    var bus = report[0];
+    bus = bus.split(" ");
+    bus = bus[1];
+    report = report[1];
+    onlineReportSave(report,bus,settings.get('tripNum'));
+  });
+  unsavedReports.removeAll();
+}
+function toggleMenuButtons(onlineOffline){
+    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];
+    if ( onlineOffline == "offline" ) {
+        jQuery.each(buttons, function(key,value){
+            if ( ! $(value).hasClass('disabled') ){
+                $(value).addClass('disabled');
+            }
+        });
+    } else {
+        var currentPage = location.pathname.split('/').slice(-1)[0];
+        currentPage = currentPage.split(".");
+        currentPage = currentPage[0];
+        jQuery.each(buttons, function(key,value){
+            if ( $(value).hasClass('disabled') ) {
+                $(value).removeClass('disabled');
+                if ( (value == "#btn-settings" && (currentPage == "index" || currentPage === "")) ||
+                     (value == "#btn-message" && currentPage == "message") ||
+                     (value == "#btn-admin" && currentPage == "admin")){
+                         $(value).addClass('disabled');
+                }
+            }
+        });
+    }
+}
+
 // Number padding for timestamp generation
 Number.prototype.pad = function(size) {
   var s = String(this);
