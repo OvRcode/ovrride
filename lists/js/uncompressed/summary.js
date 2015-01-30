@@ -2614,14 +2614,20 @@ function outputPackages(){
                             <th>Item</th>\
                             <th>Total</th>\
                             <tbody>";
+    window.packageAdded = false;
     jQuery.each(packages, function(key, value){
+        packageAdded = true;
         var row = "<tr>\
                     <th>" + key + "</th><td>" + value + "</td>\
                   </tr>";
             output = output.concat(row);
     });
     output = output.concat("</tbody></table>");
-    $("div.packageTotals").append(output);
+    if ( packageAdded ){
+      $("div.packageTotals").append(output);
+    } else {
+      $("div.packageTotals").append("<h3>Package Item Totals</h3> <p>Empty</p>");
+    }
 }
 function outputPickups(){
     var output = "<h3>Riders by location</h3>\
