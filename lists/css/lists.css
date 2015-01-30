@@ -46,7 +46,7 @@
     margin-bottom: 20px;
 }
 
-#generate_list {
+#generate_list, #clearData {
     margin-top: 20px;
     margin-bottom: 40px;
     /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */

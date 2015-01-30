@@ -185,6 +185,9 @@ $version = file_get_contents('lists.version');
                           <button class="btn btn-success" id="generate_list">
                             <i class="fa fa-floppy-o"></i>&nbsp;Generate List
                           </button>
+                          <button class="btn btn-danger" id="clearData">
+                              <i class="fa fa-trash"></i>&nbsp;Clear Data
+                          </button>
                         </div>
                     </div>
                 </div>

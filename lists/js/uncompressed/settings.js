@@ -2610,6 +2610,7 @@ Number.prototype.pad = function(size) {
     };
     $('#default').click(function(){ resetStatuses("Default"); });
     $('#clear').click(function(){ resetStatuses("All"); });
+    $("#clearData").click(function(){ clearData(); });
     $('#generate_list').click(function(){
       if ( $("#destination").val() == "none" || $("#trip").val() == "none" ) {
         alert("please select a trip or destination");
@@ -2640,6 +2641,19 @@ function checkSettings(){
     if ( settings.isSet('bus') ) {
         $('#bus').val(settings.get('bus'));
     }
+}
+function clearData(){
+  dd.removeAll();
+  settings.removeAll();
+  orders.removeAll();
+  initialHTML.removeAll();
+  tripData.removeAll();
+  reports.removeAll();
+  newWalkon.removeAll();
+  unsavedReports.removeAll();
+  messages.removeAll();
+  $("#destination").val("none").trigger("change");
+  resetStatuses('Default');
 }
 function resetStatuses(type){
     jQuery.each(window.checkBoxes, function(index,value){
