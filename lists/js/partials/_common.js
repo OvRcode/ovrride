@@ -77,6 +77,18 @@ $(function() {
       }
     });
 });
+function getContactData(){
+  var destination = settings.get('destination');
+  $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
+    settings.set('contact', data.contact);
+    settings.set('contactPhone', data.contactPhone);
+    settings.set('rep', data.rep);
+    settings.set('repPhone', data.repPhone);
+  }).done(function(){
+    window.location.href= "list.php";
+  });
+  
+}
 function getReports(){
     reports.removeAll();
     var trip = settings.get('tripNum');
@@ -120,13 +132,7 @@ function getTripData(){
         }
     })
     .done(function(){
-        window.location.href= "list.php";
-    });
-    $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
-      settings.set('contact', data.contact);
-      settings.set('contactPhone', data.contactPhone);
-      settings.set('rep', data.rep);
-      settings.set('repPhone', data.repPhone);
+      getContactData();
     });
 }
 function onlineReportSave(report,bus,trip){
