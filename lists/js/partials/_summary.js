@@ -26,9 +26,11 @@ function addPackage(packageName){
 }
 function getContactInfo(){
   $("span.contact").text(settings.get("contact"));
-  $("span.contactPhone").text(settings.get("contactPhone"));
+  var contactPhone = settings.get("contactPhone");
+  $("span.contactPhone").html('<a href="tel:' + contactPhone + '">' + contactPhone + '</a>');
   $("span.rep").text(settings.get("rep"));
-  $("span.repPhone").text(settings.get("repPhone"));
+  var repPhone = settings.get("repPhone");
+  $("span.repPhone").html('<a href="tel:' + repPhone + '">' + repPhone + '</a>');
 }
 function outputPackages(){
     var output = "<h3>Package Item Totals</h3>\
