@@ -17913,7 +17913,7 @@ $.widget( "ui.tabs", {
     
     // Notify user before reloading for update
     $(window.applicationCache).on("updateready", function(){
-      var r = confirm("Reloading for update. Press cancel if you need to save changes, OK to reload");
+      var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
       if (r === true) {
         window.location.reload();
       }

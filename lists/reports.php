@@ -162,9 +162,8 @@ $version = file_get_contents('lists.version');
                         </button>
                     </div>
                     <div class="col-xs-12">
-                        <button class="btn btn-warning" id="bus" value="show">
-                            <i class="fa fa-bus"></i>&nbsp;This Bus Only
-                        </button>
+                        Show reports from:<select id="bus" class="input-sm">
+                        </select>
                         <span class="mobileButtons hidden">
                             <button type="button" class="btn btn-primary btn-list" id="backMobile">
                                 <i class="fa fa-arrow-left"></i>&nbsp;Back to List
