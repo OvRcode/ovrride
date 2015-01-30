@@ -8,19 +8,21 @@ $(function(){
     $("#refreshReports").click(function(){ refreshReports(); });
     $("#bus").click(function(){ toggleBus(); });
 });
-function toggleBus(){
-    var bus = settings.get('bus');
-    var selector = "div#reportsContent :not(p:contains('Bus " + bus +"'))";
-    var buttonValue = $("#bus").val();
-    if ( buttonValue == "show" ) {
-        $(selector).hide();
-        $("#bus").val('hide');
-        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;Show All Buses');
-    } else {
-        $(selector).show();
-        $("#bus").val("show");
-        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;This Bus Only');
-    }
+function outputReports(){
+    $("#reportsContent").empty();
+    if (! jQuery.isEmptyObject(reports.keys()) ){
+        var output = "";
+        var allReports = reports.keys();
+        jQuery.each(allReports, function(key, value){
+            var report = reports.get(value);
+            output = output.concat("<p>" + value + ": " + report + "</p>");
+        });
+        $("#reportsContent").append(output);
+    }   
+}
+function refreshReports(){
+    getReports();
+    setTimeout(outputReports, 300);
 }
 function saveReport(){
     var report = $("#newReport").val();
@@ -38,10 +40,6 @@ function saveReport(){
     $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newReport").val()).after() + "</p>";
     $("#newReport").val('');
 }
-function refreshReports(){
-    getReports();
-    setTimeout(outputReports, 300);
-}
 function timeStamp(){
     var date    = new Date();
     var year    = date.getFullYear();
@@ -53,15 +51,17 @@ function timeStamp(){
 
     return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
 }
-function outputReports(){
-    $("#reportsContent").empty();
-    if (! jQuery.isEmptyObject(reports.keys()) ){
-        var output = "";
-        var allReports = reports.keys();
-        jQuery.each(allReports, function(key, value){
-            var report = reports.get(value);
-            output = output.concat("<p>" + value + ": " + report + "</p>");
-        });
-        $("#reportsContent").append(output);
-    }   
+function toggleBus(){
+    var bus = settings.get('bus');
+    var selector = "div#reportsContent :not(p:contains('Bus " + bus +"'))";
+    var buttonValue = $("#bus").val();
+    if ( buttonValue == "show" ) {
+        $(selector).hide();
+        $("#bus").val('hide');
+        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;Show All Buses');
+    } else {
+        $(selector).show();
+        $("#bus").val("show");
+        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;This Bus Only');
+    }
 }
