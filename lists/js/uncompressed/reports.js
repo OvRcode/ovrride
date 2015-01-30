@@ -2516,11 +2516,10 @@ function getTripData(){
     });
 }
 function onlineReportSave(report,bus,trip){
-  var url = "api/reports/add/" + bus + "/" + trip + "/" + encodeURIComponent(report);
-  $.get(url, function(data){
-      if ( data != 'success' ) {
-          alert("Report Save failed, try again");
-      }
+  $.post("api/report/add", {bus: bus, tripId: trip, report: report}, function(data){
+    if ( data != 'success' ) {
+      alert("Report Save failed, try again");
+    }
   });
 }
 function saveOfflineReports(){
@@ -2592,7 +2591,7 @@ function refreshReports(){
     setTimeout(outputReports, 300);
 }
 function saveReport(){
-    var report = $("#newReport").val();
+    var report = $("#newReport").val().replace(/\n/g,"<br>");
     var bus = settings.get('bus');
     var trip = settings.get('tripNum');
     var timestamp = timeStamp();
@@ -2604,7 +2603,7 @@ function saveReport(){
       unsavedReports.set(timestamp,1);
     }
     /*jshint -W030 */ 
-    $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + $("#newReport").val()).after() + "</p>";
+    $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + report).after() + "</p>";
     $("#newReport").val('');
 }
 function timeStamp(){

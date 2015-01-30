@@ -17970,11 +17970,10 @@ function getTripData(){
     });
 }
 function onlineReportSave(report,bus,trip){
-  var url = "api/reports/add/" + bus + "/" + trip + "/" + encodeURIComponent(report);
-  $.get(url, function(data){
-      if ( data != 'success' ) {
-          alert("Report Save failed, try again");
-      }
+  $.post("api/report/add", {bus: bus, tripId: trip, report: report}, function(data){
+    if ( data != 'success' ) {
+      alert("Report Save failed, try again");
+    }
   });
 }
 function saveOfflineReports(){
