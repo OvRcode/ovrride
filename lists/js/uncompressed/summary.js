@@ -2584,11 +2584,59 @@ $(function(){
     }
     getContactInfo();
 });
+function addPackage(packageName){
+    if ( typeof packages[packageName] == 'undefined' ) {
+      packages[packageName] = 0;
+    }
+    packages[packageName]++;
+}
 function getContactInfo(){
   $("span.contact").text(settings.get("contact"));
   $("span.contactPhone").text(settings.get("contactPhone"));
   $("span.rep").text(settings.get("rep"));
   $("span.repPhone").text(settings.get("repPhone"));
+}
+function outputPackages(){
+    var output = "<h3>Package Item Totals</h3>\
+                  <table id='packagesTable' class='summary'>\
+                      <thead>\
+                          <tr>\
+                            <th>Item</th>\
+                            <th>Total</th>\
+                            <tbody>";
+    jQuery.each(packages, function(key, value){
+        var row = "<tr>\
+                    <th>" + key + "</th><td>" + value + "</td>\
+                  </tr>";
+            output = output.concat(row);
+    });
+    output = output.concat("</tbody></table>");
+    $("div.packageTotals").append(output);
+}
+function outputPickups(){
+    var output = "<h3>Riders by location</h3>\
+                  <table id='pickupTable' class='summary'>\
+                    <thead>\
+                        <tr>\
+                            <th>Location</th><th>Expected</th><th>AM</th><th>PM</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody>";
+    window.expectedTotals = 0;
+    window.amTotals = 0;
+    window.pmTotals = 0;
+    jQuery.each(pickups, function(pickup, object){
+        var row = "<tr>\
+                       <th>" + pickup + "</th><td>" + object.Expected + "</td><td>" + object.AM + "</td><td>" + object.PM + "</td>\
+                  </tr>";
+        output = output.concat(row);
+        window.expectedTotals = expectedTotals + object.Expected;
+        window.amTotals = amTotals + object.AM;
+        window.pmTotals = pmTotals + object.PM;
+    });
+    output = output.concat("<tr><th>Totals:</th><td>" + expectedTotals + "</td><td>" + amTotals + "<td>" + pmTotals + "</tr>");
+    output = output.concat("</tbody></table>");
+    $("div.pickupTotals").append(output);
 }
 function parseData(){
     window.packages = {};
@@ -2626,12 +2674,6 @@ function parseData(){
             parsePackages(currentOrder.Package.trim());
           }
     });
-}
-function addPackage(packageName){
-    if ( typeof packages[packageName] == 'undefined' ) {
-      packages[packageName] = 0;
-    }
-    packages[packageName]++;
 }
 function parsePackages(custPackage){
     var bus           = new RegExp(/bus only/i);
@@ -2699,46 +2741,4 @@ function parsePackages(custPackage){
     if ( lunch.test(custPackage) ) {
         addPackage("Lunch Voucher");
     }
-}
-function outputPickups(){
-    var output = "<h3>Riders by location</h3>\
-                  <table id='pickupTable' class='summary'>\
-                    <thead>\
-                        <tr>\
-                            <th>Location</th><th>Expected</th><th>AM</th><th>PM</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody>";
-    window.expectedTotals = 0;
-    window.amTotals = 0;
-    window.pmTotals = 0;
-    jQuery.each(pickups, function(pickup, object){
-        var row = "<tr>\
-                       <th>" + pickup + "</th><td>" + object.Expected + "</td><td>" + object.AM + "</td><td>" + object.PM + "</td>\
-                  </tr>";
-        output = output.concat(row);
-        window.expectedTotals = expectedTotals + object.Expected;
-        window.amTotals = amTotals + object.AM;
-        window.pmTotals = pmTotals + object.PM;
-    });
-    output = output.concat("<tr><th>Totals:</th><td>" + expectedTotals + "</td><td>" + amTotals + "<td>" + pmTotals + "</tr>");
-    output = output.concat("</tbody></table>");
-    $("div.pickupTotals").append(output);
-}
-function outputPackages(){
-    var output = "<h3>Package Item Totals</h3>\
-                  <table id='packagesTable' class='summary'>\
-                      <thead>\
-                          <tr>\
-                            <th>Item</th>\
-                            <th>Total</th>\
-                            <tbody>";
-    jQuery.each(packages, function(key, value){
-        var row = "<tr>\
-                    <th>" + key + "</th><td>" + value + "</td>\
-                  </tr>";
-            output = output.concat(row);
-    });
-    output = output.concat("</tbody></table>");
-    $("div.packageTotals").append(output);
 }
