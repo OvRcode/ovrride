@@ -379,6 +379,12 @@ class Lists {
             $pickupVisible = "";
             $packageVisible = "visible-md visible-lg";
         }
+        if ( ! isset($orderData['First']) ) {
+            $orderData['First'] = "";
+        }
+        if ( ! isset($orderData['Last']) ) {
+            $orderData['Last'] = "";
+        }
         $output = <<<AAA
             <div class="row listButton {$htmlClass}" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
