@@ -559,9 +559,9 @@ Flight::route('/reports/@tripId', function($tripId){
         $list = Flight::Lists();
         echo json_encode($list->getReports($tripId));
     });
-Flight::route('/reports/add/@bus/@tripId/@report', function($bus,$tripId, $report){
+Flight::route('POST /reports/add', function(){
         $list = Flight::Lists();
-        echo $list->addReport($bus, $tripId, $report);
+        echo $list->addReport($_POST['report']['bus'], $_POST['report']['tripId'], $_POST['report']['report']);
     });
 Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
         $list = Flight::Lists();
