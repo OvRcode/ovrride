@@ -2473,7 +2473,9 @@ function getReports(){
         jQuery.each(parsed, function(key,value){
             reports.set(key, value);
         });
-    }).done(function(){})
+    }).done(function(){
+      outputReports();
+    })
     .fail(function(){ /* fail function here*/});
 }
 function getTripData(){
