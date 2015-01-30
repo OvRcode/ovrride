@@ -1,5 +1,6 @@
 $(function(){
   bounceToIndex();
+  setupBusDropdown();
   if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
     $("span.mobileButtons").removeClass('hidden');
   }
@@ -7,7 +8,7 @@ $(function(){
     getReports();
     $("#saveReport").click(function(){ saveReport(); });
     $("#refreshReports").click(function(){ getReports(); });
-    $("#bus").click(function(){ toggleBus(); });
+    $("#bus").on("change", function(){ toggleBus($(this).val()); });
 });
 function outputReports(){
     $("#reportsContent").empty();
@@ -37,6 +38,19 @@ function saveReport(){
     $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + report).after() + "</p>";
     $("#newReport").val('');
 }
+function setupBusDropdown(){
+  var bus = settings.get("bus");
+  var html = "<option value='All'>All</option>";
+  for(var i = 1; i <= 10; i++){
+    html = html.concat("<option value='" + i + "'>Bus " + i + "</option>");
+  }
+  $("#bus").append(html);
+  $("#bus").val(bus);
+  setTimeout(function(){
+    $("#bus").trigger("change");  
+  },200);
+  
+}
 function timeStamp(){
     var date    = new Date();
     var year    = date.getFullYear();
@@ -48,17 +62,11 @@ function timeStamp(){
 
     return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
 }
-function toggleBus(){
-    var bus = settings.get('bus');
-    var selector = "div#reportsContent :not(p:contains('Bus " + bus +"'))";
-    var buttonValue = $("#bus").val();
-    if ( buttonValue == "show" ) {
-        $(selector).hide();
-        $("#bus").val('hide');
-        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;Show All Buses');
-    } else {
-        $(selector).show();
-        $("#bus").val("show");
-        $("#bus").html('<i class="fa fa-bus"></i>&nbsp;This Bus Only');
-    }
+function toggleBus(value){
+  console.log(value);
+  $("div#reportsContent p").show();
+  if ( value !== "All" ){
+    var selector = "div#reportsContent :not(p:contains('Bus " + value + ":'))";
+    $(selector).hide();
+  }
 }
