@@ -1,5 +1,6 @@
 /*jshint multistr: true */
 $(function() {
+    bounceToIndex();
     $("button.saveList").on("tap", function(){
         saveData();
     });

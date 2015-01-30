@@ -1,4 +1,5 @@
 $(function(){
+  bounceToIndex();
   if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
     $("span.mobileButtons").removeClass('hidden');
   }

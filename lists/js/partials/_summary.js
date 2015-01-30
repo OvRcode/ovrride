@@ -1,5 +1,6 @@
 /*jshint multistr: true */
 $(function(){
+  bounceToIndex();
   if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
     $("div.mobileButtons").removeClass('hidden');
   }
