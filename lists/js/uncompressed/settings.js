@@ -2615,20 +2615,6 @@ Number.prototype.pad = function(size) {
         getTripData();
     });
 }); 
-
-function tripDropdown(){
-    $.get("api/dropdown/trip", function(data){
-            $('#trip').append(data); 
-    })
-    .done(function(data){
-        $('#trip').chained("#destination");
-        window.dd.set('trip',data);
-        checkSettings();
-    })
-    .fail(function(){
-        alert('Trip dropdown failed to load, please refresh page');
-    });
-}
 function checkSettings(){
     if ( settings.isSet('destination') ) {
         $('#destination').val(settings.get('destination')).trigger('change');
@@ -2647,6 +2633,15 @@ function checkSettings(){
         $('#bus').val(settings.get('bus'));
     }
 }
+function resetStatuses(type){
+    jQuery.each(window.checkBoxes, function(index,value){
+        if ( type == 'All' || (type == 'Default' && (index != 'completed' && index != 'processing' && index != 'walk-on'))){
+            value.prop('checked','');
+        } else if ( type == 'Default'){
+            value.prop('checked', 'checked');
+        }
+    });
+}
 function saveOptions(){
     settings.removeAll();
     window.settings.set('destination', $('#destination').val());
@@ -2664,12 +2659,16 @@ function saveOptions(){
     });
     window.settings.set('status', window.activeBoxes.join());
 }
-function resetStatuses(type){
-    jQuery.each(window.checkBoxes, function(index,value){
-        if ( type == 'All' || (type == 'Default' && (index != 'completed' && index != 'processing' && index != 'walk-on'))){
-            value.prop('checked','');
-        } else if ( type == 'Default'){
-            value.prop('checked', 'checked');
-        }
+function tripDropdown(){
+    $.get("api/dropdown/trip", function(data){
+            $('#trip').append(data); 
+    })
+    .done(function(data){
+        $('#trip').chained("#destination");
+        window.dd.set('trip',data);
+        checkSettings();
+    })
+    .fail(function(){
+        alert('Trip dropdown failed to load, please refresh page');
     });
 }
