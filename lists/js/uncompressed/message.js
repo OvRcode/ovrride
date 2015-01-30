@@ -2566,6 +2566,42 @@ function toggleMenuButtons(onlineOffline){
         });
     }
 }
+function bounceToIndex(){
+  var bounce = false;
+  switch ( window.location.pathname ){
+    case "/":
+      bounce = false;
+      break;
+    case "/index.php":
+      bounce = false;
+      break;
+    case "/list.php":
+      bounce = true;
+      break;
+    case "/summary.php":
+      bounce = true;
+      break;
+    case "/reports.php":
+      bounce = true;
+      break;
+    case "/message.php":
+      bounce = true;
+      break;
+    case "/login/index.php":
+      bounce = false;
+      break;
+    case "/login/logout.php":
+      bounce = false;
+      break;
+    default:
+      bounce = false;
+      break;
+  }
+  if ( bounce && settings.isEmpty() ) {
+    alert("Please select a trip first");
+    window.location.href="index.php";
+  }
+}
 
 // Number padding for timestamp generation
 Number.prototype.pad = function(size) {
@@ -2573,6 +2609,7 @@ Number.prototype.pad = function(size) {
   while (s.length < (size || 2)) {s = "0" + s;}
   return s;
 };;$(function(){
+  bounceToIndex();
   $("#messageText").on("keyup", function(){
     var text = $(this).val().length + " /160 Characters";
     $("span.charCount").text(text);

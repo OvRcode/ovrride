@@ -1,4 +1,5 @@
 $(function(){
+  bounceToIndex();
   $("#messageText").on("keyup", function(){
     var text = $(this).val().length + " /160 Characters";
     $("span.charCount").text(text);
