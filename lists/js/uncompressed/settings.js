@@ -2690,6 +2690,7 @@ function clearData(){
   messages.removeAll();
   $("#destination").val("none").trigger("change");
   resetStatuses('Default');
+  $("#bus").val("1");
 }
 function resetStatuses(type){
     jQuery.each(window.checkBoxes, function(index,value){
