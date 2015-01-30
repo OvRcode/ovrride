@@ -2611,8 +2611,16 @@ Number.prototype.pad = function(size) {
     $('#default').click(function(){ resetStatuses("Default"); });
     $('#clear').click(function(){ resetStatuses("All"); });
     $('#generate_list').click(function(){
+      if ( $("#destination").val() == "none" || $("#trip").val() == "none" ) {
+        alert("please select a trip or destination");
+      } else {
         saveOptions();
-        getTripData();
+        if ( settings.get("status") === "" ) {
+          alert("Please select at least one order status");
+        } else {
+            getTripData();
+        }
+      }
     });
 }); 
 function checkSettings(){
