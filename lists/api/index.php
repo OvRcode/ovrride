@@ -291,6 +291,9 @@ class Lists {
     }
     function saveWalkOn(){
         foreach( $_POST['walkon'] as $ID => $fields ) {
+            if ( ! isset($fields['Pickup']) ){
+                $fields['Pickup'] = "";
+            }
             $sql = "INSERT INTO `ovr_lists_manual_orders` (ID, First, Last, Pickup, Phone, Package, Trip, Bus)
                     VALUES('" . $ID . "', '" . $fields['First'] . "', '" . $fields['Last']. "', '" . $fields['Pickup']. "',
                     '" . $fields['Phone']. "', '" . $fields['Package'] . "', '" . $fields['Trip']. "', '" . $fields['Bus'] . "')
