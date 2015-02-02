@@ -1,7 +1,7 @@
 $(function(){
   bounceToIndex();
   $("#messageText").on("keyup", function(){
-    var text = $(this).val().length + " /160 Characters";
+    var text = $(this).val().length + " /119 Characters";
     $("span.charCount").text(text);
   }); 
   
@@ -57,8 +57,13 @@ function sendMessage(){
   messageData.Recipients = recipients;
   messageData.Bus = settings.get('bus');
   messageData.Trip = settings.get('tripNum');
-  console.log(messageData);
-  $.post("api/message", {message: messageData});
+  alert("Sending messages");
+  $.post("api/message", {message: messageData}).done(function(data){
+    alert("Message Sent");
+    $("#messageText").val("").trigger("keyup");
+    $("#Guests").val("none").trigger("change");
+    $("#Pickups").val("none").trigger("change");
+  });
 }
 function toggleSend(){
   var button = $("#sendMessage");

@@ -152,7 +152,7 @@ class Lists {
                         $walkOnOrder['item_num'] = $split[1];
                         $walkOnOrder['First'] = $row['First'];
                         $walkOnOrder['Last'] = $row['Last'];
-                        if (isset($row['Pickup']) && $row['Pickup'] != "No Pickup") {
+                        if (isset($row['Pickup']) && $row['Pickup'] !== "NO PICKUP") {
                             $walkOnOrder['Pickup'] = $row['Pickup'];
                         }
                         $walkOnOrder['Phone'] = $row['Phone'];
@@ -310,21 +310,21 @@ class Lists {
         $this->dbQuery($sqlData);
     }
     function sendMessage(){
-        $AccountSid = getenv('TWILIO_SID');
-        $AuthToken = getenv('TWILIO_AUTH');
- 
-        $client = new Services_Twilio($AccountSid, $AuthToken);
+        $accountSid = getenv('TWILIO_SID');
+        $authToken = getenv('TWILIO_AUTH');
+        
+        $client = new Services_Twilio($accountSid, $authToken);
         $postData = $_POST['message'];
         $recipients = $postData['Recipients'];
-        $message = $postData['Message'];
+        $body = "Message from OvR Ride: " . $postData['Message'];
+        // Loop through each recipient
         foreach( $recipients as $phoneNum ) {
             $message = $client->account->messages->create(array(
                  "From" => "+16467629375",
                  "To" => $phoneNum,
-                 "Body" => $message
+                 "Body" => $body
              ));
- 
-             // Display a confirmation message on the screen
+
              echo "Sent message {$message->sid}";
         }
     }
@@ -522,28 +522,34 @@ Flight::register('Lists', 'Lists');
 Flight::route('/save/data', function(){
         $list = Flight::Lists();
         $list->saveData();
-    });
+    }
+);
 Flight::route('/save/walkon', function(){
         $list = Flight::Lists();
         $list->saveWalkOn();
-    });
+    }
+);
 Flight::route('/walkon/delete/@tripId', function($tripId){
         $list = Flight::Lists();
         $list->deleteOrder($tripId);
-    });
+    }
+);
 Flight::route('/dropdown/destination', function(){
         $list = Flight::Lists();
         echo $list->destinationDropdown();
-    });
+    }
+);
 Flight::route('/dropdown/trip', function(){
         $list = Flight::Lists();
         $list->destinationDropdown();
         $list->tripDropdown();
-    });
+    }
+);
 Flight::route('/dropdown/destination/all', function(){
         $list = Flight::Lists();
         echo json_encode($list->getAllDestinations());
-    });
+    }
+);
 Flight::route('/contact/destination/@destination', function($destination){
     $list = Flight::Lists();
     echo json_encode($list->getContactInfo($destination));
@@ -553,19 +559,23 @@ Flight::route('POST /dropdown/destination/update', function(){
         foreach($_POST['data'] as $destination => $data){
             $list->updateDestinations($destination, $data);
         }
-    });
+    }
+);
 Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
         $list = Flight::Lists();
         echo json_encode($list->tripData($bus, $tripId, $status));
-    });
+    }
+);
 Flight::route('/reports/@tripId', function($tripId){
         $list = Flight::Lists();
         echo json_encode($list->getReports($tripId));
-    });
+    }
+);
 Flight::route('POST /report/add', function(){
         $list = Flight::Lists();
         echo $list->addReport($_POST['bus'], $_POST['tripId'], $_POST['report']);
-    });
+    }
+);
 Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
         $list = Flight::Lists();
         $tripName = $list->getTripName($trip);
@@ -576,12 +586,14 @@ Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
         header("Pragma: no-cache");
         header("Expires: 0");
         echo $list->csv($type,$trip,$status);;
-    });
+    }
+);
 Flight::route('/message', function(){
         $lists = Flight::Lists();
         $lists->sendMessage();
         $report = "Message send to: " . $_POST['message']['Group'] .  " Text:" . $_POST['message']['Message'];
         $lists->addReport($_POST['message']['Bus'], $_POST['message']['Trip'], $report );
-    });
+    }
+);
 Flight::start();
 ?>
