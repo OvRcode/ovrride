@@ -17841,8 +17841,6 @@ $.widget( "ui.tabs", {
 
 }));
 ;$(function() {
-    // TEMPORARILY HIDING MESSAGES FUNCTION
-    $("#btn-message").parent().hide();
     window.dropDown = $.initNamespaceStorage('dropdown');
     window.dd = dropDown.localStorage; 
     window.options = $.initNamespaceStorage('settings');
