@@ -2672,7 +2672,6 @@ function timeStamp(){
     return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
 }
 function toggleBus(value){
-  console.log(value);
   $("div#reportsContent p").show();
   if ( value !== "All" ){
     var selector = "div#reportsContent :not(p:contains('Bus " + value + ":'))";
