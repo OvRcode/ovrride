@@ -152,7 +152,7 @@ class Lists {
                         $walkOnOrder['item_num'] = $split[1];
                         $walkOnOrder['First'] = $row['First'];
                         $walkOnOrder['Last'] = $row['Last'];
-                        if (isset($row['Pickup']) && $row['Pickup'] !== "NO PICKUP") {
+                        if (isset($row['Pickup']) && $row['Pickup'] !== "NO PICKUP" && $row['Pickup'] !== "No Pickup") {
                             $walkOnOrder['Pickup'] = $row['Pickup'];
                         }
                         $walkOnOrder['Phone'] = $row['Phone'];
