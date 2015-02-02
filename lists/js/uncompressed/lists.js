@@ -18449,10 +18449,12 @@ function saveData(){
             newWalkon.removeAll();
         });
     }
-    $.post("api/save/data", {data: orderLocalData}, function(){
+    if ( ! tripData.isEmpty() ){
+      $.post("api/save/data", {data: orderLocalData}, function(){
         tripData.removeAll();
         getTripData();
-    });
+      });
+    }
 }
 function saveWalkOn(){
     // Saves to local storage
