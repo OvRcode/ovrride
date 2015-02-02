@@ -147,7 +147,7 @@ $version = file_get_contents('lists.version');
                 <div class ="row">
                     <div class="col-xs-12 col-md-4">
                         <br />
-                        <textarea rows="6" class="form-control" id="messageText" placeholder="Message Here" maxlength="160"></textarea>
+                        <textarea rows="6" class="form-control" id="messageText" placeholder="Message Here" maxlength="119"></textarea>
                         <span class="charCount">0/160 Characters</span>
                     </div>
                 </div>
