@@ -2494,10 +2494,11 @@ function getTripData(){
     var bus = settings.get('bus');
     var destination = settings.get('destination');
     //Start with a clean slate
-    window.orders.removeAll();
-    window.initialHTML.removeAll();
-    window.tripData.removeAll();
-    window.newWalkon.removeAll();
+    orders.removeAll();
+    initialHTML.removeAll();
+    tripData.removeAll();
+    newWalkon.removeAll();
+    messages.removeAll();
     $.get("api/trip/" + trip + "/" + bus + "/" + statuses, function(data){
         var apiData = jQuery.parseJSON(data);
         console.log(apiData);
