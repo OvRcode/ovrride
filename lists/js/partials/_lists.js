@@ -150,6 +150,7 @@ function addWalkonButton(){
     
 }
 function changeStatus(element){
+  if ( ! element.hasClass('bg-noshow') ){
     if ( $('#AMPM').val() == 'PM' ) {
         // Customer checked in at end of day
       var foundClass = false;
@@ -176,7 +177,7 @@ function changeStatus(element){
         }
     }
     
-    if ( element.hasClass('bg-none') && ! element.hasClass('bg-danger')) {
+    if ( element.hasClass('bg-none') ) {
         // Customer Checked in
         var AM = element.attr('id') + ":AM";
         var Delete = element.attr('id') + ":Delete";
@@ -206,6 +207,7 @@ function changeStatus(element){
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
     }
+  }
 
 }
 function checkData(){
