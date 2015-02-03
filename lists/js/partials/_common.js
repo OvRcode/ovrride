@@ -1,3 +1,15 @@
+// Alert user about pending cache update
+$(window.applicationCache).on("downloading", function(){
+  alert("Hang tight for a minute, downloading an update");
+});
+
+// Notify user before reloading for update
+$(window.applicationCache).on("updateready", function(){
+  var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
+  if (r === true) {
+    window.location.reload();
+  }
+});
 $(function() {
     window.dropDown = $.initNamespaceStorage('dropdown');
     window.dd = dropDown.localStorage; 
@@ -61,19 +73,6 @@ $(function() {
             }
         }
     }, 250);
-    
-    // Alert user about pending cache update
-    $(window.applicationCache).on("downloading", function(){
-      alert("Hang tight for a minute, downloading an update");
-    });
-    
-    // Notify user before reloading for update
-    $(window.applicationCache).on("updateready", function(){
-      var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
-      if (r === true) {
-        window.location.reload();
-      }
-    });
 });
 function getContactData(){
   var destination = settings.get('destination');
