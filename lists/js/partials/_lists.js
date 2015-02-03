@@ -464,6 +464,8 @@ function setState(element, state){
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
         element.removeClass('bg-none');
+    } else if ( state == 'NoShow' ){
+        noShow(element);
     }
 }
 function setupAllListeners(){
