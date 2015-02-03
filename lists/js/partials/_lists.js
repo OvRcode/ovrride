@@ -1,7 +1,7 @@
 /*jshint multistr: true */
 $(function() {
     bounceToIndex();
-    $("button.saveList").on("tap", function(){
+    $("button.saveList").on("singletap", function(){
         saveData();
     });
     if ( jQuery.browser.mobile ) {
@@ -26,7 +26,7 @@ $(function() {
         $("#last").change(function(){ addWalkonButton(); });
         $("#phone").change(function(){ addWalkonButton(); });
         $("#walkonPackage").change(function(){ addWalkonButton(); });
-        $("#saveWalkOn").on("click", function(){
+        $("#saveWalkOn").on("singletap", function(){
             saveWalkOn();
         });
         $("#sidebar-wrapper").animate({
@@ -46,7 +46,7 @@ $(function() {
     
     if ( settings.get('bus') !== "All" ){
         // Show/Hide Records with AM/PM Toggle button
-        $("#AMPM").on("click", function(){
+        $("#AMPM").on("singletap", function(){
             if ( $(this).val() == "AM") {
                 $('.listButton.bg-none').addClass('hidden');
                 html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
@@ -76,7 +76,7 @@ $(function() {
     });
     
     // Search Type listener
-    $("#searchType li a").on("click", function(){
+    $("#searchType li a").on("singletap", function(){
         var value = $(this).text();
         var placeholder = "";
         var target = $("#searchButton");
@@ -105,7 +105,7 @@ $(function() {
     // Show extra buttons for mobile
     if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
       $("div.mobileButtons").removeClass('hidden');
-      $("button.secondaryWalkOn").on("click", function(){
+      $("button.secondaryWalkOn").on("singletap", function(){
         if ( ! $("#wrapper").hasClass("toggled") ){
           $("#wrapper").addClass("toggled");
         }
@@ -489,11 +489,11 @@ function setupListener(ID){
     });
     
    // Expand list entry by pressing and holding on entry (works on mobile and desktop)
-    $( selectorID ).on("taphold", function(){
+    $( selectorID ).on("doubletap", function(){
         toggleExpanded( $(this) );
     });
     if ( settings.get('bus') != "All" ){
-        $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("tap", function(){
+        $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("singletap", function(){
             changeStatus($(this).parents().eq(1));
         });
     }
@@ -596,12 +596,12 @@ function toggleExpanded(element){
     if ( element.children('div.expanded').is(':visible') ){
         element.children('div.expanded').hide(600);
         if ( settings.get('bus') !== "All" ){
-          element.children("div.row.primary").children().not(".noClick").on("tap", function(){
+          element.children("div.row.primary").children().not(".noClick").on("singletap", function(){
             changeStatus($(this).parents().eq(1));
           });
         }
     } else {
         element.children('div.expanded').show(600);
-        element.children("div.row.primary").children().not(".noClick").unbind("tap");
+        element.children("div.row.primary").children().not(".noClick").unbind("singletap");
     }
 }
