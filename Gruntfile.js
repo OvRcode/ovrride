@@ -98,51 +98,51 @@ module.exports = function(grunt){
         options: {
           separator: ';',
         },
-        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 
+        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 'lists/js/vendor/jquery.mobile-events.js',
               'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js', 'lists/js/vendor/detectmobilebrowser.js'],
-        dest: 'lists/js/uncompressed/vendor.js',
+        dest: 'lists/js/partials/_vendor.js',
       },
       lists: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/vendor/jquery.mobile-1.4.5.js','lists/js/partials/_common.js', 'lists/js/partials/_lists.js'],
-        dest: 'lists/js/uncompressed/lists.js',
+        src: ['lists/js/partials/_vendor.js','lists/js/partials/_common.js', 'lists/js/partials/_lists.js'],
+        dest: 'lists/js/lists.min.js',
       },
       message: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js','lists/js/partials/_common.js','lists/js/partials/_message.js'],
-        dest: 'lists/js/uncompressed/message.js',
+        src: ['lists/js/partials/_vendor.js','lists/js/partials/_common.js','lists/js/partials/_message.js'],
+        dest: 'lists/js/message.min.js',
       },
       reports: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_reports.js'],
-        dest: 'lists/js/uncompressed/reports.js',
+        src: ['lists/js/partials/_vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_reports.js'],
+        dest: 'lists/js/reports.min.js',
       },
       settings: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_settings.js'],
-        dest: 'lists/js/uncompressed/settings.js',
+        src: ['lists/js/partials/_vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_settings.js'],
+        dest: 'lists/js/settings.min.js',
       },
       summary: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_summary.js'],
-        dest: 'lists/js/uncompressed/summary.js',
+        src: ['lists/js/partials/_vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_summary.js'],
+        dest: 'lists/js/summary.min.js',
       },
       admin: {
         options: {
           separator: ';',
         },
-        src: ['lists/js/uncompressed/vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_admin.js'],
-        dest: 'lists/js/uncompressed/admin.js',
+        src: ['lists/js/partials/_vendor.js', 'lists/js/partials/_common.js', 'lists/js/partials/_admin.js'],
+        dest: 'lists/js//admin.min.js',
       },
     },
     uglify: {
@@ -154,7 +154,7 @@ module.exports = function(grunt){
           message: 'admin uglify complete',
         },
         files: {
-          'lists/js/admin.min.js': ['lists/js/uncompressed/admin.js']
+          'lists/js/admin.min.js': ['lists/js/admin.min.js']
         }
       },
       lists: {
@@ -163,7 +163,7 @@ module.exports = function(grunt){
           preserveComments: false
         },
         files: {
-          'lists/js/lists.min.js': ['lists/js/uncompressed/lists.js']
+          'lists/js/lists.min.js': ['lists/js/lists.min.js']
         }
       },
       message: {
@@ -172,7 +172,7 @@ module.exports = function(grunt){
           preserveComments: false
         },
         files: {
-          'lists/js/message.min.js': ['lists/js/uncompressed/message.js']
+          'lists/js/message.min.js': ['lists/js/message.min.js']
         }
       },
       reports: {
@@ -181,7 +181,7 @@ module.exports = function(grunt){
           preserveComments: false
         },
         files: {
-          'lists/js/reports.min.js': ['lists/js/uncompressed/reports.js']
+          'lists/js/reports.min.js': ['lists/js/reports.min.js']
         }
       },
       settings: {
@@ -190,7 +190,7 @@ module.exports = function(grunt){
           preserveComments: false
         },
         files: {
-          'lists/js/settings.min.js': ['lists/js/uncompressed/settings.js']
+          'lists/js/settings.min.js': ['lists/js/settings.min.js']
         }
       },
       summary: {
@@ -199,7 +199,7 @@ module.exports = function(grunt){
           preserveComments: false
         },
         files: {
-          'lists/js/summary.min.js': ['lists/js/uncompressed/summary.js']
+          'lists/js/summary.min.js': ['lists/js/summary.min.js']
         }
       },
     },

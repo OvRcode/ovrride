@@ -399,9 +399,9 @@ class Lists {
                 <div class="noClick buttonCell col-md-2 visible-md visible-lg">
 AAA;
         if ( substr($orderData['num'],0,2) == "WO" ) {
-            $output .= 'Order: <span class="orderNum">' . $orderData['num'] . '</span></a>';
+            $output .= 'Order:&nbsp;<span class="orderNum">' . $orderData['num'] . '</span></a>';
         } else {
-            $output .= 'Order:<a href="https://ovrride.com/wp-admin/post.php?post=' . $orderData['num'] . '&action=edit" target="_blank">';
+            $output .= 'Order:&nbsp;<a href="https://ovrride.com/wp-admin/post.php?post=' . $orderData['num'] . '&action=edit" target="_blank">';
             $output .= '<span class="orderNum">' . $orderData['num'] . '</span></a>';
         }
         $output .= "</div>";
