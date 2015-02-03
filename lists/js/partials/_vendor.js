@@ -2278,7 +2278,882 @@ if (typeof jQuery === 'undefined') {
 
 }(jQuery);
 ;/* jQuery Storage API Plugin 1.7.3 https://github.com/julien-maurel/jQuery-Storage-API */
-!function(e){"function"==typeof define&&define.amd?define(["jquery"],e):e("object"==typeof exports?require("jquery"):jQuery)}(function(e){function t(t){var r,i,n,o=arguments.length,s=window[t],a=arguments,u=a[1];if(2>o)throw Error("Minimum 2 arguments must be given");if(e.isArray(u)){i={};for(var f in u){r=u[f];try{i[r]=JSON.parse(s.getItem(r))}catch(c){i[r]=s.getItem(r)}}return i}if(2!=o){try{i=JSON.parse(s.getItem(u))}catch(c){throw new ReferenceError(u+" is not defined in this storage")}for(var f=2;o-1>f;f++)if(i=i[a[f]],void 0===i)throw new ReferenceError([].slice.call(a,1,f+1).join(".")+" is not defined in this storage");if(e.isArray(a[f])){n=i,i={};for(var m in a[f])i[a[f][m]]=n[a[f][m]];return i}return i[a[f]]}try{return JSON.parse(s.getItem(u))}catch(c){return s.getItem(u)}}function r(t){var r,i,n=arguments.length,o=window[t],s=arguments,a=s[1],u=s[2],f={};if(2>n||!e.isPlainObject(a)&&3>n)throw Error("Minimum 3 arguments must be given or second parameter must be an object");if(e.isPlainObject(a)){for(var c in a)r=a[c],e.isPlainObject(r)?o.setItem(c,JSON.stringify(r)):o.setItem(c,r);return a}if(3==n)return"object"==typeof u?o.setItem(a,JSON.stringify(u)):o.setItem(a,u),u;try{i=o.getItem(a),null!=i&&(f=JSON.parse(i))}catch(m){}i=f;for(var c=2;n-2>c;c++)r=s[c],i[r]&&e.isPlainObject(i[r])||(i[r]={}),i=i[r];return i[s[c]]=s[c+1],o.setItem(a,JSON.stringify(f)),f}function i(t){var r,i,n=arguments.length,o=window[t],s=arguments,a=s[1];if(2>n)throw Error("Minimum 2 arguments must be given");if(e.isArray(a)){for(var u in a)o.removeItem(a[u]);return!0}if(2==n)return o.removeItem(a),!0;try{r=i=JSON.parse(o.getItem(a))}catch(f){throw new ReferenceError(a+" is not defined in this storage")}for(var u=2;n-1>u;u++)if(i=i[s[u]],void 0===i)throw new ReferenceError([].slice.call(s,1,u).join(".")+" is not defined in this storage");if(e.isArray(s[u]))for(var c in s[u])delete i[s[u][c]];else delete i[s[u]];return o.setItem(a,JSON.stringify(r)),!0}function n(t,r){var n=a(t);for(var o in n)i(t,n[o]);if(r)for(var o in e.namespaceStorages)u(o)}function o(r){var i=arguments.length,n=arguments,s=(window[r],n[1]);if(1==i)return 0==a(r).length;if(e.isArray(s)){for(var u=0;u<s.length;u++)if(!o(r,s[u]))return!1;return!0}try{var f=t.apply(this,arguments);e.isArray(n[i-1])||(f={totest:f});for(var u in f)if(!(e.isPlainObject(f[u])&&e.isEmptyObject(f[u])||e.isArray(f[u])&&!f[u].length)&&f[u])return!1;return!0}catch(c){return!0}}function s(r){var i=arguments.length,n=arguments,o=(window[r],n[1]);if(2>i)throw Error("Minimum 2 arguments must be given");if(e.isArray(o)){for(var a=0;a<o.length;a++)if(!s(r,o[a]))return!1;return!0}try{var u=t.apply(this,arguments);e.isArray(n[i-1])||(u={totest:u});for(var a in u)if(void 0===u[a]||null===u[a])return!1;return!0}catch(f){return!1}}function a(r){var i=arguments.length,n=window[r],o=arguments,s=(o[1],[]),a={};if(a=i>1?t.apply(this,o):n,a._cookie)for(var u in e.cookie())""!=u&&s.push(u.replace(a._prefix,""));else for(var f in a)s.push(f);return s}function u(t){if(!t||"string"!=typeof t)throw Error("First parameter must be a string");g?(window.localStorage.getItem(t)||window.localStorage.setItem(t,"{}"),window.sessionStorage.getItem(t)||window.sessionStorage.setItem(t,"{}")):(window.localCookieStorage.getItem(t)||window.localCookieStorage.setItem(t,"{}"),window.sessionCookieStorage.getItem(t)||window.sessionCookieStorage.setItem(t,"{}"));var r={localStorage:e.extend({},e.localStorage,{_ns:t}),sessionStorage:e.extend({},e.sessionStorage,{_ns:t})};return e.cookie&&(window.cookieStorage.getItem(t)||window.cookieStorage.setItem(t,"{}"),r.cookieStorage=e.extend({},e.cookieStorage,{_ns:t})),e.namespaceStorages[t]=r,r}function f(e){if(!window[e])return!1;var t="jsapi";try{return window[e].setItem(t,t),window[e].removeItem(t),!0}catch(r){return!1}}var c="ls_",m="ss_",g=f("localStorage"),h={_type:"",_ns:"",_callMethod:function(e,t){var r=[this._type],t=Array.prototype.slice.call(t),i=t[0];return this._ns&&r.push(this._ns),"string"==typeof i&&-1!==i.indexOf(".")&&(t.shift(),[].unshift.apply(t,i.split("."))),[].push.apply(r,t),e.apply(this,r)},get:function(){return this._callMethod(t,arguments)},set:function(){var t=arguments.length,i=arguments,n=i[0];if(1>t||!e.isPlainObject(n)&&2>t)throw Error("Minimum 2 arguments must be given or first parameter must be an object");if(e.isPlainObject(n)&&this._ns){for(var o in n)r(this._type,this._ns,o,n[o]);return n}var s=this._callMethod(r,i);return this._ns?s[n.split(".")[0]]:s},remove:function(){if(arguments.length<1)throw Error("Minimum 1 argument must be given");return this._callMethod(i,arguments)},removeAll:function(e){return this._ns?(r(this._type,this._ns,{}),!0):n(this._type,e)},isEmpty:function(){return this._callMethod(o,arguments)},isSet:function(){if(arguments.length<1)throw Error("Minimum 1 argument must be given");return this._callMethod(s,arguments)},keys:function(){return this._callMethod(a,arguments)}};if(e.cookie){window.name||(window.name=Math.floor(1e8*Math.random()));var l={_cookie:!0,_prefix:"",_expires:null,_path:null,_domain:null,setItem:function(t,r){e.cookie(this._prefix+t,r,{expires:this._expires,path:this._path,domain:this._domain})},getItem:function(t){return e.cookie(this._prefix+t)},removeItem:function(t){return e.removeCookie(this._prefix+t)},clear:function(){for(var t in e.cookie())""!=t&&(!this._prefix&&-1===t.indexOf(c)&&-1===t.indexOf(m)||this._prefix&&0===t.indexOf(this._prefix))&&e.removeCookie(t)},setExpires:function(e){return this._expires=e,this},setPath:function(e){return this._path=e,this},setDomain:function(e){return this._domain=e,this},setConf:function(e){return e.path&&(this._path=e.path),e.domain&&(this._domain=e.domain),e.expires&&(this._expires=e.expires),this},setDefaultConf:function(){this._path=this._domain=this._expires=null}};g||(window.localCookieStorage=e.extend({},l,{_prefix:c,_expires:3650}),window.sessionCookieStorage=e.extend({},l,{_prefix:m+window.name+"_"})),window.cookieStorage=e.extend({},l),e.cookieStorage=e.extend({},h,{_type:"cookieStorage",setExpires:function(e){return window.cookieStorage.setExpires(e),this},setPath:function(e){return window.cookieStorage.setPath(e),this},setDomain:function(e){return window.cookieStorage.setDomain(e),this},setConf:function(e){return window.cookieStorage.setConf(e),this},setDefaultConf:function(){return window.cookieStorage.setDefaultConf(),this}})}e.initNamespaceStorage=function(e){return u(e)},g?(e.localStorage=e.extend({},h,{_type:"localStorage"}),e.sessionStorage=e.extend({},h,{_type:"sessionStorage"})):(e.localStorage=e.extend({},h,{_type:"localCookieStorage"}),e.sessionStorage=e.extend({},h,{_type:"sessionCookieStorage"})),e.namespaceStorages={},e.removeAllStorages=function(t){e.localStorage.removeAll(t),e.sessionStorage.removeAll(t),e.cookieStorage&&e.cookieStorage.removeAll(t),t||(e.namespaceStorages={})}});;/* jshint -W098 */
+!function(e){"function"==typeof define&&define.amd?define(["jquery"],e):e("object"==typeof exports?require("jquery"):jQuery)}(function(e){function t(t){var r,i,n,o=arguments.length,s=window[t],a=arguments,u=a[1];if(2>o)throw Error("Minimum 2 arguments must be given");if(e.isArray(u)){i={};for(var f in u){r=u[f];try{i[r]=JSON.parse(s.getItem(r))}catch(c){i[r]=s.getItem(r)}}return i}if(2!=o){try{i=JSON.parse(s.getItem(u))}catch(c){throw new ReferenceError(u+" is not defined in this storage")}for(var f=2;o-1>f;f++)if(i=i[a[f]],void 0===i)throw new ReferenceError([].slice.call(a,1,f+1).join(".")+" is not defined in this storage");if(e.isArray(a[f])){n=i,i={};for(var m in a[f])i[a[f][m]]=n[a[f][m]];return i}return i[a[f]]}try{return JSON.parse(s.getItem(u))}catch(c){return s.getItem(u)}}function r(t){var r,i,n=arguments.length,o=window[t],s=arguments,a=s[1],u=s[2],f={};if(2>n||!e.isPlainObject(a)&&3>n)throw Error("Minimum 3 arguments must be given or second parameter must be an object");if(e.isPlainObject(a)){for(var c in a)r=a[c],e.isPlainObject(r)?o.setItem(c,JSON.stringify(r)):o.setItem(c,r);return a}if(3==n)return"object"==typeof u?o.setItem(a,JSON.stringify(u)):o.setItem(a,u),u;try{i=o.getItem(a),null!=i&&(f=JSON.parse(i))}catch(m){}i=f;for(var c=2;n-2>c;c++)r=s[c],i[r]&&e.isPlainObject(i[r])||(i[r]={}),i=i[r];return i[s[c]]=s[c+1],o.setItem(a,JSON.stringify(f)),f}function i(t){var r,i,n=arguments.length,o=window[t],s=arguments,a=s[1];if(2>n)throw Error("Minimum 2 arguments must be given");if(e.isArray(a)){for(var u in a)o.removeItem(a[u]);return!0}if(2==n)return o.removeItem(a),!0;try{r=i=JSON.parse(o.getItem(a))}catch(f){throw new ReferenceError(a+" is not defined in this storage")}for(var u=2;n-1>u;u++)if(i=i[s[u]],void 0===i)throw new ReferenceError([].slice.call(s,1,u).join(".")+" is not defined in this storage");if(e.isArray(s[u]))for(var c in s[u])delete i[s[u][c]];else delete i[s[u]];return o.setItem(a,JSON.stringify(r)),!0}function n(t,r){var n=a(t);for(var o in n)i(t,n[o]);if(r)for(var o in e.namespaceStorages)u(o)}function o(r){var i=arguments.length,n=arguments,s=(window[r],n[1]);if(1==i)return 0==a(r).length;if(e.isArray(s)){for(var u=0;u<s.length;u++)if(!o(r,s[u]))return!1;return!0}try{var f=t.apply(this,arguments);e.isArray(n[i-1])||(f={totest:f});for(var u in f)if(!(e.isPlainObject(f[u])&&e.isEmptyObject(f[u])||e.isArray(f[u])&&!f[u].length)&&f[u])return!1;return!0}catch(c){return!0}}function s(r){var i=arguments.length,n=arguments,o=(window[r],n[1]);if(2>i)throw Error("Minimum 2 arguments must be given");if(e.isArray(o)){for(var a=0;a<o.length;a++)if(!s(r,o[a]))return!1;return!0}try{var u=t.apply(this,arguments);e.isArray(n[i-1])||(u={totest:u});for(var a in u)if(void 0===u[a]||null===u[a])return!1;return!0}catch(f){return!1}}function a(r){var i=arguments.length,n=window[r],o=arguments,s=(o[1],[]),a={};if(a=i>1?t.apply(this,o):n,a._cookie)for(var u in e.cookie())""!=u&&s.push(u.replace(a._prefix,""));else for(var f in a)s.push(f);return s}function u(t){if(!t||"string"!=typeof t)throw Error("First parameter must be a string");g?(window.localStorage.getItem(t)||window.localStorage.setItem(t,"{}"),window.sessionStorage.getItem(t)||window.sessionStorage.setItem(t,"{}")):(window.localCookieStorage.getItem(t)||window.localCookieStorage.setItem(t,"{}"),window.sessionCookieStorage.getItem(t)||window.sessionCookieStorage.setItem(t,"{}"));var r={localStorage:e.extend({},e.localStorage,{_ns:t}),sessionStorage:e.extend({},e.sessionStorage,{_ns:t})};return e.cookie&&(window.cookieStorage.getItem(t)||window.cookieStorage.setItem(t,"{}"),r.cookieStorage=e.extend({},e.cookieStorage,{_ns:t})),e.namespaceStorages[t]=r,r}function f(e){if(!window[e])return!1;var t="jsapi";try{return window[e].setItem(t,t),window[e].removeItem(t),!0}catch(r){return!1}}var c="ls_",m="ss_",g=f("localStorage"),h={_type:"",_ns:"",_callMethod:function(e,t){var r=[this._type],t=Array.prototype.slice.call(t),i=t[0];return this._ns&&r.push(this._ns),"string"==typeof i&&-1!==i.indexOf(".")&&(t.shift(),[].unshift.apply(t,i.split("."))),[].push.apply(r,t),e.apply(this,r)},get:function(){return this._callMethod(t,arguments)},set:function(){var t=arguments.length,i=arguments,n=i[0];if(1>t||!e.isPlainObject(n)&&2>t)throw Error("Minimum 2 arguments must be given or first parameter must be an object");if(e.isPlainObject(n)&&this._ns){for(var o in n)r(this._type,this._ns,o,n[o]);return n}var s=this._callMethod(r,i);return this._ns?s[n.split(".")[0]]:s},remove:function(){if(arguments.length<1)throw Error("Minimum 1 argument must be given");return this._callMethod(i,arguments)},removeAll:function(e){return this._ns?(r(this._type,this._ns,{}),!0):n(this._type,e)},isEmpty:function(){return this._callMethod(o,arguments)},isSet:function(){if(arguments.length<1)throw Error("Minimum 1 argument must be given");return this._callMethod(s,arguments)},keys:function(){return this._callMethod(a,arguments)}};if(e.cookie){window.name||(window.name=Math.floor(1e8*Math.random()));var l={_cookie:!0,_prefix:"",_expires:null,_path:null,_domain:null,setItem:function(t,r){e.cookie(this._prefix+t,r,{expires:this._expires,path:this._path,domain:this._domain})},getItem:function(t){return e.cookie(this._prefix+t)},removeItem:function(t){return e.removeCookie(this._prefix+t)},clear:function(){for(var t in e.cookie())""!=t&&(!this._prefix&&-1===t.indexOf(c)&&-1===t.indexOf(m)||this._prefix&&0===t.indexOf(this._prefix))&&e.removeCookie(t)},setExpires:function(e){return this._expires=e,this},setPath:function(e){return this._path=e,this},setDomain:function(e){return this._domain=e,this},setConf:function(e){return e.path&&(this._path=e.path),e.domain&&(this._domain=e.domain),e.expires&&(this._expires=e.expires),this},setDefaultConf:function(){this._path=this._domain=this._expires=null}};g||(window.localCookieStorage=e.extend({},l,{_prefix:c,_expires:3650}),window.sessionCookieStorage=e.extend({},l,{_prefix:m+window.name+"_"})),window.cookieStorage=e.extend({},l),e.cookieStorage=e.extend({},h,{_type:"cookieStorage",setExpires:function(e){return window.cookieStorage.setExpires(e),this},setPath:function(e){return window.cookieStorage.setPath(e),this},setDomain:function(e){return window.cookieStorage.setDomain(e),this},setConf:function(e){return window.cookieStorage.setConf(e),this},setDefaultConf:function(){return window.cookieStorage.setDefaultConf(),this}})}e.initNamespaceStorage=function(e){return u(e)},g?(e.localStorage=e.extend({},h,{_type:"localStorage"}),e.sessionStorage=e.extend({},h,{_type:"sessionStorage"})):(e.localStorage=e.extend({},h,{_type:"localCookieStorage"}),e.sessionStorage=e.extend({},h,{_type:"sessionCookieStorage"})),e.namespaceStorages={},e.removeAllStorages=function(t){e.localStorage.removeAll(t),e.sessionStorage.removeAll(t),e.cookieStorage&&e.cookieStorage.removeAll(t),t||(e.namespaceStorages={})}});;/*!
+ * jQuery Mobile Events
+ * by Ben Major (www.ben-major.co.uk)
+ *
+ * Copyright 2011, Ben Major
+ * Licensed under the MIT License:
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ */
+(function ($) {
+    $.attrFn = $.attrFn || {};
+
+    // navigator.userAgent.toLowerCase() isn't reliable for Chrome installs
+    // on mobile devices. As such, we will create a boolean isChromeDesktop
+    // The reason that we need to do this is because Chrome annoyingly
+    // purports support for touch events even if the underlying hardware
+    // does not!
+    var agent = navigator.userAgent.toLowerCase(),
+        isChromeDesktop = (agent.indexOf('chrome') > -1 && ((agent.indexOf('windows') > -1) || (agent.indexOf('macintosh') > -1) || (agent.indexOf('linux') > -1)) && agent.indexOf('mobile') < 0 && agent.indexOf('android') < 0),
+
+        settings = {
+            tap_pixel_range: 5,
+            swipe_h_threshold: 50,
+            swipe_v_threshold: 50,
+            taphold_threshold: 750,
+            doubletap_int: 500,
+
+            touch_capable: ('ontouchstart' in window && !isChromeDesktop),
+            orientation_support: ('orientation' in window && 'onorientationchange' in window),
+
+            startevent: ('ontouchstart' in window && !isChromeDesktop) ? 'touchstart' : 'mousedown',
+            endevent: ('ontouchstart' in window && !isChromeDesktop) ? 'touchend' : 'mouseup',
+            moveevent: ('ontouchstart' in window && !isChromeDesktop) ? 'touchmove' : 'mousemove',
+            tapevent: ('ontouchstart' in window && !isChromeDesktop) ? 'tap' : 'click',
+            scrollevent: ('ontouchstart' in window && !isChromeDesktop) ? 'touchmove' : 'scroll',
+
+            hold_timer: null,
+            tap_timer: null
+        };
+    
+    // Convenience functions:
+    $.isTouchCapable = function() { return settings.touch_capable; };
+    $.getStartEvent = function() { return settings.startevent; };
+    $.getEndEvent = function() { return settings.endevent; };
+    $.getMoveEvent = function() { return settings.moveevent; };
+    $.getTapEvent = function() { return settings.tapevent; };
+    $.getScrollEvent = function() { return settings.scrollevent; };
+    
+    // Add Event shortcuts:
+    $.each(['tapstart', 'tapend', 'tapmove', 'tap', 'tap2', 'tap3', 'tap4', 'singletap', 'doubletap', 'taphold', 'swipe', 'swipeup', 'swiperight', 'swipedown', 'swipeleft', 'swipeend', 'scrollstart', 'scrollend', 'orientationchange'], function (i, name) {
+        $.fn[name] = function (fn) {
+            return fn ? this.on(name, fn) : this.trigger(name);
+        };
+
+        $.attrFn[name] = true;
+    });
+
+    // tapstart Event:
+    $.event.special.tapstart = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject);
+
+            $this.on(settings.startevent, function (e) {
+                $this.data('callee', arguments.callee);
+                if (e.which && e.which !== 1) {
+                    return false;
+                }
+
+                var origEvent = e.originalEvent,
+                    touchData = {
+                        'position': {
+                            'x': ((settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX),
+                            'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                        },
+                        'offset': {
+                            'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                            'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                        },
+                        'time': Date.now(),
+                        'target': e.target
+                    };
+
+                triggerCustomEvent(thisObject, 'tapstart', e, touchData);
+                return true;
+            });
+        },
+
+        remove: function () {
+            $(this).off(settings.startevent, $(this).data.callee);
+        }
+    };
+	
+    // tapmove Event:
+    $.event.special.tapmove = {
+    	setup: function() {
+            var thisObject = this,
+            $this = $(thisObject);
+    			
+            $this.on(settings.moveevent, function(e) {
+                $this.data('callee', arguments.callee);
+    			
+                var origEvent = e.originalEvent,
+                    touchData = {
+                        'position': {
+                            'x': ((settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX),
+                            'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                        },
+                        'offset': {
+                            'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                            'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                        },
+                        'time': Date.now(),
+                        'target': e.target
+                    };
+    				
+                triggerCustomEvent(thisObject, 'tapmove', e, touchData);
+                return true;
+            });
+        },
+        remove: function() {
+            $(this).off(settings.moveevent, $(this).data.callee);
+        }
+    }
+
+    // tapend Event:
+    $.event.special.tapend = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject);
+
+            $this.on(settings.endevent, function (e) {
+                // Touch event data:
+                $this.data('callee', arguments.callee);
+
+                var origEvent = e.originalEvent;
+                var touchData = {
+                    'position': {
+                        'x': (settings.touch_capable) ? origEvent.changedTouches[0].screenX : e.screenX,
+                        'y': (settings.touch_capable) ? origEvent.changedTouches[0].screenY : e.screenY
+                    },
+                    'offset': {
+                        'x': (settings.touch_capable) ? origEvent.changedTouches[0].pageX - origEvent.changedTouches[0].target.offsetLeft : e.offsetX,
+                        'y': (settings.touch_capable) ? origEvent.changedTouches[0].pageY - origEvent.changedTouches[0].target.offsetTop : e.offsetY
+                    },
+                    'time': Date.now(),
+                    'target': e.target
+                };
+                triggerCustomEvent(thisObject, 'tapend', e, touchData);
+                return true;
+            });
+        },
+        remove: function () {
+            $(this).off(settings.endevent, $(this).data.callee);
+        }
+    };
+
+    // taphold Event:
+    $.event.special.taphold = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject),
+                origTarget,
+                timer,
+                start_pos = {
+                    x: 0,
+                    y: 0
+                },
+                end_x = 0,
+                end_y = 0;
+
+            $this.on(settings.startevent, function (e) {
+                if (e.which && e.which !== 1) {
+                    return false;
+                } else {
+                    $this.data('tapheld', false);
+                    origTarget = e.target;
+
+                    var origEvent = e.originalEvent;
+                    var start_time = Date.now(),
+                        startPosition = {
+                            'x': (settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX,
+                            'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                        },
+                        startOffset = {
+                            'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                            'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                        };
+
+                    start_pos.x = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    start_pos.y = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+
+                    end_x = start_pos.x;
+                    end_y = start_pos.y;
+
+                    settings.hold_timer = window.setTimeout(function () {
+
+                        var diff_x = (start_pos.x - end_x),
+                            diff_y = (start_pos.y - end_y);
+
+                        if (e.target == origTarget && ((start_pos.x == end_x && start_pos.y == end_y) || (diff_x >= -(settings.tap_pixel_range) && diff_x <= settings.tap_pixel_range && diff_y >= -(settings.tap_pixel_range) && diff_y <= settings.tap_pixel_range))) {
+                            $this.data('tapheld', true);
+
+                            var end_time = Date.now(),
+                                endPosition = {
+                                    'x': (settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX,
+                                    'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                                },
+                                endOffset = {
+                                    'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                                    'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                                };
+                            duration = end_time - start_time;
+
+                            // Build the touch data:
+                            var touchData = {
+                                'startTime': start_time,
+                                'endTime': end_time,
+                                'startPosition': startPosition,
+                                'startOffset': startOffset,
+                                'endPosition': endPosition,
+                                'endOffset': endOffset,
+                                'duration': duration,
+                                'target': e.target
+                            }
+                            $this.data('callee1', arguments.callee);
+                            triggerCustomEvent(thisObject, 'taphold', e, touchData);
+                        }
+                    }, settings.taphold_threshold);
+
+                    return true;
+                }
+            }).on(settings.endevent, function () {
+                $this.data('callee2', arguments.callee);
+                $this.data('tapheld', false);
+                window.clearTimeout(settings.hold_timer);
+            })
+            .on(settings.moveevent, function (e) {
+                $this.data('callee3', arguments.callee);
+				
+                end_x = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                end_y = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+            });
+        },
+
+        remove: function () {
+            $(this).off(settings.startevent, $(this).data.callee1).off(settings.endevent, $(this).data.callee2).off(settings.moveevent, $(this).data.callee3);
+        }
+    };
+
+    // doubletap Event:
+    $.event.special.doubletap = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject),
+                origTarget,
+                action,
+                firstTap,
+                origEvent,
+				cooloff,
+				cooling = false;
+
+            $this.on(settings.startevent, function (e) {
+                if (e.which && e.which !== 1) {
+                    return false;
+                }
+                $this.data('doubletapped', false);
+                origTarget = e.target;
+                $this.data('callee1', arguments.callee);
+
+                origEvent = e.originalEvent;
+                firstTap = {
+                    'position': {
+                        'x': (settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX,
+                        'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                    },
+                    'offset': {
+                        'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                        'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                    },
+                    'time': Date.now(),
+                    'target': e.target
+                };
+
+                return true;
+            }).on(settings.endevent, function (e) {
+				
+                var now = Date.now();
+                var lastTouch = $this.data('lastTouch') || now + 1;
+                var delta = now - lastTouch;
+                window.clearTimeout(action);
+                $this.data('callee2', arguments.callee);
+
+                if (delta < settings.doubletap_int && (e.target == origTarget) && delta > 100) {
+                    $this.data('doubletapped', true);
+                    window.clearTimeout(settings.tap_timer);
+
+                    // Now get the current event:
+                    var lastTap = {
+                        'position': {
+                            'x': (settings.touch_capable) ? e.originalEvent.changedTouches[0].screenX : e.screenX,
+                            'y': (settings.touch_capable) ? e.originalEvent.changedTouches[0].screenY : e.screenY
+                        },
+                        'offset': {
+                            'x': (settings.touch_capable) ? e.originalEvent.changedTouches[0].pageX - e.originalEvent.changedTouches[0].target.offsetLeft : e.offsetX,
+                            'y': (settings.touch_capable) ? e.originalEvent.changedTouches[0].pageY - e.originalEvent.changedTouches[0].target.offsetTop : e.offsetY
+                        },
+                        'time': Date.now(),
+                        'target': e.target
+                    }
+
+                    var touchData = {
+                        'firstTap': firstTap,
+                        'secondTap': lastTap,
+                        'interval': lastTap.time - firstTap.time
+                    };
+
+                    if (!cooling) {
+                    	triggerCustomEvent(thisObject, 'doubletap', e, touchData);
+                    }
+                    
+                    cooling = true;
+                    
+                    cooloff = window.setTimeout(function (e) {
+                    	cooling = false;
+                    }, settings.doubletap_int);
+					
+                } else {
+                    $this.data('lastTouch', now);
+                    action = window.setTimeout(function (e) {
+                        window.clearTimeout(action);
+                    }, settings.doubletap_int, [e]);
+                }
+                $this.data('lastTouch', now);
+            });
+        },
+        remove: function () {
+            $(this).off(settings.startevent, $(this).data.callee1).off(settings.endevent, $(this).data.callee2);
+        }
+    };
+
+    // singletap Event:
+    // This is used in conjuction with doubletap when both events are needed on the same element
+    $.event.special.singletap = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject),
+                origTarget = null,
+                startTime = null,
+                start_pos = {
+                    x: 0,
+                    y: 0
+                };
+
+            $this.on(settings.startevent, function (e) {
+                if (e.which && e.which !== 1) {
+                    return false;
+                } else {
+                    startTime = Date.now();
+                    origTarget = e.target;
+                    $this.data('callee1', arguments.callee);
+
+                    // Get the start x and y position:
+                    start_pos.x = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    start_pos.y = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    return true;
+                }
+            }).on(settings.endevent, function (e) {
+                $this.data('callee2', arguments.callee);
+                if (e.target == origTarget) {
+                    // Get the end point:
+                    end_pos_x = (e.originalEvent.changedTouches) ? e.originalEvent.changedTouches[0].pageX : e.pageX;
+                    end_pos_y = (e.originalEvent.changedTouches) ? e.originalEvent.changedTouches[0].pageY : e.pageY;
+                    
+                    // We need to check if it was a taphold:
+
+                    settings.tap_timer = window.setTimeout(function () {
+                        if (!$this.data('doubletapped') && !$this.data('tapheld') && (start_pos.x == end_pos_x) && (start_pos.y == end_pos_y)) {
+                            var origEvent = e.originalEvent;
+                            var touchData = {
+                                'position': {
+                                    'x': (settings.touch_capable) ? origEvent.changedTouches[0].screenX : e.screenX,
+                                    'y': (settings.touch_capable) ? origEvent.changedTouches[0].screenY : e.screenY
+                                },
+                                'offset': {
+                                    'x': (settings.touch_capable) ? origEvent.changedTouches[0].pageX - origEvent.changedTouches[0].target.offsetLeft : e.offsetX,
+                                    'y': (settings.touch_capable) ? origEvent.changedTouches[0].pageY - origEvent.changedTouches[0].target.offsetTop : e.offsetY
+                                },
+                                'time': Date.now(),
+                                'target': e.target
+                            };
+                            
+                            // Was it a taphold?
+                            if((touchData.time - startTime) < settings.taphold_threshold)
+                            {
+                                triggerCustomEvent(thisObject, 'singletap', e, touchData);
+                            }
+                        }
+                    }, settings.doubletap_int);
+                }
+            });
+        },
+
+        remove: function () {
+            $(this).off(settings.startevent, $(this).data.callee1).off(settings.endevent, $(this).data.callee2);
+        }
+    };
+
+    // tap Event:
+    $.event.special.tap = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject),
+                started = false,
+                origTarget = null,
+                start_time,
+                start_pos = {
+                    x: 0,
+                    y: 0
+                },
+                touches;
+
+            $this.on(settings.startevent, function (e) {
+                $this.data('callee1', arguments.callee);
+
+                if (e.which && e.which !== 1) {
+                    return false;
+                } else {
+                    started = true;
+                    start_pos.x = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                    start_pos.y = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                    start_time = Date.now();
+                    origTarget = e.target;
+					
+                    touches = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches : [ e ];
+                    return true;
+                }
+            }).on(settings.endevent, function (e) {
+                $this.data('callee2', arguments.callee);
+
+                // Only trigger if they've started, and the target matches:
+                var end_x = (e.originalEvent.targetTouches) ? e.originalEvent.changedTouches[0].pageX : e.pageX,
+                    end_y = (e.originalEvent.targetTouches) ? e.originalEvent.changedTouches[0].pageY : e.pageY,
+                    diff_x = (start_pos.x - end_x),
+                    diff_y = (start_pos.y - end_y),
+                    eventName;
+					
+                if (origTarget == e.target && started && ((Date.now() - start_time) < settings.taphold_threshold) && ((start_pos.x == end_x && start_pos.y == end_y) || (diff_x >= -(settings.tap_pixel_range) && diff_x <= settings.tap_pixel_range && diff_y >= -(settings.tap_pixel_range) && diff_y <= settings.tap_pixel_range))) {
+                    var origEvent = e.originalEvent;
+                    var touchData = [ ];
+					
+                    for( var i = 0; i < touches.length; i++)
+                    {
+                        var touch = {
+                            'position': {
+                                'x': (settings.touch_capable) ? origEvent.changedTouches[i].screenX : e.screenX,
+                                'y': (settings.touch_capable) ? origEvent.changedTouches[i].screenY : e.screenY
+                            },
+                            'offset': {
+                                'x': (settings.touch_capable) ? origEvent.changedTouches[i].pageX - origEvent.changedTouches[i].target.offsetLeft : e.offsetX,
+                                'y': (settings.touch_capable) ? origEvent.changedTouches[i].pageY - origEvent.changedTouches[i].target.offsetTop : e.offsetY
+                            },
+                            'time': Date.now(),
+                            'target': e.target
+                        };
+                    	
+                        touchData.push( touch );
+                    }
+                    
+                    switch( touches.length )
+                    {
+                        case 1:
+                            eventName = 'tap';
+                            break;
+                    	
+                        case 2:
+                            eventName = 'tap2';
+                            break;
+                    	
+                        case 3:
+                            eventName = 'tap3';
+                            break;
+                    	
+                        case 4:
+                            eventName = 'tap4';
+                            break;
+                    }
+					
+                    triggerCustomEvent(thisObject, eventName, e, touchData);
+                }
+            });
+        },
+
+        remove: function () {
+            $(this).off(settings.startevent, $(this).data.callee1).off(settings.endevent, $(this).data.callee2);
+        }
+    };
+
+    // swipe Event (also handles swipeup, swiperight, swipedown and swipeleft):
+    $.event.special.swipe = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject),
+                started = false,
+                hasSwiped = false,
+                originalCoord = {
+                    x: 0,
+                    y: 0
+                },
+                finalCoord = {
+                    x: 0,
+                    y: 0
+                },
+                startEvnt;
+
+            // Screen touched, store the original coordinate
+
+            function touchStart(e) {
+                $this = $(e.target);
+                $this.data('callee1', arguments.callee);
+                originalCoord.x = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                originalCoord.y = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+                finalCoord.x = originalCoord.x;
+                finalCoord.y = originalCoord.y;
+                started = true;
+                var origEvent = e.originalEvent;
+                // Read event data into our startEvt:
+                startEvnt = {
+                    'position': {
+                        'x': (settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX,
+                        'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                    },
+                    'offset': {
+                        'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                        'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                    },
+                    'time': Date.now(),
+                    'target': e.target
+                };
+            }
+
+            // Store coordinates as finger is swiping
+
+            function touchMove(e) {
+                $this = $(e.target);
+                $this.data('callee2', arguments.callee);
+                finalCoord.x = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageX : e.pageX;
+                finalCoord.y = (e.originalEvent.targetTouches) ? e.originalEvent.targetTouches[0].pageY : e.pageY;
+
+                var swipedir;
+
+                // We need to check if the element to which the event was bound contains a data-xthreshold | data-vthreshold:
+                var ele_x_threshold = $this.data('xthreshold'),
+                    ele_y_threshold = $this.data('ythreshold'),
+                    h_threshold = (typeof ele_x_threshold !== 'undefined' && ele_x_threshold !== false && parseInt(ele_x_threshold)) ? parseInt(ele_x_threshold) : settings.swipe_h_threshold,
+                    v_threshold = (typeof ele_y_threshold !== 'undefined' && ele_y_threshold !== false && parseInt(ele_y_threshold)) ? parseInt(ele_y_threshold) : settings.swipe_v_threshold;
+
+                if (originalCoord.y > finalCoord.y && (originalCoord.y - finalCoord.y > v_threshold)) {
+                    swipedir = 'swipeup';
+                }
+                if (originalCoord.x < finalCoord.x && (finalCoord.x - originalCoord.x > h_threshold)) {
+                    swipedir = 'swiperight';
+                }
+                if (originalCoord.y < finalCoord.y && (finalCoord.y - originalCoord.y > v_threshold)) {
+                    swipedir = 'swipedown';
+                }
+                if (originalCoord.x > finalCoord.x && (originalCoord.x - finalCoord.x > h_threshold)) {
+                    swipedir = 'swipeleft';
+                }
+                if (swipedir != undefined && started) {
+                    originalCoord.x = 0;
+                    originalCoord.y = 0;
+                    finalCoord.x = 0;
+                    finalCoord.y = 0;
+                    started = false;
+
+                    // Read event data into our endEvnt:
+                    var origEvent = e.originalEvent;
+                    endEvnt = {
+                        'position': {
+                            'x': (settings.touch_capable) ? origEvent.touches[0].screenX : e.screenX,
+                            'y': (settings.touch_capable) ? origEvent.touches[0].screenY : e.screenY
+                        },
+                        'offset': {
+                            'x': (settings.touch_capable) ? origEvent.touches[0].pageX - origEvent.touches[0].target.offsetLeft : e.offsetX,
+                            'y': (settings.touch_capable) ? origEvent.touches[0].pageY - origEvent.touches[0].target.offsetTop : e.offsetY
+                        },
+                        'time': Date.now(),
+                        'target': e.target
+                    };
+
+                    // Calculate the swipe amount (normalized):
+                    var xAmount = Math.abs(startEvnt.position.x - endEvnt.position.x),
+                        yAmount = Math.abs(startEvnt.position.y - endEvnt.position.y);
+
+                    var touchData = {
+                        'startEvnt': startEvnt,
+                        'endEvnt': endEvnt,
+                        'direction': swipedir.replace('swipe', ''),
+                        'xAmount': xAmount,
+                        'yAmount': yAmount,
+                        'duration': endEvnt.time - startEvnt.time
+                    }
+                    hasSwiped = true;
+                    $this.trigger('swipe', touchData).trigger(swipedir, touchData);
+                }
+            }
+
+            function touchEnd(e) {
+                $this = $(e.target);
+                var swipedir = "";
+                $this.data('callee3', arguments.callee);
+                if (hasSwiped) {
+                    // We need to check if the element to which the event was bound contains a data-xthreshold | data-vthreshold:
+                    var ele_x_threshold = $this.data('xthreshold'),
+                        ele_y_threshold = $this.data('ythreshold'),
+                        h_threshold = (typeof ele_x_threshold !== 'undefined' && ele_x_threshold !== false && parseInt(ele_x_threshold)) ? parseInt(ele_x_threshold) : settings.swipe_h_threshold,
+                        v_threshold = (typeof ele_y_threshold !== 'undefined' && ele_y_threshold !== false && parseInt(ele_y_threshold)) ? parseInt(ele_y_threshold) : settings.swipe_v_threshold;
+
+                    var origEvent = e.originalEvent;
+                    endEvnt = {
+                        'position': {
+                            'x': (settings.touch_capable) ? origEvent.changedTouches[0].screenX : e.screenX,
+                            'y': (settings.touch_capable) ? origEvent.changedTouches[0].screenY : e.screenY
+                        },
+                        'offset': {
+                            'x': (settings.touch_capable) ? origEvent.changedTouches[0].pageX - origEvent.changedTouches[0].target.offsetLeft : e.offsetX,
+                            'y': (settings.touch_capable) ? origEvent.changedTouches[0].pageY - origEvent.changedTouches[0].target.offsetTop : e.offsetY
+                        },
+                        'time': Date.now(),
+                        'target': e.target
+                    };
+
+                    // Read event data into our endEvnt:
+                    if (startEvnt.position.y > endEvnt.position.y && (startEvnt.position.y - endEvnt.position.y > v_threshold)) {
+                        swipedir = 'swipeup';
+                    }
+                    if (startEvnt.position.x < endEvnt.position.x && (endEvnt.position.x - startEvnt.position.x > h_threshold)) {
+                        swipedir = 'swiperight';
+                    }
+                    if (startEvnt.position.y < endEvnt.position.y && (endEvnt.position.y - startEvnt.position.y > v_threshold)) {
+                        swipedir = 'swipedown';
+                    }
+                    if (startEvnt.position.x > endEvnt.position.x && (startEvnt.position.x - endEvnt.position.x > h_threshold)) {
+                        swipedir = 'swipeleft';
+                    }
+
+                    // Calculate the swipe amount (normalized):
+                    var xAmount = Math.abs(startEvnt.position.x - endEvnt.position.x),
+                        yAmount = Math.abs(startEvnt.position.y - endEvnt.position.y);
+
+                    var touchData = {
+                        'startEvnt': startEvnt,
+                        'endEvnt': endEvnt,
+                        'direction': swipedir.replace('swipe', ''),
+                        'xAmount': xAmount,
+                        'yAmount': yAmount,
+                        'duration': endEvnt.time - startEvnt.time
+                    }
+                    $this.trigger('swipeend', touchData);
+                }
+
+                started = false;
+                hasSwiped = false;
+            }
+
+            $this.on(settings.startevent, touchStart);
+            $this.on(settings.moveevent, touchMove);
+            $this.on(settings.endevent, touchEnd);
+        },
+
+        remove: function () {
+            $(this).off(settings.startevent, $(this).data.callee1).off(settings.moveevent, $(this).data.callee2).off(settings.endevent, $(this).data.callee3);
+        }
+    };
+
+    // scrollstart Event (also handles scrollend):
+    $.event.special.scrollstart = {
+        setup: function () {
+            var thisObject = this,
+                $this = $(thisObject),
+                scrolling,
+                timer;
+
+            function trigger(event, state) {
+                scrolling = state;
+                triggerCustomEvent(thisObject, scrolling ? 'scrollstart' : 'scrollend', event);
+            }
+
+            // iPhone triggers scroll after a small delay; use touchmove instead
+            $this.on(settings.scrollevent, function (event) {
+                $this.data('callee', arguments.callee);
+
+                if (!scrolling) {
+                    trigger(event, true);
+                }
+
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    trigger(event, false);
+                }, 50);
+            });
+        },
+
+        remove: function () {
+            $(this).off(settings.scrollevent, $(this).data.callee);
+        }
+    };
+
+    // This is the orientation change (largely borrowed from jQuery Mobile):
+    var win = $(window),
+        special_event,
+        get_orientation,
+        last_orientation,
+        initial_orientation_is_landscape,
+        initial_orientation_is_default,
+        portrait_map = {
+            '0': true,
+            '180': true
+        };
+
+    if (settings.orientation_support) {
+        var ww = window.innerWidth || win.width(),
+            wh = window.innerHeight || win.height(),
+            landscape_threshold = 50;
+
+        initial_orientation_is_landscape = ww > wh && (ww - wh) > landscape_threshold;
+        initial_orientation_is_default = portrait_map[window.orientation];
+
+        if ((initial_orientation_is_landscape && initial_orientation_is_default) || (!initial_orientation_is_landscape && !initial_orientation_is_default)) {
+            portrait_map = {
+                '-90': true,
+                '90': true
+            };
+        }
+    }
+
+    $.event.special.orientationchange = special_event = {
+        setup: function () {
+            // If the event is supported natively, return false so that jQuery
+            // will on to the event using DOM methods.
+            if (settings.orientation_support) {
+                return false;
+            }
+
+            // Get the current orientation to avoid initial double-triggering.
+            last_orientation = get_orientation();
+
+            win.on('throttledresize', handler);
+            return true;
+        },
+        teardown: function () {
+            if (settings.orientation_support) {
+                return false;
+            }
+
+            win.off('throttledresize', handler);
+            return true;
+        },
+        add: function (handleObj) {
+            // Save a reference to the bound event handler.
+            var old_handler = handleObj.handler;
+
+            handleObj.handler = function (event) {
+                event.orientation = get_orientation();
+                return old_handler.apply(this, arguments);
+            };
+        }
+    };
+
+    // If the event is not supported natively, this handler will be bound to
+    // the window resize event to simulate the orientationchange event.
+
+    function handler() {
+        // Get the current orientation.
+        var orientation = get_orientation();
+
+        if (orientation !== last_orientation) {
+            // The orientation has changed, so trigger the orientationchange event.
+            last_orientation = orientation;
+            win.trigger("orientationchange");
+        }
+    }
+
+    $.event.special.orientationchange.orientation = get_orientation = function () {
+        var isPortrait = true,
+            elem = document.documentElement;
+
+        if (settings.orientation_support) {
+            isPortrait = portrait_map[window.orientation];
+        } else {
+            isPortrait = elem && elem.clientWidth / elem.clientHeight < 1.1;
+        }
+
+        return isPortrait ? 'portrait' : 'landscape';
+    };
+
+    // throttle Handler:
+    $.event.special.throttledresize = {
+        setup: function () {
+            $(this).on('resize', throttle_handler);
+        },
+        teardown: function () {
+            $(this).off('resize', throttle_handler);
+        }
+    };
+
+    var throttle = 250,
+        throttle_handler = function () {
+            curr = Date.now();
+            diff = curr - lastCall;
+
+            if (diff >= throttle) {
+                lastCall = curr;
+                $(this).trigger('throttledresize');
+
+            } else {
+                if (heldCall) {
+                    window.clearTimeout(heldCall);
+                }
+
+                // Promise a held call will still execute
+                heldCall = window.setTimeout(handler, throttle - diff);
+            }
+        },
+        lastCall = 0,
+        heldCall,
+        curr,
+        diff;
+
+    // Trigger a custom event:
+
+    function triggerCustomEvent(obj, eventType, event, touchData) {
+        var originalType = event.type;
+        event.type = eventType;
+
+        $.event.dispatch.call(obj, event, touchData);
+        event.type = originalType;
+    }
+
+    // Correctly on anything we've overloaded:
+    $.each({
+        scrollend: 'scrollstart',
+        swipeup: 'swipe',
+        swiperight: 'swipe',
+        swipedown: 'swipe',
+        swipeleft: 'swipe',
+        swipeend: 'swipe',
+		tap2: 'tap'
+    }, function (e, srcE, touchData) {
+        $.event.special[e] = {
+            setup: function () {
+                $(this).on(srcE, $.noop);
+            }
+        };
+    });
+
+})(jQuery);
+;/* jshint -W098 */
 
 /*
  * Chained - jQuery / Zepto chained selects plugin
@@ -2386,347 +3261,4 @@ if (typeof jQuery === 'undefined') {
  * jQuery.browser.mobile will be true if the browser is a mobile device
  *
  **/
-(function(a){(jQuery.browser=jQuery.browser||{}).mobile=/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);;$(function() {
-    window.dropDown = $.initNamespaceStorage('dropdown');
-    window.dd = dropDown.localStorage; 
-    window.options = $.initNamespaceStorage('settings');
-    window.settings = options.localStorage; 
-    window.orderData = $.initNamespaceStorage('orders');
-    window.orders = orderData.localStorage;
-    window.outputHTML = $.initNamespaceStorage('initialHTML');
-    window.initialHTML = outputHTML.localStorage;  
-    window.data =$.initNamespaceStorage('data');
-    window.tripData = data.localStorage; 
-    window.reportspace = $.initNamespaceStorage('reports');
-    window.reports = reportspace.localStorage;
-    window.walkonspace = $.initNamespaceStorage('newWalkon');
-    window.newWalkon = walkonspace.localStorage;
-    window.reportSaveSpace = $.initNamespaceStorage('unsavedReports');
-    window.unsavedReports = reportSaveSpace.localStorage;
-    window.messageSpace = $.initNamespaceStorage('messages');
-    window.messages = messageSpace.localStorage;
-    // Menu JS
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    $("#btn-hide").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    $( '#brand' ).on("click", function(){ window.location.href='index.php'; });
-    $( '#btn-settings' ).on("click", function(){ window.location.href='index.php'; });
-    $( 'button.btn-list' ).on("click", function(){ window.location.href='list.php'; });
-    $( 'button.btn-summary' ).on("click", function(){ window.location.href = 'summary.php'; });
-    $( 'button.btn-reports' ).on("click", function(){ window.location.href = 'reports.php'; });
-    $( '#btn-message' ).on("click", function(){ window.location.href = 'message.php'; });
-    $( '#btn-admin' ).on("click", function(){ window.location.href = 'admin.php'; });
-    $( '#btn-logout' ).on("click", function(){ window.location.href= 'login/logout.php'; });
-    if ( jQuery.browser.mobile ) {
-      $(".navbar-static-top").addClass("iosFix");
-      $(".sidebar-nav").addClass("iosFix");
-    }
-    // Monitor onLine status and flip navbar indicator
-    setInterval(function () {
-        var statusIcon = $("#status");
-        if (window.navigator.onLine) {
-            toggleMenuButtons("online");
-            if ( ! jQuery.isEmptyObject(unsavedReports.keys()) ) {
-              saveOfflineReports();
-            }
-            if ( statusIcon.hasClass('btn-danger') ) {
-                statusIcon.removeClass('btn-danger')
-                    .addClass('btn-black')
-                    .html('<i class="fa fa-signal"></i> Online');
-            }
-        } else if (!window.navigator.onLine) {
-            toggleMenuButtons("offline");
-            
-            if ( statusIcon.hasClass('btn-black') ) {
-                statusIcon.removeClass('btn-black')
-                    .addClass('btn-danger')
-                    .html('<i class="fa fa-plane"></i> Offline');
-            }
-        }
-    }, 250);
-    
-    // Alert user about pending cache update
-    $(window.applicationCache).on("downloading", function(){
-      alert("Hang tight for a minute, downloading an update");
-    });
-    
-    // Notify user before reloading for update
-    $(window.applicationCache).on("updateready", function(){
-      var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
-      if (r === true) {
-        window.location.reload();
-      }
-    });
-});
-function getContactData(){
-  var destination = settings.get('destination');
-  $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
-    settings.set('contact', data.contact);
-    settings.set('contactPhone', data.contactPhone);
-    settings.set('rep', data.rep);
-    settings.set('repPhone', data.repPhone);
-  }).done(function(){
-    window.location.href= "list.php";
-  });
-  
-}
-function getReports(){
-    reports.removeAll();
-    var trip = settings.get('tripNum');
-    $.get("api/reports/"+trip, function(data){
-        var parsed = jQuery.parseJSON(data);
-        jQuery.each(parsed, function(key,value){
-            reports.set(key, value);
-        });
-    }).done(function(){
-      outputReports();
-    })
-    .fail(function(){ /* fail function here*/});
-}
-function getTripData(){
-    var trip = settings.get('tripNum');
-    var statuses = settings.get('status');
-    var bus = settings.get('bus');
-    var destination = settings.get('destination');
-    //Start with a clean slate
-    orders.removeAll();
-    initialHTML.removeAll();
-    tripData.removeAll();
-    newWalkon.removeAll();
-    messages.removeAll();
-    $.get("api/trip/" + trip + "/" + bus + "/" + statuses, function(data){
-        var apiData = jQuery.parseJSON(data);
-        console.log(apiData);
-        if ( apiData ){
-          jQuery.each(apiData, function(id,dataObject){
-              jQuery.each(dataObject, function(key, value){
-                  if ( key == 'Data' ){
-                      orders.set(id,value);
-                      if ( 'Pickup' in value )
-                          settings.set('Pickup', 1);
-                    } else if ( key == 'HTML' ){
-                      initialHTML.set(id,value);
-                    } else if ( key == 'State' && value !== null) {
-                      tripData.set(id+":"+value, 1);
-                    }
-                  });
-                });
-        }
-    })
-    .done(function(){
-      getContactData();
-    });
-}
-function onlineReportSave(report,bus,trip){
-  $.post("api/report/add", {bus: bus, tripId: trip, report: report}, function(data){
-    if ( data != 'success' ) {
-      alert("Report Save failed, try again");
-    }
-  });
-}
-function saveOfflineReports(){
-  jQuery.each(unsavedReports.keys(), function(key,value){
-    var report = reports.get(value);
-    report = report.split(": ");
-    var bus = report[0];
-    bus = bus.split(" ");
-    bus = bus[1];
-    report = report[1];
-    onlineReportSave(report,bus,settings.get('tripNum'));
-  });
-  unsavedReports.removeAll();
-}
-function toggleMenuButtons(onlineOffline){
-    var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];
-    if ( onlineOffline == "offline" ) {
-        jQuery.each(buttons, function(key,value){
-            if ( ! $(value).hasClass('disabled') ){
-                $(value).addClass('disabled');
-            }
-        });
-    } else {
-        var currentPage = location.pathname.split('/').slice(-1)[0];
-        currentPage = currentPage.split(".");
-        currentPage = currentPage[0];
-        jQuery.each(buttons, function(key,value){
-            if ( $(value).hasClass('disabled') ) {
-                $(value).removeClass('disabled');
-                if ( (value == "#btn-settings" && (currentPage == "index" || currentPage === "")) ||
-                     (value == "#btn-message" && currentPage == "message") ||
-                     (value == "#btn-admin" && currentPage == "admin")){
-                         $(value).addClass('disabled');
-                }
-            }
-        });
-    }
-}
-function bounceToIndex(){
-  var bounce = false;
-  switch ( window.location.pathname ){
-    case "/":
-      bounce = false;
-      break;
-    case "/index.php":
-      bounce = false;
-      break;
-    case "/list.php":
-      bounce = true;
-      break;
-    case "/summary.php":
-      bounce = true;
-      break;
-    case "/reports.php":
-      bounce = true;
-      break;
-    case "/message.php":
-      bounce = true;
-      break;
-    case "/login/index.php":
-      bounce = false;
-      break;
-    case "/login/logout.php":
-      bounce = false;
-      break;
-    default:
-      bounce = false;
-      break;
-  }
-  if ( bounce && settings.isEmpty() ) {
-    alert("Please select a trip first");
-    window.location.href="index.php";
-  }
-}
-
-// Number padding for timestamp generation
-Number.prototype.pad = function(size) {
-  var s = String(this);
-  while (s.length < (size || 2)) {s = "0" + s;}
-  return s;
-};;$(function(){
-    if ( ! window.navigator.onLine && ! jQuery.isEmptyObject(orders.keys())) {
-      window.location.href = "list.php";
-    } else if ( ! window.navigator.onLine && jQuery.isEmptyObject(orders.keys())) {
-      alert ("No Local Data found, cannot download trips while offline");
-    }
-    /* Start Drop Down population */
-    if ( ! window.navigator.onLine ) {
-          window.location.href = "list.php";
-    } else {
-      $.get("api/dropdown/destination", function(data, dd){
-        $('#destination').append(data); 
-      })
-      .done(function(data){
-        window.dd.set('destination', data);
-        // Download trips data if destinations load
-        tripDropdown();
-      })
-      .fail(function(){
-        alert('Destination data failed to load, please refresh page');
-      }); 
-    }
-    // All Checkboxes on settings page w/selectors
-    window.checkBoxes = {
-        "balance":    $("#balance"),
-        "cancelled":  $("#cancelled"),
-        "completed":  $("#completed"),
-        "failed":     $("#failed"),
-        "finalized":  $("#finalized"),
-        "no-show":    $("#no-show"),
-        "on-hold":    $("#on-hold"),
-        "processing": $("#processing"),
-        "pending":    $("#pending"),
-        "refunded":   $("#refunded"),
-        "walk-on":    $("#walk-on")
-    };
-    $('#default').click(function(){ resetStatuses("Default"); });
-    $('#clear').click(function(){ resetStatuses("All"); });
-    $("#clearData").click(function(){ clearData(); });
-    $('#generate_list').click(function(){
-      if ( $("#destination").val() == "none" || $("#trip").val() == "none" ) {
-        alert("please select a trip or destination");
-      } else {
-        saveOptions();
-        if ( settings.get("status") === "" ) {
-          alert("Please select at least one order status");
-        } else {
-            getTripData();
-        }
-      }
-    });
-}); 
-function checkSettings(){
-    if ( settings.isSet('destination') ) {
-        $('#destination').val(settings.get('destination')).trigger('change');
-        if ( settings.isSet('tripNum') ) {
-            $('#trip').val(settings.get('tripNum'));
-        }
-    }
-    if ( settings.isSet('status') ) {
-        var status = settings.get('status');
-        var statusList = status.split(",");
-        jQuery.each(statusList, function(index,value){
-            $("input:checkbox[value="+value+"]").prop('checked','checked');
-        });
-    }
-    if ( settings.isSet('bus') ) {
-        $('#bus').val(settings.get('bus'));
-    }
-}
-function clearData(){
-  dd.removeAll();
-  settings.removeAll();
-  orders.removeAll();
-  initialHTML.removeAll();
-  tripData.removeAll();
-  reports.removeAll();
-  newWalkon.removeAll();
-  unsavedReports.removeAll();
-  messages.removeAll();
-  $("#destination").val("none").trigger("change");
-  resetStatuses('Default');
-  $("#bus").val("1");
-}
-function resetStatuses(type){
-    jQuery.each(window.checkBoxes, function(index,value){
-        if ( type == 'All' || (type == 'Default' && (index != 'completed' && index != 'processing' && index != 'walk-on'))){
-            value.prop('checked','');
-        } else if ( type == 'Default'){
-            value.prop('checked', 'checked');
-        }
-    });
-}
-function saveOptions(){
-    settings.removeAll();
-    window.settings.set('destination', $('#destination').val());
-    var trip = $('#trip');
-    window.settings.set('tripNum', $('#trip').val());
-    window.settings.set('tripName', $('#trip option:selected').text());
-    window.settings.set('bus', $('#bus').val());
-    
-    // Array to be filled with active checkbox values then concatenated with , seperator
-    window.activeBoxes = [];
-    jQuery.each(window.checkBoxes, function(index, value){
-        if ( value.prop('checked') ){
-            window.activeBoxes[window.activeBoxes.length] = value.val();
-        }
-    });
-    window.settings.set('status', window.activeBoxes.join());
-}
-function tripDropdown(){
-    $.get("api/dropdown/trip", function(data){
-            $('#trip').append(data); 
-    })
-    .done(function(data){
-        $('#trip').chained("#destination");
-        window.dd.set('trip',data);
-        checkSettings();
-    })
-    .fail(function(){
-        alert('Trip dropdown failed to load, please refresh page');
-    });
-}
+(function(a){(jQuery.browser=jQuery.browser||{}).mobile=/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))})(navigator.userAgent||navigator.vendor||window.opera);
