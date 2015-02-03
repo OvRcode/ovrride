@@ -6622,10 +6622,6 @@ button.close {
     margin-left:10px;
 }
 
-.ui-loader {
-  display:none !important;
-}
-
 .summary {
     border-collapse:collapse;
     text-align: center;
@@ -6641,11 +6637,6 @@ button.close {
 .summary td {
     border: 1px solid grey;
 }
-
-.ui-shadow span {
-    visibility: hidden;
-}
-
 .reports button {
     margin-top:20px;
     margin-bottom:10px;
