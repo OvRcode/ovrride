@@ -20,6 +20,7 @@ function outputReports(){
             output = output.concat("<p>" + value + ": " + report + "</p>");
         });
         $("#reportsContent").append(output);
+        $("#bus").trigger("change");
     }   
 }
 function saveReport(){
