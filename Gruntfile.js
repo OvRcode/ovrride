@@ -14,15 +14,13 @@ module.exports = function(grunt){
       generate: {
         options:{
           basePath: "lists/",
-          network:["/api", "/login","http://*","https://*"],
+          network:["/api", "/login","*"],
           fallback: [ 'fonts/fontawesome-webfont.woff fonts/fontawesome-webfont.woff',
                     'fonts/fontawesome-webfont.eot fonts/fontawesome-webfont.eot',
                     'fonts/fontawesome-webfont.svg fonts/fontawesome-webfont.svg',
                     'fonts/fontawesome-webfont.ttf fonts/fontawesome-webfont.ttf',
                     'fonts/FontAwesome.otf fonts/FontAwesome.otf'],
           timestamp: true,
-          preferOnline: true,
-          
           verbose: true,
           hash: true,
         },

@@ -32,7 +32,7 @@ function saveReport(){
       onlineReportSave(report,bus,trip);
     } else {
       reports.set(timestamp, "Bus " + bus + ": " + report);
-      unsavedReports.set(timestamp,1);
+      unsavedReports.set(timestamp, settings.get('bus') + "#!" + report);
     }
     /*jshint -W030 */ 
     $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + report).after() + "</p>";
