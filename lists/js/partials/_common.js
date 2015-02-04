@@ -99,8 +99,7 @@ function getReports(){
         });
     }).done(function(){
       outputReports();
-    })
-    .fail(function(){ /* fail function here*/});
+    });
 }
 function getTripData(){
     var trip = settings.get('tripNum');
