@@ -1,15 +1,3 @@
-// Alert user about pending cache update
-$(window.applicationCache).on("downloading", function(){
-  alert("Hang tight for a minute, downloading an update");
-});
-
-// Notify user before reloading for update
-$(window.applicationCache).on("updateready", function(){
-  var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
-  if (r === true) {
-    window.location.reload();
-  }
-});
 $(function() {
     window.dropDown = $.initNamespaceStorage('dropdown');
     window.dd = dropDown.localStorage; 
@@ -50,13 +38,15 @@ $(function() {
       $(".navbar-static-top").addClass("iosFix");
       $(".sidebar-nav").addClass("iosFix");
     }
+    window.savingReports = false;
     // Monitor onLine status and flip navbar indicator
     setInterval(function () {
         var statusIcon = $("#status");
         if (window.navigator.onLine) {
             toggleMenuButtons("online");
-            if ( ! jQuery.isEmptyObject(unsavedReports.keys()) ) {
-              saveOfflineReports();
+            if ( ! jQuery.isEmptyObject(unsavedReports.keys()) && ! savingReports) {
+              savingReports = true;
+              saveOfflineReports();  
             }
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
@@ -73,6 +63,19 @@ $(function() {
             }
         }
     }, 250);
+    
+    // Alert user about pending cache update
+    $(window.applicationCache).on("downloading", function(){
+      alert("Hang tight for a minute, downloading an update");
+    });
+    
+    // Notify user before reloading for update
+    $(window.applicationCache).on("updateready", function(){
+      var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
+      if (r === true) {
+        window.location.reload();
+      }
+    });
 });
 function getContactData(){
   var destination = settings.get('destination');
@@ -136,21 +139,21 @@ function getTripData(){
 function onlineReportSave(report,bus,trip){
   $.post("api/report/add", {bus: bus, tripId: trip, report: report}, function(data){
     if ( data != 'success' ) {
-      alert("Report Save failed, try again");
+      alert("Report Save failed");
     }
   });
 }
 function saveOfflineReports(){
   jQuery.each(unsavedReports.keys(), function(key,value){
-    var report = reports.get(value);
-    report = report.split(": ");
+    var report = unsavedReports.get(value);
+    report = report.split("#!");
     var bus = report[0];
-    bus = bus.split(" ");
-    bus = bus[1];
     report = report[1];
     onlineReportSave(report,bus,settings.get('tripNum'));
   });
-  unsavedReports.removeAll();
+  window.unsavedReports.removeAll();
+  window.savingReports = false; 
+  alert("saved offline report(s)");
 }
 function toggleMenuButtons(onlineOffline){
     var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];
