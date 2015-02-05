@@ -29,7 +29,7 @@ $(function(){
     }
 });
 function saveDestination(){
-    $.post("api/dropdown/destination/update", { destination: $("#destName").val(), enabled: "Y"});
+    $.post("api/dropdown/destination/save", { destination: $("#destName").val() });
     location.reload();
 }
 function checkDestPopover(){

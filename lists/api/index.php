@@ -578,6 +578,16 @@ Flight::route('POST /dropdown/destination/update', function(){
         }
     }
 );
+Flight::route('POST /dropdown/destination/save', function(){
+        $list = Flight::Lists();
+        $data['enabled'] = "Y";
+        $data['contact'] = "";
+        $data['contactPhone'] = "";
+        $data['rep'] = "";
+        $data['repPhone'] = "";
+        $list->updateDestinations($_POST['destination'], $data);
+    }
+);
 Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
         $list = Flight::Lists();
         echo json_encode($list->tripData($bus, $tripId, $status));
