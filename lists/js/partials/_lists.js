@@ -49,6 +49,7 @@ $(function() {
         $("#AMPM").on("singletap", function(){
             if ( $(this).val() == "AM") {
                 $('.listButton.bg-none').addClass('hidden');
+                $('.listButton.bg-noshow').addClass('hidden');
                 html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
                             <i class="fa fa-toggle-on fa-lg"></i>&nbsp;\
                       <i class="fa fa-moon-o fa-lg"></i>';
@@ -57,6 +58,7 @@ $(function() {
                 $(this).addClass('btn-black').removeClass('btn-default');
             } else {
                 $('.listButton.bg-none').removeClass('hidden');
+                $('.listButton.bg-noshow').removeClass('hidden');
                 $(this).val("AM");
                 html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
                             <i class="fa fa-toggle-off fa-lg"></i>&nbsp;\
