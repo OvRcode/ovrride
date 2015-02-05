@@ -6,6 +6,7 @@ class Lists {
     var $dbConnect;
     var $destinations;
     var $orders;
+    var $pickup;
     function __construct(){
         // Setup DB Connection and check that it works
         $this->dbConnect = new mysqli(getenv('MYSQL_HOST'), getenv('MYSQL_USER'), getenv('MYSQL_PASS'), getenv('MYSQL_DB'));
@@ -71,7 +72,11 @@ class Lists {
         $orders = $this->tripData("All",$trip,$status);
         $output = "";
         if ( $type == "list" ){
-            $header = "First, Last, Phone, Pickup, Package, Order, AM, Waiver, Product Rec, PM\n";
+            if ( $this->pickup ) {
+                $header = "First, Last, Phone, Pickup, Package, Order, AM, Waiver, Product Rec, PM\n";
+            } else {
+                $header = "First, Last, Phone, Package, Order, AM, Waiver, Product Rec, PM\n";
+            }
             $output .= $header;
             foreach ( $orders as $ID => $data ) {
                 $order = preg_split("/:/",$ID);
@@ -99,7 +104,11 @@ class Lists {
                 $output .= $row;
             }
         } else if ( $type = "email" ) {
-            $header ="Email, First, Last, Package, Pickup\n";
+            if ( $this->pickup ){
+                $header ="Email, First, Last, Package, Pickup\n";
+            } else {
+                $header ="Email, First, Last, Package\n";
+            }
             $output .= $header;
             foreach( $orders as $ID => $data ) {
                 $row = "";
@@ -108,7 +117,11 @@ class Lists {
                 } else {
                     $row .= "\"none\"";
                 }
-                $row .= ",\"" . $data['Data']['First'] . "\",\"" . $data['Data']['Last'] . "\",\"" . $data['Data']['Package'] . "\",\"" . $data['Data']['Pickup'] . "\"\n";
+                $row .= ",\"" . $data['Data']['First'] . "\",\"" . $data['Data']['Last'] . "\",\"" . $data['Data']['Package'];
+                if ( $this->pickup ) {
+                  $row .= "\",\"" . $data['Data']['Pickup'];  
+                }
+                $row .= "\"\n";
                 $output .= $row;
             }
         }
@@ -123,6 +136,7 @@ class Lists {
         return $name['post_title'];
     }
     function tripData($bus, $tripId, $status){
+        $this->pickup = FALSE;
         /* Get saved trip data and sort into array based on bus # */
         $busSql = "select ID,Bus from ovr_lists_data where Trip='" . $tripId . "'";
         $busResult = $this->dbQuery($busSql);
@@ -218,6 +232,9 @@ class Lists {
                                 $orderData['Last']  = stripcslashes(ucwords(strtolower($names['Last'])));
                             } else {
                                 $orderData[$detailRow['meta_key']] = trim($detailRow['meta_value']);
+                                if ( $detailRow['meta_key'] == 'Pickup' && $this->pickup === FALSE ) {
+                                    $this->pickup = TRUE;
+                                }
                             }
                         }
                     
