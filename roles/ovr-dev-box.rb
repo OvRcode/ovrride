@@ -37,5 +37,6 @@ run_list(
   "recipe[database::mysql]",
   "recipe[s3cmd]",
   "recipe[database::import]",
-  "recipe[apache2::ovrconfig]"
+  "recipe[apache2::ovrconfig]",
+  "recipe[ovr::permissions]"
 )
