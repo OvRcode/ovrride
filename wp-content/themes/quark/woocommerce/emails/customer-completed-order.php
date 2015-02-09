@@ -46,7 +46,7 @@ $pickups["Mount Everest"]["instructions"] = "corner of Washington & 3rd St";
 
 <?php do_action('woocommerce_email_header', $email_heading); ?>
 
-<p><?php printf( __( "Hi there. Your recent order on %s has been completed. Your order details are shown below for your reference:", 'woocommerce' ), get_option( 'blogname' ) ); ?></p>
+<p><?php printf( __( "Hi there. Your recent order on %s has been completed. No need to print this email, just check in with your trip leader and they will have your name on a list the day of your trip. Your order details are shown below for your reference:", 'woocommerce' ), get_option( 'blogname' ) ); ?></p>
         <?php if ( preg_match("/Package/",$order->email_order_items_table( true, false, true )) ): ?>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
