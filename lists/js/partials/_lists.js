@@ -7,8 +7,6 @@ $(function() {
     if ( jQuery.browser.mobile ) {
       $("#top").addClass("iosFix");
     }
-    // Turn off tap event when taphold is triggered;
-    $.event.special.tap.emitTapOnTaphold = false; 
     
     // Initialize Bootstrap popover function
     $("[data-toggle=popover]").popover();
