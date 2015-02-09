@@ -48,13 +48,6 @@ $credit = "
                                         	<td valign="top">
                                                 <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                                     <tr>
-                                                        <td colspan="2" valign="middle" id="policy" style="<?php echo $credit; ?>">
-                                                            <a href="http://ovrride.com/terms-and-conditions/" style="<?php echo $credit; ?>">
-                                                                Cancellation Policy/Terms and Conditions
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td colspan="2" valign="middle" style="text-align:center;">
                                                             <a href="https://www.facebook.com/ovrride">
                                                             <img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/facebook-square.png">
@@ -67,6 +60,13 @@ $credit = "
                                                             </a>
                                                             <a href="https://plus.google.com/+OvRRide/">
                                                                 <img src="http://ovrride.com/wp-content/themes/quark/images/soc-icons/google-plus-square.png">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" valign="middle" id="policy" style="<?php echo $credit; ?>">
+                                                            <a href="http://ovrride.com/terms-and-conditions/" style="<?php echo $credit; ?>">
+                                                                Cancellation Policy/Terms and Conditions
                                                             </a>
                                                         </td>
                                                     </tr>
