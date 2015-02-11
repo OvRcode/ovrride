@@ -89,6 +89,13 @@ function add_no_show_to_order_statuses( $order_statuses ) {
 }
 add_filter( 'wc_order_statuses', 'add_no_show_to_order_statuses' );
 
+//Remove Reviews tab from woocommerce
+function woocommerce_remove_reviews($tabs){
+    unset( $tabs['reviews'] );
+    return $tabs;
+}
+add_filter('woocommerce_product_tabs', 'woocommerce_remove_reviews', 98);
+
 // Adds Google Analytics to the footer
 add_action('wp_footer', 'add_google_analytics');
   function add_google_analytics() { ?>
