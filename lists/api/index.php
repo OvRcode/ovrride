@@ -405,6 +405,9 @@ class Lists {
         if ( ! isset($orderData['Last']) ) {
             $orderData['Last'] = "";
         }
+        if ( ! isset($orderData['Package']) ) {
+            $orderData['Package'] = "";
+        }
         $output = <<<AAA
             <div class="row listButton {$htmlClass}" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
