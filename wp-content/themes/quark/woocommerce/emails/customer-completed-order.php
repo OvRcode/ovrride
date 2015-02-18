@@ -14,6 +14,8 @@ $pickups["Union Square"]["url"] = "https://www.google.com/maps/place/41+Union+Sq
 $pickups["Union Square"]["instructions"] = "NW side of USQ Park";
 $pickups["Homage Brooklyn"]["url"] = "https://www.google.com/maps/place/64+Bergen+St,+Brooklyn,+NY+11201/@40.6867357,-73.9911531,17z/";
 $pickups["Homage Brooklyn"]["instructions"] = "corner of Bergen & Smith";
+$pickups["Homage"]["url"] = "https://www.google.com/maps/place/64+Bergen+St,+Brooklyn,+NY+11201/@40.6867357,-73.9911531,17z/";
+$pickups["Homage"]["instructions"] = "corner of Bergen & Smith";
 $pickups["Blades West"]["url"] = "https://www.google.com/maps/place/156+W+72nd+St,+New+York,+NY+10023/";
 $pickups["Blades West"]["instructions"] = "between Broadway & Columbus";
 $pickups["Blades Downtown"]["url"] = "https://www.google.com/maps/place/659+Broadway,+New+York,+NY+10012/";
@@ -46,7 +48,7 @@ $pickups["Mount Everest"]["instructions"] = "corner of Washington & 3rd St";
 
 <?php do_action('woocommerce_email_header', $email_heading); ?>
 
-<p><?php printf( __( "Hi there. Your recent order on %s has been completed. No need to print this email, just check in with your trip leader and they will have your name on a list the day of your trip. Your order details are shown below for your reference:", 'woocommerce' ), get_option( 'blogname' ) ); ?></p>
+<p><?php echo "Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:"; ?></p>
         <?php if ( preg_match("/Package/",$order->email_order_items_table( true, false, true )) ): ?>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -63,13 +65,14 @@ $pickups["Mount Everest"]["instructions"] = "corner of Washington & 3rd St";
                 </td>
             </tr>
         </table>
-    <p>To make things faster on the day of your trip, please download and print out a copy of our waiver. Bring a filled out and signed copy to your trip leader.</p>
+    <p>For a smooth and prompt departure on the day of your trip, please download and print out a copy of our waiver. If you bring this 2 sided filled out and signed copy to the trip, we’ll surely appreciate it, as it will speed up our check-in process.  If you don’t have access to a printer, additional waivers will be available on the bus.</p>
     <?php endif; ?>
 <?php 
 // Pickup Matching
-if (preg_match("/Pickup Location:.(.*).-/", $order->email_order_items_table( true, false, true ), $match)){
+if (preg_match("/Pickup Location:.(.*).-.*/", $order->email_order_items_table( true, false, true ), $match)){
     if ( isset($pickups[$match[1]]) ){
-        echo "<h2>Pickup Location: " . $match[1] . "</h2>";
+        preg_match("/.*-.(.*(a|p)m)/", $match[0], $matchTime);
+        echo "<h2>Pickup Location: " . $match[1] . ",&nbsp;". $matchTime[1]."</h2>";
         echo "<p>" . $pickups[$match[1]]["instructions"] . "<br><a href='" . $pickups[$match[1]]["url"] ."'>Directions</a></p>";
     }
 }
