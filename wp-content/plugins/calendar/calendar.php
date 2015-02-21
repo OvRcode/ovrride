@@ -3009,7 +3009,7 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
   // Add Saranac header
   // #TODO Fix path, hardcoded path
   $calendar_body .= '<tr>
-                      <td colspan="7"><img src="http://local.ovrride.com/wp-content/themes/quark/images/Saranac-Cal.png"></td>
+                      <td colspan="7"><img src="http://ovrride.com/wp-content/themes/quark/images/Saranac-Cal.png"></td>
                       </tr>';
   // The header of the calendar table and the links. Note calls to link functions
   $calendar_body .= '<tr>
