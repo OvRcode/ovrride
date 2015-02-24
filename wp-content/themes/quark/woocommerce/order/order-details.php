@@ -19,7 +19,7 @@ $order = wc_get_order( $order_id );
             if ( isset($item_meta->meta['Package'][0]) ){
                 $url = get_site_url();
                 echo <<<AAA
-                    </p>Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:</p>
+                    </p>Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved.</p>
                     <a href="{$url}/OvR%202014-15WAIVER.pdf.zip"><button style="border-radius:3px;padding:10px;color:white;background-color:#2BC9F1;">
                     Download Waiver
                     </button>
