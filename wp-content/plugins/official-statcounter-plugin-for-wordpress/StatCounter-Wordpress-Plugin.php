@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Official StatCounter Plugin
- * Version: 1.6.9
+ * Version: 1.7.0
  * Plugin URI: http://statcounter.com/
  * Description: Adds the StatCounter tracking code to your blog. <br>To get setup: 1) Activate this plugin  2) Enter your StatCounter Project ID and Security Code in the <a href="options-general.php?page=StatCounter-Wordpress-Plugin.php"><strong>options page</strong></a>.
  * Author: Aodhan Cullen
@@ -9,16 +9,14 @@
  */
 
 // Defaults, etc.
-define("key_sc_project", "sc_project", true);
-define("key_sc_position", "sc_position", true);
+// the last 'false' should make these constants case sensitive
+define("key_sc_project", "sc_project", false);
+define("key_sc_position", "sc_position", false);
 // legacy problem with sc_security naming
-define("key_sc_security", "key_sc_security", true);
-
-
-
-define("sc_project_default", "0" , true);
-define("sc_security_default", "" , true);
-define("sc_position_default", "footer", true);
+define("key_sc_security", "key_sc_security", false);
+define("sc_project_default", "0" , false);
+define("sc_security_default", "" , false);
+define("sc_position_default", "footer", false);
 
 // Create the default key and status
 add_option(key_sc_project, sc_project_default);
