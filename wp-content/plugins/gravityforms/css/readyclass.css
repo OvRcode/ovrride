@@ -4,10 +4,10 @@
 readyclass.css
 Gravity Forms Ready Class Pre-Set Styles
 http://www.gravityforms.com
-updated: December 12, 2013 12:14 PM
+updated: February 17, 2015 12:29 PM
 
 Gravity Forms is a Rocketgenius project
-copyright 2013 Rocketgenius Inc.
+copyright 2008-2015 Rocketgenius Inc.
 http: //www.rocketgenius.com
 this may not be redistributed without the
 express written permission of the author.
@@ -31,7 +31,7 @@ to no.
 .gform_wrapper .top_label li.gfield.gf_inline {
 	vertical-align: top;
 	width: auto !important;
-	margin-right: 14px;
+	margin-right: 0.875em;
 	float: none !important;
 	display: -moz-inline-stack;
 	display: inline-block;
@@ -87,7 +87,7 @@ to no.
 .gform_wrapper .top_label li.gfield.gf_inline div.gfield_date_month,
 .gform_wrapper .top_label li.gfield.gf_inline div.gfield_date_day,
 .gform_wrapper .top_label li.gfield.gf_inline div.gfield_date_year {
-	width: 50px;
+	width: 3.125em;
 }
 
 .gform_wrapper .top_label li.gfield.gf_inline div.gfield_time_ampm {
@@ -101,18 +101,18 @@ to no.
 /* 2 column ready class ------------------------------------------------------*/
 
 .gform_wrapper .top_label li.gfield.gf_left_half {
-	margin: 0 0 8px 0;
+	margin: 0 0 0.50em 0;
 	width: 49%;
 }
 
 .gform_wrapper .top_label li.gfield.gf_right_half {
-	margin: 0 0 8px 0;
+	margin: 0 0 0.50em 0;
 	width: 49%;
 }
 
 .gform_wrapper .top_label li.gfield.gfield_error.gf_left_half,
 .gform_wrapper .top_label li.gfield.gfield_error.gf_right_half {
-	width: 46%;
+	width: 47.20%;
 }
 
 .gform_wrapper .top_label li.gfield.gfield_error.gf_right_half {
@@ -152,7 +152,7 @@ to no.
 
 .gform_wrapper .top_label li.gfield.gf_left_half+li.gsection,
 .gform_wrapper .top_label li.gfield.gf_right_half+li.gsection {
-	padding: 16px 0 8px 0;
+	padding: 1em 0 0.50em 0;
 }
 
 .gform_wrapper .top_label li.gfield.gf_left_half+li.gfield.gsection.gf_left_half,
@@ -162,15 +162,15 @@ to no.
 .gform_wrapper .top_label li.gfield.gsection.gf_left_half+li.gfield.gsection.gf_left_half,
 .gform_wrapper .top_label li.gfield.gsection.gf_right_half+li.gfield.gsection.gf_left_half,
 .gform_wrapper .top_label li.gfield.gsection.gf_right_half+li.gfield.gsection.gf_right_half {
-	padding: 16px 0 8px 0;
+	padding: 1em 0 0.50em 0;
 }
 
 .gform_wrapper .top_label li.gfield.gsection.gf_left_half+li.gfield.gsection.gf_right_half {
-	padding: 0 0 8px 0;
+	padding: 0 0 0.50em 0;
 }
 
 .gform_wrapper .top_label li.gfield.gsection.gf_left_half+li.gfield.gsection.gf_right_half+li.gfield.gsection.gf_left_half+li.gfield.gsection.gf_right_half {
-	padding: 16px 0 8px 0;
+	padding: 1em 0 0.50em 0;
 }
 
 .gform_wrapper .top_label li.gfield.gf_left_half+li.gfield,
@@ -185,7 +185,7 @@ to no.
 .gform_wrapper .top_label li.gfield.gf_left_third,
 .gform_wrapper .top_label li.gfield.gf_middle_third,
 .gform_wrapper .top_label li.gfield.gf_right_third {
-	margin: 0 0 8px 0;
+	margin: 0 0 0.50em 0;
 	width: 32%;
 }
 
@@ -236,7 +236,7 @@ to no.
 
 .gform_wrapper .top_label li.gfield.gf_left_third+li.gsection,
 .gform_wrapper .top_label li.gfield.gf_right_third+li.gsection {
-	padding: 16px 0 8px 0;
+	padding: 1em 0 0.50em 0;
 }
 
 .gform_wrapper .top_label li.gfield.gf_left_third+li.gfield,
@@ -256,7 +256,7 @@ to no.
 .gform_wrapper li.gfield.gf_2col ul.gfield_radio li {
 	width: 50%;
 	float: left;
-	margin: 0 0 8px 0;
+	margin: 0 0 0.50em 0;
 	min-height: 1.8em;
 }
 
@@ -266,7 +266,7 @@ to no.
 .gform_wrapper li.gfield.gf_3col ul.gfield_radio li {
 	width: 33%;
 	float: left;
-	margin: 0 0 8px 0;
+	margin: 0 0 0.50em 0;
 	min-height: 1.8em;
 }
 
@@ -274,7 +274,7 @@ to no.
 .gform_wrapper li.gfield.gf_list_4col ul.gfield_radio li {
 	width: 25%;
 	float: left;
-	margin: 0 0 8px 0;
+	margin: 0 0 0.5em 0;
 	min-height: 1.8em;
 }
 
@@ -282,7 +282,7 @@ to no.
 .gform_wrapper li.gfield.gf_list_5col ul.gfield_radio li {
 	width: 20%;
 	float: left;
-	margin: 0 0 8px 0;
+	margin: 0 0 0.50em 0;
 	min-height: 1.8em;
 }
 
@@ -306,7 +306,7 @@ to no.
 .gform_wrapper  li.gfield.gf_list_4col label.gfield_label,
 .gform_wrapper  li.gfield.gf_list_5col label.gfield_label,
 .gform_wrapper  li.gfield.gf_list_inline label.gfield_label {
-	margin: 10px 0 10px 0;
+	margin: 0.625em 0 0.625em 0;
 }
 
 /* optional height settings for the radio/checkbox columns */
@@ -346,10 +346,14 @@ to no.
 .gform_wrapper li.gf_list_inline ul.gfield_radio li {
 	width: auto !important;
 	float: none !important;
-	margin: 0 10px 10px 0;
+	margin: 0 0.625em 0.625em 0;
 	display: -moz-inline-stack;
 	display: inline-block;
 	zoom: 1;
+}
+
+body.gform_wrapper .top_label li.gsection.gf_scroll_text {
+	width: 92.5% !important;
 }
 
 /* hide am/pm field ready class ------------------------------------------------------*/
@@ -358,79 +362,84 @@ to no.
 	display: none !important;
 }
 
-/* scrolling text section break ready class ------------------------------------------------------*/
+/* scrolling text section break ready class - only works with top label option ------------------------------------------------------*/
 
-.gform_wrapper li.gsection.gf_scroll_text {
-	height: 180px;
-	width: 96%;
+.gform_wrapper .top_label li.gsection.gf_scroll_text {
+	height: 11.250em;
+	width: 97.5% !important;
 	overflow: auto;
 	border: 1px solid #CCC;
 	border-bottom: 1px solid #CCC !important;
 }
 
-.gform_wrapper li.gsection.gf_scroll_text h2.gsection_title {
-	margin: 10px 10px 0 10px !important;
+.gform_wrapper .top_label li.gsection.gf_scroll_text h2.gsection_title {
+	margin: 0.625em 0.625em 0 0.50em !important;
 }
 
-.gform_wrapper li.gsection.gf_scroll_text .gsection_description {
-	margin: 10px;
+.gform_wrapper.gf_browser_gecko .top_label li.gsection.gf_scroll_text h2.gsection_title,
+.gform_wrapper.gf_browser_chrome .top_label li.gsection.gf_scroll_text h2.gsection_title {
+	margin: 0 0.625em 0 0.50em !important;
+}
+
+.gform_wrapper .top_label li.gsection.gf_scroll_text .gsection_description {
+	margin: 0.625em;
 	font-size: 0.8em;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ul li,
-.gform_wrapper form div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ul li {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ul li,
+.gform_wrapper form div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ul li {
 	list-style-type: disc !important;
 	margin: 0 0 0.5em;
 	overflow: visible;
 	padding-left: 0;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ul,
-.gform_wrapper form div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ul {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ul,
+.gform_wrapper form div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ul {
 	list-style-type: disc !important;
 	margin: 1em 0 1em 1.5em;
 	padding-left: 0;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol li,
-.gform_wrapper form div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol li {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol li,
+.gform_wrapper form div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol li {
 	list-style-type: decimal!important;
 	overflow:visible;
 	margin: 0 0 0.5em;
 	padding-left: 0;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol,
-.gform_wrapper form div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol,
+.gform_wrapper form div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol {
 	list-style-type: decimal!important;
 	margin: 1em 0 1.5em 2.0em;
 	padding-left: 0;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul,
-.gform_wrapper form div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul li {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul,
+.gform_wrapper form div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul li {
     list-style-type: disc !important;
     padding-left: 0;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul {
 	margin: 1em 0 1em 1.5em;
 }
 
-.gform_wrapper form div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul li {
+.gform_wrapper form div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description ol li ul li {
 	margin: 0 0 0.5em;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description dl {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description dl {
 	margin: 0 0 1.5em 0;
 	padding-left: 0;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description dl dt {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description dl dt {
 	font-weight: bold;
 }
 
-.gform_wrapper div.gform_ul.gform_fields li.gfield.gsection.gf_scroll_text div.gsection_description dl dd {
+.gform_wrapper div.gform_ul.gform_fields .top_label li.gfield.gsection.gf_scroll_text div.gsection_description dl dd {
 	margin: 0 0 1em 1.5em;
 }
 
@@ -444,8 +453,8 @@ to no.
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	margin: 20px 0 !important;
-	padding: 20px !important;
+	margin: 1.250em 0 !important;
+	padding: 1.250em !important;
 }
 
 .gform_wrapper li.gfield.gfield_html.gf_alert_green {
@@ -487,7 +496,7 @@ to no.
 
 
 div.gform_confirmation_wrapper.gf_confirmation_simple_yellow {
-	margin: 30px 0;
+	margin: 1.875em 0;
 	max-width: 99%;
 	border-top: 1px solid #E6DB55;
 	border-bottom: 1px solid #E6DB55;
@@ -498,7 +507,7 @@ div.gform_confirmation_wrapper.gf_confirmation_simple_yellow {
 }
 
 div.gform_confirmation_wrapper.gf_confirmation_simple_gray {
-	margin: 30px 0;
+	margin: 1.875em 0;
 	max-width: 99%;
 	border-top: 1px solid #CCC;
 	border-bottom: 1px solid #CCC;
@@ -511,16 +520,16 @@ div.gform_confirmation_wrapper.gf_confirmation_simple_gray {
 div.gform_confirmation_wrapper.gf_confirmation_yellow_gradient {
 	position: relative;
 	background-color: #FFFBD2;
-	margin: 30px 0;
+	margin: 1.875em 0;
 	border: 1px solid #E6DB55;
 	-webkit-box-shadow: 0px 0px 5px rgba(221, 215, 131, 0.75);
 	-moz-box-shadow: 0px 0px 5px rgba(221, 215, 131, 0.75);
 	box-shadow: 0px 0px 5px rgba(221, 215, 131, 0.75);
 }
 
-div.gform_confirmation_wrapper.gf_confirmation_yellow_gradient div#gforms_confirmation_message {
+div.gform_confirmation_wrapper.gf_confirmation_yellow_gradient div.gforms_confirmation_message {
 	margin: 0;
-	padding: 40px;
+	padding: 2.50em;
 	max-width: 99%;
 	font-size: 1.8em;
 	border-top: 2px solid #FFF;
@@ -540,16 +549,16 @@ div.gform_confirmation_wrapper.gf_confirmation_yellow_gradient div#gforms_confir
 div.gform_confirmation_wrapper.gf_confirmation_green_gradient {
 	position: relative;
 	background-color: #f1fcdf;
-	margin: 30px 0;
+	margin: 1.875em 0;
 	border: 1px solid #a7c37c;
 	-webkit-box-shadow: 0px 0px 5px rgba(86, 122, 86, 0.4);
 	-moz-box-shadow: 0px 0px 5px rgba(86, 122, 86, 0.4);
 	box-shadow: 0px 0px 5px rgba(86, 122, 86, 0.4);
 }
 
-div.gform_confirmation_wrapper.gf_confirmation_green_gradient div#gforms_confirmation_message {
+div.gform_confirmation_wrapper.gf_confirmation_green_gradient div.gforms_confirmation_message {
 	margin: 0;
-	padding: 40px;
+	padding: 2.50em;
 	max-width: 99%;
 	font-size: 1.8em;
 	border-top: 2px solid #effade;
