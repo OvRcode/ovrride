@@ -9,18 +9,18 @@
  */
 class WC_Report_Sales_By_Product extends WC_Admin_Report {
 
-	public $chart_colours = array();
-	public $product_ids   = array();
+	public $chart_colours      = array();
+	public $product_ids        = array();
+	public $product_ids_titles = array();
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-
 		if ( isset( $_GET['product_ids'] ) && is_array( $_GET['product_ids'] ) ) {
-			$this->product_ids = array_map( 'absint', $_GET['product_ids'] );
+			$this->product_ids = array_filter( array_map( 'absint', $_GET['product_ids'] ) );
 		} elseif ( isset( $_GET['product_ids'] ) ) {
-			$this->product_ids = array( absint( $_GET['product_ids'] ) );
+			$this->product_ids = array_filter( array( absint( $_GET['product_ids'] ) ) );
 		}
 	}
 
@@ -166,7 +166,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 		}
 
 		echo '<p>' . ' <strong>' . implode( ', ', $this->product_ids_titles ) . '</strong></p>';
-		echo '<p><a class="button" href="' . remove_query_arg( 'product_ids' ) . '">' . __( 'Reset', 'woocommerce' ) . '</a></p>';
+		echo '<p><a class="button" href="' . esc_url( remove_query_arg( 'product_ids' ) ) . '">' . __( 'Reset', 'woocommerce' ) . '</a></p>';
 	}
 
 	/**
@@ -178,7 +178,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 		<div class="section">
 			<form method="GET">
 				<div>
-					<select id="product_ids" name="product_ids[]" class="ajax_chosen_select_products" multiple="multiple" data-placeholder="<?php _e( 'Search for a product&hellip;', 'woocommerce' ); ?>" style="width:203px;"></select>
+					<input type="hidden" class="wc-product-search" style="width:203px;" name="product_ids[]" data-placeholder="<?php _e( 'Search for a product&hellip;', 'woocommerce' ); ?>" data-action="woocommerce_json_search_products_and_variations" />
 					<input type="submit" class="submit button" value="<?php _e( 'Show', 'woocommerce' ); ?>" />
 					<input type="hidden" name="range" value="<?php if ( ! empty( $_GET['range'] ) ) echo esc_attr( $_GET['range'] ) ?>" />
 					<input type="hidden" name="start_date" value="<?php if ( ! empty( $_GET['start_date'] ) ) echo esc_attr( $_GET['start_date'] ) ?>" />
@@ -187,28 +187,6 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 					<input type="hidden" name="tab" value="<?php if ( ! empty( $_GET['tab'] ) ) echo esc_attr( $_GET['tab'] ) ?>" />
 					<input type="hidden" name="report" value="<?php if ( ! empty( $_GET['report'] ) ) echo esc_attr( $_GET['report'] ) ?>" />
 				</div>
-				<script type="text/javascript">
-					jQuery(function(){
-						// Ajax Chosen Product Selectors
-						jQuery("select.ajax_chosen_select_products").ajaxChosen({
-							method:         'GET',
-							url:            '<?php echo admin_url('admin-ajax.php'); ?>',
-							dataType:       'json',
-							afterTypeDelay: 100,
-							data: {
-								action:   'woocommerce_json_search_products_and_variations',
-								security: '<?php echo wp_create_nonce("search-products"); ?>'
-							}
-						}, function (data) {
-							var terms = {};
-
-							jQuery.each(data, function (i, val) {
-								terms[i] = val;
-							});
-							return terms;
-						});
-					});
-				</script>
 			</form>
 		</div>
 		<h4 class="section_title"><span><?php _e( 'Top Sellers', 'woocommerce' ); ?></span></h4>
@@ -230,6 +208,14 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 							'name'            => 'order_item_qty'
 						)
 					),
+					'where_meta'   => array(
+						array(
+							'type'       => 'order_item_meta',
+							'meta_key'   => '_line_subtotal',
+							'meta_value' => '0',
+							'operator'   => '>'
+						)
+					),
 					'order_by'     => 'order_item_qty DESC',
 					'group_by'     => 'product_id',
 					'limit'        => 12,
@@ -242,7 +228,57 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 					foreach ( $top_sellers as $product ) {
 						echo '<tr class="' . ( in_array( $product->product_id, $this->product_ids ) ? 'active' : '' ) . '">
 							<td class="count">' . $product->order_item_qty . '</td>
-							<td class="name"><a href="' . add_query_arg( 'product_ids', $product->product_id ) . '">' . get_the_title( $product->product_id ) . '</a></td>
+							<td class="name"><a href="' . esc_url( add_query_arg( 'product_ids', $product->product_id ) ) . '">' . get_the_title( $product->product_id ) . '</a></td>
+							<td class="sparkline">' . $this->sales_sparkline( $product->product_id, 7, 'count' ) . '</td>
+						</tr>';
+					}
+				} else {
+					echo '<tr><td colspan="3">' . __( 'No products found in range', 'woocommerce' ) . '</td></tr>';
+				}
+				?>
+			</table>
+		</div>
+		<h4 class="section_title"><span><?php _e( 'Top Freebies', 'woocommerce' ); ?></span></h4>
+		<div class="section">
+			<table cellspacing="0">
+				<?php
+				$top_freebies = $this->get_order_report_data( array(
+					'data' => array(
+						'_product_id' => array(
+							'type'            => 'order_item_meta',
+							'order_item_type' => 'line_item',
+							'function'        => '',
+							'name'            => 'product_id'
+						),
+						'_qty' => array(
+							'type'            => 'order_item_meta',
+							'order_item_type' => 'line_item',
+							'function'        => 'SUM',
+							'name'            => 'order_item_qty'
+						)
+					),
+					'where_meta'   => array(
+						array(
+							'type'       => 'order_item_meta',
+							'meta_key'   => '_line_subtotal',
+							'meta_value' => '0',
+							'operator'   => '='
+						)
+					),
+					'order_by'     => 'order_item_qty DESC',
+					'group_by'     => 'product_id',
+					'limit'        => 12,
+					'query_type'   => 'get_results',
+					'filter_range' => true,
+					'order_types'  => wc_get_order_types( 'order-count' ),
+					'nocache' => true
+				) );
+
+				if ( $top_freebies ) {
+					foreach ( $top_freebies as $product ) {
+						echo '<tr class="' . ( in_array( $product->product_id, $this->product_ids ) ? 'active' : '' ) . '">
+							<td class="count">' . $product->order_item_qty . '</td>
+							<td class="name"><a href="' . esc_url( add_query_arg( 'product_ids', $product->product_id ) ) . '">' . get_the_title( $product->product_id ) . '</a></td>
 							<td class="sparkline">' . $this->sales_sparkline( $product->product_id, 7, 'count' ) . '</td>
 						</tr>';
 					}
@@ -282,7 +318,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 					foreach ( $top_earners as $product ) {
 						echo '<tr class="' . ( in_array( $product->product_id, $this->product_ids ) ? 'active' : '' ) . '">
 							<td class="count">' . wc_price( $product->order_item_total ) . '</td>
-							<td class="name"><a href="' . add_query_arg( 'product_ids', $product->product_id ) . '">' . get_the_title( $product->product_id ) . '</a></td>
+							<td class="name"><a href="' . esc_url( add_query_arg( 'product_ids', $product->product_id ) ) . '">' . get_the_title( $product->product_id ) . '</a></td>
 							<td class="sparkline">' . $this->sales_sparkline( $product->product_id, 7, 'sales' ) . '</td>
 						</tr>';
 					}
@@ -458,7 +494,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 								points: { show: true, radius: 5, lineWidth: 3, fillColor: '#fff', fill: true },
 								lines: { show: true, lineWidth: 4, fill: false },
 								shadowSize: 0,
-								prepend_tooltip: "<?php echo get_woocommerce_currency_symbol(); ?>"
+								<?php echo $this->get_currency_tooltip(); ?>
 							}
 						];
 

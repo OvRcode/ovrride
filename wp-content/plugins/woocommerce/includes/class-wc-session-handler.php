@@ -1,7 +1,6 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
 /**
@@ -35,9 +34,6 @@ class WC_Session_Handler extends WC_Session {
 
 	/**
 	 * Constructor for the session class.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function __construct() {
 		$this->_cookie = 'wp_woocommerce_session_' . COOKIEHASH;
@@ -107,9 +103,6 @@ class WC_Session_Handler extends WC_Session {
 
     /**
      * set_session_expiration function.
-     *
-     * @access public
-     * @return void
      */
     public function set_session_expiration() {
 	    $this->_session_expiring    = time() + intval( apply_filters( 'wc_session_expiring', 60 * 60 * 47 ) ); // 47 Hours
@@ -121,7 +114,6 @@ class WC_Session_Handler extends WC_Session {
 	 *
 	 * Uses Portable PHP password hashing framework to generate a unique cryptographically strong ID.
 	 *
-	 * @access public
 	 * @return int|string
 	 */
 	public function generate_customer_id() {
@@ -137,8 +129,7 @@ class WC_Session_Handler extends WC_Session {
 	/**
 	 * get_session_cookie function.
 	 *
-	 * @access public
-	 * @return mixed
+	 * @return bool|array
 	 */
 	public function get_session_cookie() {
 		if ( empty( $_COOKIE[ $this->_cookie ] ) ) {
@@ -161,18 +152,14 @@ class WC_Session_Handler extends WC_Session {
 	/**
 	 * get_session_data function.
 	 *
-	 * @access public
 	 * @return array
 	 */
 	public function get_session_data() {
-		return (array) get_option( '_wc_session_' . $this->_customer_id, array() );
+		return $this->has_session() ? (array) get_option( '_wc_session_' . $this->_customer_id, array() ) : array();
 	}
 
     /**
      * save_data function.
-     *
-     * @access public
-     * @return void
      */
     public function save_data() {
     	// Dirty if something changed - prevents saving nothing new
@@ -215,9 +202,6 @@ class WC_Session_Handler extends WC_Session {
 
     /**
 	 * cleanup_sessions function.
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function cleanup_sessions() {
 		global $wpdb;
@@ -225,19 +209,25 @@ class WC_Session_Handler extends WC_Session {
 		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
 			$now                = time();
 			$expired_sessions   = array();
-			$wc_session_expires = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options WHERE option_name LIKE '_wc_session_expires_%'" );
+			$wc_session_expires = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name LIKE '\_wc\_session\_expires\_%' AND option_value < '$now'" );
 
-			foreach ( $wc_session_expires as $wc_session_expire ) {
-				if ( $now > intval( $wc_session_expire->option_value ) ) {
-					$session_id         = substr( $wc_session_expire->option_name, 20 );
-					$expired_sessions[] = $wc_session_expire->option_name;  // Expires key
-					$expired_sessions[] = "_wc_session_$session_id"; // Session key
-				}
+			foreach ( $wc_session_expires as $option_name ) {
+				$session_id         = substr( $option_name, 20 );
+				$expired_sessions[] = $option_name;  // Expires key
+				$expired_sessions[] = "_wc_session_$session_id"; // Session key
 			}
 
 			if ( ! empty( $expired_sessions ) ) {
 				$expired_sessions_chunked = array_chunk( $expired_sessions, 100 );
 				foreach ( $expired_sessions_chunked as $chunk ) {
+					if ( wp_using_ext_object_cache() ) {
+						// delete from object cache first, to avoid cached but deleted options
+						foreach ( $chunk as $option ) {
+							wp_cache_delete( $option, 'options' );
+						}
+					}
+
+					// delete from options table
 					$option_names = implode( "','", $chunk );
 					$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
 				}

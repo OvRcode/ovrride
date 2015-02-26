@@ -11,7 +11,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
 // Include core functions (available in both admin and frontend)
@@ -29,6 +29,7 @@ include( 'wc-attribute-functions.php' );
 /**
  * Filters on data used in admin and frontend
  */
+add_filter( 'woocommerce_coupon_code', 'html_entity_decode' );
 add_filter( 'woocommerce_coupon_code', 'sanitize_text_field' );
 add_filter( 'woocommerce_coupon_code', 'strtolower' ); // Coupons case-insensitive by default
 add_filter( 'woocommerce_stock_amount', 'intval' ); // Stock amounts are integers by default
@@ -137,7 +138,7 @@ function wc_get_template_part( $slug, $name = '' ) {
 	$template = '';
 
 	// Look in yourtheme/slug-name.php and yourtheme/woocommerce/slug-name.php
-	if ( $name ) {
+	if ( $name && ! WC_TEMPLATE_DEBUG_MODE ) {
 		$template = locate_template( array( "{$slug}-{$name}.php", WC()->template_path() . "{$slug}-{$name}.php" ) );
 	}
 
@@ -147,12 +148,14 @@ function wc_get_template_part( $slug, $name = '' ) {
 	}
 
 	// If template file doesn't exist, look in yourtheme/slug.php and yourtheme/woocommerce/slug.php
-	if ( ! $template ) {
+	if ( ! $template && ! WC_TEMPLATE_DEBUG_MODE ) {
 		$template = locate_template( array( "{$slug}.php", WC()->template_path() . "{$slug}.php" ) );
 	}
 
 	// Allow 3rd party plugin filter template file from their plugin
-	$template = apply_filters( 'wc_get_template_part', $template, $slug, $name );
+	if ( ( ! $template && WC_TEMPLATE_DEBUG_MODE ) || $template ) {
+		$template = apply_filters( 'wc_get_template_part', $template, $slug, $name );
+	}
 
 	if ( $template ) {
 		load_template( $template, false );
@@ -224,12 +227,12 @@ function wc_locate_template( $template_name, $template_path = '', $default_path 
 	);
 
 	// Get default template
-	if ( ! $template ) {
+	if ( ! $template || WC_TEMPLATE_DEBUG_MODE ) {
 		$template = $default_path . $template_name;
 	}
 
 	// Return what we found
-	return apply_filters('woocommerce_locate_template', $template, $template_name, $template_path);
+	return apply_filters( 'woocommerce_locate_template', $template, $template_name, $template_path );
 }
 
 /**
@@ -290,6 +293,7 @@ function get_woocommerce_currencies() {
 				'TWD' => __( 'Taiwan New Dollars', 'woocommerce' ),
 				'THB' => __( 'Thai Baht', 'woocommerce' ),
 				'TRY' => __( 'Turkish Lira', 'woocommerce' ),
+				'UAH' => __( 'Ukrainian Hryvnia', 'woocommerce' ),
 				'USD' => __( 'US Dollars', 'woocommerce' ),
 				'VND' => __( 'Vietnamese Dong', 'woocommerce' ),
 				'EGP' => __( 'Egyptian Pound', 'woocommerce' ),
@@ -312,66 +316,127 @@ function get_woocommerce_currency_symbol( $currency = '' ) {
 		case 'AED' :
 			$currency_symbol = 'د.إ';
 			break;
-		case 'BDT':
-			$currency_symbol = '&#2547;&nbsp;';
-			break;
-		case 'BRL' :
-			$currency_symbol = '&#82;&#36;';
-			break;
-		case 'BGN' :
-			$currency_symbol = '&#1083;&#1074;.';
-			break;
 		case 'AUD' :
 		case 'CAD' :
 		case 'CLP' :
 		case 'COP' :
+		case 'HKD' :
 		case 'MXN' :
 		case 'NZD' :
-		case 'HKD' :
 		case 'SGD' :
 		case 'USD' :
 			$currency_symbol = '&#36;';
 			break;
+		case 'BDT':
+			$currency_symbol = '&#2547;&nbsp;';
+			break;
+		case 'BGN' :
+			$currency_symbol = '&#1083;&#1074;.';
+			break;
+		case 'BRL' :
+			$currency_symbol = '&#82;&#36;';
+			break;
+		case 'CHF' :
+			$currency_symbol = '&#67;&#72;&#70;';
+			break;
+		case 'CNY' :
+		case 'JPY' :
+		case 'RMB' :
+			$currency_symbol = '&yen;';
+			break;
+		case 'CZK' :
+			$currency_symbol = '&#75;&#269;';
+			break;
+		case 'DKK' :
+			$currency_symbol = 'kr.';
+			break;
+		case 'DOP' :
+			$currency_symbol = 'RD&#36;';
+			break;
+		case 'EGP' :
+			$currency_symbol = 'EGP';
+			break;
 		case 'EUR' :
 			$currency_symbol = '&euro;';
 			break;
-		case 'CNY' :
-		case 'RMB' :
-		case 'JPY' :
-			$currency_symbol = '&yen;';
+		case 'GBP' :
+			$currency_symbol = '&pound;';
+			break;
+		case 'HRK' :
+			$currency_symbol = 'Kn';
+			break;
+		case 'HUF' :
+			$currency_symbol = '&#70;&#116;';
+			break;
+		case 'IDR' :
+			$currency_symbol = 'Rp';
+			break;
+		case 'ILS' :
+			$currency_symbol = '&#8362;';
+			break;
+		case 'INR' :
+			$currency_symbol = 'Rs.';
+			break;
+		case 'ISK' :
+			$currency_symbol = 'Kr.';
+			break;
+		case 'KIP' :
+			$currency_symbol = '&#8365;';
+			break;
+		case 'KRW' :
+			$currency_symbol = '&#8361;';
+			break;
+		case 'MYR' :
+			$currency_symbol = '&#82;&#77;';
+			break;
+		case 'NGN' :
+			$currency_symbol = '&#8358;';
+			break;
+		case 'NOK' :
+			$currency_symbol = '&#107;&#114;';
+			break;
+		case 'NPR' :
+			$currency_symbol = 'Rs.';
+			break;
+		case 'PHP' :
+			$currency_symbol = '&#8369;';
+			break;
+		case 'PLN' :
+			$currency_symbol = '&#122;&#322;';
+			break;
+		case 'PYG' :
+			$currency_symbol = '&#8370;';
+			break;
+		case 'RON' :
+			$currency_symbol = 'lei';
 			break;
 		case 'RUB' :
 			$currency_symbol = '&#1088;&#1091;&#1073;.';
 			break;
-		case 'KRW' : $currency_symbol = '&#8361;'; break;
-        	case 'PYG' : $currency_symbol = '&#8370;'; break;
-		case 'TRY' : $currency_symbol = '&#8378;'; break;
-		case 'NOK' : $currency_symbol = '&#107;&#114;'; break;
-		case 'ZAR' : $currency_symbol = '&#82;'; break;
-		case 'CZK' : $currency_symbol = '&#75;&#269;'; break;
-		case 'MYR' : $currency_symbol = '&#82;&#77;'; break;
-		case 'DKK' : $currency_symbol = 'kr.'; break;
-		case 'HUF' : $currency_symbol = '&#70;&#116;'; break;
-		case 'IDR' : $currency_symbol = 'Rp'; break;
-		case 'INR' : $currency_symbol = 'Rs.'; break;
-		case 'NPR' : $currency_symbol = 'Rs.'; break;
-		case 'ISK' : $currency_symbol = 'Kr.'; break;
-		case 'ILS' : $currency_symbol = '&#8362;'; break;
-		case 'PHP' : $currency_symbol = '&#8369;'; break;
-		case 'PLN' : $currency_symbol = '&#122;&#322;'; break;
-		case 'SEK' : $currency_symbol = '&#107;&#114;'; break;
-		case 'CHF' : $currency_symbol = '&#67;&#72;&#70;'; break;
-		case 'TWD' : $currency_symbol = '&#78;&#84;&#36;'; break;
-		case 'THB' : $currency_symbol = '&#3647;'; break;
-		case 'GBP' : $currency_symbol = '&pound;'; break;
-		case 'RON' : $currency_symbol = 'lei'; break;
-		case 'VND' : $currency_symbol = '&#8363;'; break;
-		case 'NGN' : $currency_symbol = '&#8358;'; break;
-		case 'HRK' : $currency_symbol = 'Kn'; break;
-		case 'EGP' : $currency_symbol = 'EGP'; break;
-		case 'DOP' : $currency_symbol = 'RD&#36;'; break;
-		case 'KIP' : $currency_symbol = '&#8365;'; break;
-		default    : $currency_symbol = ''; break;
+		case 'SEK' :
+			$currency_symbol = '&#107;&#114;';
+			break;
+		case 'THB' :
+			$currency_symbol = '&#3647;';
+			break;
+		case 'TRY' :
+			$currency_symbol = '&#8378;';
+			break;
+		case 'TWD' :
+			$currency_symbol = '&#78;&#84;&#36;';
+			break;
+		case 'UAH' :
+			$currency_symbol = '&#8372;';
+			break;
+		case 'VND' :
+			$currency_symbol = '&#8363;';
+			break;
+		case 'ZAR' :
+			$currency_symbol = '&#82;';
+			break;
+		default :
+			$currency_symbol = '';
+			break;
 	}
 
 	return apply_filters( 'woocommerce_currency_symbol', $currency_symbol, $currency );
@@ -397,15 +462,29 @@ function wc_mail( $to, $subject, $message, $headers = "Content-Type: text/html\r
  *
  * Variable is filtered by woocommerce_get_image_size_{image_size}
  *
- * @param string $image_size
+ * @param mixed $image_size
  * @return array
  */
 function wc_get_image_size( $image_size ) {
-	if ( in_array( $image_size, array( 'shop_thumbnail', 'shop_catalog', 'shop_single' ) ) ) {
+	if ( is_array( $image_size ) ) {
+		$width  = isset( $image_size[0] ) ? $image_size[0] : '300';
+		$height = isset( $image_size[1] ) ? $image_size[1] : '300';
+		$crop   = isset( $image_size[2] ) ? $image_size[2] : 1;
+		
+		$size = array(
+			'width'  => $width,
+			'height' => $height,
+			'crop'   => $crop
+		);
+
+		$image_size = $width . '_' . $height;
+
+	} elseif ( in_array( $image_size, array( 'shop_thumbnail', 'shop_catalog', 'shop_single' ) ) ) {
 		$size           = get_option( $image_size . '_image_size', array() );
 		$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
 		$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
 		$size['crop']   = isset( $size['crop'] ) ? $size['crop'] : 0;
+
 	} else {
 		$size = array(
 			'width'  => '300',
@@ -505,8 +584,7 @@ function wc_get_log_file_path( $handle ) {
  * Init for our rewrite rule fixes
  */
 function wc_fix_rewrite_rules_init() {
-	$permalinks        = get_option( 'woocommerce_permalinks' );
-	$product_permalink = empty( $permalinks['product_base'] ) ? _x( 'product', 'slug', 'woocommerce' ) : $permalinks['product_base'];
+	$permalinks = get_option( 'woocommerce_permalinks' );
 
 	if ( ! empty( $permalinks['use_verbose_page_rules'] ) ) {
 		$GLOBALS['wp_rewrite']->use_verbose_page_rules = true;
@@ -528,9 +606,10 @@ function wc_fix_rewrite_rules( $rules ) {
 	$product_permalink = empty( $permalinks['product_base'] ) ? _x( 'product', 'slug', 'woocommerce' ) : $permalinks['product_base'];
 
 	// Fix the rewrite rules when the product permalink have %product_cat% flag
-	if ( preg_match( '/\/(.+)(\/%product_cat%)/' , $product_permalink, $matches ) ) {
+	if ( preg_match( '`/(.+)(/%product_cat%)`' , $product_permalink, $matches ) ) {
 		foreach ( $rules as $rule => $rewrite ) {
-			if ( preg_match( '/^' . $matches[1] . '\/\(/', $rule ) && preg_match( '/^(index\.php\?product_cat)(?!(.*product))/', $rewrite ) ) {
+
+			if ( preg_match( '`^' . preg_quote( $matches[1], '`' ) . '/\(`', $rule ) && preg_match( '/^(index\.php\?product_cat)(?!(.*product))/', $rewrite ) ) {
 				unset( $rules[ $rule ] );
 			}
 		}
@@ -594,10 +673,10 @@ add_filter( 'mod_rewrite_rules', 'wc_ms_protect_download_rewite_rules' );
  * WooCommerce Core Supported Themes
  *
  * @since 2.2
- * @return string[]
+ * @return array
  */
 function wc_get_core_supported_themes() {
-	return array( 'twentyfourteen', 'twentythirteen', 'twentyeleven', 'twentytwelve', 'twentyten' );
+	return array( 'twentyfifteen', 'twentyfourteen', 'twentythirteen', 'twentyeleven', 'twentytwelve', 'twentyten' );
 }
 
 /**
@@ -615,3 +694,106 @@ function wc_deliver_webhook_async( $webhook_id, $arg ) {
 	$webhook->deliver( $arg );
 }
 add_action( 'woocommerce_deliver_webhook_async', 'wc_deliver_webhook_async', 10, 2 );
+
+/**
+ * Enables template debug mode
+ */
+function wc_template_debug_mode() {
+	if ( ! defined( 'WC_TEMPLATE_DEBUG_MODE' ) ) {
+		$status_options = get_option( 'woocommerce_status_options', array() );
+		if ( ! empty( $status_options['template_debug_mode'] ) && current_user_can( 'manage_options' ) ) {
+			define( 'WC_TEMPLATE_DEBUG_MODE', true );
+		} else {
+			define( 'WC_TEMPLATE_DEBUG_MODE', false );
+		}
+	}
+}
+add_action( 'after_setup_theme', 'wc_template_debug_mode', 20 );
+
+/**
+ * Formats a string in the format COUNTRY:STATE into an array.
+ * @since 2.3.0
+ * @param  string $country_string
+ * @return array
+ */
+function wc_format_country_state_string( $country_string ) {
+	if ( strstr( $country_string, ':' ) ) {
+		list( $country, $state ) = explode( ':', $country_string );
+	} else {
+		$country = $country_string;
+		$state   = '';
+	}
+	return array(
+		'country' => $country,
+		'state'   => $state
+	);
+}
+
+/**
+ * Get the store's base location.
+ * @todo should the woocommerce_default_country option be renamed to contain 'base'?
+ * @since 2.3.0
+ * @return array
+ */
+function wc_get_base_location() {
+	$default = apply_filters( 'woocommerce_get_base_location', get_option( 'woocommerce_default_country' ) );
+
+	return wc_format_country_state_string( $default );
+}
+
+/**
+ * Get the customer's default location. Filtered, and set to base location or left blank.
+ * @todo should the woocommerce_default_country option be renamed to contain 'base'?
+ * @since 2.3.0
+ * @return array
+ */
+function wc_get_customer_default_location() {
+	switch ( get_option( 'woocommerce_default_customer_address' ) ) {
+		case 'geolocation' :
+			$location = WC_Geolocation::geolocate_ip();
+
+			// Base fallback
+			if ( empty( $location['country'] ) ) {
+				$location = wc_format_country_state_string( apply_filters( 'woocommerce_customer_default_location', get_option( 'woocommerce_default_country' ) ) );
+			}
+		break;
+		case 'base' :
+			$location = wc_format_country_state_string( apply_filters( 'woocommerce_customer_default_location', get_option( 'woocommerce_default_country' ) ) );
+		break;
+		default :
+			$location = wc_format_country_state_string( apply_filters( 'woocommerce_customer_default_location', '' ) );
+		break;
+	}
+
+	return $location;
+}
+
+// This function can be removed when WP 3.9.2 or greater is required
+if ( ! function_exists( 'hash_equals' ) ) :
+	/**
+	 * Compare two strings in constant time.
+	 *
+	 * This function was added in PHP 5.6.
+	 * It can leak the length of a string.
+	 *
+	 * @since 3.9.2
+	 *
+	 * @param string $a Expected string.
+	 * @param string $b Actual string.
+	 * @return bool Whether strings are equal.
+	 */
+	function hash_equals( $a, $b ) {
+		$a_length = strlen( $a );
+		if ( $a_length !== strlen( $b ) ) {
+			return false;
+		}
+		$result = 0;
+
+		// Do not attempt to "optimize" this.
+		for ( $i = 0; $i < $a_length; $i++ ) {
+			$result |= ord( $a[ $i ] ) ^ ord( $b[ $i ] );
+		}
+
+		return $result === 0;
+	}
+endif;

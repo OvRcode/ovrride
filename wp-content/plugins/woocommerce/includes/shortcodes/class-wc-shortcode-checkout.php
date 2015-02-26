@@ -88,7 +88,7 @@ class WC_Shortcode_Checkout {
 			$valid_order_statuses = apply_filters( 'woocommerce_valid_order_statuses_for_payment', array( 'pending', 'failed' ), $order );
 
 			if ( ! current_user_can( 'pay_for_order', $order_id ) ) {
-				echo '<div class="woocommerce-error">' . __( 'Invalid order. If you have an account please log in and try again.', 'woocommerce' ) . ' <a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . '" class="wc-forward">' . __( 'My Account', 'woocommerce' ) . '</a>' . '</div>';
+				echo '<div class="woocommerce-error">' . __( 'Invalid order. If you have an account please log in and try again.', 'woocommerce' ) . ' <a href="' . wc_get_page_permalink( 'myaccount' ) . '" class="wc-forward">' . __( 'My Account', 'woocommerce' ) . '</a>' . '</div>';
 				return;
 			}
 
@@ -128,7 +128,7 @@ class WC_Shortcode_Checkout {
 					?>
 					<ul class="order_details">
 						<li class="order">
-							<?php _e( 'Order:', 'woocommerce' ); ?>
+							<?php _e( 'Order Number:', 'woocommerce' ); ?>
 							<strong><?php echo $order->get_order_number(); ?></strong>
 						</li>
 						<li class="date">
@@ -141,7 +141,7 @@ class WC_Shortcode_Checkout {
 						</li>
 						<?php if ($order->payment_method_title) : ?>
 						<li class="method">
-							<?php _e( 'Payment method:', 'woocommerce' ); ?>
+							<?php _e( 'Payment Method:', 'woocommerce' ); ?>
 							<strong><?php
 								echo $order->payment_method_title;
 							?></strong>
@@ -205,14 +205,15 @@ class WC_Shortcode_Checkout {
 		wc_print_notices();
 
 		// Check cart has contents
-		if ( sizeof( WC()->cart->get_cart() ) == 0 )
+		if ( sizeof( WC()->cart->get_cart() ) == 0 ) {
 			return;
+		}
+
+		// Check cart contents for errors
+		do_action( 'woocommerce_check_cart_items' );
 
 		// Calc totals
 		WC()->cart->calculate_totals();
-
-		// Check cart contents for errors
-		do_action('woocommerce_check_cart_items');
 
 		// Get checkout object
 		$checkout = WC()->checkout();
