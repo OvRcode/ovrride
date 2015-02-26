@@ -3,7 +3,7 @@
 /*
 Plugin Name: Simple Tooltips
 Description: Easily add tooltips to your wordpress site. You can define tooltip color settings in <strong>Settings > Simple Tooltips</strong>
-Version: 2.0
+Version: 2.1.2
 Author: Justin Saad
 Author URI: http://www.clevelandwebdeveloper.com
 License: GPL2
@@ -65,6 +65,11 @@ class simple_tooltips {
 	<style type="text/css">
 	#wpbody {min-width: 900px;}
 	.motechdonate{border: 1px solid #DADADA; background:white; font-family: tahoma,arial,helvetica,sans-serif;font-size: 12px;overflow: hidden;padding: 5px;position: absolute;right: 0;text-align: center;top: 0;width: 275px; box-shadow:0px 0px 8px rgba(153, 153, 153, 0.81);z-index:9;}
+	<?php if(function_exists('is_rtl')) : ?>
+		<?php if(is_rtl()) : ?>
+			.motechdonate {right:auto;left:0;}
+		<?php endif ?>
+	<?php endif ?>	
 	.motechdonate form{display:block;}
 	#motech_top_banner {background: rgb(221, 215, 215);margin: -5px;margin-bottom: 7px;padding-bottom: 4px;line-height: 16px;font-size: 18px;text-indent: 6px;}
 	.motechdonate ul {padding-left:16px;}
@@ -237,6 +242,25 @@ class simple_tooltips {
 			)				
 		);
 		
+		//add checkbox field
+		$field_slug = "disable_on_mobile";
+		$field_label = "Disable On Mobile";
+		$field_id = $this->plugin_slug.'_'.$field_slug;
+		register_setting($this->plugin_slug.'_option_group', $field_id);
+		add_settings_field(
+		    $field_id,
+		    $field_label, 
+		    array($this, 'create_a_checkbox'), //callback function for checkbox
+		    $this->plugin_slug.'-setting-admin',
+		    $this->plugin_slug.'_setting_section',
+		    array(								// The array of arguments to pass to the callback.
+				"id" => $field_id, //sends field id to callback
+				"desc" => 'Check this box to disable tooltips on mobile devices.', //description of the field (optional)
+				"default" => '0' //sets the default field value (optional), when grabbing this option value later on remember to use get_option(option_name, default_value) so it will return default value if no value exists yet
+				
+			)			
+		);		
+		
 		//add text input field
 		$field_slug = "menu_selectors";
 		$field_label = "Menu Selectors (Advanced):";
@@ -355,89 +379,101 @@ class simple_tooltips {
 	function tooltip_data() {
 		?>
         <?php
-		$selectors_field = get_option('simple_tooltips_menu_selectors', '');
+		if(function_exists('wp_is_mobile')){
+			if ( wp_is_mobile() ) {
+				$on_mobile = 1;
+			} else {
+				$on_mobile = 0;	
+			}
+		} else { //old version of wp, wp_is_mobile doesn't exist, so assume user not on mobile
+			$on_mobile = 0;
+		}
 		?>
-        
-			<script type="text/javascript">
-				jQuery(function() {
-					<?php if (!empty($selectors_field)) : ?>
-						<?php
-						$pieces = explode(",", $selectors_field);
-						foreach($pieces as $piece) {
-							$selectors_string .= $piece . " .tooltips > a,";
-						}
-						$selectors_string = substr($selectors_string, 0, -1);
-						?>
-						jQuery('<?php echo $selectors_string ?>').each(function () {
-							jQuery(this).addClass('tooltips').closest('li').removeClass('tooltips');
-						});
-					<?php endif ?>
-					
-					jQuery(".tooltips img").closest(".tooltips").css("display", "inline-block");
-				
-					new jQuery.Zebra_Tooltips(jQuery('.tooltips').not('.custom_m_bubble'), {
-						'background_color':     '<?php echo get_option('simple_tooltips_background_color', '#000000') ?>',
-						'color':				'<?php echo get_option('simple_tooltips_text_color', '#ffffff') ?>',
-						'max_width':  <?php echo get_option('simple_tooltips_max_width', 250) ?>,
-						'opacity':    <?php echo get_option('simple_tooltips_opacity', .95) ?>, 
-						'position':    '<?php echo get_option('simple_tooltips_position', 'center') ?>'
-					});
-					
-					<?php //add customized tooltips
-					$custom_tooltips = $this->custom_tooltips;
-					$custom_tooltips = array_map("unserialize", array_unique(array_map("serialize", $custom_tooltips)));
-					//$custom_tooltips = array_unique($custom_tooltips);
-					foreach($custom_tooltips as $custom_tooltip) { ?>
-						<?php
-						
-							//first get default values
-							$bgcolor = get_option('simple_tooltips_background_color', '#000000');
-							$color = get_option('simple_tooltips_text_color', '#ffffff');
-							$max_width = get_option('simple_tooltips_max_width', 250);
-							$opacity =  get_option('simple_tooltips_opacity', .95);
-							$position =  get_option('simple_tooltips_position', 'center');
-							
-							$special_classes = "";
-							//now override custom values, if there are any. the order here matters
-							if(isset($custom_tooltip["bubblewidth"])){
-								$max_width = $custom_tooltip["bubblewidth"];
-								$special_classes .= " bubblewidth_".$custom_tooltip["bubblewidth"];
-							}
-							if(isset($custom_tooltip["bubblebgcolor"])){
-								$bgcolor = $custom_tooltip["bubblebgcolor"];
-								$special_classes .= " bubblebgcolor_".$custom_tooltip["bubblebgcolor"];
-							}
-							if(isset($custom_tooltip["bubbleopacity"])){
-								$opacity = $custom_tooltip["bubbleopacity"];
-								$special_classes .= " bubbleopacity_".$custom_tooltip["bubbleopacity"];
-							}
-							if(isset($custom_tooltip["bubbleposition"])){
-								$position = $custom_tooltip["bubbleposition"];
-								$special_classes .= " bubbleposition_".$custom_tooltip["bubbleposition"];
-							}
-							if(isset($custom_tooltip["bubblecolor"])){
-								$color = $custom_tooltip["bubblecolor"];
-								$special_classes .= " bubblecolor_".$custom_tooltip["bubblecolor"];
-							}							
-						
-						
-						?>
-
-						new jQuery.Zebra_Tooltips(jQuery('[class="tooltips <?php echo $special_classes ?> custom_m_bubble"]'), {
-							'background_color':     '<?php echo $bgcolor ?>',
-							'color':				'<?php echo $color ?>',
-							'max_width':  <?php echo $max_width ?>,
-							'opacity':    <?php echo $opacity ?>, 
-							'position':    '<?php echo $position ?>'
-						});
-						
-						<?php
-					}
-					?>
-				
-				});
-            </script>        
-        <?php
+        <?php if (!( ( get_option('simple_tooltips_disable_on_mobile', 0) == 1 ) and ($on_mobile == 1) )) : //only load on non mobile, if set to disable on mobile ?>
+			<?php
+            $selectors_field = get_option('simple_tooltips_menu_selectors', '');
+            ?>
+            
+                <script type="text/javascript">
+                    jQuery(function() {
+                        <?php if (!empty($selectors_field)) : ?>
+                            <?php
+                            $pieces = explode(",", $selectors_field);
+                            foreach($pieces as $piece) {
+                                $selectors_string .= $piece . " .tooltips > a,";
+                            }
+                            $selectors_string = substr($selectors_string, 0, -1);
+                            ?>
+                            jQuery('<?php echo $selectors_string ?>').each(function () {
+                                jQuery(this).addClass('tooltips').closest('li').removeClass('tooltips');
+                            });
+                        <?php endif ?>
+                        
+                        jQuery(".tooltips img").closest(".tooltips").css("display", "inline-block");
+                    
+                        new jQuery.Zebra_Tooltips(jQuery('.tooltips').not('.custom_m_bubble'), {
+                            'background_color':     '<?php echo get_option('simple_tooltips_background_color', '#000000') ?>',
+                            'color':				'<?php echo get_option('simple_tooltips_text_color', '#ffffff') ?>',
+                            'max_width':  <?php echo get_option('simple_tooltips_max_width', 250) ?>,
+                            'opacity':    <?php echo get_option('simple_tooltips_opacity', .95) ?>, 
+                            'position':    '<?php echo get_option('simple_tooltips_position', 'center') ?>'
+                        });
+                        
+                        <?php //add customized tooltips
+                        $custom_tooltips = $this->custom_tooltips;
+                        $custom_tooltips = array_map("unserialize", array_unique(array_map("serialize", $custom_tooltips)));
+                        //$custom_tooltips = array_unique($custom_tooltips);
+                        foreach($custom_tooltips as $custom_tooltip) { ?>
+                            <?php
+                            
+                                //first get default values
+                                $bgcolor = get_option('simple_tooltips_background_color', '#000000');
+                                $color = get_option('simple_tooltips_text_color', '#ffffff');
+                                $max_width = get_option('simple_tooltips_max_width', 250);
+                                $opacity =  get_option('simple_tooltips_opacity', .95);
+                                $position =  get_option('simple_tooltips_position', 'center');
+                                
+                                $special_classes = "";
+                                //now override custom values, if there are any. the order here matters
+                                if(isset($custom_tooltip["bubblewidth"])){
+                                    $max_width = $custom_tooltip["bubblewidth"];
+                                    $special_classes .= " bubblewidth_".$custom_tooltip["bubblewidth"];
+                                }
+                                if(isset($custom_tooltip["bubblebgcolor"])){
+                                    $bgcolor = $custom_tooltip["bubblebgcolor"];
+                                    $special_classes .= " bubblebgcolor_".$custom_tooltip["bubblebgcolor"];
+                                }
+                                if(isset($custom_tooltip["bubbleopacity"])){
+                                    $opacity = $custom_tooltip["bubbleopacity"];
+                                    $special_classes .= " bubbleopacity_".$custom_tooltip["bubbleopacity"];
+                                }
+                                if(isset($custom_tooltip["bubbleposition"])){
+                                    $position = $custom_tooltip["bubbleposition"];
+                                    $special_classes .= " bubbleposition_".$custom_tooltip["bubbleposition"];
+                                }
+                                if(isset($custom_tooltip["bubblecolor"])){
+                                    $color = $custom_tooltip["bubblecolor"];
+                                    $special_classes .= " bubblecolor_".$custom_tooltip["bubblecolor"];
+                                }							
+                            
+                            
+                            ?>
+    
+                            new jQuery.Zebra_Tooltips(jQuery('[class="tooltips <?php echo $special_classes ?> custom_m_bubble"]'), {
+                                'background_color':     '<?php echo $bgcolor ?>',
+                                'color':				'<?php echo $color ?>',
+                                'max_width':  <?php echo $max_width ?>,
+                                'opacity':    <?php echo $opacity ?>, 
+                                'position':    '<?php echo $position ?>'
+                            });
+                            
+                            <?php
+                        }
+                        ?>
+                    
+                    });
+                </script>        
+		<?php endif;
 	}
 	
 	public function plugin_row_links($links, $file) {
