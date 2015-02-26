@@ -162,23 +162,17 @@ function wc_update_new_customer_past_orders( $customer_id ) {
 	$linked   = 0;
 	$complete = 0;
 
-	if ( $customer_orders )
+	if ( $customer_orders ) {
 		foreach ( $customer_orders as $order_id ) {
 			update_post_meta( $order_id, '_customer_user', $customer->ID );
 
-			$order_status = get_post_status( $order_id );
-
-			if ( $order_status ) {
-				$order_status = current( $order_status );
-				$order_status = sanitize_title( $order_status->slug );
-			}
-
-			if ( $order_status === 'completed' ) {
+			if ( get_post_status( $order_id ) === 'wc-completed' ) {
 				$complete ++;
 			}
 
 			$linked ++;
 		}
+	}
 
 	if ( $complete ) {
 		update_user_meta( $customer_id, 'paying_customer', 1 );
@@ -197,15 +191,15 @@ function wc_update_new_customer_past_orders( $customer_id ) {
  * @return void
  */
 function wc_paying_customer( $order_id ) {
-
 	$order = wc_get_order( $order_id );
 
-	if ( $order->user_id > 0 ) {
+	if ( $order->user_id > 0 && 'refund' !== $order->order_type ) {
 		update_user_meta( $order->user_id, 'paying_customer', 1 );
 
 		$old_spent = absint( get_user_meta( $order->user_id, '_money_spent', true ) );
 		update_user_meta( $order->user_id, '_money_spent', $old_spent + $order->order_total );
-
+	}
+	if ( $order->user_id > 0 && 'simple' === $order->order_type ) {
 		$old_count = absint( get_user_meta( $order->user_id, '_order_count', true ) );
 		update_user_meta( $order->user_id, '_order_count', $old_count + 1 );
 	}
@@ -228,8 +222,11 @@ function wc_customer_bought_product( $customer_email, $user_id, $product_id ) {
 	$emails = array();
 
 	if ( $user_id ) {
-		$user     = get_user_by( 'id', $user_id );
-		$emails[] = $user->user_email;
+		$user = get_user_by( 'id', $user_id );
+
+		if ( isset( $user->user_email ) ) {
+			$emails[] = $user->user_email;
+		}
 	}
 
 	if ( is_email( $customer_email ) ) {
@@ -391,10 +388,8 @@ function wc_get_customer_available_downloads( $customer_id ) {
 	$results = $wpdb->get_results( $wpdb->prepare( "
 		SELECT permissions.*
 		FROM {$wpdb->prefix}woocommerce_downloadable_product_permissions as permissions
-		LEFT JOIN {$wpdb->posts} as posts ON permissions.order_id = posts.ID
 		WHERE user_id = %d
 		AND permissions.order_id > 0
-		AND posts.post_status IN ( '" . implode( "','", array_keys( wc_get_order_statuses() ) ) . "' )
 		AND
 			(
 				permissions.downloads_remaining > 0
@@ -407,11 +402,12 @@ function wc_get_customer_available_downloads( $customer_id ) {
 				OR
 				permissions.access_expires >= %s
 			)
-		GROUP BY permissions.download_id
 		ORDER BY permissions.order_id, permissions.product_id, permissions.permission_id;
 		", $customer_id, date( 'Y-m-d', current_time( 'timestamp' ) ) ) );
 
 	if ( $results ) {
+		
+		$looped_downloads = array();
 		foreach ( $results as $result ) {
 			if ( ! $order || $order->id != $result->order_id ) {
 				// new order
@@ -419,15 +415,22 @@ function wc_get_customer_available_downloads( $customer_id ) {
 				$_product = null;
 			}
 
+			// Make sure the order exists for this download
+			if ( ! $order ) {
+				continue;
+			}
+
 			// Downloads permitted?
 			if ( ! $order->is_download_permitted() ) {
 				continue;
 			}
 
-			if ( ! $_product || $_product->id != $result->product_id ) {
+			$product_id = intval( $result->product_id );
+
+			if ( ! $_product || $_product->id != $product_id ) {
 				// new product
 				$file_number = 0;
-				$_product    = wc_get_product( $result->product_id );
+				$_product    = wc_get_product( $product_id );
 			}
 
 			// Check product exists and has the file
@@ -436,6 +439,13 @@ function wc_get_customer_available_downloads( $customer_id ) {
 			}
 
 			$download_file = $_product->get_file( $result->download_id );
+			
+			// Check if the file has been already added to the downloads list
+			if ( in_array( $download_file, $looped_downloads ) ) {
+				continue;
+			}
+
+			array_push( $looped_downloads, $download_file );
 
 			// Download name will be 'Product Name' for products with a single downloadable file, and 'Product Name - File X' for products with multiple files
 			$download_name = apply_filters(
@@ -449,7 +459,7 @@ function wc_get_customer_available_downloads( $customer_id ) {
 			$downloads[] = array(
 				'download_url'        => add_query_arg(
 					array(
-						'download_file' => $result->product_id,
+						'download_file' => $product_id,
 						'order'         => $result->order_key,
 						'email'         => $result->user_email,
 						'key'           => $result->download_id
@@ -457,11 +467,12 @@ function wc_get_customer_available_downloads( $customer_id ) {
 					home_url( '/' )
 				),
 				'download_id'         => $result->download_id,
-				'product_id'          => $result->product_id,
+				'product_id'          => $product_id,
 				'download_name'       => $download_name,
 				'order_id'            => $order->id,
 				'order_key'           => $order->order_key,
 				'downloads_remaining' => $result->downloads_remaining,
+				'access_expires' 	  => $result->access_expires,
 				'file'                => $download_file
 			);
 
@@ -470,4 +481,58 @@ function wc_get_customer_available_downloads( $customer_id ) {
 	}
 
 	return $downloads;
+}
+
+/**
+ * Get total spent by customer
+ * @param  int $user_id
+ * @return string
+ */
+function wc_get_customer_total_spent( $user_id ) {
+	if ( ! $spent = get_user_meta( $user_id, '_money_spent', true ) ) {
+		global $wpdb;
+
+		$spent = $wpdb->get_var( "SELECT SUM(meta2.meta_value)
+			FROM $wpdb->posts as posts
+
+			LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+			LEFT JOIN {$wpdb->postmeta} AS meta2 ON posts.ID = meta2.post_id
+
+			WHERE   meta.meta_key       = '_customer_user'
+			AND     meta.meta_value     = $user_id
+			AND     posts.post_type     IN ('" . implode( "','", wc_get_order_types( 'reports' ) ) . "')
+			AND     posts.post_status   IN ( 'wc-completed', 'wc-processing' )
+			AND     meta2.meta_key      = '_order_total'
+		" );
+
+		update_user_meta( $user_id, '_money_spent', $spent );
+	}
+
+	return $spent;
+}
+
+/**
+ * Get total orders by customer
+ * @param  int $user_id
+ * @return int
+ */
+function wc_get_customer_order_count( $user_id ) {
+	if ( ! $count = get_user_meta( $user_id, '_order_count', true ) ) {
+		global $wpdb;
+
+		$count = $wpdb->get_var( "SELECT COUNT(*)
+			FROM $wpdb->posts as posts
+
+			LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+
+			WHERE   meta.meta_key       = '_customer_user'
+			AND     posts.post_type     IN ('" . implode( "','", wc_get_order_types( 'order-count' ) ) . "')
+			AND     posts.post_status   IN ('" . implode( "','", array_keys( wc_get_order_statuses() ) )  . "')
+			AND     meta_value          = $user_id
+		" );
+
+		update_user_meta( $user_id, '_order_count', absint( $count ) );
+	}
+
+	return absint( $count );
 }

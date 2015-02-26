@@ -12,16 +12,16 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account' ) ) :
  * An email sent to the customer when they create an account.
  *
  * @class 		WC_Email_Customer_New_Account
- * @version		2.0.0
+ * @version		2.3.0
  * @package		WooCommerce/Classes/Emails
  * @author 		WooThemes
  * @extends 	WC_Email
  */
 class WC_Email_Customer_New_Account extends WC_Email {
 
-	var $user_login;
-	var $user_email;
-	var $user_pass;
+	public $user_login;
+	public $user_email;
+	public $user_pass;
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ class WC_Email_Customer_New_Account extends WC_Email {
 
 		$this->id 				= 'customer_new_account';
 		$this->title 			= __( 'New account', 'woocommerce' );
-		$this->description		= __( 'Customer new account emails are sent when a customer signs up via the checkout or My Account page.', 'woocommerce' );
+		$this->description		= __( 'Customer "new account" emails are sent to the customer when a customer signs up via checkout or account pages.', 'woocommerce' );
 
 		$this->template_html 	= 'emails/customer-new-account.php';
 		$this->template_plain 	= 'emails/plain/customer-new-account.php';

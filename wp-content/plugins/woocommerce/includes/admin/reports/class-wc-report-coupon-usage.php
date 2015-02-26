@@ -180,7 +180,7 @@ class WC_Report_Coupon_Usage extends WC_Admin_Report {
 
 						if ( $used_coupons ) :
 					?>
-						<select id="coupon_codes" name="coupon_codes" class="chosen_select" data-placeholder="<?php _e( 'Choose coupons&hellip;', 'woocommerce' ); ?>" style="width:100%;">
+						<select id="coupon_codes" name="coupon_codes" class="wc-enhanced-select" data-placeholder="<?php _e( 'Choose coupons&hellip;', 'woocommerce' ); ?>" style="width:100%;">
 							<option value=""><?php _e( 'All coupons', 'woocommerce' ); ?></option>
 							<?php
 								foreach ( $used_coupons as $coupon ) {
@@ -195,11 +195,6 @@ class WC_Report_Coupon_Usage extends WC_Admin_Report {
 						<input type="hidden" name="page" value="<?php if ( ! empty( $_GET['page'] ) ) echo esc_attr( $_GET['page'] ) ?>" />
 						<input type="hidden" name="tab" value="<?php if ( ! empty( $_GET['tab'] ) ) echo esc_attr( $_GET['tab'] ) ?>" />
 						<input type="hidden" name="report" value="<?php if ( ! empty( $_GET['report'] ) ) echo esc_attr( $_GET['report'] ) ?>" />
-						<script type="text/javascript">
-							jQuery(function() {
-								jQuery('select.chosen_select').chosen();
-							});
-						</script>
 					<?php else : ?>
 						<span><?php _e( 'No used coupons found', 'woocommerce' ); ?></span>
 					<?php endif; ?>
@@ -244,7 +239,7 @@ class WC_Report_Coupon_Usage extends WC_Admin_Report {
 					foreach ( $most_popular as $coupon ) {
 						echo '<tr class="' . ( in_array( $coupon->coupon_code, $this->coupon_codes ) ? 'active' : '' ) . '">
 							<td class="count" width="1%">' . $coupon->coupon_count . '</td>
-							<td class="name"><a href="' . add_query_arg( 'coupon_codes', $coupon->coupon_code ) . '">' . $coupon->coupon_code . '</a></td>
+							<td class="name"><a href="' . esc_url( add_query_arg( 'coupon_codes', $coupon->coupon_code ) ) . '">' . $coupon->coupon_code . '</a></td>
 						</tr>';
 					}
 				} else {
@@ -292,7 +287,7 @@ class WC_Report_Coupon_Usage extends WC_Admin_Report {
 					foreach ( $most_discount as $coupon ) {
 						echo '<tr class="' . ( in_array( $coupon->coupon_code, $this->coupon_codes ) ? 'active' : '' ) . '">
 							<td class="count" width="1%">' . wc_price( $coupon->discount_amount ) . '</td>
-							<td class="name"><a href="' . add_query_arg( 'coupon_codes', $coupon->coupon_code ) . '">' . $coupon->coupon_code . '</a></td>
+							<td class="name"><a href="' . esc_url( add_query_arg( 'coupon_codes', $coupon->coupon_code ) ) . '">' . $coupon->coupon_code . '</a></td>
 						</tr>';
 					}
 				} else {
@@ -460,7 +455,7 @@ class WC_Report_Coupon_Usage extends WC_Admin_Report {
 							points: { show: true, radius: 5, lineWidth: 3, fillColor: '#fff', fill: true },
 							lines: { show: true, lineWidth: 4, fill: false },
 							shadowSize: 0,
-							prepend_tooltip: "<?php echo get_woocommerce_currency_symbol(); ?>"
+							<?php echo $this->get_currency_tooltip(); ?>
 						}
 					];
 
