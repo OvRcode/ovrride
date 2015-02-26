@@ -2,12 +2,11 @@
 Contributors: elliotcondon
 Tags: custom, field, custom field, advanced, simple fields, magic fields, more fields, repeater, matrix, post, type, text, textarea, file, image, edit, admin
 Requires at least: 3.5.0
-Tested up to: 4.0
+Tested up to: 4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Fully customise WordPress edit screens with powerful fields. Boasting a professional interface and a powerful API, it’s a must have for any web developer working with WordPress.Field types include: Wysiwyg, text, textarea, image, file, select, checkbox, page link, post object, date picker, color picker and more!
-
+Customise WordPress with powerful, professional and intuitive fields
 
 == Description ==
 
@@ -22,7 +21,7 @@ Advanced Custom Fields is the perfect solution for any wordpress website which n
 
 = Field Types =
 * Text (type text, api returns text)
-* Text Area (type text, api returns text with `<br />` tags)
+* Text Area (type text, api returns text)
 * Number (type number, api returns integer)
 * Email (type email, api returns text)
 * Password (type password, api returns text)
@@ -106,6 +105,9 @@ http://support.advancedcustomfields.com/
 
 
 == Changelog ==
+
+= 4.4.0 =
+* Core: Fixed depreciated warnings
 
 = 4.3.9 =
 * Core: Added compatibility for WP4 media grid
