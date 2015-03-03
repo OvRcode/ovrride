@@ -54,14 +54,14 @@ define('DISABLE_WP_CRON', true);
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         '}(mm,}oIWC;Y~kCQ>ut{)-+h&w1]fJW )|)nrE]4bUxKckV7<FK|cV/DIjyRQD5r');
-define('SECURE_AUTH_KEY',  ']im5h^3]Lj7y.lRnbsVct0^3HkQu,y+SbrzXAnQ(:x0. Qr=Muu6W#Dqy8;(uC9U');
-define('LOGGED_IN_KEY',    'fbXsQVTi>9c[,!rO?qw|%*]~HNu(9S7){~ouE$4[w/c0G2]q^^I GrHnl)UvuE6#');
-define('NONCE_KEY',        'Mx=G-gT?2j&$!mA^3PlR`PoD-5{3p V%hOK0^*gZ$#.^|c_&eBoVJa#zEbqZhYst');
-define('AUTH_SALT',        '%L@(yW 214]}lPsg]/ie|;tIs2AkJ;$_JFA4q<{r@2-TKoVum`>1r8<@uOuofM.+');
-define('SECURE_AUTH_SALT', 'n..@Z0r+@_O+l>zL^pe-]C++P1&P<hdg.b+F~*]+|7d!XB7G,a(=,-5_`Fs^adux');
-define('LOGGED_IN_SALT',   '&ov&a6]Ddi;W_MHfFOl7Ca.>c]CWW;;&Q)iS|8y;EM>01VQ<<eGw3nbPej.k@!0j');
-define('NONCE_SALT',       '_@x_gIX%`?:L;@4oa|?WTDV}neBx+-{NO8kdb%KOsv05=W2n+.3CVX;=+A1@#X@(');
+define('AUTH_KEY',         getenv('WP_AUTH_KEY') );
+define('SECURE_AUTH_KEY',  getenv('WP_SECURE_AUTH_KEY') );
+define('LOGGED_IN_KEY',    getenv('WP_LOGGED_IN_KEY') );
+define('NONCE_KEY',        getenv('WP_NONCE_KEY') );
+define('AUTH_SALT',        getenv('WP_AUTH_SALT') );
+define('SECURE_AUTH_SALT', getenv('WP_SECURE_AUTH_SALT') );
+define('LOGGED_IN_SALT',   getenv('WP_LOGGED_IN_SALT') );
+define('NONCE_SALT',       getenv('WP_NONCE_SALT') );
 
 /**#@-*/
 
