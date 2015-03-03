@@ -28,7 +28,7 @@ jQuery( function ( $ ) {
 	});
 
 	$(function(){
-		$('.wc-metabox > h3').click( function(event){
+		jQuery('.wc-metabox > h3').click( function(event){
 			$( this ).parent( '.wc-metabox' ).toggleClass( 'closed' ).toggleClass( 'open' );
 		});
 	});
@@ -48,33 +48,122 @@ jQuery( function ( $ ) {
 	});
 	$('ul.wc-tabs li:visible').eq(0).find('a').click();
 
-	$('body').on( 'wc-init-datepickers', function() {
-		$( ".date-picker-field, .date-picker" ).datepicker({
-			dateFormat: "yy-mm-dd",
-			numberOfMonths: 1,
-			showButtonPanel: true,
-		});
+	// Chosen selects
+	jQuery("select.chosen_select").chosen();
+
+	jQuery("select.chosen_select_nostd").chosen({
+		allow_single_deselect: 'true'
 	});
 
-	$('body').trigger( 'wc-init-datepickers' );
+	// Ajax Chosen Product Selectors
+	jQuery("select.ajax_chosen_select_products").ajaxChosen({
+		method: 	'GET',
+		url: 		woocommerce_admin_meta_boxes.ajax_url,
+		dataType: 	'json',
+		afterTypeDelay: 100,
+		data:		{
+			action: 		'woocommerce_json_search_products',
+			security: 		woocommerce_admin_meta_boxes.search_products_nonce
+		}
+	}, function (data) {
+		var terms = {};
+
+		$.each(data, function (i, val) {
+			terms[i] = val;
+		});
+
+		return terms;
+	});
+
+	/**
+	 * Load Chosen for select products and variations
+	 *
+	 * @return {void}
+	 */
+	function loadSelectProductAndVariation() {
+		$( 'select.ajax_chosen_select_products_and_variations' ).ajaxChosen({
+			method:         'GET',
+			url:            woocommerce_admin_meta_boxes.ajax_url,
+			dataType:       'json',
+			afterTypeDelay: 100,
+			data:           {
+				action:   'woocommerce_json_search_products_and_variations',
+				security: woocommerce_admin_meta_boxes.search_products_nonce
+			}
+		},
+		function ( data ) {
+			var terms = {};
+
+			$.each(data, function ( i, val ) {
+				terms[i] = val;
+			});
+
+			return terms;
+		});
+	}
+
+	// Run on document load
+	loadSelectProductAndVariation();
+
+	// Load chosen inside WC Backbone Modal
+	$( 'body' ).on( 'wc_backbone_modal_loaded', function ( e, target ) {
+		if ( '#wc-modal-add-products' === target ) {
+			loadSelectProductAndVariation();
+		}
+	});
+
+	jQuery("select.ajax_chosen_select_downloadable_products_and_variations").ajaxChosen({
+		method: 	'GET',
+		url: 		woocommerce_admin_meta_boxes.ajax_url,
+		dataType: 	'json',
+		afterTypeDelay: 100,
+		data:		{
+			action: 		'woocommerce_json_search_downloadable_products_and_variations',
+			security: 		woocommerce_admin_meta_boxes.search_products_nonce
+		}
+	}, function (data) {
+
+		var terms = {};
+
+		$.each(data, function (i, val) {
+			terms[i] = val;
+		});
+
+		return terms;
+	});
+
+	$( ".date-picker" ).datepicker({
+		dateFormat: "yy-mm-dd",
+		numberOfMonths: 1,
+		showButtonPanel: true,
+		showOn: "button",
+		buttonImage: woocommerce_admin_meta_boxes.calendar_image,
+		buttonImageOnly: true
+	});
+
+	$( ".date-picker-field" ).datepicker({
+		dateFormat: "yy-mm-dd",
+		numberOfMonths: 1,
+		showButtonPanel: true,
+	});
 
 	// META BOXES - Open/close
-	$('.wc-metaboxes-wrapper').on('click', '.wc-metabox h3', function(event){
+	jQuery('.wc-metaboxes-wrapper').on('click', '.wc-metabox h3', function(event){
 		// If the user clicks on some form input inside the h3, like a select list (for variations), the box should not be toggled
 		if ($(event.target).filter(':input, option').length) return;
 
-		$(this).next('.wc-metabox-content').stop().slideToggle();
+		jQuery(this).next('.wc-metabox-content').toggle();
 	})
 	.on('click', '.expand_all', function(event){
-		$(this).closest('.wc-metaboxes-wrapper').find('.wc-metabox > .wc-metabox-content').show();
+		jQuery(this).closest('.wc-metaboxes-wrapper').find('.wc-metabox > table').show();
 		return false;
 	})
 	.on('click', '.close_all', function(event){
-		$(this).closest('.wc-metaboxes-wrapper').find('.wc-metabox > .wc-metabox-content').hide();
+		jQuery(this).closest('.wc-metaboxes-wrapper').find('.wc-metabox > table').hide();
 		return false;
 	});
-	$('.wc-metabox.closed').each(function(){
-		$(this).find('.wc-metabox-content').hide();
+	jQuery('.wc-metabox.closed').each(function(){
+		jQuery(this).find('.wc-metabox-content').hide();
 	});
 
 });

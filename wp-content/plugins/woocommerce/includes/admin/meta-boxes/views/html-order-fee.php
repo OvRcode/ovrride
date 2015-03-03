@@ -1,14 +1,9 @@
 <?php
-/**
- * Shows an order item fee
- *
- * @var object $item The item being displayed
- * @var int $item_id The id of the item being displayed
- */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	exit; // Exit if accessed directly
 }
+
 ?>
 <tr class="fee <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_item_id="<?php echo $item_id; ?>">
 	<td class="check-column"><input type="checkbox" /></td>
@@ -28,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'woocommerce_admin_order_item_values', null, $item, absint( $item_id ) ); ?>
 
-	<td class="item_cost" width="1%">&nbsp;</td>
 	<td class="quantity" width="1%">&nbsp;</td>
 
 	<td class="line_cost" width="1%">
@@ -50,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</td>
 
 	<?php
-		if ( empty( $legacy_order ) && wc_tax_enabled() ) :
+		if ( empty( $legacy_order ) && 'yes' == get_option( 'woocommerce_calc_taxes' ) ) :
 			$line_tax_data = isset( $item['line_tax_data'] ) ? $item['line_tax_data'] : '';
 			$tax_data      = maybe_unserialize( $line_tax_data );
 

@@ -18,84 +18,57 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class WC_Payment_Gateway extends WC_Settings_API {
 
-	/**
-	 * Set if the place order button should be renamed on selection
-	 * @var string
-	 */
+	/** @var string Payment method ID. */
+	public $id;
+
+	/** @var string Set if the place order button should be renamed on selection. */
 	public $order_button_text;
 
-	/**
-	 * Payment method title
-	 * @var string
-	 */
+	/** @var string Payment method title. */
 	public $title;
 
-	/**
-	 * Chosen payment method id
-	 * @var bool
-	 */
+	/** @var string Chosen payment method id. */
 	public $chosen;
 
-	/**
-	 * True if the gateway shows fields on the checkout
-	 * @var bool
-	 */
+	/** @var bool True if the gateway shows fields on the checkout. */
 	public $has_fields;
 
-	/**
-	 * Countries this gateway is allowed for
-	 * @var array
-	 */
+	/** @var array Array of countries this gateway is allowed for. */
 	public $countries;
 
-	/**
-	 * Available for all counties or specific
-	 * @var string
-	 */
+	/** @var string Available for all counties or specific. */
 	public $availability;
 
-	/**
-	 * Icon for the gateway
-	 * @var string
-	 */
+	/** @var string 'yes' if the method is enabled. */
+	public $enabled;
+
+	/** @var string Icon for the gateway. */
 	public $icon;
 
-	/**
-	 * Description for the gateway
-	 * @var string
-	 */
+	/** @var string Description for the gateway. */
 	public $description;
 
-	/**
-	 * Supported features such as 'default_credit_card_form', 'refunds'
-	 * @var array
-	 */
+	/** @var array Array of supported features such as 'default_credit_card_form', 'refunds' */
 	public $supports = array( 'products' );
 
-	/**
-	 * Maximum transaction amount, zero does not define a maximum
-	 * @var int
-	 */
+	/** @var int Maximum transaction amount, zero does not define a maximum */
 	public $max_amount = 0;
 
-	/**
-	 * Optional URL to view a transaction
-	 * @var string
-	 */
+	/** @var string Optional URL to view a transaction */
 	public $view_transaction_url = '';
 
 	/**
 	 * Get the return url (thank you page)
 	 *
-	 * @param WC_Order $order
+	 * @param string $order (default: '')
 	 * @return string
 	 */
-	public function get_return_url( $order = null ) {
+	public function get_return_url( $order = '' ) {
 
 		if ( $order ) {
 			$return_url = $order->get_checkout_order_received_url();
 		} else {
-			$return_url = wc_get_endpoint_url( 'order-received', '', wc_get_page_permalink( 'checkout' ) );
+			$return_url = wc_get_endpoint_url( 'order-received', '', get_permalink( wc_get_page_id( 'checkout' ) ) );
 		}
 
 		if ( is_ssl() || get_option('woocommerce_force_ssl_checkout') == 'yes' ) {
@@ -240,7 +213,7 @@ abstract class WC_Payment_Gateway extends WC_Settings_API {
 	 * @param  int $order_id
 	 * @param  float $amount
 	 * @param  string $reason
-	 * @return bool|WP_Error True or false based on success, or a WP_Error object
+	 * @return  boolean True or false based on success, or a WP_Error object
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		return false;

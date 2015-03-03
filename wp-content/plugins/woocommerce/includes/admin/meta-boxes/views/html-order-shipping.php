@@ -1,14 +1,9 @@
 <?php
-/**
- * Shows a shipping line
- *
- * @var object $item The item being displayed
- * @var int $item_id The id of the item being displayed
- */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
 ?>
 <tr class="shipping <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_item_id="<?php echo $item_id; ?>">
 	<td class="check-column"><input type="checkbox" /></td>
@@ -52,16 +47,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'woocommerce_admin_order_item_values', null, $item, absint( $item_id ) ); ?>
 
-	<td class="item_cost" width="1%">&nbsp;</td>
 	<td class="quantity" width="1%">&nbsp;</td>
 
 	<td class="line_cost" width="1%">
 		<div class="view">
 			<?php
-				echo ( isset( $item['cost'] ) ) ? wc_price( wc_round_tax_total( $item['cost'] ), array( 'currency' => $order->get_order_currency() ) ) : '';
+				echo ( isset( $item['cost'] ) ) ? wc_price( wc_round_tax_total( $item['cost'] ) ) : '';
 
 				if ( $refunded = $order->get_total_refunded_for_item( $item_id, 'shipping' ) ) {
-					echo '<small class="refunded">-' . wc_price( $refunded, array( 'currency' => $order->get_order_currency() ) ) . '</small>';
+					echo '<small class="refunded">-' . wc_price( $refunded ) . '</small>';
 				}
 			?>
 		</div>
@@ -74,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</td>
 
 	<?php
-		if ( empty( $legacy_order ) && wc_tax_enabled() ) :
+		if ( empty( $legacy_order ) && 'yes' == get_option( 'woocommerce_calc_taxes' ) ) :
 			$shipping_taxes = isset( $item['taxes'] ) ? $item['taxes'] : '';
 			$tax_data       = maybe_unserialize( $shipping_taxes );
 
@@ -85,10 +79,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<td class="line_tax" width="1%">
 						<div class="view">
 							<?php
-								echo ( '' != $tax_item_total ) ? wc_price( wc_round_tax_total( $tax_item_total ), array( 'currency' => $order->get_order_currency() ) ) : '&ndash;';
+								echo ( '' != $tax_item_total ) ? wc_price( wc_round_tax_total( $tax_item_total ) ) : '&ndash;';
 
 								if ( $refunded = $order->get_tax_refunded_for_item( $item_id, $tax_item_id, 'shipping' ) ) {
-									echo '<small class="refunded">-' . wc_price( $refunded, array( 'currency' => $order->get_order_currency() ) ) . '</small>';
+									echo '<small class="refunded">-' . wc_price( $refunded ) . '</small>';
 								}
 							?>
 						</div>

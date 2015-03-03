@@ -19,9 +19,6 @@ class WC_API_Orders extends WC_API_Resource {
 	/** @var string $base the route base */
 	protected $base = '/orders';
 
-	/** @var string $post_type the custom post type */
-	protected $post_type = 'shop_order';
-
 	/**
 	 * Register the routes for this class
 	 *
@@ -100,9 +97,8 @@ class WC_API_Orders extends WC_API_Resource {
 	 */
 	public function get_orders( $fields = null, $filter = array(), $status = null, $page = 1 ) {
 
-		if ( ! empty( $status ) ) {
+		if ( ! empty( $status ) )
 			$filter['status'] = $status;
-		}
 
 		$filter['page'] = $page;
 
@@ -110,11 +106,10 @@ class WC_API_Orders extends WC_API_Resource {
 
 		$orders = array();
 
-		foreach ( $query->posts as $order_id ) {
+		foreach( $query->posts as $order_id ) {
 
-			if ( ! $this->is_readable( $order_id ) ) {
+			if ( ! $this->is_readable( $order_id ) )
 				continue;
-			}
 
 			$orders[] = current( $this->get_order( $order_id, $fields, $filter ) );
 		}
@@ -137,11 +132,10 @@ class WC_API_Orders extends WC_API_Resource {
 	public function get_order( $id, $fields = null, $filter = array() ) {
 
 		// ensure order ID is valid & user has permission to read
-		$id = $this->validate_request( $id, $this->post_type, 'read' );
+		$id = $this->validate_request( $id, 'shop_order', 'read' );
 
-		if ( is_wp_error( $id ) ) {
+		if ( is_wp_error( $id ) )
 			return $id;
-		}
 
 		$order = wc_get_order( $id );
 
@@ -156,13 +150,15 @@ class WC_API_Orders extends WC_API_Resource {
 			'status'                    => $order->get_status(),
 			'currency'                  => $order->get_order_currency(),
 			'total'                     => wc_format_decimal( $order->get_total(), 2 ),
-			'subtotal'                  => wc_format_decimal( $order->get_subtotal(), 2 ),
+			'subtotal'                  => wc_format_decimal( $order->get_subtotal( $order ), 2 ),
 			'total_line_items_quantity' => $order->get_item_count(),
 			'total_tax'                 => wc_format_decimal( $order->get_total_tax(), 2 ),
 			'total_shipping'            => wc_format_decimal( $order->get_total_shipping(), 2 ),
 			'cart_tax'                  => wc_format_decimal( $order->get_cart_tax(), 2 ),
 			'shipping_tax'              => wc_format_decimal( $order->get_shipping_tax(), 2 ),
 			'total_discount'            => wc_format_decimal( $order->get_total_discount(), 2 ),
+			'cart_discount'             => wc_format_decimal( $order->get_cart_discount(), 2 ),
+			'order_discount'            => wc_format_decimal( $order->get_order_discount(), 2 ),
 			'shipping_methods'          => $order->get_shipping_method(),
 			'payment_details' => array(
 				'method_id'    => $order->payment_method,
@@ -196,7 +192,7 @@ class WC_API_Orders extends WC_API_Resource {
 			'note'                      => $order->customer_note,
 			'customer_ip'               => $order->customer_ip_address,
 			'customer_user_agent'       => $order->customer_user_agent,
-			'customer_id'               => $order->get_user_id(),
+			'customer_id'               => $order->customer_user,
 			'view_order_url'            => $order->get_view_order_url(),
 			'line_items'                => array(),
 			'shipping_lines'            => array(),
@@ -265,7 +261,7 @@ class WC_API_Orders extends WC_API_Resource {
 			$order_data['tax_lines'][] = array(
 				'id'       => $tax->id,
 				'rate_id'  => $tax->rate_id,
-				'code'     => $tax_code,
+ 				'code'     => $tax_code,
 				'title'    => $tax->label,
 				'total'    => wc_format_decimal( $tax->amount, 2 ),
 				'compound' => (bool) $tax->is_compound,
@@ -307,21 +303,16 @@ class WC_API_Orders extends WC_API_Resource {
 	 */
 	public function get_orders_count( $status = null, $filter = array() ) {
 
-		try {
-			if ( ! current_user_can( 'read_private_shop_orders' ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_user_cannot_read_orders_count', __( 'You do not have permission to read the orders count', 'woocommerce' ), 401 );
-			}
+		if ( ! empty( $status ) )
+			$filter['status'] = $status;
 
-			if ( ! empty( $status ) ) {
-				$filter['status'] = $status;
-			}
+		$query = $this->query_orders( $filter );
 
-			$query = $this->query_orders( $filter );
-
-			return array( 'count' => (int) $query->found_posts );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( ! current_user_can( 'read_private_shop_orders' ) ) {
+			return new WP_Error( 'woocommerce_api_user_cannot_read_orders_count', __( 'You do not have permission to read the orders count', 'woocommerce' ), array( 'status' => 401 ) );
 		}
+
+		return array( 'count' => (int) $query->found_posts );
 	}
 
 	/**
@@ -383,7 +374,7 @@ class WC_API_Orders extends WC_API_Resource {
 			}
 
 			// create the pending order
-			$order = $this->create_base_order( $default_order_args, $data );
+			$order = wc_create_order( $default_order_args );
 
 			if ( is_wp_error( $order ) ) {
 				throw new WC_API_Exception( 'woocommerce_api_cannot_create_order', sprintf( __( 'Cannot create order: %s', 'woocommerce' ), implode( ', ', $order->get_error_messages() ) ), 400 );
@@ -427,7 +418,7 @@ class WC_API_Orders extends WC_API_Resource {
 				update_post_meta( $order->id, '_payment_method_title', $data['payment_details']['method_title'] );
 
 				// mark as paid if set
-				if ( isset( $data['payment_details']['paid'] ) && true === $data['payment_details']['paid'] ) {
+				if ( isset( $data['payment_details']['paid'] ) && 'true' === $data['payment_details']['paid'] ) {
 					$order->payment_complete( isset( $data['payment_details']['transaction_id'] ) ? $data['payment_details']['transaction_id'] : '' );
 				}
 			}
@@ -469,19 +460,6 @@ class WC_API_Orders extends WC_API_Resource {
 	}
 
 	/**
-	 * Creates new WC_Order.
-	 *
-	 * Requires a separate function for classes that extend WC_API_Orders.
-	 *
-	 * @since 2.3
-	 * @param $args array
-	 * @return WC_Order
-	 */
-	protected function create_base_order( $args, $data ) {
-		return wc_create_order( $args );
-	}
-
-	/**
 	 * Edit an order
 	 *
 	 * @since 2.2
@@ -497,7 +475,7 @@ class WC_API_Orders extends WC_API_Resource {
 
 			$update_totals = false;
 
-			$id = $this->validate_request( $id, $this->post_type, 'edit' );
+			$id = $this->validate_request( $id, 'shop_order', 'edit' );
 
 			if ( is_wp_error( $id ) ) {
 				return $id;
@@ -559,7 +537,7 @@ class WC_API_Orders extends WC_API_Resource {
 
 							$this->set_item( $order, $line_type, $item, 'create' );
 
-						} elseif ( $this->item_is_null( $item ) ) {
+						} elseif ( $this->item_is_null( $item, $line_type ) ) {
 
 							// delete item
 							wc_delete_order_item( $item['id'] );
@@ -587,7 +565,7 @@ class WC_API_Orders extends WC_API_Resource {
 				}
 
 				// mark as paid if set
-				if ( $order->needs_payment() && isset( $data['payment_details']['paid'] ) && true === $data['payment_details']['paid'] ) {
+				if ( $order->needs_payment() && isset( $data['payment_details']['paid'] ) && 'true' === $data['payment_details']['paid'] ) {
 					$order->payment_complete( isset( $data['payment_details']['transaction_id'] ) ? $data['payment_details']['transaction_id'] : '' );
 				}
 			}
@@ -642,7 +620,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 */
 	public function delete_order( $id, $force = false ) {
 
-		$id = $this->validate_request( $id, $this->post_type, 'delete' );
+		$id = $this->validate_request( $id, 'shop_order', 'delete' );
 
 		if ( is_wp_error( $id ) ) {
 			return $id;
@@ -662,12 +640,12 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param array $args request arguments for filtering query
 	 * @return WP_Query
 	 */
-	protected function query_orders( $args ) {
+	private function query_orders( $args ) {
 
 		// set base query arguments
 		$query_args = array(
 			'fields'      => 'ids',
-			'post_type'   => $this->post_type,
+			'post_type'   => 'shop_order',
 			'post_status' => array_keys( wc_get_order_statuses() )
 		);
 
@@ -695,7 +673,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param \WC_Order $order
 	 * @param array $data
 	 */
-	protected function set_order_addresses( $order, $data ) {
+	private function set_order_addresses( $order, $data ) {
 
 		$address_fields = array(
 			'first_name',
@@ -743,10 +721,10 @@ class WC_API_Orders extends WC_API_Resource {
 
 		// update user meta
 		if ( $order->get_user_id() ) {
-			foreach ( $billing_address as $key => $value ) {
+			foreach( $billing_address as $key => $value ) {
 				update_user_meta( $order->get_user_id(), 'billing_' . $key, $value );
 			}
-			foreach ( $shipping_address as $key => $value ) {
+			foreach( $shipping_address as $key => $value ) {
 				update_user_meta( $order->get_user_id(), 'shipping_' . $key, $value );
 			}
 		}
@@ -762,7 +740,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param int $order_id valid order ID
 	 * @param array $order_meta order meta in array( 'meta_key' => 'meta_value' ) format
 	 */
-	protected function set_order_meta( $order_id, $order_meta ) {
+	private function set_order_meta( $order_id, $order_meta ) {
 
 		foreach ( $order_meta as $meta_key => $meta_value ) {
 
@@ -781,7 +759,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param array $item item provided in the request body
 	 * @return bool true if the item resource ID is null, false otherwise
 	 */
-	protected function item_is_null( $item ) {
+	private function item_is_null( $item ) {
 
 		$keys = array( 'product_id', 'method_id', 'title', 'code' );
 
@@ -807,7 +785,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param string $action either 'create' or 'update'
 	 * @throws WC_API_Exception if item ID is not associated with order
 	 */
-	protected function set_item( $order, $item_type, $item, $action ) {
+	private function set_item( $order, $item_type, $item, $action ) {
 		global $wpdb;
 
 		$set_method = "set_{$item_type}";
@@ -838,7 +816,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param string $action 'create' to add line item or 'update' to update it
 	 * @throws WC_API_Exception invalid data, server error
 	 */
-	protected function set_line_item( $order, $item, $action ) {
+	private function set_line_item( $order, $item, $action ) {
 
 		$creating = ( 'create' === $action );
 
@@ -939,7 +917,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param string $action 'create' to add shipping or 'update' to update it
 	 * @throws WC_API_Exception invalid data, server error
 	 */
-	protected function set_shipping( $order, $shipping, $action ) {
+	private function set_shipping( $order, $shipping, $action ) {
 
 		// total must be a positive float
 		if ( isset( $shipping['total'] ) && floatval( $shipping['total'] ) < 0 ) {
@@ -994,7 +972,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param string $action 'create' to add fee or 'update' to update it
 	 * @throws WC_API_Exception invalid data, server error
 	 */
-	protected function set_fee( $order, $fee, $action ) {
+	private function set_fee( $order, $fee, $action ) {
 
 		if ( 'create' === $action ) {
 
@@ -1011,7 +989,7 @@ class WC_API_Orders extends WC_API_Resource {
 			// if taxable, tax class and total are required
 			if ( isset( $fee['taxable'] ) && $fee['taxable'] ) {
 
-				if ( ! isset( $fee['tax_class'] ) ) {
+				if ( empty( $fee['tax_class'] ) ) {
 					throw new WC_API_Exception( 'woocommerce_invalid_fee_item', __( 'Fee tax class is required when fee is taxable', 'woocommerce' ), 400 );
 				}
 
@@ -1073,7 +1051,7 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @param string $action 'create' to add coupon or 'update' to update it
 	 * @throws WC_API_Exception invalid data, server error
 	 */
-	protected function set_coupon( $order, $coupon, $action ) {
+	private function set_coupon( $order, $coupon, $action ) {
 
 		// coupon amount must be positive float
 		if ( isset( $coupon['amount'] ) && floatval( $coupon['amount'] ) < 0 ) {
@@ -1124,7 +1102,7 @@ class WC_API_Orders extends WC_API_Resource {
 	public function get_order_notes( $order_id, $fields = null ) {
 
 		// ensure ID is valid order ID
-		$order_id = $this->validate_request( $order_id, $this->post_type, 'read' );
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'read' );
 
 		if ( is_wp_error( $order_id ) ) {
 			return $order_id;
@@ -1162,37 +1140,34 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return array
 	 */
 	public function get_order_note( $order_id, $id, $fields = null ) {
-		try {
-			// Validate order ID
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'read' );
 
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
+		// validate order ID
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'read' );
 
-			$id = absint( $id );
-
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'Invalid order note ID', 'woocommerce' ), 400 );
-			}
-
-			$note = get_comment( $id );
-
-			if ( is_null( $note ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'An order note with the provided ID could not be found', 'woocommerce' ), 404 );
-			}
-
-			$order_note = array(
-				'id'            => $note->comment_ID,
-				'created_at'    => $this->server->format_datetime( $note->comment_date_gmt ),
-				'note'          => $note->comment_content,
-				'customer_note' => get_comment_meta( $note->comment_ID, 'is_customer_note', true ) ? true : false,
-			);
-
-			return array( 'order_note' => apply_filters( 'woocommerce_api_order_note_response', $order_note, $id, $fields, $note, $order_id, $this ) );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( is_wp_error( $order_id ) ) {
+			return $order_id;
 		}
+
+		$id = absint( $id );
+
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'Invalid order note ID', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$note = get_comment( $id );
+
+		if ( is_null( $note ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'An order note with the provided ID could not be found', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		$order_note = array(
+			'id'            => $note->comment_ID,
+			'created_at'    => $this->server->format_datetime( $note->comment_date_gmt ),
+			'note'          => $note->comment_content,
+			'customer_note' => get_comment_meta( $note->comment_ID, 'is_customer_note', true ) ? true : false,
+		);
+
+		return array( 'order_note' => apply_filters( 'woocommerce_api_order_note_response', $order_note, $id, $fields, $note, $order_id, $this ) );
 	}
 
 	/**
@@ -1204,47 +1179,44 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return WP_Error|array error or created note response data
 	 */
 	public function create_order_note( $order_id, $data ) {
-		try {
-			$data = isset( $data['order_note'] ) ? $data['order_note'] : array();
 
-			// permission check
-			if ( ! current_user_can( 'publish_shop_orders' ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_user_cannot_create_order_note', __( 'You do not have permission to create order notes', 'woocommerce' ), 401 );
-			}
+		$data = isset( $data['order_note'] ) ? $data['order_note'] : array();
 
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'edit' );
-
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
-
-			$order = wc_get_order( $order_id );
-
-			$data = apply_filters( 'woocommerce_api_create_order_note_data', $data, $order_id, $this );
-
-			// note content is required
-			if ( ! isset( $data['note'] ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note', __( 'Order note is required', 'woocommerce' ), 400 );
-			}
-
-			$is_customer_note = ( isset( $data['customer_note'] ) && true === $data['customer_note'] );
-
-			// create the note
-			$note_id = $order->add_order_note( $data['note'], $is_customer_note );
-
-			if ( ! $note_id ) {
-				throw new WC_API_Exception( 'woocommerce_api_cannot_create_order_note', __( 'Cannot create order note, please try again', 'woocommerce' ), 500 );
-			}
-
-			// HTTP 201 Created
-			$this->server->send_status( 201 );
-
-			do_action( 'woocommerce_api_create_order_note', $note_id, $order_id, $this );
-
-			return $this->get_order_note( $order->id, $note_id );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		// permission check
+		if ( ! current_user_can( 'publish_shop_orders' ) ) {
+			return new WP_Error( 'woocommerce_api_user_cannot_create_order_note', __( 'You do not have permission to create order notes', 'woocommerce' ), array( 'status' => 401 ) );
 		}
+
+		$order_id = absint( $order_id );
+
+		if ( empty( $order_id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_id', __( 'Order ID is invalid', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$order = wc_get_order( $order_id );
+
+		$data = apply_filters( 'woocommerce_api_create_order_note_data', $data, $order_id, $this );
+
+		// note content is required
+		if ( ! isset( $data['note'] ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note', __( 'Order note is required', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$is_customer_note = ( isset( $data['customer_note'] ) && true === $data['customer_note'] );
+
+		// create the note
+		$note_id = $order->add_order_note( $data['note'], $is_customer_note );
+
+		if ( ! $note_id ) {
+			return new WP_Error( 'woocommerce_api_cannot_create_order_note', __( 'Cannot create order note, please try again', 'woocommerce' ), array( 'status' => 500 ) );
+		}
+
+		// HTTP 201 Created
+		$this->server->send_status( 201 );
+
+		do_action( 'woocommerce_api_create_order_note', $note_id, $order_id, $this );
+
+		return $this->get_order_note( $order->id, $note_id );
 	}
 
 	/**
@@ -1257,62 +1229,59 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return WP_Error|array error or edited note response data
 	 */
 	public function edit_order_note( $order_id, $id, $data ) {
-		try {
-			$data = isset( $data['order_note'] ) ? $data['order_note'] : array();
 
-			// Validate order ID
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'edit' );
+		$data = isset( $data['order_note'] ) ? $data['order_note'] : array();
 
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
+		// validate order ID
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'edit' );
 
-			$order = wc_get_order( $order_id );
-
-			// Validate note ID
-			$id = absint( $id );
-
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'Invalid order note ID', 'woocommerce' ), 400 );
-			}
-
-			// Ensure note ID is valid
-			$note = get_comment( $id );
-
-			if ( is_null( $note ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'An order note with the provided ID could not be found', 'woocommerce' ), 404 );
-			}
-
-			// Ensure note ID is associated with given order
-			if ( $note->comment_post_ID != $order->id ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'The order note ID provided is not associated with the order', 'woocommerce' ), 400 );
-			}
-
-			$data = apply_filters( 'woocommerce_api_edit_order_note_data', $data, $note->comment_ID, $order->id, $this );
-
-			// Note content
-			if ( isset( $data['note'] ) ) {
-
-				wp_update_comment(
-					array(
-						'comment_ID'      => $note->comment_ID,
-						'comment_content' => $data['note'],
-					)
-				);
-			}
-
-			// Customer note
-			if ( isset( $data['customer_note'] ) ) {
-
-				update_comment_meta( $note->comment_ID, 'is_customer_note', true === $data['customer_note'] );
-			}
-
-			do_action( 'woocommerce_api_edit_order_note', $note->comment_ID, $order->id, $this );
-
-			return $this->get_order_note( $order->id, $note->comment_ID );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( is_wp_error( $order_id ) ) {
+			return $order_id;
 		}
+
+		$order = wc_get_order( $order_id );
+
+		// validate note ID
+		$id = absint( $id );
+
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'Invalid order note ID', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		// ensure note ID is valid
+		$note = get_comment( $id );
+
+		if ( is_null( $note) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'An order note with the provided ID could not be found', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		// ensure note ID is associated with given order
+		if ( $note->comment_post_ID != $order->id ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'The order note ID provided is not associated with the order', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$data = apply_filters( 'woocommerce_api_edit_order_note_data', $data, $note->comment_ID, $order->id, $this );
+
+		// note content
+		if ( isset( $data['note'] ) ) {
+
+			wp_update_comment(
+				array(
+					'comment_ID'      => $note->comment_ID,
+					'comment_content' => $data['note'],
+				)
+			);
+		}
+
+		// customer note
+		if ( isset( $data['customer_note'] ) ) {
+
+			update_comment_meta( $note->comment_ID, 'is_customer_note', true === $data['customer_note'] );
+		}
+
+		do_action( 'woocommerce_api_edit_order_note', $note->comment_ID, $order->id, $this );
+
+		return $this->get_order_note( $order->id, $note->comment_ID );
 	}
 
 	/**
@@ -1324,44 +1293,44 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return WP_Error|array error or deleted message
 	 */
 	public function delete_order_note( $order_id, $id ) {
-		try {
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'delete' );
 
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'delete' );
 
-			// Validate note ID
-			$id = absint( $id );
+		if ( is_wp_error( $order_id ) ) {
+			return $order_id;
+		}
 
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'Invalid order note ID', 'woocommerce' ), 400 );
-			}
+		// validate note ID
+		$id = absint( $id );
 
-			// Ensure note ID is valid
-			$note = get_comment( $id );
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'Invalid order note ID', 'woocommerce' ), array( 'status' => 400 ) );
+		}
 
-			if ( is_null( $note ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'An order note with the provided ID could not be found', 'woocommerce' ), 404 );
-			}
+		// ensure note ID is valid
+		$note = get_comment( $id );
 
-			// Ensure note ID is associated with given order
-			if ( $note->comment_post_ID != $order_id ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_note_id', __( 'The order note ID provided is not associated with the order', 'woocommerce' ), 400 );
-			}
+		if ( is_null( $note) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'An order note with the provided ID could not be found', 'woocommerce' ), array( 'status' => 404 ) );
+		}
 
-			// Force delete since trashed order notes could not be managed through comments list table
-			$result = wp_delete_comment( $note->comment_ID, true );
+		// ensure note ID is associated with given order
+		if ( $note->comment_post_ID != $order_id ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_note_id', __( 'The order note ID provided is not associated with the order', 'woocommerce' ), array( 'status' => 400 ) );
+		}
 
-			if ( ! $result ) {
-				throw new WC_API_Exception( 'woocommerce_api_cannot_delete_order_note', __( 'This order note cannot be deleted', 'woocommerce' ), 500 );
-			}
+		// force delete since trashed order notes could not be managed through comments list table
+		$result = wp_delete_comment( $note->comment_ID, true );
+
+		if ( $result ) {
 
 			do_action( 'woocommerce_api_delete_order_note', $note->comment_ID, $order_id, $this );
 
 			return array( 'message' => __( 'Permanently deleted order note', 'woocommerce' ) );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+
+		} else {
+
+			return new WP_Error( 'woocommerce_api_cannot_delete_order_note', __( 'This order note cannot be deleted', 'woocommerce' ), array( 'status' => 500 ) );
 		}
 	}
 
@@ -1376,7 +1345,7 @@ class WC_API_Orders extends WC_API_Resource {
 	public function get_order_refunds( $order_id, $fields = null ) {
 
 		// Ensure ID is valid order ID
-		$order_id = $this->validate_request( $order_id, $this->post_type, 'read' );
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'read' );
 
 		if ( is_wp_error( $order_id ) ) {
 			return $order_id;
@@ -1409,72 +1378,69 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return array
 	 */
 	public function get_order_refund( $order_id, $id, $fields = null ) {
-		try {
-			// Validate order ID
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'read' );
 
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
+		// Validate order ID
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'read' );
 
-			$id = absint( $id );
+		if ( is_wp_error( $order_id ) ) {
+			return $order_id;
+		}
 
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'Invalid order refund ID', 'woocommerce' ), 400 );
-			}
+		$id = absint( $id );
 
-			$order  = wc_get_order( $id );
-			$refund = wc_get_order( $id );
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'Invalid order refund ID', 'woocommerce' ), array( 'status' => 400 ) );
+		}
 
-			if ( ! $refund ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'An order refund with the provided ID could not be found', 'woocommerce' ), 404 );
-			}
+		$order  = wc_get_order( $id );
+		$refund = wc_get_order( $id );
 
-			$line_items = array();
+		if ( ! $refund ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'An order refund with the provided ID could not be found', 'woocommerce' ), array( 'status' => 404 ) );
+		}
 
-			// Add line items
-			foreach ( $refund->get_items( 'line_item' ) as $item_id => $item ) {
+		$line_items = array();
 
-				$product   = $order->get_product_from_item( $item );
-				$meta      = new WC_Order_Item_Meta( $item['item_meta'], $product );
-				$item_meta = array();
+		// Add line items
+		foreach ( $refund->get_items( 'line_item' ) as $item_id => $item ) {
 
-				foreach ( $meta->get_formatted() as $meta_key => $formatted_meta ) {
-					$item_meta[] = array(
-						'key' => $meta_key,
-						'label' => $formatted_meta['label'],
-						'value' => $formatted_meta['value'],
-					);
-				}
+			$product   = $order->get_product_from_item( $item );
+			$meta      = new WC_Order_Item_Meta( $item['item_meta'], $product );
+			$item_meta = array();
 
-				$line_items[] = array(
-					'id'           => $item_id,
-					'subtotal'     => wc_format_decimal( $order->get_line_subtotal( $item ), 2 ),
-					'subtotal_tax' => wc_format_decimal( $item['line_subtotal_tax'], 2 ),
-					'total'        => wc_format_decimal( $order->get_line_total( $item ), 2 ),
-					'total_tax'    => wc_format_decimal( $order->get_line_tax( $item ), 2 ),
-					'price'        => wc_format_decimal( $order->get_item_total( $item ), 2 ),
-					'quantity'     => (int) $item['qty'],
-					'tax_class'    => ( ! empty( $item['tax_class'] ) ) ? $item['tax_class'] : null,
-					'name'         => $item['name'],
-					'product_id'   => ( isset( $product->variation_id ) ) ? $product->variation_id : $product->id,
-					'sku'          => is_object( $product ) ? $product->get_sku() : null,
-					'meta'         => $item_meta,
+			foreach ( $meta->get_formatted() as $meta_key => $formatted_meta ) {
+				$item_meta[] = array(
+					'key' => $meta_key,
+					'label' => $formatted_meta['label'],
+					'value' => $formatted_meta['value'],
 				);
 			}
 
-			$order_refund = array(
-				'id'         => $refund->id,
-				'created_at' => $this->server->format_datetime( $refund->date ),
-				'amount'     => wc_format_decimal( $refund->get_refund_amount(), 2 ),
-				'reason'     => $refund->get_refund_reason(),
-				'line_items' => $line_items
+			$line_items[] = array(
+				'id'           => $item_id,
+				'subtotal'     => wc_format_decimal( $order->get_line_subtotal( $item ), 2 ),
+				'subtotal_tax' => wc_format_decimal( $item['line_subtotal_tax'], 2 ),
+				'total'        => wc_format_decimal( $order->get_line_total( $item ), 2 ),
+				'total_tax'    => wc_format_decimal( $order->get_line_tax( $item ), 2 ),
+				'price'        => wc_format_decimal( $order->get_item_total( $item ), 2 ),
+				'quantity'     => (int) $item['qty'],
+				'tax_class'    => ( ! empty( $item['tax_class'] ) ) ? $item['tax_class'] : null,
+				'name'         => $item['name'],
+				'product_id'   => ( isset( $product->variation_id ) ) ? $product->variation_id : $product->id,
+				'sku'          => is_object( $product ) ? $product->get_sku() : null,
+				'meta'         => $item_meta,
 			);
-
-			return array( 'order_refund' => apply_filters( 'woocommerce_api_order_refund_response', $order_refund, $id, $fields, $refund, $order_id, $this ) );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
 		}
+
+		$order_refund = array(
+			'id'         => $refund->id,
+			'date'       => $this->server->format_datetime( $refund->date ),
+			'amount'     => wc_format_decimal( $refund->get_refund_amount(), 2 ),
+			'reason'     => $refund->get_refund_reason(),
+			'line_items' => $line_items
+		);
+
+		return array( 'order_refund' => apply_filters( 'woocommerce_api_order_refund_response', $order_refund, $id, $fields, $refund, $order_id, $this ) );
 	}
 
 	/**
@@ -1487,67 +1453,64 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return WP_Error|array error or created refund response data
 	 */
 	public function create_order_refund( $order_id, $data, $api_refund = true ) {
-		try {
-			$data = isset( $data['order_refund'] ) ? $data['order_refund'] : array();
 
-			// Permission check
-			if ( ! current_user_can( 'publish_shop_orders' ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_user_cannot_create_order_refund', __( 'You do not have permission to create order refunds', 'woocommerce' ), 401 );
-			}
+		$data = isset( $data['order_refund'] ) ? $data['order_refund'] : array();
 
-			$order_id = absint( $order_id );
-
-			if ( empty( $order_id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_id', __( 'Order ID is invalid', 'woocommerce' ), 400 );
-			}
-
-			$data = apply_filters( 'woocommerce_api_create_order_refund_data', $data, $order_id, $this );
-
-			// Refund amount is required
-			if ( ! isset( $data['amount'] ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund', __( 'Refund amount is required', 'woocommerce' ), 400 );
-			} elseif ( 0 > $data['amount'] ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund', __( 'Refund amount must be positive', 'woocommerce' ), 400 );
-			}
-
-			$data['order_id']  = $order_id;
-			$data['refund_id'] = 0;
-
-			// Create the refund
-			$refund = wc_create_refund( $data );
-
-			if ( ! $refund ) {
-				throw new WC_API_Exception( 'woocommerce_api_cannot_create_order_refund', __( 'Cannot create order refund, please try again', 'woocommerce' ), 500 );
-			}
-
-			// Refund via API
-			if ( $api_refund ) {
-				if ( WC()->payment_gateways() ) {
-					$payment_gateways = WC()->payment_gateways->payment_gateways();
-				}
-
-				$order = wc_get_order( $order_id );
-
-				if ( isset( $payment_gateways[ $order->payment_method ] ) && $payment_gateways[ $order->payment_method ]->supports( 'refunds' ) ) {
-					$result = $payment_gateways[ $order->payment_method ]->process_refund( $order_id, $refund->get_refund_amount(), $refund->get_refund_reason() );
-
-					if ( is_wp_error( $result ) ) {
-						return $result;
-					} elseif ( ! $result ) {
-						throw new WC_API_Exception( 'woocommerce_api_create_order_refund_api_failed', __( 'An error occurred while attempting to create the refund using the payment gateway API', 'woocommerce' ), 500 );
-					}
-				}
-			}
-
-			// HTTP 201 Created
-			$this->server->send_status( 201 );
-
-			do_action( 'woocommerce_api_create_order_refund', $refund->id, $order_id, $this );
-
-			return $this->get_order_refund( $order_id, $refund->id );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		// Permission check
+		if ( ! current_user_can( 'publish_shop_orders' ) ) {
+			return new WP_Error( 'woocommerce_api_user_cannot_create_order_refund', __( 'You do not have permission to create order refunds', 'woocommerce' ), array( 'status' => 401 ) );
 		}
+
+		$order_id = absint( $order_id );
+
+		if ( empty( $order_id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_id', __( 'Order ID is invalid', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$data = apply_filters( 'woocommerce_api_create_order_refund_data', $data, $order_id, $this );
+
+		// Refund amount is required
+		if ( ! isset( $data['amount'] ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund', __( 'Refund amount is required', 'woocommerce' ), array( 'status' => 400 ) );
+		} elseif ( 0 > $data['amount'] ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund', __( 'Refund amount must be positive', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$data['order_id']  = $order_id;
+		$data['refund_id'] = 0;
+
+		// Create the refund
+		$refund = wc_create_refund( $data );
+
+		if ( ! $refund ) {
+			return new WP_Error( 'woocommerce_api_cannot_create_order_refund', __( 'Cannot create order refund, please try again', 'woocommerce' ), array( 'status' => 500 ) );
+		}
+
+		// Refund via API
+		if ( $api_refund ) {
+			if ( WC()->payment_gateways() ) {
+				$payment_gateways = WC()->payment_gateways->payment_gateways();
+			}
+
+			$order = wc_get_order( $order_id );
+
+			if ( isset( $payment_gateways[ $order->payment_method ] ) && $payment_gateways[ $order->payment_method ]->supports( 'refunds' ) ) {
+				$result = $payment_gateways[ $order->payment_method ]->process_refund( $order_id, $refund->get_refund_amount(), $refund->get_refund_reason() );
+
+				if ( is_wp_error( $result ) ) {
+					return $result;
+				} elseif ( ! $result ) {
+					return new WP_Error( 'woocommerce_api_create_order_refund_api_failed', __( 'An error occurred while attempting to create the refund using the payment gateway API', 'woocommerce' ), array( 'status' => 500 ) );
+				}
+			}
+		}
+
+		// HTTP 201 Created
+		$this->server->send_status( 201 );
+
+		do_action( 'woocommerce_api_create_order_refund', $refund->id, $order_id, $this );
+
+		return $this->get_order_refund( $order_id, $refund->id );
 	}
 
 	/**
@@ -1560,57 +1523,54 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return WP_Error|array error or edited refund response data
 	 */
 	public function edit_order_refund( $order_id, $id, $data ) {
-		try {
-			$data = isset( $data['order_refund'] ) ? $data['order_refund'] : array();
 
-			// Validate order ID
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'edit' );
+		$data = isset( $data['order_refund'] ) ? $data['order_refund'] : array();
 
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
+		// Validate order ID
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'edit' );
 
-			// Validate refund ID
-			$id = absint( $id );
-
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'Invalid order refund ID', 'woocommerce' ), 400 );
-			}
-
-			// Ensure order ID is valid
-			$refund = get_post( $id );
-
-			if ( ! $refund ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'An order refund with the provided ID could not be found', 'woocommerce' ), 404 );
-			}
-
-			// Ensure refund ID is associated with given order
-			if ( $refund->post_parent != $order_id ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'The order refund ID provided is not associated with the order', 'woocommerce' ), 400 );
-			}
-
-			$data = apply_filters( 'woocommerce_api_edit_order_refund_data', $data, $refund->ID, $order_id, $this );
-
-			// Update reason
-			if ( isset( $data['reason'] ) ) {
-				$updated_refund = wp_update_post( array( 'ID' => $refund->ID, 'post_excerpt' => $data['reason'] ) );
-
-				if ( is_wp_error( $updated_refund ) ) {
-					return $updated_refund;
-				}
-			}
-
-			// Update refund amount
-			if ( isset( $data['amount'] ) && 0 < $data['amount'] ) {
-				update_post_meta( $refund->ID, '_refund_amount', wc_format_decimal( $data['amount'] ) );
-			}
-
-			do_action( 'woocommerce_api_edit_order_refund', $refund->ID, $order_id, $this );
-
-			return $this->get_order_refund( $order_id, $refund->ID );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( is_wp_error( $order_id ) ) {
+			return $order_id;
 		}
+
+		// Validate refund ID
+		$id = absint( $id );
+
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'Invalid order refund ID', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		// Ensure order ID is valid
+		$refund = get_post( $id );
+
+		if ( ! $refund ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'An order refund with the provided ID could not be found', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		// Ensure refund ID is associated with given order
+		if ( $refund->post_parent != $order_id ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'The order refund ID provided is not associated with the order', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$data = apply_filters( 'woocommerce_api_edit_order_refund_data', $data, $refund->ID, $order_id, $this );
+
+		// Update reason
+		if ( isset( $data['reason'] ) ) {
+			$updated_refund = wp_update_post( array( 'ID' => $refund->ID, 'post_excerpt' => $data['reason'] ) );
+
+			if ( is_wp_error( $updated_refund ) ) {
+				return $updated_refund;
+			}
+		}
+
+		// Update refund amount
+		if ( isset( $data['amount'] ) && 0 < $data['amount'] ) {
+			update_post_meta( $refund->ID, '_refund_amount', wc_format_decimal( $data['amount'] ) );
+		}
+
+		do_action( 'woocommerce_api_edit_order_refund', $refund->ID, $order_id, $this );
+
+		return $this->get_order_refund( $order_id, $refund->ID );
 	}
 
 	/**
@@ -1622,39 +1582,36 @@ class WC_API_Orders extends WC_API_Resource {
 	 * @return WP_Error|array error or deleted message
 	 */
 	public function delete_order_refund( $order_id, $id ) {
-		try {
-			$order_id = $this->validate_request( $order_id, $this->post_type, 'delete' );
 
-			if ( is_wp_error( $order_id ) ) {
-				return $order_id;
-			}
+		$order_id = $this->validate_request( $order_id, 'shop_order', 'delete' );
 
-			// Validate refund ID
-			$id = absint( $id );
-
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'Invalid order refund ID', 'woocommerce' ), 400 );
-			}
-
-			// Ensure refund ID is valid
-			$refund = get_post( $id );
-
-			if ( ! $refund ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'An order refund with the provided ID could not be found', 'woocommerce' ), 404 );
-			}
-
-			// Ensure refund ID is associated with given order
-			if ( $refund->post_parent != $order_id ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_order_refund_id', __( 'The order refund ID provided is not associated with the order', 'woocommerce' ), 400 );
-			}
-
-			wc_delete_shop_order_transients( $order_id );
-
-			do_action( 'woocommerce_api_delete_order_refund', $refund->ID, $order_id, $this );
-
-			return $this->delete( $refund->ID, 'refund', true );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( is_wp_error( $order_id ) ) {
+			return $order_id;
 		}
+
+		// Validate refund ID
+		$id = absint( $id );
+
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'Invalid order refund ID', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		// Ensure refund ID is valid
+		$refund = get_post( $id );
+
+		if ( ! $refund ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'An order refund with the provided ID could not be found', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		// Ensure refund ID is associated with given order
+		if ( $refund->post_parent != $order_id ) {
+			return new WP_Error( 'woocommerce_api_invalid_order_refund_id', __( 'The order refund ID provided is not associated with the order', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		wc_delete_shop_order_transients( $order_id );
+
+		do_action( 'woocommerce_api_delete_order_refund', $refund->ID, $order_id, $this );
+
+		return $this->delete( $refund->ID, 'order', true );
 	}
 }

@@ -70,11 +70,7 @@
 			.on( 'change', '.variations select', function( event ) {
 
 				$variation_form = $( this ).closest( '.variations_form' );
-
-				if ( $variation_form.find( 'input.variation_id' ).length > 0 )
-					$variation_form.find( 'input.variation_id' ).val( '' ).change();
-				else
-					$variation_form.find( 'input[name=variation_id]' ).val( '' ).change();
+				$variation_form.find( 'input[name=variation_id]' ).val( '' ).change();
 
 				$variation_form
 					.trigger( 'woocommerce_variation_select_change' )
@@ -86,9 +82,6 @@
 					$.uniform.update();
 				}
 
-				// Custom event for when variation selection has been changed
-				$variation_form.trigger( 'woocommerce_variation_has_changed' );
-
 			} )
 
 			// Upon gaining focus
@@ -96,15 +89,9 @@
 
 				$variation_form = $( this ).closest( '.variations_form' );
 
-				// Get attribute name from data-attribute_name, or from input name if it doesn't exist
-				if ( typeof( $( this ).data( 'attribute_name' ) ) != 'undefined' )
-					attribute_name = $( this ).data( 'attribute_name' );
-				else
-					attribute_name = $( this ).attr( 'name' );
-
 				$variation_form
 					.trigger( 'woocommerce_variation_select_focusin' )
-					.trigger( 'check_variations', [ attribute_name, true ] );
+					.trigger( 'check_variations', [ $( this ).attr( 'name' ), true ] );
 
 			} )
 
@@ -119,23 +106,16 @@
 
 				$variation_form.find( '.variations select' ).each( function() {
 
-					// Get attribute name from data-attribute_name, or from input name if it doesn't exist
-					if ( typeof( $( this ).data( 'attribute_name' ) ) != 'undefined' )
-						attribute_name = $( this ).data( 'attribute_name' );
-					else
-						attribute_name = $( this ).attr( 'name' );
-
-
 					if ( $( this ).val().length === 0 ) {
 						all_set = false;
 					} else {
 						any_set = true;
 					}
 
-					if ( exclude && attribute_name === exclude ) {
+					if ( exclude && $( this ).attr( 'name' ) === exclude ) {
 
 						all_set = false;
-						current_settings[ attribute_name ] = '';
+						current_settings[$( this ).attr( 'name' )] = '';
 
 					} else {
 
@@ -143,7 +123,7 @@
 						value = $( this ).val();
 
 						// Add to settings array
-						current_settings[ attribute_name ] = value;
+						current_settings[ $( this ).attr( 'name' ) ] = value;
 					}
 
 				});
@@ -168,15 +148,8 @@
 					if ( variation ) {
 
 						// Found - set ID
-
-						// Get variation input by class, or by input name if class doesn't exist
-						if ( $variation_form.find( 'input.variation_id' ).length > 0 )
-							$variation_input = $variation_form.find( 'input.variation_id' );
-						else
-							$variation_input = $variation_form.find( 'input[name=variation_id]' );
-
-						// Set ID
-						$variation_input
+						$variation_form
+							.find( 'input[name=variation_id]' )
 							.val( variation.variation_id )
 							.change();
 
@@ -202,7 +175,7 @@
 						$variation_form.trigger( 'reset_image' );
 
 					if ( ! exclude ) {
-						$variation_form.find( '.single_variation_wrap' ).slideUp( 200 ).trigger( 'hide_variation' );
+						$variation_form.find( '.single_variation_wrap' ).slideUp( 200 );
 					}
 
 				}
@@ -270,16 +243,10 @@
 
 					current_attr_select.find( 'option:gt(0)' ).remove();
 					current_attr_select.append( current_attr_select.data( 'attribute_options' ) );
-					current_attr_select.find( 'option:gt(0)' ).removeClass( 'attached' );
+					current_attr_select.find( 'option:gt(0)' ).removeClass( 'active' );
 
-					current_attr_select.find( 'option:gt(0)' ).removeClass( 'enabled' );
-					current_attr_select.find( 'option:gt(0)' ).removeAttr( 'disabled' );
-
-					// Get name from data-attribute_name, or from input name if it doesn't exist
-					if ( typeof( current_attr_select.data( 'attribute_name' ) ) != 'undefined' )
-						current_attr_name = current_attr_select.data( 'attribute_name' );
-					else
-						current_attr_name = current_attr_select.attr( 'name' );
+					// Get name
+					var current_attr_name = current_attr_select.attr( 'name' );
 
 					// Loop through variations
 					for ( var num in variations ) {
@@ -294,11 +261,6 @@
 
 									if ( attr_name == current_attr_name ) {
 
-										if ( variations[ num ].variation_is_active )
-											variation_active = 'enabled';
-										else
-											variation_active = '';
-
 										if ( attr_val ) {
 
 											// Decode entities
@@ -309,11 +271,11 @@
 											attr_val = attr_val.replace( /"/g, "\\\"" );
 
 											// Compare the meerkat
-											current_attr_select.find( 'option[value="' + attr_val + '"]' ).addClass( 'attached ' + variation_active );
+											current_attr_select.find( 'option[value="' + attr_val + '"]' ).addClass( 'active' );
 
 										} else {
 
-											current_attr_select.find( 'option:gt(0)' ).addClass( 'attached ' + variation_active );
+											current_attr_select.find( 'option:gt(0)' ).addClass( 'active' );
 
 										}
 									}
@@ -322,11 +284,8 @@
 						}
 					}
 
-					// Detach unattached
-					current_attr_select.find( 'option:gt(0):not(.attached)' ).remove();
-
-					// Grey out disabled
-					current_attr_select.find( 'option:gt(0):not(.enabled)' ).attr( 'disabled', 'disabled' );
+					// Detach inactive
+					current_attr_select.find( 'option:gt(0):not(.active)' ).remove();
 
 				});
 
@@ -434,17 +393,17 @@
 				}
 
 				if ( variation.min_qty )
-					$single_variation_wrap.find( '.quantity input.qty' ).attr( 'min', variation.min_qty ).val( variation.min_qty );
+					$single_variation_wrap.find( 'input[name=quantity]' ).attr( 'min', variation.min_qty ).val( variation.min_qty );
 				else
-					$single_variation_wrap.find( '.quantity input.qty' ).removeAttr( 'min' );
+					$single_variation_wrap.find( 'input[name=quantity]' ).removeAttr( 'min' );
 
 				if ( variation.max_qty )
-					$single_variation_wrap.find( '.quantity input.qty' ).attr( 'max', variation.max_qty );
+					$single_variation_wrap.find( 'input[name=quantity]' ).attr( 'max', variation.max_qty );
 				else
-					$single_variation_wrap.find( '.quantity input.qty' ).removeAttr( 'max' );
+					$single_variation_wrap.find( 'input[name=quantity]' ).removeAttr( 'max' );
 
 				if ( variation.is_sold_individually === 'yes' ) {
-					$single_variation_wrap.find( '.quantity input.qty' ).val( '1' );
+					$single_variation_wrap.find( 'input[name=quantity]' ).val( '1' );
 					$single_variation_wrap.find( '.quantity' ).hide();
 				}
 

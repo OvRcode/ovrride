@@ -5,7 +5,7 @@
  * @author      WooThemes
  * @category    i18n
  * @package     WooCommerce/i18n
- * @version     2.3.0
+ * @version     2.0.0
  */
 global $states;
 
@@ -24,7 +24,6 @@ $states['NZ'] = array(
 	'WC' => __( 'West Coast', 'woocommerce' ),
 	'CT' => __( 'Canterbury', 'woocommerce' ),
 	'OT' => __( 'Otago', 'woocommerce' ),
-	'SL' => __( 'Southland', 'woocommerce'),
-	'GI' => __( 'Gisborne', 'woocommerce' ),
+	'SL' => __( 'Southland', 'woocommerce')
 );
 

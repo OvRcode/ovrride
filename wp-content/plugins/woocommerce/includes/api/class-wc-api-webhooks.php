@@ -4,10 +4,10 @@
  *
  * Handles requests to the /webhooks endpoint
  *
- * @author   WooThemes
- * @category API
- * @package  WooCommerce/API
- * @since    2.2
+ * @author      WooThemes
+ * @category    API
+ * @package     WooCommerce/API
+ * @since       2.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -63,7 +63,7 @@ class WC_API_Webhooks extends WC_API_Resource {
 	 * Get all webhooks
 	 *
 	 * @since 2.2
-	 * @param array $fields
+	 * @param string $fields
 	 * @param array $filter
 	 * @param int $page
 	 * @return array
@@ -80,7 +80,7 @@ class WC_API_Webhooks extends WC_API_Resource {
 
 		$webhooks = array();
 
-		foreach ( $query->posts as $webhook_id ) {
+		foreach( $query->posts as $webhook_id ) {
 
 			if ( ! $this->is_readable( $webhook_id ) ) {
 				continue;
@@ -138,21 +138,18 @@ class WC_API_Webhooks extends WC_API_Resource {
 	 * @return array
 	 */
 	public function get_webhooks_count( $status = null, $filter = array() ) {
-		try {
-			if ( ! current_user_can( 'read_private_shop_webhooks' ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_user_cannot_read_webhooks_count', __( 'You do not have permission to read the webhooks count', 'woocommerce' ), 401 );
-			}
 
-			if ( ! empty( $status ) ) {
-				$filter['status'] = $status;
-			}
-
-			$query = $this->query_webhooks( $filter );
-
-			return array( 'count' => (int) $query->found_posts );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( ! empty( $status ) ) {
+			$filter['status'] = $status;
 		}
+
+		$query = $this->query_webhooks( $filter );
+
+		if ( ! current_user_can( 'read_private_shop_webhooks' ) ) {
+			return new WP_Error( 'woocommerce_api_user_cannot_read_webhooks_count', __( 'You do not have permission to read the webhooks count', 'woocommerce' ), array( 'status' => 401 ) );
+		}
+
+		return array( 'count' => (int) $query->found_posts );
 	}
 
 	/**
@@ -176,12 +173,12 @@ class WC_API_Webhooks extends WC_API_Resource {
 			$data = apply_filters( 'woocommerce_api_create_webhook_data', $data, $this );
 
 			// validate topic
-			if ( empty( $data['topic'] ) || ! wc_is_webhook_valid_topic( strtolower( $data['topic'] ) ) ) {
+			if ( empty( $data['topic'] ) || ! $this->is_valid_topic( strtolower( $data['topic'] ) ) ) {
 				throw new WC_API_Exception( 'woocommerce_api_invalid_webhook_topic', __( 'Webhook topic is required and must be valid', 'woocommerce' ), 400 );
 			}
 
 			// validate delivery URL
-			if ( empty( $data['delivery_url'] ) || ! wc_is_valid_url( $data['delivery_url'] ) ) {
+			if ( empty( $data['delivery_url'] ) || ! $this->is_valid_url( $data['delivery_url'] ) ) {
 				throw new WC_API_Exception( 'woocommerce_api_invalid_webhook_delivery_url', __( 'Webhook delivery URL must be a valid URL starting with http:// or https://', 'woocommerce' ), 400 );
 			}
 
@@ -190,7 +187,7 @@ class WC_API_Webhooks extends WC_API_Resource {
 				'post_status'   => 'publish',
 				'ping_status'   => 'closed',
 				'post_author'   => get_current_user_id(),
-				'post_password' => strlen( ( $password = uniqid( 'webhook_' ) ) ) > 20 ? substr( $password, 0, 20 ) : $password,
+				'post_password' => uniqid( 'webhook_' ),
 				'post_title'    => ! empty( $data['name'] ) ? $data['name'] : sprintf( __( 'Webhook created on %s', 'woocommerce' ), strftime( _x( '%b %d, %Y @ %I:%M %p', 'Webhook created on date parsed by strftime', 'woocommerce' ) ) ),
 			), $data, $this );
 
@@ -216,8 +213,6 @@ class WC_API_Webhooks extends WC_API_Resource {
 			$this->server->send_status( 201 );
 
 			do_action( 'woocommerce_api_create_webhook', $webhook->id, $this );
-
-			delete_transient( 'woocommerce_webhook_ids' );
 
 			return $this->get_webhook( $webhook->id );
 
@@ -254,7 +249,7 @@ class WC_API_Webhooks extends WC_API_Resource {
 			// update topic
 			if ( ! empty( $data['topic'] ) ) {
 
-				if ( wc_is_webhook_valid_topic( strtolower( $data['topic'] ) ) ) {
+				if ( $this->is_valid_topic( strtolower( $data['topic'] ) ) ) {
 
 					$webhook->set_topic( $data['topic'] );
 
@@ -265,7 +260,7 @@ class WC_API_Webhooks extends WC_API_Resource {
 
 			// update delivery URL
 			if ( ! empty( $data['delivery_url'] ) ) {
-				if ( wc_is_valid_url( $data['delivery_url'] ) ) {
+				if ( $this->is_valid_url( $data['delivery_url'] ) ) {
 
 					$webhook->set_delivery_url( $data['delivery_url'] );
 
@@ -300,14 +295,69 @@ class WC_API_Webhooks extends WC_API_Resource {
 
 			do_action( 'woocommerce_api_edit_webhook', $webhook->id, $this );
 
-			delete_transient( 'woocommerce_webhook_ids' );
-
 			return $this->get_webhook( $id );
 
 		} catch ( WC_API_Exception $e ) {
 
 			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
 		}
+	}
+
+
+	/**
+	 * Check if the given topic is a valid webhook topic, a topic is valid if:
+	 *
+	 * + starts with `action.woocommerce_` or `action.wc_`
+	 * + it has a valid resource & event
+	 *
+	 * @since 2.2
+	 * @param string $topic webhook topic
+	 * @return bool true if valid, false otherwise
+	 */
+	private function is_valid_topic( $topic ) {
+
+		// custom topics are prefixed with woocommerce_ or wc_ are valid
+		if ( 0 === strpos( $topic, 'action.woocommerce_' ) || 0 === strpos( $topic, 'action.wc_' ) ) {
+			return true;
+		}
+
+		@list( $resource, $event ) = explode( '.', $topic );
+
+		if ( ! isset( $resource ) || ! isset( $event ) ) {
+			return false;
+		}
+
+		$valid_resources = apply_filters( 'woocommerce_valid_webhook_resources', array( 'coupon', 'customer', 'order', 'product' ) );
+		$valid_events    = apply_filters( 'woocommerce_valid_webhook_events', array( 'created', 'updated', 'deleted' ) );
+
+		if ( in_array( $resource, $valid_resources ) && in_array( $event, $valid_events ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Simple check for validating a URL, it must start with http:// or https://
+	 * and pass FILTER_VALIDATE_URL validation
+	 *
+	 * @since 2.2
+	 * @param string $url delivery URL for the webhook
+	 * @return bool true if valid, false otherwise
+	 */
+	private function is_valid_url( $url ) {
+
+		// must start with http:// or https://
+		if ( 0 !== strpos( $url, 'http://' ) && 0 !== strpos( $url, 'https://' ) ) {
+			return false;
+		}
+
+		// must pass validation
+		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -327,8 +377,6 @@ class WC_API_Webhooks extends WC_API_Resource {
 
 		do_action( 'woocommerce_api_delete_webhook', $id, $this );
 
-		delete_transient( 'woocommerce_webhook_ids' );
-
 		// no way to manage trashed webhooks at the moment, so force delete
 		return $this->delete( $id, 'webhook', true );
 	}
@@ -342,13 +390,13 @@ class WC_API_Webhooks extends WC_API_Resource {
 	 */
 	private function query_webhooks( $args ) {
 
-		// Set base query arguments
+		// set base query arguments
 		$query_args = array(
 			'fields'      => 'ids',
 			'post_type'   => 'shop_webhook',
 		);
 
-		// Add status argument
+		// add status argument
 		if ( ! empty( $args['status'] ) ) {
 
 			switch ( $args['status'] ) {
@@ -382,23 +430,25 @@ class WC_API_Webhooks extends WC_API_Resource {
 	 */
 	public function get_webhook_deliveries( $webhook_id, $fields = null ) {
 
-		// Ensure ID is valid webhook ID
+		// ensure ID is valid webhook ID
 		$webhook_id = $this->validate_request( $webhook_id, 'shop_webhook', 'read' );
 
 		if ( is_wp_error( $webhook_id ) ) {
 			return $webhook_id;
 		}
 
-		$webhook       = new WC_Webhook( $webhook_id );
-		$logs          = $webhook->get_delivery_logs();
+		$webhook = new WC_Webhook( $webhook_id );
+
+		$logs = $webhook->get_delivery_logs();
+
 		$delivery_logs = array();
 
 		foreach ( $logs as $log ) {
 
-			// Add timestamp
+			// add timestamp
 			$log['created_at'] = $this->server->format_datetime( $log['comment']->comment_date_gmt );
 
-			// Remove comment object
+			// remove comment object
 			unset( $log['comment'] );
 
 			$delivery_logs[] = $log;
@@ -417,40 +467,37 @@ class WC_API_Webhooks extends WC_API_Resource {
 	 * @return array
 	 */
 	public function get_webhook_delivery( $webhook_id, $id, $fields = null ) {
-		try {
-			// Validate webhook ID
-			$webhook_id = $this->validate_request( $webhook_id, 'shop_webhook', 'read' );
 
-			if ( is_wp_error( $webhook_id ) ) {
-				return $webhook_id;
-			}
+		// validate webhook ID
+		$webhook_id = $this->validate_request( $webhook_id, 'shop_webhook', 'read' );
 
-			$id = absint( $id );
-
-			if ( empty( $id ) ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_webhook_delivery_id', __( 'Invalid webhook delivery ID', 'woocommerce' ), 404 );
-			}
-
-			$webhook = new WC_Webhook( $webhook_id );
-
-			$log = $webhook->get_delivery_log( $id );
-
-			if ( ! $log ) {
-				throw new WC_API_Exception( 'woocommerce_api_invalid_webhook_delivery_id', __( 'Invalid webhook delivery', 'woocommerce' ), 400 );
-			}
-
-			$delivery_log = $log;
-
-			// Add timestamp
-			$delivery_log['created_at'] = $this->server->format_datetime( $log['comment']->comment_date_gmt );
-
-			// Remove comment object
-			unset( $delivery_log['comment'] );
-
-			return array( 'webhook_delivery' => apply_filters( 'woocommerce_api_webhook_delivery_response', $delivery_log, $id, $fields, $log, $webhook_id, $this ) );
-		} catch ( WC_API_Exception $e ) {
-			return new WP_Error( $e->getErrorCode(), $e->getMessage(), array( 'status' => $e->getCode() ) );
+		if ( is_wp_error( $webhook_id ) ) {
+			return $webhook_id;
 		}
+
+		$id = absint( $id );
+
+		if ( empty( $id ) ) {
+			return new WP_Error( 'woocommerce_api_invalid_webhook_delivery_id', __( 'Invalid webhook delivery ID', 'woocommerce' ), array( 'status' => 404 ) );
+		}
+
+		$webhook = new WC_Webhook( $webhook_id );
+
+		$log = $webhook->get_delivery_log( $id );
+
+		if ( ! $log ) {
+			return new WP_Error( 'woocommerce_api_invalid_webhook_delivery_id', __( 'Invalid webhook delivery', 'woocommerce' ), array( 'status' => 400 ) );
+		}
+
+		$delivery_log = $log;
+
+		// add timestamp
+		$delivery_log['created_at'] = $this->server->format_datetime( $log['comment']->comment_date_gmt );
+
+		// remove comment object
+		unset( $delivery_log['comment'] );
+
+		return array( 'webhook_delivery' => apply_filters( 'woocommerce_api_webhook_delivery_response', $delivery_log, $id, $fields, $log, $webhook_id, $this ) );
 	}
 
 }

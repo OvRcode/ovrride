@@ -34,10 +34,9 @@ class WC_Order_Item_Meta {
 	 * @param bool $flat (default: false)
 	 * @param bool $return (default: false)
 	 * @param string $hideprefix (default: _)
-	 * @param  string $delimiter Delimiter used to separate items when $flat is true
 	 * @return string
 	 */
-	public function display( $flat = false, $return = false, $hideprefix = '_', $delimiter = ", \n" ) {
+	public function display( $flat = false, $return = false, $hideprefix = '_' ) {
 
 		$output = '';
 
@@ -54,7 +53,7 @@ class WC_Order_Item_Meta {
 				} else {
 					$meta_list[] = '
 							<dt class="variation-' . sanitize_html_class( sanitize_text_field( $meta_key ) ) . '">' . wp_kses_post( $meta['label'] ) . ':</dt>
-							<dd class="variation-' . sanitize_html_class( sanitize_text_field( $meta_key ) ) . '">' . wp_kses_post( wpautop( make_clickable( $meta['value'] ) ) ) . '</dd>
+							<dd class="variation-' . sanitize_html_class( sanitize_text_field( $meta_key ) ) . '">' . wp_kses_post( wpautop( $meta['value'] ) ) . '</dd>
 						';
 				}
 			}
@@ -62,9 +61,9 @@ class WC_Order_Item_Meta {
 			if ( ! empty( $meta_list ) ) {
 
 				if ( $flat ) {
-					$output .= implode( $delimiter, $meta_list );
+					$output .= implode( ", \n", $meta_list );
 				} else {
-					$output .= '<dl class="variation">' . implode( '', $meta_list ) . '</dl>';
+					$output .= '<dl class="variation">' . implode( '', $meta_list ). '</dl>';
 				}
 			}
 		}

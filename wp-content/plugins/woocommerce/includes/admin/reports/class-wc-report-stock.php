@@ -20,6 +20,8 @@ class WC_Report_Stock extends WP_List_Table {
 
 	/**
 	 * __construct function.
+	 *
+	 * @access public
 	 */
 	public function __construct() {
 

@@ -207,9 +207,9 @@ jQuery(function($) {
                 var date = new Date( parseInt( index ) );
 
                 if ( groupby == 'day' )
-                    csv_data += date.getUTCFullYear() + "-" + parseInt( date.getUTCMonth() + 1 ) + "-" + date.getUTCDate() + ',';
+                    csv_data += date.getFullYear() + "-" + parseInt( date.getMonth() + 1 ) + "-" + date.getDate() + ',';
                 else
-                    csv_data += date.getUTCFullYear() + "-" + parseInt( date.getUTCMonth() + 1 ) + ',';
+                    csv_data += date.getFullYear() + "-" + parseInt( date.getMonth() + 1 ) + ',';
 
                 for ( var d = 0; d < value.length; ++d ) {
                     val = value[d];
