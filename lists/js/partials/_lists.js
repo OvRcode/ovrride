@@ -339,6 +339,7 @@ function packageList(){
     });
     dd.set('packages',output);
 }
+
 function pageTotal(){
   var totalGuests = $("div.listButton:visible").length;
   $("span.listTotal").text(totalGuests + " Guests");
@@ -497,8 +498,13 @@ function setupListener(ID){
         toggleExpanded( $(this) );
     });
     if ( settings.get('bus') != "All" ){
-        $("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("singletap", function(){
-            changeStatus($(this).parents().eq(1));
+      $("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
+        //$("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
+        //$("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("singletap", function(){
+            changeStatus($(this).parent());
+            console.log($(this).attr('id'));
+            console.log($(this));
+            console.log('clicked');
         });
     }
 }
