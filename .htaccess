@@ -1,5 +1,5 @@
 # Protect system files from peeping eyes
-<FilesMatch "dev.sql|Gruntfile.js|package.json|ovrride.sql|README.md|register.php|Vagrantfile">
+<FilesMatch "signature.html|dev.sql|Gruntfile.js|package.json|ovrride.sql|README.md|register.php|Vagrantfile">
   Order allow,deny
   Deny from all
 </FilesMatch>
