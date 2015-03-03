@@ -62,7 +62,7 @@ get_header(); ?>
                     endwhile;
                 
                     // count how many trips are listed, if less than 8 have date_picker fields set, set to that number
-                    $max_trips = count($trip_dates) < 8 ? count($trip_dates) : 8;
+                    $max_trips = count($trip_dates) < 10 ? count($trip_dates) : 10;
                 
                     // foreach ($trip_dates as $key => $value) {
                     for( $i = 0; $i < $max_trips; $i++ ) { ?>
