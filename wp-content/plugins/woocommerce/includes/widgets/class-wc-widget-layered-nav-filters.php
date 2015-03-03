@@ -1,18 +1,18 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Layered Navigation Fitlers Widget
  *
- * @author   WooThemes
- * @category Widgets
- * @package  WooCommerce/Widgets
- * @version  2.3.0
- * @extends  WC_Widget
+ * @author 		WooThemes
+ * @category 	Widgets
+ * @package 	WooCommerce/Widgets
+ * @version 	2.0.1
+ * @extends 	WC_Widget
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 class WC_Widget_Layered_Nav_Filters extends WC_Widget {
 
 	/**
@@ -30,7 +30,6 @@ class WC_Widget_Layered_Nav_Filters extends WC_Widget {
 				'label' => __( 'Title', 'woocommerce' )
 			)
 		);
-
 		parent::__construct();
 	}
 
@@ -38,45 +37,52 @@ class WC_Widget_Layered_Nav_Filters extends WC_Widget {
 	 * widget function.
 	 *
 	 * @see WP_Widget
-	 *
+	 * @access public
 	 * @param array $args
 	 * @param array $instance
-	 *
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
 		global $_chosen_attributes;
 
-		if ( ! is_post_type_archive( 'product' ) && ! is_tax( get_object_taxonomies( 'product' ) ) ) {
+		extract( $args );
+
+		if ( ! is_post_type_archive( 'product' ) && ! is_tax( get_object_taxonomies( 'product' ) ) )
 			return;
-		}
+
+		$current_term 	= is_tax() ? get_queried_object()->term_id : '';
+		$current_tax 	= is_tax() ? get_queried_object()->taxonomy : '';
+		$title          = isset( $instance['title'] ) ? $instance['title'] : '';
+		$title          = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		// Price
 		$min_price = isset( $_GET['min_price'] ) ? esc_attr( $_GET['min_price'] ) : 0;
 		$max_price = isset( $_GET['max_price'] ) ? esc_attr( $_GET['max_price'] ) : 0;
 
-		if ( 0 < count( $_chosen_attributes ) || 0 < $min_price || 0 < $max_price ) {
+		if ( count( $_chosen_attributes ) > 0 || $min_price > 0 || $max_price > 0 ) {
 
-			$this->widget_start( $args, $instance );
+			echo $before_widget;
+			if ( $title ) {
+				echo $before_title . $title . $after_title;
+			}
 
-			echo '<ul>';
+			echo "<ul>";
 
 			// Attributes
-			if ( ! is_null( $_chosen_attributes ) ) {
+			if (!is_null($_chosen_attributes)){
 				foreach ( $_chosen_attributes as $taxonomy => $data ) {
 
 					foreach ( $data['terms'] as $term_id ) {
-						$term            = get_term( $term_id, $taxonomy );
-						$taxonomy_filter = str_replace( 'pa_', '', $taxonomy );
-						$current_filter  = ! empty( $_GET[ 'filter_' . $taxonomy_filter ] ) ? $_GET[ 'filter_' . $taxonomy_filter ] : '';
-						$new_filter      = array_map( 'absint', explode( ',', $current_filter ) );
-						$new_filter      = array_diff( $new_filter, array( $term_id ) );
+						$term 				= get_term( $term_id, $taxonomy );
+						$taxonomy_filter 	= str_replace( 'pa_', '', $taxonomy );
+						$current_filter 	= ! empty( $_GET[ 'filter_' . $taxonomy_filter ] ) ? $_GET[ 'filter_' . $taxonomy_filter ] : '';
+						$new_filter			= array_map( 'absint', explode( ',', $current_filter ) );
+						$new_filter			= array_diff( $new_filter, array( $term_id ) );
 
 						$link = remove_query_arg( 'filter_' . $taxonomy_filter );
 
-						if ( sizeof( $new_filter ) > 0 ) {
+						if ( sizeof( $new_filter ) > 0 )
 							$link = add_query_arg( 'filter_' . $taxonomy_filter, implode( ',', $new_filter ), $link );
-						}
 
 						echo '<li class="chosen"><a title="' . __( 'Remove filter', 'woocommerce' ) . '" href="' . esc_url( $link ) . '">' . $term->name . '</a></li>';
 					}
@@ -93,9 +99,9 @@ class WC_Widget_Layered_Nav_Filters extends WC_Widget {
 				echo '<li class="chosen"><a title="' . __( 'Remove filter', 'woocommerce' ) . '" href="' . esc_url( $link ) . '">' . __( 'Max', 'woocommerce' ) . ' ' . wc_price( $max_price ) . '</a></li>';
 			}
 
-			echo '</ul>';
+			echo "</ul>";
 
-			$this->widget_end( $args );
+			echo $after_widget;
 		}
 	}
 }

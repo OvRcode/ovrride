@@ -12,7 +12,8 @@
 				$form.block({
 					message: null,
 					overlayCSS: {
-						background: '#fff',
+						background: '#fff url(' + wc_checkout_params.ajax_loader_url + ') no-repeat center',
+						backgroundSize: '16px 16px',
 						opacity: 0.6
 					}
 				});

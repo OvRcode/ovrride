@@ -2,47 +2,18 @@
 /**
  * Abstract Widget Class
  *
- * @author   WooThemes
- * @category Widgets
- * @package  WooCommerce/Abstracts
- * @version  2.3.0
- * @extends  WP_Widget
+ * @author      WooThemes
+ * @category    Widgets
+ * @package     WooCommerce/Abstracts
+ * @version     2.1.0
+ * @extends     WP_Widget
  */
 abstract class WC_Widget extends WP_Widget {
 
-	/**
-	 * CSS class
-	 *
-	 * @var string
-	 */
 	public $widget_cssclass;
-
-	/**
-	 * Widget description
-	 *
-	 * @var string
-	 */
 	public $widget_description;
-
-	/**
-	 * Widget ID
-	 *
-	 * @var string
-	 */
 	public $widget_id;
-
-	/**
-	 * Widget name
-	 *
-	 * @var string
-	 */
 	public $widget_name;
-
-	/**
-	 * Settings
-	 *
-	 * @var array
-	 */
 	public $settings;
 
 	/**
@@ -65,7 +36,7 @@ abstract class WC_Widget extends WP_Widget {
 	/**
 	 * get_cached_widget function.
 	 */
-	public function get_cached_widget( $args ) {
+	function get_cached_widget( $args ) {
 
 		$cache = wp_cache_get( apply_filters( 'woocommerce_cached_widget_id', $this->widget_id ), 'widget' );
 
@@ -83,15 +54,12 @@ abstract class WC_Widget extends WP_Widget {
 
 	/**
 	 * Cache the widget
-	 *
-	 * @param  array $args
-	 * @param  string $content
-	 * @return string the content that was cached
+	 * @param string $content
 	 */
 	public function cache_widget( $args, $content ) {
-		wp_cache_set( apply_filters( 'woocommerce_cached_widget_id', $this->widget_id ), array( $args['widget_id'] => $content ), 'widget' );
+		$cache[ $args['widget_id'] ] = $content;
 
-		return $content;
+		wp_cache_set( apply_filters( 'woocommerce_cached_widget_id', $this->widget_id ), $cache, 'widget' );
 	}
 
 	/**
@@ -101,30 +69,6 @@ abstract class WC_Widget extends WP_Widget {
 	 */
 	public function flush_widget_cache() {
 		wp_cache_delete( apply_filters( 'woocommerce_cached_widget_id', $this->widget_id ), 'widget' );
-	}
-
-	/**
-	 * Output the html at the start of a widget
-	 *
-	 * @param  array $args
-	 * @return string
-	 */
-	public function widget_start( $args, $instance ) {
-		echo $args['before_widget'];
-
-		if ( $title = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance, $this->id_base ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
-		}
-	}
-
-	/**
-	 * Output the html at the end of a widget
-	 *
-	 * @param  array $args
-	 * @return string
-	 */
-	public function widget_end( $args ) {
-		echo $args['after_widget'];
 	}
 
 	/**
@@ -171,11 +115,11 @@ abstract class WC_Widget extends WP_Widget {
 
 		foreach ( $this->settings as $key => $setting ) {
 
-			$value = isset( $instance[ $key ] ) ? $instance[ $key ] : $setting['std'];
+			$value   = isset( $instance[ $key ] ) ? $instance[ $key ] : $setting['std'];
 
 			switch ( $setting['type'] ) {
 
-				case 'text' :
+				case "text" :
 					?>
 					<p>
 						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
@@ -184,7 +128,7 @@ abstract class WC_Widget extends WP_Widget {
 					<?php
 				break;
 
-				case 'number' :
+				case "number" :
 					?>
 					<p>
 						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
@@ -193,7 +137,7 @@ abstract class WC_Widget extends WP_Widget {
 					<?php
 				break;
 
-				case 'select' :
+				case "select" :
 					?>
 					<p>
 						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
@@ -206,7 +150,7 @@ abstract class WC_Widget extends WP_Widget {
 					<?php
 				break;
 
-				case 'checkbox' :
+				case "checkbox" :
 					?>
 					<p>
 						<input id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />

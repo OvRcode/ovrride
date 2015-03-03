@@ -30,7 +30,7 @@ class WC_Language_Pack_Upgrader {
 	public function __construct() {
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_update' ) );
 		add_filter( 'upgrader_pre_download', array( $this, 'version_update' ), 10, 2 );
-		add_action( 'woocommerce_installed', array( $this, 'has_available_update' ) );
+		add_action( 'woocommerce_language_pack_updater_check', array( $this, 'has_available_update' ) );
 		add_filter( 'admin_init', array( $this, 'manual_language_update' ), 999 );
 	}
 
@@ -94,7 +94,12 @@ class WC_Language_Pack_Upgrader {
 	 * @return void
 	 */
 	public function configure_woocommerce_upgrade_notice() {
-		WC_Admin_Notices::add_notice( 'translation_upgrade' );
+		$notices = get_option( 'woocommerce_admin_notices', array() );
+		if ( false === array_search( 'translation_upgrade', $notices ) ) {
+			$notices[] = 'translation_upgrade';
+
+			update_option( 'woocommerce_admin_notices', $notices );
+		}
 	}
 
 	/**

@@ -4,7 +4,7 @@
  *
  * @extends 	Walker
  * @class 		WC_Product_Cat_Dropdown_Walker
- * @version		2.3.0
+ * @version		1.6.4
  * @package		WooCommerce/Classes/Walkers
  * @author 		WooThemes
  */
@@ -13,12 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'WC_Product_Cat_List_Walker' ) ) :
-
 class WC_Product_Cat_List_Walker extends Walker {
 
-	public $tree_type = 'product_cat';
-	public $db_fields = array ( 'parent' => 'parent', 'id' => 'term_id', 'slug' => 'slug' );
+	var $tree_type = 'product_cat';
+	var $db_fields = array ( 'parent' => 'parent', 'id' => 'term_id', 'slug' => 'slug' );
 
 	/**
 	 * @see Walker::start_lvl()
@@ -121,5 +119,3 @@ class WC_Product_Cat_List_Walker extends Walker {
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 }
-
-endif;

@@ -7,10 +7,7 @@
  * @version     2.2.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 ?>
 <form class="woocommerce-ordering" method="get">
 	<select name="orderby" class="orderby">

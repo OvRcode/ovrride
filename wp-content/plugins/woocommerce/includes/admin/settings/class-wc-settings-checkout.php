@@ -40,18 +40,19 @@ class WC_Settings_Payment_Gateways extends WC_Settings_Page {
 	 * @return array
 	 */
 	public function get_sections() {
+
 		$sections = array(
-			'' => __( 'Checkout Options', 'woocommerce' )
+			''         => __( 'Checkout Options', 'woocommerce' )
 		);
 
-		if ( ! defined( 'WC_INSTALLING' ) ) {
-			// Load shipping methods so we can show any global options they may have
-			$payment_gateways = WC()->payment_gateways->payment_gateways();
+		// Load shipping methods so we can show any global options they may have
+		$payment_gateways = WC()->payment_gateways->payment_gateways();
 
-			foreach ( $payment_gateways as $gateway ) {
-				$title = empty( $gateway->method_title ) ? ucfirst( $gateway->id ) : $gateway->method_title;
-				$sections[ strtolower( get_class( $gateway ) ) ] = esc_html( $title );
-			}
+		foreach ( $payment_gateways as $gateway ) {
+
+			$title = empty( $gateway->method_title ) ? ucfirst( $gateway->id ) : $gateway->method_title;
+
+			$sections[ strtolower( get_class( $gateway ) ) ] = esc_html( $title );
 		}
 
 		return apply_filters( 'woocommerce_get_sections_' . $this->id, $sections );
@@ -117,7 +118,7 @@ class WC_Settings_Payment_Gateways extends WC_Settings_Page {
 				'id'       => 'woocommerce_cart_page_id',
 				'type'     => 'single_select_page',
 				'default'  => '',
-				'class'    => 'wc-enhanced-select-nostd',
+				'class'    => 'chosen_select_nostd',
 				'css'      => 'min-width:300px;',
 				'desc_tip' => true,
 			),
@@ -128,7 +129,7 @@ class WC_Settings_Payment_Gateways extends WC_Settings_Page {
 				'id'       => 'woocommerce_checkout_page_id',
 				'type'     => 'single_select_page',
 				'default'  => '',
-				'class'    => 'wc-enhanced-select-nostd',
+				'class'    => 'chosen_select_nostd',
 				'css'      => 'min-width:300px;',
 				'desc_tip' => true,
 			),
@@ -138,7 +139,7 @@ class WC_Settings_Payment_Gateways extends WC_Settings_Page {
 				'desc'     => __( 'If you define a "Terms" page the customer will be asked if they accept them when checking out.', 'woocommerce' ),
 				'id'       => 'woocommerce_terms_page_id',
 				'default'  => '',
-				'class'    => 'wc-enhanced-select-nostd',
+				'class'    => 'chosen_select_nostd',
 				'css'      => 'min-width:300px;',
 				'type'     => 'single_select_page',
 				'desc_tip' => true,

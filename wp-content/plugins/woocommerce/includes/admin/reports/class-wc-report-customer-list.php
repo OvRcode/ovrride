@@ -51,16 +51,6 @@ class WC_Report_Customer_List extends WP_List_Table {
 			echo '<div class="updated"><p>' . sprintf( _n( '%s previous order linked', '%s previous orders linked', $linked, 'woocommerce' ), $linked ) . '</p></div>';
 		}
 
-		if ( ! empty( $_GET['refresh'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'refresh' ) ) {
-			$user_id = absint( $_GET['refresh'] );
-			$user    = get_user_by( 'id', $user_id );
-
-			delete_user_meta( $user_id, '_money_spent' );
-			delete_user_meta( $user_id, '_order_count' );
-
-			echo '<div class="updated"><p>' . sprintf( __( 'Refreshed stats for %s', 'woocommerce' ), $user->display_name ) . '</p></div>';
-		}
-
 		echo '<form method="post" id="woocommerce_customers">';
 
 		$this->search_box( __( 'Search customers', 'woocommerce' ), 'customer_search' );
@@ -73,14 +63,15 @@ class WC_Report_Customer_List extends WP_List_Table {
 	/**
 	 * column_default function.
 	 *
-	 * @param WP_User $user
+	 * @param mixed  $user
 	 * @param string $column_name
-	 * @return string
+	 * @return int|string
+	 * @todo Inconsistent return types, and void return at the end. Needs a rewrite.
 	 */
 	function column_default( $user, $column_name ) {
 		global $wpdb;
 
-		switch ( $column_name ) {
+		switch( $column_name ) {
 
 			case 'customer_name' :
 				if ( $user->last_name && $user->first_name ) {
@@ -91,6 +82,7 @@ class WC_Report_Customer_List extends WP_List_Table {
 
 			case 'username' :
 				return $user->user_login;
+			break;
 
 			case 'location' :
 
@@ -113,15 +105,52 @@ class WC_Report_Customer_List extends WP_List_Table {
 				} else {
 					return '-';
 				}
+			break;
 
 			case 'email' :
 				return '<a href="mailto:' . $user->user_email . '">' . $user->user_email . '</a>';
 
 			case 'spent' :
-				return wc_price( wc_get_customer_total_spent( $user->ID ) );
+				if ( ! $spent = get_user_meta( $user->ID, '_money_spent', true ) ) {
+
+					$spent = $wpdb->get_var( "SELECT SUM(meta2.meta_value)
+						FROM $wpdb->posts as posts
+
+						LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+						LEFT JOIN {$wpdb->postmeta} AS meta2 ON posts.ID = meta2.post_id
+
+						WHERE   meta.meta_key       = '_customer_user'
+						AND     meta.meta_value     = $user->ID
+						AND     posts.post_type     IN ('" . implode( "','", wc_get_order_types( 'reports' ) ) . "')
+						AND     posts.post_status   = 'wc-completed'
+						AND     meta2.meta_key      = '_order_total'
+					" );
+
+					update_user_meta( $user->ID, '_money_spent', $spent );
+				}
+
+				return wc_price( $spent );
+			break;
 
 			case 'orders' :
-				return wc_get_customer_order_count( $user->ID );
+				if ( ! $count = get_user_meta( $user->ID, '_order_count', true ) ) {
+
+					$count = $wpdb->get_var( "SELECT COUNT(*)
+						FROM $wpdb->posts as posts
+
+						LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+
+						WHERE   meta.meta_key       = '_customer_user'
+						AND     posts.post_type     IN ('" . implode( "','", wc_get_order_types( 'order-count' ) ) . "')
+						AND     posts.post_status   = 'wc-completed'
+						AND     meta_value          = $user->ID
+					" );
+
+					update_user_meta( $user->ID, '_order_count', $count );
+				}
+
+				return absint( $count );
+			break;
 
 			case 'last_order' :
 
@@ -130,7 +159,7 @@ class WC_Report_Customer_List extends WP_List_Table {
 					'post_type'      => 'shop_order',
 					'orderby'        => 'date',
 					'order'          => 'desc',
-					'post_status'    => array( 'wc-completed', 'wc-processing' ),
+					'post_status'    => array_keys( wc_get_order_statuses() ),
 					'meta_query' => array(
 						array(
 							'key'     => '_customer_user',
@@ -143,26 +172,17 @@ class WC_Report_Customer_List extends WP_List_Table {
 				if ( $order_ids ) {
 					$order = wc_get_order( $order_ids[0] );
 
-					return '<a href="' . admin_url( 'post.php?post=' . $order->id . '&action=edit' ) . '">' . _x( '#', 'hash before order number', 'woocommerce' ) . $order->get_order_number() . '</a> &ndash; ' . date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) );
-				} else {
-					return '-';
-				}
+					echo '<a href="' . admin_url( 'post.php?post=' . $order->id . '&action=edit' ) . '">' . $order->get_order_number() . '</a> &ndash; ' . date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) );
+				} else echo '-';
 
 			break;
 
 			case 'user_actions' :
-				ob_start();
 				?><p>
 					<?php
 						do_action( 'woocommerce_admin_user_actions_start', $user );
 
 						$actions = array();
-
-						$actions['refresh'] = array(
-							'url'       => wp_nonce_url( add_query_arg( 'refresh', $user->ID ), 'refresh' ),
-							'name'      => __( 'Refresh stats', 'woocommerce' ),
-							'action'    => "refresh"
-						);
 
 						$actions['edit'] = array(
 							'url'       => admin_url( 'user-edit.php?user_id=' . $user->ID ),
@@ -178,8 +198,8 @@ class WC_Report_Customer_List extends WP_List_Table {
 
 						$order_ids = get_posts( array(
 							'posts_per_page' => 1,
-							'post_type'   => wc_get_order_types(),
-							'post_status' => array_keys( wc_get_order_statuses() ),
+							'post_type'      => wc_get_order_types(),
+							'post_status'    => array_keys( wc_get_order_statuses() ),
 							'meta_query' => array(
 								array(
 									'key'     => '_customer_user',
@@ -195,6 +215,7 @@ class WC_Report_Customer_List extends WP_List_Table {
 						) );
 
 						if ( $order_ids ) {
+
 							$actions['link'] = array(
 								'url'       => wp_nonce_url( add_query_arg( 'link_orders', $user->ID ), 'link_orders' ),
 								'name'      => __( 'Link previous orders', 'woocommerce' ),
@@ -211,13 +232,8 @@ class WC_Report_Customer_List extends WP_List_Table {
 						do_action( 'woocommerce_admin_user_actions_end', $user );
 					?>
 				</p><?php
-				$user_actions = ob_get_contents();
-				ob_end_clean();
-
-				return $user_actions;
+			break;
 		}
-
-		return '';
 	}
 
 	/**
@@ -230,7 +246,7 @@ class WC_Report_Customer_List extends WP_List_Table {
 			'email'           => __( 'Email', 'woocommerce' ),
 			'location'        => __( 'Location', 'woocommerce' ),
 			'orders'          => __( 'Orders', 'woocommerce' ),
-			'spent'           => __( 'Money Spent', 'woocommerce' ),
+			'spent'           => __( 'Spent', 'woocommerce' ),
 			'last_order'      => __( 'Last order', 'woocommerce' ),
 			'user_actions'    => __( 'Actions', 'woocommerce' )
 		);
@@ -280,7 +296,7 @@ class WC_Report_Customer_List extends WP_List_Table {
 		 */
 		$admin_users = new WP_User_Query(
 			array(
-				'role'   => 'administrator1',
+				'role'   => 'administrator',
 				'fields' => 'ID'
 			)
 		);

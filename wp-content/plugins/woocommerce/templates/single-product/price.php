@@ -12,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $product;
-
 ?>
 <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 

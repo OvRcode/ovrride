@@ -34,16 +34,6 @@ function wc_get_order_statuses() {
 }
 
 /**
- * See if a string is an order status.
- * @param  string $maybe_status Status, including any wc- prefix
- * @return bool
- */
-function wc_is_order_status( $maybe_status ) {
-	$order_statuses = wc_get_order_statuses();
-	return isset( $order_statuses[ $maybe_status ] );
-}
-
-/**
  * Main function for returning orders, uses the WC_Order_Factory class.
  *
  * @since  2.2
@@ -227,17 +217,16 @@ function wc_register_order_type( $type, $args = array() ) {
  * @param string $download_id file identifier
  * @param int $product_id product identifier
  * @param WC_Order $order the order
- * @param  int $qty purchased
  * @return int|bool insert id or false on failure
  */
-function wc_downloadable_file_permission( $download_id, $product_id, $order, $qty = 1 ) {
+function wc_downloadable_file_permission( $download_id, $product_id, $order ) {
 	global $wpdb;
 
 	$user_email = sanitize_email( $order->billing_email );
 	$limit      = trim( get_post_meta( $product_id, '_download_limit', true ) );
 	$expiry     = trim( get_post_meta( $product_id, '_download_expiry', true ) );
 
-	$limit      = empty( $limit ) ? '' : absint( $limit ) * $qty;
+	$limit      = empty( $limit ) ? '' : absint( $limit );
 
 	// Default value is NULL in the table schema
 	$expiry     = empty( $expiry ) ? null : absint( $expiry );
@@ -313,7 +302,7 @@ function wc_downloadable_product_permissions( $order_id ) {
 				$downloads = $_product->get_files();
 
 				foreach ( array_keys( $downloads ) as $download_id ) {
-					wc_downloadable_file_permission( $download_id, $item['variation_id'] > 0 ? $item['variation_id'] : $item['product_id'], $order, $item['qty'] );
+					wc_downloadable_file_permission( $download_id, $item['variation_id'] > 0 ? $item['variation_id'] : $item['product_id'], $order );
 				}
 			}
 		}
@@ -533,8 +522,7 @@ function wc_processing_order_count() {
  * @param int $post_id (default: 0)
  */
 function wc_delete_shop_order_transients( $post_id = 0 ) {
-	$post_id             = absint( $post_id );
-	$transients_to_clear = array();
+	$post_id = absint( $post_id );
 
 	// Clear report transients
 	$reports = WC_Admin_Reports::get_reports();
@@ -567,11 +555,11 @@ function wc_ship_to_billing_address_only() {
 /**
  * Create a new order refund programmatically
  *
- * Returns a new refund object on success which can then be used to add additional data.
+ * Returns a new refund object on success which can then be used to add additonal data.
  *
  * @since 2.2
  * @param array $args
- * @return WC_Order_Refund|WP_Error
+ * @return WC_Order_Refund on success, WP_Error on failure
  */
 function wc_create_refund( $args = array() ) {
 	$default_args = array(
@@ -682,8 +670,6 @@ function wc_create_refund( $args = array() ) {
 
 		// Set total to total refunded which may vary from order items
 		$refund->set_total( wc_format_decimal( $args['amount'] ) * -1, 'total' );
-
-		do_action( 'woocommerce_refund_created', $refund_id );
 	}
 
 	// Clear transients
