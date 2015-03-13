@@ -42,9 +42,13 @@ class GFAsyncUpload {
 
 		$form_id        = intval( $_REQUEST['form_id'] );
 		$form_unique_id = rgpost( 'gform_unique_id' );
-		$form           = GFFormsModel::get_form_meta( $form_id );
+		$form           = GFAPI::get_form( $form_id );
 
-		if ( empty( $form ) || ! ctype_alnum( $form_unique_id ) ) {
+		if ( empty( $form ) || ! $form['is_active'] ) {
+			die();
+		}
+
+		if ( ! ctype_alnum( $form_unique_id ) ) {
 			die();
 		}
 
@@ -86,14 +90,15 @@ class GFAsyncUpload {
 		$uploaded_filename = $_FILES['file']['name'];
 		$file_name = isset( $_REQUEST['name'] ) ? $_REQUEST['name'] : '';
 		$field_id  = rgpost( 'field_id' );
+		$field_id = absint( $field_id );
 		$field     = GFFormsModel::get_field( $form, $field_id );
 
-		if ( empty( $field ) || GFFormsModel::get_input_type( $field ) != 'fileupload') {
+		if ( empty( $field ) || GFFormsModel::get_input_type( $field ) != 'fileupload' ) {
 			die();
 		}
 
-		// Clean the fileName for security reasons
-		$file_name = preg_replace( '/[^\w\._]+/', '_', $file_name );
+		$file_name = sanitize_file_name( $file_name );
+		$uploaded_filename = sanitize_file_name( $uploaded_filename );
 
 		$allowed_extensions = ! empty( $field->allowedExtensions ) ? GFCommon::clean_extensions( explode( ',', strtolower( $field->allowedExtensions ) ) ) : array();
 
@@ -104,17 +109,21 @@ class GFAsyncUpload {
 			die( '{"status" : "error", "error" : {"code": 104, "message": "' . sprintf( __( 'File exceeds size limit. Maximum file size: %dMB', 'gravityforms' ), $max_upload_size_in_mb ) . '"}}' );
 		}
 
-		if ( empty( $allowed_extensions ) && GFCommon::file_name_has_disallowed_extension( $uploaded_filename ) ) {
+		if ( GFCommon::file_name_has_disallowed_extension( $file_name ) || GFCommon::file_name_has_disallowed_extension( $uploaded_filename ) ) {
 			GFCommon::log_debug( "GFAsyncUpload::upload(): Illegal file extension: {$file_name}" );
 			die( '{"status" : "error", "error" : {"code": 104, "message": "' . __( 'The uploaded file type is not allowed.', 'gravityforms' ) . '"}}' );
-		} elseif ( ! empty( $allowed_extensions ) && ! GFCommon::match_file_extension( $uploaded_filename, $allowed_extensions ) ) {
-			GFCommon::log_debug( "GFAsyncUpload::upload(): The uploaded file type is not allowed: {$file_name}" );
-			die( '{"status" : "error", "error" : {"code": 104, "message": "' . sprintf( __( 'The uploaded file type is not allowed. Must be one of the following: %s', 'gravityforms' ), strtolower( $field['allowedExtensions'] ) ) . '"}}' );
 		}
 
+		if ( ! empty( $allowed_extensions ) ) {
+			if ( ! GFCommon::match_file_extension( $file_name, $allowed_extensions ) || ! GFCommon::match_file_extension( $uploaded_filename, $allowed_extensions ) ) {
+				GFCommon::log_debug( "GFAsyncUpload::upload(): The uploaded file type is not allowed: {$file_name}" );
+				die( '{"status" : "error", "error" : {"code": 104, "message": "' . sprintf( __( 'The uploaded file type is not allowed. Must be one of the following: %s', 'gravityforms' ), strtolower( $field['allowedExtensions'] ) ) . '"}}' );
+			}
+		}
 
 		$tmp_file_name = $form_unique_id . '_input_' . $field_id . '_' . $file_name;
 
+		$tmp_file_name = sanitize_file_name( $tmp_file_name );
 
 		$file_path = $target_dir . $tmp_file_name;
 
@@ -199,7 +208,6 @@ class GFAsyncUpload {
 			// Strip the temp .part suffix off
 			rename( "{$file_path}.part", $file_path );
 		}
-
 
 		if ( file_exists( $file_path ) ) {
 			GFFormsModel::set_permissions( $file_path );

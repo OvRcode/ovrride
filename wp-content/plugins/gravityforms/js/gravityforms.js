@@ -1203,7 +1203,7 @@ var gform = {
 
             var button = typeof settings.browse_button == "string" ? $("#" + settings.browse_button) : $(settings.browse_button);
             button.prop("disabled", disabled);
-        }
+        };
 
         function addMessage(messagesID, message){
             $("#" + messagesID).prepend("<li>" + message + "</li>");
@@ -1222,7 +1222,7 @@ var gform = {
                 $.each(files, function(i, file) {
                     up.removeFile(file);
                     return;
-                })
+                });
                 return;
             }
             $.each(files, function(i, file) {
@@ -1343,8 +1343,6 @@ var gform = {
 
 
         });
-
-
 
         function getAllFiles(){
             var selector = '#gform_uploaded_files_' + formID,

@@ -154,7 +154,7 @@ class GF_Field_Number extends GF_Field {
 				}
 			}
 		} else if ( RG_CURRENT_VIEW == 'entry' ) {
-			$value = GFCommon::format_number( $value, $this->numberFormat );
+			$value = GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ) );
 		}
 
 		$is_html5        = RGFormsModel::is_html5_enabled();
@@ -169,7 +169,7 @@ class GF_Field_Number extends GF_Field {
 
 		$logic_event = $this->get_conditional_logic_event( 'keyup' );
 
-		$value = GFCommon::format_number( $value, $this->numberFormat );
+		$value = GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ) );
 
 		$placeholder_attribute = $this->get_field_placeholder_attribute();
 
@@ -181,18 +181,19 @@ class GF_Field_Number extends GF_Field {
 
 	public function get_value_entry_list( $value, $entry, $field_id, $columns, $form ) {
 
-		return GFCommon::format_number( $value, $this->numberFormat );
+		return GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ), true );
 	}
 
 
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
 
-		return GFCommon::format_number( $value, $this->numberFormat );
+		return GFCommon::format_number( $value, $this->numberFormat, $currency, true );
 	}
 
 	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format ) {
+		$include_thousands_sep = $modifier == 'value' ? false : true;
 
-		return GFCommon::format_number( $value, $this->numberFormat );
+		return GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ), $include_thousands_sep );
 	}
 
 	public function get_value_save_entry( $value, $form, $input_name, $lead_id, $lead ) {
