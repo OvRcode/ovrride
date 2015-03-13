@@ -766,6 +766,9 @@ class GFExport {
 
 			$lines = '';
 		}
+
+		do_action( 'gform_post_export_entries', $form, $start_date, $end_date, $fields );
+
 	}
 
 	public static function add_default_export_fields( $form ) {

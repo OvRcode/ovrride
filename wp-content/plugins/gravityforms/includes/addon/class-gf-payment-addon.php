@@ -60,6 +60,9 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 		add_filter( 'gform_currencies', array( $this, 'supported_currencies' ) );
 
+		add_filter( 'gform_delete_lead', array( $this, 'entry_deleted' ) );
+
+
 		if ( rgget( 'page' ) == 'gf_entries' ) {
 			add_action( 'gform_payment_details', array( $this, 'entry_info' ), 10, 2 );
 			add_action( 'gform_enable_entry_info_payment_details', array( $this, 'disable_entry_info_payment' ), 10, 2 );
@@ -1689,7 +1692,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 				$select_inner1 = "date_format(CONVERT_TZ(date_created, '+00:00', '" . $tz_offset . "'), '%%Y-%%m-01') month";
 				$select_inner2 = "date_format(CONVERT_TZ(t.date_created, '+00:00', '" . $tz_offset . "'), '%%Y-%%m-01') month";
 				$group_by      = 'month';
-				$order_by      = 'month desc';
+				$order_by      = 'year desc, month desc';
 				$join          = 'lead.month = transaction.month';
 
 				$data['chart']['hAxis']['column'] = 'month_abbrev';
@@ -1739,7 +1742,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
                                           sum( if(transaction_type = 1,1,0) ) as orders,
                                           sum( if(transaction_type = 2,1,0) ) as subscriptions
                                   FROM {$wpdb->prefix}rg_lead l
-                                  WHERE form_id=%d {$lead_date_filter} {$payment_method_filter}
+                                  WHERE l.status='active' AND form_id=%d {$lead_date_filter} {$payment_method_filter}
                                   GROUP BY {$group_by}
                                 ) AS lead
 
@@ -1750,7 +1753,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
                                           sum( if(t.transaction_type = 'payment' AND t.is_recurring = 1, 1, 0) ) as recurring_payments
                                   FROM {$wpdb->prefix}gf_addon_payment_transaction t
                                   INNER JOIN {$wpdb->prefix}rg_lead l ON l.id = t.lead_id
-                                  WHERE l.form_id=%d {$lead_date_filter} {$transaction_date_filter} {$payment_method_filter}
+                                  WHERE l.status='active' AND l.form_id=%d {$lead_date_filter} {$transaction_date_filter} {$payment_method_filter}
                                   GROUP BY {$group_by}
 
                                 ) AS transaction on {$join}
@@ -1812,7 +1815,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
                                sum( if(transaction_type = 1,1,0) ) as orders,
                                sum( if(transaction_type = 2,1,0) ) as subscriptions
                        FROM {$wpdb->prefix}rg_lead
-                       WHERE form_id = %d and datediff(now(), CONVERT_TZ(date_created, '+00:00', '" . $tz_offset . "') ) <= 30
+                       WHERE status='active' AND form_id = %d AND datediff(now(), CONVERT_TZ(date_created, '+00:00', '" . $tz_offset . "') ) <= 30
                        GROUP BY date
                      ) AS lead
 
@@ -1821,7 +1824,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
                                sum( if(t.transaction_type = 'refund', abs(t.amount) * -1, t.amount) ) as revenue
                        FROM {$wpdb->prefix}gf_addon_payment_transaction t
                          INNER JOIN {$wpdb->prefix}rg_lead l ON l.id = t.lead_id
-                       WHERE l.form_id=%d
+                       WHERE l.form_id=%d AND l.status='active'
                        GROUP BY date
                      ) AS transaction on lead.date = transaction.date
                     ORDER BY date desc", $form_id, $form_id
@@ -1834,7 +1837,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
                     SELECT sum( if(transaction_type = 1,1,0) ) as orders,
                            sum( if(transaction_type = 2,1,0) ) as subscriptions
                     FROM {$wpdb->prefix}rg_lead
-                    WHERE form_id=%d", $form_id
+                    WHERE form_id=%d AND status='active'", $form_id
 			), ARRAY_A
 		);
 
@@ -1844,7 +1847,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
                     SELECT sum( if(t.transaction_type = 'refund', abs(t.amount) * -1, t.amount) ) as revenue
                     FROM {$wpdb->prefix}gf_addon_payment_transaction t
                     INNER JOIN {$wpdb->prefix}rg_lead l ON l.id = t.lead_id
-                    WHERE l.form_id=%d", $form_id
+                    WHERE l.form_id=%d AND status='active'", $form_id
 			)
 		);
 
@@ -2025,6 +2028,21 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 		<?php
 		}
+	}
+
+	/**
+	 * Target of gform_delete_lead hook. Deletes all transactions and callbacks when an entry is deleted.
+	 *
+	 * @param $entry_id. ID of entry that is being deleted
+	 */
+	public function entry_deleted( $entry_id ){
+		global $wpdb;
+
+		//deleting from transaction table
+		$wpdb->delete( "{$wpdb->prefix}gf_addon_payment_transaction", array( 'lead_id' => $entry_id ), array( '%d' ) );
+
+		//deleting from callback table
+		$wpdb->delete( "{$wpdb->prefix}gf_addon_payment_callback", array( 'lead_id' => $entry_id ), array( '%d' ) );
 	}
 
 	public function disable_entry_info_payment( $is_enabled, $entry ) {
