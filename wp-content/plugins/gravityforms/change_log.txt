@@ -1,4 +1,47 @@
 -------------------------------------------------------------------------------------------------------------------
+Version 1.9.3.1
+    - Updated number formatting to include the thousands separator on the entry list and detail pages and when merge tags are processed. The :value modifier will return the value without the thousand separator.
+    - Fixed an issue with GFCommon::format_number using the currency defined on the Forms > Settings page instead of the currency used with the entry which resulted in the number being incorrectly formatted when using the third-party Gravity Forms Multi Currency add-on.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.3
+    - Added the 'gform_post_send_entry_note' hook to allow users to perform custom actions when an entry note has been sent.
+        add_action( 'gform_post_send_entry_note', function ( $result, $email_to, $email_from, $email_subject, $body, $form, $entry ) {
+            // do stuff
+        }, 10, 7 );
+    - Added the 'gform_entry_list_column_input_label_only' filter to allow users to override the default behaviour of only including the input label in the entry list column header.
+        add_filter( 'gform_entry_list_column_input_label_only', function ( $input_label_only, $form, $field ) {
+            return $field->type == 'product' ? false : $input_label_only;
+        }, 10, 3 );
+    - Added gf_apply_filters() to allow providing a list of modifiers for a filter.
+        Example: gf_apply_filters( 'gform_field_validation', array( $form_id, $field_id ), $custom_validation_result, $value, $form, $field );
+	- Added logging around key validation.
+    - Added Faroe Islands (FO) to the country list.
+    - Added additional security precautions to the file upload file.
+    - Added the 'gform_post_export_entries' hook to allow users to perform custom actions when entries have been exported.
+        add_action( 'gform_post_export_entries', function ( $form, $start_date, $end_date, $fields ) {
+            // do stuff
+        }, 10, 4 );
+    - Added context support to 'MM' string to allow different translations for abbreviation of minutes and month when needed.
+    - Updated Spanish translation.
+    - Updated the background updates setting to be activated by default on new installations.
+    - Updated Finnish translation.
+	- Fixed duplicate ID attribute on multi-page forms.
+	- Fixed a JavaScript error in the form editor that can sometimes occur when opening the date field on a form created in 1.8 or lower.
+	- Fixed issue with sales page when entries are deleted or moved to trash.
+    - Fixed styling issues with Year input overlapping other Date field inputs when format began with year.
+	- Fixed a XSS issue for some legacy forms. Credit: the a3rev.com team.
+    - Fixed and issue with the save and continue form setting where the Save and Continue Confirmation may not get generated on some servers.
+    - Fixed issue where default value for Date field and Drop Down date field would not populate correctly.
+    - Fixed styling issue where Date field "Year" input was cut off.
+    - Fixed an issue with the List field in the form editor where clicking on the field label opens and then immediately closes the field.
+    - Fixed a security vulnerability with the multi-file upload field.
+	- Fixed an issue in the conditional logic javascript which impacted loading data into the list field.
+    - API: Added support for WordPress cookie authentication to the Web API. Requires nonce with the action set to gf_api passed via the _gf_json_nonce POST data or in the query for GET requests. Intended for use by JavaScript on the same site as the Gravity Forms installation.
+    - API: Removed authentication for the POST forms/[ID]/submissions endpoint.
+    - API: Fixed an issue with GFAPI::add_entry() which can result in entry values being blank for email, date and time fields.
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.9.2
     - Added the disabled attribute to the datepicker input in the form editor.
     - Added support for the field placeholder as an available choice in the conditional logic value drop down.

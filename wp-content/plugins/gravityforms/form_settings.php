@@ -1627,7 +1627,7 @@ class GFFormSettings {
 		}
 
 		if ( ! $has_save_confirmation ) {
-			$confirmation_id = uniqid();
+			$confirmation_id = uniqid( 'sc1' );
 			$form['confirmations'][ $confirmation_id ] = array(
 				'id'          => $confirmation_id,
 				'event'       => 'form_saved',
@@ -1639,7 +1639,7 @@ class GFFormSettings {
 				'pageId'      => '',
 				'queryString' => '',
 			);
-			$confirmation_id = uniqid();
+			$confirmation_id = uniqid( 'sc2' );
 			$form['confirmations'][ $confirmation_id ] = array(
 				'id'          => $confirmation_id,
 				'event'       => 'form_save_email_sent',

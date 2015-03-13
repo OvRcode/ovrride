@@ -10,46 +10,50 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	 * Constuctor
 	 */
 	public function __construct() {
-		$this->id					= 'paypal_pro';
-		$this->method_title 		= __( 'PayPal Pro', 'woocommerce-gateway-paypal-pro' );
-		$this->method_description 	= __( 'PayPal Pro works by adding credit card fields on the checkout and then sending the details to PayPal for verification.', 'woocommerce-gateway-paypal-pro' );
-		$this->icon 				= apply_filters('woocommerce_paypal_pro_icon', WP_PLUGIN_URL . "/" . plugin_basename( dirname( dirname( __FILE__ ) ) ) . '/assets/images/cards.png' );
-		$this->has_fields 			= true;
-		$this->supports 			= array(
+		$this->id                   = 'paypal_pro';
+		$this->api_version          = '119';
+		$this->method_title         = __( 'PayPal Pro', 'woocommerce-gateway-paypal-pro' );
+		$this->method_description   = __( 'PayPal Pro works by adding credit card fields on the checkout and then sending the details to PayPal for verification.', 'woocommerce-gateway-paypal-pro' );
+		$this->icon                 = apply_filters('woocommerce_paypal_pro_icon', plugins_url( '/assets/images/cards.png', plugin_basename( dirname( __FILE__ ) ) ) );
+		$this->has_fields           = true;
+		$this->supports             = array(
 			'products',
 			'refunds'
 		);
-		$this->liveurl				= 'https://api-3t.paypal.com/nvp';
-		$this->testurl				= 'https://api-3t.sandbox.paypal.com/nvp';
-		$this->liveurl_3ds			= 'https://paypal.cardinalcommerce.com/maps/txns.asp';
-		$this->testurl_3ds			= 'https://centineltest.cardinalcommerce.com/maps/txns.asp';
-		$this->avaiable_card_types 	= apply_filters( 'woocommerce_paypal_pro_avaiable_card_types', array(
+		$this->liveurl               = 'https://api-3t.paypal.com/nvp';
+		$this->testurl               = 'https://api-3t.sandbox.paypal.com/nvp';
+		$this->liveurl_3ds           = 'https://paypal.cardinalcommerce.com/maps/txns.asp';
+		$this->testurl_3ds           = 'https://centineltest.cardinalcommerce.com/maps/txns.asp';
+		$this->available_card_types  = apply_filters( 'woocommerce_paypal_pro_available_card_types', array(
 			'GB' => array(
-				'Visa' 			=> 'Visa',
-				'MasterCard' 	=> 'MasterCard',
-				'Maestro'		=> 'Maestro/Switch',
-				'Solo'			=> 'Solo'
+				'Visa'          => 'Visa',
+				'MasterCard'    => 'MasterCard',
+				'Maestro'       => 'Maestro/Switch',
+				'Solo'          => 'Solo'
 			),
 			'US' => array(
-				'Visa' 			=> 'Visa',
-				'MasterCard' 	=> 'MasterCard',
-				'Discover'		=> 'Discover',
-				'AmEx'			=> 'American Express'
+				'Visa'          => 'Visa',
+				'MasterCard'    => 'MasterCard',
+				'Discover'      => 'Discover',
+				'AmEx'          => 'American Express'
 			),
 			'CA' => array(
-				'Visa' 			=> 'Visa',
-				'MasterCard' 	=> 'MasterCard'
+				'Visa'          => 'Visa',
+				'MasterCard'    => 'MasterCard'
 			),
 			'AU' => array(
-				'Visa' 			=> 'Visa',
-				'MasterCard' 	=> 'MasterCard'
+				'Visa'          => 'Visa',
+				'MasterCard'    => 'MasterCard'
 			),
 			'JP' => array(
-				'Visa' 			=> 'Visa',
-				'MasterCard' 	=> 'MasterCard',
-				'JCB' 			=> 'JCB'
+				'Visa'          => 'Visa',
+				'MasterCard'    => 'MasterCard',
+				'JCB'           => 'JCB'
 			)
 		) );
+		// this redundant filter is target previous typo'd filter name
+		$this->available_card_types = apply_filters( 'woocommerce_paypal_pro_avaiable_card_types', $this->available_card_types );
+
 		$this->iso4217 = apply_filters( 'woocommerce_paypal_pro_iso_currencies', array(
 			'AUD' => '036',
 			'CAD' => '124',
@@ -75,25 +79,25 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Get setting values
-		$this->title 			= $this->get_option( 'title' );
-		$this->description 		= $this->get_option( 'description' );
-		$this->enabled 			= $this->get_option( 'enabled' );
-		$this->api_username 	= $this->get_option( 'api_username' );
-		$this->api_password 	= $this->get_option( 'api_password' );
-		$this->api_signature 	= $this->get_option( 'api_signature' );
-		$this->testmode 		= $this->get_option( 'testmode', "no" ) === "yes" ? true : false;
-		$this->enable_3dsecure 	= $this->get_option( 'enable_3dsecure', "no" ) === "yes" ? true : false;
-		$this->liability_shift 	= $this->get_option( 'liability_shift', "no" ) === "yes" ? true : false;
-		$this->debug			= $this->get_option( 'debug', "no" ) === "yes" ? true : false;
-		$this->send_items		= $this->get_option( 'send_items', "no" ) === "yes" ? true : false;
-		$this->soft_descriptor 	= str_replace( ' ', '-', preg_replace('/[^A-Za-z0-9\-\.]/', '', $this->get_option( 'soft_descriptor', "" ) ) );
-		$this->paymentaction    = $this->get_option( 'paypal_pro_paymentaction', 'sale' );
+		$this->title           = $this->get_option( 'title' );
+		$this->description     = $this->get_option( 'description' );
+		$this->enabled         = $this->get_option( 'enabled' );
+		$this->api_username    = $this->get_option( 'api_username' );
+		$this->api_password    = $this->get_option( 'api_password' );
+		$this->api_signature   = $this->get_option( 'api_signature' );
+		$this->testmode        = $this->get_option( 'testmode', "no" ) === "yes" ? true : false;
+		$this->enable_3dsecure = $this->get_option( 'enable_3dsecure', "no" ) === "yes" ? true : false;
+		$this->liability_shift = $this->get_option( 'liability_shift', "no" ) === "yes" ? true : false;
+		$this->debug           = $this->get_option( 'debug', "no" ) === "yes" ? true : false;
+		$this->send_items      = $this->get_option( 'send_items', "no" ) === "yes" ? true : false;
+		$this->soft_descriptor = str_replace( ' ', '-', preg_replace('/[^A-Za-z0-9\-\.]/', '', $this->get_option( 'soft_descriptor', "" ) ) );
+		$this->paymentaction   = $this->get_option( 'paypal_pro_paymentaction', 'sale' );
 
 		// 3DS
 		if ( $this->enable_3dsecure ) {
-			$this->centinel_pid		= $this->get_option( 'centinel_pid' );
-			$this->centinel_mid		= $this->get_option( 'centinel_mid' );
-			$this->centinel_pwd		= $this->get_option( 'centinel_pwd' );
+			$this->centinel_pid = $this->get_option( 'centinel_pid' );
+			$this->centinel_mid = $this->get_option( 'centinel_mid' );
+			$this->centinel_pwd = $this->get_option( 'centinel_pwd' );
 
 			if ( empty( $this->centinel_pid ) || empty( $this->centinel_mid ) || empty( $this->centinel_pwd ) ) {
 				$this->enable_3dsecure = false;
@@ -104,7 +108,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		// Maestro
 		if ( ! $this->enable_3dsecure ) {
-			unset( $this->avaiable_card_types['GB']['Maestro'] );
+			unset( $this->available_card_types['GB']['Maestro'] );
 		}
 
 		// Hooks
@@ -235,12 +239,12 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				)
 			),
 			'debug' => array(
-				'title'       => __( 'Debug Log', 'woocommerce' ),
+				'title'       => __( 'Debug Log', 'woocommerce-gateway-paypal-pro' ),
 				'type'        => 'checkbox',
-				'label'       => __( 'Enable logging', 'woocommerce' ),
+				'label'       => __( 'Enable logging', 'woocommerce-gateway-paypal-pro' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
-				'description' => __( 'Log PayPal events inside <code>woocommerce/logs/paypal-pro.txt</code>', 'woocommerce-gateway-paypal-pro' ),
+				'description' => __( 'Log PayPal Pro events inside <code>woocommerce/logs/paypal-pro.txt</code>', 'woocommerce-gateway-paypal-pro' ),
 			)
 		);
     }
@@ -291,7 +295,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				return false;
 			}
 
-			return isset( $this->avaiable_card_types[ WC()->countries->get_base_country() ] );
+			return isset( $this->available_card_types[ WC()->countries->get_base_country() ] );
 		}
 
 		return false;
@@ -302,8 +306,9 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
      */
 	public function payment_fields() {
 		if ( $this->description ) {
-			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.', 'woocommerce-gateway-paypal-pro') : '' ) . '</p>';
+			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.  Note that you will get a faster processing result if you use a card from your developer\'s account.', 'woocommerce-gateway-paypal-pro' ) : '' ) . '</p>';
 		}
+		
 		$this->credit_card_form();
 	}
 
@@ -401,7 +406,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		    // Standard cmpi_lookup fields
 		    $centinelClient->add( 'OrderNumber', $order_id );
 		    $centinelClient->add( 'Amount', $order->order_total * 100 );
-		    $centinelClient->add( 'CurrencyCode', $this->iso4217[ get_option('woocommerce_currency') ] );
+		    $centinelClient->add( 'CurrencyCode', $this->iso4217[ $order->get_order_currency() ] );
 		    $centinelClient->add( 'TransactionMode', 'S' );
 
 			// Items
@@ -476,7 +481,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 						        	'card_exp_year' 	=> $card_exp_year
 						        ) ) ); ?>">
 						        <noscript>
-						        	<div class="woocommerce_message"><?php _e('Processing your Payer Authentication Transaction', 'woocommerce-gateway-paypal-pro'); ?> - <?php _e('Please click Submit to continue the processing of your transaction.', 'woocommerce-gateway-paypal-pro'); ?>  <input type="submit" class="button" id="3ds_submit" value="Submit" /></div>
+						        	<div class="woocommerce_message"><?php _e( 'Processing your Payer Authentication Transaction', 'woocommerce-gateway-paypal-pro' ); ?> - <?php _e( 'Please click Submit to continue the processing of your transaction.', 'woocommerce-gateway-paypal-pro' ); ?>  <input type="submit" class="button" id="3ds_submit" value="Submit" /></div>
 						        </noscript>
 						    </form>
 						    <script>
@@ -487,9 +492,9 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 					<?php
 					exit;
 
-    			} elseif ( $this->liability_shift && WC()->session->get('Centinel_Enrolled') != 'N' ) {
+    			} elseif ( $this->liability_shift && WC()->session->get( 'Centinel_Enrolled' ) != 'N' ) {
 
-    				wc_add_notice( __('Authentication unavailable. Please try a different payment method or card.','woocommerce-gateway-paypal-pro'), 'error' );
+    				wc_add_notice( __( 'Authentication unavailable. Please try a different payment method or card.','woocommerce-gateway-paypal-pro' ), 'error' );
 					return;
 
 				} else {
@@ -500,7 +505,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
     			}
 
     		} else {
-    			wc_add_notice( __('Error in 3D secure authentication: ', 'woocommerce-gateway-paypal-pro') . WC()->session->get('Centinel_ErrorNo'), 'error' );
+    			wc_add_notice( __( 'Error in 3D secure authentication: ', 'woocommerce-gateway-paypal-pro' ) . WC()->session->get( 'Centinel_ErrorNo' ), 'error' );
     			return;
 			}
 
@@ -526,8 +531,20 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			return false;
 		}
 
+		// get transaction details
+		$details = $this->get_transaction_details( $order->get_transaction_id() );
+
+		// check if it is authorized only we need to void instead 
+		if ( $details && strtolower( $details['PENDINGREASON'] ) === 'authorization' ) {
+			$order->add_order_note( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
+
+			$this->log( 'Refund order # ' . $order_id . ': authorized only transactions need to use cancel/void instead.' );
+
+			throw new Exception( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
+		}
+
 		$post_data = array(
-			'VERSION'       => '59.0',
+			'VERSION'       => $this->api_version,
 			'SIGNATURE'     => $this->api_signature,
 			'USER'          => $this->api_username,
 			'PWD'           => $this->api_password,
@@ -550,13 +567,13 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		}
 
 		$response = wp_remote_post( $url, array(
-			'method'		=> 'POST',
-			'headers'       => array( 'PAYPAL-NVP' => 'Y' ),
-			'body' 			=> $post_data,
-			'timeout' 		=> 70,
-			'sslverify' 	=> false,
-			'user-agent' 	=> 'WooCommerce',
-			'httpversion'   => '1.1'
+			'method'      => 'POST',
+			'headers'     => array( 'PAYPAL-NVP' => 'Y' ),
+			'body'        => $post_data,
+			'timeout'     => 70,
+			'sslverify'   => false,
+			'user-agent'  => 'WooCommerce',
+			'httpversion' => '1.1'
 		));
 
 		if ( is_wp_error( $response ) ) {
@@ -572,6 +589,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			case 'successwithwarning':
 				$order->add_order_note( sprintf( __( 'Refunded %s - Refund ID: %s', 'woocommerce-gateway-paypal-pro' ), $parsed_response['GROSSREFUNDAMT'], $parsed_response['REFUNDTRANSACTIONID'] ) );
 				return true;
+			default:
+				$this->log( 'Parsed Response (refund) ' . print_r( $parsed_response, true ) );
 			break;
 		}
 
@@ -712,7 +731,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			$url = $this->testmode ? $this->testurl : $this->liveurl;
 
 			$post_data = array(
-				'VERSION'           => '59.0',
+				'VERSION'           => $this->api_version,
 				'SIGNATURE'         => $this->api_signature,
 				'USER'              => $this->api_username,
 				'PWD'               => $this->api_password,
@@ -720,7 +739,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				'PAYMENTACTION'     => $this->paymentaction,
 				'IPADDRESS'         => $this->get_user_ip(),
 				'AMT'               => $order->get_total(),
-				'CURRENCYCODE'      => get_option('woocommerce_currency' ),
+				'INVNUM'            => $order->get_order_number(),
+				'CURRENCYCODE'      => $order->get_order_currency(),
 				'CREDITCARDTYPE'    => $card_type,
 				'ACCT'              => $card_number,
 				'EXPDATE'           => $card_exp,
@@ -851,8 +871,10 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 			$this->log( 'Response ' . print_r( $response['body'], true ) );
 
-			if ( empty($response['body']) ) {
-				throw new Exception(__('Empty Paypal response.', 'woocommerce-gateway-paypal-pro'));
+			if ( empty( $response['body'] ) ) {
+				$this->log( 'Empty response!' );
+				
+				throw new Exception( __( 'Empty Paypal response.', 'woocommerce-gateway-paypal-pro' ) );
 			}
 
 			parse_str( $response['body'], $parsed_response );
@@ -862,13 +884,31 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			switch ( strtolower( $parsed_response['ACK'] ) ) {
 				case 'success':
 				case 'successwithwarning':
-
-					// Add order note
-					$order->add_order_note( sprintf(__('PayPal Pro payment completed (Transaction ID: %s, Correlation ID: %s)', 'woocommerce-gateway-paypal-pro'), $parsed_response['TRANSACTIONID'], $parsed_response['CORRELATIONID'] ) );
-
-					// Payment complete
 					$txn_id = ( ! empty( $parsed_response['TRANSACTIONID'] ) ) ? wc_clean( $parsed_response['TRANSACTIONID'] ) : '';
-					$order->payment_complete( $txn_id );
+					$correlation_id = ( ! empty( $parsed_response['CORRELATIONID'] ) ) ? wc_clean( $parsed_response['CORRELATIONID'] ) : '';
+
+					// get transaction details
+					$details = $this->get_transaction_details( $txn_id );
+
+					// check if it is captured or authorization only
+					if ( $details && strtolower( $details['PAYMENTSTATUS'] ) === 'pending' && strtolower( $details['PENDINGREASON'] ) === 'authorization' ) {
+						// Store captured value
+						update_post_meta( $order->id, '_paypalpro_charge_captured', 'no' );
+						add_post_meta( $order->id, '_transaction_id', $txn_id, true );
+
+						// Mark as on-hold
+						$order->update_status( 'on-hold', sprintf( __( 'PayPal Pro charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-pro' ), $txn_id ) );
+
+						// Reduce stock levels
+						$order->reduce_order_stock();
+					} else {
+
+						// Add order note
+						$order->add_order_note( sprintf( __( 'PayPal Pro payment completed (Transaction ID: %s, Correlation ID: %s)', 'woocommerce-gateway-paypal-pro' ), $txn_id, $correlation_id ) );
+
+						// Payment complete
+						$order->payment_complete( $txn_id );
+					}
 
 					// Remove cart
 					WC()->cart->empty_cart();
@@ -884,7 +924,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 						'result' 	=> 'success',
 						'redirect'	=> $redirect
 					);
-
 				break;
 				case 'failure':
 				default:
@@ -907,10 +946,56 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				break;
 			}
 
-		} catch(Exception $e) {
-			wc_add_notice( '<strong>' . __('Payment error', 'woocommerce-gateway-paypal-pro') . '</strong>: ' . $e->getMessage(), 'error' );
+		} catch( Exception $e ) {
+			wc_add_notice( '<strong>' . __( 'Payment error', 'woocommerce-gateway-paypal-pro' ) . '</strong>: ' . $e->getMessage(), 'error' );
 			return;
 		}
+	}
+
+	/**
+	 * Get transaction details
+	 */
+	public function get_transaction_details( $transaction_id = 0 ) {
+		$url = $this->testmode ? $this->testurl : $this->liveurl;
+
+		$post_data = array(
+			'VERSION'       => $this->api_version,
+			'SIGNATURE'     => $this->api_signature,
+			'USER'          => $this->api_username,
+			'PWD'           => $this->api_password,
+			'METHOD'        => 'GetTransactionDetails',
+			'TRANSACTIONID' => $transaction_id
+		);
+
+		$response = wp_remote_post( $url, array(
+			'method'      => 'POST',
+			'headers'     => array(
+				'PAYPAL-NVP' => 'Y'
+			),
+			'body'        => $post_data,
+			'timeout'     => 70,
+			'sslverify'   => false,
+			'user-agent'  => 'WooCommerce',
+			'httpversion' => '1.1'
+		));
+
+		if ( is_wp_error( $response ) ) {
+			$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
+
+			throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
+		}
+
+		parse_str( $response['body'], $parsed_response );
+
+		switch ( strtolower( $parsed_response['ACK'] ) ) {
+			case 'success':
+			case 'successwithwarning':
+				
+				return $parsed_response;
+			break;
+		}
+
+		return false;
 	}
 
 	/**

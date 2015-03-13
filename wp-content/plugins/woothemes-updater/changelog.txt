@@ -1,4 +1,11 @@
 *** WooThemes Helper Changelog ***
+2015.01.09 - version 1.4.1
+ * Fix - remove unnecessary $defaults
+
+2015.01.08 - version 1.4.0
+ * New - Activate license keys using AJAX. Fixes Suhosin issue, while adding a bit of extra spice to the interface.
+ * New - Adds a woothemes_updater_request_args filter around the request arguments when using the request() method in the Woothemes_Updater_API class.
+ * New - Adds language translation POT file and adjusts the localisation loader to look in the new "languages" directory.
 
 2014.07.18 - version 1.3.0
  * New - Check license keys on the "Licenses" screen to ensure they are active on WooThemes.com. If not, deactivate them locally to avoid confusion.

@@ -138,13 +138,20 @@ class GFEntryDetail {
 
 					$headers = "From: \"$email_from\" <$email_from> \r\n";
 					GFCommon::log_debug( "GFEntryDetail::lead_detail_page(): Emailing notes - TO: $email_to SUBJECT: $email_subject BODY: $body HEADERS: $headers" );
-					$result  = wp_mail( $email_to, $email_subject, $body, $headers );
+					$is_success  = wp_mail( $email_to, $email_subject, $body, $headers );
+					$result = is_wp_error( $is_success ) ? $is_success->get_error_message() : $is_success;
 					GFCommon::log_debug( "GFEntryDetail::lead_detail_page(): Result from wp_mail(): {$result}" );
-					if ( $result ) {
+					if ( ! is_wp_error( $is_success ) && $is_success ) {
 						GFCommon::log_debug( 'GFEntryDetail::lead_detail_page(): Mail was passed from WordPress to the mail server.' );
 					} else {
 						GFCommon::log_error( 'GFEntryDetail::lead_detail_page(): The mail message was passed off to WordPress for processing, but WordPress was unable to send the message.' );
 					}
+
+					if ( has_filter( 'phpmailer_init' ) ) {
+						GFCommon::log_debug( __METHOD__ . '(): The WordPress phpmailer_init hook has been detected, usually used by SMTP plugins, it can impact mail delivery.' );
+					}
+
+					do_action( 'gform_post_send_entry_note', $result, $email_to, $email_from, $email_subject, $body, $form, $lead );
 				}
 				break;
 
