@@ -4,7 +4,7 @@ Donate link: http://statcounter.com/
 Tags: web, statistics, stats, hit, counter, visitor, ip, tracker, analytics
 Requires at least: 2.0.2
 Tested up to: 4.1.1
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ To activate the StatCounter service for your WordPress site:
 2. Using the magnify tool, you can "zoom in" on individual visitors and get a detailed report on where they are from, their system settings, and most importantly, what link reffered them to your site and their navigation path through your site. 
 
 == Changelog ==
+
+= 1.7.1 =
+Removed unnecessary type attribute from script element
 
 = 1.7 =
 Updated constant definitions to be case sensitive
@@ -144,3 +147,4 @@ Bug fix to prevent user entry of whitespace characters for Project ID and Securi
 
 = 1.6.2 =
 Upgrade to allow for fully functioning PayPal upgrade options.
+

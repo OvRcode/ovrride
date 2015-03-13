@@ -1,9 +1,9 @@
 # Copyright 2009-2015 Rocketgenius, Inc.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gravity Forms 1.9.2\n"
+"Project-Id-Version: Gravity Forms 1.9.3.1\n"
 "Report-Msgid-Bugs-To: http://www.gravtiyhelp.com\n"
-"POT-Creation-Date: 2015-02-25 21:44:11+00:00\n"
+"POT-Creation-Date: 2015-03-06 21:58:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,539 +24,539 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Textdomain-Support: yes\n"
 
-#: common.php:319 common.php:629 form_detail.php:2562
+#: common.php:331 common.php:641 form_detail.php:2562
 msgid "Insert Merge Tag"
 msgstr ""
 
-#: common.php:380 js.php:1209
+#: common.php:392 js.php:1209
 msgid "All Submitted Fields"
 msgstr ""
 
-#: common.php:450
+#: common.php:462
 msgid "All Pricing Fields"
 msgstr ""
 
-#: common.php:458 form_detail.php:2564 js.php:1209
+#: common.php:470 form_detail.php:2564 js.php:1209
 msgid "User IP Address"
 msgstr ""
 
-#: common.php:459 common.php:460 entry_detail.php:1034 form_detail.php:748
+#: common.php:471 common.php:472 entry_detail.php:1041 form_detail.php:748
 #: form_detail.php:1663 form_detail.php:2565 form_detail.php:2566
-#: includes/addon/class-gf-payment-addon.php:1710
+#: includes/addon/class-gf-payment-addon.php:1713
 #: includes/fields/class-gf-field-date.php:13 js.php:663 js.php:1209
 msgid "Date"
 msgstr ""
 
-#: common.php:461 form_detail.php:2567
+#: common.php:473 form_detail.php:2567
 msgid "Embed Post/Page Id"
 msgstr ""
 
-#: common.php:462 form_detail.php:2568
+#: common.php:474 form_detail.php:2568
 msgid "Embed Post/Page Title"
 msgstr ""
 
-#: common.php:463 form_detail.php:2569
+#: common.php:475 form_detail.php:2569
 msgid "Embed URL"
 msgstr ""
 
-#: common.php:464 entry_detail.php:374 export.php:775 select_columns.php:164
+#: common.php:476 entry_detail.php:381 export.php:778 select_columns.php:164
 msgid "Entry Id"
 msgstr ""
 
-#: common.php:465
+#: common.php:477
 msgid "Entry URL"
 msgstr ""
 
-#: common.php:466
+#: common.php:478
 msgid "Form Id"
 msgstr ""
 
-#: common.php:467 form_list.php:183 includes/addon/class-gf-addon.php:1696
+#: common.php:479 form_list.php:183 includes/addon/class-gf-addon.php:1696
 #: js.php:1209 tooltips.php:33
 msgid "Form Title"
 msgstr ""
 
-#: common.php:468 form_detail.php:2570
+#: common.php:480 form_detail.php:2570
 msgid "HTTP User Agent"
 msgstr ""
 
-#: common.php:469 form_detail.php:2571
+#: common.php:481 form_detail.php:2571
 msgid "HTTP Referer URL"
 msgstr ""
 
-#: common.php:472 export.php:783
+#: common.php:484 export.php:786
 msgid "Post Id"
 msgstr ""
 
-#: common.php:473
+#: common.php:485
 msgid "Post Edit URL"
 msgstr ""
 
-#: common.php:476 form_detail.php:2572
+#: common.php:488 form_detail.php:2572
 msgid "User Display Name"
 msgstr ""
 
-#: common.php:477 form_detail.php:2573
+#: common.php:489 form_detail.php:2573
 msgid "User Email"
 msgstr ""
 
-#: common.php:478 form_detail.php:2574
+#: common.php:490 form_detail.php:2574
 msgid "User Login"
 msgstr ""
 
-#: common.php:490
+#: common.php:502
 msgid "Required form fields"
 msgstr ""
 
-#: common.php:494
+#: common.php:506
 msgid "Optional form fields"
 msgstr ""
 
-#: common.php:498
+#: common.php:510
 msgid "Pricing form fields"
 msgstr ""
 
-#: common.php:502 common.php:3011 form_detail.php:1421 form_detail.php:1423
+#: common.php:514 common.php:3027 form_detail.php:1421 form_detail.php:1423
 msgid "Other"
 msgstr ""
 
-#: common.php:506 common.php:660 form_detail.php:259 form_detail.php:1635
+#: common.php:518 common.php:672 form_detail.php:259 form_detail.php:1635
 msgid "Custom"
 msgstr ""
 
-#: common.php:594
+#: common.php:606
 msgid "Select image size"
 msgstr ""
 
-#: common.php:595
+#: common.php:607
 msgid "Thumbnail"
 msgstr ""
 
-#: common.php:596
+#: common.php:608
 msgid "Thumbnail - Left Aligned"
 msgstr ""
 
-#: common.php:597
+#: common.php:609
 msgid "Thumbnail - Centered"
 msgstr ""
 
-#: common.php:598
+#: common.php:610
 msgid "Thumbnail - Right Aligned"
 msgstr ""
 
-#: common.php:600 form_detail.php:800 form_detail.php:1433 form_detail.php:1983
+#: common.php:612 form_detail.php:800 form_detail.php:1433 form_detail.php:1983
 msgid "Medium"
 msgstr ""
 
-#: common.php:601
+#: common.php:613
 msgid "Medium - Left Aligned"
 msgstr ""
 
-#: common.php:602
+#: common.php:614
 msgid "Medium - Centered"
 msgstr ""
 
-#: common.php:603
+#: common.php:615
 msgid "Medium - Right Aligned"
 msgstr ""
 
-#: common.php:605 form_detail.php:801 form_detail.php:1433 form_detail.php:1984
+#: common.php:617 form_detail.php:801 form_detail.php:1433 form_detail.php:1984
 msgid "Large"
 msgstr ""
 
-#: common.php:606
+#: common.php:618
 msgid "Large - Left Aligned"
 msgstr ""
 
-#: common.php:607
+#: common.php:619
 msgid "Large - Centered"
 msgstr ""
 
-#: common.php:608
+#: common.php:620
 msgid "Large - Right Aligned"
 msgstr ""
 
-#: common.php:610
+#: common.php:622
 msgid "Full Size"
 msgstr ""
 
-#: common.php:611
+#: common.php:623
 msgid "Full Size - Left Aligned"
 msgstr ""
 
-#: common.php:612
+#: common.php:624
 msgid "Full Size - Centered"
 msgstr ""
 
-#: common.php:613
+#: common.php:625
 msgid "Full Size - Right Aligned"
 msgstr ""
 
-#: common.php:630
+#: common.php:642
 msgid "Allowable form fields"
 msgstr ""
 
-#: common.php:1200 entry_detail.php:905
+#: common.php:1212 entry_detail.php:912
 msgid "Order"
 msgstr ""
 
-#: common.php:1232 entry_detail.php:980 gravityforms.php:1470
-#: includes/addon/class-gf-payment-addon.php:1522
+#: common.php:1244 entry_detail.php:987 gravityforms.php:1476
+#: includes/addon/class-gf-payment-addon.php:1525
 #: includes/fields/class-gf-field-total.php:24 js.php:765
 msgid "Total"
 msgstr ""
 
-#: common.php:1249 entry_detail.php:917
+#: common.php:1261 entry_detail.php:924
 #: includes/fields/class-gf-field-product.php:13
 msgid "Product"
 msgstr ""
 
-#: common.php:1250 entry_detail.php:918
+#: common.php:1262 entry_detail.php:925
 msgid "Qty"
 msgstr ""
 
-#: common.php:1251 entry_detail.php:919
+#: common.php:1263 entry_detail.php:926
 msgid "Unit Price"
 msgstr ""
 
-#: common.php:1252 entry_detail.php:920 form_detail.php:572
+#: common.php:1264 entry_detail.php:927 form_detail.php:572
 #: form_detail.php:1400 includes/fields/class-gf-field-calculation.php:86
 #: includes/fields/class-gf-field-singleproduct.php:91 js.php:742 js.php:801
 msgid "Price"
 msgstr ""
 
-#: common.php:1304
+#: common.php:1316
 msgid "Total:"
 msgstr ""
 
-#: common.php:1955
+#: common.php:1967
 msgid ""
 "Gravity Forms require WordPress %s or greater. You must upgrade WordPress "
 "in order to use Gravity Forms"
 msgstr ""
 
-#: common.php:2068
+#: common.php:2084
 msgid "%s ago"
 msgstr ""
 
-#: common.php:2070 common.php:2073
+#: common.php:2086 common.php:2089
 msgid "%1$s at %2$s"
 msgstr ""
 
-#: common.php:2521
+#: common.php:2537
 msgid "Product fields are not editable"
 msgstr ""
 
-#: common.php:2523
+#: common.php:2539
 msgid "Donations are not editable"
 msgstr ""
 
-#: common.php:3496 form_list.php:241 form_list.php:424 form_settings.php:1006
+#: common.php:3512 form_list.php:241 form_list.php:424 form_settings.php:1006
 #: form_settings.php:1770 includes/addon/class-gf-feed-addon.php:1137
 #: js.php:262 js.php:322 notification.php:446 notification.php:1184
 msgid "Active"
 msgstr ""
 
-#: common.php:3497 form_list.php:237 form_list.php:424 form_settings.php:1002
+#: common.php:3513 form_list.php:237 form_list.php:424 form_settings.php:1002
 #: form_settings.php:1770 includes/addon/class-gf-feed-addon.php:1137
 #: js.php:262 js.php:326 notification.php:442 notification.php:1184
 msgid "Inactive"
 msgstr ""
 
-#: common.php:3498 common.php:3527 form_detail.php:1473 select_columns.php:228
+#: common.php:3514 common.php:3543 form_detail.php:1473 select_columns.php:228
 msgid "Save"
 msgstr ""
 
-#: common.php:3499 entry_detail.php:484
+#: common.php:3515 entry_detail.php:491
 msgid "Update"
 msgstr ""
 
-#: common.php:3500 form_display.php:755 form_display.php:2240 js.php:553
+#: common.php:3516 form_display.php:755 form_display.php:2240 js.php:553
 msgid "Previous"
 msgstr ""
 
-#: common.php:3501
+#: common.php:3517
 msgid "Select a format"
 msgstr ""
 
-#: common.php:3502
+#: common.php:3518
 msgid "5 of %d items shown. Edit field to view all"
 msgstr ""
 
-#: common.php:3503
+#: common.php:3519
 msgid "Enter a value"
 msgstr ""
 
-#: common.php:3504
+#: common.php:3520
 msgid "Untitled Form"
 msgstr ""
 
-#: common.php:3505
+#: common.php:3521
 msgid ""
 "We would love to hear from you! Please fill out this form and we will get "
 "in touch with you shortly."
 msgstr ""
 
-#: common.php:3506 common.php:3535 form_detail.php:2751
+#: common.php:3522 common.php:3551 form_detail.php:2751
 msgid "Thanks for contacting us! We will get in touch with you shortly."
 msgstr ""
 
-#: common.php:3507 form_display.php:957 form_list.php:647
+#: common.php:3523 form_display.php:957 form_list.php:647
 msgid "Submit"
 msgstr ""
 
-#: common.php:3508 notification.php:313
+#: common.php:3524 notification.php:313
 msgid "Loading..."
 msgstr ""
 
-#: common.php:3509
+#: common.php:3525
 msgid "this field if"
 msgstr ""
 
-#: common.php:3510
+#: common.php:3526
 msgid "this page"
 msgstr ""
 
-#: common.php:3511
+#: common.php:3527
 msgid "this form button if"
 msgstr ""
 
-#: common.php:3512
+#: common.php:3528
 msgid "Show"
 msgstr ""
 
-#: common.php:3513
+#: common.php:3529
 msgid "Hide"
 msgstr ""
 
-#: common.php:3516
+#: common.php:3532
 msgid "of the following match:"
 msgstr ""
 
-#: common.php:3517 includes/addon/class-gf-addon.php:1977 notification.php:193
+#: common.php:3533 includes/addon/class-gf-addon.php:1977 notification.php:193
 #: notification.php:712
 msgid "is"
 msgstr ""
 
-#: common.php:3518 includes/addon/class-gf-addon.php:1981 notification.php:194
+#: common.php:3534 includes/addon/class-gf-addon.php:1981 notification.php:194
 #: notification.php:713
 msgid "is not"
 msgstr ""
 
-#: common.php:3519 includes/addon/class-gf-addon.php:1985 notification.php:195
+#: common.php:3535 includes/addon/class-gf-addon.php:1985 notification.php:195
 #: notification.php:714
 msgid "greater than"
 msgstr ""
 
-#: common.php:3520 includes/addon/class-gf-addon.php:1989 notification.php:196
+#: common.php:3536 includes/addon/class-gf-addon.php:1989 notification.php:196
 #: notification.php:715
 msgid "less than"
 msgstr ""
 
-#: common.php:3521 includes/addon/class-gf-addon.php:1993 notification.php:197
+#: common.php:3537 includes/addon/class-gf-addon.php:1993 notification.php:197
 #: notification.php:716
 msgid "contains"
 msgstr ""
 
-#: common.php:3522 includes/addon/class-gf-addon.php:1997 notification.php:198
+#: common.php:3538 includes/addon/class-gf-addon.php:1997 notification.php:198
 #: notification.php:717
 msgid "starts with"
 msgstr ""
 
-#: common.php:3523 includes/addon/class-gf-addon.php:2001 notification.php:199
+#: common.php:3539 includes/addon/class-gf-addon.php:2001 notification.php:199
 #: notification.php:718
 msgid "ends with"
 msgstr ""
 
-#: common.php:3525
+#: common.php:3541
 msgid "Use this confirmation if"
 msgstr ""
 
-#: common.php:3526
+#: common.php:3542
 msgid "Send this notification if"
 msgstr ""
 
-#: common.php:3528
+#: common.php:3544
 msgid "Saving..."
 msgstr ""
 
-#: common.php:3529
+#: common.php:3545
 msgid "Are you sure you wish to cancel these changes?"
 msgstr ""
 
-#: common.php:3530 form_settings.php:1508
+#: common.php:3546 form_settings.php:1508
 msgid "There was an issue saving this confirmation."
 msgstr ""
 
-#: common.php:3531
+#: common.php:3547
 msgid "Are you sure you wish to delete this confirmation?"
 msgstr ""
 
-#: common.php:3532 form_settings.php:1528
+#: common.php:3548 form_settings.php:1528
 msgid "There was an issue deleting this confirmation."
 msgstr ""
 
-#: common.php:3533
+#: common.php:3549
 msgid ""
 "There are unsaved changes to the current confirmation. Would you like to "
 "discard these changes?"
 msgstr ""
 
-#: common.php:3534
+#: common.php:3550
 msgid "Untitled Confirmation"
 msgstr ""
 
-#: common.php:3536
+#: common.php:3552
 msgid "Please select a page."
 msgstr ""
 
-#: common.php:3537
+#: common.php:3553
 msgid "Please enter a URL."
 msgstr ""
 
-#: common.php:3538
+#: common.php:3554
 msgid "Please enter a confirmation name."
 msgstr ""
 
-#: common.php:3540
+#: common.php:3556
 msgid ""
 "This form contains conditional logic dependent upon this field. Are you "
 "sure you want to delete this field? 'OK' to delete, 'Cancel' to abort."
 msgstr ""
 
-#: common.php:3541
+#: common.php:3557
 msgid ""
 "This form contains conditional logic dependent upon this choice. Are you "
 "sure you want to delete this choice? 'OK' to delete, 'Cancel' to abort."
 msgstr ""
 
-#: common.php:3542
+#: common.php:3558
 msgid ""
 "This form contains conditional logic dependent upon this choice. Are you "
 "sure you want to modify this choice? 'OK' to delete, 'Cancel' to abort."
 msgstr ""
 
-#: common.php:3544
+#: common.php:3560
 msgid ""
 "<h6>Merge Tags</h6>Merge tags allow you to dynamically populate submitted "
 "field values in your form content wherever this merge tag icon is present."
 msgstr ""
 
-#: common.php:3552
+#: common.php:3568
 msgid "Add a condition"
 msgstr ""
 
-#: common.php:3553
+#: common.php:3569
 msgid "Remove a condition"
 msgstr ""
 
-#: common.php:3554
+#: common.php:3570
 msgid "Include results if {0} match:"
 msgstr ""
 
-#: common.php:3556
+#: common.php:3572
 msgid "Custom Choices"
 msgstr ""
 
-#: common.php:3557
+#: common.php:3573
 msgid "Predefined Choices"
 msgstr ""
 
-#: common.php:3691
+#: common.php:3707
 msgid "Any form field"
 msgstr ""
 
-#: common.php:3795
+#: common.php:3811
 msgid "Entry ID"
 msgstr ""
 
-#: common.php:3799 export.php:776 includes/addon/class-gf-addon.php:1693
+#: common.php:3815 export.php:779 includes/addon/class-gf-addon.php:1693
 #: select_columns.php:165
 msgid "Entry Date"
 msgstr ""
 
-#: common.php:3801
+#: common.php:3817
 msgid "yyyy-mm-dd"
 msgstr ""
 
-#: common.php:3804
+#: common.php:3820
 msgid "Starred"
 msgstr ""
 
-#: common.php:3818
+#: common.php:3834
 msgid "IP Address"
 msgstr ""
 
-#: common.php:3822
+#: common.php:3838
 msgid "Source URL"
 msgstr ""
 
-#: common.php:3826 entry_detail.php:405 export.php:781 select_columns.php:168
+#: common.php:3842 entry_detail.php:412 export.php:784 select_columns.php:168
 msgid "Payment Status"
 msgstr ""
 
-#: common.php:3852 entry_detail.php:410 export.php:780 select_columns.php:171
+#: common.php:3868 entry_detail.php:417 export.php:783 select_columns.php:171
 msgid "Payment Date"
 msgstr ""
 
-#: common.php:3856 entry_detail.php:422 export.php:779
-#: includes/addon/class-gf-payment-addon.php:1217
-#: includes/addon/class-gf-payment-addon.php:1222 select_columns.php:170
+#: common.php:3872 entry_detail.php:429 export.php:782
+#: includes/addon/class-gf-payment-addon.php:1220
+#: includes/addon/class-gf-payment-addon.php:1225 select_columns.php:170
 msgid "Payment Amount"
 msgstr ""
 
-#: common.php:3860
+#: common.php:3876
 msgid "Transaction ID"
 msgstr ""
 
-#: common.php:3864 entry_detail.php:382 select_columns.php:172
+#: common.php:3880 entry_detail.php:389 select_columns.php:172
 msgid "User"
 msgstr ""
 
-#: common.php:3953
+#: common.php:3969
 msgid "This type of file is not allowed. Must be one of the following: "
 msgstr ""
 
-#: common.php:3954
+#: common.php:3970
 msgid "Delete this file"
 msgstr ""
 
-#: common.php:3955
+#: common.php:3971
 msgid "in progress"
 msgstr ""
 
-#: common.php:3956
+#: common.php:3972
 msgid "File exceeds size limit"
 msgstr ""
 
-#: common.php:3957
+#: common.php:3973
 msgid "This type of file is not allowed."
 msgstr ""
 
-#: common.php:3958
+#: common.php:3974
 msgid "Maximum number of files reached"
 msgstr ""
 
-#: common.php:3959
+#: common.php:3975
 msgid "There was a problem while saving the file on the server"
 msgstr ""
 
-#: common.php:3960
+#: common.php:3976
 msgid "Please wait for the uploading to complete"
 msgstr ""
 
-#: common.php:3961 entry_detail.php:491 form_detail.php:1464
+#: common.php:3977 entry_detail.php:498 form_detail.php:1464
 #: form_detail.php:1474 includes/addon/class-gf-results.php:326
 #: includes/locking/class-gf-locking.php:198
 #: includes/templates/edit-shortcode-form.tpl.php:22 select_columns.php:229
 msgid "Cancel"
 msgstr ""
 
-#: common.php:3962
+#: common.php:3978
 msgid "Cancel this upload"
 msgstr ""
 
-#: common.php:3963
+#: common.php:3979
 msgid "Cancelled"
 msgstr ""
 
@@ -664,241 +664,241 @@ msgstr ""
 msgid "Oops! We couldn't find your entry. Please try again"
 msgstr ""
 
-#: entry_detail.php:161
+#: entry_detail.php:168
 msgid "You don't have adequate permission to delete notes."
 msgstr ""
 
-#: entry_detail.php:189 entry_list.php:102 entry_list.php:122 form_list.php:84
+#: entry_detail.php:196 entry_list.php:102 entry_list.php:122 form_list.php:84
 msgid "You don't have adequate permission to delete entries."
 msgstr ""
 
-#: entry_detail.php:212
+#: entry_detail.php:219
 msgid ""
 "'Would you like to delete this file? \\'Cancel\\' to stop. \\'OK\\' to "
 "delete'"
 msgstr ""
 
-#: entry_detail.php:223 js.php:519
+#: entry_detail.php:230 js.php:519
 msgid "Ajax error while deleting field."
 msgstr ""
 
-#: entry_detail.php:278 entry_list.php:430
+#: entry_detail.php:285 entry_list.php:430
 msgid "You must select at least one type of notification to resend."
 msgstr ""
 
-#: entry_detail.php:296
+#: entry_detail.php:303
 msgid "Notifications were resent successfully."
 msgstr ""
 
-#: entry_detail.php:342
+#: entry_detail.php:349
 msgid "Entry #"
 msgstr ""
 
-#: entry_detail.php:342 entry_list.php:758 form_detail.php:148
+#: entry_detail.php:349 entry_list.php:758 form_detail.php:148
 #: form_settings.php:1377 includes/addon/class-gf-results.php:236
 msgid "Form Name"
 msgstr ""
 
-#: entry_detail.php:367
+#: entry_detail.php:374
 msgid "Entry"
 msgstr ""
 
-#: entry_detail.php:375
+#: entry_detail.php:382
 msgid "Submitted on"
 msgstr ""
 
-#: entry_detail.php:377 export.php:785 includes/addon/class-gf-addon.php:1694
+#: entry_detail.php:384 export.php:788 includes/addon/class-gf-addon.php:1694
 #: select_columns.php:166
 msgid "User IP"
 msgstr ""
 
-#: entry_detail.php:383
+#: entry_detail.php:390
 msgid "View user profile"
 msgstr ""
 
-#: entry_detail.php:389
+#: entry_detail.php:396
 msgid "Embed Url"
 msgstr ""
 
-#: entry_detail.php:396
+#: entry_detail.php:403
 msgid "Edit Post"
 msgstr ""
 
-#: entry_detail.php:397
+#: entry_detail.php:404
 msgid "Click to edit post"
 msgstr ""
 
-#: entry_detail.php:405
+#: entry_detail.php:412
 msgid "Subscription Status"
 msgstr ""
 
-#: entry_detail.php:410 entry_detail.php:1034
+#: entry_detail.php:417 entry_detail.php:1041
 msgid "Start Date"
 msgstr ""
 
-#: entry_detail.php:416 entry_detail.php:1044 export.php:778
+#: entry_detail.php:423 entry_detail.php:1051 export.php:781
 #: select_columns.php:169
 msgid "Transaction Id"
 msgstr ""
 
-#: entry_detail.php:416
+#: entry_detail.php:423
 msgid "Subscriber Id"
 msgstr ""
 
-#: entry_detail.php:422
+#: entry_detail.php:429
 msgid "Subscription Amount"
 msgstr ""
 
-#: entry_detail.php:440 entry_list.php:823 entry_list.php:1133
+#: entry_detail.php:447 entry_list.php:823 entry_list.php:1133
 #: entry_list.php:1265
 msgid "Not Spam"
 msgstr ""
 
-#: entry_detail.php:446 entry_detail.php:459
+#: entry_detail.php:453 entry_detail.php:466
 msgid ""
 "You are about to delete this entry. \\'Cancel\\' to stop, \\'OK\\' to "
 "delete."
 msgstr ""
 
-#: entry_detail.php:446 entry_detail.php:459 entry_list.php:817
+#: entry_detail.php:453 entry_detail.php:466 entry_list.php:817
 #: entry_list.php:827 entry_list.php:1117 entry_list.php:1142
 #: entry_list.php:1259 entry_list.php:1269
 msgid "Delete Permanently"
 msgstr ""
 
-#: entry_detail.php:454 entry_list.php:813 entry_list.php:1108
+#: entry_detail.php:461 entry_list.php:813 entry_list.php:1108
 #: entry_list.php:1255 form_list.php:326 form_list.php:446 form_list.php:447
 #: form_list.php:535
 msgid "Restore"
 msgstr ""
 
-#: entry_detail.php:468 entry_list.php:1291 form_detail.php:2364
+#: entry_detail.php:475 entry_list.php:1291 form_detail.php:2364
 msgid "Move to Trash"
 msgstr ""
 
-#: entry_detail.php:474
+#: entry_detail.php:481
 msgid "Mark as Spam"
 msgstr ""
 
-#: entry_detail.php:484 form_list.php:436 form_settings.php:1779
-#: gravityforms.php:2561 includes/addon/class-gf-feed-addon.php:723
+#: entry_detail.php:491 form_list.php:436 form_settings.php:1779
+#: gravityforms.php:2567 includes/addon/class-gf-feed-addon.php:723
 #: notification.php:1192
 msgid "Edit"
 msgstr ""
 
-#: entry_detail.php:513 form_settings.php:1434 notification.php:115
+#: entry_detail.php:520 form_settings.php:1434 notification.php:115
 #: notification.php:429 notification.php:433
 msgid "Notifications"
 msgstr ""
 
-#: entry_detail.php:524
+#: entry_detail.php:531
 msgid ""
 "You cannot resend notifications for this entry because this form does not "
 "currently have any notifications configured."
 msgstr ""
 
-#: entry_detail.php:526 entry_list.php:881
+#: entry_detail.php:533 entry_list.php:881
 msgid "Configure Notifications"
 msgstr ""
 
-#: entry_detail.php:542 entry_list.php:900 notification.php:597
+#: entry_detail.php:549 entry_list.php:900 notification.php:597
 msgid "Send To"
 msgstr ""
 
-#: entry_detail.php:548 entry_list.php:386 entry_list.php:838
+#: entry_detail.php:555 entry_list.php:386 entry_list.php:838
 #: entry_list.php:905 entry_list.php:1280
 msgid "Resend Notifications"
 msgstr ""
 
-#: entry_detail.php:551 entry_list.php:907
+#: entry_detail.php:558 entry_list.php:907
 msgid "Resending..."
 msgstr ""
 
-#: entry_detail.php:565 entry_list.php:839 entry_list.php:943
+#: entry_detail.php:572 entry_list.php:839 entry_list.php:943
 msgid "Print"
 msgstr ""
 
-#: entry_detail.php:568
+#: entry_detail.php:575
 msgid "include notes"
 msgstr ""
 
-#: entry_detail.php:593
+#: entry_detail.php:600
 msgid "Notes"
 msgstr ""
 
-#: entry_detail.php:632
+#: entry_detail.php:639
 msgid "Entry Updated."
 msgstr ""
 
-#: entry_detail.php:644
+#: entry_detail.php:651
 msgid "Details"
 msgstr ""
 
-#: entry_detail.php:703
+#: entry_detail.php:710
 msgid " Bulk action"
 msgstr ""
 
-#: entry_detail.php:705 entry_list.php:808 entry_list.php:1250
+#: entry_detail.php:712 entry_list.php:808 entry_list.php:1250
 msgid " Bulk action "
 msgstr ""
 
-#: entry_detail.php:706 form_detail.php:1475 form_settings.php:1781
+#: entry_detail.php:713 form_detail.php:1475 form_settings.php:1781
 #: includes/addon/class-gf-feed-addon.php:691
 #: includes/addon/class-gf-feed-addon.php:724 notification.php:1194
 msgid "Delete"
 msgstr ""
 
-#: entry_detail.php:709 entry_list.php:856 entry_list.php:1297
+#: entry_detail.php:716 entry_list.php:856 entry_list.php:1297
 #: form_list.php:337 form_list.php:546
 msgid "Apply"
 msgstr ""
 
-#: entry_detail.php:758
+#: entry_detail.php:765
 msgid "added on"
 msgstr ""
 
-#: entry_detail.php:773
+#: entry_detail.php:780
 msgid "Add Note"
 msgstr ""
 
-#: entry_detail.php:781
+#: entry_detail.php:788
 msgid "Also email this note to"
 msgstr ""
 
-#: entry_detail.php:789
+#: entry_detail.php:796
 msgid "Subject:"
 msgstr ""
 
-#: entry_detail.php:820 print-entry.php:91
+#: entry_detail.php:827 print-entry.php:91
 msgid "Entry # "
 msgstr ""
 
-#: entry_detail.php:829
+#: entry_detail.php:836
 msgid "show empty fields"
 msgstr ""
 
-#: entry_detail.php:1013
+#: entry_detail.php:1020
 msgid "Subscription Details"
 msgstr ""
 
-#: entry_detail.php:1013
+#: entry_detail.php:1020
 msgid "Payment Details"
 msgstr ""
 
-#: entry_detail.php:1024
+#: entry_detail.php:1031
 msgid "Status"
 msgstr ""
 
-#: entry_detail.php:1044
+#: entry_detail.php:1051
 msgid "Subscription Id"
 msgstr ""
 
-#: entry_detail.php:1054 includes/addon/class-gf-payment-addon.php:1174
-#: includes/addon/class-gf-payment-addon.php:1178
+#: entry_detail.php:1061 includes/addon/class-gf-payment-addon.php:1177
+#: includes/addon/class-gf-payment-addon.php:1181
 msgid "Recurring Amount"
 msgstr ""
 
-#: entry_detail.php:1054 includes/addon/class-gf-payment-addon.php:1085
+#: entry_detail.php:1061 includes/addon/class-gf-payment-addon.php:1088
 msgid "Amount"
 msgstr ""
 
@@ -1006,8 +1006,8 @@ msgstr ""
 msgid "Entry List"
 msgstr ""
 
-#: entry_list.php:758 form_list.php:375 form_list.php:395 gravityforms.php:1116
-#: gravityforms.php:2593
+#: entry_list.php:758 form_list.php:375 form_list.php:395 gravityforms.php:1122
+#: gravityforms.php:2599
 msgid "Entries"
 msgstr ""
 
@@ -1103,7 +1103,7 @@ msgid "View this entry"
 msgstr ""
 
 #: entry_list.php:1103 entry_list.php:1128 entry_list.php:1154
-#: includes/addon/class-gf-payment-addon.php:1900
+#: includes/addon/class-gf-payment-addon.php:1903
 msgid "View"
 msgstr ""
 
@@ -1213,7 +1213,7 @@ msgstr ""
 msgid "Edit Form"
 msgstr ""
 
-#: export.php:317 export.php:878
+#: export.php:317 export.php:881
 msgid "Import Forms"
 msgstr ""
 
@@ -1231,7 +1231,7 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: export.php:355 export.php:877
+#: export.php:355 export.php:880
 msgid "Export Forms"
 msgstr ""
 
@@ -1251,7 +1251,7 @@ msgstr ""
 msgid "Download Export File"
 msgstr ""
 
-#: export.php:403 export.php:550 export.php:873
+#: export.php:403 export.php:550 export.php:876
 msgid "Export Entries"
 msgstr ""
 
@@ -1280,7 +1280,7 @@ msgid ""
 "computer."
 msgstr ""
 
-#: export.php:476 gravityforms.php:2453
+#: export.php:476 gravityforms.php:2459
 msgid "Select A Form"
 msgstr ""
 
@@ -1293,8 +1293,8 @@ msgid "Select Fields"
 msgstr ""
 
 #: export.php:505 form_settings.php:1326
-#: includes/addon/class-gf-payment-addon.php:1262
-#: includes/addon/class-gf-payment-addon.php:1264 notification.php:880
+#: includes/addon/class-gf-payment-addon.php:1265
+#: includes/addon/class-gf-payment-addon.php:1267 notification.php:880
 #: tooltips.php:108 tooltips.php:122 tooltips.php:145
 msgid "Conditional Logic"
 msgstr ""
@@ -1321,23 +1321,23 @@ msgstr ""
 msgid "Exporting entries. Please wait..."
 msgstr ""
 
-#: export.php:774
+#: export.php:777
 msgid "Created By (User Id)"
 msgstr ""
 
-#: export.php:777 includes/addon/class-gf-addon.php:1695 select_columns.php:167
+#: export.php:780 includes/addon/class-gf-addon.php:1695 select_columns.php:167
 msgid "Source Url"
 msgstr ""
 
-#: export.php:784
+#: export.php:787
 msgid "User Agent"
 msgstr ""
 
-#: form_detail.php:145 gravityforms.php:1114
+#: form_detail.php:145 gravityforms.php:1120
 msgid "New Form"
 msgstr ""
 
-#: form_detail.php:148 gravityforms.php:2561
+#: form_detail.php:148 gravityforms.php:2567
 msgid "Form Editor"
 msgstr ""
 
@@ -1562,7 +1562,7 @@ msgid "Default"
 msgstr ""
 
 #: form_detail.php:436 form_detail.php:660 form_detail.php:698
-#: form_settings.php:493 gravityforms.php:1600
+#: form_settings.php:493 gravityforms.php:1606
 msgid "Image"
 msgstr ""
 
@@ -1582,7 +1582,7 @@ msgstr ""
 msgid "What would you like to do next?"
 msgstr ""
 
-#: form_detail.php:468 form_detail.php:2380 gravityforms.php:2610
+#: form_detail.php:468 form_detail.php:2380 gravityforms.php:2616
 msgid "Preview this form"
 msgstr ""
 
@@ -1736,7 +1736,7 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
-#: form_detail.php:752 includes/addon/class-gf-payment-addon.php:1439
+#: form_detail.php:752 includes/addon/class-gf-payment-addon.php:1442
 #: includes/fields/class-gf-field-email.php:13 js.php:641
 msgid "Email"
 msgstr ""
@@ -1858,7 +1858,7 @@ msgid "Image Metadata"
 msgstr ""
 
 #: form_detail.php:1076 form_list.php:373 form_list.php:393
-#: gravityforms.php:1466 includes/fields/class-gf-field-post-image.php:76
+#: gravityforms.php:1472 includes/fields/class-gf-field-post-image.php:76
 #: includes/fields/class-gf-field-post-image.php:124
 #: includes/fields/class-gf-field-post-title.php:13 widget.php:77
 msgid "Title"
@@ -1881,7 +1881,7 @@ msgstr ""
 msgid "Address Fields"
 msgstr ""
 
-#: form_detail.php:1134 includes/addon/class-gf-payment-addon.php:1443
+#: form_detail.php:1134 includes/addon/class-gf-payment-addon.php:1446
 #: includes/fields/class-gf-field-address.php:123
 #: includes/fields/class-gf-field-address.php:388
 msgid "State"
@@ -2488,7 +2488,7 @@ msgstr ""
 msgid "April"
 msgstr ""
 
-#: form_detail.php:1425 includes/addon/class-gf-payment-addon.php:1785
+#: form_detail.php:1425 includes/addon/class-gf-payment-addon.php:1788
 msgid "May"
 msgstr ""
 
@@ -2790,7 +2790,7 @@ msgstr ""
 msgid "Custom Mask Instructions"
 msgstr ""
 
-#: form_detail.php:1645 gravityforms.php:1133
+#: form_detail.php:1645 gravityforms.php:1139
 msgid "Help"
 msgstr ""
 
@@ -3118,7 +3118,7 @@ msgstr ""
 msgid "Save Form"
 msgstr ""
 
-#: form_detail.php:2380 gravityforms.php:2608
+#: form_detail.php:2380 gravityforms.php:2614
 msgid "Preview"
 msgstr ""
 
@@ -3130,7 +3130,7 @@ msgstr ""
 msgid "New submission from"
 msgstr ""
 
-#: form_detail.php:2748 forms_model.php:3898
+#: form_detail.php:2748 forms_model.php:3899
 msgid "Default Confirmation"
 msgstr ""
 
@@ -3193,7 +3193,7 @@ msgstr ""
 msgid "No results matched"
 msgstr ""
 
-#: form_display.php:1933 form_display.php:2421 gravityforms.php:1601
+#: form_display.php:1933 form_display.php:2421 gravityforms.php:1607
 msgid "of"
 msgstr ""
 
@@ -3350,8 +3350,8 @@ msgid ""
 "forms. "
 msgstr ""
 
-#: form_list.php:284 gravityforms.php:1109 gravityforms.php:1112
-#: gravityforms.php:1452
+#: form_list.php:284 gravityforms.php:1115 gravityforms.php:1118
+#: gravityforms.php:1458
 msgid "Forms"
 msgstr ""
 
@@ -3448,7 +3448,7 @@ msgid "Saved! Redirecting..."
 msgstr ""
 
 #: form_settings.php:110 form_settings.php:907 form_settings.php:1432
-#: gravityforms.php:2576
+#: gravityforms.php:2582
 msgid "Form Settings"
 msgstr ""
 
@@ -3771,9 +3771,9 @@ msgstr ""
 msgid "The link was sent to the following email address: {save_email}"
 msgstr ""
 
-#: form_settings.php:1701 includes/addon/class-gf-payment-addon.php:1083
-#: includes/addon/class-gf-payment-addon.php:1144
-#: includes/addon/class-gf-payment-addon.php:1148
+#: form_settings.php:1701 includes/addon/class-gf-payment-addon.php:1086
+#: includes/addon/class-gf-payment-addon.php:1147
+#: includes/addon/class-gf-payment-addon.php:1151
 #: includes/fields/class-gf-field-name.php:12 js.php:572 js.php:742
 #: notification.php:542 notification.php:1122
 msgid "Name"
@@ -3815,11 +3815,11 @@ msgstr ""
 msgid "You don't have adequate permission to edit entries."
 msgstr ""
 
-#: gravityforms.php:1105
+#: gravityforms.php:1111
 msgid "Update Available"
 msgstr ""
 
-#: gravityforms.php:1124 gravityforms.php:1390 gravityforms.php:2576
+#: gravityforms.php:1130 gravityforms.php:1396 gravityforms.php:2582
 #: includes/addon/class-gf-addon.php:2720
 #: includes/addon/class-gf-addon.php:2935
 #: includes/addon/class-gf-addon.php:3093
@@ -3827,190 +3827,190 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: gravityforms.php:1126
+#: gravityforms.php:1132
 msgid "Import/Export"
 msgstr ""
 
-#: gravityforms.php:1129
+#: gravityforms.php:1135
 msgid "Updates"
 msgstr ""
 
-#: gravityforms.php:1130 help.php:49
+#: gravityforms.php:1136 help.php:49
 msgid "Add-Ons"
 msgstr ""
 
-#: gravityforms.php:1204
+#: gravityforms.php:1210
 msgid "%1$s &lsaquo; %2$s &#8212; WordPress"
 msgstr ""
 
-#: gravityforms.php:1315 gravityforms.php:1338
+#: gravityforms.php:1321 gravityforms.php:1344
 msgid "Add Gravity Form"
 msgstr ""
 
-#: gravityforms.php:1338
+#: gravityforms.php:1344
 msgid "Add Form"
 msgstr ""
 
-#: gravityforms.php:1350
+#: gravityforms.php:1356
 msgid "Please select a form"
 msgstr ""
 
-#: gravityforms.php:1404 update.php:38
+#: gravityforms.php:1410 update.php:38
 msgid "There is a new version of Gravity Forms available."
 msgstr ""
 
-#: gravityforms.php:1404 includes/addon/class-gf-auto-upgrade.php:60
+#: gravityforms.php:1410 includes/addon/class-gf-auto-upgrade.php:60
 #: includes/addon/class-gf-auto-upgrade.php:148
 msgid "View version %s Details"
 msgstr ""
 
-#: gravityforms.php:1436
+#: gravityforms.php:1442
 msgid ""
 "Oops!! Something went wrong.<br/>Please try again or <a "
 "href='http://www.gravityforms.com'>contact us</a>."
 msgstr ""
 
-#: gravityforms.php:1468
+#: gravityforms.php:1474
 msgid "Unread"
 msgstr ""
 
-#: gravityforms.php:1482 gravityforms.php:1488
+#: gravityforms.php:1488 gravityforms.php:1494
 msgid "View All Entries"
 msgstr ""
 
-#: gravityforms.php:1485
+#: gravityforms.php:1491
 msgid "Last Entry: %s"
 msgstr ""
 
-#: gravityforms.php:1500
+#: gravityforms.php:1506
 msgid "View All Forms"
 msgstr ""
 
-#: gravityforms.php:1507
+#: gravityforms.php:1513
 msgid "You don't have any forms. Let's go %s create one %s!"
 msgstr ""
 
-#: gravityforms.php:1538
+#: gravityforms.php:1544
 msgid "There is an update available for Gravity Forms. %sView Details%s %s"
 msgstr ""
 
-#: gravityforms.php:1541
+#: gravityforms.php:1547
 msgid "Dismiss"
 msgstr ""
 
-#: gravityforms.php:1598
+#: gravityforms.php:1604
 msgid "Next &gt;"
 msgstr ""
 
-#: gravityforms.php:1599
+#: gravityforms.php:1605
 msgid "&lt; Prev"
 msgstr ""
 
-#: gravityforms.php:1602
+#: gravityforms.php:1608
 msgid "Close"
 msgstr ""
 
-#: gravityforms.php:1603
+#: gravityforms.php:1609
 msgid ""
 "This feature requires inline frames. You have iframes disabled or your "
 "browser does not support them."
 msgstr ""
 
-#: gravityforms.php:1764
+#: gravityforms.php:1770
 msgid "Please select a form."
 msgstr ""
 
-#: gravityforms.php:1953
+#: gravityforms.php:1959
 msgid "Add-On browser is currently unavailable. Please try again later."
 msgstr ""
 
-#: gravityforms.php:2140
+#: gravityforms.php:2146
 msgid "There was an error while resending the notifications."
 msgstr ""
 
-#: gravityforms.php:2146
+#: gravityforms.php:2152
 msgid ""
 "No notifications have been selected. Please select a notification to be "
 "sent."
 msgstr ""
 
-#: gravityforms.php:2150
+#: gravityforms.php:2156
 msgid "The <strong>Send To</strong> email address provided is not valid."
 msgstr ""
 
-#: gravityforms.php:2459
+#: gravityforms.php:2465
 msgid "Switch Form"
 msgstr ""
 
-#: gravityforms.php:2563
+#: gravityforms.php:2569
 msgid "Edit this form"
 msgstr ""
 
-#: gravityforms.php:2578
+#: gravityforms.php:2584
 msgid "Edit settings for this form"
 msgstr ""
 
-#: gravityforms.php:2595
+#: gravityforms.php:2601
 msgid "View entries generated by this form"
 msgstr ""
 
-#: gravityforms.php:2726 widget.php:27
+#: gravityforms.php:2732 widget.php:27
 msgid "Form"
 msgstr ""
 
-#: gravityforms.php:2814 includes/locking/class-gf-locking.php:206
+#: gravityforms.php:2834 includes/locking/class-gf-locking.php:206
 msgid "Error"
 msgstr ""
 
-#: gravityforms.php:2902 widget.php:81
+#: gravityforms.php:2922 widget.php:81
 msgid "Select a Form"
 msgstr ""
 
-#: gravityforms.php:2909
+#: gravityforms.php:2929
 msgid "Select a form below to add it to your post or page."
 msgstr ""
 
-#: gravityforms.php:2910
+#: gravityforms.php:2930
 msgid "Select a form from the list to add it to your post or page."
 msgstr ""
 
-#: gravityforms.php:2914
+#: gravityforms.php:2934
 msgid "Can't find your form? Make sure it is active."
 msgstr ""
 
-#: gravityforms.php:2918 widget.php:97
+#: gravityforms.php:2938 widget.php:97
 msgid "Display form title"
 msgstr ""
 
-#: gravityforms.php:2923
+#: gravityforms.php:2943
 msgid "Whether or not do display the form title."
 msgstr ""
 
-#: gravityforms.php:2926 widget.php:99
+#: gravityforms.php:2946 widget.php:99
 msgid "Display form description"
 msgstr ""
 
-#: gravityforms.php:2931
+#: gravityforms.php:2951
 msgid "Whether or not do display the form description."
 msgstr ""
 
-#: gravityforms.php:2934 widget.php:106
+#: gravityforms.php:2954 widget.php:106
 msgid "Enable AJAX"
 msgstr ""
 
-#: gravityforms.php:2938
+#: gravityforms.php:2958
 msgid "Specify whether or not to use AJAX to submit the form."
 msgstr ""
 
-#: gravityforms.php:2944
+#: gravityforms.php:2964
 msgid "Specify the starting tab index for the fields of this form."
 msgstr ""
 
-#: gravityforms.php:2952
+#: gravityforms.php:2972
 msgid "Select an action"
 msgstr ""
 
-#: gravityforms.php:2964
+#: gravityforms.php:2984
 msgid "Select an action for this shortcode. Actions are added by some add-ons."
 msgstr ""
 
@@ -4307,438 +4307,438 @@ msgstr ""
 msgid "feeds"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:411
+#: includes/addon/class-gf-payment-addon.php:414
 msgid "Payment failed to be captured. Reason: %s"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:431
+#: includes/addon/class-gf-payment-addon.php:434
 msgid "Initial payment"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:438
+#: includes/addon/class-gf-payment-addon.php:441
 msgid "%s has been captured successfully. Amount: %s. Transaction Id: %s"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:443
+#: includes/addon/class-gf-payment-addon.php:446
 msgid "Failed to capture %s. Reason: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:457
+#: includes/addon/class-gf-payment-addon.php:460
 msgid "Subscription failed to be created. Reason: %s"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:612
+#: includes/addon/class-gf-payment-addon.php:615
 msgid "options: "
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:730
+#: includes/addon/class-gf-payment-addon.php:733
 msgid "This webhook has already been processed (Event Id: %s)"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:826
+#: includes/addon/class-gf-payment-addon.php:829
 msgid "Payment is pending. Amount: %s. Transaction Id: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:860
+#: includes/addon/class-gf-payment-addon.php:863
 msgid "Payment has been completed. Amount: %s. Transaction Id: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:884
+#: includes/addon/class-gf-payment-addon.php:887
 msgid "Payment has been refunded. Amount: %s. Transaction Id: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:904
+#: includes/addon/class-gf-payment-addon.php:907
 msgid "Payment has failed. Amount: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:920
+#: includes/addon/class-gf-payment-addon.php:923
 msgid "Authorization has been voided. Transaction Id: %s"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:950
+#: includes/addon/class-gf-payment-addon.php:953
 msgid "Subscription has been created. Subscription Id: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:974
+#: includes/addon/class-gf-payment-addon.php:977
 msgid "Subscription has been paid. Amount: %s. Subscription Id: %s"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:991
+#: includes/addon/class-gf-payment-addon.php:994
 msgid "Subscription payment has failed. Amount: %s. Subscription Id: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1007
+#: includes/addon/class-gf-payment-addon.php:1010
 msgid "Subscription has been cancelled. Subscription Id: %s."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1029
+#: includes/addon/class-gf-payment-addon.php:1032
 msgid "Subscription has expired. Subscriber Id: %s"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1084
-#: includes/addon/class-gf-payment-addon.php:1152
-#: includes/addon/class-gf-payment-addon.php:1160
+#: includes/addon/class-gf-payment-addon.php:1087
+#: includes/addon/class-gf-payment-addon.php:1155
+#: includes/addon/class-gf-payment-addon.php:1163
 msgid "Transaction Type"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1092
-#: includes/addon/class-gf-payment-addon.php:1158
+#: includes/addon/class-gf-payment-addon.php:1095
+#: includes/addon/class-gf-payment-addon.php:1161
 msgid "Subscription"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1095
-#: includes/addon/class-gf-payment-addon.php:1157
+#: includes/addon/class-gf-payment-addon.php:1098
+#: includes/addon/class-gf-payment-addon.php:1160
 msgid "Products and Services"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1098
+#: includes/addon/class-gf-payment-addon.php:1101
 msgid "Donations"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1102
+#: includes/addon/class-gf-payment-addon.php:1105
 msgid "Unsupported transaction type"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1109
-#: includes/addon/class-gf-payment-addon.php:1414
-#: includes/addon/class-gf-payment-addon.php:1422
+#: includes/addon/class-gf-payment-addon.php:1112
+#: includes/addon/class-gf-payment-addon.php:1417
+#: includes/addon/class-gf-payment-addon.php:1425
 msgid "Form Total"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1131
+#: includes/addon/class-gf-payment-addon.php:1134
 msgid ""
 "You must add a Credit Card field to your form before creating a feed. Let's "
 "go %sadd one%s!"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1148
+#: includes/addon/class-gf-payment-addon.php:1151
 msgid "Enter a feed name to uniquely identify this setup."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1156
-#: includes/addon/class-gf-payment-addon.php:1160
+#: includes/addon/class-gf-payment-addon.php:1159
+#: includes/addon/class-gf-payment-addon.php:1163
 msgid "Select a transaction type"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1178
+#: includes/addon/class-gf-payment-addon.php:1181
 msgid ""
 "Select which field determines the recurring payment amount, or select 'Form "
 "Total' to use the total of all pricing fields as the recurring amount."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1182
-#: includes/addon/class-gf-payment-addon.php:1184
+#: includes/addon/class-gf-payment-addon.php:1185
+#: includes/addon/class-gf-payment-addon.php:1187
 msgid "Billing Cycle"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1184
+#: includes/addon/class-gf-payment-addon.php:1187
 msgid ""
 "Select your billing cycle.  This determines how often the recurring payment "
 "should occur."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1188
 #: includes/addon/class-gf-payment-addon.php:1191
+#: includes/addon/class-gf-payment-addon.php:1194
 msgid "Recurring Times"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1190
+#: includes/addon/class-gf-payment-addon.php:1193
 msgid "infinite"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1191
+#: includes/addon/class-gf-payment-addon.php:1194
 msgid ""
 "Select how many times the recurring payment should be made.  The default is "
 "to bill the customer until the subscription is canceled."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1195
+#: includes/addon/class-gf-payment-addon.php:1198
 msgid "Setup Fee"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1200
+#: includes/addon/class-gf-payment-addon.php:1203
 msgid "Trial"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1203
+#: includes/addon/class-gf-payment-addon.php:1206
 msgid "Trial Period"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1203
+#: includes/addon/class-gf-payment-addon.php:1206
 msgid ""
 "Enable a trial period.  The users recurring payment will not begin until "
 "after this trial period."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1222
+#: includes/addon/class-gf-payment-addon.php:1225
 msgid ""
 "Select which field determines the payment amount, or select 'Form Total' to "
 "use the total of all pricing fields as the payment amount."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1228
+#: includes/addon/class-gf-payment-addon.php:1231
 msgid "Other Settings"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1243
 #: includes/addon/class-gf-payment-addon.php:1246
+#: includes/addon/class-gf-payment-addon.php:1249
 msgid "Billing Information"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1246
+#: includes/addon/class-gf-payment-addon.php:1249
 msgid "Map your Form Fields to the available listed fields."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1254
+#: includes/addon/class-gf-payment-addon.php:1257
 msgid "Options"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1264
+#: includes/addon/class-gf-payment-addon.php:1267
 msgid ""
 "When conditions are enabled, form submissions will only be sent to the "
 "payment gateway when the conditions are met. When disabled, all form "
 "submissions will be sent to the payment gateway."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1325
-#: includes/addon/class-gf-payment-addon.php:1370
+#: includes/addon/class-gf-payment-addon.php:1328
+#: includes/addon/class-gf-payment-addon.php:1373
 #: includes/webapi/webapi.php:185
 msgid "Enabled"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1382
+#: includes/addon/class-gf-payment-addon.php:1385
 msgid "Enter an amount"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1430
+#: includes/addon/class-gf-payment-addon.php:1433
 msgid "Sample Option"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1440
+#: includes/addon/class-gf-payment-addon.php:1443
 #: includes/fields/class-gf-field-address.php:32 js.php:618
 msgid "Address"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1441
+#: includes/addon/class-gf-payment-addon.php:1444
 msgid "Address 2"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1442
+#: includes/addon/class-gf-payment-addon.php:1445
 #: includes/fields/class-gf-field-address.php:152 js.php:619
 msgid "City"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1444
+#: includes/addon/class-gf-payment-addon.php:1447
 msgid "Zip"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1445
+#: includes/addon/class-gf-payment-addon.php:1448
 #: includes/fields/class-gf-field-address.php:156 js.php:620
 msgid "Country"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1463
+#: includes/addon/class-gf-payment-addon.php:1466
 msgid "day(s)"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1464
+#: includes/addon/class-gf-payment-addon.php:1467
 msgid "week(s)"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1465
+#: includes/addon/class-gf-payment-addon.php:1468
 msgid "month(s)"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1466
+#: includes/addon/class-gf-payment-addon.php:1469
 msgid "year(s)"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1475
+#: includes/addon/class-gf-payment-addon.php:1478
 msgid "Select a product field"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1519
+#: includes/addon/class-gf-payment-addon.php:1522
 msgid "Today"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1520
+#: includes/addon/class-gf-payment-addon.php:1523
 msgid "Yesterday"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1521
+#: includes/addon/class-gf-payment-addon.php:1524
 msgid "Last 30 Days"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1528
-#: includes/addon/class-gf-payment-addon.php:1535
-#: includes/addon/class-gf-payment-addon.php:1543
-#: includes/addon/class-gf-payment-addon.php:1550
+#: includes/addon/class-gf-payment-addon.php:1531
+#: includes/addon/class-gf-payment-addon.php:1538
+#: includes/addon/class-gf-payment-addon.php:1546
+#: includes/addon/class-gf-payment-addon.php:1553
 msgid "subscriptions"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1529
-#: includes/addon/class-gf-payment-addon.php:1536
-#: includes/addon/class-gf-payment-addon.php:1544
-#: includes/addon/class-gf-payment-addon.php:1551
+#: includes/addon/class-gf-payment-addon.php:1532
+#: includes/addon/class-gf-payment-addon.php:1539
+#: includes/addon/class-gf-payment-addon.php:1547
+#: includes/addon/class-gf-payment-addon.php:1554
 msgid "orders"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1559
+#: includes/addon/class-gf-payment-addon.php:1562
 msgid "There aren't any transactions that match your criteria."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1663
-#: includes/addon/class-gf-payment-addon.php:1664
+#: includes/addon/class-gf-payment-addon.php:1666
+#: includes/addon/class-gf-payment-addon.php:1667
 msgid "Revenue"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1664
+#: includes/addon/class-gf-payment-addon.php:1667
 msgid "Orders"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1664
+#: includes/addon/class-gf-payment-addon.php:1667
 msgid "Subscriptions"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1664
+#: includes/addon/class-gf-payment-addon.php:1667
 msgid "Recurring Payments"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1664
+#: includes/addon/class-gf-payment-addon.php:1667
 msgid "Refunds"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1683
-#: includes/addon/class-gf-payment-addon.php:1684
+#: includes/addon/class-gf-payment-addon.php:1686
+#: includes/addon/class-gf-payment-addon.php:1687
 msgid "Week"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1696
-#: includes/addon/class-gf-payment-addon.php:1697
+#: includes/addon/class-gf-payment-addon.php:1699
+#: includes/addon/class-gf-payment-addon.php:1700
 #: includes/fields/class-gf-field-creditcard.php:280
-#: includes/fields/class-gf-field-date.php:440 js.php:871 js.php:872
+#: includes/fields/class-gf-field-date.php:456 js.php:871 js.php:872
 msgid "Month"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1709
-#: includes/addon/class-gf-payment-addon.php:1710
-#: includes/fields/class-gf-field-date.php:448 js.php:874
+#: includes/addon/class-gf-payment-addon.php:1712
+#: includes/addon/class-gf-payment-addon.php:1713
+#: includes/fields/class-gf-field-date.php:464 js.php:874
 msgid "Day"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Jan"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Feb"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Mar"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Apr"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Jun"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Jul"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Aug"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Sep"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Oct"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Nov"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1785
+#: includes/addon/class-gf-payment-addon.php:1788
 msgid "Dec"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1895
+#: includes/addon/class-gf-payment-addon.php:1898
 msgid "Daily"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1896
+#: includes/addon/class-gf-payment-addon.php:1899
 msgid "Weekly"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1897
+#: includes/addon/class-gf-payment-addon.php:1900
 msgid "Monthly"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1900
+#: includes/addon/class-gf-payment-addon.php:1903
 msgid "<h6>View</h6>Select how you would like the sales data to be displayed."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1916
+#: includes/addon/class-gf-payment-addon.php:1919
 msgid "Payment Method"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1972
+#: includes/addon/class-gf-payment-addon.php:1975
 msgid ""
 "Warning! This subscription will be canceled. This cannot be undone. 'OK' to "
 "cancel subscription, 'Cancel' to stop"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1974
+#: includes/addon/class-gf-payment-addon.php:1977
 msgid "Canceled"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1975
+#: includes/addon/class-gf-payment-addon.php:1978
 msgid "The subscription could not be canceled. Please try again later."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2019
+#: includes/addon/class-gf-payment-addon.php:2022
 msgid "Cancel Subscription"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2127
+#: includes/addon/class-gf-payment-addon.php:2145
 msgid "sale"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2128
+#: includes/addon/class-gf-payment-addon.php:2146
 msgid "sales"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2142
+#: includes/addon/class-gf-payment-addon.php:2160
 msgid "There hasn't been any sales in the specified date range."
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2161
+#: includes/addon/class-gf-payment-addon.php:2179
 msgid "1 item"
 msgid_plural "%s items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/addon/class-gf-payment-addon.php:2178
+#: includes/addon/class-gf-payment-addon.php:2196
 msgid "Go to the first page"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2185
+#: includes/addon/class-gf-payment-addon.php:2203
 msgid "Go to the previous page"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2199
+#: includes/addon/class-gf-payment-addon.php:2217
 msgid "Go to the next page"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2207
+#: includes/addon/class-gf-payment-addon.php:2225
 msgid "Go to the last page"
 msgstr ""
 
@@ -4908,7 +4908,7 @@ msgstr ""
 msgid "Invalid form object"
 msgstr ""
 
-#: includes/api.php:173 includes/webapi/webapi.php:712
+#: includes/api.php:173 includes/webapi/webapi.php:718
 msgid "Missing form id"
 msgstr ""
 
@@ -4956,7 +4956,7 @@ msgstr ""
 msgid "Entry not found"
 msgstr ""
 
-#: includes/api.php:593 includes/api.php:762
+#: includes/api.php:593 includes/api.php:763
 msgid "The form for this entry does not exist"
 msgstr ""
 
@@ -4964,59 +4964,59 @@ msgstr ""
 msgid "There was a problem while updating the entry properties"
 msgstr ""
 
-#: includes/api.php:676
+#: includes/api.php:677
 msgid "There was a problem while updating one of the input values for the entry"
 msgstr ""
 
-#: includes/api.php:689 includes/api.php:725
+#: includes/api.php:690 includes/api.php:726
 msgid "There was a problem while updating the field values"
 msgstr ""
 
-#: includes/api.php:752
+#: includes/api.php:753
 msgid "The entry object must be an array"
 msgstr ""
 
-#: includes/api.php:758
+#: includes/api.php:759
 msgid "The form id must be specified"
 msgstr ""
 
-#: includes/api.php:802
+#: includes/api.php:803
 msgid "There was a problem while inserting the entry properties"
 msgstr ""
 
-#: includes/api.php:821
+#: includes/api.php:824
 msgid "There was a problem while inserting one of the input values for the entry"
 msgstr ""
 
-#: includes/api.php:830
+#: includes/api.php:833
 msgid "There was a problem while inserting the field values"
 msgstr ""
 
-#: includes/api.php:863
+#: includes/api.php:866
 msgid "Invalid entry id: %s"
 msgstr ""
 
-#: includes/api.php:994
+#: includes/api.php:997
 msgid "There was an error while processing the form:"
 msgstr ""
 
-#: includes/api.php:1074
+#: includes/api.php:1077
 msgid "Feed not found"
 msgstr ""
 
-#: includes/api.php:1105
+#: includes/api.php:1108
 msgid "There was an an error while deleting feed id %s"
 msgstr ""
 
-#: includes/api.php:1109 includes/api.php:1133
+#: includes/api.php:1112 includes/api.php:1136
 msgid "Feed id %s not found"
 msgstr ""
 
-#: includes/api.php:1129
+#: includes/api.php:1132
 msgid "There was an an error while updating feed id %s"
 msgstr ""
 
-#: includes/api.php:1162
+#: includes/api.php:1165
 msgid "There was an an error while inserting a feed"
 msgstr ""
 
@@ -5299,6 +5299,10 @@ msgstr ""
 
 #: includes/fields/class-gf-field-address.php:450
 msgid "Ethiopia"
+msgstr ""
+
+#: includes/fields/class-gf-field-address.php:450
+msgid "Faroe Islands"
 msgstr ""
 
 #: includes/fields/class-gf-field-address.php:450
@@ -6126,899 +6130,903 @@ msgid "ETHIOPIA"
 msgstr ""
 
 #: includes/fields/class-gf-field-address.php:527
-msgid "FIJI"
+msgid "FAROE ISLANDS"
 msgstr ""
 
 #: includes/fields/class-gf-field-address.php:528
-msgid "FINLAND"
+msgid "FIJI"
 msgstr ""
 
 #: includes/fields/class-gf-field-address.php:529
-msgid "FRANCE"
+msgid "FINLAND"
 msgstr ""
 
 #: includes/fields/class-gf-field-address.php:530
-msgid "GABON"
+msgid "FRANCE"
 msgstr ""
 
 #: includes/fields/class-gf-field-address.php:531
+msgid "GABON"
+msgstr ""
+
+#: includes/fields/class-gf-field-address.php:532
 msgid "GAMBIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:533
+#: includes/fields/class-gf-field-address.php:534
 msgid "GERMANY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:534
+#: includes/fields/class-gf-field-address.php:535
 msgid "GHANA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:535
+#: includes/fields/class-gf-field-address.php:536
 msgid "GREECE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:536
+#: includes/fields/class-gf-field-address.php:537
 msgid "GREENLAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:537
+#: includes/fields/class-gf-field-address.php:538
 msgid "GRENADA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:538
+#: includes/fields/class-gf-field-address.php:539
 msgid "GUAM"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:539
+#: includes/fields/class-gf-field-address.php:540
 msgid "GUATEMALA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:540
+#: includes/fields/class-gf-field-address.php:541
 msgid "GUINEA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:541
+#: includes/fields/class-gf-field-address.php:542
 msgid "GUINEA-BISSAU"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:542
+#: includes/fields/class-gf-field-address.php:543
 msgid "GUYANA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:543
+#: includes/fields/class-gf-field-address.php:544
 msgid "HAITI"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:544
+#: includes/fields/class-gf-field-address.php:545
 msgid "HONDURAS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:545
+#: includes/fields/class-gf-field-address.php:546
 msgid "HONG KONG"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:546
+#: includes/fields/class-gf-field-address.php:547
 msgid "HUNGARY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:547
+#: includes/fields/class-gf-field-address.php:548
 msgid "ICELAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:548
+#: includes/fields/class-gf-field-address.php:549
 msgid "INDIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:549
+#: includes/fields/class-gf-field-address.php:550
 msgid "INDONESIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:550
+#: includes/fields/class-gf-field-address.php:551
 msgid "IRAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:551
+#: includes/fields/class-gf-field-address.php:552
 msgid "IRAQ"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:552
+#: includes/fields/class-gf-field-address.php:553
 msgid "IRELAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:553
+#: includes/fields/class-gf-field-address.php:554
 msgid "ISRAEL"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:554
+#: includes/fields/class-gf-field-address.php:555
 msgid "ITALY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:555
+#: includes/fields/class-gf-field-address.php:556
 msgid "JAMAICA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:556
+#: includes/fields/class-gf-field-address.php:557
 msgid "JAPAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:557
+#: includes/fields/class-gf-field-address.php:558
 msgid "JORDAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:558
+#: includes/fields/class-gf-field-address.php:559
 msgid "KAZAKHSTAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:559
+#: includes/fields/class-gf-field-address.php:560
 msgid "KENYA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:560
+#: includes/fields/class-gf-field-address.php:561
 msgid "KIRIBATI"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:561
+#: includes/fields/class-gf-field-address.php:562
 msgid "NORTH KOREA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:562
+#: includes/fields/class-gf-field-address.php:563
 msgid "SOUTH KOREA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:563
+#: includes/fields/class-gf-field-address.php:564
 msgid "KOSOVO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:564
+#: includes/fields/class-gf-field-address.php:565
 msgid "KUWAIT"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:565
+#: includes/fields/class-gf-field-address.php:566
 msgid "KYRGYZSTAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:566
+#: includes/fields/class-gf-field-address.php:567
 msgid "LAOS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:567
+#: includes/fields/class-gf-field-address.php:568
 msgid "LATVIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:568
+#: includes/fields/class-gf-field-address.php:569
 msgid "LEBANON"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:569
+#: includes/fields/class-gf-field-address.php:570
 msgid "LESOTHO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:570
+#: includes/fields/class-gf-field-address.php:571
 msgid "LIBERIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:571
+#: includes/fields/class-gf-field-address.php:572
 msgid "LIBYA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:572
+#: includes/fields/class-gf-field-address.php:573
 msgid "LIECHTENSTEIN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:573
+#: includes/fields/class-gf-field-address.php:574
 msgid "LITHUANIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:574
+#: includes/fields/class-gf-field-address.php:575
 msgid "LUXEMBOURG"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:575
+#: includes/fields/class-gf-field-address.php:576
 msgid "MACEDONIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:576
+#: includes/fields/class-gf-field-address.php:577
 msgid "MADAGASCAR"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:577
+#: includes/fields/class-gf-field-address.php:578
 msgid "MALAWI"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:578
+#: includes/fields/class-gf-field-address.php:579
 msgid "MALAYSIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:579
+#: includes/fields/class-gf-field-address.php:580
 msgid "MALDIVES"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:580
+#: includes/fields/class-gf-field-address.php:581
 msgid "MALI"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:581
+#: includes/fields/class-gf-field-address.php:582
 msgid "MALTA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:582
+#: includes/fields/class-gf-field-address.php:583
 msgid "MARSHALL ISLANDS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:583
+#: includes/fields/class-gf-field-address.php:584
 msgid "MAURITANIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:584
+#: includes/fields/class-gf-field-address.php:585
 msgid "MAURITIUS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:585
+#: includes/fields/class-gf-field-address.php:586
 msgid "MEXICO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:586
+#: includes/fields/class-gf-field-address.php:587
 msgid "MICRONESIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:587
+#: includes/fields/class-gf-field-address.php:588
 msgid "MOLDOVA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:588
+#: includes/fields/class-gf-field-address.php:589
 msgid "MONACO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:589
+#: includes/fields/class-gf-field-address.php:590
 msgid "MONGOLIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:590
+#: includes/fields/class-gf-field-address.php:591
 msgid "MONTENEGRO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:591
+#: includes/fields/class-gf-field-address.php:592
 msgid "MOROCCO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:592
+#: includes/fields/class-gf-field-address.php:593
 msgid "MOZAMBIQUE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:593
+#: includes/fields/class-gf-field-address.php:594
 msgid "MYANMAR"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:594
+#: includes/fields/class-gf-field-address.php:595
 msgid "NAMIBIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:595
+#: includes/fields/class-gf-field-address.php:596
 msgid "NAURU"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:596
+#: includes/fields/class-gf-field-address.php:597
 msgid "NEPAL"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:597
+#: includes/fields/class-gf-field-address.php:598
 msgid "NETHERLANDS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:598
+#: includes/fields/class-gf-field-address.php:599
 msgid "NEW ZEALAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:599
+#: includes/fields/class-gf-field-address.php:600
 msgid "NICARAGUA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:600
+#: includes/fields/class-gf-field-address.php:601
 msgid "NIGER"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:601
+#: includes/fields/class-gf-field-address.php:602
 msgid "NIGERIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:602
+#: includes/fields/class-gf-field-address.php:603
 msgid "NORTHERN MARIANA ISLANDS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:603
+#: includes/fields/class-gf-field-address.php:604
 msgid "NORWAY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:604
+#: includes/fields/class-gf-field-address.php:605
 msgid "OMAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:605
+#: includes/fields/class-gf-field-address.php:606
 msgid "PAKISTAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:606
+#: includes/fields/class-gf-field-address.php:607
 msgid "PALAU"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:607
+#: includes/fields/class-gf-field-address.php:608
 msgid "PALESTINE, STATE OF"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:608
+#: includes/fields/class-gf-field-address.php:609
 msgid "PANAMA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:609
+#: includes/fields/class-gf-field-address.php:610
 msgid "PAPUA NEW GUINEA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:610
+#: includes/fields/class-gf-field-address.php:611
 msgid "PARAGUAY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:611
+#: includes/fields/class-gf-field-address.php:612
 msgid "PERU"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:612
+#: includes/fields/class-gf-field-address.php:613
 msgid "PHILIPPINES"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:613
+#: includes/fields/class-gf-field-address.php:614
 msgid "POLAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:614
+#: includes/fields/class-gf-field-address.php:615
 msgid "PORTUGAL"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:615
+#: includes/fields/class-gf-field-address.php:616
 msgid "PUERTO RICO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:616
+#: includes/fields/class-gf-field-address.php:617
 msgid "QATAR"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:617
+#: includes/fields/class-gf-field-address.php:618
 msgid "ROMANIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:618
+#: includes/fields/class-gf-field-address.php:619
 msgid "RUSSIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:619
+#: includes/fields/class-gf-field-address.php:620
 msgid "RWANDA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:620
+#: includes/fields/class-gf-field-address.php:621
 msgid "SAINT KITTS AND NEVIS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:621
+#: includes/fields/class-gf-field-address.php:622
 msgid "SAINT LUCIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:622
+#: includes/fields/class-gf-field-address.php:623
 msgid "SAINT VINCENT AND THE GRENADINES"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:623
+#: includes/fields/class-gf-field-address.php:624
 msgid "SAMOA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:624
+#: includes/fields/class-gf-field-address.php:625
 msgid "SAN MARINO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:625
+#: includes/fields/class-gf-field-address.php:626
 msgid "SAO TOME AND PRINCIPE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:626
+#: includes/fields/class-gf-field-address.php:627
 msgid "SAUDI ARABIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:627
+#: includes/fields/class-gf-field-address.php:628
 msgid "SENEGAL"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:628
+#: includes/fields/class-gf-field-address.php:629
 msgid "SERBIA AND MONTENEGRO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:629
+#: includes/fields/class-gf-field-address.php:630
 msgid "SEYCHELLES"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:630
+#: includes/fields/class-gf-field-address.php:631
 msgid "SIERRA LEONE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:631
+#: includes/fields/class-gf-field-address.php:632
 msgid "SINGAPORE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:632
+#: includes/fields/class-gf-field-address.php:633
 msgid "SLOVAKIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:633
+#: includes/fields/class-gf-field-address.php:634
 msgid "SLOVENIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:634
+#: includes/fields/class-gf-field-address.php:635
 msgid "SOLOMON ISLANDS"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:635
+#: includes/fields/class-gf-field-address.php:636
 msgid "SOMALIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:636
+#: includes/fields/class-gf-field-address.php:637
 msgid "SOUTH AFRICA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:637
+#: includes/fields/class-gf-field-address.php:638
 msgid "SPAIN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:638
+#: includes/fields/class-gf-field-address.php:639
 msgid "SRI LANKA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:639
+#: includes/fields/class-gf-field-address.php:640
 msgid "SUDAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:640
+#: includes/fields/class-gf-field-address.php:641
 msgid "SUDAN, SOUTH"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:641
+#: includes/fields/class-gf-field-address.php:642
 msgid "SURINAME"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:642
+#: includes/fields/class-gf-field-address.php:643
 msgid "SWAZILAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:643
+#: includes/fields/class-gf-field-address.php:644
 msgid "SWEDEN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:644
+#: includes/fields/class-gf-field-address.php:645
 msgid "SWITZERLAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:645
+#: includes/fields/class-gf-field-address.php:646
 msgid "SYRIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:646
+#: includes/fields/class-gf-field-address.php:647
 msgid "TAIWAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:647
+#: includes/fields/class-gf-field-address.php:648
 msgid "TAJIKISTAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:648
+#: includes/fields/class-gf-field-address.php:649
 msgid "TANZANIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:649
+#: includes/fields/class-gf-field-address.php:650
 msgid "THAILAND"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:650
+#: includes/fields/class-gf-field-address.php:651
 msgid "TOGO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:651
+#: includes/fields/class-gf-field-address.php:652
 msgid "TONGA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:652
+#: includes/fields/class-gf-field-address.php:653
 msgid "TRINIDAD AND TOBAGO"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:653
+#: includes/fields/class-gf-field-address.php:654
 msgid "TUNISIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:654
+#: includes/fields/class-gf-field-address.php:655
 msgid "TURKEY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:655
+#: includes/fields/class-gf-field-address.php:656
 msgid "TURKMENISTAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:656
+#: includes/fields/class-gf-field-address.php:657
 msgid "TUVALU"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:657
+#: includes/fields/class-gf-field-address.php:658
 msgid "UGANDA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:658
+#: includes/fields/class-gf-field-address.php:659
 msgid "UKRAINE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:659
+#: includes/fields/class-gf-field-address.php:660
 msgid "UNITED ARAB EMIRATES"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:660
+#: includes/fields/class-gf-field-address.php:661
 msgid "UNITED KINGDOM"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:661
+#: includes/fields/class-gf-field-address.php:662
 msgid "UNITED STATES"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:662
+#: includes/fields/class-gf-field-address.php:663
 msgid "URUGUAY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:663
+#: includes/fields/class-gf-field-address.php:664
 msgid "UZBEKISTAN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:664
+#: includes/fields/class-gf-field-address.php:665
 msgid "VANUATU"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:665
+#: includes/fields/class-gf-field-address.php:666
 msgid "VATICAN CITY"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:666
+#: includes/fields/class-gf-field-address.php:667
 msgid "VENEZUELA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:667
+#: includes/fields/class-gf-field-address.php:668
 msgid "VIRGIN ISLANDS, BRITISH"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:668
+#: includes/fields/class-gf-field-address.php:669
 msgid "VIRGIN ISLANDS, U.S."
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:669
+#: includes/fields/class-gf-field-address.php:670
 msgid "VIETNAM"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:670
+#: includes/fields/class-gf-field-address.php:671
 msgid "YEMEN"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:671
+#: includes/fields/class-gf-field-address.php:672
 msgid "ZAMBIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:672
+#: includes/fields/class-gf-field-address.php:673
 msgid "ZIMBABWE"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:680
-#: includes/fields/class-gf-field-address.php:701
+#: includes/fields/class-gf-field-address.php:682
+#: includes/fields/class-gf-field-address.php:703
 msgid "Alabama"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:680
-#: includes/fields/class-gf-field-address.php:702
+#: includes/fields/class-gf-field-address.php:682
+#: includes/fields/class-gf-field-address.php:704
 msgid "Alaska"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:680
-#: includes/fields/class-gf-field-address.php:703
+#: includes/fields/class-gf-field-address.php:682
+#: includes/fields/class-gf-field-address.php:705
 msgid "Arizona"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:680
-#: includes/fields/class-gf-field-address.php:704
+#: includes/fields/class-gf-field-address.php:682
+#: includes/fields/class-gf-field-address.php:706
 msgid "Arkansas"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:681
-#: includes/fields/class-gf-field-address.php:705
+#: includes/fields/class-gf-field-address.php:683
+#: includes/fields/class-gf-field-address.php:707
 msgid "California"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:681
-#: includes/fields/class-gf-field-address.php:706
+#: includes/fields/class-gf-field-address.php:683
+#: includes/fields/class-gf-field-address.php:708
 msgid "Colorado"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:681
-#: includes/fields/class-gf-field-address.php:707
+#: includes/fields/class-gf-field-address.php:683
+#: includes/fields/class-gf-field-address.php:709
 msgid "Connecticut"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:681
-#: includes/fields/class-gf-field-address.php:708
+#: includes/fields/class-gf-field-address.php:683
+#: includes/fields/class-gf-field-address.php:710
 msgid "Delaware"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:682
-#: includes/fields/class-gf-field-address.php:709
+#: includes/fields/class-gf-field-address.php:684
+#: includes/fields/class-gf-field-address.php:711
 msgid "District of Columbia"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:682
-#: includes/fields/class-gf-field-address.php:710
+#: includes/fields/class-gf-field-address.php:684
+#: includes/fields/class-gf-field-address.php:712
 msgid "Florida"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:683
-#: includes/fields/class-gf-field-address.php:712
+#: includes/fields/class-gf-field-address.php:685
+#: includes/fields/class-gf-field-address.php:714
 msgid "Hawaii"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:683
-#: includes/fields/class-gf-field-address.php:713
+#: includes/fields/class-gf-field-address.php:685
+#: includes/fields/class-gf-field-address.php:715
 msgid "Idaho"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:683
-#: includes/fields/class-gf-field-address.php:714
+#: includes/fields/class-gf-field-address.php:685
+#: includes/fields/class-gf-field-address.php:716
 msgid "Illinois"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:683
-#: includes/fields/class-gf-field-address.php:715
+#: includes/fields/class-gf-field-address.php:685
+#: includes/fields/class-gf-field-address.php:717
 msgid "Indiana"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:684
-#: includes/fields/class-gf-field-address.php:716
+#: includes/fields/class-gf-field-address.php:686
+#: includes/fields/class-gf-field-address.php:718
 msgid "Iowa"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:684
-#: includes/fields/class-gf-field-address.php:717
+#: includes/fields/class-gf-field-address.php:686
+#: includes/fields/class-gf-field-address.php:719
 msgid "Kansas"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:684
-#: includes/fields/class-gf-field-address.php:718
+#: includes/fields/class-gf-field-address.php:686
+#: includes/fields/class-gf-field-address.php:720
 msgid "Kentucky"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:684
-#: includes/fields/class-gf-field-address.php:719
+#: includes/fields/class-gf-field-address.php:686
+#: includes/fields/class-gf-field-address.php:721
 msgid "Louisiana"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:685
-#: includes/fields/class-gf-field-address.php:720
+#: includes/fields/class-gf-field-address.php:687
+#: includes/fields/class-gf-field-address.php:722
 msgid "Maine"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:685
-#: includes/fields/class-gf-field-address.php:721
+#: includes/fields/class-gf-field-address.php:687
+#: includes/fields/class-gf-field-address.php:723
 msgid "Maryland"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:685
-#: includes/fields/class-gf-field-address.php:722
+#: includes/fields/class-gf-field-address.php:687
+#: includes/fields/class-gf-field-address.php:724
 msgid "Massachusetts"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:685
-#: includes/fields/class-gf-field-address.php:723
+#: includes/fields/class-gf-field-address.php:687
+#: includes/fields/class-gf-field-address.php:725
 msgid "Michigan"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:686
-#: includes/fields/class-gf-field-address.php:724
+#: includes/fields/class-gf-field-address.php:688
+#: includes/fields/class-gf-field-address.php:726
 msgid "Minnesota"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:686
-#: includes/fields/class-gf-field-address.php:725
+#: includes/fields/class-gf-field-address.php:688
+#: includes/fields/class-gf-field-address.php:727
 msgid "Mississippi"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:686
-#: includes/fields/class-gf-field-address.php:726
+#: includes/fields/class-gf-field-address.php:688
+#: includes/fields/class-gf-field-address.php:728
 msgid "Missouri"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:686
-#: includes/fields/class-gf-field-address.php:727
+#: includes/fields/class-gf-field-address.php:688
+#: includes/fields/class-gf-field-address.php:729
 msgid "Montana"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:687
-#: includes/fields/class-gf-field-address.php:728
+#: includes/fields/class-gf-field-address.php:689
+#: includes/fields/class-gf-field-address.php:730
 msgid "Nebraska"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:687
-#: includes/fields/class-gf-field-address.php:729
+#: includes/fields/class-gf-field-address.php:689
+#: includes/fields/class-gf-field-address.php:731
 msgid "Nevada"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:687
-#: includes/fields/class-gf-field-address.php:730
+#: includes/fields/class-gf-field-address.php:689
+#: includes/fields/class-gf-field-address.php:732
 msgid "New Hampshire"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:687
-#: includes/fields/class-gf-field-address.php:731
+#: includes/fields/class-gf-field-address.php:689
+#: includes/fields/class-gf-field-address.php:733
 msgid "New Jersey"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:688
-#: includes/fields/class-gf-field-address.php:732
+#: includes/fields/class-gf-field-address.php:690
+#: includes/fields/class-gf-field-address.php:734
 msgid "New Mexico"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:688
-#: includes/fields/class-gf-field-address.php:733
+#: includes/fields/class-gf-field-address.php:690
+#: includes/fields/class-gf-field-address.php:735
 msgid "New York"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:688
-#: includes/fields/class-gf-field-address.php:734
+#: includes/fields/class-gf-field-address.php:690
+#: includes/fields/class-gf-field-address.php:736
 msgid "North Carolina"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:689
-#: includes/fields/class-gf-field-address.php:735
+#: includes/fields/class-gf-field-address.php:691
+#: includes/fields/class-gf-field-address.php:737
 msgid "North Dakota"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:689
-#: includes/fields/class-gf-field-address.php:736
+#: includes/fields/class-gf-field-address.php:691
+#: includes/fields/class-gf-field-address.php:738
 msgid "Ohio"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:689
-#: includes/fields/class-gf-field-address.php:737
+#: includes/fields/class-gf-field-address.php:691
+#: includes/fields/class-gf-field-address.php:739
 msgid "Oklahoma"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:689
-#: includes/fields/class-gf-field-address.php:738
+#: includes/fields/class-gf-field-address.php:691
+#: includes/fields/class-gf-field-address.php:740
 msgid "Oregon"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:690
-#: includes/fields/class-gf-field-address.php:739
+#: includes/fields/class-gf-field-address.php:692
+#: includes/fields/class-gf-field-address.php:741
 msgid "Pennsylvania"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:690
-#: includes/fields/class-gf-field-address.php:740
+#: includes/fields/class-gf-field-address.php:692
+#: includes/fields/class-gf-field-address.php:742
 msgid "Rhode Island"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:690
-#: includes/fields/class-gf-field-address.php:741
+#: includes/fields/class-gf-field-address.php:692
+#: includes/fields/class-gf-field-address.php:743
 msgid "South Carolina"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:691
-#: includes/fields/class-gf-field-address.php:742
+#: includes/fields/class-gf-field-address.php:693
+#: includes/fields/class-gf-field-address.php:744
 msgid "South Dakota"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:691
-#: includes/fields/class-gf-field-address.php:743
+#: includes/fields/class-gf-field-address.php:693
+#: includes/fields/class-gf-field-address.php:745
 msgid "Tennessee"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:691
-#: includes/fields/class-gf-field-address.php:744
+#: includes/fields/class-gf-field-address.php:693
+#: includes/fields/class-gf-field-address.php:746
 msgid "Texas"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:691
-#: includes/fields/class-gf-field-address.php:745
+#: includes/fields/class-gf-field-address.php:693
+#: includes/fields/class-gf-field-address.php:747
 msgid "Utah"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:692
-#: includes/fields/class-gf-field-address.php:746
+#: includes/fields/class-gf-field-address.php:694
+#: includes/fields/class-gf-field-address.php:748
 msgid "Vermont"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:692
-#: includes/fields/class-gf-field-address.php:747
+#: includes/fields/class-gf-field-address.php:694
+#: includes/fields/class-gf-field-address.php:749
 msgid "Virginia"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:692
-#: includes/fields/class-gf-field-address.php:748
+#: includes/fields/class-gf-field-address.php:694
+#: includes/fields/class-gf-field-address.php:750
 msgid "Washington"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:692
-#: includes/fields/class-gf-field-address.php:749
+#: includes/fields/class-gf-field-address.php:694
+#: includes/fields/class-gf-field-address.php:751
 msgid "West Virginia"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:693
-#: includes/fields/class-gf-field-address.php:750
+#: includes/fields/class-gf-field-address.php:695
+#: includes/fields/class-gf-field-address.php:752
 msgid "Wisconsin"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:693
-#: includes/fields/class-gf-field-address.php:751
+#: includes/fields/class-gf-field-address.php:695
+#: includes/fields/class-gf-field-address.php:753
 msgid "Wyoming"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:693
-#: includes/fields/class-gf-field-address.php:752
+#: includes/fields/class-gf-field-address.php:695
+#: includes/fields/class-gf-field-address.php:754
 msgid "Armed Forces Americas"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:694
-#: includes/fields/class-gf-field-address.php:753
+#: includes/fields/class-gf-field-address.php:696
+#: includes/fields/class-gf-field-address.php:755
 msgid "Armed Forces Europe"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:694
-#: includes/fields/class-gf-field-address.php:754
+#: includes/fields/class-gf-field-address.php:696
+#: includes/fields/class-gf-field-address.php:756
 msgid "Armed Forces Pacific"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Alberta"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "British Columbia"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Manitoba"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "New Brunswick"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Newfoundland & Labrador"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Northwest Territories"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Nova Scotia"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Nunavut"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Ontario"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Prince Edward Island"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Quebec"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Saskatchewan"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:764
+#: includes/fields/class-gf-field-address.php:766
 msgid "Yukon"
 msgstr ""
 
@@ -7116,7 +7124,7 @@ msgid "Cardholder Name"
 msgstr ""
 
 #: includes/fields/class-gf-field-creditcard.php:294
-#: includes/fields/class-gf-field-date.php:456 js.php:875 js.php:876
+#: includes/fields/class-gf-field-date.php:472 js.php:875 js.php:876
 msgid "Year"
 msgstr ""
 
@@ -7126,11 +7134,6 @@ msgstr ""
 
 #: includes/fields/class-gf-field-date.php:72
 msgid "Please enter a valid date."
-msgstr ""
-
-#: includes/fields/class-gf-field-date.php:133
-#: includes/fields/class-gf-field-time.php:136 js.php:866 js.php:890
-msgid "MM"
 msgstr ""
 
 #: includes/fields/class-gf-field-date.php:134 js.php:867
@@ -7159,7 +7162,7 @@ msgid "Confirm Email"
 msgstr ""
 
 #: includes/fields/class-gf-field-fileupload.php:48
-#: includes/fields/class-gf-field-fileupload.php:58 includes/upload.php:104
+#: includes/fields/class-gf-field-fileupload.php:58 includes/upload.php:109
 msgid "File exceeds size limit. Maximum file size: %dMB"
 msgstr ""
 
@@ -7167,11 +7170,11 @@ msgstr ""
 msgid "There was an error while uploading the file. Error code: %d"
 msgstr ""
 
-#: includes/fields/class-gf-field-fileupload.php:71 includes/upload.php:109
+#: includes/fields/class-gf-field-fileupload.php:71 includes/upload.php:114
 msgid "The uploaded file type is not allowed."
 msgstr ""
 
-#: includes/fields/class-gf-field-fileupload.php:74 includes/upload.php:112
+#: includes/fields/class-gf-field-fileupload.php:74 includes/upload.php:120
 msgid "The uploaded file type is not allowed. Must be one of the following: %s"
 msgstr ""
 
@@ -7391,19 +7394,19 @@ msgstr ""
 msgid "Please enter a valid Website URL (i.e. http://www.gravityforms.com)."
 msgstr ""
 
-#: includes/fields/class-gf-field.php:224
+#: includes/fields/class-gf-field.php:234
 msgid "click to duplicate this field"
 msgstr ""
 
-#: includes/fields/class-gf-field.php:227
+#: includes/fields/class-gf-field.php:237
 msgid "click to delete this field"
 msgstr ""
 
-#: includes/fields/class-gf-field.php:235
+#: includes/fields/class-gf-field.php:245
 msgid "Field ID"
 msgstr ""
 
-#: includes/fields/class-gf-field.php:235
+#: includes/fields/class-gf-field.php:245
 msgid "click to expand and edit the options for this field"
 msgstr ""
 
@@ -7514,27 +7517,27 @@ msgstr ""
 msgid "Insert Form"
 msgstr ""
 
-#: includes/upload.php:40 includes/upload.php:56
+#: includes/upload.php:40 includes/upload.php:60
 msgid "Failed to upload file."
 msgstr ""
 
-#: includes/upload.php:136
+#: includes/upload.php:145
 msgid "Failed to open temp directory."
 msgstr ""
 
-#: includes/upload.php:163 includes/upload.php:187
+#: includes/upload.php:172 includes/upload.php:196
 msgid "Failed to open input stream."
 msgstr ""
 
-#: includes/upload.php:170 includes/upload.php:193
+#: includes/upload.php:179 includes/upload.php:202
 msgid "Failed to open output stream."
 msgstr ""
 
-#: includes/upload.php:173
+#: includes/upload.php:182
 msgid "Failed to move uploaded file."
 msgstr ""
 
-#: includes/upload.php:207
+#: includes/upload.php:215
 msgid "Upload unsuccessful:"
 msgstr ""
 
@@ -7556,99 +7559,113 @@ msgstr ""
 msgid "Enable access to the API"
 msgstr ""
 
-#: includes/webapi/webapi.php:190
+#: includes/webapi/webapi.php:191
+msgid "Authentication"
+msgstr ""
+
+#: includes/webapi/webapi.php:193
+msgid ""
+"The settings below are only required to authenticate external applications. "
+"WordPress cookie authentication is supported for logged in users."
+msgstr ""
+
+#: includes/webapi/webapi.php:197
 msgid "Public API Key"
 msgstr ""
 
-#: includes/webapi/webapi.php:198
+#: includes/webapi/webapi.php:205
 msgid "Private API Key"
 msgstr ""
 
-#: includes/webapi/webapi.php:206
+#: includes/webapi/webapi.php:213
 msgid "QR Code"
 msgstr ""
 
-#: includes/webapi/webapi.php:212
+#: includes/webapi/webapi.php:219
 msgid "Impersonate account"
 msgstr ""
 
-#: includes/webapi/webapi.php:218
+#: includes/webapi/webapi.php:225
 msgid "Developer tools"
 msgstr ""
 
-#: includes/webapi/webapi.php:235
+#: includes/webapi/webapi.php:242
 msgid "Show/hide QR Code"
 msgstr ""
 
-#: includes/webapi/webapi.php:251
+#: includes/webapi/webapi.php:258
 msgid "Open developer tools"
 msgstr ""
 
-#: includes/webapi/webapi.php:662
+#: includes/webapi/webapi.php:668
 msgid "Feeds deleted successfully: %d"
 msgstr ""
 
-#: includes/webapi/webapi.php:695
+#: includes/webapi/webapi.php:701
 msgid "Feeds updated: %d"
 msgstr ""
 
-#: includes/webapi/webapi.php:792
+#: includes/webapi/webapi.php:795
 msgid "Forms deleted successfully: %d"
 msgstr ""
 
-#: includes/webapi/webapi.php:829
+#: includes/webapi/webapi.php:832
 msgid "Entries updated successfully"
 msgstr ""
 
-#: includes/webapi/webapi.php:829
+#: includes/webapi/webapi.php:832
 msgid "Entry updated successfully"
 msgstr ""
 
-#: includes/webapi/webapi.php:852 includes/webapi/webapi.php:877
+#: includes/webapi/webapi.php:855 includes/webapi/webapi.php:880
 msgid "Success"
 msgstr ""
 
-#: includes/webapi/webapi.php:882
+#: includes/webapi/webapi.php:885
 msgid "No property values were found in the request body"
 msgstr ""
 
-#: includes/webapi/webapi.php:884
+#: includes/webapi/webapi.php:887
 msgid "Property values should be sent as an array"
 msgstr ""
 
-#: includes/webapi/webapi.php:926
+#: includes/webapi/webapi.php:929
 msgid "Forms updated successfully"
 msgstr ""
 
-#: includes/webapi/webapi.php:926
+#: includes/webapi/webapi.php:929
 msgid "Form updated successfully"
 msgstr ""
 
-#: includes/webapi/webapi.php:956
+#: includes/webapi/webapi.php:959
 msgid "Entries deleted successfully: %d"
 msgstr ""
 
-#: includes/webapi/webapi.php:1537
+#: includes/webapi/webapi.php:1557
 msgid "Not authorized"
 msgstr ""
 
-#: includes/webapi/webapi.php:1541
+#: includes/webapi/webapi.php:1561
 msgid "Permission denied"
 msgstr ""
 
-#: includes/webapi/webapi.php:1545
+#: includes/webapi/webapi.php:1565
+msgid "Forbidden"
+msgstr ""
+
+#: includes/webapi/webapi.php:1569
 msgid "Bad request"
 msgstr ""
 
-#: includes/webapi/webapi.php:1549
+#: includes/webapi/webapi.php:1573
 msgid "Not found"
 msgstr ""
 
-#: includes/webapi/webapi.php:1553
+#: includes/webapi/webapi.php:1577
 msgid "Not implemented"
 msgstr ""
 
-#: includes/webapi/webapi.php:1557
+#: includes/webapi/webapi.php:1581
 msgid "Internal Error"
 msgstr ""
 
@@ -9506,12 +9523,12 @@ msgstr ""
 msgid "http://www.rocketgenius.com"
 msgstr ""
 
-#: common.php:3514
+#: common.php:3530
 msgctxt "Conditional Logic"
 msgid "All"
 msgstr ""
 
-#: common.php:3515
+#: common.php:3531
 msgctxt "Conditional Logic"
 msgid "Any"
 msgstr ""
@@ -9546,22 +9563,22 @@ msgctxt "Form List"
 msgid "Inactive"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1491
+#: includes/addon/class-gf-payment-addon.php:1494
 msgctxt "toolbar label"
 msgid "Sales"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1492
+#: includes/addon/class-gf-payment-addon.php:1495
 msgctxt "metabox title"
 msgid "Filter"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:1907
+#: includes/addon/class-gf-payment-addon.php:1910
 msgctxt "regarding a payment method"
 msgid "Any"
 msgstr ""
 
-#: includes/addon/class-gf-payment-addon.php:2194
+#: includes/addon/class-gf-payment-addon.php:2212
 msgctxt "paging"
 msgid "%1$s of %2$s"
 msgstr ""
@@ -9571,13 +9588,23 @@ msgctxt "Country"
 msgid "Georgia"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:532
+#: includes/fields/class-gf-field-address.php:533
 msgctxt "Country"
 msgid "GEORGIA"
 msgstr ""
 
-#: includes/fields/class-gf-field-address.php:682
-#: includes/fields/class-gf-field-address.php:711
+#: includes/fields/class-gf-field-address.php:684
+#: includes/fields/class-gf-field-address.php:713
 msgctxt "US State"
 msgid "Georgia"
+msgstr ""
+
+#: includes/fields/class-gf-field-date.php:133 js.php:866
+msgctxt "Abbreviation: Month"
+msgid "MM"
+msgstr ""
+
+#: includes/fields/class-gf-field-time.php:136 js.php:890
+msgctxt "Abbreviation: Minutes"
+msgid "MM"
 msgstr ""

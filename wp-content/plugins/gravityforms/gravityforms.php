@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.9.2
+Version: 1.9.3.1
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 Text Domain: gravityforms
@@ -112,7 +112,7 @@ add_action( 'plugins_loaded', array( 'GFForms', 'loaded' ) );
 
 class GFForms {
 
-	public static $version = '1.9.2';
+	public static $version = '1.9.3.1';
 
 	public static function loaded() {
 
@@ -355,9 +355,15 @@ class GFForms {
 
 	//Creates or updates database tables. Will only run when version changes
 	public static function setup( $force_setup = false ) {
-		global $wpdb;
 
-		$has_version_changed = get_option( 'rg_form_version' ) != GFCommon::$version;
+		$current_version = get_option( 'rg_form_version' );
+
+		if ( $current_version === false ){
+			// Turn background updates on by default for all new installations.
+			update_option( 'gform_enable_background_updates', true );
+		}
+
+		$has_version_changed = $current_version != GFCommon::$version;
 		if ( $has_version_changed ) {
 			//Making sure version has really changed. Gets around aggressive caching issue on some sites that cause setup to run multiple times.
 			$has_version_changed = self::get_wp_option( 'rg_form_version' ) != GFCommon::$version;
@@ -2760,7 +2766,10 @@ class GFForms {
 
 	public static function is_auto_update_disabled(){
 
-		// Background updates are disabled if you don't want file changes.
+		// Currently WordPress won't ask Gravity Forms to update if background updates are disabled.
+		// Let's double check anyway.
+
+		// WordPress background updates are disabled if you don't want file changes.
 		if ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ){
 			return true;
 		}
@@ -2768,6 +2777,17 @@ class GFForms {
 		if ( defined( 'WP_INSTALLING' ) ){
 			return true;
 		}
+
+		$wp_updates_disabled = defined( 'AUTOMATIC_UPDATER_DISABLED' ) && AUTOMATIC_UPDATER_DISABLED;
+
+		$wp_updates_disabled = apply_filters( 'automatic_updater_disabled', $wp_updates_disabled );
+
+		if ( $wp_updates_disabled ) {
+			GFCommon::log_debug( __METHOD__ . '() - Background updates are disabled in WordPress.' );
+			return true;
+		}
+
+		// Now check Gravity Forms Background Update Settings
 
 		$enabled = get_option( 'gform_enable_background_updates' );
 		GFCommon::log_debug( 'GFForms::is_auto_update_disabled() - $enabled: ' . var_export( $enabled, true ) );
@@ -3108,5 +3128,29 @@ if ( ! function_exists( 'rgexplode' ) ) {
 		}
 
 		return $ary;
+	}
+}
+
+if( ! function_exists( 'gf_apply_filters' ) ) {
+	function gf_apply_filters( $filter, $modifiers, $value ) {
+
+		if( ! is_array( $modifiers ) ) {
+			$modifiers = array( $modifiers );
+		}
+
+		// add an empty modifier so the base filter will be applied as well
+		array_unshift( $modifiers, '' );
+
+		$args = array_slice( func_get_args(), 3 );
+		$args = array_pad( $args, 10, null );
+
+		// apply modified versions of filter
+		foreach( $modifiers as $modifier ) {
+			$modifier = empty( $modifier ) ? '' : sprintf( '_%s', $modifier );
+			$filter  .= $modifier;
+			$value    = apply_filters( $filter, $value, $args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8], $args[9] );
+		}
+
+		return $value;
 	}
 }

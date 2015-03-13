@@ -3726,6 +3726,7 @@ class GFFormsModel {
 				default :
 					$field = self::get_field( $form, $field_id );
 					if ( $field ) {
+						$input_label_only = apply_filters( 'gform_entry_list_column_input_label_only', $input_label_only, $form, $field );
 						$columns[strval( $field_id )] = array( 'label' => self::get_label( $field, $field_id, $input_label_only ), 'type' => $field->type, 'inputType' => $field->inputType );
 					}
 			}

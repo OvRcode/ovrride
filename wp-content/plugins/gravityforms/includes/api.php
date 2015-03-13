@@ -660,6 +660,7 @@ class GFAPI {
 
 		$form = GFFormsModel::get_form_meta( $form_id );
 		foreach ( $form['fields'] as $field ) {
+			/* @var GF_Field $field */
 			$type = GFFormsModel::get_input_type( $field );
 			if ( in_array( $type, array( 'html', 'page', 'section' ) ) ) {
 				continue;
@@ -809,11 +810,13 @@ class GFAPI {
 
 		$form = GFFormsModel::get_form_meta( $form_id );
 		foreach ( $form['fields'] as $field ) {
+			/* @var GF_Field $field */
 			if ( in_array( $field->type, array( 'html', 'page', 'section' ) ) ) {
 				continue;
 			}
-			if ( is_array( $field->inputs ) ) {
-				foreach ( $field->inputs as $input ) {
+			$inputs = $field->get_entry_inputs();
+			if ( is_array( $inputs ) ) {
+				foreach ( $inputs as $input ) {
 					$input_id = (string) $input['id'];
 					if ( isset( $entry[ $input_id ] ) ) {
 						$result = GFFormsModel::update_lead_field_value( $form, $entry, $field, 0, $input_id, $entry[ $input_id ] );
