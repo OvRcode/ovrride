@@ -98,6 +98,8 @@ class WooThemes_Updater_Admin {
 		add_action( 'admin_footer', array( $this, 'theme_upgrade_form_adjustments' ) );
 
 		add_action( 'woothemes_updater_license_screen_before', array( $this, 'ensure_keys_are_actually_active' ) );
+
+		add_action( 'wp_ajax_woothemes_activate_license_keys', array( $this, 'ajax_process_request' ) );
 	} // End __construct()
 
 	/**
@@ -199,11 +201,11 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	public function settings_screen () {
 		?>
 		<div id="welcome-panel" class="wrap about-wrap woothemes-updater-wrap">
-			<h1><?php _e( 'Welcome to the WooThemes Helper', 'woothemes-updater' ); ?></h1>
+			<h1><?php _e( 'Welcome to WooThemes Helper', 'woothemes-updater' ); ?></h1>
 
 			<div class="about-text woothemes-helper-about-text">
 				<?php
-					_e( 'Looking for a hand with activating your licenses, or have questions about your WooThemes products? We\'ve got you covered.', 'woothemes-updater' );
+					_e( 'Looking for a hand with activating your licenses, or have questions about WooThemes products? We\'ve got you covered.', 'woothemes-updater' );
 				?>
 			</div>
 		</div><!--/#welcome-panel .welcome-panel-->
@@ -395,7 +397,19 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	 * @return  void
 	 */
 	public function enqueue_scripts () {
+		$screen = get_current_screen();
 		wp_enqueue_script( 'post' );
+		wp_register_script( 'woothemes-updater-admin', $this->assets_url . 'js/admin.js', array( 'jquery' ) );
+
+		// Only load script and localization on helper admin page.
+		if ( 'dashboard_page_woothemes-helper' == $screen->id ) {
+			wp_enqueue_script( 'woothemes-updater-admin' );
+			$localization = array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'activate_license_nonce' => wp_create_nonce( 'activate-license-keys' )
+			);
+			wp_localize_script( 'woothemes-updater-admin', 'WTHelper', $localization );
+		}
 	} // End enqueue_scripts()
 
 	/**
@@ -453,6 +467,59 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 			exit;
 		}
 	} // End process_request()
+
+	/**
+	 * Process Ajax license activation requests
+	 * @since 1.3.1
+	 * @return void
+	 */
+	public function ajax_process_request() {
+		if ( isset( $_POST['security'] ) && wp_verify_nonce( $_POST['security'], 'activate-license-keys' ) && isset( $_POST['license_data'] ) && ! empty( $_POST['license_data'] ) ) {
+			$license_keys = array();
+			foreach ( $_POST['license_data'] as $license_data ) {
+				if ( '' != $license_data['key'] ) {
+					$license_keys[ $license_data['name'] ] = $license_data['key'];
+				}
+			}
+			if ( 0 < count( $license_keys ) ) {
+				$response = $this->activate_products( $license_keys );
+			}
+			if ( $response == true ) {
+				$request_errors = $this->api->get_error_log();
+				if ( 0 >= count( $request_errors ) ) {
+					$return = '<div class="updated true fade">' . "\n";
+					$return .= wpautop( __( 'Products activated successfully.', 'woothemes-updater' ) );
+					$return .= '</div>' . "\n";
+					$return_json = array( 'success' => 'true', 'message' => $return, 'url' => add_query_arg( array( 'page' => 'woothemes-helper', 'status' => 'true', 'type' => 'activate-products' ), admin_url( 'index.php' ) ) );
+				} else {
+					$return = '<div class="error fade">' . "\n";
+					$return .= wpautop( __( 'There was an error and not all products were activated.', 'woothemes-updater' ) );
+					$return .= '</div>' . "\n";
+
+					$message = '';
+					foreach ( $request_errors as $k => $v ) {
+						$message .= wpautop( $v );
+					}
+
+					$return .= '<div class="error fade">' . "\n";
+					$return .= make_clickable( $message );
+					$return .= '</div>' . "\n";
+
+					$return_json = array( 'success' => 'false', 'message' => $return );
+
+					// Clear the error log.
+					$this->api->clear_error_log();
+				}
+			} else {
+				$return = '<div class="error fade">' . "\n";
+				$return .= wpautop( __( 'No license keys were specified for activation.', 'woothemes-updater' ) );
+				$return .= '</div>' . "\n";
+				$return_json = array( 'success' => 'false', 'message' => $return );
+			}
+			echo json_encode( $return_json );
+		}
+		die();
+	}
 
 	/**
 	 * Display admin notices.
@@ -629,6 +696,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 
 		foreach ( $products as $k => $v ) {
 			if ( ! in_array( $v, $product_keys ) ) {
+
 				// Perform API "activation" request.
 				$activate = $this->api->activate( $products[$k], $product_keys[$k]['product_id'], $k );
 
