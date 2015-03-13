@@ -1,5 +1,17 @@
 *** PayPal Pro Changelog ***
 
+2015.01.26 - version 4.3.0
+* woocommerce_paypal_pro_payflow_icon filter.
+* Added logging for PayPal Pro Payflow.
+* Added transaction capture from admin backend for PayPal Pro and Payflow.
+* Added void capability on an authorized only order for PayPal Pro and Payflow.
+* Added order id to be passed to PayPal Pro for reference.
+* Added authorize/capture option to PayPal Pro Payflow.
+* Added refund capability to PayPal Pro Payflow.
+* Updated test credit card number for PayPal Pro Payflow.
+* UPdated PayPal Pro classic API version to 119.
+* Fixed various undefined index bugs in PayPal Pro classic.
+
 2014.10.27 - version 4.2.0
 * Added test credit card number on checkout when in test/sandbox mode.
 * Added refund capability to PayPal Pro classic.
