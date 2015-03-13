@@ -157,7 +157,6 @@ class WooThemes_Updater_API {
 	 * @return array $data
 	 */
 	private function request ( $endpoint = 'check', $params = array(), $method = 'get' ) {
-		// $url = add_query_arg( 'wc-api', 'product-key-api', $this->api_url );
 		$url = $this->api_url;
 
 		if ( in_array( $endpoint, array( 'themeupdatecheck', 'pluginupdatecheck' ) ) ) {
@@ -166,6 +165,18 @@ class WooThemes_Updater_API {
 
 		$supported_methods = array( 'check', 'activation', 'deactivation', 'ping', 'pluginupdatecheck', 'themeupdatecheck' );
 		$supported_params = array( 'licence_key', 'file_id', 'product_id', 'home_url', 'license_hash', 'plugin_name', 'theme_name', 'version' );
+
+		$defaults = array(
+			'method' => strtoupper( $method ),
+			'timeout' => 45,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'blocking' => true,
+			'headers' => array( 'user-agent' => 'WooThemesUpdater/1.4.1' ),
+			'cookies' => array(),
+			'ssl_verify' => false,
+			'user-agent' => 'WooThemes Updater; http://www.woothemes.com'
+	    );
 
 		if ( 'GET' == strtoupper( $method ) ) {
 			if ( 0 < count( $params ) ) {
@@ -192,21 +203,16 @@ class WooThemes_Updater_API {
 			if ( in_array( $endpoint, $supported_methods ) ) {
 				$params['request'] = $endpoint;
 			}
+
+
+			// Add the 'body' parameter if using a POST method. Not required if using a GET method.
+			$defaults['body'] = $params;
 		}
 
-		$response = wp_remote_get( $url, array(
-			'method' => strtoupper( $method ),
-			'timeout' => 45,
-			'redirection' => 5,
-			'httpversion' => '1.0',
-			'blocking' => true,
-			'headers' => array( 'user-agent' => 'WooThemesUpdater/1.3.0' ),
-			'body' => $params,
-			'cookies' => array(),
-			'ssl_verify' => false,
-			'user-agent' => 'WooThemes Updater; http://www.woothemes.com'
-		    )
-		);
+		// Set up a filter on our default arguments. If any arguments are removed by the filter, replace them with the default value.
+		$args = wp_parse_args( (array)apply_filters( 'woothemes_updater_request_args', $defaults, $endpoint, $params, $method ), $defaults );
+
+		$response = wp_remote_get( $url, $args );
 
 		if( is_wp_error( $response ) ) {
 			$data = new StdClass;
