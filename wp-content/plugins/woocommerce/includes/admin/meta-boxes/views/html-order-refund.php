@@ -1,9 +1,11 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * @var object $refund The refund object.
+ */
 $who_refunded = new WP_User( $refund->post->post_author );
 ?>
 <tr class="refund <?php echo ( ! empty( $class ) ) ? $class : ''; ?>" data-order_refund_id="<?php echo $refund->id; ?>">
@@ -27,6 +29,7 @@ $who_refunded = new WP_User( $refund->post->post_author );
 
 	<?php do_action( 'woocommerce_admin_order_item_values', null, $refund, absint( $refund->id ) ); ?>
 
+	<td class="item_cost" width="1%">&nbsp;</td>
 	<td class="quantity" width="1%">&nbsp;</td>
 
 	<td class="line_cost" width="1%">
@@ -35,7 +38,7 @@ $who_refunded = new WP_User( $refund->post->post_author );
 		</div>
 	</td>
 
-	<?php if ( ( ! isset( $legacy_order ) || ! $legacy_order ) && 'yes' == get_option( 'woocommerce_calc_taxes' ) ) : for ( $i = 0;  $i < count( $order_taxes ); $i++ ) : ?>
+	<?php if ( ( ! isset( $legacy_order ) || ! $legacy_order ) && wc_tax_enabled() ) : for ( $i = 0;  $i < count( $order_taxes ); $i++ ) : ?>
 
 		<td class="line_tax" width="1%"></td>
 

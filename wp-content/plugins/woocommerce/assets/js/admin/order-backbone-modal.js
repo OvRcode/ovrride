@@ -1,5 +1,5 @@
 /*global jQuery, Backbone, _ */
-( function ( $, Backbone, _ ) {
+( function( $, Backbone, _ ) {
 	'use strict';
 
 	/**
@@ -8,7 +8,7 @@
 	 * @param {object} options
 	 */
 	$.fn.WCBackboneModal = function( options ) {
-		return this.each( function () {
+		return this.each( function() {
 			( new $.WCBackboneModal( $( this ), options ) );
 		});
 	};
@@ -49,15 +49,16 @@
 		id: 'wc-backbone-modal-dialog',
 		_target: undefined,
 		events: {
-			'click #btn-cancel': 'closeButton',
-			'click #btn-ok':     'addButton',
+			'click .modal-close': 'closeButton',
+			'click #btn-ok':      'addButton',
+			'keydown':            'keyboardActions'
 		},
-		initialize: function ( data ) {
+		initialize: function( data ) {
 			this._target = data.target;
 			_.bindAll( this, 'render' );
 			this.render();
 		},
-		render: function () {
+		render: function() {
 			this.$el.attr( 'tabindex' , '0' ).append( $( this._target ).html() );
 
 			$( 'body' ).css({
@@ -65,7 +66,7 @@
 			}).append( this.$el );
 
 			var $content  = $( '.wc-backbone-modal-content' ).find( 'article' );
-			var content_h = $content.height();
+			var content_h = ( 0 === $content.height() ) ? 90 : $content.height();
 			var max_h     = $( window ).height() - 200;
 
 			if ( max_h > 400 ) {
@@ -90,8 +91,9 @@
 
 			$( 'body' ).trigger( 'wc_backbone_modal_loaded', this._target );
 		},
-		closeButton: function ( e ) {
+		closeButton: function( e ) {
 			e.preventDefault();
+			$( 'body' ).trigger( 'wc_backbone_modal_before_remove', this._target );
 			this.undelegateEvents();
 			$( document ).off( 'focusin' );
 			$( 'body' ).css({
@@ -100,11 +102,11 @@
 			this.remove();
 			$( 'body' ).trigger( 'wc_backbone_modal_removed', this._target );
 		},
-		addButton: function ( e ) {
-			$( 'body' ).trigger( 'wc_backbone_modal_response', this._target, this.getFormData() );
+		addButton: function( e ) {
+			$( 'body' ).trigger( 'wc_backbone_modal_response', [ this._target, this.getFormData() ] );
 			this.closeButton( e );
 		},
-		getFormData: function () {
+		getFormData: function() {
 			var data = {};
 
 			$.each( $( 'form', this.$el ).serializeArray(), function( index, item ) {
@@ -118,6 +120,19 @@
 			});
 
 			return data;
+		},
+		keyboardActions: function( e ) {
+			var button = e.keyCode || e.which;
+
+			// Enter key
+			if ( 13 === button && ! ( e.target.tagName && e.target.tagName.toLowerCase() === 'input' ) ) {
+				this.addButton( e );
+			}
+
+			// ESC key
+			if ( 27 === button ) {
+				this.closeButton( e );
+			}
 		}
 	});
 

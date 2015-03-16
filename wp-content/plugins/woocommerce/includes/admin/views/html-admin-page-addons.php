@@ -1,11 +1,16 @@
 <?php
 /**
  * Admin View: Page - Addons
+ *
+ * @var string $view
+ * @var object $addons
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+$view 	= isset( $_GET['view'] ) ? sanitize_text_field( $_GET['view'] ) : '';
+$theme 	= wp_get_theme();
 
 ?>
 
@@ -14,7 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<h2>
 		<?php _e( 'WooCommerce Add-ons/Extensions', 'woocommerce' ); ?>
 		<a href="http://www.woothemes.com/product-category/woocommerce-extensions/" class="add-new-h2"><?php _e( 'Browse all extensions', 'woocommerce' ); ?></a>
-		<a href="http://www.woothemes.com/product-category/themes/woocommerce/" class="add-new-h2"><?php _e( 'Browse themes', 'woocommerce' ); ?></a>
 	</h2>
 	<?php if ( $addons ) : ?>
 		<ul class="subsubsub">
@@ -89,5 +93,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</ul>
 	<?php else : ?>
 		<p><?php printf( __( 'Our catalog of WooCommerce Extensions can be found on WooThemes.com here: <a href="%s">WooCommerce Extensions Catalog</a>', 'woocommerce' ), 'http://www.woothemes.com/product-category/woocommerce-extensions/' ); ?></p>
+	<?php endif; ?>
+
+	<?php if ( 'Storefront' != $theme['Name'] ) : ?>
+
+	<div class="storefront">
+		<img src="<?php echo WC()->plugin_url(); ?>/assets/images/storefront.jpg" alt="Storefront" />
+
+		<h3><?php _e( 'Looking for a WooCommerce theme?', 'woocommerce' ); ?></h3>
+
+		<p>
+			<?php printf( __( 'We recommend Storefront, the %sofficial%s WooCommerce theme.', 'woocommerce' ), '<em>', '</em>' ); ?>
+		</p>
+
+		<p>
+			<?php printf( __( 'Storefront is an intuitive &amp; flexible, %sfree%s WordPress theme offering deep integration with WooCommerce and many of the most popular customer-facing extensions.', 'woocommerce' ), '<strong>', '</strong>' ); ?>
+		</p>
+
+		<p>
+			<a href="<?php echo esc_url( 'http://www.woothemes.com/storefront/' ); ?>" target="_blank" class="button"><?php _e( 'Read all about it', 'woocommerce' ) ?></a>
+			<a href="<?php echo esc_url( wp_nonce_url( self_admin_url( 'update.php?action=install-theme&theme=storefront' ), 'install-theme_storefront' ) ); ?>" class="button button-primary"><?php _e( 'Download &amp; install', 'woocommerce' ); ?></a>
+		</p>
+	</div>
+
 	<?php endif; ?>
 </div>

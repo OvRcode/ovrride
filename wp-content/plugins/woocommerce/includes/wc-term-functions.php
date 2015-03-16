@@ -35,8 +35,9 @@ function wc_get_product_terms( $product_id, $taxonomy, $args = array() ) {
 	}
 
 	// Support ordering by parent
-	if ( ! empty( $args['orderby'] ) && $args['orderby'] === 'parent' ) {
-		$fields = isset( $args['fields'] ) ? $args['fields'] : 'all';
+	if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], array( 'name_num', 'parent' ) ) ) {
+		$fields  = isset( $args['fields'] ) ? $args['fields'] : 'all';
+		$orderby = $args['orderby'];
 
 		// Unset for wp_get_post_terms
 		unset( $args['orderby'] );
@@ -44,7 +45,14 @@ function wc_get_product_terms( $product_id, $taxonomy, $args = array() ) {
 
 		$terms = wp_get_post_terms( $product_id, $taxonomy, $args );
 
-		usort( $terms, '_wc_get_product_terms_parent_usort_callback' );
+		switch ( $orderby ) {
+			case 'name_num' :
+				usort( $terms, '_wc_get_product_terms_name_num_usort_callback' );
+			break;
+			case 'parent' :
+				usort( $terms, '_wc_get_product_terms_parent_usort_callback' );
+			break;
+		}
 
 		switch ( $fields ) {
 			case 'names' :
@@ -83,6 +91,19 @@ function wc_get_product_terms( $product_id, $taxonomy, $args = array() ) {
 	return $terms;
 }
 
+
+/**
+ * Sort by name (numeric)
+ * @param  WP_POST object $a
+ * @param  WP_POST object $b
+ * @return int
+ */
+function _wc_get_product_terms_name_num_usort_callback( $a, $b ) {
+	if ( $a->name + 0 === $b->name + 0 ) {
+		return 0;
+	}
+	return ( $a->name + 0 < $b->name + 0 ) ? -1 : 1;
+}
 /**
  * Sort by parent
  * @param  WP_POST object $a
@@ -193,6 +214,36 @@ function wc_taxonomy_metadata_wpdbfix() {
 }
 add_action( 'init', 'wc_taxonomy_metadata_wpdbfix', 0 );
 add_action( 'switch_blog', 'wc_taxonomy_metadata_wpdbfix', 0 );
+
+/**
+ * When a term is split, ensure meta data maintained.
+ * @param  int $old_term_id
+ * @param  int $new_term_id
+ * @param  string $term_taxonomy_id
+ * @param  string $taxonomy
+ */
+function wc_taxonomy_metadata_update_content_for_split_terms( $old_term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
+	global $wpdb;
+
+	if ( 'product_cat' === $taxonomy || taxonomy_is_product_attribute( $taxonomy ) ) {
+		$old_meta_data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}woocommerce_termmeta WHERE woocommerce_term_id = %d;", $old_term_id ) );
+
+		// Copy across to split term
+		if ( $old_meta_data ) {
+			foreach ( $old_meta_data as $meta_data ) {
+				$wpdb->insert(
+					"{$wpdb->prefix}woocommerce_termmeta",
+					array(
+						'woocommerce_term_id' => $new_term_id,
+						'meta_key'            => $meta_data->meta_key,
+						'meta_value'          => $meta_data->meta_value
+					)
+				);
+			}
+		}
+	}
+}
+add_action( 'split_shared_term', 'wc_taxonomy_metadata_update_content_for_split_terms', 10, 4 );
 
 /**
  * WooCommerce Term Meta API - Update term meta
@@ -513,8 +564,11 @@ function wc_recount_after_stock_change( $product_id ) {
 	$product_terms = get_the_terms( $product_id, 'product_cat' );
 
 	if ( $product_terms ) {
-		foreach ( $product_terms as $term )
+		$product_cats = array();
+
+		foreach ( $product_terms as $term ) {
 			$product_cats[ $term->term_id ] = $term->parent;
+		}
 
 		_wc_term_recount( $product_cats, get_taxonomy( 'product_cat' ), false, false );
 	}
@@ -522,8 +576,11 @@ function wc_recount_after_stock_change( $product_id ) {
 	$product_terms = get_the_terms( $product_id, 'product_tag' );
 
 	if ( $product_terms ) {
-		foreach ( $product_terms as $term )
+		$product_tags = array();
+
+		foreach ( $product_terms as $term ) {
 			$product_tags[ $term->term_id ] = $term->parent;
+		}
 
 		_wc_term_recount( $product_tags, get_taxonomy( 'product_tag' ), false, false );
 	}
@@ -536,11 +593,10 @@ add_action( 'woocommerce_product_set_stock_status', 'wc_recount_after_stock_chan
  * that takes catalog visibility into account.
  *
  * @param array $terms
- * @param mixed $taxonomies
- * @param mixed $args
+ * @param string|array $taxonomies
  * @return array
  */
-function wc_change_term_counts( $terms, $taxonomies, $args ) {
+function wc_change_term_counts( $terms, $taxonomies ) {
 	if ( is_admin() || is_ajax() ) {
 		return $terms;
 	}
@@ -563,9 +619,9 @@ function wc_change_term_counts( $terms, $taxonomies, $args ) {
 
 	// Update transient
 	if ( $term_counts != $o_term_counts ) {
-		set_transient( 'wc_term_counts', $term_counts, YEAR_IN_SECONDS );
+		set_transient( 'wc_term_counts', $term_counts, DAY_IN_SECONDS * 30 );
 	}
 
 	return $terms;
 }
-add_filter( 'get_terms', 'wc_change_term_counts', 10, 3 );
+add_filter( 'get_terms', 'wc_change_term_counts', 10, 2 );

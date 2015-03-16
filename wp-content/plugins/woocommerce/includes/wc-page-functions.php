@@ -11,6 +11,23 @@
  */
 
 /**
+ * Replace a page title with the endpoint title
+ * @param  string $title
+ * @return string
+ */
+function wc_page_endpoint_title( $title ) {
+	if ( is_main_query() && in_the_loop() && is_page() && is_wc_endpoint_url() ) {
+		$endpoint = WC()->query->get_current_endpoint();
+		if ( $endpoint_title = WC()->query->get_endpoint_title( $endpoint ) ) {
+			$title = $endpoint_title;
+		}
+		remove_filter( 'the_title', 'wc_page_endpoint_title' );
+	}
+	return $title;
+}
+add_filter( 'the_title', 'wc_page_endpoint_title' );
+
+/**
  * Retrieve page ids - used for myaccount, edit_address, shop, cart, checkout, pay, view_order, terms. returns -1 if no page is found
  *
  * @param string $page
@@ -32,6 +49,18 @@ function wc_get_page_id( $page ) {
 	$page = apply_filters( 'woocommerce_get_' . $page . '_page_id', get_option('woocommerce_' . $page . '_page_id' ) );
 
 	return $page ? absint( $page ) : -1;
+}
+
+/**
+ * Retrieve page permalink
+ *
+ * @param string $page
+ * @return string
+ */
+function wc_get_page_permalink( $page ) {
+	$permalink = get_permalink( wc_get_page_id( $page ) );
+
+	return apply_filters( 'woocommerce_get_' . $page . '_page_permalink', $permalink );
 }
 
 /**
@@ -61,7 +90,7 @@ function wc_get_endpoint_url( $endpoint, $value = '', $permalink = '' ) {
 		$url = add_query_arg( $endpoint, $value, $permalink );
 	}
 
-	return apply_filters( 'woocommerce_get_endpoint_url', $url );
+	return apply_filters( 'woocommerce_get_endpoint_url', $url, $endpoint, $value, $permalink );
 }
 
 /**
@@ -96,7 +125,7 @@ function wc_edit_address_i18n( $id, $flip = false ) {
  * @return string
  */
 function wc_lostpassword_url() {
-    return wc_get_endpoint_url( 'lost-password', '', get_permalink( wc_get_page_id( 'myaccount' ) ) );
+    return wc_get_endpoint_url( 'lost-password', '', wc_get_page_permalink( 'myaccount' ) );
 }
 add_filter( 'lostpassword_url',  'wc_lostpassword_url', 10, 0 );
 
@@ -107,7 +136,7 @@ add_filter( 'lostpassword_url',  'wc_lostpassword_url', 10, 0 );
  * @return string
  */
 function wc_customer_edit_account_url() {
-	$edit_account_url = wc_get_endpoint_url( 'edit-account', '', get_permalink( wc_get_page_id( 'myaccount' ) ) );
+	$edit_account_url = wc_get_endpoint_url( 'edit-account', '', wc_get_page_permalink( 'myaccount' ) );
 
 	return apply_filters( 'woocommerce_customer_edit_account_url', $edit_account_url );
 }
@@ -116,36 +145,35 @@ function wc_customer_edit_account_url() {
  * Hide menu items conditionally
  *
  * @param array $items
- * @param mixed $args
  * @return array
  */
-function wc_nav_menu_items( $items, $args ) {
+function wc_nav_menu_items( $items ) {
 	if ( ! is_user_logged_in() ) {
-
-		$hide_pages   = array();
-		$hide_pages[] = (int) wc_get_page_id( 'logout' );
-		$hide_pages   = apply_filters( 'woocommerce_logged_out_hidden_page_ids', $hide_pages );
+		$customer_logout = get_option( 'woocommerce_logout_endpoint', 'customer-logout' );
 
 		foreach ( $items as $key => $item ) {
-			if ( strstr( $item->url, 'customer-logout' ) )
+			if ( strstr( $item->url, $customer_logout ) ) {
 				unset( $items[ $key ] );
+			}
 		}
 	}
+
     return $items;
 }
-add_filter( 'wp_nav_menu_objects', 'wc_nav_menu_items', 10, 2 );
+add_filter( 'wp_nav_menu_objects', 'wc_nav_menu_items', 10 );
 
 
 /**
  * Fix active class in nav for shop page.
  *
  * @param array $menu_items
- * @param array $args
  * @return array
  */
-function wc_nav_menu_item_classes( $menu_items, $args ) {
+function wc_nav_menu_item_classes( $menu_items ) {
 
-	if ( ! is_woocommerce() ) return $menu_items;
+	if ( ! is_woocommerce() ) {
+		return $menu_items;
+	}
 
 	$shop_page 		= (int) wc_get_page_id('shop');
 	$page_for_posts = (int) get_option( 'page_for_posts' );
@@ -158,15 +186,17 @@ function wc_nav_menu_item_classes( $menu_items, $args ) {
 		if ( $page_for_posts == $menu_item->object_id ) {
 			$menu_items[$key]->current = false;
 
-			if ( in_array( 'current_page_parent', $classes ) )
+			if ( in_array( 'current_page_parent', $classes ) ) {
 				unset( $classes[ array_search('current_page_parent', $classes) ] );
+			}
 
-			if ( in_array( 'current-menu-item', $classes ) )
+			if ( in_array( 'current-menu-item', $classes ) ) {
 				unset( $classes[ array_search('current-menu-item', $classes) ] );
+			}
 
 		// Set active state if this is the shop page link
 		} elseif ( is_shop() && $shop_page == $menu_item->object_id ) {
-			$menu_items[$key]->current = true;
+			$menu_items[ $key ]->current = true;
 			$classes[] = 'current-menu-item';
 			$classes[] = 'current_page_item';
 
@@ -175,13 +205,13 @@ function wc_nav_menu_item_classes( $menu_items, $args ) {
 			$classes[] = 'current_page_parent';
 		}
 
-		$menu_items[$key]->classes = array_unique( $classes );
+		$menu_items[ $key ]->classes = array_unique( $classes );
 
 	}
 
 	return $menu_items;
 }
-add_filter( 'wp_nav_menu_objects',  'wc_nav_menu_item_classes', 2, 20 );
+add_filter( 'wp_nav_menu_objects', 'wc_nav_menu_item_classes', 2 );
 
 
 /**
