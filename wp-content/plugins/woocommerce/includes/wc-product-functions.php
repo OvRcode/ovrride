@@ -4,10 +4,10 @@
  *
  * Functions for product specific things.
  *
- * @author 		WooThemes
- * @category 	Core
- * @package 	WooCommerce/Functions
- * @version     2.1.0
+ * @author   WooThemes
+ * @category Core
+ * @package  WooCommerce/Functions
+ * @version  2.3.0
  */
 
 /**
@@ -79,7 +79,9 @@ function wc_delete_product_transients( $post_id = 0 ) {
 	// Core transients
 	$transients_to_clear = array(
 		'wc_products_onsale',
-		'wc_featured_products'
+		'wc_featured_products',
+		'wc_outofstock_count',
+		'wc_low_stock_count'
 	);
 
 	// Transients that include an ID
@@ -98,6 +100,9 @@ function wc_delete_product_transients( $post_id = 0 ) {
 	foreach( $transients_to_clear as $transient ) {
 		delete_transient( $transient );
 	}
+
+	// Increments the transient version to invalidate cache
+	WC_Cache_Helper::get_transient_version( 'product', true );
 
 	do_action( 'woocommerce_delete_product_transients', $post_id );
 }
@@ -135,7 +140,7 @@ function wc_get_product_ids_on_sale() {
 
 	$product_ids_on_sale = array_unique( array_map( 'absint', array_merge( wp_list_pluck( $on_sale_posts, 'ID' ), array_diff( wp_list_pluck( $on_sale_posts, 'post_parent' ), array( 0 ) ) ) ) );
 
-	set_transient( 'wc_products_onsale', $product_ids_on_sale, YEAR_IN_SECONDS );
+	set_transient( 'wc_products_onsale', $product_ids_on_sale, DAY_IN_SECONDS * 30 );
 
 	return $product_ids_on_sale;
 }
@@ -178,7 +183,7 @@ function wc_get_featured_product_ids() {
 	$parent_ids           = array_values( $featured );
 	$featured_product_ids = array_unique( array_merge( $product_ids, $parent_ids ) );
 
-	set_transient( 'wc_featured_products', $featured_product_ids, YEAR_IN_SECONDS );
+	set_transient( 'wc_featured_products', $featured_product_ids, DAY_IN_SECONDS * 30 );
 
 	return $featured_product_ids;
 }
@@ -302,9 +307,9 @@ function wc_get_formatted_variation( $variation, $flat = false ) {
 			}
 
 			if ( $flat ) {
-				$variation_list[] = wc_attribute_label( str_replace( 'attribute_', '', $name ) ) . ': ' . urldecode( $value );
+				$variation_list[] = wc_attribute_label( str_replace( 'attribute_', '', $name ) ) . ': ' . rawurldecode( $value );
 			} else {
-				$variation_list[] = '<dt>' . wc_attribute_label( str_replace( 'attribute_', '', $name ) ) . ':</dt><dd>' . urldecode( $value ) . '</dd>';
+				$variation_list[] = '<dt>' . wc_attribute_label( str_replace( 'attribute_', '', $name ) ) . ':</dt><dd>' . rawurldecode( $value ) . '</dd>';
 			}
 		}
 
@@ -522,4 +527,26 @@ function wc_product_has_unique_sku( $product_id, $sku ) {
 	} else {
 		return true;
 	}
+}
+
+/**
+ * Get product ID by SKU.
+ *
+ * @since  2.3.0
+ * @param  string $sku
+ * @return int
+ */
+function wc_get_product_id_by_sku( $sku ) {
+	global $wpdb;
+
+	$product_id = $wpdb->get_var( $wpdb->prepare( "
+		SELECT posts.ID
+		FROM $wpdb->posts AS posts
+		LEFT JOIN $wpdb->postmeta AS postmeta ON ( posts.ID = postmeta.post_id )
+		WHERE posts.post_type IN ( 'product', 'product_variation' )
+		AND postmeta.meta_key = '_sku' AND postmeta.meta_value = '%s'
+		LIMIT 1
+	 ", $sku ) );
+
+	return ( $product_id ) ? intval( $product_id ) : 0;
 }

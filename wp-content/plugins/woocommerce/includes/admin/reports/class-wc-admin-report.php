@@ -53,15 +53,15 @@ class WC_Admin_Report {
 			'debug'               => false,
 			'order_types'         => wc_get_order_types( 'reports' ),
 			'order_status'        => array( 'completed', 'processing', 'on-hold' ),
-			'parent_order_status' => false
+			'parent_order_status' => false,
 		);
-
-		$args = apply_filters( 'woocommerce_reports_get_order_report_data_args', wp_parse_args( $args, $default_args ) );
+		$args = apply_filters( 'woocommerce_reports_get_order_report_data_args', $args );
+		$args = wp_parse_args( $args, $default_args );
 
 		extract( $args );
 
 		if ( empty( $data ) ) {
-			return false;
+			return '';
 		}
 
 		$order_status = apply_filters( 'woocommerce_reports_order_statuses', $order_status );
@@ -72,8 +72,9 @@ class WC_Admin_Report {
 		foreach ( $data as $key => $value ) {
 			$distinct = '';
 
-			if ( isset( $value['distinct'] ) )
+			if ( isset( $value['distinct'] ) ) {
 				$distinct = 'DISTINCT';
+			}
 
 			if ( $value['type'] == 'meta' ) {
 				$get_key = "meta_{$key}.meta_value";
@@ -83,6 +84,8 @@ class WC_Admin_Report {
 				$get_key = "order_item_meta_{$key}.meta_value";
 			} elseif( $value['type'] == 'order_item' ) {
 				$get_key = "order_items.{$key}";
+			} else {
+				continue;
 			}
 
 			if ( $value['function'] ) {
@@ -158,7 +161,7 @@ class WC_Admin_Report {
 
 		if ( ! empty( $parent_order_status ) ) {
 			$query['where'] .= "
-				AND 	parent.post_status 	IN ( 'wc-" . implode( "','wc-", $parent_order_status ) . "')
+				AND ( parent.post_status IN ( 'wc-" . implode( "','wc-", $parent_order_status ) . "') OR parent.ID IS NULL )
 			";
 		}
 
@@ -283,7 +286,9 @@ class WC_Admin_Report {
 		$cached_results = get_transient( strtolower( get_class( $this ) ) );
 
 		if ( $debug ) {
-			var_dump( $query );
+			echo '<pre>';
+			print_r( $query );
+			echo '</pre>';
 		}
 
 		if ( $debug || $nocache || false === $cached_results || ! isset( $cached_results[ $query_hash ] ) ) {
@@ -308,20 +313,16 @@ class WC_Admin_Report {
 	 * @return string
 	 */
 	public function prepare_chart_data( $data, $date_key, $data_key, $interval, $start_date, $group_by ) {
-
 		$prepared_data = array();
-		$time          =  '';
 
 		// Ensure all days (or months) have values first in this range
 		for ( $i = 0; $i <= $interval; $i ++ ) {
-
 			switch ( $group_by ) {
-
 				case 'day' :
 					$time = strtotime( date( 'Ymd', strtotime( "+{$i} DAY", $start_date ) ) ) . '000';
 				break;
-
 				case 'month' :
+				default :
 					$time = strtotime( date( 'Ym', strtotime( "+{$i} MONTH", $start_date ) ) . '01' ) . '000';
 				break;
 			}
@@ -333,12 +334,11 @@ class WC_Admin_Report {
 
 		foreach ( $data as $d ) {
 			switch ( $group_by ) {
-
 				case 'day' :
 					$time = strtotime( date( 'Ymd', strtotime( $d->$date_key ) ) ) . '000';
 				break;
-
 				case 'month' :
+				default :
 					$time = strtotime( date( 'Ym', strtotime( $d->$date_key ) ) . '01' ) . '000';
 				break;
 			}
@@ -528,6 +528,27 @@ class WC_Admin_Report {
 				$this->barwidth = 60 * 60 * 24 * 7 * 4 * 1000;
 			break;
 		}
+	}
+
+	/**
+	 * Return currency tooltip JS based on WooCommerce currency position settings.
+	 *
+	 * @return string
+	 */
+	public function get_currency_tooltip() {
+		switch( get_option( 'woocommerce_currency_pos' ) ) {
+			case 'right':
+				$currency_tooltip = 'append_tooltip: "' . get_woocommerce_currency_symbol() . '"'; break;
+			case 'right_space':
+				$currency_tooltip = 'append_tooltip: "&nbsp;' . get_woocommerce_currency_symbol() . '"'; break;
+			case 'left':
+				$currency_tooltip = 'prepend_tooltip: "' . get_woocommerce_currency_symbol() . '"'; break;
+			case 'left_space':
+			default:
+				$currency_tooltip = 'prepend_tooltip: "' . get_woocommerce_currency_symbol() . '&nbsp;"'; break;
+		}
+
+		return $currency_tooltip;
 	}
 
 	/**
