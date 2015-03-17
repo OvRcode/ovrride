@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.9.3.1
+Version: 1.9.4.1
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 Text Domain: gravityforms
@@ -112,7 +112,7 @@ add_action( 'plugins_loaded', array( 'GFForms', 'loaded' ) );
 
 class GFForms {
 
-	public static $version = '1.9.3.1';
+	public static $version = '1.9.4.1';
 
 	public static function loaded() {
 
@@ -1592,7 +1592,7 @@ class GFForms {
 		wp_register_script( 'gform_tooltip_init', $base_url . '/js/tooltip_init.js', array( 'jquery-ui-tooltip' ), $version );
 		wp_register_script( 'gform_textarea_counter', $base_url . '/js/jquery.textareaCounter.plugin.js', array( 'jquery' ), $version );
 		wp_register_script( 'gform_field_filter', $base_url . '/js/gf_field_filter.js', array( 'jquery' ), $version );
-		wp_register_script( 'gform_shortcode_ui', $base_url . '/js/shortcode-ui.js', array( 'jquery', 'backbone', 'mce-view' ), $version, true );
+		wp_register_script( 'gform_shortcode_ui', $base_url . '/js/shortcode-ui.js', array( 'jquery', 'wp-backbone' ), $version, true );
 
 		wp_register_style( 'gform_shortcode_ui', $base_url . '/css/shortcode-ui.css', array(), $version );
 
@@ -1754,23 +1754,19 @@ class GFForms {
 
 		}
 
-
 		if ( self::page_supports_add_form_button() ) {
 			// add_filter( 'gform_shortcode_preview_disabled', '__return_false' );
-			$screen = get_current_screen();
-			if ( ! $screen instanceof WP_Screen || $screen->post_type != 'attachment' ) {
-				require_once( GFCommon::get_base_path() . '/tooltips.php' );
-				wp_enqueue_script( 'gform_shortcode_ui' );
-				wp_enqueue_style( 'gform_shortcode_ui' );
-				wp_localize_script( 'gform_shortcode_ui', 'gfShortcodeUIData', array(
-					'shortcodes' => self::get_shortcodes(),
-					'previewNonce' => wp_create_nonce( 'gf-shortcode-ui-preview' ),
-					'previewDisabled' => apply_filters( 'gform_shortcode_preview_disabled', true ),
-					'strings' => array(
-						'pleaseSelectAForm' => __( 'Please select a form.', 'gravityforms' ),
-					)
-				) );
-			}
+			require_once( GFCommon::get_base_path() . '/tooltips.php' );
+			wp_enqueue_script( 'gform_shortcode_ui' );
+			wp_enqueue_style( 'gform_shortcode_ui' );
+			wp_localize_script( 'gform_shortcode_ui', 'gfShortcodeUIData', array(
+				'shortcodes' => self::get_shortcodes(),
+				'previewNonce' => wp_create_nonce( 'gf-shortcode-ui-preview' ),
+				'previewDisabled' => apply_filters( 'gform_shortcode_preview_disabled', true ),
+				'strings' => array(
+					'pleaseSelectAForm' => __( 'Please select a form.', 'gravityforms' ),
+				)
+			) );
 		}
 
 		if ( empty( $scripts ) ) {

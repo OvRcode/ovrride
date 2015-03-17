@@ -169,7 +169,8 @@ class GF_Field_Number extends GF_Field {
 
 		$logic_event = $this->get_conditional_logic_event( 'keyup' );
 
-		$value = GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ) );
+		$include_thousands_sep = $html_input_type == 'text';
+		$value                 = GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ), $include_thousands_sep );
 
 		$placeholder_attribute = $this->get_field_placeholder_attribute();
 
