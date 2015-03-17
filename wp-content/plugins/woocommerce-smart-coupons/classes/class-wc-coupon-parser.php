@@ -5,89 +5,143 @@
  * and open the template in the editor.
  */
 
+/**
+ * class to parse values for WC_Coupon for importing
+ */
 class WC_Coupon_Parser {
     
+        
+        /**
+         * @var string $post_type
+         */
         var $post_type;
+        
+        /**
+         * @var array $reserved_fields
+         */
         var $reserved_fields;		// Fields we map/handle (not custom fields)
+        
+        /**
+         * @var array $post_defaults
+         */
         var $post_defaults;			// Default post data
+        
+        /**
+         * @var array $postmeta_defaults
+         */
         var $postmeta_defaults;		// default post meta
     
+        /**
+         * @var int $row
+         */
+        var $row;
+    
+        /**
+         * Constructor
+         * 
+         * @param string $post_type
+         */
         public function __construct( $post_type = 'shop_coupon' ) {
 
-                    $this->post_type = $post_type;
+            $this->post_type = $post_type;
 
-                    $this->reserved_fields = array(
-                            'id',
-                            'post_id',
-                            'post_type',
-                            'menu_order',
-                            'postmeta',
-                            'post_status',
-                            'post_title',
-                            'post_name',
-                            'comment_status',
-                            'post_date',
-                            'post_date_gmt',
-                            'post_content',
-                            'post_excerpt',
-                            'post_parent',
-                            'post_password',
-                            'discount_type',
-                            'coupon_amount',
-                            'individual_use', 
-                            'product_ids',
-                            'exclude_product_ids',
-                            'usage_limit',
-                            'expiry_date',
-                            'apply_before_tax',
-                            'free_shipping',
-                            'product_categories',
-                            'exclude_product_categories',
-                            'minimum_amount',
-                            'customer_email', 
-                    );
+            $this->reserved_fields = array(
+                    'id',
+                    'post_id',
+                    'post_type',
+                    'menu_order',
+                    'postmeta',
+                    'post_status',
+                    'post_title',
+                    'post_name',
+                    'comment_status',
+                    'post_date',
+                    'post_date_gmt',
+                    'post_content',
+                    'post_excerpt',
+                    'post_parent',
+                    'post_password',
+                    'discount_type',
+                    'coupon_amount',
+                    'individual_use', 
+                    'product_ids',
+                    'exclude_product_ids',
+                    'usage_limit',
+                    'usage_limit_per_user',
+                    'limit_usage_to_x_items',
+                    'expiry_date',
+                    'apply_before_tax',
+                    'free_shipping',
+                    'product_categories',
+                    'exclude_product_categories',
+                    'minimum_amount',
+                    'customer_email', 
+                    'exclude_sale_items'
+            );
 
-                    $this->post_defaults = array(
-                            'post_type' 	=> $this->post_type,
-                            'menu_order' 	=> '',
-                            'postmeta'      => array(),
-                            'post_status'	=> 'publish',
-                            'post_title'	=> '',
-                            'post_name'	=> '',
-                            'post_date'	=> '',
-                            'post_date_gmt'	=> '',
-                            'post_content'	=> '',
-                            'post_excerpt'	=> '',
-                            'post_parent'	=> 0,
-                            'post_password'	=> '',
-                            'comment_status'=> 'open'
-                    );
+            $this->post_defaults = array(
+                    'post_type'         => $this->post_type,
+                    'menu_order'        => '',
+                    'postmeta'          => array(),
+                    'post_status'       => 'publish',
+                    'post_title'        => '',
+                    'post_name'         => '',
+                    'comment_status'    => 'open',
+                    'post_date'         => '',
+                    'post_date_gmt'     => '',
+                    'post_content'      => '',
+                    'post_excerpt'      => '',
+                    'post_parent'       => 0,
+                    'post_password'     => ''
+            );
 
-                    $this->postmeta_defaults = array(
-                            'discount_type' => '',
-                            'coupon_amount' => '',
-                            'individual_use' => '',
-                            'product_ids' => '',
-                            'exclude_product_ids' => '',
-                            'usage_limit' => '',
-                            'expiry_date' => '',
-                            'apply_before_tax' => '',
-                            'free_shipping' => '',
-                            'product_categories' => '',
-                            'exclude_product_categories' => '',
-                            'minimum_amount' => '',
-                            'customer_email' => ''
+            $this->postmeta_defaults = apply_filters( 'smart_coupons_parser_postmeta_defaults', array(
+                    'discount_type'                 => 'fixed_cart',
+                    'coupon_amount'                 => '',
+                    'individual_use'                => '',
+                    'product_ids'                   => '',
+                    'exclude_product_ids'           => '',
+                    'usage_limit'                   => '',
+                    'usage_limit_per_user'          => '',
+                    'limit_usage_to_x_items'        => '',
+                    'expiry_date'                   => '',
+                    'apply_before_tax'              => '',
+                    'free_shipping'                 => '',
+                    'product_categories'            => '',
+                    'exclude_product_categories'    => '',
+                    'minimum_amount'                => '',
+                    'customer_email'                => '',
+                    'exclude_sale_items'            => '',
+                    'auto_generate_coupon'          => '',
+                    'coupon_title_prefix'           => '',
+                    'coupon_title_suffix'           => '',
+                    'sc_coupon_validity'            => '',
+                    'validity_suffix'               => '',
+                    'sc_is_visible_storewide'       => '',
+                    'sc_disable_email_restriction'  => '',
+                    'is_pick_price_of_product'      => ''
 
-                    );
-
+            ));
 
         } 
 
-        function format_data_from_csv( $data, $enc ) {
-                return ( $enc == 'UTF-8' ) ? $data : utf8_encode( $data );
+        /**
+         * Format data passed from CSV 
+         * 
+         * @param array $data
+         * @param string $enc encoding
+         */
+        public function format_data_from_csv( $data, $enc ) {
+            return ( $enc == 'UTF-8' ) ? $data : utf8_encode( $data );
         }
         
-        function parse_data( $file ) {
+        /**
+         * Parse data
+         * 
+         * @param file imported file
+         * @return array parsed data with headers
+         */
+        public function parse_data( $file ) {
 
             // Set locale
             $enc = mb_detect_encoding( $file, 'UTF-8, ISO-8859-1', true );
@@ -141,12 +195,16 @@ class WC_Coupon_Parser {
             return array( $parsed_data, $raw_headers );
         }
         
-        function parse_coupon( $item ){
+        /**
+         * Parse coupon
+         * 
+         * @param array $item
+         * @return array $coupon
+         */
+        public function parse_coupon( $item ){
             global $wc_csv_coupon_import, $wpdb;
 
-
             $this->row++;
-
             $postmeta = $coupon = array();
 
             $post_id = ( ! empty($item['id'] ) ) ? $item['id'] : 0;
@@ -172,7 +230,7 @@ class WC_Coupon_Parser {
             $postmeta = wp_parse_args( $postmeta, $this->postmeta_defaults );
 
             //discount types
-             if( isset( $postmeta['discount_type'] ) ) {
+             if( ! empty( $postmeta['discount_type'] ) ) {
 
                  if( "Cart Discount" == $postmeta['discount_type'] ){
                      $postmeta['discount_type'] = "fixed_cart";
@@ -215,8 +273,8 @@ class WC_Coupon_Parser {
 
             // customer_email
             if ( isset( $postmeta['customer_email'] ) && ! is_array( $postmeta['customer_email'] ) ) {
-                    $ids = array_filter( array_map( 'trim', explode('|', $postmeta['customer_email'] ) ) );
-                    $postmeta['customer_email'] = $ids;
+                    $email_ids = array_filter( array_map( 'trim', explode(',', $postmeta['customer_email'] ) ) );
+                    $postmeta['customer_email'] = $email_ids;
             }
 
             // expiry date
@@ -235,7 +293,4 @@ class WC_Coupon_Parser {
         
     }
 	
-    
 }
-
-?>

@@ -7,7 +7,9 @@
  * @version     1.6.4
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 $template = get_option( 'template' );
 
@@ -24,6 +26,9 @@ switch( $template ) {
 	case 'twentyfourteen' :
 		echo '</div></div></div>';
 		get_sidebar( 'content' );
+		break;
+	case 'twentyfifteen' :
+		echo '</div></div>';
 		break;
 	default :
 		echo '</div></div>';

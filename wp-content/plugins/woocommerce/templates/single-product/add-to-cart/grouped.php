@@ -7,7 +7,9 @@
  * @version     2.1.7
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 global $product, $post;
 
@@ -21,6 +23,11 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 			<?php
 				foreach ( $grouped_products as $product_id ) :
 					$product = wc_get_product( $product_id );
+
+					if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) && ! $product->is_in_stock() ) {
+						continue;
+					}
+
 					$post    = $product->post;
 					setup_postdata( $post );
 					?>
@@ -31,7 +38,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 							<?php else : ?>
 								<?php
 									$quantites_required = true;
-									woocommerce_quantity_input( array( 'input_name' => 'quantity[' . $product_id . ']', 'input_value' => '0' ) );
+									woocommerce_quantity_input( array( 'input_name' => 'quantity[' . $product_id . ']', 'input_value' => '0', 'min_value' => apply_filters( 'woocommerce_quantity_input_min', 0, $product ), 'max_value' => apply_filters( 'woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product ) ) );
 								?>
 							<?php endif; ?>
 						</td>

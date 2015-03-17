@@ -12,15 +12,15 @@ if ( ! class_exists( 'WC_Email_Customer_Invoice' ) ) :
  * An email sent to the customer via admin.
  *
  * @class 		WC_Email_Customer_Invoice
- * @version		2.0.0
+ * @version		2.3.0
  * @package		WooCommerce/Classes/Emails
  * @author 		WooThemes
  * @extends 	WC_Email
  */
 class WC_Email_Customer_Invoice extends WC_Email {
 
-	var $find;
-	var $replace;
+	public $find;
+	public $replace;
 
 	/**
 	 * Constructor
@@ -29,7 +29,7 @@ class WC_Email_Customer_Invoice extends WC_Email {
 
 		$this->id             = 'customer_invoice';
 		$this->title          = __( 'Customer invoice', 'woocommerce' );
-		$this->description    = __( 'Customer invoice emails can be sent to the user containing order info and payment links.', 'woocommerce' );
+		$this->description    = __( 'Customer invoice emails can be sent to customers containing their order information and payment links.', 'woocommerce' );
 
 		$this->template_html  = 'emails/customer-invoice.php';
 		$this->template_plain = 'emails/plain/customer-invoice.php';
@@ -139,14 +139,14 @@ class WC_Email_Customer_Invoice extends WC_Email {
 		return ob_get_clean();
 	}
 
-    /**
-     * Initialise Settings Form Fields
-     *
-     * @access public
-     * @return void
-     */
-    function init_form_fields() {
-    	$this->form_fields = array(
+	/**
+	 * Initialise Settings Form Fields
+	 *
+	 * @access public
+	 * @return void
+	 */
+	function init_form_fields() {
+		$this->form_fields = array(
 			'subject' => array(
 				'title' 		=> __( 'Email subject', 'woocommerce' ),
 				'type' 			=> 'text',
@@ -180,15 +180,11 @@ class WC_Email_Customer_Invoice extends WC_Email {
 				'type' 			=> 'select',
 				'description' 	=> __( 'Choose which format of email to send.', 'woocommerce' ),
 				'default' 		=> 'html',
-				'class'			=> 'email_type',
-				'options'		=> array(
-					'plain' 		=> __( 'Plain text', 'woocommerce' ),
-					'html' 			=> __( 'HTML', 'woocommerce' ),
-					'multipart' 	=> __( 'Multipart', 'woocommerce' ),
-				)
+				'class'			=> 'email_type wc-enhanced-select',
+				'options'		=> $this->get_email_type_options()
 			)
 		);
-    }
+	}
 }
 
 endif;

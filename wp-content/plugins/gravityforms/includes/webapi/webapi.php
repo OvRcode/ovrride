@@ -352,6 +352,8 @@ if ( class_exists( 'GFForms' ) ) {
 				return;
 			}
 
+			send_origin_headers();
+
 			$settings = get_option( 'gravityformsaddon_gravityformswebapi_settings' );
 			if ( empty( $settings ) || ! $settings['enabled'] ) {
 				$this->die_permission_denied();
@@ -1367,7 +1369,7 @@ if ( class_exists( 'GFForms' ) ) {
 					$gf_results         = new GFResults( $this->_slug, array() );
 					$max_execution_time = 5;
 					$results            = $gf_results->get_results_data( $form, $fields, $search_criteria, $state, $max_execution_time );
-					if ( 'complete' == $results['status'] ) {
+					if ( 'complete' == rgar( $data, 'status' ) ) {
 						$status = 200;
 						if ( false == empty( $state ) ) {
 							delete_option( $key_tmp );
@@ -1409,10 +1411,13 @@ if ( class_exists( 'GFForms' ) ) {
 				}
 			}
 
-			$fields = $results['field_data'];
+			$fields = rgar( $results, 'field_data' );
 
-			// add choice labels to the results so the client doesn't need to cross-reference with the form object
-			$results['field_data'] = $this->results_data_add_labels( $form, $fields );
+			if ( ! empty( $fields ) ) {
+				// add choice labels to the results so the client doesn't need to cross-reference with the form object
+				$results['field_data'] = $this->results_data_add_labels( $form, $fields );
+			}
+
 
 			$this->end( $status, $results );
 		}
@@ -1545,7 +1550,6 @@ if ( class_exists( 'GFForms' ) ) {
 				header_remove( 'X-Pingback' );
 			}
 
-			send_origin_headers();
 			header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ), true );
 			$output_json = json_encode( $output );
 

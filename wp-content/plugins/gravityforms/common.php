@@ -283,6 +283,7 @@ class GFCommon {
 	}
 
 	public static function is_valid_email( $email ) {
+
 		return filter_var( $email, FILTER_VALIDATE_EMAIL );
 	}
 
@@ -1620,6 +1621,8 @@ class GFCommon {
 	}
 
 	private static function send_email( $from, $to, $bcc, $reply_to, $subject, $message, $from_name = '', $message_format = 'html', $attachments = '' ) {
+		
+		global $phpmailer;
 
 		$to    = str_replace( ' ', '', $to );
 		$bcc   = str_replace( ' ', '', $bcc );
@@ -1680,6 +1683,10 @@ class GFCommon {
 			if ( has_filter( 'phpmailer_init' ) ) {
 				GFCommon::log_debug( __METHOD__ . '(): The WordPress phpmailer_init hook has been detected, usually used by SMTP plugins, it can impact mail delivery.' );
 			}
+
+			if ( ! empty( $phpmailer->ErrorInfo ) ) {
+				GFCommon::log_debug( __METHOD__ . '(): PHPMailer class returned an error message: ' . $phpmailer->ErrorInfo );
+			}			
 		} else {
 			GFCommon::log_debug( 'GFCommon::send_email(): Aborting. The gform_pre_send_email hook was used to set the abort_email parameter to true.' );
 		}

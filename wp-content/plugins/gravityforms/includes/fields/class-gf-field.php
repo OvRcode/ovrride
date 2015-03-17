@@ -196,17 +196,17 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 		$is_entry_detail = $this->is_entry_detail();
 		$is_form_editor  = $this->is_form_editor();
-		$field_id        = $is_entry_detail || $is_form_editor || $form_id == 0 ? 'input_' : 'input_' . $form_id;
+		$field_id        = $is_entry_detail || $is_form_editor || $form_id == 0 ? 'input_' : "input_{$form_id}_";
 
 		if ( is_array( $this->inputs ) ) {
 			foreach ( $this->inputs as $input ) {
 				if ( ! isset( $input['isHidden'] ) || ! $input['isHidden'] ) {
-					$field_id .= '_' . str_replace( '.', '_', $input['id'] );
+					$field_id .= str_replace( '.', '_', $input['id'] );
 					break;
 				}
 			}
 		} else {
-			$field_id .= '_' . $this->id;
+			$field_id .= $this->id;
 		}
 
 		return $field_id;
@@ -367,11 +367,13 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 	public function has_calculation() {
 
-		if ( $this->type == 'number' ) {
+		$type =  GFFormsModel::get_input_type( $this );
+
+		if ( $type == 'number' ) {
 			return $this->enableCalculation && $this->calculationFormula;
 		}
 
-		return GFFormsModel::get_input_type( $this ) == 'calculation';
+		return $type == 'calculation';
 	}
 
 	public function get_conditional_logic_event( $event ) {
