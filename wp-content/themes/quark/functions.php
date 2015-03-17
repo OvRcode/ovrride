@@ -11,6 +11,12 @@
  *
  * @since Quark 1.0
  */
+
+add_action( 'after_setup_theme', 'woocommerce_support' );
+function woocommerce_support() {
+    add_theme_support( 'woocommerce' );
+}
+
 if ( ! isset( $content_width ) )
 	$content_width = 790; /* Default the embedded content width to 790px */
 
