@@ -8,7 +8,7 @@ var GformShortcodeUI;
         views: {},
         utils: {},
         strings: {}
-    }
+    };
 
     /**
      * Shortcode Attribute Model.
@@ -21,8 +21,8 @@ var GformShortcodeUI;
             section: '',
             description: '',
             default: '',
-            value: '',
-        },
+            value: ''
+        }
     });
 
     /**
@@ -660,7 +660,7 @@ var GformShortcodeUI;
 
         sui.shortcodes = new sui.collections.Shortcodes( gfShortcodeUIData.shortcodes );
 
-        if( ! gfShortcodeUIData.previewDisabled ){
+        if( ! gfShortcodeUIData.previewDisabled && typeof wp.mce != 'undefined'){
             wp.mce.views.register( 'gravityform', $.extend(true, {}, sui.utils.shortcodeViewConstructor) );
         }
 

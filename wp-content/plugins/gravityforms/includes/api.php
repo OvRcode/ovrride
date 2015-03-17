@@ -229,8 +229,14 @@ class GFAPI {
 	public static function update_forms_property( $form_ids, $property_key, $value ) {
 		global $wpdb;
 		$table        = GFFormsModel::get_form_table_name();
-		$property_key = esc_sql( $property_key );
-		$value        = esc_sql( $value );
+
+		$db_columns = GFFormsModel::get_form_db_columns();
+
+		if ( ! in_array( strtolower( $property_key ), $db_columns ) ) {
+			return new WP_Error( 'property_key_incorrect', __( 'Property key incorrect', 'gravityforms' ) );
+		}
+
+		$value = esc_sql( $value );
 		if ( ! is_numeric( $value ) ) {
 			$value = sprintf( "'%s'", $value );
 		}
@@ -564,9 +570,9 @@ class GFAPI {
 		global $wpdb;
 
 		if ( empty( $entry_id ) ) {
-			$entry_id = $entry['id'];
+			$entry_id = absint( $entry['id'] );
 		} else {
-			$entry["id"] = $entry_id;
+			$entry['id'] = absint( $entry_id );
 		}
 
 		if ( empty( $entry_id ) ) {
@@ -613,9 +619,9 @@ class GFAPI {
 		$status         = isset( $entry['status'] ) ? $entry['status'] : 'active';
 
 		global $current_user;
-		$user_id = isset( $entry['created_by'] ) ? esc_sql( $entry['created_by'] ) : '';
+		$user_id = isset( $entry['created_by'] ) ?  absint( $entry['created_by'] ) : '';
 		if ( empty( $user_id ) ) {
-			$user_id = $current_user && $current_user->ID ? $current_user->ID : 'NULL';
+			$user_id = $current_user && $current_user->ID ? absint( $current_user->ID ) : 'NULL';
 		}
 
 		$transaction_type = isset( $entry['transaction_type'] ) ? intval( $entry['transaction_type'] ) : 'NULL';
@@ -781,9 +787,9 @@ class GFAPI {
 		$status         = isset( $entry['status'] ) ? $entry['status'] : 'active';
 
 		global $current_user;
-		$user_id = isset( $entry['created_by'] ) ? esc_sql( $entry['created_by'] ) : '';
+		$user_id = isset( $entry['created_by'] ) ? absint( $entry['created_by'] ) : '';
 		if ( empty( $user_id ) ) {
-			$user_id = $current_user && $current_user->ID ? $current_user->ID : 'NULL';
+			$user_id = $current_user && $current_user->ID ? absint( $current_user->ID )  : 'NULL';
 		}
 
 		$transaction_type = isset( $entry['transaction_type'] ) ? intval( $entry['transaction_type'] ) : 'NULL';

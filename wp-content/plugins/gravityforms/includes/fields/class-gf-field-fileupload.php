@@ -86,7 +86,7 @@ class GF_Field_FileUpload extends GF_Field {
 
 		$lead_id = intval( rgar( $entry, 'id' ) );
 
-		$form_id         = $form['id'];
+		$form_id         = absint( $form['id'] );
 		$is_entry_detail = $this->is_entry_detail();
 		$is_form_editor  = $this->is_form_editor();
 
@@ -152,6 +152,10 @@ class GF_Field_FileUpload extends GF_Field {
 						'disallowed_extensions' => $disallowed_extensions,
 					)
 				);
+
+				if ( rgar( $form, 'requireLogin' ) ) {
+					$plupload_init['multipart_params'][ '_gform_file_upload_nonce_' . $form_id ] = wp_create_nonce( 'gform_file_upload_' . $form_id, '_gform_file_upload_nonce_' . $form_id );
+				}
 
 				// plupload 2 was introduced in WordPress 3.9. Plupload 1 accepts a slightly different init array.
 				if ( version_compare( get_bloginfo( 'version' ), '3.9-RC1', '<' ) ) {

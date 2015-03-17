@@ -105,7 +105,7 @@ class GF_Field_Email extends GF_Field {
                             <div class='gf_clear gf_clear_complex'></div>
                         </div>
                         <div class='ginput_complex ginput_container ginput_confirm_email' {$confirm_style} id='{$field_id}_container'>
-                            <span id='{$field_id}_container' class='ginput_left'>
+                            <span id='{$field_id}_1_container' class='ginput_left'>
                                 <label for='{$field_id}' {$sub_label_class_attribute}>{$enter_email_label}</label>
                                 <input class='{$class}' type='text' name='input_{$id}' id='{$field_id}' disabled='disabled' {$enter_email_placeholder_attribute}/>
                             </span>
@@ -121,7 +121,7 @@ class GF_Field_Email extends GF_Field {
                             <div class='gf_clear gf_clear_complex'></div>
                         </div>
                         <div class='ginput_complex ginput_container ginput_confirm_email' {$confirm_style} id='{$field_id}_container'>
-                            <span id='{$field_id}_container' class='ginput_left'>
+                            <span id='{$field_id}_1_container' class='ginput_left'>
                                 <input class='{$class}' type='text' name='input_{$id}' id='{$field_id}' disabled='disabled' {$enter_email_placeholder_attribute}/>
                                 <label for='{$field_id}' {$sub_label_class_attribute}>{$enter_email_label}</label>
                             </span>
@@ -145,7 +145,7 @@ class GF_Field_Email extends GF_Field {
 				$confirmation_disabled = $is_entry_detail ? "disabled='disabled'" : $disabled_text;
 				if ( $is_sub_label_above ) {
 					return "<div class='ginput_complex ginput_container' id='{$field_id}_container'>
-                                <span id='{$field_id}_container' class='ginput_left'>
+                                <span id='{$field_id}_1_container' class='ginput_left'>
                                     <label for='{$field_id}'>" . $enter_email_label . "</label>
                                     <input class='{$class}' type='{$html_input_type}' name='input_{$id}' id='{$field_id}' value='{$email_value}' {$first_tabindex} {$logic_event} {$disabled_text} {$enter_email_placeholder_attribute}/>
                                 </span>
@@ -157,7 +157,7 @@ class GF_Field_Email extends GF_Field {
                             </div>";
 				} else {
 					return "<div class='ginput_complex ginput_container' id='{$field_id}_container'>
-                                <span id='{$field_id}_container' class='ginput_left'>
+                                <span id='{$field_id}_1_container' class='ginput_left'>
                                     <input class='{$class}' type='{$html_input_type}' name='input_{$id}' id='{$field_id}' value='{$email_value}' {$first_tabindex} {$logic_event} {$disabled_text} {$enter_email_placeholder_attribute}/>
                                     <label for='{$field_id}' {$sub_label_class_attribute}>{$enter_email_label}</label>
                                 </span>
