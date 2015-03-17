@@ -9,30 +9,69 @@
         if ( class_exists( 'WP_Importer' ) ) {
             
             class WC_CSV_Coupon_Import extends WP_Importer {
-                var $id; // CSV attachment ID
-                var $file_url; // CSV attachmente url
+
+                /**
+                 * @var $id CSV attachment ID
+                 */
+                var $id;
+                /**
+                 * @var $file_url CSV attachment url
+                 */
+                var $file_url;
+                /**
+                 * @var $import_page
+                 */
                 var $import_page;
 
-                // information to import from CSV file
+                /**
+                 * @var $posts
+                 */
                 var $posts = array();
 
-                // mappings from old information to new
+                /**
+                 * @var $processed_terms
+                 */
                 var $processed_terms = array();
+                /**
+                 * @var $processed_posts
+                 */
                 var $processed_posts = array();
+                /**
+                 * @var $post_orphans
+                 */
                 var $post_orphans = array();
 
+                /**
+                 * @var $fetch_attachments
+                 */
                 var $fetch_attachments = false;
+                /**
+                 * @var $url_remap
+                 */
                 var $url_remap = array();
 
-                // Counts
+                /**
+                 * @var $log
+                 */
                 var $log;
+                /**
+                 * @var $merged
+                 */
                 var $merged;
+                /**
+                 * @var $skipped
+                 */
                 var $skipped = 0;
+                /**
+                 * @var $imported
+                 */
                 var $imported = 0;
                 
-                
+                /**
+                 * Constructor
+                 */
                 public function __construct() { 
-                        $this->import_page = 'woocommerce_coupon_csv';
+                        $this->import_page = 'woocommerce_smart_coupon_csv';
                         ob_start();
                 }
                 
@@ -41,7 +80,7 @@
                 *
                 * Manages the three separate stages of the CSV import process
                 */
-                function dispatch() {
+                public function dispatch() {
                         global $woocommerce_smart_coupon;     
                         $step = empty( $_GET['step'] ) ? 0 : (int) $_GET['step'];
                         
@@ -103,8 +142,8 @@
                 /**
                 * Display pre-import options
                 */
-                function import( ){
-                        global $woocommerce, $wpdb;
+                public function import( ){
+                        global $wpdb;
 
                         wp_suspend_cache_invalidation( true );
                         echo '<div class="progress">';
@@ -130,7 +169,7 @@
                 /**
                 * Create new posts based on import information
                 */
-                function process_coupon( $post ){
+                public function process_coupon( $post ){
                         global $woocommerce_smart_coupon;
 
                         // Get parent
@@ -154,7 +193,7 @@
                                 'post_date_gmt' => ( $post['post_date_gmt'] ) ? date( 'Y-m-d H:i:s', strtotime( $post['post_date_gmt'] )) : '',
                                 'post_content' => $post['post_content'],
                                 'post_excerpt' => $post['post_excerpt'], 
-                                'post_title' => $post['post_title'],
+                                'post_title' => strtolower( $post['post_title'] ),
                                 'post_name' => ( $post['post_name'] ) ? $post['post_name'] : sanitize_title( $post['post_title'] ),
                                 'post_status' => $post['post_status'], 
                                 'post_parent' => $post_parent, 
@@ -180,33 +219,39 @@
                         if (!isset($post['post_id'])) $post['post_id'] = (int) $post_id;
                         $this->processed_posts[intval($post['post_id'])] = (int) $post_id;
 
-                        $coupon_code = $post['post_title'];
+                        $coupon_code = strtolower( $post['post_title'] );
 
                         // add/update post meta
                         if ( ! empty( $post['postmeta'] ) && is_array( $post['postmeta'] ) ) {
+
+                                $postmeta = array();
                                 foreach ( $post['postmeta'] as $meta ) {
-                                        $key = apply_filters( 'import_post_meta_key', $meta['key'] );
-
-                                        switch( $meta['key'] ) {
-
-                                            case 'customer_email':
-                                                $customer_emails = maybe_unserialize( $meta['value'] );
-                                                break;
-
-                                            case 'coupon_amount':
-                                                $coupon_amount = maybe_unserialize( $meta['value'] );
-                                                break;
-
-                                            case 'discount_type':
-                                                $discount_type = maybe_unserialize( $meta['value'] );
-                                                break;
-                                        }
-
-                                        if ( $key ) {
-                                                update_post_meta( $post_id, $key, maybe_unserialize( $meta['value'] ) );
-                                        }
+                                    $postmeta[ $meta['key'] ] = $meta['value'];
                                 }
+                                foreach ( $postmeta as $meta_key => $meta_value ) {
+                                    switch( $meta_key ) {
 
+                                        case 'customer_email':
+                                            $customer_emails = maybe_unserialize( $meta_value );
+                                            break;
+
+                                        case 'coupon_amount':
+                                            $coupon_amount = maybe_unserialize( $meta_value );
+                                            break;
+
+                                        case 'discount_type':
+                                            $discount_type = maybe_unserialize( $meta_value );
+                                            break;
+                                    }
+
+                                    if ( $meta_key ) {
+                                        if ( $meta_key == 'customer_email' && ! empty( $postmeta['sc_disable_email_restriction'] ) && $postmeta['sc_disable_email_restriction'] == 'yes' ) {                                                
+                                            continue;
+                                        }
+                                        update_post_meta( $post_id, $meta_key, maybe_unserialize( $meta_value ) );
+                                    }
+                                }
+                                
                                 unset( $post['postmeta'] );
                         }
 
@@ -235,7 +280,7 @@
                 *
                 * @param string $file Path to the CSV file for importing
                 */
-                function import_start( $file ) {
+                public function import_start( $file ) {
                     
                         if ( ! is_file($file) ) {
                             echo '<p><strong>' . __( 'Sorry, there has been an error.', 'wc_smart_coupons' ) . '</strong><br />';
@@ -260,14 +305,14 @@
                 * Added to http_request_timeout filter to force timeout at 60 seconds during import
                 * @return int 60
                 */
-                function bump_request_timeout() {
+                public function bump_request_timeout( $val ) {
                         return 60;
                 }
                 
                 /**
                 * Performs post-import cleanup of files and the cache
                 */
-                function import_end() {
+                public function import_end() {
                     
                         wp_cache_flush();
 
@@ -284,7 +329,7 @@
                 *
                 * @return bool False if error uploading or invalid file, true otherwise
                 */
-                function handle_upload(){
+                public function handle_upload(){
                     
                         if ( empty( $_POST['file_url'] ) ) {
                             $file = wp_import_handle_upload();
@@ -317,7 +362,7 @@
                 /**
                 * Display pre-import options
                 */
-                function import_options(){
+                public function import_options(){
                         $j = 0;
 
                         if ( $this->id ) 
@@ -329,7 +374,7 @@
                         $enc = mb_detect_encoding( $file, 'UTF-8, ISO-8859-1', true );
                         if ( $enc ) setlocale( LC_ALL, 'en_US.' . $enc );
                         @ini_set( 'auto_detect_line_endings', true );
-
+                        
                         if ( ( $handle = fopen( $file, "r" ) ) !== FALSE ) {
 
                             $row = $raw_headers = array();
@@ -387,22 +432,23 @@
                                                                             <option <?php selected( $key, 'post_status' ); ?>>post_status</option>
                                                                             <option <?php selected( $key, 'post_title' ); ?>>post_title</option>
                                                                             <option <?php selected( $key, 'post_name' ); ?>>post_name</option>
+                                                                            <option <?php selected( $key, 'comment_status' ); ?>>comment_status</option>
                                                                             <option <?php selected( $key, 'post_date' ); ?>>post_date</option>
                                                                             <option <?php selected( $key, 'post_date_gmt' ); ?>>post_date_gmt</option>
                                                                             <option <?php selected( $key, 'post_content' ); ?>>post_content</option>
                                                                             <option <?php selected( $key, 'post_excerpt' ); ?>>post_excerpt</option>
                                                                             <option <?php selected( $key, 'post_parent' ); ?>>post_parent</option>
                                                                             <option <?php selected( $key, 'post_password' ); ?>>post_password</option>
-                                                                            <option <?php selected( $key, 'comment_status' ); ?>>comment_status</option>
                                                                     </optgroup>
                                                                     <optgroup label="<?php _e( 'Coupon data', 'wc_smart_coupons' ); ?>">
-
                                                                             <option <?php selected( $key, 'discount_type' ); ?>>discount_type</option>
                                                                             <option <?php selected( $key, 'coupon_amount' ); ?>>coupon_amount</option>
                                                                             <option <?php selected( $key, 'individual_use' ); ?>>individual_use</option>
                                                                             <option <?php selected( $key, 'product_ids' ); ?>>product_ids</option>
                                                                             <option <?php selected( $key, 'exclude_product_ids' ); ?>>exclude_product_ids</option>
                                                                             <option <?php selected( $key, 'usage_limit' ); ?>>usage_limit</option>
+                                                                            <option <?php selected( $key, 'usage_limit_per_user' ); ?>>usage_limit_per_user</option>
+                                                                            <option <?php selected( $key, 'limit_usage_to_x_items' ); ?>>limit_usage_to_x_items</option>
                                                                             <option <?php selected( $key, 'expiry_date' ); ?>>expiry_date</option>
                                                                             <option <?php selected( $key, 'apply_before_tax' ); ?>>apply_before_tax</option>
                                                                             <option <?php selected( $key, 'free_shipping' ); ?>>free_shipping</option>
@@ -410,7 +456,15 @@
                                                                             <option <?php selected( $key, 'exclude_product_categories' ); ?>>exclude_product_categories</option>
                                                                             <option <?php selected( $key, 'minimum_amount' ); ?>>minimum_amount</option>
                                                                             <option <?php selected( $key, 'customer_email' ); ?>>customer_email</option>
-
+                                                                            <option <?php selected( $key, 'exclude_sale_items' ); ?>>exclude_sale_items</option>
+                                                                            <option <?php selected( $key, 'auto_generate_coupon' ); ?>>auto_generate_coupon</option>
+                                                                            <option <?php selected( $key, 'coupon_title_prefix' ); ?>>coupon_title_prefix</option>
+                                                                            <option <?php selected( $key, 'coupon_title_suffix' ); ?>>coupon_title_suffix</option>
+                                                                            <option <?php selected( $key, 'sc_coupon_validity' ); ?>>sc_coupon_validity</option>
+                                                                            <option <?php selected( $key, 'validity_suffix' ); ?>>validity_suffix</option>
+                                                                            <option <?php selected( $key, 'sc_is_visible_storewide' ); ?>>sc_is_visible_storewide</option>
+                                                                            <option <?php selected( $key, 'sc_disable_email_restriction' ); ?>>sc_disable_email_restriction</option>
+                                                                            <option <?php selected( $key, 'is_pick_price_of_product' ); ?>>is_pick_price_of_product</option>
                                                                     </optgroup>
                                                                 </select>
                                                         <?php
@@ -436,24 +490,29 @@
                         <?php
                 }
                 
-                //
-                function format_data_from_csv( $data, $enc ) {
+                /**
+                 * Format data passed from CSV
+                 * 
+                 * @param array $data
+                 * @param string $enc encoding
+                 */
+                public function format_data_from_csv( $data, $enc ) {
                         return ( $enc == 'UTF-8' ) ? $data : utf8_encode( $data );
                 }
                 
                 /**
                 * Display introductory text and file upload form
                 */
-                function greet() {
+                public function greet() {
                     
                         echo '<div class="narrow">';
                         echo '<p>'.__( 'Choose a CSV (.csv) file to upload, then click Upload file and import.', 'wc_smart_coupons' ).'</p>';
                         //wp_import_upload_form( 'admin.php?import=woocommerce_csv&amp;step=1&amp;merge=' . ( ! empty( $_GET['merge'] ) ? 1 : 0 ) );
 
-                        $action = 'admin.php?import=woocommerce_coupon_csv&amp;step=1';
+                        $action = 'admin.php?import=woocommerce_smart_coupon_csv&amp;step=1';
 
                         $bytes = apply_filters( 'import_upload_size_limit', wp_max_upload_size() );
-                        $size = wp_convert_bytes_to_hr( $bytes );
+                        $size = size_format( $bytes );
                         $upload_dir = wp_upload_dir();
                         if ( ! empty( $upload_dir['error'] ) ) :
                                 ?><div class="error"><p><?php _e('Before you can upload your import file, you will need to fix the following error:', 'wc_smart_coupons'); ?></p>

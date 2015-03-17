@@ -5,6 +5,7 @@
     display: inline-table;
     text-align: center;
     cursor: pointer;
+    position: relative;
 }
 .coupon-container.previews { cursor: inherit }
 .coupon-container.blue { background-color: #e0f7ff }
@@ -89,7 +90,7 @@ div#coupon-selector {
     width: 275px;
     color: #333;
 }
-#search-results span{
+#coupon-option #search-panel #search-results span{
     width: 100%;
     margin-left: 10px;
 }
@@ -104,6 +105,10 @@ div#coupon-selector {
 #search-results ul li:hover {
     background-color: #EAF2FA;
     color: #000;
+}
+#coupon-option #search-panel #search-results ul li span {
+    width: 0;
+    color: #f00;
 }
 #sc_coupons_attributes .submitbox { clear: both }
 #default-text {
@@ -138,10 +143,9 @@ input#deliver_on_date { text-align: center }
 /* Coupon generation form */
 form#generate_coupons p.form-field input[type=checkbox] {
     width: 2%;
-    margin-top: 6px;
 }
 form#generate_coupons p.form-field input[type=text] { width: 30% }
-form#generate_coupons p.form-field input[type=number] { width: 10% }
+form#generate_coupons p.form-field input[type=number] { width: 15% }
 div.gift-certificate-receiver-detail-form,
 div#gift-certificate-receiver-form-multi { display: none }
 a#single_multi { float: right }
@@ -181,3 +185,22 @@ div.amount {
 .gift-certificate-show-form input[type=radio] { margin-left: 1em }
 .show_hide_list { padding-left: 0 }
 .single_multi_list { display: none }
+div.mce-smart-coupon-shortcode {
+    cursor: pointer;
+}
+div.mce-smart-coupon-shortcode i:before {
+    content: "\e600";
+    font-family: 'WooCommerce';
+}
+.smart-coupon-loading:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: url(../../../woocommerce-smart-coupons/assets/images/ajax-loader.gif) center no-repeat rgba(255,255,255,.65);
+}
+div[aria-describedby="sc_coupons_attributes"] {
+    z-index: 1000;
+}
