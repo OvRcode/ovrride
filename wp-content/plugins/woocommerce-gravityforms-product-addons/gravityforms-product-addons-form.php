@@ -11,8 +11,6 @@ class woocommerce_gravityforms_product_form {
 
 		add_filter('gform_form_tag', array(&$this, 'on_form_tag'), 10, 2);
 		add_filter('gform_submit_button', array(&$this, 'on_submit_button'), 10, 2);
-		
-		add_action('wp_enqueue_scripts', array($this, 'on_enqueue_scripts'), 99);
 	}
 
 	function get_form($options) {
@@ -38,19 +36,22 @@ class woocommerce_gravityforms_product_form {
 		    'disable_label_subtotal' => 'no',
 		    'disable_label_options' => 'no',
 		    'disable_label_total' => 'no',
-		    'disable_calculations' => 'no'
+		    'disable_calculations' => 'no',
+		    'disable_anchor' => 'no',
 		), $options));
 
 		//Get the form meta so we can make sure the form exists.
 		$form_meta = RGFormsModel::get_form_meta($this->form_id);
 		if (!empty($form_meta)) {
 
-			$_POST['gform_submit'] = isset($_POST['gform_old_submit']) ? $_POST['gform_old_submit'] : '';
+			if (!empty($_POST)) {
+				$_POST['gform_submit'] = isset($_POST['gform_old_submit']) ? $_POST['gform_old_submit'] : '';
+				$_POST['gform_old_submit'] = $_POST['gform_submit'];
+			}
 
 			$form = RGForms::get_form($this->form_id, $display_title, $display_description, $display_inactive, $field_values, $ajax, $tabindex);
-			$_POST['gform_old_submit'] = $_POST['gform_submit'];
+			
 			unset($_POST['gform_submit']);
-
 			$form = str_replace('</form>', '', $form);
 
 			$form = str_replace('gform_submit', 'gform_old_submit', $form);
@@ -77,10 +78,18 @@ class woocommerce_gravityforms_product_form {
 				echo '<input type="hidden" id="product_id" name="product_id" value="' . $this->product_id . '" />';
 			endif;
 
-			$woocommerce->nonce_field('add_to_cart');
-
+			if (wc_is_21x()) {
+				wp_nonce_field('add_to_cart');
+			} else {
+				$woocommerce->nonce_field('add_to_cart');
+			}
+			
+			if ($disable_anchor != 'yes'){
+				echo '<a id="_form_' . $this->form_id . '" href="#_form_' . $this->form_id . '" class="gform_anchor"></a>';
+			}
+			
 			echo $form;
-
+			
 			echo '<input type="hidden" name="gform_form_id" id="gform_form_id" value="' . $this->form_id . '" />';
 			echo '<input type="hidden" id="woocommerce_get_action" value="" />';
 			echo '<input type="hidden" id="woocommerce_product_base_price" value="' . $product->get_price() . '" />';
@@ -89,39 +98,38 @@ class woocommerce_gravityforms_product_form {
 			?>
 
 			<?php
-			
 			$this->on_print_scripts();
-			
+
 			if ($disable_calculations == 'no') :
 				?>
 
 				<div class="product_totals">
 					<ul id="gform_totals_<?php echo $this->form_id; ?>" class="gform_fields <?php echo $form_meta['labelPlacement'] . ' ' . $description_class; ?>">
 						<li class="gfield" <?php
-				if ($disable_label_subtotal == 'yes')
-					echo 'style="display:none;"';
-				?> >
+						if ($disable_label_subtotal == 'yes')
+							echo 'style="display:none !important;"';
+						?> >
 							<label class="gfield_label"><?php echo $label_subtotal; ?></label>
 							<div class="ginput_container">
-				                                <span class="formattedBasePrice ginput_total"></span>
+								<span class="formattedBasePrice ginput_total"></span>
 							</div>
 						</li>
 						<li class="gfield" <?php
-				if ($disable_label_options == 'yes')
-					echo 'style="display:none;"';
-				?> >
+						if ($disable_label_options == 'yes')
+							echo 'style="display:none !important;"';
+						?> >
 							<label class="gfield_label"><?php echo $label_options; ?></label>
 							<div class="ginput_container">
-				                                <span class="formattedVariationTotal ginput_total"></span>
+								<span class="formattedVariationTotal ginput_total"></span>
 							</div>
 						</li>
 						<li class="gfield" <?php
-				if ($disable_label_total == 'yes')
-					echo 'style="display:none;"';
-				?> >
+						if ($disable_label_total == 'yes')
+							echo 'style="display:none !important;"';
+						?> >
 							<label class="gfield_label"><?php echo $label_total; ?></label>
 							<div class="ginput_container">
-				                                <span class="formattedTotalPrice ginput_total"></span>
+								<span class="formattedTotalPrice ginput_total"></span>
 							</div>
 						</li>
 					</ul>
@@ -165,18 +173,23 @@ class woocommerce_gravityforms_product_form {
 
 	function on_print_scripts() {
 
-		
-			$garvityforms_params = array(
-			    'form_id' => $this->form_id,
-			    'next_page' => $this->next_page,
-			    'previous_page' => $this->previous_page,
-			);
-			
-			wp_localize_script('wc-gravityforms-product-addons', 'gravityforms_params', $garvityforms_params);
+
+		$garvityforms_params = array(
+		    'form_id' => $this->form_id,
+		    'next_page' => $this->next_page,
+		    'previous_page' => $this->previous_page,
+		);
+
+		wp_localize_script('wc-gravityforms-product-addons', 'gravityforms_params', $garvityforms_params);
 		?>
-			<script>
-				gravityforms_params = <?php echo json_encode($garvityforms_params); ?>;
-			</script>
+		<script>
+			gravityforms_params = <?php echo json_encode($garvityforms_params); ?>;
+
+			gform.addFilter('gform_product_total', function(total, formId) {
+				return update_dynamic_price(total);
+			});
+
+		</script>
 		<?php
 	}
 

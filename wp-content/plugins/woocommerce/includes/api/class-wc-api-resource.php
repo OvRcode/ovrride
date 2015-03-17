@@ -72,30 +72,37 @@ class WC_API_Resource {
 	 */
 	protected function validate_request( $id, $type, $context ) {
 
-		if ( 'shop_order' === $type || 'shop_coupon' === $type || 'shop_webhook' === $type )
+		if ( 'shop_order' === $type || 'shop_coupon' === $type || 'shop_webhook' === $type ) {
 			$resource_name = str_replace( 'shop_', '', $type );
-		else
+		} else {
 			$resource_name = $type;
+		}
 
 		$id = absint( $id );
 
-		// validate ID
-		if ( empty( $id ) )
+		// Validate ID
+		if ( empty( $id ) ) {
 			return new WP_Error( "woocommerce_api_invalid_{$resource_name}_id", sprintf( __( 'Invalid %s ID', 'woocommerce' ), $type ), array( 'status' => 404 ) );
+		}
 
-		// only custom post types have per-post type/permission checks
+		// Only custom post types have per-post type/permission checks
 		if ( 'customer' !== $type ) {
 
 			$post = get_post( $id );
 
-			// for checking permissions, product variations are the same as the product post type
+			if ( null === $post ) {
+				return new WP_Error( "woocommerce_api_no_{$resource_name}_found", sprintf( __( 'No %s found with the ID equal to %s', 'woocommerce' ), $resource_name, $id ), array( 'status' => 404 ) );
+			}
+
+			// For checking permissions, product variations are the same as the product post type
 			$post_type = ( 'product_variation' === $post->post_type ) ? 'product' : $post->post_type;
 
-			// validate post type
-			if ( $type !== $post_type )
+			// Validate post type
+			if ( $type !== $post_type ) {
 				return new WP_Error( "woocommerce_api_invalid_{$resource_name}", sprintf( __( 'Invalid %s', 'woocommerce' ), $resource_name ), array( 'status' => 404 ) );
+			}
 
-			// validate permissions
+			// Validate permissions
 			switch ( $context ) {
 
 				case 'read':
@@ -192,8 +199,17 @@ class WC_API_Resource {
 			unset( $request_args['post_status'] );
 		}
 
+		// filter by a list of post id
+		if ( ! empty( $request_args['in'] ) ) {
+			$args['post__in'] = explode( ',', $request_args['in'] );
+			unset( $request_args['in'] );
+		}
+
+
 		// resource page
 		$args['paged'] = ( isset( $request_args['page'] ) ) ? absint( $request_args['page'] ) : 1;
+
+		$args = apply_filters( 'woocommerce_api_query_args', $args, $request_args );
 
 		return array_merge( $base_args, $args );
 	}

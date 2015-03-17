@@ -300,18 +300,24 @@ function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, cal
 
 function gf_reset_to_default(targetId, defaultValue){
 	var dateFields = jQuery(targetId).find('.gfield_date_month input[type="text"], .gfield_date_day input[type="text"], .gfield_date_year input[type="text"], .gfield_date_dropdown_month select, .gfield_date_dropdown_day select, .gfield_date_dropdown_year select');
-	var dateIndex = 0;
 	if(dateFields.length > 0){
 		dateFields.each(function(){
 			if(defaultValue){
-				val = defaultValue.split(/[\.\/-]+/)[dateIndex];
-				dateIndex++;
+				var element = jQuery(this);
+				var key = 'd';
+				if (element.parents().hasClass('gfield_date_month') || element.parents().hasClass('gfield_date_dropdown_month') ){
+					key = 'm';
+				}
+				else if(element.parents().hasClass('gfield_date_year') || element.parents().hasClass('gfield_date_dropdown_year') ){
+					key = 'y';
+				}
+
+				val = defaultValue[key];
 			}
 			else{
 				val = "";
 			}
 
-			var element = jQuery(this);
 			if(element.prop("tagName") == "SELECT")
 				val = parseInt(val);
 
@@ -358,6 +364,9 @@ function gf_reset_to_default(targetId, defaultValue){
 
 		if(element.val() != val) {
 			element.val(val).trigger('change');
+            if (element.is('select') && element.next().hasClass('chosen-container')) {
+                element.trigger('chosen:updated');
+            }
 		}
 		else{
 			element.val(val);

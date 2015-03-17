@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
                 });
 
             // Register buttons - trigger above command when clicked
-            ed.addButton('sc_shortcode_button', {title : 'Insert Smart Coupons shortcode', cmd : 'smart_coupons_insert_shortcode', image: assetsUrl + '/images/coupon_shortcode.jpg' });
+            ed.addButton('sc_shortcode_button', {title : 'Insert Smart Coupons shortcode', cmd : 'smart_coupons_insert_shortcode', classes: 'smart-coupon-shortcode btn' });
         },   
     });
 

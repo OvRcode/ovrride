@@ -1,31 +1,32 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
 /**
  * Comments
  *
  * Handle comments (reviews and order notes)
  *
- * @class 		WC_Post_types
- * @version		2.2.0
- * @package		WooCommerce/Classes/Products
- * @category	Class
- * @author 		WooThemes
+ * @class    WC_Comments
+ * @version  2.3.0
+ * @package  WooCommerce/Classes/Products
+ * @category Class
+ * @author   WooThemes
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class WC_Comments {
 
 	/**
-	 * Hook in methods
+	 * Hook in methods.
 	 */
 	public static function init() {
+
 		// Rating posts
 		add_filter( 'preprocess_comment', array( __CLASS__, 'check_comment_rating' ), 0 );
 		add_action( 'comment_post', array( __CLASS__, 'add_comment_rating' ), 1 );
 
-		// clear transients
+		// Clear transients
 		add_action( 'wp_update_comment_count', array( __CLASS__, 'clear_transients' ) );
 
 		// Secure order notes
@@ -40,6 +41,9 @@ class WC_Comments {
 
 		// Count comments
 		add_filter( 'wp_count_comments', array( __CLASS__, 'wp_count_comments' ), 10, 2 );
+
+		// Support avatars for `review` comment type
+		add_filter( 'get_avatar_comment_types', array( __CLASS__, 'add_avatar_for_review_comment_type' ) );
 	}
 
 	/**
@@ -50,8 +54,7 @@ class WC_Comments {
 	 * shop managers can view orders anyway.
 	 *
 	 * The frontend view order pages get around this filter by using remove_filter('comments_clauses', array( 'WC_Comments' ,'exclude_order_comments'), 10, 1 );
-	 *
-	 * @param array $clauses
+	 * @param  array $clauses
 	 * @return array
 	 */
 	public static function exclude_order_comments( $clauses ) {
@@ -80,8 +83,7 @@ class WC_Comments {
 
 	/**
 	 * Exclude order comments from queries and RSS
-	 *
-	 * @param string $join
+	 * @param  string $join
 	 * @return string
 	 */
 	public static function exclude_order_comments_from_feed_join( $join ) {
@@ -96,8 +98,7 @@ class WC_Comments {
 
 	/**
 	 * Exclude order comments from queries and RSS
-	 *
-	 * @param string $where
+	 * @param  string $where
 	 * @return string
 	 */
 	public static function exclude_order_comments_from_feed_where( $where ) {
@@ -114,9 +115,8 @@ class WC_Comments {
 
 	/**
 	 * Exclude webhook comments from queries and RSS
-	 *
-	 * @since 2.2
-	 * @param array $clauses
+	 * @since  2.2
+	 * @param  array $clauses
 	 * @return array
 	 */
 	public static function exclude_webhook_comments( $clauses ) {
@@ -141,9 +141,8 @@ class WC_Comments {
 
 	/**
 	 * Exclude webhook comments from queries and RSS
-	 *
-	 * @since 2.2
-	 * @param string $join
+	 * @since  2.2
+	 * @param  string $join
 	 * @return string
 	 */
 	public static function exclude_webhook_comments_from_feed_join( $join ) {
@@ -158,9 +157,8 @@ class WC_Comments {
 
 	/**
 	 * Exclude webhook comments from queries and RSS
-	 *
-	 * @since 2.1
-	 * @param string $where
+	 * @since  2.1
+	 * @param  string $where
 	 * @return string
 	 */
 	public static function exclude_webhook_comments_from_feed_where( $where ) {
@@ -177,26 +175,25 @@ class WC_Comments {
 
 	/**
 	 * Validate the comment ratings.
-	 *
-	 * @param array $comment_data
+	 * @param  array $comment_data
 	 * @return array
 	 */
 	public static function check_comment_rating( $comment_data ) {
 		// If posting a comment (not trackback etc) and not logged in
-		if ( isset( $_POST['rating'] ) && empty( $_POST['rating'] ) && '' === $comment_data['comment_type'] && 'yes' === get_option( 'woocommerce_review_rating_required' ) ) {
+		if ( ! is_admin() && 'product' === get_post_type( $_POST['comment_post_ID'] ) && empty( $_POST['rating'] ) && '' === $comment_data['comment_type'] && 'yes' === get_option( 'woocommerce_review_rating_required' ) ) {
 			wp_die( __( 'Please rate the product.', 'woocommerce' ) );
 			exit;
 		}
+
 		return $comment_data;
 	}
 
 	/**
 	 * Rating field for comments.
-	 *
-	 * @param mixed $comment_id
+	 * @param int $comment_id
 	 */
 	public static function add_comment_rating( $comment_id ) {
-		if ( isset( $_POST['rating'] ) ) {
+		if ( isset( $_POST['rating'] ) && 'product' === get_post_type( $_POST['comment_post_ID'] ) ) {
 			if ( ! $_POST['rating'] || $_POST['rating'] > 5 || $_POST['rating'] < 0 ) {
 				return;
 			}
@@ -207,26 +204,27 @@ class WC_Comments {
 
 	/**
 	 * Clear transients for a review.
-	 *
-	 * @param mixed $post_id
+	 * @param int $post_id
 	 */
 	public static function clear_transients( $post_id ) {
 		$post_id = absint( $post_id );
-		delete_transient( 'wc_average_rating_' . $post_id );
-		delete_transient( 'wc_rating_count_' . $post_id );
-		delete_transient( 'wc_rating_count_' . $post_id . '_1' );
-		delete_transient( 'wc_rating_count_' . $post_id . '_2' );
-		delete_transient( 'wc_rating_count_' . $post_id . '_3' );
-		delete_transient( 'wc_rating_count_' . $post_id . '_4' );
-		delete_transient( 'wc_rating_count_' . $post_id . '_5' );
+		$transient_version = WC_Cache_Helper::get_transient_version( 'product' );
+
+		delete_transient( 'wc_average_rating_' . $post_id . $transient_version );
+		delete_transient( 'wc_rating_count_' . $post_id . $transient_version );
+		delete_transient( 'wc_rating_count_' . $post_id . '_1' . $transient_version );
+		delete_transient( 'wc_rating_count_' . $post_id . '_2' . $transient_version );
+		delete_transient( 'wc_rating_count_' . $post_id . '_3' . $transient_version );
+		delete_transient( 'wc_rating_count_' . $post_id . '_4' . $transient_version );
+		delete_transient( 'wc_rating_count_' . $post_id . '_5' . $transient_version );
+		delete_transient( 'wc_review_count_' . $post_id . $transient_version );
 	}
 
 	/**
 	 * Remove order notes from wp_count_comments()
-	 *
-	 * @since 2.2
-	 * @param object $stats
-	 * @param int $post_id
+	 * @since  2.2
+	 * @param  object $stats
+	 * @param  int $post_id
 	 * @return object
 	 */
 	public static function wp_count_comments( $stats, $post_id ) {
@@ -266,6 +264,16 @@ class WC_Comments {
 		}
 
 		return $stats;
+	}
+
+	/**
+	 * Make sure WP displays avatars for comments with the `review` type
+	 * @since  2.3
+	 * @param  array $comment_types
+	 * @return array
+	 */
+	public static function add_avatar_for_review_comment_type( $comment_types ) {
+		return array_merge( $comment_types, array( 'review' ) );
 	}
 }
 

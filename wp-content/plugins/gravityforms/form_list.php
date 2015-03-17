@@ -99,11 +99,17 @@ class GFFormList {
 					break;
 			}
 
-			if ( isset( $message ) )
+			if ( isset( $message ) ) {
 				$message = sprintf( $message, $form_count );
-
+			}
 		}
 		$sort_column    = empty( $_GET['sort'] ) ? 'title' : $_GET['sort'];
+		$db_columns = GFFormsModel::get_form_db_columns();
+
+		if ( ! in_array( strtolower( $sort_column ), $db_columns ) ) {
+			$sort_column = 'title';
+		}
+
 		$sort_direction = empty( $_GET['dir'] ) ? 'ASC' : $_GET['dir'];
 		$active         = RGForms::get( 'active' ) == '' ? null : RGForms::get( 'active' );
 		$trash          = RGForms::get( 'trash' ) == '' ? false : RGForms::get( 'trash' );

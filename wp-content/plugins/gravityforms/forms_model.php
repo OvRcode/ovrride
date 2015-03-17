@@ -103,7 +103,13 @@ class GFFormsModel {
 
 		$where_clause = 'WHERE ' . join( ' AND ', $where_arr );
 		$sort_keyword = $sort_dir == 'ASC' ? 'ASC' : 'DESC';
-		$sort_column  = ESC_SQL( $sort_column );
+
+		$db_columns = self::get_form_db_columns();
+
+		if ( ! in_array( strtolower( $sort_column ), $db_columns ) ) {
+			$sort_column = 'title';
+		}
+
 		$order_by     = ! empty( $sort_column ) ? "ORDER BY $sort_column $sort_keyword" : '';
 
 		$sql = "SELECT f.id, f.title, f.date_created, f.is_active, 0 as lead_count, 0 view_count
@@ -140,6 +146,10 @@ class GFFormsModel {
 		}
 
 		return $forms;
+	}
+
+	public static function get_form_db_columns() {
+		return array( 'id', 'title', 'date_created', 'is_active', 'is_trash' );
 	}
 
 	public static function get_forms_by_id( $ids ) {
@@ -2975,10 +2985,12 @@ class GFFormsModel {
 	}
 
 	public static function get_upload_path( $form_id ) {
+		$form_id = absint( $form_id );
 		return self::get_upload_root() . $form_id . '-' . wp_hash( $form_id );
 	}
 
 	public static function get_upload_url( $form_id ) {
+		$form_id = absint( $form_id );
 		$dir = wp_upload_dir();
 
 		return $dir['baseurl'] . "/gravity_forms/$form_id" . '-' . wp_hash( $form_id );
@@ -2989,6 +3001,8 @@ class GFFormsModel {
 		if ( get_magic_quotes_gpc() ) {
 			$file_name = stripslashes( $file_name );
 		}
+
+		$form_id = absint( $form_id );
 
 		// Where the file is going to be placed
 		// Generate the yearly and monthly dirs
@@ -4182,8 +4196,8 @@ class GFFormsModel {
 		global $wpdb;
 
 		if ( is_array( $form_id ) ) {
-			$in_str_arr    = array_fill( 0, count( $form_id ), '%s' );
-			$in_str        = esc_sql( join( ',', $in_str_arr ) );
+			$in_str_arr    = array_fill( 0, count( $form_id ), '%d' );
+			$in_str        = join( ',', $in_str_arr );
 			$form_id_where = $wpdb->prepare( "l.form_id IN ($in_str)", $form_id );
 		} else {
 			$form_id_where = $form_id > 0 ? $wpdb->prepare( 'l.form_id=%d', $form_id ) : '';
@@ -4270,8 +4284,8 @@ class GFFormsModel {
 		$lead_details_table_name = GFFormsModel::get_lead_details_table_name();
 		$lead_meta_table_name    = GFFormsModel::get_lead_meta_table_name();
 		if ( is_array( $form_id ) ) {
-			$in_str_arr    = array_fill( 0, count( $form_id ), '%s' );
-			$in_str        = esc_sql( join( ',', $in_str_arr ) );
+			$in_str_arr    = array_fill( 0, count( $form_id ), '%d' );
+			$in_str        = join( ',', $in_str_arr );
 			$form_id_where = $wpdb->prepare( "AND form_id IN ($in_str)", $form_id );
 		} else {
 			$form_id_where = $form_id > 0 ? $wpdb->prepare( 'AND form_id=%d', $form_id ) : '';

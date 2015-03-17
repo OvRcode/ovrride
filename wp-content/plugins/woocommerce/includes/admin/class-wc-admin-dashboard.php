@@ -2,9 +2,9 @@
 /**
  * Admin Dashboard
  *
- * @author 		WooThemes
- * @category 	Admin
- * @package 	WooCommerce/Admin
+ * @author      WooThemes
+ * @category    Admin
+ * @package     WooCommerce/Admin
  * @version     2.1.0
  */
 
@@ -53,9 +53,10 @@ class WC_Admin_Dashboard {
 		// Sales
 		$query            = array();
 		$query['fields']  = "SELECT SUM( postmeta.meta_value ) FROM {$wpdb->posts} as posts";
-		$query['join']    = "INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id ";
-		$query['where']   = "WHERE posts.post_type IN ( '" . implode( "','", wc_get_order_types( 'reports' ) ) . "' ) ";
+		$query['join']    = "INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id LEFT JOIN {$wpdb->posts} AS parent ON posts.post_parent = parent.ID";
+		$query['where']   = "WHERE posts.post_type IN ( '" . implode( "','", array_merge( wc_get_order_types( 'sales-reports' ), array( 'shop_order_refund' ) ) ) . "' ) ";
 		$query['where']  .= "AND posts.post_status IN ( 'wc-" . implode( "','wc-", apply_filters( 'woocommerce_reports_order_statuses', array( 'completed', 'processing', 'on-hold' ) ) ) . "' ) ";
+		$query['where']  .= "AND ( parent.post_status IN ( 'wc-" . implode( "','wc-", apply_filters( 'woocommerce_reports_order_statuses', array( 'completed', 'processing', 'on-hold' ) ) ) . "' ) OR parent.ID IS NULL ) ";
 		$query['where']  .= "AND postmeta.meta_key   = '_order_total' ";
 		$query['where']  .= "AND posts.post_date >= '" . date( 'Y-m-01', current_time( 'timestamp' ) ) . "' ";
 		$query['where']  .= "AND posts.post_date <= '" . date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) . "' ";
@@ -92,40 +93,40 @@ class WC_Admin_Dashboard {
 		}
 
 		// Get products using a query - this is too advanced for get_posts :(
-		$stock   = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
-		$nostock = absint( max( get_option( 'woocommerce_notify_no_stock_amount' ), 0 ) );
+		$stock          = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
+		$nostock        = absint( max( get_option( 'woocommerce_notify_no_stock_amount' ), 0 ) );
+		$transient_name = 'wc_low_stock_count';
 
-		$query_from = "FROM {$wpdb->posts} as posts
-			INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id
-			INNER JOIN {$wpdb->postmeta} AS postmeta2 ON posts.ID = postmeta2.post_id
-			WHERE 1=1
-				AND posts.post_type IN ('product', 'product_variation')
+		if ( false === ( $lowinstock_count = get_transient( $transient_name ) ) ) {
+			$query_from = apply_filters( 'woocommerce_report_low_in_stock_query_from', "FROM {$wpdb->posts} as posts
+				INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id
+				INNER JOIN {$wpdb->postmeta} AS postmeta2 ON posts.ID = postmeta2.post_id
+				WHERE 1=1
+				AND posts.post_type IN ( 'product', 'product_variation' )
 				AND posts.post_status = 'publish'
-				AND (
-					postmeta.meta_key = '_stock' AND CAST(postmeta.meta_value AS SIGNED) <= '{$stock}' AND CAST(postmeta.meta_value AS SIGNED) > '{$nostock}' AND postmeta.meta_value != ''
-				)
-				AND (
-					( postmeta2.meta_key = '_manage_stock' AND postmeta2.meta_value = 'yes' ) OR ( posts.post_type = 'product_variation' )
-				)
-			";
+				AND postmeta2.meta_key = '_manage_stock' AND postmeta2.meta_value = 'yes'
+				AND postmeta.meta_key = '_stock' AND CAST(postmeta.meta_value AS SIGNED) <= '{$stock}'
+				AND postmeta.meta_key = '_stock' AND CAST(postmeta.meta_value AS SIGNED) > '{$nostock}'
+			" );
+			$lowinstock_count = absint( $wpdb->get_var( "SELECT COUNT( DISTINCT posts.ID ) {$query_from};" ) );
+			set_transient( $transient_name, $lowinstock_count, DAY_IN_SECONDS * 30 );
+		}
 
-		$lowinstock_count = absint( $wpdb->get_var( "SELECT COUNT( DISTINCT posts.ID ) {$query_from};" ) );
+		$transient_name = 'wc_outofstock_count';
 
-		$query_from = "FROM {$wpdb->posts} as posts
-			INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id
-			INNER JOIN {$wpdb->postmeta} AS postmeta2 ON posts.ID = postmeta2.post_id
-			WHERE 1=1
-				AND posts.post_type IN ('product', 'product_variation')
+		if ( false === ( $outofstock_count = get_transient( $transient_name ) ) ) {
+			$query_from = apply_filters( 'woocommerce_report_out_of_stock_query_from', "FROM {$wpdb->posts} as posts
+				INNER JOIN {$wpdb->postmeta} AS postmeta ON posts.ID = postmeta.post_id
+				INNER JOIN {$wpdb->postmeta} AS postmeta2 ON posts.ID = postmeta2.post_id
+				WHERE 1=1
+				AND posts.post_type IN ( 'product', 'product_variation' )
 				AND posts.post_status = 'publish'
-				AND (
-					postmeta.meta_key = '_stock' AND CAST(postmeta.meta_value AS SIGNED) <= '{$nostock}' AND postmeta.meta_value != ''
-				)
-				AND (
-					( postmeta2.meta_key = '_manage_stock' AND postmeta2.meta_value = 'yes' ) OR ( posts.post_type = 'product_variation' )
-				)
-			";
-
-		$outofstock_count = absint( $wpdb->get_var( "SELECT COUNT( DISTINCT posts.ID ) {$query_from};" ) );
+				AND postmeta2.meta_key = '_manage_stock' AND postmeta2.meta_value = 'yes'
+				AND postmeta.meta_key = '_stock' AND CAST(postmeta.meta_value AS SIGNED) <= '{$nostock}'
+			" );
+			$outofstock_count = absint( $wpdb->get_var( "SELECT COUNT( DISTINCT posts.ID ) {$query_from};" ) );
+			set_transient( $transient_name, $outofstock_count, DAY_IN_SECONDS * 30 );
+		}
 		?>
 		<ul class="wc_status_list">
 			<li class="sales-this-month">
@@ -194,7 +195,7 @@ class WC_Admin_Dashboard {
 				echo '<div class="star-rating" title="' . esc_attr( $rating ) . '">
 					<span style="width:'. ( $rating * 20 ) . '%">' . $rating . ' ' . __( 'out of 5', 'woocommerce' ) . '</span></div>';
 
-				echo '<h4 class="meta"><a href="' . get_permalink( $comment->ID ) . '#comment-' . absint( $comment->comment_ID ) .'">' . esc_html__( $comment->post_title ) . '</a> ' . __( 'reviewed by', 'woocommerce' ) . ' ' . esc_html( $comment->comment_author ) .'</h4>';
+				echo '<h4 class="meta"><a href="' . get_permalink( $comment->ID ) . '#comment-' . absint( $comment->comment_ID ) .'">' . esc_html__( apply_filters( 'woocommerce_admin_dashboard_recent_reviews', $comment->post_title, $comment ) ) . '</a> ' . __( 'reviewed by', 'woocommerce' ) . ' ' . esc_html( $comment->comment_author ) .'</h4>';
 				echo '<blockquote>' . wp_kses_data( $comment->comment_excerpt ) . ' [...]</blockquote></li>';
 
 			}

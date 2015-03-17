@@ -2,27 +2,66 @@
 /**
  * Admin Settings API used by Shipping Methods and Payment Gateways
  *
- * @class       WC_Settings_API
- * @version     2.1.0
- * @package     WooCommerce/Abstracts
- * @category    Abstract Class
- * @author      WooThemes
+ * @class    WC_Settings_API
+ * @version  2.3.0
+ * @package  WooCommerce/Abstracts
+ * @category Abstract Class
+ * @author   WooThemes
  */
 abstract class WC_Settings_API {
 
-	/** @var string The plugin ID. Used for option names. */
+	/**
+	 * The plugin ID. Used for option names.
+	 * @var string
+	 */
 	public $plugin_id = 'woocommerce_';
 
-	/** @var array Array of setting values. */
+	/**
+	 * Method ID.
+	 * @var string
+	 */
+	public $id = '';
+
+	/**
+	 * Method title.
+	 * @var string
+	 */
+	public $method_title = '';
+
+	/**
+	 * Method description.
+	 * @var string
+	 */
+	public $method_description = '';
+
+	/**
+	 * 'yes' if the method is enabled
+	 * @var string
+	 */
+	public $enabled;
+
+	/**
+	 * Setting values.
+	 * @var array
+	 */
 	public $settings = array();
 
-	/** @var array Array of form option fields. */
+	/**
+	 * Form option fields.
+	 * @var array
+	 */
 	public $form_fields = array();
 
-	/** @var array Array of validation errors. */
+	/**
+	 * Validation errors.
+	 * @var array
+	 */
 	public $errors = array();
 
-	/** @var array Sanitized fields after validation. */
+	/**
+	 * Sanitized fields after validation.
+	 * @var array
+	 */
 	public $sanitized_fields = array();
 
 	/**
@@ -133,7 +172,7 @@ abstract class WC_Settings_API {
 	 *
 	 * @param string $key
 	 * @param mixed $empty_value
-	 * @return string The value specified for the option or a default value for the option
+	 * @return mixed The value specified for the option or a default value for the option
 	 */
 	public function get_option( $key, $empty_value = null ) {
 
@@ -169,12 +208,12 @@ abstract class WC_Settings_API {
 	 *
 	 * Generate the HTML for the fields on the "settings" screen.
 	 *
-	 * @param bool $form_fields (default: false)
+	 * @param array $form_fields (default: array())
 	 * @since 1.0.0
 	 * @uses method_exists()
 	 * @return string the html for the settings
 	 */
-	public function generate_settings_html( $form_fields = false ) {
+	public function generate_settings_html( $form_fields = array() ) {
 
 		if ( ! $form_fields ) {
 			$form_fields = $this->get_form_fields();
@@ -204,7 +243,6 @@ abstract class WC_Settings_API {
 	 * @return string
 	 */
 	public function get_tooltip_html( $data ) {
-
 		if ( $data['desc_tip'] === true ) {
 			$tip = $data['description'];
 		} elseif ( ! empty( $data['desc_tip'] ) ) {
@@ -213,7 +251,7 @@ abstract class WC_Settings_API {
 			$tip = '';
 		}
 
-		return $tip ? '<img class="help_tip" data-tip="' . esc_attr( $tip ) . '" src="' . WC()->plugin_url() . '/assets/images/help.png" height="16" width="16" />' : '';
+		return $tip ? '<img class="help_tip" data-tip="' . esc_attr( wc_sanitize_tooltip( $tip ) ) . '" src="' . WC()->plugin_url() . '/assets/images/help.png" height="16" width="16" />' : '';
 	}
 
 	/**
@@ -406,6 +444,52 @@ abstract class WC_Settings_API {
 	}
 
 	/**
+	 * Generate Color Picker Input HTML.
+	 *
+	 * @param mixed $key
+	 * @param mixed $data
+	 * @since 2.3.0
+	 * @return string
+	 */
+	public function generate_color_html( $key, $data ) {
+		$field    = $this->plugin_id . $this->id . '_' . $key;
+		$defaults = array(
+			'title'             => '',
+			'disabled'          => false,
+			'class'             => '',
+			'css'               => '',
+			'placeholder'       => '',
+			'desc_tip'          => false,
+			'description'       => '',
+			'custom_attributes' => array()
+		);
+
+		$data = wp_parse_args( $data, $defaults );
+
+		ob_start();
+		?>
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+				<label for="<?php echo esc_attr( $field ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
+				<?php echo $this->get_tooltip_html( $data ); ?>
+			</th>
+			<td class="forminp">
+				<fieldset>
+					<legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span></legend>
+					<div class="color_box">
+						<input class="colorpick <?php echo esc_attr( $data['class'] ); ?>" type="text" name="<?php echo esc_attr( $field ); ?>" id="<?php echo esc_attr( $field ); ?>" style="<?php echo esc_attr( $data['css'] ); ?>" value="<?php echo esc_attr( $this->get_option( $key ) ); ?>" placeholder="<?php echo esc_attr( $data['placeholder'] ); ?>" <?php disabled( $data['disabled'], true ); ?> <?php echo $this->get_custom_attribute_html( $data ); ?> />
+						<div id="colorPickerDiv_<?php echo esc_attr( $field ); ?>" class="colorpickdiv" style="z-index: 100; background: #eee; border: 1px solid #ccc; position: absolute; display: none;"></div>
+					</div>
+					<?php echo $this->get_description_html( $data ); ?>
+				</fieldset>
+			</td>
+		</tr>
+		<?php
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * Generate Textarea HTML.
 	 *
 	 * @param mixed $key
@@ -574,7 +658,8 @@ abstract class WC_Settings_API {
 			'options'           => array()
 		);
 
-		$data = wp_parse_args( $data, $defaults );
+		$data  = wp_parse_args( $data, $defaults );
+		$value = (array) $this->get_option( $key, array() );
 
 		ob_start();
 		?>
@@ -588,7 +673,7 @@ abstract class WC_Settings_API {
 					<legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span></legend>
 					<select multiple="multiple" class="multiselect <?php echo esc_attr( $data['class'] ); ?>" name="<?php echo esc_attr( $field ); ?>[]" id="<?php echo esc_attr( $field ); ?>" style="<?php echo esc_attr( $data['css'] ); ?>" <?php disabled( $data['disabled'], true ); ?> <?php echo $this->get_custom_attribute_html( $data ); ?>>
 						<?php foreach ( (array) $data['options'] as $option_key => $option_value ) : ?>
-							<option value="<?php echo esc_attr( $option_key ); ?>" <?php selected( in_array( $option_key, $this->get_option( $key, array() ) ), true ); ?>><?php echo esc_attr( $option_value ); ?></option>
+							<option value="<?php echo esc_attr( $option_key ); ?>" <?php selected( in_array( $option_key, $value ), true ); ?>><?php echo esc_attr( $option_value ); ?></option>
 						<?php endforeach; ?>
 					</select>
 					<?php echo $this->get_description_html( $data ); ?>
@@ -620,7 +705,7 @@ abstract class WC_Settings_API {
 		ob_start();
 		?>
 			</table>
-			<h4 class="wc-settings-sub-title <?php echo esc_attr( $data['class'] ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></h4>
+			<h3 class="wc-settings-sub-title <?php echo esc_attr( $data['class'] ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></h3>
 			<?php if ( ! empty( $data['description'] ) ) : ?>
 				<p><?php echo wp_kses_post( $data['description'] ); ?></p>
 			<?php endif; ?>
@@ -637,9 +722,9 @@ abstract class WC_Settings_API {
 	 *
 	 * @since 1.0.0
 	 * @uses method_exists()
-	 * @param bool $form_fields (default: false)
+	 * @param array $form_fields (default: array())
 	 */
-	public function validate_settings_fields( $form_fields = false ) {
+	public function validate_settings_fields( $form_fields = array() ) {
 
 		if ( ! $form_fields ) {
 			$form_fields = $this->get_form_fields();
@@ -836,8 +921,6 @@ abstract class WC_Settings_API {
 	 * @return string
 	 */
 	public function validate_multiselect_field( $key ) {
-
-		$value = $this->get_option( $key );
 
 		if ( isset( $_POST[ $this->plugin_id . $this->id . '_' . $key ] ) ) {
 			$value = array_map( 'wc_clean', array_map( 'stripslashes', (array) $_POST[ $this->plugin_id . $this->id . '_' . $key ] ) );

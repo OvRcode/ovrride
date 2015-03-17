@@ -40,12 +40,19 @@ class GFAsyncUpload {
 			die( '{"status" : "error", "error" : {"code": 500, "message": "' . __( 'Failed to upload file.', 'gravityforms' ) . '"}}' );
 		}
 
-		$form_id        = intval( $_REQUEST['form_id'] );
+		$form_id        = absint( $_REQUEST['form_id'] );
 		$form_unique_id = rgpost( 'gform_unique_id' );
 		$form           = GFAPI::get_form( $form_id );
 
 		if ( empty( $form ) || ! $form['is_active'] ) {
 			die();
+		}
+
+		if ( rgar( $form, 'requireLogin' ) ) {
+			if ( ! is_user_logged_in() ) {
+				die();
+			}
+			check_admin_referer( 'gform_file_upload_' . $form_id, '_gform_file_upload_nonce_' . $form_id );
 		}
 
 		if ( ! ctype_alnum( $form_unique_id ) ) {

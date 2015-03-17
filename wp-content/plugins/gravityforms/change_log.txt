@@ -1,7 +1,28 @@
 -------------------------------------------------------------------------------------------------------------------
-Version 1.9.3.1
+Version 1.9.4.1
+	- Fixed issue with conditional logic when hiding date fields.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.4
+    - Added 2 new helper styles to the readyclass.css file
+    	1. "gf_simple_horizontal" - when applied to main form will create a very simple horizontal form layout (think simple email address field and inline form button)
+    	2. "gf_section_right" - when applied to the section break fields will align the section break right with the form fields if the left/right label form setting is selected.
+    - Added logging for $phpmailer->ErrorInfo
+    - Updated the Number field to include the thousands separator when returning a validation failure if the input type is 'text'. Some browsers do not allow commas when using the HTML5 'number' input type.
     - Updated number formatting to include the thousands separator on the entry list and detail pages and when merge tags are processed. The :value modifier will return the value without the thousand separator.
+    - Fixed security vulnerability in the import process of legacy forms on some systems.
     - Fixed an issue with GFCommon::format_number using the currency defined on the Forms > Settings page instead of the currency used with the entry which resulted in the number being incorrectly formatted when using the third-party Gravity Forms Multi Currency add-on.
+    - Fixed an issue with conditional logic not updating the enhanced UI after resetting the value of the underlying select element.
+    - Fixed a security vulnerability in the admin area that could be exploited by users with permission to edit forms. Credit: 10up.
+    - Fixed a security vulnerability for forms that require login. Caching pages with forms that require login will now cause submissions to fail.
+    - Fixed a JavaScript error on the edit page for some custom post types that don't have an editor.
+    - Fixed issue with chosen sprite file name. Renamed it to prevent issues on some server configurations.
+    - Fixed calculations in the the post custom field when when the input type is set to number and calculations are enabled.
+    - Fixed an issue with the ID attributes of the left span elements of Email and Password fields.
+    - Fixed an issue with the field label for attribute in the form editor containing an extra underscore.
+    - AF: Updated logging in GFPaymentAddOn.
+    - API: Fixed an issue that could potentially pose a security vulnerability via third-party add-ons and custom code.
+    - API: Fixed a warning generated in the results endpoint when there are no entries.
 
 -------------------------------------------------------------------------------------------------------------------
 Version 1.9.3
@@ -37,7 +58,7 @@ Version 1.9.3
     - Fixed an issue with the List field in the form editor where clicking on the field label opens and then immediately closes the field.
     - Fixed a security vulnerability with the multi-file upload field.
 	- Fixed an issue in the conditional logic javascript which impacted loading data into the list field.
-    - API: Added support for WordPress cookie authentication to the Web API. Requires nonce with the action set to gf_api passed via the _gf_json_nonce POST data or in the query for GET requests. Intended for use by JavaScript on the same site as the Gravity Forms installation.
+    - API: Added support for WordPress cookie authentication to the Web API. Requires nonce with the action set to gf_api passed via the _gf_json_nonce query arg. Intended for use by JavaScript on the same site as the Gravity Forms installation.
     - API: Removed authentication for the POST forms/[ID]/submissions endpoint.
     - API: Fixed an issue with GFAPI::add_entry() which can result in entry values being blank for email, date and time fields.
 
