@@ -1,5 +1,126 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.03.06 - version 2.8.3
+ * Fix: Credit should be applied after taxation
+ * Fix: Smart Coupon balance not updating correctly
+ * Fix: Usage limit data of coupon was not added when auto generating coupons
+ * Fix: Sometimes not generating unique coupon codes
+ * Fix: Unnecessary coupon notices related to Store Credit on cart & checkout page, when Store Credit's balance is zero
+ * Fix: 'One click apply coupon' not working from My Account page (WooCommerce 2.3.x)
+
+2015.02.13 - version 2.8.2
+ * Fix: Conflict with discount of WooCommerce core coupons
+
+2015.02.11 - version 2.8.1
+ * Fix: 'One click apply coupon' not working (WooCommerce 2.2)
+ * Update: Minor update in coupon notice & javascript for applying coupon
+
+2015.02.10 - version 2.8
+ * Update: WooCommerce 2.3 compatible
+ * Update: Discount calculation for Smart Coupons
+ * Fix: Few fields of coupon was not added when auto generating coupons
+ * Fix: Emails not sending when bulk generating & importing coupons and when 'Disable Email Resriction' is checked
+
+2015.02.02 - version 2.7
+ * Fix: Conflict with 'Product CSV Import Suite'
+ * Fix: Customer email was adding via Import, even if 'Disable Email Restriction' was checked
+ * Fix: Coupon displayed via shortcode always show discount type as 'Store Credit' for all discount type
+ * Fix: Email subject always show coupon, even if Store Credit is sent
+ * Fix: 'Coupons received' details not coming up in order complete email for customer
+ * Fix: 'Coupons received' on My Account page shows trashed coupons
+ * New: Template for purchasing 'Credit of any amount'
+ * Update: Allowed searching of all discount type, when adding Smart Coupons shortcode from WordPress editor
+ * Update: Support for template path 'woocommerce/woocommerce-smart-coupons/email.php' in addition to 'woocommerce-smart-coupons/email.php' and 'email.php'
+ * Update: More fields for discount type 'Store Credit / Gift Certificate' on coupon edit page
+ * Update: Made meta data protected which are added from Smart Coupons
+ * Update: By default, uncheck, 'Delete Gift / Credit' in Smart Coupons Storewide setting at WooCommerce -> Settings
+ 
+2014.12.23 - version 2.6.2
+ * Fix: Smart Coupons shortcode button's incorrect allignement (Thanks to: Kevin Hagerty)
+ * Fix: Minor update in style of "coupon shortcode form" to display it on top-most layer
+ * Fix: "Gift store credit to someone else" not working, generated coupons are getting send to sender
+ * Fix: Discount amount of store credit not visible in cart after applying
+ 
+2014.12.03 - version 2.6.1
+ * Fix: "Store Credit Receiver Details" form not showing email & message fields
+ * Fix: Showing "Invalid email error" even after entering a valid email address in "Store Credit Receiver Details" form
+ 
+2014.10.31 - version 2.6
+ * Update: Performance improvement by query optimization
+ * Fix: Unnecessary loading of JavaScript on front-end
+ * Fix: Some fields of coupons not importing
+ 
+2014.10.04 - version 2.5
+ * Fix: Coupon code in URL not working properly with Add to cart in URL
+ * Fix: After applying store credit, discounts are applying on renewals also
+ * Update: Show spinner on clicked coupon when it is being applied to cart
+ 
+2014.09.09 - version 2.4
+ * Update: WooCommerce 2.2 compatible
+ * Update: Docblocks & Indentation
+ * Fix: Minor CSS fix
+ 
+2014.08.23 - version 2.3
+ * Fix: Conflict with PDF Invoice plugin
+ * Fix: Apply coupon on cart redirect to home page in some cases
+ * Fix: Shortcode query related bug
+ * Fix: All coupons shows up for logged in user with no email address set
+ * Update: All new coupon meta fields available for import and export functionality
+
+2014.07.16 - version 2.2.2
+ * Fix: "Apply coupon by one click" conflict with different version of IE
+ * Fix: Unnecessary "No records found" in email
+
+2014.05.27 - version 2.2.1
+ * Fix: Localization for javascript error message
+ * Fix: Plugin's name was hardcoded
+ * Fix: Smart Coupon shortcode: Fixes related to JavaScript errors & changed icon for button
+
+2014.05.02 - version 2.2
+ * Update: Message field for sending credit from admin
+ 
+2014.04.14 - version 2.1.3
+ * Fix: Minor fix related to misssing global $woocommerce
+ 
+2014.03.27 - version 2.1.2
+ * Fix: Unnecessary "No records found" in email
+ 
+2014.03.25 - version 2.1.1
+ * Fix: Gift certificate email not sent with special characters in subject
+ * Fix: Unnecessary "No records found" on My Account page
+ * Fix: Unnecessary warnings in email
+
+2014.03.11 - version 2.1
+ * Fix: Upper case in coupon code causes "Coupon does not exist!" error
+ * Fix: Addition of 'coupon_sent' meta in all orders
+ * New: Feature to show coupon sent / received to store admin / customer
+ * New: Filter to allow export of more coupon's field (custom meta)
+ * Update: Included new coupon field (added in WC 2.1+) in export
+
+2014.01.23 - version 2.0
+ * Update: WooCommerce 2.1 compatibility
+ * Fix: Incorrect coupon generation
+ * Update: Other minor fixes related to PHP warnings.
+
+2014.01.08 - version 1.6.5
+ * Fix: Additional space in email's subject
+ * Update: Support for overriding email template of Smart Coupons
+
+2013.12.21 - version 1.6.4
+ * New: Coupon code send via email are URL Coupon link (Integration with WooCommerce URL Coupons)
+
+2013.12.07 - version 1.6.3
+ * Update: Notification for undefined function 'mb_detect_encoding' for preventing fatal error
+ * Fix: Coupons generating 2 times in some cases
+
+2013.12.03 - version 1.6.2
+ * Fix: 'Add to cart' from catalog page redirecting to that product's shop page
+ * Update: Show 'Free Shipping coupon' on Cart / Checkout page
+
+2013.11.29 - version 1.6.1
+ * Fix: Empty receiver's email address in acknowledgement email to sender 
+ * Fix: PHP warnings
+
 2013.11.15 - version 1.6
  * Fix: Coupons not generating for product having price zero
  * Fix: Warnings for BC Math module of PHP
