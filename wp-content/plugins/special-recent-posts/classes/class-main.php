@@ -1200,9 +1200,12 @@ class SpecialRecentPostsFree {
 				
 				// Opening single post container.
 				$srp_content .= '<div id="' . $srp_post_id . '" class="srp-widget-singlepost">';
-
+                
+				// Generating the post title.
+				$srp_content .= $this->generate_post_title( $recent_posts->post );
+                
 				$srp_content .= '<div class="srp-post-content-container">';
-
+                
 				// Checking if thumbnail option is on.
 				if ( 'yes' == $this->widget_args['display_thumbnail'] ) {
 					
@@ -1215,9 +1218,6 @@ class SpecialRecentPostsFree {
 				
 					// Opening container for Content Box.
 					$srp_content .= '<div class="srp-content-box">';
-					
-					// Generating the post title.
-					$srp_content .= $this->generate_post_title( $recent_posts->post );
 					
 					// Checking if "post_date" option is on.
 					if ( 'yes' == $this->widget_args['post_date'] ) {
