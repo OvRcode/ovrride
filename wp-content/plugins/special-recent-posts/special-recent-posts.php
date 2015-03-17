@@ -1,144 +1,262 @@
 <?php
 /*
 Plugin Name: Special Recent Posts FREE Edition
-Plugin URI: http://www.specialrecentposts.com
-Description: <a href='http://codecanyon.net/item/special-recent-posts-pro/552356'><strong>***** Want to go PRO? Special Recent Posts PRO Edition is now available. Upgrade Now! *****</strong></a>Special Recent Posts FREE Edition is a very powerful plugin/widget which displays your latest posts with thumbnails. <strong>To get started: 1)</strong> Click the "Activate" link to the left of this description. <strong>2)</strong> Go to Settings->Special Recent Posts FREE page and configure the general options. <strong>3)</strong> Go to the Widgets page and drag the 'Special Recent Posts FREE Edition' widget onto your sidebar and configure its settings. <strong>4)</strong> Enjoy.
-Version: 1.9.9
+Plugin URI: http://www.specialrecentposts.com/?ref=uri_pd
+Description: <a href='http://codecanyon.net/item/special-recent-posts-pro-edition/552356?ref=lucagrandicelli'><strong>***** SPECIAL RECENT POSTS PRO EDITION v3 HAS BEEN RELEASED! ***** NOW FINALLY WITH <strong>PAGINATION SUPPORT</strong>, <strong>CUSTOM POST TYPES & TAXONOMY MANAGEMENT</strong>, <strong>AUTO UPDATE NOTIFICATIONS</strong> AND MUCH MORE UP TO <strong>120 CUSTOMIZATION OPTIONS AVAILABLE. NOW TRANSLATED IN MULTIPLE LANGUAGES.</strong> UPGRADE NOW!</strong></a> <strong>The most beautiful and powerful way to display your Wordpress posts with thumbnails.</strong> <strong>Instructions to get started: 1)</strong>  Click the 'Activate' link to the left of this description. <strong>2)</strong> Once activated, a new link named 'SRP FREE' will appear on the main Wordpress left menu. Click it, or go to its submenu and click the 'General Settings' link to configure the global plugin options. <strong>3)</strong> Go to your widgets page and drag the 'Special Recent Posts FREE' widget onto your sidebar and configure its settings. <strong>4)</strong> If you wish to use PHP code or shortcodes for your pages, please refer to the online documentation available at <a href='http://www.specialrecentposts.com/docs/?ref=docs_pd' title="Learn how to use SRP. View the online documentation.">http://www.specialrecentposts.com/docs/</a>. You can also check the readme.txt file for further details. <strong>5)</strong> You're done. Enjoy!
+Version: 2.0.4
+Tags: thumbnails, featured, custom post type, custom taxonomy, recent posts, pagination, filtering, customization, wordpress posts, wordpress loop
+Text Domain: special-recent-posts-free
+Domain Path: /languages
 Author: Luca Grandicelli
-Author URI: http://www.lucagrandicelli.com
-Copyright (C) 2011-2012 Luca Grandicelli
+Author URI: http://www.lucagrandicelli.co.uk/?ref=author_pd
+Copyright (C) 2011-2014 Luca Grandicelli
 */
 
-/*
-| ---------------------------------------------
-| GLOBAL DECLARATIONS
-| In this section we define the enviroment
-| basic constants and global paths.
-| ---------------------------------------------
-*/
 
-define('SRP_PLUGIN_URL'          , plugin_dir_url( __FILE__ ));                  // Defining plugin url path.
-define('SRP_PLUGIN_DIR'          , dirname(__FILE__) . '/');                     // Defining plugin dir path.
-define('SRP_PLUGIN_MAINFILE'     , __FILE__);                                    // Defining plugin main filename.
-define('SRP_PLUGIN_VERSION'      , '1.9.9');                                     // Defining plugin version.
-define('SRP_PLUGIN_VERSION_MODE' , 'FREE');                                      // Defining plugin version mode.
-define('SRP_REQUIRED_PHPVER'     , '5.0.0');                                     // Defining required PHP version.
-define('SRP_TRANSLATION_ID'      , 'srplang');                                   // Defining gettext translation ID.
-define('SRP_CLASS_FOLDER'        , 'classes/');                                  // Defining path: main plugin classes folder.
-define('SRP_ASSETS_FOLDER'       , 'assets/');                                   // Defining path: assets folder.
-define('SRP_LIB_FOLDER'          , 'lib/');                                      // Defining path: external libraries folder.
-define('SRP_LANG_FOLDER'         , 'languages/');                                // Defining path: language packs folder.
-define('SRP_CACHE_DIR'           , 'cache/');                                    // Defining path: cached images folder. [Remember to set this folder to 0775 or 0777 permissions.]
-define('SRP_CSS_FOLDER'          , SRP_ASSETS_FOLDER    . 'css/');               // Defining path: CSS folder.
-define('SRP_JS_FOLDER'           , SRP_ASSETS_FOLDER    . 'js/');                // Defining path: javascript folder.
-define('SRP_IMAGES_FOLDER'       , SRP_ASSETS_FOLDER    . 'images/');            // Defining path: global images folder.
-define('SRP_ICONS_FOLDER'        , SRP_IMAGES_FOLDER    . 'icons/');             // Defining path: icons images folder.
-define('SRP_STRUCTURE_FOLDER'    , SRP_IMAGES_FOLDER    . 'structure/');         // Defining path: structure images folder.
-define('SRP_ADMIN_CSS'           , SRP_CSS_FOLDER       . 'css-admin.css');      // Defining path: administration stylesheet.
-define('SRP_FRONT_CSS'           , SRP_CSS_FOLDER       . 'css-front.css');      // Defining path: Front End CSS.
-define('SRP_IEFIX_CSS'           , SRP_CSS_FOLDER       . 'css-ie7-fix.css');    // Defining path: IE browsers CSS fix.
-define('SRP_JS_INIT'             , SRP_JS_FOLDER        . 'srp-init.js');        // Defining path: custom js init script.
-define('SRP_DEFAULT_THUMB'       , SRP_ICONS_FOLDER     . 'default-thumb.gif');  // Defining path: default no-image thumbnail placeholder.
-define('SRP_WIDGET_HEADER'       , SRP_STRUCTURE_FOLDER . 'widget_header.gif');  // Defining path: the widget header image.
+// {{{ constants
 
-/*
-| ---------------------------------------------
-| GLOBAL INCLUDES
-| In this section we include all the needed
-| files for the plugin to properly work.
-| ---------------------------------------------
-*/
-require_once('srp-defaults.php');                                // Including main config file.
-require_once('srp-versionmap.php');                              // Including the version map superarry, to prevent version conflicts.
-require_once(SRP_LIB_FOLDER    . 'phpthumb/ThumbLib.inc.php');   // Including PHP Thumbnailer external library.
-require_once(SRP_CLASS_FOLDER  . 'class-main.php');              // Including main plugin class.
-require_once(SRP_CLASS_FOLDER  . 'class-widgets.php');           // Including widgets class.
-require_once(SRP_LIB_FOLDER    . 'lib-admin.php');               // Including plugin admin library.
+/**
+ * GLOBAL PATHS & PLACEHOLDERS
+ *
+ * Here we set up all the necessary SRP PATH enviroment through a list of constants and placeholders.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ */
+define( 'SRP_PLUGIN_URL'      , plugin_dir_url(  __FILE__  ) );                                   // The plugin URL
+define( 'SRP_PLUGIN_DIR'      , dirname( __FILE__ ) . '/' );                                      // The plugin dir path
+define( 'SRP_PLUGIN_MAINFILE' , plugin_basename( __FILE__ ) );                                    // The main file path
+define( 'SRP_PLUGIN_VERSION'  , '2.0.4' );                                                        // The plugin version
+define( 'SRP_REQUIRED_PHPVER' , '5.0.0' );                                                        // The required PHP version
+define( 'SRP_TRANSLATION_ID'  , 'special-recent-posts-free' );                                    // The gettext translation placeholder.
+define( 'SRP_CLASS_FOLDER'    , 'classes/' );                                                     // The classes folder path
+define( 'SRP_LIB_FOLDER'      , 'lib/' );                                                         // The library folder path
+define( 'SRP_LANG_FOLDER'     , 'languages/' );                                                   // The language folder path
+define( 'SRP_CACHE_DIR'       , 'cache/' );                                                       // The cache folder path
+define( 'SRP_CSS_FOLDER'      , 'css/' );                                                         // The CSS folder path
+define( 'SRP_JS_FOLDER'       , 'js/' );                                                          // The Javascript folder path
+define( 'SRP_IMAGES_FOLDER'   , 'images/' );                                                      // The images folder path
+define( 'SRP_ADMIN_CSS'       , SRP_PLUGIN_URL . SRP_CSS_FOLDER    . 'admin.css' );               // The admin CSS placeholder
+define( 'SRP_LAYOUT_CSS'      , SRP_PLUGIN_URL . SRP_CSS_FOLDER    . 'layout.css' );              // The layout (front end) CSS placeholder
+define( 'SRP_JS_INIT'         , SRP_PLUGIN_URL . SRP_JS_FOLDER     . 'init.js' );                 // The Javascript initialization script placeholder
+define( 'SRP_DEFAULT_THUMB'   , SRP_PLUGIN_URL . SRP_IMAGES_FOLDER . 'no-thumb.png' );            // The no thumbnail available placeholder
+define( 'SRP_WIDGET_HEADER'   , SRP_PLUGIN_URL . SRP_IMAGES_FOLDER . 'widget-header-logo.png' );  // The widget header image
+// }}}
 
-/*
-| -------------------------------------------------------------
-| External functions to call plugin from PHP inline code.
-| Check the manual provided for further configuration settings.
-| -------------------------------------------------------------
-*/
+/**
+ * GLOBAL INCLUDES
+ *
+ * Here we include all the necessary files to make Special Recent Posts work properly.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ */
 
-// External PHP function call.
-function special_recent_posts($args = array()) {
+// This file contains all the functions needed for the SRP admin panel
+include_once( SRP_PLUGIN_DIR . 'functions.php' );
 
-	// Checking Visualization filter.
-	if (SpecialRecentPostsFree::visualizationCheck($args, 'phpcall')) {
+// This file contains all the default presets of the plugin options                                
+include_once( SRP_PLUGIN_DIR . 'defaults.php' );
+
+// This file contains all the mapping between the current version variables and older versions of SRP.
+include_once( SRP_PLUGIN_DIR . 'versionmap.php' );
+
+// Checking if the PHP Thumb Factory Library already exists.
+if ( !class_exists( 'PhpThumbFactory' ) ) {
+
+	// This contains the main library for image manipulation.
+	include_once( SRP_LIB_FOLDER    . 'phpthumb/ThumbLib.inc.php' );
+}
+
+// This file contains the main SRP rendering class
+include_once( SRP_CLASS_FOLDER  . 'class-main.php' );
+
+// This file contains the WP Widget class
+include_once( SRP_CLASS_FOLDER  . 'class-widgets.php' );
+
+/**
+ * special_recent_posts()
+ *
+ * This function initialize the all SRP process.
+ * It's also called from the generated PHP code and shortcodes.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ * @param array $args The plugin settings array.
+ * @return boolean
+ */
+function special_recent_posts( $args = array() ) {
+
+	// Checking Visualization Filter.
+	if ( SpecialRecentPostsFree::visualization_check( $args, 'phpcall' ) ) {
 	
-		// Creating an instance of Special Posts Class with widget args passed in manual mode.
-		$srp = new SpecialRecentPostsFree($args);
+		// Creating an instance of the SRP class with widget args passed in manual mode.
+		$srp = new SpecialRecentPostsFree( $args );
 		
 		// Displaying posts.
-		$srp->displayPosts(NULL, 'print');
+		$srp->display_posts( NULL, 'print' );
+
+		// Returning true.
+		return true;
 	}
+
+	// Nothing happened. Returning true anyway.
+	return true;
 }
 
-// Shortcode function call.
-function srp_shortcode($atts) {
+/**
+ * srp_shortcode()
+ *
+ * This function handles the shortcodes generated by SRP.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ * @global array $srp_default_widget_values The default SRP widget presets.
+ * @param array $atts The plugin shortcodes attributes.
+ * @return boolean/string It could be a boolean true or the generated HTML posts layout.
+ */
+function srp_shortcode( $atts ) {
 
-	// Including external widget values.
+	// Including default widget presets.
 	global $srp_default_widget_values;
 	
-	// Checking Visualization filter.
-	if (SpecialRecentPostsFree::visualizationCheck($srp_default_widget_values, 'shortcode')) {
+	// Checking Visualization Filter.
+	if ( SpecialRecentPostsFree::visualization_check( $srp_default_widget_values, 'shortcode' ) ) {
 	
 		// If shortcode comes without parameters, make $atts a valid array.
-		if (!is_array($atts)) $atts = array();
+		if ( !is_array( $atts ) ) {
+
+			// Initializing $atts as an empty array.
+			$atts = array();
+		}
 		
-		// Assembling default widget options with available shortcode options.
-		extract(shortcode_atts($srp_default_widget_values, $atts));
+		// Combining default widget presets with available shortcode attributes.
+		extract( shortcode_atts( $srp_default_widget_values, $atts ) );
 		
-		// Creating an instance of Special Posts Class with widget args passed in manual mode.
-		$srp = new SpecialRecentPostsFree($atts);
+		// Creating an instance of the SRP class with widget args passed in manual mode.
+		$srp = new SpecialRecentPostsFree( $atts );
 		
-		// Displaying Posts.
-		return $srp->displayPosts(NULL, 'return');
+		// Displaying posts.
+		return $srp->display_posts( NULL, 'return' );
 	}
+
+	// Nothing happened. Returning true anyway.
+	return true;
 }
 
-/*
-| -------------------------------------------------------
-| Plugin action links
-| -------------------------------------------------------
-*/
-function srp_plugin_action_links($links, $file) {
+/**
+ * srp_plugin_action_links()
+ *
+ * This function builds all the necessary HTML links in the WP plugins page.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ * @param array $links The default WP plugin description links, as 'activate' and 'uninstall'.
+ * @return array It return an array containg all the plugin description HTML link (defaults included).
+ */
+function srp_plugin_action_links( $links ) {
+
+	// Appending the 'Settings' link.
+    $links[] = '<a href="'. get_admin_url( null, 'admin.php?page=srp-free-general-settings' ) .'" title="' . esc_attr( 'Configure the SRP general settings.', SRP_TRANSLATION_ID ) . '">' . __( 'Settings', SRP_TRANSLATION_ID ) . '</a>';
+
+    // Appending the 'Support' link.
+    $links[] = '<a href="'. esc_url( 'http://wordpress.org/support/plugin/special-recent-posts/' ) .'" title="' . esc_attr( 'Visit the online Wordpress.org forum to get instant support.', SRP_TRANSLATION_ID ) . '" target="_blank" >' . __( 'Customer Support', SRP_TRANSLATION_ID ) . '</a>';
+
+    // Appending the 'Support' link.
+    $links[] = '<a href="'. esc_url( 'http://www.specialrecentposts.com/docs/?ref=docs_pl' ) .'" title="' . esc_attr( 'Learn how to use SRP. View the online documentation.', SRP_TRANSLATION_ID ) . '" target="_blank" >' . __( 'Online Docs', SRP_TRANSLATION_ID ) . '</a>';
 	
-	static $this_plugin;
-
-    if (!$this_plugin) $this_plugin = plugin_basename(__FILE__);
-        
-    // Check to make sure we are on the correct plugin
-    if ($file == $this_plugin) {
-		
-        // The anchor tag and href to the URL we want. For a "Settings" link, this needs to be the url of your settings page
-        $settings_link = sprintf( '<a href="options-general.php?page=%s">%s</a>', plugin_basename(__DIR__) . '/lib/lib-admin.php', __('Settings') );
-		
-		// Add the link to the list
-        array_unshift($links, $settings_link);
-    }
- 	
- 	// Return link.
-    return $links;
+    // Returning the $links array.
+	return $links;
 }
 
-// Load Translation Table.
-load_plugin_textdomain(SRP_TRANSLATION_ID, false, dirname(plugin_basename( __FILE__ )) . '/' . SRP_LANG_FOLDER );
+/**
+ * srp_load_textdomain()
+ *
+ * This function builds all the necessary HTML links in the WP plugins page.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ * @return boolean
+ */
+function srp_load_textdomain() {
 
-/*
-| ---------------------------------------------
-| PLUGIN HOOKS, FILTERS & ACTIONS
-| Listing plugin hooks and actions.
-| ---------------------------------------------
-*/
+	// Loading translation table path.
+	load_plugin_textdomain( SRP_TRANSLATION_ID, false, plugin_basename( dirname( __FILE__ ) ) . '/' . SRP_LANG_FOLDER );
 
-register_activation_hook(__FILE__     , array('SpecialRecentPostsFree', 'install_plugin'));   // Registering plugin activation hook.
-register_uninstall_hook( __FILE__     , array('SpecialRecentPostsFree', 'uninstall_plugin')); // Registering plugin uninstall hook.
-add_filter('plugin_action_links'      , 'srp_plugin_action_links', 10, 2);                    // Adding plugin action links.
-add_action('widgets_init'             , 'srp_install_widgets');                               // Defining actions on widgets page init.
-add_action('admin_menu'               , 'srp_admin_setup');                                   // Defining actions for admin page setup.
-add_action('admin_enqueue_scripts'    , 'widget_enqueue_scripts');                            // Enqueuing styles and scripts in widget page.
-add_action('wp_head'                  , 'srp_front_head', 0);                                 // Inlcuding main theme CSS in the header section.
-add_shortcode('srp'                   , 'srp_shortcode' );                                    // Registering SRP Shortcode.
+	// Returning true.
+	return true;
+}
+
+/**
+ * ACTIONS, FILTERS & HOOKS
+ *
+ * Here we define all the needed SRP WP actions, filters & hooks.
+ * 
+ * @author Luca Grandicelli <lgrandicelli@gmail.com>
+ * @copyright (C) 2011-2014 Luca Grandicelli
+ * @package special-recent-posts-free
+ * @version 2.0.4
+ */
+
+/**
+ * On activation, call the install_plugin() function.
+ */
+register_activation_hook( __FILE__, array( 'SpecialRecentPostsFree', 'install_plugin' ) );
+
+/**
+ * On uninstall, call the uninstall_plugin() function.
+ */
+register_uninstall_hook( __FILE__,  array( 'SpecialRecentPostsFree', 'uninstall_plugin' ) );
+
+/**
+ * As soon as the plugin is loaded, let's load the translation table.
+ */
+add_action( 'plugins_loaded', 'srp_load_textdomain' );
+
+/**
+ * Let's build the SRP action links in the WP plugins page.
+ */
+add_filter( 'plugin_action_links_' . SRP_PLUGIN_MAINFILE , 'srp_plugin_action_links' );
+
+/**
+ * On everypage load, SRP does a compatibility test.
+ * If something goes wrong, display a WP notice on the top of the browser window.
+ */
+add_action( 'admin_notices', 'srp_check_plugin_compatibility' );
+
+/**
+ * On the WP widgets initialization, initialize the SRP widget.
+ */
+add_action( 'widgets_init', 'srp_widgets_init' );
+
+/**
+ * Let's build the SRP WP menu entry.
+ */
+add_action( 'admin_menu', 'srp_admin_menu' );
+
+/**
+ * Let's load all the SRP necessary stylesheets & JS scripts.
+ */
+add_action( 'admin_enqueue_scripts', 'srp_admin_enqueue_scripts' );
+
+/**
+ * Let's put some code in the <head> part of our pages.
+ */
+add_action( 'wp_head', 'srp_wp_head', 0 );
+
+/**
+ * Let's register our SRP shortcode tag.
+ */
+add_shortcode( 'srp', 'srp_shortcode' );
