@@ -2,7 +2,7 @@
 Contributors: elliotcondon
 Tags: custom, field, custom field, advanced, simple fields, magic fields, more fields, repeater, matrix, post, type, text, textarea, file, image, edit, admin
 Requires at least: 3.5.0
-Tested up to: 4.1
+Tested up to: 4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,7 +81,7 @@ Your votes really make a difference! Thanks.
 
 1. Upload 'advanced-custom-fields' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Click on the new menu itme "Custom Fields" and create your first Custom Field Group!
+3. Click on the new menu item "Custom Fields" and create your first Custom Field Group!
 4. Your custom field group will now appear on the page / post / template you specified in the field group's location rules!
 5. Read the documentation to display your data: 
 
@@ -105,6 +105,11 @@ http://support.advancedcustomfields.com/
 
 
 == Changelog ==
+
+= 4.4.1 =
+* Taxonomy field: Added compatibility for upcoming 'term splitting' in WP 4.2
+* Taxonomy field: Major improvement to save/load setting allowing for different values on multiple sub fields
+* Core: Minor fixes and improvements
 
 = 4.4.0 =
 * Core: Fixed depreciated warnings
