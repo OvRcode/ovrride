@@ -33,11 +33,14 @@ class WooThemes_Updater_API {
 	private $api_url;
 	private $products_api_url;
 	private $errors;
+	private $version;
 
 	public function __construct () {
+		$this->version = '1.5.1';
 		$this->token = 'woothemes-updater';
 		$this->api_url = 'http://www.woothemes.com/wc-api/product-key-api';
 		$this->products_api_url = 'http://www.woothemes.com/wc-api/woothemes-installer-api';
+		$this->license_check_url = 'http://www.woothemes.com/wc-api/license-status-check';
 		$this->errors = array();
 	} // End __construct()
 
@@ -63,7 +66,11 @@ class WooThemes_Updater_API {
 
 		$request = $this->request( 'activation', array( 'licence_key' => $key, 'product_id' => $product_id, 'home_url' => esc_url( home_url( '/' ) ) ) );
 
-		return ! isset( $request->error );
+		if ( isset( $request->error ) ) {
+			return 0;
+		}
+
+		return $request;
 	} // End activate()
 
 	/**
@@ -108,44 +115,35 @@ class WooThemes_Updater_API {
 	} // End ping()
 
 	/**
-	 * Check if a product license key is actually active for the current website.
+	 * Check if a product license keys are actually active for the current website.
 	 * @access   public
 	 * @since    1.3.0
 	 * @return   boolean Whether or not the given key is actually active for the current website.
 	 */
-	public function product_active_status_check ( $file, $product_id, $file_id, $license_hash ) {
-		$response = true;
+	public function product_active_statuses_check( $product_details ) {
+		$args = array(
+			'method' => 'POST',
+			'timeout' => 45,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'headers' => array( 'user-agent' => 'WooThemesUpdater/' . $this->version ),
+			'body' => json_encode( array( 'licenses' => $product_details ) ),
+			'sslverify' => false
+		);
 
-		$request_type = 'pluginupdatecheck';
-		$name_label = 'plugin_name';
-		if ( strpos( $file, 'style.css' ) ) {
-			$request_type = 'themeupdatecheck';
-			$name_label = 'theme_name';
-			$file = str_replace( '/style.css', '', $file );
+		$response = wp_remote_post( $this->license_check_url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			return false;
 		}
 
-		$args = array(
-	        $name_label => $file,
-	        'product_id' => $product_id,
-	        'version' => '1.0.0',
-	        'file_id' => $file_id,
-	        'license_hash' => $license_hash,
-	        'url' => esc_url( home_url( '/' ) )
-	    );
+		$payload = json_decode( wp_remote_retrieve_body( $response ) );
+		if ( ! isset( $payload->payload ) ) {
+			return false;
+		}
 
-	    // Send request checking for an update
-	    $request = $this->request( $request_type, $args, 'POST' );
-
-	    // If request is false, don't alter the transient
-	    if( false !== $request ) {
-	    	if ( isset( $request->payload->errors->woo_updater_api_license_deactivated ) ) {
-	    		$response = false;
-	    	} else {
-	    		$response = true;
-	    	}
-	    }
-	    return (bool)$response;
-	} // End product_active_status_check()
+		return $payload->payload;
+	} // End product_active_statuses_check()
 
 	/**
 	 * Make a request to the WooThemes API.
@@ -172,7 +170,7 @@ class WooThemes_Updater_API {
 			'redirection' => 5,
 			'httpversion' => '1.0',
 			'blocking' => true,
-			'headers' => array( 'user-agent' => 'WooThemesUpdater/1.4.1' ),
+			'headers' => array( 'user-agent' => 'WooThemesUpdater/' . $this->version ),
 			'cookies' => array(),
 			'ssl_verify' => false,
 			'user-agent' => 'WooThemes Updater; http://www.woothemes.com'

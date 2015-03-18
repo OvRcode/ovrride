@@ -1,4 +1,16 @@
 *** WooThemes Helper Changelog ***
+
+2015.03.18 - version 1.5.1
+ * New - License expire dates and notices with links to renew
+ * New - Plugin update "view details" support, shows plugin data & changelog in popup.
+ * New - Clear message on plugins page to activate your license if you haven't already.
+ * New - Better error reporting regarding update checks, ie. show when server cant be reached or there are failed checks on WooThemes end.
+ * Fix - Ensure updates always show up, no more clicking check for updates multiple times.
+ * Tweak - Improved update checks, more reliable and faster with less calls.
+
+2015.02.01 - version 1.5.0
+ * Beta test version
+
 2015.01.09 - version 1.4.1
  * Fix - remove unnecessary $defaults
 
