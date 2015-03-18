@@ -38,7 +38,7 @@ class WooThemes_Updater {
 	private $plugin_url;
 	private $plugin_path;
 	public $version;
-	private $file;
+	public $file;
 	private $products;
 
 	/**
@@ -47,7 +47,7 @@ class WooThemes_Updater {
 	 * @since  1.0.0
 	 * @return  void
 	 */
-	public function __construct ( $file ) {
+	public function __construct ( $file, $version ) {
 
 		// If multisite, plugin must be network activated. First make sure the is_plugin_active_for_network function exists
 		if( is_multisite() && ! is_network_admin() ) {
@@ -60,6 +60,7 @@ class WooThemes_Updater {
 		}
 
 		$this->file = $file;
+		$this->version = $version;
 		$this->plugin_url = trailingslashit( plugins_url( '', $plugin = $file ) );
 		$this->plugin_path = trailingslashit( dirname( $file ) );
 
@@ -72,10 +73,6 @@ class WooThemes_Updater {
 		register_activation_hook( $this->file, array( $this, 'activation' ) );
 
 		if ( is_admin() ) {
-			// Load the self-updater.
-			require_once( 'class-woothemes-updater-self-updater.php' );
-			$this->updater = new WooThemes_Updater_Self_Updater( $file );
-
 			// Load the admin.
 			require_once( 'class-woothemes-updater-admin.php' );
 			$this->admin = new WooThemes_Updater_Admin( $file );
@@ -279,8 +276,8 @@ class WooThemes_Updater {
 	 * @return void
 	 */
 	public function need_license_message ( $plugin_data, $r ) {
-		if( empty( $r->package ) ) {
-			_e( ' To enable updates for this WooThemes product, please activate your license by visiting the Dashboard > WooThemes Helper screen.', 'woothemes-updater' );
+		if ( empty( $r->package ) ) {
+			echo wp_kses_post( '<div class="woothemes-updater-plugin-upgrade-notice">' . __( 'To enable this update please activate your WooThemes license by visiting the Dashboard > WooThemes Helper screen.', 'woothemes-updater' ) . '</div>' );
 		}
 	} // End need_license_message()
 
@@ -302,11 +299,10 @@ class WooThemes_Updater {
 
 			foreach ( $woothemes_queued_updates as $key => $value ) {
 				if( isset( $transient->response[ $value->file ] ) && isset( $transient->response[ $value->file ]->package ) && '' == $transient->response[ $value->file ]->package && ( FALSE === stristr($transient->response[ $value->file ]->upgrade_notice, $notice_text ) ) ){
-					$message = $notice_text . ' ' . $transient->response[ $value->file ]->upgrade_notice;
-					$transient->response[ $value->file ]->upgrade_notice = $message;
+					$message = '<div class="woothemes-updater-plugin-upgrade-notice">' . $notice_text . '</div>';
+					$transient->response[ $value->file ]->upgrade_notice = wp_kses_post( $message );
 				}
 			}
-
 		}
 
 		return $transient;

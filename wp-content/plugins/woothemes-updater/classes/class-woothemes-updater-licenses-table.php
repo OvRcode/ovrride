@@ -51,6 +51,7 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	        case 'product':
 	        case 'product_status':
 	        case 'product_version':
+	        case 'license_expiry':
 	            return $item[$column_name];
 	        break;
 	    }
@@ -74,7 +75,8 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
         $columns = array(
             'product_name' => __( 'Product', 'woothemes-updater' ),
             'product_version' => __( 'Version', 'woothemes-updater' ),
-            'product_status' => __( 'License Key', 'woothemes-updater' )
+            'product_status' => __( 'License Key', 'woothemes-updater' ),
+            'product_expiry' => __( 'License Expiry Date', 'woothemes-updater' )
         );
          return $columns;
     } // End get_columns()
@@ -116,6 +118,23 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 
 		return $response;
 	} // End column_status()
+
+	public function column_product_expiry( $item ) {
+		if ( '-' <> $item['license_expiry'] && 'Please activate' <> $item['license_expiry'] ) {
+			$renew_link = add_query_arg( array( 'utm_source' => 'product', 'utm_medium' => 'upsell', 'utm_campaign' => 'licenserenewal' ), 'https://www.woothemes.com/my-account/my-licenses/' );
+			$date = new DateTime( $item['license_expiry'] );
+			$date_string = $date->format( get_option( 'date_format' ) );
+
+			if ( current_time( 'timestamp' ) > strtotime( '-60 day', $date->format( 'U' ) ) && current_time( 'timestamp' ) < strtotime( '+4 day', $date->format( 'U' ) ) ) {
+				$date_string .= ' ' . sprintf( __( '%s(Renew @ 50%% off)</a>', 'woothemes-updater' ), '<a href="' . $renew_link . '">', '</a>' );
+			} elseif ( current_time( 'timestamp' ) > $date->format( 'U' ) ) {
+				$date_string .= ' ' . sprintf( __( '%s(Renew)</a>', 'woothemes-updater' ), '<a href="' . $renew_link . '">', '</a>' );
+			}
+
+			return $date_string;
+		}
+		return $item['license_expiry'];
+	}
 
 	/**
 	 * Retrieve an array of possible bulk actions.
