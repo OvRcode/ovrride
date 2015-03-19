@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce Smart Coupons
 Plugin URI: http://woothemes.com/woocommerce
 Description: <strong>WooCommerce Smart Coupons</strong> lets customers buy gift certificates, store credits or coupons easily. They can use purchased credits themselves or gift to someone else.
-Version: 2.8.3
+Version: 2.8.4
 Author: Store Apps
 Author URI: http://www.storeapps.org/
 Copyright (c) 2012, 2013, 2014, 2015 Store Apps All rights reserved.
@@ -2703,52 +2703,58 @@ if ( is_woocommerce_active() ) {
 
 						<?php if ( $this->is_wc_gte_23() ) { ?>
 
+							<?php if ( $this->is_wc_greater_than( '2.3.5' ) ) { ?>
+								var sc_select_params = wc_enhanced_select_params;
+							<?php } else { ?>
+								var sc_select_params = wc_select_params;
+							<?php } ?>
+
 							if ( typeof getEnhancedSelectFormatString == "undefined" ) {
 								function getEnhancedSelectFormatString() {
 									var formatString = {
 										formatMatches: function( matches ) {
 											if ( 1 === matches ) {
-												return wc_enhanced_select_params.i18n_matches_1;
+												return sc_select_params.i18n_matches_1;
 											}
 
-											return wc_enhanced_select_params.i18n_matches_n.replace( '%qty%', matches );
+											return sc_select_params.i18n_matches_n.replace( '%qty%', matches );
 										},
 										formatNoMatches: function() {
-											return wc_enhanced_select_params.i18n_no_matches;
+											return sc_select_params.i18n_no_matches;
 										},
 										formatAjaxError: function( jqXHR, textStatus, errorThrown ) {
-											return wc_enhanced_select_params.i18n_ajax_error;
+											return sc_select_params.i18n_ajax_error;
 										},
 										formatInputTooShort: function( input, min ) {
 											var number = min - input.length;
 
 											if ( 1 === number ) {
-												return wc_enhanced_select_params.i18n_input_too_short_1
+												return sc_select_params.i18n_input_too_short_1
 											}
 
-											return wc_enhanced_select_params.i18n_input_too_short_n.replace( '%qty%', number );
+											return sc_select_params.i18n_input_too_short_n.replace( '%qty%', number );
 										},
 										formatInputTooLong: function( input, max ) {
 											var number = input.length - max;
 
 											if ( 1 === number ) {
-												return wc_enhanced_select_params.i18n_input_too_long_1
+												return sc_select_params.i18n_input_too_long_1
 											}
 
-											return wc_enhanced_select_params.i18n_input_too_long_n.replace( '%qty%', number );
+											return sc_select_params.i18n_input_too_long_n.replace( '%qty%', number );
 										},
 										formatSelectionTooBig: function( limit ) {
 											if ( 1 === limit ) {
-												return wc_enhanced_select_params.i18n_selection_too_long_1;
+												return sc_select_params.i18n_selection_too_long_1;
 											}
 
-											return wc_enhanced_select_params.i18n_selection_too_long_n.replace( '%qty%', number );
+											return sc_select_params.i18n_selection_too_long_n.replace( '%qty%', number );
 										},
 										formatLoadMore: function( pageNumber ) {
-											return wc_enhanced_select_params.i18n_load_more;
+											return sc_select_params.i18n_load_more;
 										},
 										formatSearching: function() {
-											return wc_enhanced_select_params.i18n_searching;
+											return sc_select_params.i18n_searching;
 										}
 									};
 
