@@ -8,13 +8,13 @@
 
 get_header(); ?>
 
-	<div id="primary" class="site-content row clearfix" role="main">
+	<div id="primary" class="site-content row" role="main">
 
 			<div class="col grid_8_of_12">
 
 				<?php while ( have_posts() ) : the_post(); ?>
 
-					<?php get_template_part( 'content-single', get_post_format() ); ?>
+					<?php get_template_part( 'content', get_post_format() ); ?>
 
 					<?php
 					// If comments are open or we have at least one comment, load up the comment template
@@ -29,7 +29,6 @@ get_header(); ?>
 
 			</div> <!-- /.col.grid_8_of_12 -->
 			<?php get_sidebar(); ?>
-            
 
 	</div> <!-- /#primary.site-content.row -->
 

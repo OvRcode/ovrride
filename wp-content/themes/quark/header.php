@@ -21,58 +21,29 @@
 	<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<meta http-equiv="cleartype" content="on">
 
-  <!-- Responsive and mobile friendly stuff -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0">
+	<!-- Responsive and mobile friendly stuff -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="profile" href="http://gmpg.org/xfn/11" />
-  <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
-
-  <?php
-    // If Home Page, display generic meta description, else display page specific content
-    if (is_front_page()) { ?>
-      <meta name="description" content="The number one source for snowboard and ski trips in New York City. Providing tours to the best East Coast mountains, West Coast resorts, and International destinations!">
-  <?php } ?>
-
-  <!-- Facebook Open Graph Properties -->
-  <?php if (stristr($_SERVER["HTTP_USER_AGENT"],'facebook') !== false) { ?>
-    <meta property="og:title" content="<?php wp_title(); ?>" />
-    <meta property="og:description" content="<?php bloginfo('description'); ?>" />
-    <meta property="og:url" content="<?php bloginfo('url'); ?>" />
-    <meta property="og:type" content="website" />
-    <meta property="fb:admins" content="123456789" />
-    <meta property="og:image" content="<?php bloginfo('url'); ?>/wp-content/uploads/2013/05/ovr-logo.jpg" />
-  <?php } ?>
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
 
 	<?php wp_head(); ?>
-  <!-- Pingdom Real User Monitoring Script -->
-  <script>
-  var _prum = [['id', '54885757abe53d7d3d2bdebd'],
-               ['mark', 'firstbyte', (new Date()).getTime()]];
-  (function() {
-      var s = document.getElementsByTagName('script')[0]
-        , p = document.createElement('script');
-      p.async = 'async';
-      p.src = '//rum-static.pingdom.net/prum.min.js';
-      s.parentNode.insertBefore(p, s);
-  })();
-  </script>
 </head>
 
 <body <?php body_class(); ?>>
 
-<div class="visuallyhidden"><a href="#primary" title="<?php esc_attr_e( 'Skip to main content', 'quark' ); ?>"><?php _e( 'Skip to main content', 'quark' ); ?></a></div>
-
 <div id="wrapper" class="hfeed site">
 
-  <div id="headercontainer">
+	<div class="visuallyhidden skip-link"><a href="#primary" title="<?php esc_attr_e( 'Skip to main content', 'quark' ); ?>"><?php esc_html_e( 'Skip to main content', 'quark' ); ?></a></div>
 
-    <header id="masthead" class="site-header row clearfix" role="banner">
-      <div class="col grid_2_of_12 site-title">
+	<div id="headercontainer">
+
+		<header id="masthead" class="site-header row" role="banner">
+			<div class="col grid_5_of_12 site-title">
 				<h1>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" rel="home">
 						<?php 
@@ -85,47 +56,53 @@
 						} ?>
 					</a>
 				</h1>
-			</div> <!-- /.col.grid_2_of_12 -->
+			</div> <!-- /.col.grid_5_of_12 -->
 
-      <div class="col grid_10_of_12">
-        <div class="social-media-icons">
-          <ul style="margin-top:5px;" id="topnav">
-            <li class="ovr_soc_icon">
-              <a href="/contact-us/" title="Contact Us"><i class="icon-envelope icon-large"></i></a>
-            </li>
-            <li class="ovr_soc_icon">
-              <a href="https://www.facebook.com/ovrride" title="Like Us on Facebook" target="_blank"><i class="icon-facebook-sign icon-large"></i></a>
-            </li>
-            <li class="ovr_soc_icon">
-              <a href="http://twitter.com/ovrride" title="Follow Us on Twitter" target="_blank"><i class="icon-twitter-sign icon-large"></i></a>
-            </li>
-            <li class="ovr_soc_icon">
-              <a href="http://instagram.com/ovrride" title="Follow Us on Instagram" target="_blank"><i class="icon-instagram icon-large"></i></a>
-            </li>
-            <li class="ovr_soc_icon_end">
-              <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="icon-youtube-sign icon-large"></i></a>
-            </li>
-            <li>
-              <a href="/cart">CART</a>
-            </li>
-            <li class="ovr_login_split">|</li>
-            <li>
-				<?php wp_loginout(); ?>
-            </li>
-          </ul>
-          <div class="top-search">
-            <?php echo do_shortcode('[widget id="search-3"]'); ?>
-          </div>
-        </div>
-
+			<div class="col grid_7_of_12">
+				<div class="social-media-icons">
+					<?php echo quark_get_social_media(); ?>
+				</div>
 				<nav id="site-navigation" class="main-navigation" role="navigation">
-					<h3 class="menu-toggle assistive-text"><?php _e( 'Menu', 'quark' ); ?></h3>
-					<div class="assistive-text skip-link"><a href="#content" title="<?php esc_attr_e( 'Skip to content', 'quark' ); ?>"><?php _e( 'Skip to content', 'quark' ); ?></a></div>
+					<h3 class="menu-toggle assistive-text"><?php esc_html_e( 'Menu', 'quark' ); ?></h3>
+					<div class="assistive-text skip-link"><a href="#content" title="<?php esc_attr_e( 'Skip to content', 'quark' ); ?>"><?php esc_html_e( 'Skip to content', 'quark' ); ?></a></div>
 					<?php wp_nav_menu( array( 'theme_location' => 'primary', 'menu_class' => 'nav-menu' ) ); ?>
 				</nav> <!-- /.site-navigation.main-navigation -->
 			</div> <!-- /.col.grid_7_of_12 -->
 		</header> <!-- /#masthead.site-header.row -->
 
 	</div> <!-- /#headercontainer -->
+	<div id="bannercontainer">
+		<div class="banner row">
+			<?php if ( is_front_page() ) {
+				// Count how many banner sidebars are active so we can work out how many containers we need
+				$bannerSidebars = 0;
+				for ( $x=1; $x<=2; $x++ ) {
+					if ( is_active_sidebar( 'frontpage-banner' . $x ) ) {
+						$bannerSidebars++;
+					}
+				}
+
+				// If there's one or more one active sidebars, create a row and add them
+				if ( $bannerSidebars > 0 ) { ?>
+					<?php
+					// Work out the container class name based on the number of active banner sidebars
+					$containerClass = "grid_" . 12 / $bannerSidebars . "_of_12";
+
+					// Display the active banner sidebars
+					for ( $x=1; $x<=2; $x++ ) {
+						if ( is_active_sidebar( 'frontpage-banner'. $x ) ) { ?>
+							<div class="col <?php echo $containerClass?>">
+								<div class="widget-area" role="complementary">
+									<?php dynamic_sidebar( 'frontpage-banner'. $x ); ?>
+								</div> <!-- /.widget-area -->
+							</div> <!-- /.col.<?php echo $containerClass?> -->
+						<?php }
+					} ?>
+
+				<?php }
+			} ?>
+		</div> <!-- /.banner.row -->
+	</div> <!-- /#bannercontainer -->
 
 	<div id="maincontentcontainer">
+		<?php	do_action( 'quark_before_woocommerce' ); ?>
