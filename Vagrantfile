@@ -17,6 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider "virtualbox" do |vb|
     # Up memory on VM
     vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "2"]
+    vb.customize [ "guestproperty", "set", :id, "--timesync-threshold", 10000 ]
   end
 
   config.vm.provision "chef_solo" do |chef|
