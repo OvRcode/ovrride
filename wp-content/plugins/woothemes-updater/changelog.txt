@@ -1,5 +1,8 @@
 *** WooThemes Helper Changelog ***
 
+2015.03.18 - version 1.5.2
+ * Tweak - Increase the timeout for update checks from the default 5 seconds.
+
 2015.03.18 - version 1.5.1
  * New - License expire dates and notices with links to renew
  * New - Plugin update "view details" support, shows plugin data & changelog in popup.

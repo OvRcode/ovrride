@@ -387,6 +387,7 @@ class WooThemes_Updater_Update_Checker {
 		// Send request
 		$request = wp_remote_post( ( $api == 'info' ) ? $this->api_url : $this->update_check_url, array(
 			'method' => 'POST',
+			'timeout' => 45,
 			'redirection' => 5,
 			'httpversion' => '1.0',
 			'headers' => array( 'user-agent' => 'WooThemesUpdater/' . $this->version ),
