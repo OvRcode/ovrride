@@ -1,7 +1,10 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.03.17 - version 2.8.4
+ * Fix: Broken 'Set featured image' due to undefined 'wc_select_params'
+
 2015.03.06 - version 2.8.3
- * Fix: Credit should be applied after taxation
+ * Fix: Credit should be applied after shipping & taxation
  * Fix: Smart Coupon balance not updating correctly
  * Fix: Usage limit data of coupon was not added when auto generating coupons
  * Fix: Sometimes not generating unique coupon codes
