@@ -99,10 +99,10 @@
             <li class="ovr_soc_icon">
               <a href="http://twitter.com/ovrride" title="Follow Us on Twitter" target="_blank"><i class="icon-twitter-sign icon-large"></i></a>
             </li>
-            <li class="ovr_soc_icon">
+            <li class="ovr_soc_icon ovr_soc_pad">
               <a href="http://instagram.com/ovrride" title="Follow Us on Instagram" target="_blank"><i class="icon-instagram icon-large"></i></a>
             </li>
-            <li class="ovr_soc_icon_end">
+            <li class="ovr_soc_icon_end ovr_soc_pad">
               <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="icon-youtube-sign icon-large"></i></a>
             </li>
             <li>
