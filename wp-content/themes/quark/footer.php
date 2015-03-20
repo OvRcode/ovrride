@@ -11,12 +11,11 @@
  */
 ?>
 
-		<?php	do_action( 'quark_after_woocommerce' ); ?>
 	</div> <!-- /#maincontentcontainer -->
 
 	<div id="footercontainer">
 
-		<footer class="site-footer row" role="contentinfo">
+		<footer class="site-footer row clearfix" role="contentinfo">
 
 			<?php
 			// Count how many footer sidebars are active so we can work out how many containers we need
@@ -49,7 +48,7 @@
 		</footer> <!-- /.site-footer.row -->
 
 		<?php if ( of_get_option( 'footer_content', quark_get_credits() ) ) {
-			echo '<div class="row smallprint">';
+			echo '<div class="row smallprint clearfix">';
 			echo apply_filters( 'meta_content', wp_kses_post( of_get_option( 'footer_content', quark_get_credits() ) ) );
 			echo '</div> <!-- /.smallprint -->';
 		} ?>
