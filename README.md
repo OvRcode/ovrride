@@ -31,8 +31,11 @@ OvRride.com is built using WordPress 4.0, and the WooCommerce plugin. The OvRrid
 3. Change permissions on special recent posts
   - ```chmod -R 777 wp-content/plugins/special-recent-posts/cache/```
   - without this step you will get errors from the plugin
- 
-4. Start virtual machine
+4. install vmware fusion provider
+  - ```vagrant plugin install vagrant-vmware-fusion```
+  - install licence for plugin: ```vagrant plugin license vagrant-vmware-fusion ~/license.lic```
+  - check plugin installation: ```vagrant plugin list```
+5. Start virtual machine
   - ```vagrant up``` this needs to be run in terminal from inside the project folder
 
   - The VM looks at the project directory for files so changes will show up immediately
@@ -42,7 +45,7 @@ OvRride.com is built using WordPress 4.0, and the WooCommerce plugin. The OvRrid
 
 
 **NOTES:**
-- Email hasn't been setup yet for dev system, creating user accounts/orders will not send any emails right now, will just error out on the backend
+- Email is setup on a development key, errors will no be generated but emails will not be sent from the dev system
 - If you'll need to test the Payment Gateway, make sure to (Enable PayPal Sandbox/Test Mode](http://docs.woothemes.com/document/paypal-pro/)
 
 ### OvR Lists:

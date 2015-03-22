@@ -6,18 +6,17 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # ubuntu 14.04 64bit base
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vmwarefusion.box"
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.vm.host_name = "local.ovrride.com"
   config.vm.network "private_network", ip: "192.168.50.4"
   config.vm.network "public_network"
   config.vm.synced_folder ".", "/var/www/"
-
-  config.vm.provider "virtualbox" do |vb|
-    # Up memory on VM
-    vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "2"]
-    vb.customize [ "guestproperty", "set", :id, "--timesync-threshold", 10000 ]
+  
+  config.vm.provider "vmware_fusion" do |v|
+    v.vmx["memsize"] = "2048"
+    v.vmx["numvcpus"] = "2"
   end
 
   config.vm.provision "chef_solo" do |chef|
