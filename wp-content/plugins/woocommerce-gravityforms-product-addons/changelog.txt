@@ -1,4 +1,11 @@
 *** Gravity Forms Product Add-Ons Changelog ***
+2015.03.20 - version 2.9.1
+	* Fix:  Fix to allow Secure forms to work properly after Gravity Forms 2.9.4.1
+	
+2015.03.02 - version 2.9.0
+	* Fix:  Hidden field usage. 
+	* Update:  Add gravityforms_add_to_cart_text to the functions which override the add to cart link. 
+		
 2015.02.26 - version 2.8.9
 	* Fix:  Override gravity forms display:block !important on mobile devices when total options are hidden. 
 

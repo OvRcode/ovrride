@@ -55,7 +55,8 @@ class woocommerce_gravityforms_product_form {
 			$form = str_replace('</form>', '', $form);
 
 			$form = str_replace('gform_submit', 'gform_old_submit', $form);
-
+			$form .= wp_nonce_field( 'gform_submit_' . $this->form_id, '_gform_submit_nonce_' . $this->form_id, true, false );
+			
 			$this->current_page = GFFormDisplay::get_current_page($this->form_id);
 			$this->next_page = $this->current_page + 1;
 			$this->previous_page = $this->current_page - 1;
