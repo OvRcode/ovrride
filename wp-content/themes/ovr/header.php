@@ -18,8 +18,8 @@
 
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
-	<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<!-- Always force latest IE rendering engine (even in intranet)-->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<meta http-equiv="cleartype" content="on">
