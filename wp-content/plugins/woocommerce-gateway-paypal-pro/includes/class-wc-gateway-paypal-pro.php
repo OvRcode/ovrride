@@ -308,8 +308,17 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		if ( $this->description ) {
 			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.  Note that you will get a faster processing result if you use a card from your developer\'s account.', 'woocommerce-gateway-paypal-pro' ) : '' ) . '</p>';
 		}
-		
-		$this->credit_card_form();
+
+		$fields = array();
+
+		if ( isset( $this->available_card_types[ WC()->countries->get_base_country() ]['Maestro'] ) ) {
+			$fields['card-startdate-field'] = '<p class="form-row form-row-first">
+				<label for="' . esc_attr( $this->id ) . '-card-startdate">' . __( 'Start Date (MM/YY)', 'woocommerce' ) . '</label>
+				<input id="' . esc_attr( $this->id ) . '-card-startdate" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="' . __( 'MM / YY', 'woocommerce' ) . '" name="' . $this->id . '-card-startdate' . '" />
+			</p>';
+		}
+
+		$this->credit_card_form( array(), $fields );
 	}
 
 	/**
@@ -376,6 +385,16 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		$card_expiry    = array_map( 'trim', explode( '/', $card_expiry ) );
 		$card_exp_month = str_pad( $card_expiry[0], 2, "0", STR_PAD_LEFT );
 		$card_exp_year  = $card_expiry[1];
+
+		if ( isset( $_POST['paypal_pro-card-start'] ) ) {
+			$card_start       = woocommerce_clean( $_POST['paypal_pro-card-start'] );
+			$card_start       = array_map( 'trim', explode( '/', $card_start ) );
+			$card_start_month = str_pad( $card_start[0], 2, "0", STR_PAD_LEFT );
+			$card_start_year  = $card_start[1];
+		} else {
+			$card_start_month = '';
+			$card_start_year  = '';
+		}
 
 		if ( strlen( $card_exp_year ) == 2 ) {
 			$card_exp_year += 2000;
@@ -444,7 +463,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		    WC()->session->set( "Centinel_ErrorDesc", $centinelClient->getValue("ErrorDesc") );
 			WC()->session->set( "Centinel_EciFlag", $centinelClient->getValue("EciFlag") );
 		    WC()->session->set( "Centinel_TransactionType", "C" );
-		    WC()->session->set( 'Centinel_TermUrl', WC()->api_request_url( 'WC_Gateway_PayPal_Pro' ) );
+		    WC()->session->set( 'Centinel_TermUrl', WC()->api_request_url( 'WC_Gateway_PayPal_Pro', true ) );
 		    WC()->session->set( 'Centinel_OrderId', $centinelClient->getValue("OrderId") );
 
 		    $this->log( '3dsecure Centinel_Enrolled: ' . WC()->session->get( 'Centinel_Enrolled' ) );
@@ -475,10 +494,12 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 						        <input type="hidden" name="PaReq" value="<?php echo WC()->session->get("Centinel_Payload"); ?>">
 						        <input type="hidden" name="TermUrl" value="<?php echo WC()->session->get('Centinel_TermUrl'); ?>">
 						        <input type="hidden" name="MD" value="<?php echo urlencode( json_encode( array(
-						        	'card' 				=> $card_number,
-						        	'csc'				=> $card_cvc,
-						        	'card_exp_month' 	=> $card_exp_month,
-						        	'card_exp_year' 	=> $card_exp_year
+									'card'             => $card_number,
+									'csc'              => $card_cvc,
+									'card_exp_month'   => $card_exp_month,
+									'card_exp_year'    => $card_exp_year,
+									'card_start_month' => $card_start_month,
+									'card_start_year'  => $card_start_year
 						        ) ) ); ?>">
 						        <noscript>
 						        	<div class="woocommerce_message"><?php _e( 'Processing your Payer Authentication Transaction', 'woocommerce-gateway-paypal-pro' ); ?> - <?php _e( 'Please click Submit to continue the processing of your transaction.', 'woocommerce-gateway-paypal-pro' ); ?>  <input type="submit" class="button" id="3ds_submit" value="Submit" /></div>
@@ -500,7 +521,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				} else {
 
     				// Customer not-enrolled, so just carry on with PayPal process
-    				return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc, '', WC()->session->get('Centinel_Enrolled'), '', WC()->session->get("Centinel_EciFlag"), '' );
+    				return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc, $card_start_month, $card_start_year, '', WC()->session->get('Centinel_Enrolled'), '', WC()->session->get("Centinel_EciFlag"), '' );
 
     			}
 
@@ -512,7 +533,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		}
 
 		// Do payment with paypal
-		return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc );
+		return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc, $card_start_month, $card_start_year );
 	}
 
 	/**
@@ -534,7 +555,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		// get transaction details
 		$details = $this->get_transaction_details( $order->get_transaction_id() );
 
-		// check if it is authorized only we need to void instead 
+		// check if it is authorized only we need to void instead
 		if ( $details && strtolower( $details['PENDINGREASON'] ) === 'authorization' ) {
 			$order->add_order_note( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
 
@@ -683,7 +704,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				if ( ( $pa_res_status == "Y" || $pa_res_status == "A" || $pa_res_status == "U") && $sig_verification == "Y" ) {
 
 					// If we are here we can process the card
-					$this->do_payment( $order, $merchant_data['card'], $merchant_data['type'], $merchant_data['card_exp_month'], $merchant_data['card_exp_year'], $merchant_data['csc'], $pa_res_status, "Y", $cavv, $eci_flag, $xid );
+					$this->do_payment( $order, $merchant_data['card'], $merchant_data['type'], $merchant_data['card_exp_month'], $merchant_data['card_exp_year'], $merchant_data['csc'], $merchant_data['card_start_month'], $merchant_data['card_start_year'], $pa_res_status, "Y", $cavv, $eci_flag, $xid );
 
 					$this->clear_centinel_session();
 
@@ -722,9 +743,10 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	 * @param string $centinelXid (default: '')
 	 * @return void
 	 */
-	public function do_payment( $order, $card_number, $card_type, $card_exp_month, $card_exp_year, $card_cvc, $centinelPAResStatus = '', $centinelEnrolled = '', $centinelCavv = '', $centinelEciFlag = '', $centinelXid = '' ) {
+	public function do_payment( $order, $card_number, $card_type, $card_exp_month, $card_exp_year, $card_cvc, $card_start_month, $card_start_year, $centinelPAResStatus = '', $centinelEnrolled = '', $centinelCavv = '', $centinelEciFlag = '', $centinelXid = '' ) {
 
-		$card_exp = $card_exp_month . $card_exp_year;
+		$card_exp   = $card_exp_month . $card_exp_year;
+		$card_start = $card_start_month . $card_start_year;
 
 		// Send request to paypal
 		try {
@@ -744,6 +766,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				'CREDITCARDTYPE'    => $card_type,
 				'ACCT'              => $card_number,
 				'EXPDATE'           => $card_exp,
+				'STARTDATE'         => $card_start,
 				'CVV2'              => $card_cvc,
 				'EMAIL'             => $order->billing_email,
 				'FIRSTNAME'         => $order->billing_first_name,
@@ -873,7 +896,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 			if ( empty( $response['body'] ) ) {
 				$this->log( 'Empty response!' );
-				
+
 				throw new Exception( __( 'Empty Paypal response.', 'woocommerce-gateway-paypal-pro' ) );
 			}
 
@@ -990,7 +1013,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		switch ( strtolower( $parsed_response['ACK'] ) ) {
 			case 'success':
 			case 'successwithwarning':
-				
+
 				return $parsed_response;
 			break;
 		}

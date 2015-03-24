@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
 Plugin URI: http://www.woothemes.com/products/paypal-pro/
 Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
-Version: 4.3.0
+Version: 4.3.1
 Author: WooThemes
 Author URI: http://woothemes.com/
 
@@ -153,7 +153,7 @@ class WC_PayPal_Pro {
 			if ( $paypalpro->soft_descriptor ) {
 				$post_data['SOFTDESCRIPTOR'] = $paypalpro->soft_descriptor;
 			}
-			
+
 			$response = wp_remote_post( $url, array(
 				'method'        => 'POST',
 				'headers'       => array(
@@ -198,7 +198,7 @@ class WC_PayPal_Pro {
 			if ( $paypalpro_payflow->soft_descriptor ) {
 				$post_data['MERCHDESCR'] = $paypalpro_payflow->soft_descriptor;
 			}
-			
+
 			$response = wp_remote_post( $url, array(
 				'method'      => 'POST',
 				'body'        => urldecode( http_build_query( $post_data, null, '&' ) ),
@@ -258,7 +258,7 @@ class WC_PayPal_Pro {
 				'METHOD'          => 'DoVoid',
 				'AUTHORIZATIONID' => $txn_id
 			);
-			
+
 			$response = wp_remote_post( $url, array(
 				'method'		=> 'POST',
 				'headers'       => array(
@@ -316,7 +316,7 @@ class WC_PayPal_Pro {
 				$order->add_order_note( __( 'Unable to void charge!', 'woocommerce-gateway-paypal-pro' ) . ' ' . $response->get_error_message() );
 
 				// log it
-				$paypalpro_payflow->log( 'Parsed Response ' . print_r( $parsed_response, true ) );				
+				$paypalpro_payflow->log( 'Parsed Response ' . print_r( $parsed_response, true ) );
 			} else {
 				$order->add_order_note( sprintf( __( 'PayPal Pro (Payflow) void complete (PNREF: %s)', 'woocommerce-gateway-paypal-pro' ), $parsed_response['PNREF'] ) );
 

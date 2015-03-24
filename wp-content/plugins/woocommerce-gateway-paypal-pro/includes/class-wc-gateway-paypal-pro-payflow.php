@@ -42,7 +42,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		$this->debug                = $this->get_option( 'debug', "no" ) === "yes" ? true : false;
 		$this->transparent_redirect = $this->get_option( 'transparent_redirect' ) === "yes" ? true : false;
 		$this->soft_descriptor      = str_replace( ' ', '-', preg_replace('/[^A-Za-z0-9\-\.]/', '', $this->get_option( 'soft_descriptor', "" ) ) );
-		$this->paymentaction        = $this->get_option( 'paypal_pro_payflow_paymentaction', 'S' );
+		$this->paymentaction        = strtoupper( $this->get_option( 'paypal_pro_payflow_paymentaction', 'S' ) );
 
 		if ( $this->transparent_redirect ) {
 			$this->order_button_text    = __( 'Enter payment details', 'woocommerce-gateway-paypal-pro' );
@@ -508,7 +508,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			$post_data[ 'ITEMAMT' ] = $order->get_total();
 		}
 
-		$post_data['ORDERDESC']      = 'Order ' . $order->get_order_number() . ' on ' . get_bloginfo( 'name' );
+		$post_data['ORDERDESC']      = 'Order ' . $order->get_order_number() . ' on ' . wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 		$post_data['FIRSTNAME']      = $order->billing_first_name;
 		$post_data['LASTNAME']       = $order->billing_last_name;
 		$post_data['STREET']         = $order->billing_address_1 . ' ' . $order->billing_address_2;
