@@ -91,7 +91,6 @@ do_action('woocommerce_email_before_order_table', $order, false); ?>
 	</thead>
 	<tbody>
 		<?php echo $order->email_order_items_table( true, false, true ); ?>
-        <?php error_log($order->email_order_items_table( true, false, true )); ?>
 	</tbody>
 	<tfoot>
 		<?php
