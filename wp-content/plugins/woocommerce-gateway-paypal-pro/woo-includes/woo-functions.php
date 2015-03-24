@@ -1,33 +1,16 @@
 <?php
 /**
+ * Functions used by plugins
+ */
+if ( ! class_exists( 'WC_Dependencies' ) )
+	require_once 'class-wc-dependencies.php';
+
+/**
  * WC Detection
  */
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
 	function is_woocommerce_active() {
-
-		if ( defined( 'WOOCOMMERCE_ACTIVE' ) )
-			return WOOCOMMERCE_ACTIVE;
-
-		$plugin = 'woocommerce/woocommerce.php';
-
-		if ( is_admin() ) {
-			if ( ! function_exists( 'is_plugin_active' ) )
-				include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-			define( 'WOOCOMMERCE_ACTIVE', is_plugin_active( $plugin ) );
-		} else {
-			$active_plugins = (array) get_option( 'active_plugins', array() );
-
-			if ( is_multisite() )
-				$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
-
-			if ( in_array( $plugin, $active_plugins ) || isset( $active_plugins[ $plugin ] ) )
-				define( 'WOOCOMMERCE_ACTIVE', true );
-			else
-				define( 'WOOCOMMERCE_ACTIVE', false );
-		}
-
-		return WOOCOMMERCE_ACTIVE;
+		return WC_Dependencies::woocommerce_active_check();
 	}
 }
 
@@ -84,12 +67,8 @@ if ( ! class_exists( 'WooThemes_Updater' ) && ! function_exists( 'woothemes_upda
 	 * @return void
 	 */
 	function woothemes_updater_notice() {
-
-		if ( ! function_exists( 'is_plugin_active' ) )
-			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-		if ( is_plugin_active( 'woothemes-updater/woothemes-updater.php' ) )
-			return;
+		$active_plugins = apply_filters( 'active_plugins', get_option('active_plugins' ) );
+		if ( in_array( 'woothemes-updater/woothemes-updater.php', $active_plugins ) ) return;
 
 		$slug = 'woothemes-updater';
 		$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=' . $slug ), 'install-plugin_' . $slug );
