@@ -3,7 +3,7 @@
   Plugin Name: WooCommerce - Gravity Forms Product Add-Ons
   Plugin URI: http://woothemes.com/woocommerce
   Description: Allows you to use Gravity Forms on individual WooCommerce products. Requires the Gravity Forms plugin to work.
-  Version: 2.8.9
+  Version: 2.9.1
   Author: Lucas Stark
   Author URI: http://lucasstark.com
   Requires at least: 3.1
@@ -143,7 +143,7 @@ if ( is_woocommerce_active() ) {
 		function get_add_to_cart_link( $anchor, $product, $link ) {
 			if ( is_array( $this->gravity_products ) && in_array( $product->id, $this->gravity_products ) ) {
 				$link['url'] = apply_filters( 'variable_add_to_cart_url', get_permalink( $product->id ) );
-				$link['label'] = apply_filters( 'variable_add_to_cart_text', __( 'Select options', 'woocommerce' ) );
+				$link['label'] = apply_filters( 'gravityforms_add_to_cart_text', apply_filters( 'variable_add_to_cart_text', __( 'Select options', 'woocommerce' ) ));
 				return sprintf( '<a href="%s" rel="nofollow" data-product_id="%s" data-product_sku="%s" class="%s button product_type_%s">%s</a>', esc_url( $link['url'] ), esc_attr( $product->id ), esc_attr( $product->get_sku() ), esc_attr( $link['class'] ), esc_attr( 'variable' ), esc_html( $link['label'] ) );
 			} else {
 				return $anchor;
@@ -153,7 +153,7 @@ if ( is_woocommerce_active() ) {
 		function get_add_to_cart_link21( $link, $product ) {
 			if ( is_array( $this->gravity_products ) && in_array( $product->id, $this->gravity_products ) ) {
 				$label = $product->is_purchasable() && $product->is_in_stock() ? __( 'Select options', 'woocommerce' ) : __( 'Read More', 'woocommerce' );
-				$label = apply_filters( 'woocommerce_product_add_to_cart_text', $label, $product );
+				$label = apply_filters( 'gravityforms_add_to_cart_text', apply_filters( 'woocommerce_product_add_to_cart_text', $label, $product ));
 
 				return sprintf( '<a href="%s" rel="nofollow" data-product_id="%s" data-product_sku="%s" class="button add_to_cart_button product_type_%s">%s</a>', get_permalink( $product->id ), esc_attr( $product->id ), esc_attr( $product->get_sku() ), 'variable', esc_html( $label ) );
 			} else {
@@ -698,6 +698,7 @@ if ( is_woocommerce_active() ) {
 
 							$display_title = GFCommon::get_label( $field );
 
+							$prefix = '';
 							$hidden = $field['type'] == 'hidden';
 							$display_hidden = apply_filters( "woocommerce_gforms_field_is_hidden", $hidden, $display_value, $display_title, $field, $lead, $form_meta );
 							if ( $display_hidden ) {
@@ -922,7 +923,7 @@ if ( is_woocommerce_active() ) {
 									$display_text = GFCommon::get_lead_field_display( $field, $value, isset( $lead["currency"] ) ? $lead["currency"] : false, false );
 									$display_value = apply_filters( "woocommerce_gforms_field_display_text", $display_value, $display_text, $field, $lead, $form_meta );
 
-
+									$prefix = '';
 									$hidden = $field['type'] == 'hidden';
 									$display_hidden = apply_filters( "woocommerce_gforms_field_is_hidden", $hidden, $display_value, $display_title, $field, $lead, $form_meta );
 									if ( $display_hidden ) {
