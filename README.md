@@ -1,6 +1,6 @@
 ## OvRride.com
 
-OvRride.com is built using WordPress 4.0, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
+OvRride.com is built using WordPress 4.1, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
 
 
 ### Dependancies:
@@ -19,7 +19,7 @@ OvRride.com is built using WordPress 4.0, and the WooCommerce plugin. The OvRrid
     - once rvm is installed ```rvm install 2.1```
   - [Chef](https://downloads.getchef.com/chef-dk/mac/#/)
   - [Vagrant](http://vagrantup.com) - Virtual machine manager
-  - [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
+  - [VMware Fusion 7](http://store.vmware.com/store/vmware/en_US/DisplayProductDetailsPage/ThemeID.2485600/productID.304322400)
   - Kife solo gem - part of chef solo which is used to configure the virtual machine the development environment runs on
   - librian-chef - helps manage chef cookbooks
   - Both can be installed by running ```bundle install```
