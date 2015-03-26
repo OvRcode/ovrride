@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore (<schisamo@chef.io>)
+# Author:: Sander Botman <sbotman@schubergphilis.com>
 # Cookbook Name:: windows
-# Resource:: reboot
+# Resource:: font
 #
-# Copyright:: 2011, Chef Software, Inc.
+# Copyright:: 2014, Schuberg Philis BV.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,8 @@
 # limitations under the License.
 #
 
-actions :request, :cancel
+actions :install
 
-attribute :timeout, :kind_of => Integer, :name_attribute => true
-attribute :reason, :kind_of => String, :default => ''
+default_action :install
 
-def initialize(name,run_context=nil)
-  super
-  @action = :request
-end
+attribute :file, :kind_of => String, :name_attribute => true
