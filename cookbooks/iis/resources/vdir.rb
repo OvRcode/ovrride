@@ -1,9 +1,9 @@
 #
-# Author:: Jon DeCamp (<jon.decamp@nordstrom.com>)
+# Author:: Justin Schuhmann (<jmschu02@gmail.com>)
 # Cookbook Name:: iis
-# Resource:: module
+# Resource:: site
 #
-# Copyright:: 2012, Nordstrom, Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,15 @@
 # limitations under the License.
 #
 
-actions :add, :delete
+actions :add, :delete, :config
 default_action :add
 
-attribute :module_name, :kind_of => String, :name_attribute => true
-attribute :type, :kind_of => String, :default => nil
-attribute :precondition, :kind_of => String, :default => nil
-attribute :application, :kind_of => String, :default => nil
+attribute :application_name, :kind_of => String, :name_attribute => true
+attribute :path, :kind_of => String
+attribute :physical_path, :kind_of => String
+attribute :username, :kind_of => String, :default => nil
+attribute :password, :kind_of => String, :default => nil
+attribute :logon_method, :kind_of => Symbol, :default => :ClearText, :equal_to => [:Interactive, :Batch, :Network, :ClearText]
+attribute :allow_sub_dir_config, :kind_of => [TrueClass, FalseClass], :default => true
 
 attr_accessor :exists

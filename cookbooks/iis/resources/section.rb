@@ -1,9 +1,9 @@
 #
-# Author:: Jon DeCamp (<jon.decamp@nordstrom.com>)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Resource:: module
+# Resource:: lock
 #
-# Copyright:: 2012, Nordstrom, Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@
 # limitations under the License.
 #
 
-actions :add, :delete
-default_action :add
+actions :lock, :unlock
+default_action :lock
 
-attribute :module_name, :kind_of => String, :name_attribute => true
-attribute :type, :kind_of => String, :default => nil
-attribute :precondition, :kind_of => String, :default => nil
-attribute :application, :kind_of => String, :default => nil
+attribute :section, :kind_of => String
+attribute :returns, :kind_of => [Integer, Array], :default => 0
 
 attr_accessor :exists
