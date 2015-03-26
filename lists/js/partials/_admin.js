@@ -29,8 +29,11 @@ $(function(){
     }
 });
 function saveDestination(){
-    $.post("api/dropdown/destination/save", { destination: $("#destName").val() });
-    location.reload();
+    $.post("api/dropdown/destination/save", { destination: $("#destName").val() })
+      .done(function(){
+        location.reload();
+      });
+    
 }
 function checkDestPopover(){
     var destName = $("#destName").val();
