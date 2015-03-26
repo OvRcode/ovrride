@@ -12,15 +12,13 @@ attr_reader :key_file, :key, :cert, :ef
 action :create  do
   unless ::File.exists? new_resource.name
     create_keys
-    cert_content = cert.to_pem
-    key_content = key.to_pem
 
     file new_resource.name do
       action :create_if_missing
       mode  new_resource.mode
       owner new_resource.owner
       group new_resource.group
-      content cert_content
+      content cert.to_pem
     end
 
     file new_resource.key_file do
@@ -28,7 +26,7 @@ action :create  do
       mode  new_resource.mode
       owner new_resource.owner
       group new_resource.group
-      content key_content
+      content key.to_pem
     end
 
   end

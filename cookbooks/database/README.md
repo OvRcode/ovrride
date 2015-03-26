@@ -1,52 +1,39 @@
 Database Cookbook
 =================
-The main highlight of this cookbook is the `database` and
-`database_user` resources for managing databases and database users in
-a RDBMS. Providers for MySQL, PostgreSQL and SQL Server are also
-provided, see usage documentation below.
+The main highlight of this cookbook is the `database` and `database_user` resources for managing databases and database users in a RDBMS. Providers for MySQL, PostgreSQL and SQL Server are also provided, see usage documentation below.
+
+This cookbook also contains recipes to configure mysql database masters and slaves and uses EBS for storage, integrating together with the application cookbook utilizing data bags for application related information. These recipes are written primarily to use MySQL and the Opscode mysql cookbook. Other RDBMS may be supported at a later date. This cookbook does not automatically restore database dumps, but does install tools to help with that.
+
 
 Requirements
 ------------
 Chef version 0.11+
 
 ### Platforms
-- Debian, Ubuntu
-- Red Hat, CentOS, Scientific, Fedora, Amazon
+* Debian, Ubuntu
+* Red Hat, CentOS, Scientific, Fedora, Amazon
 
 ### Cookbooks
-The following Chef Software cookbooks are dependencies:
+The following Opscode cookbooks are dependencies:
 
+* mysql
 * postgresql
+* xfs
+* aws
+
 
 Resources/Providers
 -------------------
-These resources aim to expose an abstraction layer for interacting
-with different RDBMS in a general way. Currently the cookbook ships
-with providers for MySQL, PostgreSQL and SQL Server. Please see
-specific usage in the __Example__ sections below. The providers use
-specific Ruby gems installed under Chef's Ruby environment to execute
-commands and carry out actions. These gems will need to be installed
-before the providers can operate correctly. Specific notes for each
-RDBS flavor:
+These resources aim to expose an abstraction layer for interacting with different RDBMS in a general way. Currently the cookbook ships with providers for MySQL, PostgreSQL and SQL Server. Please see specific usage in the __Example__ sections below. The providers use specific Ruby gems installed under Chef's Ruby environment to execute commands and carry out actions. These gems will need to be installed before the providers can operate correctly. Specific notes for each RDBS flavor:
 
-- MySQL: leverages the `mysql2` gem, which can be installed with the
-  `mysql2_chef_gem` resource prior to use (available on the
-  Supermarket). You must depend on the `mysql2_chef_gem` cookbook,
-  then use a `mysql2_chef_gem` resource to install it. The resource
-  allows the user to select MySQL client library versions, as well as
-  optionally select MariaDB libraries.
-      
-- PostgreSQL: leverages the `pg` gem which is installed as part of the
-  `postgresql::ruby` recipe. You must declare `include_recipe
-  "database::postgresql"` to include this.
+- MySQL: leverages the `mysql` gem which is installed as part of the `mysql-chef_gem` recipe. You must declare `include_recipe "database::mysql"` to include this in your recipe.
+- PostgreSQL: leverages the `pg` gem which is installed as part of the `postgresql::ruby` recipe. You must declare `include_recipe "database::postgresql"` to include this. 
+- SQL Server: leverages the `tiny_tds` gem which is installed as part of the `sql_server::client` recipe.
 
-- SQL Server: leverages the `tiny_tds` gem which is installed as part
-  of the `sql_server::client` recipe.
+This cookbook is not in charge of installing the Database Management System itself. Therefore, if you want to install MySQL, for instance, you should add `include_recipe "mysql::server"` in your recipe, or include `mysql::server` in the node run_list.
 
 ### database
-Manage databases in a RDBMS. Use the proper shortcut resource
-depending on your RDBMS: `mysql_database`, `postgresql_database` or
-`sql_server_database`.
+Manage databases in a RDBMS. Use the proper shortcut resource depending on your RDBMS: `mysql_database`, `postgresql_database` or `sql_server_database`.
 
 #### Actions
 - :create: create a named database
@@ -55,27 +42,14 @@ depending on your RDBMS: `mysql_database`, `postgresql_database` or
 
 #### Attribute Parameters
 - database_name: name attribute. Name of the database to interact with
-- connection: hash of connection info. valid keys include `:host`,
-  `:port`, `:username`, and `:password` (only for MySQL DB*)
+- connection: hash of connection info. valid keys include :host, :port, :username, :password and :socket (only for MySQL DB*)
+- sql: string of sql or a block that executes to a string of sql, which will be executed against the database. used by :query action only
 
-- sql: string of sql or a block that executes to a string of sql,
-  which will be executed against the database. used by `:query` action
-  only
+\* The database cookbook uses the `mysql` gem, which uses the `real_connect()` function from mysql API to connect to the server.
 
-\* The database cookbook uses the `mysql2` gem.
+> "The value of host may be either a host name or an IP address. If host is NULL or the string "***REMOVED***", a connection to the local host is assumed. For Windows, the client connects using a shared-memory connection, if the server has shared-memory connections enabled. Otherwise, TCP/IP is used. For Unix, the client connects using a Unix socket file. For local connections, you can also influence the type of connection to use with the MYSQL_OPT_PROTOCOL or MYSQL_OPT_NAMED_PIPE options to mysql_options(). The type of connection must be supported by the server. For a host value of "." on Windows, the client connects using a named pipe, if the server has named-pipe connections enabled. If named-pipe connections are not enabled, an error occurs."
 
-> "The value of host may be either a host name or an IP address. If
-  host is NULL or the string "127.0.0.1", a connection to the local
-  host is assumed. For Windows, the client connects using a
-  shared-memory connection, if the server has shared-memory
-  connections enabled. Otherwise, TCP/IP is used. For a host value of
-  "." on Windows, the client connects using a named pipe, if the
-  server has named-pipe connections enabled. If named-pipe connections
-  are not enabled, an error occurs."
-
-If you specify a `:socket` key and are using the mysql_service
-resource to set up the MySQL service, you'll need to specify the path
-in the form `/var/run/mysql-<instance name>/mysqld.sock`.
+If you set the `:host` key to "***REMOVED***" or if you leave it blank, a socket will be used. By default `real_connect()` function will look for socket in `/var/lib/mysql/mysql.sock`. If your socket file in non-default location - you can use :socket key to specify that location.
 
 #### Providers
 - `Chef::Provider::Database::Mysql`: shortcut resource `mysql_database`
@@ -85,27 +59,16 @@ in the form `/var/run/mysql-<instance name>/mysqld.sock`.
 #### Examples
 ```ruby
 # Create a mysql database
-mysql_database 'wordpress-cust01' do
+mysql_database 'oracle_rules' do
   connection(
-    :host     => '127.0.0.1',
+    :host     => '***REMOVED***',
     :username => 'root',
-    :password => node['wordpress-cust01']['mysql']['initial_root_password']
+    :password => node['mysql']['server_root_password']
   )
   action :create
 end
 ```
-```ruby
-# Create a mysql database on a named mysql instance
-mysql_database 'oracle_rools' do
-  connection(
-    :host     => '127.0.0.1',
-    :username => 'root',
-    :socket   => "/var/run/mysql-#{instance-name}/mysqld.sock"
-    :password => node['mysql']['server_root_password']
-  )
-  action :create
-end       
-```
+
 ```ruby
 # Create a sql server database
 sql_server_database 'mr_softie' do
@@ -153,13 +116,13 @@ end
 ```ruby
 # Externalize conection info in a ruby hash
 mysql_connection_info = {
-  :host     => '127.0.0.1',
+  :host     => '***REMOVED***',
   :username => 'root',
   :password => node['mysql']['server_root_password']
 }
 
 sql_server_connection_info = {
-  :host     => '127.0.0.1',
+  :host     => '***REMOVED***',
   :port     => node['sql_server']['port'],
   :username => 'sa',
   :password => node['sql_server']['server_sa_password']
@@ -171,6 +134,8 @@ postgresql_connection_info = {
   :username => 'postgres',
   :password => node['postgresql']['password']['postgres']
 }
+
+
 
 # Same create commands, connection info as an external hash
 mysql_database 'foo' do
@@ -187,6 +152,8 @@ postgresql_database 'foo' do
   connection postgresql_connection_info
   action     :create
 end
+
+
 
 # Create database, set provider in resource parameter
 database 'bar' do
@@ -225,6 +192,7 @@ mysql_database 'flush the privileges' do
 end
 
 
+
 # Query a database from a sql script on disk
 mysql_database 'run script' do
   connection mysql_connection_info
@@ -237,7 +205,7 @@ end
 # Vacuum a postgres database
 postgresql_database 'vacuum databases' do
   connection      postgresql_connection_info
-  database_name 'template1'
+  database_table 'template1'
   sql 'VACUUM FULL VERBOSE ANALYZE'
   action :query
 end
@@ -260,7 +228,7 @@ Manage users and user privileges in a RDBMS. Use the proper shortcut resource de
 - privileges: array of database privileges to grant user. used by the
   :grant action. default is :all
 - host: host where user connections are allowed from. used by MySQL
-  provider only. default is '127.0.0.1'
+  provider only. default is '***REMOVED***'
 - table: table to grant privileges on. used by :grant action and MySQL
   provider only. default is '*' (all tables)
 - require_ssl: true or false to force SSL connections to be used for user
@@ -277,14 +245,14 @@ Manage users and user privileges in a RDBMS. Use the proper shortcut resource de
 ### Examples
 
     # create connection info as an external ruby hash
-    mysql_connection_info = {:host => "127.0.0.1",
+    mysql_connection_info = {:host => "***REMOVED***",
                              :username => 'root',
                              :password => node['mysql']['server_root_password']}
-    postgresql_connection_info = {:host => "127.0.0.1",
+    postgresql_connection_info = {:host => "***REMOVED***",
                                   :port => node['postgresql']['config']['port'],
                                   :username => 'postgres',
                                   :password => node['postgresql']['password']['postgres']}
-    sql_server_connection_info = {:host => "127.0.0.1",
+    sql_server_connection_info = {:host => "***REMOVED***",
                                   :port => node['sql_server']['port'],
                                   :username => 'sa',
                                   :password => node['sql_server']['server_sa_password']}
@@ -351,7 +319,7 @@ Manage users and user privileges in a RDBMS. Use the proper shortcut resource de
       action :grant
     end
 
-    # grant all privileges on all databases/tables from 127.0.0.1
+    # grant all privileges on all databases/tables from ***REMOVED***
     mysql_database_user 'super_user' do
       connection mysql_connection_info
       password 'super_secret'
@@ -385,20 +353,20 @@ Manage users and user privileges in a RDBMS. Use the proper shortcut resource de
 ```ruby
 # create connection info as an external ruby hash
 mysql_connection_info = {
-  :host     => '127.0.0.1',
+  :host     => '***REMOVED***',
   :username => 'root',
   :password => node['mysql']['server_root_password']
 }
 
 postgresql_connection_info = {
-  :host     => '127.0.0.1',
+  :host     => '***REMOVED***',
   :port     => node['postgresql']['config']['port'],
   :username => 'postgres',
   :password => node['postgresql']['password']['postgres']
 }
 
 sql_server_connection_info = {
-  :host     => '127.0.0.1',
+  :host     => '***REMOVED***',
   :port     => node['sql_server']['port'],
   :username => 'sa',
   :password => node['sql_server']['server_sa_password']
@@ -483,7 +451,7 @@ end
 
 
 
-# Grant all privileges on all databases/tables from 127.0.0.1
+# Grant all privileges on all databases/tables from ***REMOVED***
 mysql_database_user 'super_user' do
   connection mysql_connection_info
   password   'super_secret'
@@ -579,7 +547,7 @@ Note: with the Open Source Chef Server, the server using the database recipes mu
       ...
     }
 
-This is not required if the Chef Server is Chef Software Hosted Chef, instead use the ACL feature to modify access for the node to be able to update the data bag.
+This is not required if the Chef Server is Opscode Hosted Chef, instead use the ACL feature to modify access for the node to be able to update the data bag.
 
 
 Usage
@@ -615,23 +583,18 @@ Create a `production` environment. This is also used in the `application` cookbo
 }
 ```
 
-The cookbook `my_app_database` is recommended to set up any
-application specific database resources such as configuration
-templates, trending monitors, etc. It is not required, but you would
-need to create it separately in `site-cookbooks`. Add it to the
-`my_app_database_master` role.
+The cookbook `my_app_database` is recommended to set up any application specific database resources such as configuration templates, trending monitors, etc. It is not required, but you would need to create it separately in `site-cookbooks`. Add it to the `my_app_database_master` role.
 
 License & Authors
 -----------------
-- Author:: Adam Jacob (<adam@chef.io>)
-- Author:: Joshua Timberman (<joshua@chef.io>)
-- Author:: AJ Christensen (<aj@chef.io>)
-- Author:: Seth Chisamore (<schisamo@chef.io>)
-- Author:: Lamont Granquist (<lamont@chef.io>)
-- Author:: Sean OMeara (<sean@chef.io>)
+- Author:: Adam Jacob (<adam@opscode.com>)
+- Author:: Joshua Timberman (<joshua@opscode.com>)
+- Author:: AJ Christensen (<aj@opscode.com>)
+- Author:: Seth Chisamore (<schisamo@opscode.com>)
+- Author:: Lamont Granquist (<lamont@opscode.com>)
 
 ```text
-Copyright 2009-2015, Chef Software, Inc.
+Copyright 2009-2013, Opscode, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

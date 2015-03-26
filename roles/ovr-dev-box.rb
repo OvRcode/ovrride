@@ -1,9 +1,9 @@
 name "ovr-dev-box"
 
 default_attributes(
-    "build_essential" => {
-        "compiletime" => true
-    }
+    "build-essential" => {
+        "compile_time" => true
+    },
 )
 
 override_attributes(
