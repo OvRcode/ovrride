@@ -1,7 +1,7 @@
 #
-# Author:: Seth Chisamore (<schisamo@chef.io>)
-# Author:: Lamont Granquist (<lamont@chef.io>)
-# Copyright:: Copyright (c) 2011 Chef Software, Inc.
+# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Lamont Granquist (<lamont@opscode.com>)
+# Copyright:: Copyright (c) 2011 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +22,8 @@ require 'chef/provider'
 class Chef
   class Provider
     class Database
-      class Postgresql < Chef::Provider::LWRPBase
-        use_inline_resources if defined?(use_inline_resources)
-
-        def whyrun_supported?
-          true
-        end
+      class Postgresql < Chef::Provider
+        include Chef::Mixin::ShellOut
 
         def load_current_resource
           Gem.clear_paths
@@ -37,7 +33,7 @@ class Chef
           @current_resource
         end
 
-        action :create do
+        def action_create
           unless exists?
             begin
               encoding = @new_resource.encoding
@@ -61,7 +57,7 @@ class Chef
           end
         end
 
-        action :drop do
+        def action_drop
           if exists?
             begin
               Chef::Log.debug("#{@new_resource}: Dropping database #{new_resource.database_name}")
@@ -73,7 +69,7 @@ class Chef
           end
         end
 
-        action :query do
+        def action_query
           if exists?
             begin
               Chef::Log.debug("#{@new_resource}: Performing query [#{new_resource.sql_query}]")
@@ -100,16 +96,6 @@ class Chef
           ret
         end
 
-        # Test if text is psql keyword
-        def keyword?(text)
-          begin
-            result = db('template1').exec_params('select * from pg_get_keywords() where word = $1', [text.downcase]).num_tuples != 0
-          ensure
-            close
-          end
-          result
-        end
-
         #
         # Specifying the database in the connection parameter for the postgres resource is not recommended.
         #
@@ -126,11 +112,11 @@ class Chef
           Chef::Log.debug("#{@new_resource}: connecting to database #{dbname} on #{host}:#{port} as #{user}")
           password = @new_resource.connection[:password] || node[:postgresql][:password][:postgres]
           @db = ::PGconn.new(
-            host: host,
-            port: port,
-            dbname: dbname,
-            user: user,
-            password: password
+            :host => host,
+            :port => port,
+            :dbname => dbname,
+            :user => user,
+            :password => password
           )
         end
 

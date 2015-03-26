@@ -19,9 +19,6 @@ default['postgresql']['enable_pgdg_apt'] = false
 default['postgresql']['server']['config_change_notify'] = :restart
 default['postgresql']['assign_postgres_password'] = true
 
-# Establish default database name
-default['postgresql']['database_name'] = 'template1'
-
 case node['platform']
 when "debian"
 
@@ -181,7 +178,6 @@ when 'debian'
   default['postgresql']['config']['ssl_cert_file'] = '/etc/ssl/certs/ssl-cert-snakeoil.pem' if node['postgresql']['version'].to_f >= 9.2
   default['postgresql']['config']['ssl_key_file'] = '/etc/ssl/private/ssl-cert-snakeoil.key'if node['postgresql']['version'].to_f >= 9.2
 when 'rhel', 'fedora', 'suse'
-  default['postgresql']['config']['data_directory'] = node['postgresql']['dir']
   default['postgresql']['config']['listen_addresses'] = 'localhost'
   default['postgresql']['config']['port'] = 5432
   default['postgresql']['config']['max_connections'] = 100
@@ -287,9 +283,6 @@ default['postgresql']['pgdg']['repo_rpm_url'] = {
       }
     },
     "fedora" => {
-      "20" => {
-        "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-20-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
-      },
       "19" => {
         "x86_64" => "http://yum.postgresql.org/9.3/fedora/fedora-19-x86_64/pgdg-fedora93-9.3-1.noarch.rpm"
       },

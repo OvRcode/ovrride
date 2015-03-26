@@ -1,11 +1,11 @@
 #
 # Author:: Doug MacEachern (<dougm@vmware.com>)
-# Author:: Seth Chisamore (<schisamo@chef.io>)
+# Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: windows
-# Provider:: zipfile
+# Provider:: unzip
 #
 # Copyright:: 2010, VMware, Inc.
-# Copyright:: 2011, Chef Software, Inc.
+# Copyright:: 2011, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ action :unzip do
       zip.extract(entry, path)
     end
   end
-  new_resource.updated_by_last_action(true)
+  @new_resource.updated_by_last_action(true)
 end
 
 action :zip do
@@ -71,7 +71,6 @@ action :zip do
         z.add(zip_fname, f)
       end
       z.close
-      new_resource.updated_by_last_action(true)
     else
       Chef::Log.info("Single directory must be specified for compression, and #{@new_resource.source} does not meet that criteria.")
     end
@@ -86,7 +85,6 @@ def ensure_rubyzip_gem_installed
     Chef::Log.info("Missing gem 'rubyzip'...installing now.")
     chef_gem "rubyzip" do
       version node['windows']['rubyzipversion']
-      action :install
     end
     require 'zip'
   end

@@ -28,11 +28,10 @@ if Chef::Config[:solo]
   end.map { |attr| "node['postgresql']['password']['#{attr}']" }
 
   if !missing_attrs.empty?
-    Chef::Log.fatal([
+    Chef::Application.fatal!([
         "You must set #{missing_attrs.join(', ')} in chef-solo mode.",
         "For more information, see https://github.com/opscode-cookbooks/postgresql#chef-solo-note"
       ].join(' '))
-    raise
   end
 else
   # TODO: The "secure_password" is randomly generated plain text, so it
@@ -54,18 +53,22 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
-# Versions prior to 9.2 do not have a config file option to set the SSL
-# key and cert path, and instead expect them to be in a specific location.
-if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_cert_file')
-  link ::File.join(node['postgresql']['config']['data_directory'], 'server.crt') do
-    to node['postgresql']['config']['ssl_cert_file']
-  end
+change_notify = node['postgresql']['server']['config_change_notify']
+
+template "#{node['postgresql']['dir']}/postgresql.conf" do
+  source "postgresql.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 0600
+  notifies change_notify, 'service[postgresql]', :immediately
 end
 
-if node['postgresql']['version'].to_f < 9.2 && node['postgresql']['config'].attribute?('ssl_key_file')
-  link ::File.join(node['postgresql']['config']['data_directory'], 'server.key') do
-    to node['postgresql']['config']['ssl_key_file']
-  end
+template "#{node['postgresql']['dir']}/pg_hba.conf" do
+  source "pg_hba.conf.erb"
+  owner "postgres"
+  group "postgres"
+  mode 00600
+  notifies change_notify, 'service[postgresql]', :immediately
 end
 
 # NOTE: Consider two facts before modifying "assign-postgres-password":
@@ -79,9 +82,8 @@ end
 bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
-  echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -p #{node['postgresql']['config']['port']}
+echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql -p #{node['postgresql']['config']['port']}
   EOH
   action :run
-  not_if "ls #{node['postgresql']['config']['data_directory']}/recovery.conf"
   only_if { node['postgresql']['assign_postgres_password'] }
 end

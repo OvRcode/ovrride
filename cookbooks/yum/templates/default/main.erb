@@ -149,10 +149,10 @@ mirrorlist_expire=<%= @config.mirrorlist_expire %>
 <% if @config.multilib_policy %>
 multilib_policy=<%= @config.multilib_policy %>
 <% end %>
-<% if @config.obsoletes == false %>
-obsoletes=0
-<% else %>
+<% if @config.obsoletes %>
 obsoletes=1
+<% else %>
+obsoletes=0
 <% end %>
 <% if @config.overwrite_groups %>
 overwrite_groups=<%= @config.overwrite_groups %>
@@ -197,9 +197,6 @@ releasever=<%= @config.releasever %>
 <% end %>
 <% if @config.repo_gpgcheck %>
 repo_gpgcheck=<%= @config.repo_gpgcheck %>
-<% end %>
-<% if @config.reposdir %>
-reposdir=<%= @config.reposdir %>
 <% end %>
 <% if @config.reset_nice %>
 reset_nice=<%= @config.reset_nice %>
@@ -254,7 +251,7 @@ username=<%= @config.username %>
 <% end %>
 <% if @config.options -%>
 <%   @config.options.each do |key, value| -%>
-<%= key %>=<%=
+<%= key %>=<%= 
        case value
        when Array
          value.join("\n       ")
