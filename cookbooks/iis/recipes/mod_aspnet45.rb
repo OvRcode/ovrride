@@ -1,9 +1,9 @@
 #
-# Author:: Jon DeCamp (<jon.decamp@nordstrom.com>)
+# Author:: Blair Hamilton (<blairham@me.com>)
 # Cookbook Name:: iis
-# Resource:: module
+# Recipe:: mod_aspnet45
 #
-# Copyright:: 2012, Nordstrom, Inc.
+# Copyright 2011, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,17 @@
 # limitations under the License.
 #
 
-actions :add, :delete
-default_action :add
+include_recipe "iis"
+include_recipe "iis::mod_isapi"
 
-attribute :module_name, :kind_of => String, :name_attribute => true
-attribute :type, :kind_of => String, :default => nil
-attribute :precondition, :kind_of => String, :default => nil
-attribute :application, :kind_of => String, :default => nil
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  features = %w{NET-Framework}
+else
+  features = %w{NetFx4Extended-ASPNET45 IIS-NetFxExtensibility45 IIS-ASPNET45}
+end
 
-attr_accessor :exists
+features.each do |feature|
+  windows_feature feature do
+    action :install
+  end
+end

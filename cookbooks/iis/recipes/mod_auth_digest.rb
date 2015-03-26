@@ -1,9 +1,9 @@
 #
-# Author:: Jon DeCamp (<jon.decamp@nordstrom.com>)
+# Author:: Justin Schuhmann
 # Cookbook Name:: iis
-# Resource:: module
+# Recipe:: mod_auth_basic
 #
-# Copyright:: 2012, Nordstrom, Inc.
+# Copyright:: Justin Schuhmann
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,19 @@
 # limitations under the License.
 #
 
-actions :add, :delete
-default_action :add
+include_recipe "iis"
 
-attribute :module_name, :kind_of => String, :name_attribute => true
-attribute :type, :kind_of => String, :default => nil
-attribute :precondition, :kind_of => String, :default => nil
-attribute :application, :kind_of => String, :default => nil
+if Opscode::IIS::Helper.older_than_windows2008r2?
+  feature = 'Web-Digest-Auth'
+else
+  feature = 'IIS-DigestAuthentication'
+end
 
-attr_accessor :exists
+windows_feature feature do
+  action :install
+end
+
+iis_section 'unlocks digest authentication control in web.config' do
+  section "system.webServer/security/authentication/digestAuthentication"
+  action :unlock
+end
