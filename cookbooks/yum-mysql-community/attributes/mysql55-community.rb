@@ -14,6 +14,8 @@ when 'rhel'
       default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/6/$basearch/'
     when 2014
       default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/6/$basearch/'
+    when 2015
+      default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/6/$basearch/'
     end
   when 'redhat'
     case node['platform_version'].to_i
@@ -22,6 +24,8 @@ when 'rhel'
       default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/5/$basearch/'
     when 6
       default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/6/$basearch/'
+    when 7
+      default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/7/$basearch/'
     end
   else # other rhel. only 6 and 7 for now
     default['yum']['mysql55-community']['baseurl'] = 'http://repo.mysql.com/yum/mysql-5.5-community/el/$releasever/$basearch/'
