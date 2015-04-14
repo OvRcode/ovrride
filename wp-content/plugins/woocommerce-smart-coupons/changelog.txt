@@ -1,5 +1,20 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.04.09 - version 2.8.6
+ * Fix: Incorrect discount calculation when store credit applied along with other discount type in cart
+
+2015.03.27 - version 2.8.5
+ * Fix: Missing text domains at some places
+ * Fix: Product which allows to purchase store credit doesn't show currency symbol
+ * Fix: PHP Warning: Illegal string offset 'coupon_type'
+ * Fix: Replaced 'isset' with 'empty' as 'isset' was giving Fatal Error
+ * Update: Allow filtered export
+ * Update: Added styles for coupon code with additional details which is sent after coupon generation via email
+ * Update: Access to Smart Coupons' feature from WooCommerce Coupon page
+ * Update: Added new fields for coupon in import
+ * Update: Added label for store credit, to be displayed in cart or order
+ * Update: Replace 'type' with 'discount_type'. Look for discount_type in key 'discount_type' instead of 'type'
+
 2015.03.17 - version 2.8.4
  * Fix: Broken 'Set featured image' due to undefined 'wc_select_params'
 
