@@ -1,5 +1,11 @@
 *** WooThemes Helper Changelog ***
 
+2015.03.26 - version 1.5.3
+ * Fix - Ensure there are no wp.org update clashes from products with same slugs.
+ * Fix - Warnings when checking for updates in some instances.
+ * Tweak - Make renewing notices dismissable.
+
+
 2015.03.18 - version 1.5.2
  * Tweak - Increase the timeout for update checks from the default 5 seconds.
 

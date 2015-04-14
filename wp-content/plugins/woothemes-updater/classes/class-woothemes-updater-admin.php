@@ -117,6 +117,9 @@ class WooThemes_Updater_Admin {
 
 			wp_safe_redirect( $redirect_url );
 			exit;
+		} else if ( isset( $_GET['woo-dismiss-renewal-notice'] ) && 'true' == $_GET['woo-dismiss-renewal-notice'] ) {
+			// Only hide it for 60 days on end, make sure future renewals will get notices as well
+			set_transient( 'woo_hide_renewal_notices', 'yes', 60 * DAY_IN_SECONDS );
 		}
 	} // End maybe_process_dismiss_link()
 
@@ -167,8 +170,8 @@ class WooThemes_Updater_Admin {
 				}
 			}
 		}
-		if ( is_array( $notices ) && 0 < count( $notices ) ) {
-			echo '<div class="update-nag"><p class="alignleft">' . implode( '<br/>', $notices ) . '</p></div>';
+		if ( is_array( $notices ) && 0 < count( $notices ) && FALSE == get_transient( 'woo_hide_renewal_notices' ) ) {
+			echo '<div class="update-nag"><p class="alignleft">' . implode( '<br/>', $notices ) . '</p><br/><a class="button primary" href="' . add_query_arg( array( 'woo-dismiss-renewal-notice' => 'true' ) ) . '">' . __( 'Don\'t remind me','woothemes-updater' ) . '</a></div>';
 		}
 	}
 

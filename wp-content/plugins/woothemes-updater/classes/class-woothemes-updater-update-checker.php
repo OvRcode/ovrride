@@ -162,31 +162,29 @@ class WooThemes_Updater_Update_Checker {
 		if ( isset( $response->plugins ) ) {
 			$activated_products = get_option( 'woothemes-updater-activated', array() );
 			foreach ( $response->plugins as $plugin_key => $plugin ) {
-				if ( ! in_array( $plugin_key, array_keys( $transient->response ) ) && ! in_array( $plugin_key, array_keys( $transient->no_update ) ) ) {
-					if ( isset( $plugin->no_update ) ) {
-						if ( isset( $plugin->license_expiry_date ) ) {
-							$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
-						}
-						$transient->no_update[ $plugin_key ] = new stdClass();
-					} elseif ( isset( $plugin->deactivate ) ) {
-						$this->errors[] = $plugin->deactivate;
-						global $woothemes_updater;
-						$woothemes_updater->admin->deactivate_product( $plugin_key, true );
-					} elseif ( isset( $plugin->error ) ) {
-						$this->errors[] = $plugin->error;
-						$transient->no_update[ $plugin_key ] = new stdClass();
-					} elseif ( isset( $plugin->new_version ) && ! empty( $plugin->new_version ) ) {
-						if ( isset( $plugin->license_expiry_date ) ) {
-							$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
-							unset( $plugin->license_expiry_date );
-						}
-						$transient->response[ $plugin_key ] = $plugin;
-					} else {
-						if ( isset( $plugin->license_expiry_date ) ) {
-							$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
-						}
-						$transient->no_update[ $plugin_key ] = new stdClass();
+				if ( isset( $plugin->no_update ) ) {
+					if ( isset( $plugin->license_expiry_date ) ) {
+						$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
 					}
+					$transient->no_update[ $plugin_key ] = $plugin;
+				} elseif ( isset( $plugin->deactivate ) ) {
+					$this->errors[] = $plugin->deactivate;
+					global $woothemes_updater;
+					$woothemes_updater->admin->deactivate_product( $plugin_key, true );
+				} elseif ( isset( $plugin->error ) ) {
+					$this->errors[] = $plugin->error;
+					$transient->no_update[ $plugin_key ] = $plugin;
+				} elseif ( isset( $plugin->new_version ) && ! empty( $plugin->new_version ) ) {
+					if ( isset( $plugin->license_expiry_date ) ) {
+						$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
+						unset( $plugin->license_expiry_date );
+					}
+					$transient->response[ $plugin_key ] = $plugin;
+				} else {
+					if ( isset( $plugin->license_expiry_date ) ) {
+						$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
+					}
+					$transient->no_update[ $plugin_key ] = $plugin;
 				}
 			}
 			update_option( 'woothemes-updater-activated', $activated_products );
@@ -195,17 +193,15 @@ class WooThemes_Updater_Update_Checker {
 		// Set WooThemes Helper update info into transient
 		if ( isset( $response->helper ) ) {
 			foreach ( $response->helper as $plugin_key => $plugin ) {
-				if ( ! in_array( $plugin_key, array_keys( $transient->response ) ) && ! in_array( $plugin_key, array_keys( $transient->no_update ) ) ) {
-					if ( isset( $plugin->no_update ) ) {
-						$transient->no_update[ $plugin_key ] = new stdClass();
-					} elseif ( isset( $plugin->error ) ) {
-						$this->errors[] = $plugin->error;
-						$transient->no_update[ $plugin_key ] = new stdClass();
-					} elseif ( isset( $plugin->new_version ) && ! empty( $plugin->new_version ) ) {
-						$transient->response[ $plugin_key ] = $plugin;
-					} else {
-						$transient->no_update[ $plugin_key ] = new stdClass();
-					}
+				if ( isset( $plugin->no_update ) ) {
+					$transient->no_update[ $plugin_key ] = $plugin;
+				} elseif ( isset( $plugin->error ) ) {
+					$this->errors[] = $plugin->error;
+					$transient->no_update[ $plugin_key ] = $plugin;
+				} elseif ( isset( $plugin->new_version ) && ! empty( $plugin->new_version ) ) {
+					$transient->response[ $plugin_key ] = $plugin;
+				} else {
+					$transient->no_update[ $plugin_key ] = $plugin;
 				}
 			}
 		}
@@ -236,24 +232,22 @@ class WooThemes_Updater_Update_Checker {
 		if ( isset( $response->themes ) ) {
 			$activated_products = get_option( 'woothemes-updater-activated', array() );
 			foreach ( $response->themes as $theme_key => $theme ) {
-				if ( ! in_array( $theme_key, array_keys( $transient->response ) ) ) {
-					if ( isset( $theme->new_version ) ) {
-						if ( isset( $theme->license_expiry_date ) ) {
-							$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
-						}
-						$transient->response[ $theme_key ]['new_version'] = $theme->new_version;
-		        		$transient->response[ $theme_key ]['url'] = 'http://www.woothemes.com/';
-		        		$transient->response[ $theme_key ]['package'] = $theme->package;
-					} elseif ( isset( $theme->error ) ) {
-						$this->errors[] = $theme->error;
-					} elseif ( isset( $theme->deactivate ) ) {
-						$this->errors[] = $theme->deactivate;
-						global $woothemes_updater;
-						$woothemes_updater->admin->deactivate_product( $theme_key . '/style.css', true );
-					} else {
-						if ( isset( $theme->license_expiry_date ) ) {
-							$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
-						}
+				if ( isset( $theme->new_version ) ) {
+					if ( isset( $theme->license_expiry_date ) ) {
+						$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
+					}
+					$transient->response[ $theme_key ]['new_version'] = $theme->new_version;
+		        	$transient->response[ $theme_key ]['url'] = 'http://www.woothemes.com/';
+		        	$transient->response[ $theme_key ]['package'] = $theme->package;
+				} elseif ( isset( $theme->error ) ) {
+					$this->errors[] = $theme->error;
+				} elseif ( isset( $theme->deactivate ) ) {
+					$this->errors[] = $theme->deactivate;
+					global $woothemes_updater;
+					$woothemes_updater->admin->deactivate_product( $theme_key . '/style.css', true );
+				} else {
+					if ( isset( $theme->license_expiry_date ) ) {
+						$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
 					}
 				}
 			}
