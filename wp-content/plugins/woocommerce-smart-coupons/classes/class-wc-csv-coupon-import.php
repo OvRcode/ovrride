@@ -106,8 +106,7 @@
                                             } else  {
                                                $file = ABSPATH . $this->file_url; 
                                             }
-                                                
-                                            
+                                        
                                         } else {
                                             
                                             $file = $woocommerce_smart_coupon->export_coupon($_POST,'','');
@@ -131,14 +130,14 @@
                                             );
                                         $url = add_query_arg( $params, admin_url('edit.php?post_type=shop_coupon') );
                                         
-                                        if($this->imported > 0){
-                                         ob_clean();
-                                         wp_safe_redirect($url);
-                                         exit;
-                                    }
+                                        if($this->imported > 0) {
+                                            ob_clean();
+                                            wp_safe_redirect($url);
+                                            exit;
+                                        }
                         }
                 }
-                                
+
                 /**
                 * Display pre-import options
                 */
@@ -152,7 +151,6 @@
 
                             $coupon = $this->parser->parse_coupon( $item );
 
-
                             if ( $coupon ) {
                                 $this->process_coupon( $coupon );
                             } else {
@@ -161,6 +159,7 @@
 
                             unset( $item, $coupon ); 
                         }
+
                         update_option( 'woo_sc_is_email_imported_coupons', 'no' );
                         $this->import_end();
                     
@@ -443,28 +442,28 @@
                                                                     <optgroup label="<?php _e( 'Coupon data', 'wc_smart_coupons' ); ?>">
                                                                             <option <?php selected( $key, 'discount_type' ); ?>>discount_type</option>
                                                                             <option <?php selected( $key, 'coupon_amount' ); ?>>coupon_amount</option>
-                                                                            <option <?php selected( $key, 'individual_use' ); ?>>individual_use</option>
-                                                                            <option <?php selected( $key, 'product_ids' ); ?>>product_ids</option>
-                                                                            <option <?php selected( $key, 'exclude_product_ids' ); ?>>exclude_product_ids</option>
-                                                                            <option <?php selected( $key, 'usage_limit' ); ?>>usage_limit</option>
-                                                                            <option <?php selected( $key, 'usage_limit_per_user' ); ?>>usage_limit_per_user</option>
-                                                                            <option <?php selected( $key, 'limit_usage_to_x_items' ); ?>>limit_usage_to_x_items</option>
-                                                                            <option <?php selected( $key, 'expiry_date' ); ?>>expiry_date</option>
-                                                                            <option <?php selected( $key, 'apply_before_tax' ); ?>>apply_before_tax</option>
                                                                             <option <?php selected( $key, 'free_shipping' ); ?>>free_shipping</option>
-                                                                            <option <?php selected( $key, 'product_categories' ); ?>>product_categories</option>
-                                                                            <option <?php selected( $key, 'exclude_product_categories' ); ?>>exclude_product_categories</option>
-                                                                            <option <?php selected( $key, 'minimum_amount' ); ?>>minimum_amount</option>
-                                                                            <option <?php selected( $key, 'customer_email' ); ?>>customer_email</option>
-                                                                            <option <?php selected( $key, 'exclude_sale_items' ); ?>>exclude_sale_items</option>
+                                                                            <option <?php selected( $key, 'expiry_date' ); ?>>expiry_date</option>
+                                                                            <option <?php selected( $key, 'sc_coupon_validity' ); ?>>sc_coupon_validity</option>
+                                                                            <option <?php selected( $key, 'validity_suffix' ); ?>>validity_suffix</option>
                                                                             <option <?php selected( $key, 'auto_generate_coupon' ); ?>>auto_generate_coupon</option>
                                                                             <option <?php selected( $key, 'coupon_title_prefix' ); ?>>coupon_title_prefix</option>
                                                                             <option <?php selected( $key, 'coupon_title_suffix' ); ?>>coupon_title_suffix</option>
-                                                                            <option <?php selected( $key, 'sc_coupon_validity' ); ?>>sc_coupon_validity</option>
-                                                                            <option <?php selected( $key, 'validity_suffix' ); ?>>validity_suffix</option>
-                                                                            <option <?php selected( $key, 'sc_is_visible_storewide' ); ?>>sc_is_visible_storewide</option>
-                                                                            <option <?php selected( $key, 'sc_disable_email_restriction' ); ?>>sc_disable_email_restriction</option>
                                                                             <option <?php selected( $key, 'is_pick_price_of_product' ); ?>>is_pick_price_of_product</option>
+                                                                            <option <?php selected( $key, 'minimum_amount' ); ?>>minimum_amount</option>
+                                                                            <option <?php selected( $key, 'maximum_amount' ); ?>>maximum_amount</option>
+                                                                            <option <?php selected( $key, 'individual_use' ); ?>>individual_use</option>
+                                                                            <option <?php selected( $key, 'exclude_sale_items' ); ?>>exclude_sale_items</option>
+                                                                            <option <?php selected( $key, 'product_ids' ); ?>>product_ids</option>
+                                                                            <option <?php selected( $key, 'exclude_product_ids' ); ?>>exclude_product_ids</option>
+                                                                            <option <?php selected( $key, 'product_categories' ); ?>>product_categories</option>
+                                                                            <option <?php selected( $key, 'exclude_product_categories' ); ?>>exclude_product_categories</option>
+                                                                            <option <?php selected( $key, 'customer_email' ); ?>>customer_email</option>
+                                                                            <option <?php selected( $key, 'sc_disable_email_restriction' ); ?>>sc_disable_email_restriction</option>
+                                                                            <option <?php selected( $key, 'usage_limit' ); ?>>usage_limit</option>
+                                                                            <option <?php selected( $key, 'usage_limit_per_user' ); ?>>usage_limit_per_user</option>
+                                                                            <option <?php selected( $key, 'limit_usage_to_x_items' ); ?>>limit_usage_to_x_items</option>
+                                                                            <option <?php selected( $key, 'sc_is_visible_storewide' ); ?>>sc_is_visible_storewide</option>
                                                                     </optgroup>
                                                                 </select>
                                                         <?php
@@ -504,7 +503,8 @@
                 * Display introductory text and file upload form
                 */
                 public function greet() {
-                    
+
+                        echo '<h2>' . __( 'Import WooCommerce Coupons', 'wc_smart_coupons' ) . '</h2>';                    
                         echo '<div class="narrow">';
                         echo '<p>'.__( 'Choose a CSV (.csv) file to upload, then click Upload file and import.', 'wc_smart_coupons' ).'</p>';
                         //wp_import_upload_form( 'admin.php?import=woocommerce_csv&amp;step=1&amp;merge=' . ( ! empty( $_GET['merge'] ) ? 1 : 0 ) );
@@ -544,7 +544,8 @@
                                                 </tbody>
                                         </table>
                                         <p class="submit">
-                                                <input type="submit" class="button" value="<?php esc_attr_e( 'Upload file and import', 'wc_smart_coupons' ); ?>" />
+                                            <input type="submit" class="button" value="<?php esc_attr_e( 'Upload file and import', 'wc_smart_coupons' ); ?>" />&nbsp;
+                                            <a href="<?php echo trailingslashit( admin_url() ) . 'edit.php?post_type=shop_coupon'; ?>"><?php echo sprintf(__( '%s Back to Coupons', 'wc_smart_coupons' ), '&larr;' ); ?></a>
                                         </p>
                                 </form>
                                 <?php

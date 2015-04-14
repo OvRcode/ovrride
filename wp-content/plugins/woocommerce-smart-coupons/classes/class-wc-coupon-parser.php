@@ -63,20 +63,20 @@ class WC_Coupon_Parser {
                     'post_password',
                     'discount_type',
                     'coupon_amount',
+                    'free_shipping',
+                    'expiry_date',
+                    'minimum_amount',
+                    'maximum_amount',
                     'individual_use', 
+                    'exclude_sale_items',
                     'product_ids',
                     'exclude_product_ids',
-                    'usage_limit',
-                    'usage_limit_per_user',
-                    'limit_usage_to_x_items',
-                    'expiry_date',
-                    'apply_before_tax',
-                    'free_shipping',
                     'product_categories',
                     'exclude_product_categories',
-                    'minimum_amount',
                     'customer_email', 
-                    'exclude_sale_items'
+                    'usage_limit',
+                    'usage_limit_per_user',
+                    'limit_usage_to_x_items'
             );
 
             $this->post_defaults = array(
@@ -98,29 +98,28 @@ class WC_Coupon_Parser {
             $this->postmeta_defaults = apply_filters( 'smart_coupons_parser_postmeta_defaults', array(
                     'discount_type'                 => 'fixed_cart',
                     'coupon_amount'                 => '',
-                    'individual_use'                => '',
-                    'product_ids'                   => '',
-                    'exclude_product_ids'           => '',
-                    'usage_limit'                   => '',
-                    'usage_limit_per_user'          => '',
-                    'limit_usage_to_x_items'        => '',
-                    'expiry_date'                   => '',
-                    'apply_before_tax'              => '',
                     'free_shipping'                 => '',
-                    'product_categories'            => '',
-                    'exclude_product_categories'    => '',
-                    'minimum_amount'                => '',
-                    'customer_email'                => '',
-                    'exclude_sale_items'            => '',
+                    'expiry_date'                   => '',
+                    'sc_coupon_validity'            => '',
+                    'validity_suffix'               => '',
                     'auto_generate_coupon'          => '',
                     'coupon_title_prefix'           => '',
                     'coupon_title_suffix'           => '',
-                    'sc_coupon_validity'            => '',
-                    'validity_suffix'               => '',
-                    'sc_is_visible_storewide'       => '',
+                    'is_pick_price_of_product'      => '',
+                    'minimum_amount'                => '',
+                    'maximum_amount'                => '',
+                    'individual_use'                => '',
+                    'exclude_sale_items'            => '',
+                    'product_ids'                   => '',
+                    'exclude_product_ids'           => '',
+                    'product_categories'            => '',
+                    'exclude_product_categories'    => '',
+                    'customer_email'                => '',
                     'sc_disable_email_restriction'  => '',
-                    'is_pick_price_of_product'      => ''
-
+                    'usage_limit'                   => '',
+                    'usage_limit_per_user'          => '',
+                    'limit_usage_to_x_items'        => '',
+                    'sc_is_visible_storewide'       => ''
             ));
 
         } 
@@ -252,7 +251,7 @@ class WC_Coupon_Parser {
                     $postmeta['product_ids'] = $ids;
             }
 
-            // product_ids
+            // exclude_product_ids
             if ( isset( $postmeta['exclude_product_ids'] ) && ! is_array( $postmeta['exclude_product_ids'] ) ) {
                     $ids = array_filter( array_map( 'trim', explode('|', $postmeta['exclude_product_ids'] ) ) );
                     $ids = implode(',',$ids);
@@ -290,7 +289,6 @@ class WC_Coupon_Parser {
             unset( $item, $postmeta );
 
             return $coupon;
-        
+ 
     }
-	
 }
