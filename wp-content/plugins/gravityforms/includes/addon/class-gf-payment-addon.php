@@ -51,6 +51,17 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 	}
 
+	public function init() {
+
+		parent::init();
+
+		add_filter( 'gform_confirmation', array( $this, 'confirmation' ), 20, 4 );
+
+		add_filter( 'gform_validation', array( $this, 'validation' ), 20 );
+		add_filter( 'gform_entry_post_save', array( $this, 'entry_post_save' ), 10, 2 );
+
+	}
+
 	public function init_admin() {
 
 		parent::init_admin();
@@ -68,17 +79,6 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 			add_action( 'gform_enable_entry_info_payment_details', array( $this, 'disable_entry_info_payment' ), 10, 2 );
 			add_filter( 'gform_notes_avatar', array( $this, 'notes_avatar' ), 10, 2 );
 		}
-	}
-
-	public function init_frontend() {
-
-		parent::init_frontend();
-
-		add_filter( 'gform_confirmation', array( $this, 'confirmation' ), 20, 4 );
-
-		add_filter( 'gform_validation', array( $this, 'validation' ), 20 );
-		add_filter( 'gform_entry_post_save', array( $this, 'entry_post_save' ), 10, 2 );
-
 	}
 
 	public function init_ajax() {
@@ -530,8 +530,9 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		//getting mapped field data
 		$billing_fields = $this->billing_info_fields();
 		foreach ( $billing_fields as $billing_field ) {
-			$field_name             = $billing_field['name'];
-			$form_data[ $field_name ] = rgpost( 'input_' . str_replace( '.', '_', rgar( $feed['meta'], "billingInformation_{$field_name}" ) ) );
+			$field_name               = $billing_field['name'];
+			$input_id                 = rgar( $feed['meta'], "billingInformation_{$field_name}" );
+			$form_data[ $field_name ] = rgar( $entry, $input_id );
 		}
 
 		//getting credit card field data
@@ -1996,11 +1997,11 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 	//-------- Scripts -----------------------
 	public function scripts() {
-
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
 		$scripts = array(
 			array(
 				'handle'  => 'gaddon_payment',
-				'src'     => $this->get_gfaddon_base_url() . '/js/gaddon_payment.js',
+				'src'     => $this->get_gfaddon_base_url() . "/js/gaddon_payment{$min}.js",
 				'version' => GFCommon::$version,
 				'strings' => array(
 					'subscriptionCancelWarning' => __( "Warning! This subscription will be canceled. This cannot be undone. 'OK' to cancel subscription, 'Cancel' to stop", 'gravityforms' ),

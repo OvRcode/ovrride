@@ -807,8 +807,10 @@ class GFExport {
 
 	public static function page_header( $title = '' ) {
 
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+
 		// register admin styles
-		wp_register_style( 'gform_admin', GFCommon::get_base_url() . '/css/admin.css' );
+		wp_register_style( 'gform_admin', GFCommon::get_base_url() . "/css/admin{$min}.css" );
 		wp_print_styles( array( 'jquery-ui-styles', 'gform_admin' ) );
 
 		$current_tab  = rgempty( 'view', $_GET ) ? 'export_entry' : rgget( 'view' );

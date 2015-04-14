@@ -411,18 +411,26 @@ class GF_Field_Date extends GF_Field {
 		}
 	}
 
-	public function get_value_default(){
+	public function get_value_default() {
 
 		$value = parent::get_value_default();
 
-		// the default value for mulit-input date fields will always be an array in mdy order
-		// this code will alter the order of the values to the date format of the field
 		if ( is_array( $this->inputs ) ) {
-			$format   = empty( $this->dateFormat ) ? 'mdy' : esc_attr( $this->dateFormat );
-			$position = substr( $format, 0, 3 );
-			$date     = array_combine( array( 'm', 'd', 'y' ), $value );            // takes our numerical array and converts it to an associative array
-			$value    = array_merge( array_flip( str_split( $position ) ), $date ); // uses the mdy position as the array keys and creates a new array in the desired order
+			$value = $this->get_date_array_by_format( $value );
 		}
+
+		return $value;
+	}
+
+	/**
+	 * The default value for mulit-input date fields will always be an array in mdy order
+	 * this code will alter the order of the values to the date format of the field
+	 */
+	public function get_date_array_by_format( $value ) {
+		$format   = empty( $this->dateFormat ) ? 'mdy' : esc_attr( $this->dateFormat );
+		$position = substr( $format, 0, 3 );
+		$date     = array_combine( array( 'm', 'd', 'y' ), $value );            // takes our numerical array and converts it to an associative array
+		$value    = array_merge( array_flip( str_split( $position ) ), $date ); // uses the mdy position as the array keys and creates a new array in the desired order
 
 		return $value;
 	}
