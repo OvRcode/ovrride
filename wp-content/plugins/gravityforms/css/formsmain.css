@@ -493,6 +493,9 @@ div.gf_page_steps+div.validation_error { margin-top: 1em }
     max-height: 1px !important;
     overflow: hidden;
 }
+.gform_wrapper .gf_invisible {
+    visibility: hidden; position: absolute; left: -9999px;
+}
 .gform_wrapper .ginput_full br, .gform_wrapper .ginput_left br, .gform_wrapper .ginput_right br { display: none !important }
 .gform_wrapper ul.gfield_checkbox li, .gform_wrapper ul.gfield_radio li { padding: 0 !important }
 .gform_wrapper ul.gfield_radio li input+input { margin-left: .25em }
@@ -1168,7 +1171,7 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 .gform_wrapper .chosen-rtl.chosen-container-single .chosen-single div b { background-position: 6px 2px }
 .gform_wrapper .chosen-rtl.chosen-container-single.chosen-with-drop .chosen-single div b { background-position: -12px 2px }
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 144dpi) {
-    .gform_wrapper .chosen-rtl .chosen-search input[type="text"], .gform_wrapper .chosen-container-single .chosen-single abbr, .gform_wrapper .chosen-container-single .chosen-single div b, .gform_wrapper .chosen-container-single .chosen-search input[type="text"], .gform_wrapper .chosen-container-multi .chosen-choices .search-choice .search-choice-close, .gform_wrapper .chosen-container .chosen-results-scroll-down span, .gform_wrapper .chosen-container .chosen-results-scroll-up span {
+    .gform_wrapper .chosen-rtl .chosen-search input[type="text"], .gform_wrapper .chosen-container-single .chosen-single abbr, .gform_wrapper .chosen-container-single .chosen-single div b, .gform_wrapper .chosen-container-multi .chosen-choices .search-choice .search-choice-close, .gform_wrapper .chosen-container .chosen-results-scroll-down span, .gform_wrapper .chosen-container .chosen-results-scroll-up span {
         background-image: url('../images/chosen-sprite-2x.png') !important;
         background-position: 0 0;
         background-size: 52px 37px !important;

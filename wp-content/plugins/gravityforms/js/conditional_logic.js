@@ -222,12 +222,15 @@ function gf_do_field_action(formId, action, fieldId, isInit, callback){
 
 	for(var i=0; i < dependent_fields.length; i++){
 		var targetId = fieldId == 0 ? "#gform_submit_button_" + formId : "#field_" + formId + "_" + dependent_fields[i];
+        var defaultValues = conditional_logic["defaults"][dependent_fields[i]];
 
-		//calling callback function on the last dependent field, to make sure it is only called once
+        //calling callback function on the last dependent field, to make sure it is only called once
 		do_callback = (i+1) == dependent_fields.length ? callback : null;
 
-		gf_do_action(action, targetId, conditional_logic["animation"], conditional_logic["defaults"][dependent_fields[i]], isInit, do_callback);
-	}
+		gf_do_action(action, targetId, conditional_logic["animation"], defaultValues, isInit, do_callback);
+
+        gform.doAction('gform_post_conditional_logic_field_action', formId, action, targetId, defaultValues, isInit);
+    }
 }
 
 function gf_do_next_button_action(formId, action, fieldId, isInit){
@@ -255,13 +258,15 @@ function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, cal
 			}
 		}
 		else{
-			//$target.show();
-			//Getting around an issue with Chrome on Android. Does not like jQuery('xx').show() ...
-			if ($target.is('.gf_inline, input.button')) {
-				$target.css('display', 'inline-block');
-			} else {
-				$target.css('display', 'block');
+
+			var display = $target.data('gf_display');
+
+			//defaults to list-item if previous (saved) display isn't set for any reason
+			if ( display == '' || display == 'none' ){
+				display = 'list-item';
 			}
+
+			$target.css('display', display);
 
 			if(callback){
 				callback();
@@ -269,6 +274,7 @@ function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, cal
 		}
 	}
 	else{
+
 		//if field is not already hidden, reset its values to the default
 		var child = $target.children().first();
 		if (child.length > 0){
@@ -282,6 +288,11 @@ function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, cal
 			$select = jQuery( this );
 			$select.data( 'tabindex', $select.attr( 'tabindex' ) ).removeAttr( 'tabindex' );
 		} );
+
+		//Saving existing display so that it can be reset when showing the field
+		if( ! $target.data('gf_display') ){
+			$target.data('gf_display', $target.css('display'));
+		}
 
 		if(useAnimation && !isInit){
 			if($target.length > 0 && $target.is(":visible")) {
@@ -299,26 +310,33 @@ function gf_do_action(action, targetId, useAnimation, defaultValues, isInit, cal
 }
 
 function gf_reset_to_default(targetId, defaultValue){
-	var dateFields = jQuery(targetId).find('.gfield_date_month input[type="text"], .gfield_date_day input[type="text"], .gfield_date_year input[type="text"], .gfield_date_dropdown_month select, .gfield_date_dropdown_day select, .gfield_date_dropdown_year select');
-	if(dateFields.length > 0){
-		dateFields.each(function(){
-			if(defaultValue){
-				var element = jQuery(this);
-				var key = 'd';
-				if (element.parents().hasClass('gfield_date_month') || element.parents().hasClass('gfield_date_dropdown_month') ){
-					key = 'm';
-				}
-				else if(element.parents().hasClass('gfield_date_year') || element.parents().hasClass('gfield_date_dropdown_year') ){
-					key = 'y';
-				}
 
-				val = defaultValue[key];
+    var dateFields = jQuery( targetId ).find( '.gfield_date_month input, .gfield_date_day input, .gfield_date_year input, .gfield_date_dropdown_month select, .gfield_date_dropdown_day select, .gfield_date_dropdown_year select' );
+	if( dateFields.length > 0 ) {
+
+		dateFields.each( function(){
+
+			var element = jQuery( this );
+
+            // defaultValue is associative array (i.e. [ m: 1, d: 13, y: 1987 ] )
+			if( defaultValue ) {
+
+                var key = 'd';
+                if (element.parents().hasClass('gfield_date_month') || element.parents().hasClass('gfield_date_dropdown_month') ){
+                    key = 'm';
+                }
+                else if(element.parents().hasClass('gfield_date_year') || element.parents().hasClass('gfield_date_dropdown_year') ){
+                    key = 'y';
+                }
+
+                val = defaultValue[ key ];
+
 			}
 			else{
 				val = "";
 			}
 
-			if(element.prop("tagName") == "SELECT")
+			if(element.prop("tagName") == "SELECT" && val != '' )
 				val = parseInt(val);
 
 
@@ -342,9 +360,6 @@ function gf_reset_to_default(targetId, defaultValue){
 		var val = "";
 
 		var element = jQuery(this);
-		if(element.is('select:not([multiple])')){
-			val = element.find('option' ).not( ':disabled' ).eq(0).val();
-		}
 
 		//get name of previous input field to see if it is the radio button which goes with the "Other" text box
 		//otherwise field is populated with input field name
@@ -357,10 +372,19 @@ function gf_reset_to_default(targetId, defaultValue){
 		}
 		else if(jQuery.isPlainObject(defaultValue)){
 			val = defaultValue[element.attr("name")];
+            if( ! val ) {
+                // 'input_123_3_1' => '3.1'
+                var inputId = element.attr( 'id' ).split( '_' ).splice( -2 ).join( '.' );
+                val = defaultValue[ inputId ];
+            }
 		}
 		else if(defaultValue){
 			val = defaultValue;
 		}
+
+        if( element.is('select:not([multiple])') && ! val ) {
+            val = element.find( 'option' ).not( ':disabled' ).eq(0).val();
+        }
 
 		if(element.val() != val) {
 			element.val(val).trigger('change');

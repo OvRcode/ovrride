@@ -29,9 +29,11 @@ class GFAPI {
 	 *
 	 * @param int $form_id The ID of the Form
 	 *
-	 * @return mixed The form meta array or a WP_Error instance
+	 * @return mixed The form meta array or false
 	 */
 	public static function get_form( $form_id ) {
+
+		$form_id = absint( $form_id );
 
 		$form = GFFormsModel::get_form_meta( $form_id );
 		if ( ! $form ) {
@@ -846,7 +848,7 @@ class GFAPI {
 		if ( is_array( $entry_meta ) ) {
 			foreach ( array_keys( $entry_meta ) as $key ) {
 				if ( isset( $entry[ $key ] ) ) {
-					gform_update_meta( $entry_id, $key, $entry[ $key ] );
+					gform_update_meta( $entry_id, $key, $entry[ $key ], $form['id'] );
 				}
 			}
 		}
@@ -983,6 +985,12 @@ class GFAPI {
 	 */
 	public static function submit_form($form_id, $input_values, $field_values = array(), $target_page = 0, $source_page = 1){
 		$form_id = absint( $form_id );
+		$form = GFAPI::get_form( $form_id );
+
+		if ( empty( $form ) || ! $form['is_active'] || $form['is_trash'] ) {
+			return new WP_Error( 'form_not_found', __( 'Your form could not be found', 'gravityforms' ) );
+		}
+
 		$input_values[ 'is_submit_' . $form_id ] = true;
 		$input_values['gform_submit'] = $form_id;
 		$input_values[ 'gform_target_page_number_' . $form_id ] = absint( $target_page );
@@ -1001,6 +1009,10 @@ class GFAPI {
 			GFFormDisplay::process_form( $form_id );
 		} catch ( Exception $ex ) {
 			return new WP_Error( 'error_processing_form', __( 'There was an error while processing the form:', 'gravityforms' ) . ' ' . $ex->getCode() . ' ' . $ex->getMessage() );
+		}
+
+		if ( empty( GFFormDisplay::$submission ) ) {
+			return new WP_Error( 'error_processing_form', __( 'There was an error while processing the form:', 'gravityforms' ) );
 		}
 
 		$submissions_array = GFFormDisplay::$submission;
@@ -1191,7 +1203,8 @@ class GFAPI {
 			return array();
 		}
 
-		GFCommon::log_debug( "GFAPI::send_notifications(): Gathering notifications for {$event} event." );
+		$entry_id = rgar( $entry, 'id' );
+		GFCommon::log_debug( "GFAPI::send_notifications(): Gathering notifications for {$event} event for entry #{$entry_id}." );
 
 		$notifications_to_send = array();
 

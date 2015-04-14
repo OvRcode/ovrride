@@ -769,12 +769,12 @@ class GFCommon {
 		return implode( $separator, $ary );
 	}
 
-	public static function format_variable_value( $value, $url_encode, $esc_html, $format ) {
+	public static function format_variable_value( $value, $url_encode, $esc_html, $format, $nl2br = true ) {
 		if ( $esc_html ) {
 			$value = esc_html( $value );
 		}
 
-		if ( $format == 'html' ) {
+		if ( $format == 'html' && $nl2br ) {
 			$value = nl2br( $value );
 		}
 
@@ -807,7 +807,7 @@ class GFCommon {
 					$value = rgar( $value, $input_id );
 				}
 
-				$value = self::format_variable_value( $value, $url_encode, $esc_html, $format );
+				$value = self::format_variable_value( $value, $url_encode, $esc_html, $format, $nl2br );
 
 				$modifier = strtolower( rgar( $match, 4 ) );
 
@@ -1476,6 +1476,7 @@ class GFCommon {
 		if ( empty( $email_to ) && rgar( $notification, 'toType' ) == 'routing' ) {
 			$email_to = array();
 			foreach ( $notification['routing'] as $routing ) {
+				GFCommon::log_debug( __METHOD__ . '(): Evaluating Routing - rule => ' . print_r( $routing, 1 ) );
 
 				$source_field   = RGFormsModel::get_field( $form, $routing['fieldId'] );
 				$field_value    = RGFormsModel::get_lead_field_value( $lead, $source_field );
@@ -1484,6 +1485,10 @@ class GFCommon {
 				if ( $is_value_match ) {
 					$email_to[] = $routing['email'];
 				}
+
+				GFCommon::log_debug( __METHOD__ . '(): Evaluating Routing - field value => ' . print_r( $field_value, 1 ) );
+				$is_value_match = $is_value_match ? 'Yes' : 'No';
+				GFCommon::log_debug( __METHOD__ . '(): Evaluating Routing - is value match? ' . $is_value_match );
 			}
 
 			$email_to = join( ',', $email_to );
@@ -1522,13 +1527,14 @@ class GFCommon {
 	}
 
 	public static function send_notifications( $notification_ids, $form, $lead, $do_conditional_logic = true, $event = 'form_submission' ) {
+		$entry_id = rgar( $lead, 'id' );
 		if ( ! is_array( $notification_ids ) || empty( $notification_ids ) ) {
-			GFCommon::log_debug( "GFCommon::send_notifications(): Aborting. No notifications to process for {$event} event." );
+			GFCommon::log_debug( "GFCommon::send_notifications(): Aborting. No notifications to process for {$event} event for entry #{$entry_id}." );
 
 			return;
 		}
 
-		GFCommon::log_debug( "GFCommon::send_notifications(): Processing notifications for {$event} event: " . print_r( $notification_ids, true ) . "\n(only active/applicable notifications are sent)" );
+		GFCommon::log_debug( "GFCommon::send_notifications(): Processing notifications for {$event} event for entry #{$entry_id}: " . print_r( $notification_ids, true ) . "\n(only active/applicable notifications are sent)" );
 
 		foreach ( $notification_ids as $notification_id ) {
 			if ( ! isset( $form['notifications'][ $notification_id ] ) ) {
@@ -2656,6 +2662,30 @@ class GFCommon {
 	public static function file_name_has_disallowed_extension( $file_name ) {
 
 		return self::match_file_extension( $file_name, self::get_disallowed_file_extensions() ) || strpos( strtolower( $file_name ), '.php.' ) !== false;
+	}
+
+	public static function check_type_and_ext( $file, $file_name = ''){
+		if ( empty( $file_name ) ) {
+			$file_name = $file['name'];
+		}
+		$tmp_name = $file['tmp_name'];
+		// Whitelist the mime type and extension
+		$wp_filetype = wp_check_filetype_and_ext( $tmp_name, $file_name );
+		$ext = empty( $wp_filetype['ext'] ) ? '' : $wp_filetype['ext'];
+		$type = empty( $wp_filetype['type'] ) ? '' : $wp_filetype['type'];
+		$proper_filename = empty( $wp_filetype['proper_filename'] ) ? '' : $wp_filetype['proper_filename'];
+
+		if ( $proper_filename ) {
+			return new WP_Error( 'invalid_file', __( 'There was an problem while verifying your file.' ) );
+		}
+		if ( ! $ext ) {
+			return new WP_Error( 'illegal_extension', __( 'Sorry, this file extension is not permitted for security reasons.' ) );
+		}
+		if ( ! $type ) {
+			return new WP_Error( 'illegal_type', __( 'Sorry, this file type is not permitted for security reasons.' ) );
+		}
+
+		return true;
 	}
 
 	public static function to_money( $number, $currency_code = '' ) {

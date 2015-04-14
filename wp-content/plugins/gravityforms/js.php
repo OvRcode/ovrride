@@ -1003,7 +1003,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 				}
 				break;
 			default :
-				return true;
+				return gform.applyFilters('gform_form_editor_can_field_be_added', true, type);
 		}
 
 		return true;
