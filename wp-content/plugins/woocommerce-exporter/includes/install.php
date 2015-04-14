@@ -20,6 +20,7 @@ function woo_ce_install() {
 function woo_ce_create_options() {
 
 	$prefix = 'woo_ce';
+
 	if( !get_option( $prefix . '_export_filename' ) )
 		add_option( $prefix . '_export_filename', 'export_%dataset%-%date%-%time%.csv' );
 	if( !get_option( $prefix . '_delete_file' ) )
@@ -35,7 +36,7 @@ function woo_ce_create_options() {
 	if( !get_option( $prefix . '_escape_formatting' ) )
 		add_option( $prefix . '_escape_formatting', 'all' );
 	if( !get_option( $prefix . '_date_format' ) )
-		add_option( $prefix . '_date_format', 1 );
+		add_option( $prefix . '_date_format', 'd/m/Y' );
 
 }
 ?>

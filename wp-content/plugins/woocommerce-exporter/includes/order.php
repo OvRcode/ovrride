@@ -3,14 +3,18 @@ if( is_admin() ) {
 
 	/* Start of: WordPress Administration */
 
-	// HTML template for disabled Filter Orders by Date widget on Store Exporter screen
+	// HTML template for disabled Filter Orders by Order Date widget on Store Exporter screen
 	function woo_ce_orders_filter_by_date() {
 
 		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
 		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
 
+		$today = date( 'l' );
+		$yesterday = date( 'l', strtotime( '-1 days' ) );
 		$current_month = date( 'F' );
 		$last_month = date( 'F', mktime( 0, 0, 0, date( 'n' )-1, 1, date( 'Y' ) ) );
+		$order_dates_variable = '-';
+		$order_dates_variable_length = '';
 		$order_dates_from = '-';
 		$order_dates_to = '-';
 
@@ -19,16 +23,47 @@ if( is_admin() ) {
 <div id="export-orders-filters-date" class="separator">
 	<ul>
 		<li>
+			<label><input type="radio" name="order_dates_filter" value="today" disabled="disabled" /> <?php _e( 'Today', 'woo_ce' ); ?> (<?php echo $today; ?>)</label>
+		</li>
+		<li>
+			<label><input type="radio" name="order_dates_filter" value="yesterday" disabled="disabled" /> <?php _e( 'Yesterday', 'woo_ce' ); ?> (<?php echo $yesterday; ?>)</label>
+		</li>
+		<li>
+			<label><input type="radio" name="order_dates_filter" value="current_week" disabled="disabled" /> <?php _e( 'Current week', 'woo_ce' ); ?></label>
+		</li>
+		<li>
+			<label><input type="radio" name="order_dates_filter" value="last_week" disabled="disabled" /> <?php _e( 'Last week', 'woo_ce' ); ?></label>
+		</li>
+		<li>
 			<label><input type="radio" name="order_dates_filter" value="current_month" disabled="disabled" /> <?php _e( 'Current month', 'woo_ce' ); ?> (<?php echo $current_month; ?>)</label>
 		</li>
 		<li>
 			<label><input type="radio" name="order_dates_filter" value="last_month" disabled="disabled" /> <?php _e( 'Last month', 'woo_ce' ); ?> (<?php echo $last_month; ?>)</label>
 		</li>
+<!--
 		<li>
 			<label><input type="radio" name="order_dates_filter" value="last_quarter" disabled="disabled" /> <?php _e( 'Last quarter', 'woo_ce' ); ?> (Nov. - Jan.)</label>
 		</li>
+-->
 		<li>
-			<label><input type="radio" name="order_dates_filter" value="manual" disabled="disabled" /> <?php _e( 'Manual', 'woo_ce' ); ?></label>
+			<label><input type="radio" name="order_dates_filter" value="variable" disabled="disabled" /> <?php _e( 'Variable date', 'woo_ce' ); ?></label>
+			<div style="margin-top:0.2em;">
+				<?php _e( 'Last', 'woo_ce' ); ?>
+				<input type="text" name="order_dates_filter_variable" class="text code" size="4" maxlength="4" value="<?php echo $order_dates_variable; ?>" disabled="disabled" />
+				<select name="order_dates_filter_variable_length" style="vertical-align:top;">
+					<option value="">&nbsp;</option>
+					<option value="second" disabled="disabled"><?php _e( 'second(s)', 'woo_ce' ); ?></option>
+					<option value="minute" disabled="disabled"><?php _e( 'minute(s)', 'woo_ce' ); ?></option>
+					<option value="hour" disabled="disabled"><?php _e( 'hour(s)', 'woo_ce' ); ?></option>
+					<option value="day" disabled="disabled"><?php _e( 'day(s)', 'woo_ce' ); ?></option>
+					<option value="week" disabled="disabled"><?php _e( 'week(s)', 'woo_ce' ); ?></option>
+					<option value="month" disabled="disabled"><?php _e( 'month(s)', 'woo_ce' ); ?></option>
+					<option value="year" disabled="disabled"><?php _e( 'year(s)', 'woo_ce' ); ?></option>
+				</select>
+			</div>
+		</li>
+		<li>
+			<label><input type="radio" name="order_dates_filter" value="manual" disabled="disabled" /> <?php _e( 'Fixed date', 'woo_ce' ); ?></label>
 			<div style="margin-top:0.2em;">
 				<input type="text" size="10" maxlength="10" id="order_dates_from" name="order_dates_from" value="<?php echo esc_attr( $order_dates_from ); ?>" class="text" disabled="disabled" /> to <input type="text" size="10" maxlength="10" id="order_dates_to" name="order_dates_to" value="<?php echo esc_attr( $order_dates_to ); ?>" class="text" disabled="disabled" />
 				<p class="description"><?php _e( 'Filter the dates of Orders to be included in the export. Default is the date of the first order to today.', 'woo_ce' ); ?></p>
@@ -51,10 +86,82 @@ if( is_admin() ) {
 		ob_start(); ?>
 <p><label><input type="checkbox" id="orders-filters-customer" /> <?php _e( 'Filter Orders by Customer', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-orders-filters-customer" class="separator">
-	<select id="order_customer" name="order_customer" disabled="disabled">
-		<option value=""><?php _e( 'Show all customers', 'woo_ce' ); ?></option>
-	</select>
+	<ul>
+		<li>
+			<select id="order_customer" name="order_filter_customer" class="chzn-select">
+				<option value=""><?php _e( 'Show all customers', 'woo_ce' ); ?></option>
+			</select>
+		</li>
+	</ul>
 	<p class="description"><?php _e( 'Filter Orders by Customer (unique e-mail address) to be included in the export. Default is to include all Orders.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-customer -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Orders by Billing Country widget on Store Exporter screen
+	function woo_ce_orders_filter_by_billing_country() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		$countries = woo_ce_allowed_countries();
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-billing_country" /> <?php _e( 'Filter Orders by Billing Country', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-billing_country" class="separator">
+	<ul>
+		<li>
+<?php if( !empty( $countries ) ) { ?>
+			<select id="order_billing_country" name="order_filter_billing_country" class="chzn-select">
+				<option value="" disabled="disabled"><?php _e( 'Show all Countries', 'woo_ce' ); ?></option>
+	<?php if( $countries ) { ?>
+		<?php foreach( $countries as $country_prefix => $country ) { ?>
+				<option value="<?php echo $country_prefix; ?>" disabled="disabled"><?php printf( '%s (%s)', $country, $country_prefix ); ?></option>
+		<?php } ?>
+	<?php } ?>
+			</select>
+<?php } else { ?>
+			<?php _e( 'No Countries were found.', 'woo_ce' ); ?>
+<?php } ?>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Filter Orders by Billing Country to be included in the export. Default is to include all Countries.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-customer -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Orders by Shipping Country widget on Store Exporter screen
+	function woo_ce_orders_filter_by_shipping_country() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		$countries = woo_ce_allowed_countries();
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-shipping_country" /> <?php _e( 'Filter Orders by Shipping Country', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-shipping_country" class="separator">
+	<ul>
+		<li>
+<?php if( !empty( $countries ) ) { ?>
+			<select id="order_shipping_country" name="order_filter_shipping_country" class="chzn-select">
+				<option value="" disabled="disabled"><?php _e( 'Show all Countries', 'woo_ce' ); ?></option>
+	<?php foreach( $countries as $country_prefix => $country ) { ?>
+				<option value="<?php echo $country_prefix; ?>" disabled="disabled"><?php printf( '%s (%s)', $country, $country_prefix ); ?></option>
+	<?php } ?>
+			</select>
+<?php } else { ?>
+			<?php _e( 'No Countries were found.', 'woo_ce' ); ?>
+<?php } ?>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Filter Orders by Shipping Country to be included in the export. Default is to include all Countries.', 'woo_ce' ); ?></p>
 </div>
 <!-- #export-orders-filters-customer -->
 <?php
@@ -74,15 +181,42 @@ if( is_admin() ) {
 <p><label><input type="checkbox" id="orders-filters-user_role" /> <?php _e( 'Filter Orders by User Role', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-orders-filters-user_role" class="separator">
 	<ul>
-<?php if( $user_roles ) { ?>
+		<li>
+<?php if( !empty( $user_roles ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a User Role...', 'woo_ce' ); ?>" name="order_filter_user_role[]" multiple class="chzn-select" style="width:95%;">
 	<?php foreach( $user_roles as $key => $user_role ) { ?>
-		<li><label><input type="checkbox" name="order_filter_user_role[<?php echo $key; ?>]" value="<?php echo $key; ?>" disabled="disabled" /> <?php echo ucfirst( $user_role['name'] ); ?></label></li>
+				<option value="<?php echo $key; ?>"><?php echo ucfirst( $user_role['name'] ); ?></option>
 	<?php } ?>
+			</select>
 <?php } else { ?>
-		<li><?php _e( 'No User Roles were found.', 'woo_ce' ); ?></li>
+			<?php _e( 'No User Roles were found.', 'woo_ce' ); ?>
 <?php } ?>
+		</li>
 	</ul>
 	<p class="description"><?php _e( 'Select the User Roles you want to filter exported Orders by. Default is to include all User Role options.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-user_role -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Orders by Order ID widget on Store Exporter screen
+	function woo_ce_orders_filter_by_order_id() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-id" /> <?php _e( 'Filter Orders by Order ID', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-id" class="separator">
+	<ul>
+		<li>
+			<label for="order_filter_id"><?php _e( 'Order ID', 'woo_ce' ); ?></label>:<br />
+			<input type="text" id="order_filter_id" name="order_filter_id" value="-" class="text code" disabled="disabled" />
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Enter the Order ID\'s you want to filter exported Orders by. Multiple Order ID\'s can be entered separated by the \',\' (comma) character. Default is to include all Orders.', 'woo_ce' ); ?></p>
 </div>
 <!-- #export-orders-filters-user_role -->
 <?php
@@ -106,11 +240,67 @@ if( is_admin() ) {
 <p><label><input type="checkbox" id="orders-filters-coupon" /> <?php _e( 'Filter Orders by Coupon Code', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-orders-filters-coupon" class="separator">
 	<ul>
-<?php foreach( $coupons as $key => $coupon ) { ?>
-		<li><label><input type="checkbox" name="order_filter_coupon[<?php echo $key; ?>]" disabled="disabled" /> <?php echo get_the_title( $coupon ); ?></label></li>
+		<li>
+<?php if( !empty( $coupons ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Coupon...', 'woo_ce' ); ?>" name="order_filter_coupon[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $coupons as $coupon ) { ?>
+				<option value="<?php echo $coupon; ?>"><?php echo get_the_title( $coupon ); ?> (<?php echo woo_ce_get_coupon_code_usage( get_the_title( $coupon ) ); ?>)</option>
+	<?php } ?>
+			</select>
+<?php } else { ?>
+			<?php _e( 'No Coupons were found.', 'woo_ce' ); ?>
 <?php } ?>
+		</li>
 	</ul>
 	<p class="description"><?php _e( 'Select the Coupon Codes you want to filter exported Orders by. Default is to include all Orders with and without assigned Coupon Codes.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-coupon -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Orders by Payment Gateway widget on Store Exporter screen
+	function woo_ce_orders_filter_by_payment_gateway() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-payment_gateway" /> <?php _e( 'Filter Orders by Payment Gateway', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-payment_gateway" class="separator">
+	<ul>
+		<li>
+			<select id="order_payment_gateway" name="order_payment_gateway" disabled="disabled">
+				<option value=""><?php _e( 'Show all payment gateways', 'woo_ce' ); ?></option>
+			</select>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Select the Payment Gateways you want to filter exported Orders by. Default is to include all Orders.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-coupon -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Orders by Payment Gateway widget on Store Exporter screen
+	function woo_ce_orders_filter_by_shipping_method() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-shipping_method" /> <?php _e( 'Filter Orders by Shipping Method', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-shipping_method" class="separator">
+	<ul>
+		<li>
+			<select id="order_shipping_method" name="order_shipping_method" disabled="disabled">
+				<option value=""><?php _e( 'Show all shipping methods', 'woo_ce' ); ?></option>
+			</select>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Select the Shipping Methods you want to filter exported Orders by. Default is to include all Orders.', 'woo_ce' ); ?></p>
 </div>
 <!-- #export-orders-filters-coupon -->
 <?php
@@ -136,6 +326,7 @@ if( is_admin() ) {
 			<li>
 				<label><input type="radio" name="order_items" value="unique" disabled="disabled" />&nbsp;<?php _e( 'Place Order Items on individual cells within a single Order row', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label>
 				<p class="description"><?php _e( 'For example: <code>Order Items: SKU</code> would become <code>Order Item #1: SKU</code> with <codeSPECK-IPHONE</code> for the first Order item within an Order', 'woo_ce' ); ?></p>
+				<p><strong><?php _e( 'Note', 'woo_ce' ); ?></strong>: <?php _e( 'Custom field labels set for Order export fields will not be applied when using this Order Item Formatting rule, if you need custom field labels use another formatting rule.', 'woo_ce' ); ?></p>
 			</li>
 			<li>
 				<label><input type="radio" name="order_items" value="individual" disabled="disabled" />&nbsp;<?php _e( 'Place each Order Item within their own Order row', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label>
@@ -181,14 +372,17 @@ if( is_admin() ) {
 
 		$types = woo_ce_get_order_items_types();
 		$order_items_types = woo_ce_get_option( 'order_items_types', array() );
+		// Default to Line Item
+		if( empty( $order_items_types ) )
+			$order_items_types = array( 'line_item' );
 
 		ob_start(); ?>
 <tr class="export-options order-options">
-	<th><label><?php _e( 'Order items types', 'woo_ce' ); ?></label></th>
+	<th><label><?php _e( 'Order item types', 'woo_ce' ); ?></label></th>
 	<td>
 		<ul>
 <?php foreach( $types as $key => $type ) { ?>
-			<li><label><input type="checkbox" name="order_filter_order_item_types[<?php echo $key; ?>]" value="<?php echo $key; ?>" disabled="disabled" /> <?php echo ucfirst( $type ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></li>
+			<li><label><input type="checkbox" name="order_items_types[<?php echo $key; ?>]" value="<?php echo $key; ?>" disabled="disabled" /> <?php echo ucfirst( $type ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></li>
 <?php } ?>
 		</ul>
 		<p class="description"><?php _e( 'Choose what Order Item types are included within the Orders export. Default is to include all Order Item types.', 'woo_ce' ); ?></p>
@@ -211,20 +405,56 @@ if( is_admin() ) {
 <p><label><input type="checkbox" id="orders-filters-status" /> <?php _e( 'Filter Orders by Order Status', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-orders-filters-status" class="separator">
 	<ul>
-<?php if( $order_statuses ) { ?>
-	<?php foreach( $order_statuses as $order_status ) { ?>
 		<li>
-			<label><input type="checkbox" name="order_filter_status[<?php echo $order_status->slug; ?>]" value="<?php echo $order_status->slug; ?>" disabled="disabled" /> <?php echo ucfirst( $order_status->name ); ?></label>
-			<span class="description">(<?php echo $order_status->count; ?>)</span>
-		</li>
+<?php if( !empty( $order_statuses ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Order Status...', 'woo_ce' ); ?>" name="order_filter_status[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $order_statuses as $order_status ) { ?>
+				<option value="<?php echo $order_status->slug; ?>"><?php echo ucfirst( $order_status->name ); ?> (<?php echo $order_status->count; ?>)</option>
 	<?php } ?>
+			</select>
 <?php } else { ?>
-		<li><?php _e( 'No Order Status\'s were found.', 'woo_ce' ); ?></li>
+			<?php _e( 'No Order Status\'s were found.', 'woo_ce' ); ?>
 <?php } ?>
+		</li>
 	</ul>
 	<p class="description"><?php _e( 'Select the Order Status you want to filter exported Orders by. Default is to include all Order Status options.', 'woo_ce' ); ?></p>
 </div>
 <!-- #export-orders-filters-status -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Orders by Product widget on Store Exporter screen
+	function woo_ce_orders_filter_by_product() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		$args = array(
+			'hide_empty' => 1
+		);
+		$products = woo_ce_get_products( $args );
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-product" /> <?php _e( 'Filter Orders by Product', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-product" class="separator">
+	<ul>
+		<li>
+<?php if( !empty( $products ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Product...', 'woo_ce' ); ?>" name="order_filter_product[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $products as $product ) { ?>
+				<option value="<?php echo $product; ?>" disabled="disabled"><?php echo get_the_title( $product ); ?> (<?php printf( __( 'SKU: %s', 'woo_ce' ), get_post_meta( $product, '_sku', true ) ); ?>)</option>
+	<?php } ?>
+			</select>
+<?php } else { ?>
+			<?php _e( 'No Products were found.', 'woo_ce' ); ?>
+<?php } ?>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Select the Products you want to filter exported Orders by. Default is to include all Products.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-product -->
 <?php
 		ob_end_flush();
 
@@ -245,15 +475,17 @@ if( is_admin() ) {
 <p><label><input type="checkbox" id="orders-filters-category" /> <?php _e( 'Filter Orders by Product Category', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-orders-filters-category" class="separator">
 	<ul>
-<?php if( $product_categories ) { ?>
-	<?php foreach( $product_categories as $product_category ) { ?>
 		<li>
-			<label><input type="checkbox" name="order_filter_category[<?php echo $product_category->name; ?>]" value="<?php echo $product_category->term_id; ?>" title="<?php printf( __( 'Term ID: %d', 'woo_ce' ), $product_category->term_id ); ?>" disabled="disabled" /> <?php echo woo_ce_format_product_category_label( $product_category->name, $product_category->parent_name ); ?></label>
-		</li>
+<?php if( !empty( $product_categories ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Product Category...', 'woo_ce' ); ?>" name="order_filter_category[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $product_categories as $product_category ) { ?>
+				<option value="<?php echo $product_category->term_id; ?>"><?php echo woo_ce_format_product_category_label( $product_category->name, $product_category->parent_name ); ?> (<?php printf( __( 'Term ID: %d', 'woo_ce' ), $product_category->term_id ); ?>)</option>
 	<?php } ?>
+			</select>
 <?php } else { ?>
-		<li><?php _e( 'No Product Categories were found.', 'woo_ce' ); ?></li>
+			<?php _e( 'No Product Categories were found.', 'woo_ce' ); ?>
 <?php } ?>
+		</li>
 	</ul>
 	<p class="description"><?php _e( 'Select the Product Categories you want to filter exported Orders by. Default is to include all Product Categories.', 'woo_ce' ); ?></p>
 </div>
@@ -278,16 +510,17 @@ if( is_admin() ) {
 <p><label><input type="checkbox" id="orders-filters-tag" /> <?php _e( 'Filter Orders by Product Tag', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-orders-filters-tag" class="separator">
 	<ul>
-<?php if( $product_tags ) { ?>
-	<?php foreach( $product_tags as $product_tag ) { ?>
 		<li>
-			<label><input type="checkbox" name="order_filter_tag[<?php echo $product_tag->name; ?>]" value="<?php echo $product_tag->name; ?>" title="<?php printf( __( 'Term ID: %d', 'woo_ce' ), $product_tag->term_id ); ?>" disabled="disabled" /> <?php echo $product_tag->name; ?></label>
-			<span class="description">(<?php echo $product_tag->count; ?>)</span>
-		</li>
+<?php if( !empty( $product_tags ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Product Tag...', 'woo_ce' ); ?>" name="order_filter_tag[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $product_tags as $product_tag ) { ?>
+				<option value="<?php echo $product_tag->term_id; ?>"><?php echo $product_tag->name; ?> (<?php printf( __( 'Term ID: %d', 'woo_ce' ), $product_tag->term_id ); ?>)</option>
 	<?php } ?>
+			</select>
 <?php } else { ?>
-		<li><?php _e( 'No Product Tags have been found.', 'jigo_ce' ); ?></li>
+			<?php _e( 'No Product Tags were found.', 'woo_ce' ); ?>
 <?php } ?>
+		</li>
 	</ul>
 	<p class="description"><?php _e( 'Select the Product Tags you want to filter exported Orders by. Default is to include all Product Tags.', 'woo_ce' ); ?></p>
 </div>
@@ -297,8 +530,48 @@ if( is_admin() ) {
 
 	}
 
+	// HTML template for disabled Filter Orders by Brand widget on Store Exporter screen
+	function woo_ce_orders_filter_by_product_brand() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		// WooCommerce Brands Addon - http://woothemes.com/woocommerce/
+		// WooCommerce Brands - http://proword.net/Woocommerce_Brands/
+		if( class_exists( 'WC_Brands' ) || class_exists( 'woo_brands' ) || taxonomy_exists( apply_filters( 'woo_ce_brand_term_taxonomy', 'product_brand' ) ) )
+			return;
+
+		$args = array(
+			'hide_empty' => 1
+		);
+		$product_brands = woo_ce_get_product_brands( $args );
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="orders-filters-brand" /> <?php _e( 'Filter Orders by Product Brand', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-orders-filters-brand" class="separator">
+	<ul>
+		<li>
+<?php if( !empty( $product_brands ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Product Category...', 'woo_ce' ); ?>" name="order_filter_brand[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $product_brands as $product_brand ) { ?>
+				<option value="<?php echo $product_brand->term_id; ?>"><?php echo woo_ce_format_product_category_label( $product_brand->name, $product_brand->parent_name ); ?> (<?php printf( __( 'Term ID: %d', 'woo_ce' ), $product_brand->term_id ); ?>)</option>
+	<?php } ?>
+			</select>
+<?php } else { ?>
+			<?php _e( 'No Product Brands were found.', 'woo_ce' ); ?>
+<?php } ?>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Select the Product Brands you want to filter exported Orders by. Default is to include all Product Brands.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-orders-filters-brand -->
+<?php
+		ob_end_flush();
+
+	}
+
 	// HTML template for disabled Order Sorting widget on Store Exporter screen
-	function woo_ce_orders_order_sorting() {
+	function woo_ce_order_sorting() {
 
 		ob_start(); ?>
 <p><label><?php _e( 'Order Sorting', 'woo_ce' ); ?></label></p>
@@ -396,11 +669,23 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 	$fields = array();
 	$fields[] = array(
 		'name' => 'purchase_id',
-		'label' => __( 'Purchase ID', 'woo_ce' )
+		'label' => __( 'Order ID', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'post_id',
+		'label' => __( 'Post ID', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'purchase_total',
 		'label' => __( 'Order Total', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'purchase_subtotal',
+		'label' => __( 'Order Subtotal', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'order_currency',
+		'label' => __( 'Order Currency', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'order_discount',
@@ -410,6 +695,10 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 		'name' => 'coupon_code',
 		'label' => __( 'Coupon Code', 'woo_ce' )
 	);
+	$fields[] = array(
+		'name' => 'purchase_total_tax',
+		'label' => __( 'Order Total Tax', 'woo_ce' )
+	);
 /*
 	$fields[] = array(
 		'name' => 'order_incl_tax',
@@ -418,7 +707,7 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 */
 	$fields[] = array(
 		'name' => 'order_excl_tax',
-		'label' => __( 'Order Excl. Tax', 'woo_ce' )
+		'label' => __( 'Order Subtotal Excl. Tax', 'woo_ce' )
 	);
 /*
 	$fields[] = array(
@@ -433,6 +722,10 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 	$fields[] = array(
 		'name' => 'order_shipping_tax',
 		'label' => __( 'Shipping Tax Total', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'order_tax_percentage',
+		'label' => __( 'Order Tax Percentage', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'payment_gateway_id',
@@ -472,11 +765,11 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 	);
 	$fields[] = array(
 		'name' => 'purchase_date',
-		'label' => __( 'Purchase Date', 'woo_ce' )
+		'label' => __( 'Order Date', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'purchase_time',
-		'label' => __( 'Purchase Time', 'woo_ce' )
+		'label' => __( 'Order Time', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'customer_message',
@@ -489,6 +782,14 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 	$fields[] = array(
 		'name' => 'order_notes',
 		'label' => __( 'Order Notes', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'total_quantity',
+		'label' => __( 'Total Quantity', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'total_order_items',
+		'label' => __( 'Total Order Items', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'user_id',
@@ -643,6 +944,14 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 		'label' => __( 'Order Items: Product Variation', 'woo_ce' )
 	);
 	$fields[] = array(
+		'name' => 'order_items_description',
+		'label' => __( 'Order Items: Product Description', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'order_items_excerpt',
+		'label' => __( 'Order Items: Product Excerpt', 'woo_ce' )
+	);
+	$fields[] = array(
 		'name' => 'order_items_tax_class',
 		'label' => __( 'Order Items: Tax Class', 'woo_ce' )
 	);
@@ -659,6 +968,14 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 		'label' => __( 'Order Items: Subtotal', 'woo_ce' )
 	);
 	$fields[] = array(
+		'name' => 'order_items_rrp',
+		'label' => __( 'Order Items: RRP', 'woo_ce' )
+	);
+	$fields[] = array(
+		'name' => 'order_items_stock',
+		'label' => __( 'Order Items: Stock', 'woo_ce' )
+	);
+	$fields[] = array(
 		'name' => 'order_items_tax',
 		'label' => __( 'Order Items: Tax', 'woo_ce' )
 	);
@@ -666,6 +983,16 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 		'name' => 'order_items_tax_subtotal',
 		'label' => __( 'Order Items: Tax Subtotal', 'woo_ce' )
 	);
+	$tax_rates = woo_ce_get_order_tax_rates();
+	if( !empty( $tax_rates ) ) {
+		foreach( $tax_rates as $tax_rate ) {
+			$fields[] = array(
+				'name' => sprintf( 'order_items_tax_rate_%d', $tax_rate['rate_id'] ),
+				'label' => sprintf( __( 'Order Items: Tax Rate - %s', 'woo_ce' ), $tax_rate['label'] )
+			);
+		}
+	}
+	unset( $tax_rates, $tax_rate );
 	$fields[] = array(
 		'name' => 'order_items_type',
 		'label' => __( 'Order Items: Type', 'woo_ce' )
@@ -679,16 +1006,16 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 		'label' => __( 'Order Items: Tag', 'woo_ce' )
 	);
 	$fields[] = array(
+		'name' => 'order_items_total_sales',
+		'label' => __( 'Order Items: Total Sales', 'woo_ce' )
+	);
+	$fields[] = array(
 		'name' => 'order_items_weight',
 		'label' => __( 'Order Items: Weight', 'woo_ce' )
 	);
 	$fields[] = array(
 		'name' => 'order_items_total_weight',
 		'label' => __( 'Order Items: Total Weight', 'woo_ce' )
-	);
-	$fields[] = array(
-		'name' => 'order_items_stock',
-		'label' => __( 'Order Items: Stock', 'woo_ce' )
 	);
 
 /*
@@ -717,9 +1044,13 @@ function woo_ce_get_order_fields( $format = 'full' ) {
 		default:
 			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, woo_ce_sort_fields( 'order' ) );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
@@ -744,7 +1075,7 @@ add_filter( 'woo_ce_order_fields', 'woo_ce_override_order_field_labels', 11 );
 // Adds custom Order and Order Item columns to the Order fields list
 function woo_ce_extend_order_fields( $fields = array() ) {
 
-	// Product Addons - http://www.woothemes.com/
+	// Product Add-ons - http://www.woothemes.com/
 	if( class_exists( 'Product_Addon_Admin' ) || class_exists( 'Product_Addon_Display' ) ) {
 		$product_addons = woo_ce_get_product_addons();
 		if( !empty( $product_addons ) ) {
@@ -752,7 +1083,8 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 				if( !empty( $product_addon ) ) {
 					$fields[] = array(
 						'name' => sprintf( 'order_items_product_addon_%s', $product_addon->post_name ),
-						'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), ucfirst( $product_addon->post_title ) )
+						'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), ucfirst( $product_addon->post_title ) ),
+						'hover' => sprintf( apply_filters( 'woo_ce_extend_order_fields_product_addons', '%s: %s' ), __( 'Product Add-ons', 'woo_ce' ), $product_addon->form_title )
 					);
 				}
 			}
@@ -795,18 +1127,21 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 
 	// WooCommerce Checkout Manager - http://wordpress.org/plugins/woocommerce-checkout-manager/
 	// WooCommerce Checkout Manager Pro - http://www.trottyzone.com/product/woocommerce-checkout-manager-pro
-	if( function_exists( 'wccs_install' ) ) {
+	if( function_exists( 'wccs_install' ) || function_exists( 'wccs_install_pro' ) ) {
 		$options = get_option( 'wccs_settings' );
 		if( isset( $options['buttons'] ) ) {
 			$buttons = $options['buttons'];
 			if( !empty( $buttons ) ) {
+				$header = ( $buttons[0]['type'] == 'heading' ? $buttons[0]['label'] : false );
 				foreach( $buttons as $button ) {
+					if( $button['type'] == 'heading' )
+						continue;
 					$fields[] = array(
 						'name' => $button['label'],
-						'label' => ucfirst( $button['label'] )
+						'label' => ( !empty( $header ) ? sprintf( apply_filters( 'woo_ce_extend_order_fields_wccs', '%s: %s' ), ucfirst( $header ), ucfirst( $button['label'] ) ) : ucfirst( $button['label'] ) )
 					);
 				}
-				unset( $buttons, $button );
+				unset( $buttons, $button, $header );
 			}
 		}
 		unset( $options );
@@ -814,6 +1149,7 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 
 	// Poor Guys Swiss Knife - http://wordpress.org/plugins/woocommerce-poor-guys-swiss-knife/
 	if( function_exists( 'wcpgsk_init' ) ) {
+
 		$options = get_option( 'wcpgsk_settings' );
 		$billing_fields = ( isset( $options['woofields']['billing'] ) ? $options['woofields']['billing'] : array() );
 		$shipping_fields = ( isset( $options['woofields']['shipping'] ) ? $options['woofields']['shipping'] : array() );
@@ -853,7 +1189,7 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 		if( !empty( $billing_fields ) ) {
 			foreach( $billing_fields as $key => $billing_field ) {
 				// Only add non-default Checkout fields to export columns list
-				if( $billing_field['custom'] == 1 ) {
+				if( isset( $billing_field['custom'] ) && $billing_field['custom'] == 1 ) {
 					$fields[] = array(
 						'name' => sprintf( 'wc_billing_%s', $key ),
 						'label' => sprintf( __( 'Billing: %s', 'woo_ce' ), ucfirst( $billing_field['label'] ) )
@@ -867,7 +1203,7 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 		if( !empty( $shipping_fields ) ) {
 			foreach( $shipping_fields as $key => $shipping_field ) {
 				// Only add non-default Checkout fields to export columns list
-				if( $shipping_field['custom'] == 1 ) {
+				if( isset( $shipping_field['custom'] ) && $shipping_field['custom'] == 1 ) {
 					$fields[] = array(
 						'name' => sprintf( 'wc_shipping_%s', $key ),
 						'label' => sprintf( __( 'Shipping: %s', 'woo_ce' ), ucfirst( $shipping_field['label'] ) )
@@ -881,7 +1217,7 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 		if( !empty( $custom_fields ) ) {
 			foreach( $custom_fields as $key => $custom_field ) {
 				// Only add non-default Checkout fields to export columns list
-				if( $billing_field['custom'] == 1 ) {
+				if( isset( $custom_field['custom'] ) && $custom_field['custom'] == 1 ) {
 					$fields[] = array(
 						'name' => sprintf( 'wc_additional_%s', $key ),
 						'label' => sprintf( __( 'Additional: %s', 'woo_ce' ), ucfirst( $custom_field['label'] ) )
@@ -958,7 +1294,8 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 	}
 
 	// WooCommerce Brands Addon - http://woothemes.com/woocommerce/
-	if( class_exists( 'WC_Brands' ) ) {
+	// WooCommerce Brands - http://proword.net/Woocommerce_Brands/
+	if( class_exists( 'WC_Brands' ) || class_exists( 'woo_brands' ) || taxonomy_exists( apply_filters( 'woo_ce_brand_term_taxonomy', 'product_brand' ) ) ) {
 		$fields[] = array(
 			'name' => 'order_items_brand',
 			'label' => __( 'Order Items: Brand', 'woo_ce' )
@@ -976,12 +1313,24 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 	// Cost of Goods - http://www.skyverge.com/product/woocommerce-cost-of-goods-tracking/
 	if( class_exists( 'WC_COG' ) ) {
 		$fields[] = array(
-			'name' => 'total_cost_of_goods',
-			'label' => __( 'Total Cost of Goods', 'woo_ce' )
+			'name' => 'cost_of_goods',
+			'label' => __( 'Order Total Cost of Goods', 'woo_ce' )
 		);
 		$fields[] = array(
 			'name' => 'order_items_cost_of_goods',
 			'label' => __( 'Order Items: Cost of Goods', 'woo_ce' )
+		);
+		$fields[] = array(
+			'name' => 'order_items_total_cost_of_goods',
+			'label' => __( 'Order Items: Total Cost of Goods', 'woo_ce' )
+		);
+	}
+
+	// WooCommerce MSRP Pricing - http://woothemes.com/woocommerce/
+	if( function_exists( 'woocommerce_msrp_activate' ) ) {
+		$fields[] = array(
+			'name' => 'order_items_msrp',
+			'label' => __( 'Order Items: MSRP', 'woo_ce' )
 		);
 	}
 
@@ -990,6 +1339,30 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 		$fields[] = array(
 			'name' => 'order_items_pickup_location',
 			'label' => __( 'Order Items: Pickup Location', 'woo_ce' )
+		);
+	}
+
+	// WooCommerce Bookings - http://www.woothemes.com/products/woocommerce-bookings/
+	if( class_exists( 'WC_Bookings' ) ) {
+		$fields[] = array(
+			'name' => 'order_items_booking_id',
+			'label' => __( 'Order Items: Booking ID', 'woo_ce' ),
+			'hover' => __( 'WooCommerce Bookings', 'woo_ce' )
+		);
+		$fields[] = array(
+			'name' => 'order_items_booking_date',
+			'label' => __( 'Order Items: Booking Date', 'woo_ce' ),
+			'hover' => __( 'WooCommerce Bookings', 'woo_ce' )
+		);
+		$fields[] = array(
+			'name' => 'order_items_booking_start_date',
+			'label' => __( 'Order Items: Start Date', 'woo_ce' ),
+			'hover' => __( 'WooCommerce Bookings', 'woo_ce' )
+		);
+		$fields[] = array(
+			'name' => 'order_items_booking_end_date',
+			'label' => __( 'Order Items: End Date', 'woo_ce' ),
+			'hover' => __( 'WooCommerce Bookings', 'woo_ce' )
 		);
 	}
 
@@ -1005,12 +1378,26 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 				'name' => 'order_items_gf_form_label',
 				'label' => __( 'Order Items: Gravity Form Label', 'woo_ce' )
 			);
-			foreach( $gf_fields as $key => $gf_field ) {
-				$fields[] = array(
-					'name' => sprintf( 'order_items_gf_%d_%s', $gf_field['formId'], $gf_field['id'] ),
-					'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), ucfirst( $gf_field['label'] ) )
-				);
+			foreach( $gf_fields as $gf_field ) {
+				$gf_field_duplicate = false;
+				// Check if this isn't a duplicate Gravity Forms field
+				foreach( $fields as $field ) {
+					if( isset( $field['name'] ) && $field['name'] == sprintf( 'order_items_gf_%d_%s', $gf_field['formId'], $gf_field['id'] ) ) {
+						// Duplicate exists
+						$gf_field_duplicate = true;
+						break;
+					}
+				}
+				// If it's not a duplicate go ahead and add it to the list
+				if( $gf_field_duplicate !== true ) {
+					$fields[] = array(
+						'name' => sprintf( 'order_items_gf_%d_%s', $gf_field['formId'], $gf_field['id'] ),
+						'label' => sprintf( apply_filters( 'woo_ce_extend_order_fields_gf_label', __( 'Order Items: %s - %s', 'woo_ce' ) ), ucwords( strtolower( $gf_field['formTitle'] ) ), ucfirst( strtolower( $gf_field['label'] ) ) ),
+						'hover' => sprintf( apply_filters( 'woo_ce_extend_order_fields_gf_hover', '%s: %s (ID: %d)' ), __( 'Gravity Forms', 'woo_ce' ), ucwords( strtolower( $gf_field['formTitle'] ) ), $gf_field['formId'] )
+					);
+				}
 			}
+			unset( $gf_fields, $gf_field );
 		}
 	}
 
@@ -1022,6 +1409,43 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 		);
 	}
 
+	// WooCommerce TM Extra Product Options - http://codecanyon.net/item/woocommerce-extra-product-options/7908619
+	if( class_exists( 'TM_Extra_Product_Options' ) ) {
+		if( $tm_fields = woo_ce_get_extra_product_option_fields() ) {
+			foreach( $tm_fields as $tm_field ) {
+				$fields[] = array(
+					'name' => sprintf( 'order_items_tm_%s', sanitize_key( $tm_field['name'] ) ),
+					'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), $tm_field['name'] )
+				);
+			}
+			unset( $tm_fields, $tm_field );
+		}
+	}
+
+	// WooCommerce Ship to Multiple Addresses - http://woothemes.com/woocommerce
+	if( class_exists( 'WC_Ship_Multiple' ) ) {
+		$fields[] = array(
+			'name' => 'wcms_number_packages',
+			'label' => __( 'Number of Packages', 'woo_ce' ),
+			'hover' => __( 'Ship to Multiple Addresses', 'woo_ce' )
+		);
+	}
+
+	// Attributes
+	if( $attributes = woo_ce_get_product_attributes() ) {
+		foreach( $attributes as $attribute ) {
+			$attribute->attribute_label = trim( $attribute->attribute_label );
+			if( empty( $attribute->attribute_label ) )
+				$attribute->attribute_label = $attribute->attribute_name;
+			$fields[] = array(
+				'name' => sprintf( 'order_items_attribute_%s', $attribute->attribute_name ),
+				'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), ucwords( $attribute->attribute_label ) ),
+				'hover' => sprintf( apply_filters( 'woo_ce_extend_order_fields_attribute', '%s: %s (#%d)' ), __( 'Attribute', 'woo_ce' ), $attribute->attribute_name, $attribute->attribute_id )
+			);
+		}
+		unset( $attributes, $attribute );
+	}
+
 	// Custom Order fields
 	$custom_orders = woo_ce_get_option( 'custom_orders', '' );
 	if( !empty( $custom_orders ) ) {
@@ -1029,13 +1453,13 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 			if( !empty( $custom_order ) ) {
 				$fields[] = array(
 					'name' => $custom_order,
-					'label' => ucfirst( $custom_order )
+					'label' => woo_ce_clean_export_label( $custom_order ),
+					'hover' => sprintf( apply_filters( 'woo_ce_extend_order_fields_custom_order_hover', '%s: %s' ), __( 'Custom Order', 'woo_ce' ), $custom_order )
 				);
 			}
 		}
 		unset( $custom_orders, $custom_order );
 	}
-
 
 	// Custom Order Items fields
 	$custom_order_items = woo_ce_get_option( 'custom_order_items', '' );
@@ -1044,7 +1468,22 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 			if( !empty( $custom_order_item ) ) {
 				$fields[] = array(
 					'name' => sprintf( 'order_items_%s', $custom_order_item ),
-					'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), $custom_order_item )
+					'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), woo_ce_clean_export_label( $custom_order_item ) ),
+					'hover' => sprintf( apply_filters( 'woo_ce_extend_order_fields_custom_order_item_hover', '%s: %s' ), __( 'Custom Order Item', 'woo_ce' ), $custom_order_item )
+				);
+			}
+		}
+	}
+
+	// Custom Product fields
+	$custom_product_fields = woo_ce_get_option( 'custom_products', '' );
+	if( !empty( $custom_product_fields ) ) {
+		foreach( $custom_product_fields as $custom_product_field ) {
+			if( !empty( $custom_product_field ) ) {
+				$fields[] = array(
+					'name' => sprintf( 'order_items_%s', $custom_product_field ),
+					'label' => sprintf( __( 'Order Items: %s', 'woo_ce' ), woo_ce_clean_export_label( $custom_product_field ) ),
+					'hover' => sprintf( apply_filters( 'woo_ce_extend_order_fields_custom_product_hover', '%s: %s' ), __( 'Custom Product', 'woo_ce' ), $custom_product_field )
 				);
 			}
 		}
@@ -1054,6 +1493,23 @@ function woo_ce_extend_order_fields( $fields = array() ) {
 
 }
 add_filter( 'woo_ce_order_fields', 'woo_ce_extend_order_fields' );
+
+function woo_ce_get_order_tax_rates() {
+
+	global $wpdb;
+
+	$tax_rates_sql = "SELECT order_items.order_item_id as item_id, order_items.order_item_name FROM " . $wpdb->prefix . "woocommerce_order_items as order_items WHERE order_items.order_item_type = 'tax' GROUP BY order_item_name";
+	$tax_rates = $wpdb->get_results( $tax_rates_sql, 'ARRAY_A' );
+	if( !empty( $tax_rates ) ) {
+		$meta_type = 'order_item';
+		foreach( $tax_rates as $key => $tax_rate ) {
+			$tax_rates[$key]['rate_id'] = get_metadata( $meta_type, $tax_rate['item_id'], 'rate_id', true );
+			$tax_rates[$key]['label'] = get_metadata( $meta_type, $tax_rate['item_id'], 'label', true );
+		}
+		return $tax_rates;
+	}
+
+}
 
 function woo_ce_get_gravity_forms_products() {
 
@@ -1081,15 +1537,44 @@ function woo_ce_get_gravity_form_fields() {
 							foreach( $gf_form_meta['fields'] as $gf_form_field ) {
 								// Check for duplicate Gravity Form fields
 								$gf_form_field['formTitle'] = $gf_form_meta['title'];
-								$fields[] = $gf_form_field;
+								// Do not include page and section breaks, hidden as exportable fields
+								if( !in_array( $gf_form_field['type'], array( 'page', 'section', 'hidden' ) ) )
+									$fields[] = $gf_form_field;
 							}
 						}
 					}
+					unset( $gf_form_meta );
 				}
 			}
 		}
 		return $fields;
 	}
+
+}
+
+function woo_ce_get_extra_product_option_fields() {
+
+	global $wpdb;
+
+	$meta_key = '_tmcartepo_data';
+	$tm_fields_sql = $wpdb->prepare( "SELECT order_itemmeta.`meta_value` FROM `" . $wpdb->prefix . "woocommerce_order_items` as order_items, `" . $wpdb->prefix . "woocommerce_order_itemmeta` as order_itemmeta WHERE order_items.`order_item_id` = order_itemmeta.`order_item_id` AND order_items.`order_item_type` = 'line_item' AND order_itemmeta.`meta_key` = %s", $meta_key );
+	$tm_fields = $wpdb->get_col( $tm_fields_sql );
+	if( !empty( $tm_fields ) ) {
+		$fields = array();
+		foreach( $tm_fields as $tm_field ) {
+			$tm_field = maybe_unserialize( $tm_field );
+			$size = count( $tm_field );
+			for( $i = 0; $i < $size; $i++ ) {
+				// Check that the name is set
+				if( !empty( $tm_field[$i]['name'] ) ) {
+				// Check if we haven't already set this
+					if( !array_key_exists( sanitize_key( $tm_field[$i]['name'] ), $fields ) )
+						$fields[sanitize_key( $tm_field[$i]['name'] )] = $tm_field[$i];
+				}
+			}
+		}
+	}
+	return $fields;
 
 }
 
@@ -1146,47 +1631,6 @@ function woo_ce_get_order_items_types() {
 	);
 	$types = apply_filters( 'woo_ce_order_item_types', $types );
 	return $types;
-
-}
-
-// Returns list of Product Addon columns
-function woo_ce_get_product_addons() {
-
-	$output = array();
-
-	// Product Addons - http://www.woothemes.com/
-	if( class_exists( 'Product_Addon_Admin' ) || class_exists( 'Product_Addon_Display' ) ) {
-		$post_type = 'global_product_addon';
-		$args = array(
-			'post_type' => $post_type,
-			'numberposts' => -1
-		);
-		if( $product_addons = get_posts( $args ) ) {
-			foreach( $product_addons as $product_addon ) {
-				if( $meta = maybe_unserialize( get_post_meta( $product_addon->ID, '_product_addons', true ) ) ) {
-					$size = count( $meta );
-					for( $i = 0; $i < $size; $i++ ) {
-						$output[] = (object)array(
-							'post_name' => $meta[$i]['name'],
-							'post_title' => $meta[$i]['name']
-						);
-					}
-				}
-			}
-		}
-	}
-
-	// Custom Order Items
-	if( $custom_order_items = woo_ce_get_option( 'custom_order_items', '' ) ) {
-		foreach( $custom_order_items as $custom_order_item ) {
-			$output[] = (object)array(
-				'post_name' => $custom_order_item,
-				'post_title' => $custom_order_item
-			);
-		}
-	}
-
-	return $output;
 
 }
 ?>

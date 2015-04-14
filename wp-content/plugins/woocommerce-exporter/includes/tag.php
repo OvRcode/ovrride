@@ -4,7 +4,7 @@ if( is_admin() ) {
 	/* Start of: WordPress Administration */
 
 	// HTML template for Tag Sorting widget on Store Exporter screen
-	function woo_ce_tag_order_sorting() {
+	function woo_ce_tag_sorting() {
 
 		$tag_orderby = woo_ce_get_option( 'tag_orderby', 'ID' );
 		$tag_order = woo_ce_get_option( 'tag_order', 'DESC' );
@@ -110,9 +110,13 @@ function woo_ce_get_tag_fields( $format = 'full' ) {
 		default:
 			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, woo_ce_sort_fields( 'order' ) );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 

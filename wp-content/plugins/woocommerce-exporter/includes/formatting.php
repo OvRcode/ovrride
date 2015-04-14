@@ -15,6 +15,7 @@ function woo_ce_file_encoding( $content = '' ) {
 
 }
 
+// Format the raw memory data provided by PHP
 function woo_ce_display_memory( $memory = 0 ) {
 
 	$output = '-';
@@ -24,6 +25,7 @@ function woo_ce_display_memory( $memory = 0 ) {
 
 }
 
+// Format the raw timestamps to something more friendly
 function woo_ce_display_time_elapsed( $from, $to ) {
 
 	$output = __( '1 second', 'woo_ce' );
@@ -37,16 +39,17 @@ function woo_ce_display_time_elapsed( $from, $to ) {
 		60 => __( 'minute', 'woo_ce' ),
 		1 => __( 'second', 'woo_ce' )
 	);
-	foreach ($tokens as $unit => $text) {
-		if ($time < $unit) continue;
-		$numberOfUnits = floor($time / $unit);
+	foreach( $tokens as $unit => $text ) {
+		if( $time < $unit )
+			continue;
+		$numberOfUnits = floor( $time / $unit );
 		$output = $numberOfUnits . ' ' . $text . ( ( $numberOfUnits > 1 ) ? 's' : '' );
 	}
 	return $output;
 
 }
 
-// This function escapes all cells in 'Excel' CSV escape formatting of a CSV file, also converts HTML entities to plain-text
+// Escape all cells in 'Excel' CSV escape formatting of a CSV file, also converts HTML entities to plain-text
 function woo_ce_escape_csv_value( $string = '', $delimiter = ',', $format = 'all' ) {
 
 	$string = str_replace( '"', '""', $string );
@@ -68,6 +71,15 @@ function woo_ce_escape_csv_value( $string = '', $delimiter = ',', $format = 'all
 
 }
 
+function woo_ce_sanitize_key( $key ) {
+
+	// Limit length of key to 24 characters
+	$key = substr( $key, 0, 24 );
+	return $key;
+
+}
+
+// Return the element count of an object
 function woo_ce_count_object( $object = 0, $exclude_post_types = array() ) {
 
 	$count = 0;
@@ -90,12 +102,13 @@ function woo_ce_count_object( $object = 0, $exclude_post_types = array() ) {
 
 }
 
+// Takes an array or comma separated string and returns an export formatted string 
 function woo_ce_convert_product_ids( $product_ids = null ) {
 
 	global $export;
 
 	$output = '';
-	if( $product_ids ) {
+	if( $product_ids !== null ) {
 		if( is_array( $product_ids ) ) {
 			$size = count( $product_ids );
 			for( $i = 0; $i < $size; $i++ )
@@ -157,6 +170,7 @@ function woo_ce_format_download_type( $download_type = '' ) {
 
 }
 
+// Format the raw post_status
 function woo_ce_format_product_status( $product_status = '' ) {
 
 	$output = $product_status;
@@ -179,6 +193,7 @@ function woo_ce_format_product_status( $product_status = '' ) {
 
 }
 
+// Format the raw comment_status
 function woo_ce_format_comment_status( $comment_status ) {
 
 	$output = $comment_status;
@@ -439,13 +454,35 @@ function woo_ce_format_product_type( $type_id = '' ) {
 
 }
 
-function woo_ce_format_price( $price = '' ) {
+function woo_ce_format_price( $price = '', $currency = '' ) {
 
-	// Check that a valid price has been provided and that wc_format_localized_price() exists
-	if( isset( $price ) && $price != '' && function_exists( 'wc_format_localized_price' ) )
-		return wc_format_localized_price( $price );
-	else
+	// Check that a valid price has been provided and that wc_price() exists
+	if( $price !== false && function_exists( 'wc_price' ) ) {
+		// WooCommerce adds currency formatting to the price, let's not do that
+		add_filter( 'wc_price', 'woo_ce_filter_wc_price', 10, 3 );
+		add_filter( 'formatted_woocommerce_price', 'woo_ce_formatted_woocommerce_price', 10, 5 );
+		return wc_price( $price, array( 'currency' => $currency ) );
+		remove_filter( 'formatted_woocommerce_price', 'woo_ce_formatted_woocommerce_price' );
+		remove_filter( 'wc_price', 'woo_ce_filter_wc_price' );
+	} else {
 		return $price;
+	}
+
+}
+
+function woo_ce_filter_wc_price( $return, $price ) {
+
+	return $price;
+
+}
+
+function woo_ce_formatted_woocommerce_price( $return, $price, $num_decimals, $decimal_sep, $thousands_sep ) {
+
+	$decimal_sep = apply_filters( 'woo_ce_wc_price_decimal_sep', $decimal_sep );
+	$thousands_sep = apply_filters( 'woo_ce_wc_price_thousands_sep', '' );
+
+	$price = number_format( $price, $num_decimals, $decimal_sep, $thousands_sep );
+	return $price;
 
 }
 
@@ -468,12 +505,38 @@ function woo_ce_format_date( $date = '' ) {
 
 }
 
+function woo_ce_format_archive_date( $post_id = 0, $time = false ) {
+
+	if( $time == false )
+		$time = get_post_time( 'G', true, $post_id, false );
+	if( ( abs( $t_diff = time() - $time ) ) < 86400 )
+		$post_date = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+	else
+		$post_date = mysql2date( __( 'Y/m/d' ), $time );
+	unset( $time );
+	return $post_date;
+
+}
+
 function woo_ce_format_product_category_label( $product_category = '', $parent_category = '' ) {
 
 	$output = $product_category;
 	if( !empty( $parent_category ) )
 		$output .= ' &raquo; ' . $parent_category;
 	return $output;
+
+}
+
+function woo_ce_clean_export_label( $label = '' ) {
+
+	// If the first character is an underscore remove it
+	if( $label[0] === '_' )
+		$label = substr( $label, 1 );
+	// Replace any underscores with spaces
+	$label = str_replace( '_', ' ', $label );
+	// Auto-capitalise label
+	$label = ucfirst( $label );
+	return $label;
 
 }
 
@@ -500,17 +563,37 @@ if( !function_exists( 'woo_ce_expand_state_name' ) ) {
 if( !function_exists( 'woo_ce_expand_country_name' ) ) {
 	function woo_ce_expand_country_name( $country_prefix = '' ) {
 
-		global $woocommerce;
-
 		$output = $country_prefix;
-		if( $output && method_exists( $woocommerce, 'countries' ) ) {
-			$countries = $woocommerce->countries;
-			if( isset( $countries[$country_prefix] ) )
-				$output = $countries[$country_prefix];
+		if( !empty( $output ) && class_exists( 'WC_Countries' ) ) {
+			if( $countries = woo_ce_allowed_countries() ) {
+				if( isset( $countries[$country_prefix] ) )
+					$output = $countries[$country_prefix];
+			}
 			unset( $countries );
 		}
 		return $output;
 
 	}
+}
+
+function woo_ce_allowed_countries() {
+
+	if( class_exists( 'WC_Countries' ) ) {
+		$countries = new WC_Countries();
+		if( method_exists( $countries, 'get_allowed_countries' ) ) {
+			$countries = $countries->get_allowed_countries();
+			return $countries;
+		}
+	}
+
+}
+
+function woo_ce_format_description_excerpt( $string = '' ) {
+
+	if( $description_excerpt_formatting = woo_ce_get_option( 'description_excerpt_formatting', 0 ) ) {
+		$string = wp_kses( $string );
+	}
+	return $string;
+
 }
 ?>

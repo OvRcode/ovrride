@@ -4,11 +4,14 @@
 * Filename: common.php
 * Description: common.php loads commonly accessed functions across the Visser Labs suite.
 * 
+* Free
 * - woo_get_action
 * - woo_is_wpsc_activated
 * - woo_is_woo_activated
 * - woo_is_jigo_activated
+* - woo_is_exchange_activated
 * - woo_get_woo_version
+*
 */
 
 if( is_admin() ) {
@@ -26,13 +29,13 @@ if( !function_exists( 'woo_get_action' ) ) {
 	function woo_get_action( $prefer_get = false ) {
 
 		if ( isset( $_GET['action'] ) && $prefer_get )
-			return $_GET['action'];
+			return sanitize_text_field( $_GET['action'] );
 
 		if ( isset( $_POST['action'] ) )
-			return $_POST['action'];
+			return sanitize_text_field( $_POST['action'] );
 
 		if ( isset( $_GET['action'] ) )
-			return $_GET['action'];
+			return sanitize_text_field( $_GET['action'] );
 
 		return false;
 
@@ -66,13 +69,22 @@ if( !function_exists( 'woo_is_jigo_activated' ) ) {
 	}
 }
 
+if( !function_exists( 'woo_is_exchange_activated' ) ) {
+	function woo_is_exchange_activated() {
+
+		if( function_exists( 'IT_Exchange' ) )
+			return true;
+
+	}
+}
+
 if( !function_exists( 'woo_get_woo_version' ) ) {
 	function woo_get_woo_version() {
 
 		$version = false;
 		if( defined( 'WC_VERSION' ) ) {
 			$version = WC_VERSION;
-		 // Backwards compatibility
+		// Backwards compatibility
 		} else if( defined( 'WOOCOMMERCE_VERSION' ) ) {
 			$version = WOOCOMMERCE_VERSION;
 		}

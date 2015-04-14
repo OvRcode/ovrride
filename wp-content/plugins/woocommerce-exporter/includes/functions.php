@@ -1,16 +1,18 @@
 <?php
-include_once( WOO_CE_PATH . 'includes/products.php' );
-include_once( WOO_CE_PATH . 'includes/categories.php' );
-include_once( WOO_CE_PATH . 'includes/tags.php' );
-include_once( WOO_CE_PATH . 'includes/brands.php' );
-include_once( WOO_CE_PATH . 'includes/orders.php' );
-include_once( WOO_CE_PATH . 'includes/customers.php' );
-include_once( WOO_CE_PATH . 'includes/users.php' );
-include_once( WOO_CE_PATH . 'includes/coupons.php' );
-include_once( WOO_CE_PATH . 'includes/subscriptions.php' );
-include_once( WOO_CE_PATH . 'includes/product_vendors.php' );
-include_once( WOO_CE_PATH . 'includes/shipping_classes.php' );
+include_once( WOO_CE_PATH . 'includes/product.php' );
+include_once( WOO_CE_PATH . 'includes/category.php' );
+include_once( WOO_CE_PATH . 'includes/tag.php' );
+include_once( WOO_CE_PATH . 'includes/brand.php' );
+include_once( WOO_CE_PATH . 'includes/order.php' );
+include_once( WOO_CE_PATH . 'includes/customer.php' );
+include_once( WOO_CE_PATH . 'includes/user.php' );
+include_once( WOO_CE_PATH . 'includes/coupon.php' );
+include_once( WOO_CE_PATH . 'includes/subscription.php' );
+include_once( WOO_CE_PATH . 'includes/product_vendor.php' );
+include_once( WOO_CE_PATH . 'includes/commission.php' );
+include_once( WOO_CE_PATH . 'includes/shipping_class.php' );
 
+// Check if we are using PHP 5.3 and above
 if( version_compare( phpversion(), '5.3' ) >= 0 )
 	include_once( WOO_CE_PATH . 'includes/legacy.php' );
 include_once( WOO_CE_PATH . 'includes/formatting.php' );
@@ -26,12 +28,12 @@ if( is_admin() ) {
 
 	function woo_ce_detect_non_woo_install() {
 
-		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter-deluxe/usage/';
+		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter/usage/';
 		if( !woo_is_woo_activated() && ( woo_is_jigo_activated() || woo_is_wpsc_activated() ) ) {
-			$message = sprintf( __( 'We have detected another e-Commerce Plugin than WooCommerce activated, please check that you are using Store Exporter Deluxe for the correct platform. <a href="%s" target="_blank">Need help?</a>', 'woo_ce' ), $troubleshooting_url );
+			$message = sprintf( __( 'We have detected another e-Commerce Plugin than WooCommerce activated, please check that you are using Store Exporter for the correct platform. <a href="%s" target="_blank">Need help?</a>', 'woo_ce' ), $troubleshooting_url );
 			woo_ce_admin_notice( $message, 'error', 'plugins.php' );
 		} else if( !woo_is_woo_activated() ) {
-			$message = sprintf( __( 'We have been unable to detect the WooCommerce Plugin activated on this WordPress site, please check that you are using Store Exporter Deluxe for the correct platform. <a href="%s" target="_blank">Need help?</a>', 'woo_ce' ), $troubleshooting_url );
+			$message = sprintf( __( 'We have been unable to detect the WooCommerce Plugin activated on this WordPress site, please check that you are using Store Exporter for the correct platform. <a href="%s" target="_blank">Need help?</a>', 'woo_ce' ), $troubleshooting_url );
 			woo_ce_admin_notice( $message, 'error', 'plugins.php' );
 		}
 		woo_ce_plugin_page_notices();
@@ -41,9 +43,9 @@ if( is_admin() ) {
 	// Displays a HTML notice when a WordPress or Store Exporter error is encountered
 	function woo_ce_fail_notices() {
 
-		woo_ce_memory_prompt();
+		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter/usage/';
 
-		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter-deluxe/usage/';
+		// If the failed flag is set then prepare for an error notice
 		if( isset( $_GET['failed'] ) ) {
 			$message = '';
 			if( isset( $_GET['message'] ) )
@@ -54,6 +56,52 @@ if( is_admin() ) {
 				$message = __( 'A WordPress or server error caused the exporter to fail, no reason was provided, please get in touch so we can reproduce and resolve this.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)';
 			woo_ce_admin_notice_html( $message, 'error' );
 		}
+
+		// Displays a HTML notice where the memory allocated to WordPress falls below 64MB
+		if( !woo_ce_get_option( 'dismiss_execution_time_prompt', 0 ) ) {
+			$max_execution_time = absint( ini_get( 'max_execution_time' ) );
+			$response = ini_set( 'max_execution_time', 120 );
+			if( $response == false || ( $response != $max_execution_time ) ) {
+				$dismiss_url = add_query_arg( 'action', 'dismiss_execution_time_prompt' );
+				$message = sprintf( __( 'We could not override the PHP configuration option <code>max_execution_time</code>, this will limit the size of possible exports. See: <a href="%s" target="_blank">Increasing PHP max_execution_time configuration option</a>', 'woo_ce' ), $troubleshooting_url ) . '<span style="float:right;"><a href="' . $dismiss_url . '">' . __( 'Dismiss', 'woo_ce' ) . '</a></span>';
+				woo_ce_admin_notice_html( $message, 'error' );
+			}
+			ini_set( 'max_execution_time', $max_execution_time );
+		}
+
+		// Displays a HTML notice where the memory allocated to WordPress falls below 64MB
+		if( !woo_ce_get_option( 'dismiss_memory_prompt', 0 ) ) {
+			$memory_limit = absint( ini_get( 'memory_limit' ) );
+			$minimum_memory_limit = 64;
+			if( $memory_limit < $minimum_memory_limit ) {
+				$dismiss_url = add_query_arg( 'action', 'dismiss_memory_prompt' );
+				$message = sprintf( __( 'We recommend setting memory to at least %dMB, your site has only %dMB allocated to it. See: <a href="%s" target="_blank">Increasing memory allocated to PHP</a>', 'woo_ce' ), $minimum_memory_limit, $memory_limit, $troubleshooting_url ) . '<span style="float:right;"><a href="' . $dismiss_url . '">' . __( 'Dismiss', 'woo_ce' ) . '</a></span>';
+				woo_ce_admin_notice_html( $message, 'error' );
+			}
+		}
+
+		// Displays a HTML notice if PHP 5.2 is installed
+		if( version_compare( phpversion(), '5.3', '<' ) && !woo_ce_get_option( 'dismiss_php_legacy', 0 ) ) {
+			$dismiss_url = add_query_arg( 'action', 'dismiss_php_legacy' );
+			$message = sprintf( __( 'Your PHP version (%s) is not supported and is very much out of date, since 2010 all users are strongly encouraged to upgrade to PHP 5.3+ and above. Contact your hosting provider to make this happen. See: <a href="%s" target="_blank">Migrating from PHP 5.2 to 5.3</a>', 'woo_ce' ), phpversion(), $troubleshooting_url ) . '<span style="float:right;"><a href="' . $dismiss_url . '">' . __( 'Dismiss', 'woo_ce' ) . '</a></span>';
+			woo_ce_admin_notice_html( $message, 'error' );
+		}
+
+		// Displays HTML notice if there are more than 2500 Subscriptions
+		if( !woo_ce_get_option( 'dismiss_subscription_prompt', 0 ) ) {
+			if( class_exists( 'WC_Subscriptions' ) ) {
+				if( method_exists( 'WC_Subscriptions', 'is_large_site' ) ) {
+					// Does this store have roughly more than 3000 Subscriptions
+					if( WC_Subscriptions::is_large_site() ) {
+						$dismiss_url = add_query_arg( 'action', 'dismiss_subscription_prompt' );
+						$message = __( 'We\'ve detected the <em>is_large_site</em> flag has been set within WooCommerce Subscriptions. Please get in touch if exports are incomplete as we need to spin up an alternative export process to export Subscriptions from large stores.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)' . '<span style="float:right;"><a href="' . $dismiss_url . '">' . __( 'Dismiss', 'woo_ce' ) . '</a></span>';;
+						woo_ce_admin_notice_html( $message, 'error' );
+					}
+				}
+			}
+		}
+
+		// If the export failed the WordPress Transient will still exist
 		if( get_transient( WOO_CE_PREFIX . '_running' ) ) {
 			$message = __( 'A WordPress or server error caused the exporter to fail with a blank screen, this is either a memory or timeout issue, please get in touch so we can reproduce and resolve this.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)';
 			woo_ce_admin_notice_html( $message, 'error' );
@@ -62,67 +110,11 @@ if( is_admin() ) {
 
 	}
 
-	function woo_ce_memory_prompt() {
-
-		$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter-deluxe/usage/';
-
-		// Displays a HTML notice where the memory allocated to WordPress falls below 64MB
-		$memory_limit = (int)( ini_get( 'memory_limit' ) );
-		$minimum_memory_limit = 64;
-		if( ( $memory_limit < $minimum_memory_limit ) && !woo_ce_get_option( 'dismiss_memory_prompt', 0 ) ) {
-			$dismiss_url = add_query_arg( 'action', 'dismiss_memory_prompt' );
-			$message = sprintf( __( 'We recommend setting memory to at least %dMB, your site has only %dMB allocated to it. See: <a href="%s" target="_blank">Increasing memory allocated to PHP</a>', 'woo_ce' ), $minimum_memory_limit, $memory_limit, $troubleshooting_url ) . '<span style="float:right;"><a href="' . $dismiss_url . '">' . __( 'Dismiss', 'woo_ce' ) . '</a></span>';
-			woo_ce_admin_notice_html( $message, 'error' );
-		}
-
-		if( version_compare( phpversion(), '5.3', '<' ) && !woo_ce_get_option( 'dismiss_php_legacy', 0 ) ) {
-			$dismiss_url = add_query_arg( 'action', 'dismiss_php_legacy' );
-			$message = sprintf( __( 'Your PHP version (%s) is not supported and is very much out of date, since 2010 all users are strongly encouraged to upgrade to PHP 5.3+ and above. Contact your hosting provider to make this happen. See: <a href="%s" target="_blank">Migrating from PHP 5.2 to 5.3</a>', 'woo_ce' ), phpversion(), $troubleshooting_url ) . '<span style="float:right;"><a href="' . $dismiss_url . '">' . __( 'Dismiss', 'woo_ce' ) . '</a></span>';
-			woo_ce_admin_notice_html( $message, 'error' );
-		}
-
-	}
-
-	function woo_ce_plugin_page_notices() {
-
-		global $pagenow;
-
-		if( $pagenow == 'plugins.php' ) {
-			if( woo_is_jigo_activated() || woo_is_wpsc_activated() ) {
-				$r_plugins = array(
-					'woocommerce-exporter/exporter.php',
-					'woocommerce-store-exporter/exporter.php'
-				);
-				$i_plugins = get_plugins();
-				foreach( $r_plugins as $path ) {
-					if( isset( $i_plugins[$path] ) ) {
-						add_action( 'after_plugin_row_' . $path, 'woo_ce_plugin_page_notice', 10, 3 );
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	function woo_ce_plugin_page_notice( $file, $data, $context ) {
-
-		if( is_plugin_active( $file ) ) { ?>
-<tr class='plugin-update-tr su-plugin-notice'>
-	<td colspan='3' class='plugin-update colspanchange'>
-		<div class='update-message'>
-			<?php printf( __( '%1$s is intended to be used with a WooCommerce store, please check that you are using Store Exporter with the correct e-Commerce platform.', 'woo_ce' ), $data['Name'] ); ?>
-		</div>
-	</td>
-</tr>
-<?php
-		}
-
-	}
-
 	// Saves the state of Export fields for next export
 	function woo_ce_save_fields( $type = '', $fields = array(), $sorting = array() ) {
 
-		if( $fields == false )
+		// Default fields
+		if( $fields == false && !is_array( $fields ) )
 			$fields = array();
 		$types = array_keys( woo_ce_return_export_types() );
 		if( in_array( $type, $types ) && !empty( $fields ) ) {
@@ -138,6 +130,7 @@ if( is_admin() ) {
 		global $wpdb;
 
 		$count_sql = null;
+		$woocommerce_version = woo_get_woo_version();
 		switch( $export_type ) {
 
 			case 'product':
@@ -147,34 +140,43 @@ if( is_admin() ) {
 					'posts_per_page' => 1,
 					'fields' => 'ids'
 				);
-				$query = new WP_Query( $args );
-				$count = $query->found_posts;
+				$count_query = new WP_Query( $args );
+				$count = $count_query->found_posts;
 				break;
 
 			case 'category':
 				$term_taxonomy = 'product_cat';
-				$count = wp_count_terms( $term_taxonomy );
+				if( taxonomy_exists( $term_taxonomy ) )
+					$count = wp_count_terms( $term_taxonomy );
 				break;
 
 			case 'tag':
 				$term_taxonomy = 'product_tag';
-				$count = wp_count_terms( $term_taxonomy );
+				if( taxonomy_exists( $term_taxonomy ) )
+					$count = wp_count_terms( $term_taxonomy );
 				break;
 
 			case 'brand':
-				$term_taxonomy = apply_filters( 'woo_ce_return_count_brand', 'product_brand' );
-				$count = wp_count_terms( $term_taxonomy );
+				$term_taxonomy = apply_filters( 'woo_ce_brand_term_taxonomy', 'product_brand' );
+				if( taxonomy_exists( $term_taxonomy ) )
+					$count = wp_count_terms( $term_taxonomy );
 				break;
 
 			case 'order':
 				$post_type = 'shop_order';
+				// Check if this is a WooCommerce 2.2+ instance (new Post Status)
+				if( version_compare( $woocommerce_version, '2.2' ) >= 0 )
+					$post_status = ( function_exists( 'wc_get_order_statuses' ) ? apply_filters( 'woo_ce_order_post_status', array_keys( wc_get_order_statuses() ) ) : 'any' );
+				else
+					$post_status = apply_filters( 'woo_ce_order_post_status', woo_ce_post_statuses() );
 				$args = array(
 					'post_type' => $post_type,
 					'posts_per_page' => 1,
+					'post_status' => $post_status,
 					'fields' => 'ids'
 				);
-				$query = new WP_Query( $args );
-				$count = $query->found_posts;
+				$count_query = new WP_Query( $args );
+				$count = $count_query->found_posts;
 				break;
 
 			case 'customer':
@@ -188,7 +190,6 @@ if( is_admin() ) {
 						'fields' => 'ids'
 					);
 					// Check if this is a WooCommerce 2.2+ instance (new Post Status)
-					$woocommerce_version = woo_get_woo_version();
 					if( version_compare( $woocommerce_version, '2.2' ) >= 0 ) {
 						$args['post_status'] = apply_filters( 'woo_ce_customer_post_status', array( 'wc-pending', 'wc-on-hold', 'wc-processing', 'wc-completed' ) );
 					} else {
@@ -201,24 +202,21 @@ if( is_admin() ) {
 							),
 						);
 					}
-					$orders = new WP_Query( $args );
-					$count = $orders->found_posts;
+					$order_ids = new WP_Query( $args );
+					$count = $order_ids->found_posts;
 					if( $count > 100 ) {
 						$count = sprintf( '~%s', $count );
 					} else {
 						$customers = array();
-						if ( $orders->have_posts() ) {
-							while ( $orders->have_posts() ) {
-								$orders->the_post();
-								$email = get_post_meta( get_the_ID(), '_billing_email', true );
-								if( !in_array( $email, $customers ) ) {
-									$customers[get_the_ID()] = $email;
-								}
+						if( $order_ids->posts ) {
+							foreach( $order_ids->posts as $order_id ) {
+								$email = get_post_meta( $order_id, '_billing_email', true );
+								if( !in_array( $email, $customers ) )
+									$customers[$order_id] = $email;
 								unset( $email );
 							}
 							$count = count( $customers );
 						}
-						wp_reset_postdata();
 					}
 				}
 /*
@@ -256,23 +254,36 @@ if( is_admin() ) {
 
 			case 'coupon':
 				$post_type = 'shop_coupon';
-				$count = wp_count_posts( $post_type );
+				if( post_type_exists( $post_type ) )
+					$count = wp_count_posts( $post_type );
 				break;
 
 			case 'subscription':
 				$count = 0;
 				// Check that WooCommerce Subscriptions exists
-				if( class_exists( 'WC_Subscriptions_Manager' ) ) {
-					// Check that the get_all_users_subscriptions() function exists
-					if( method_exists( 'WC_Subscriptions_Manager', 'get_all_users_subscriptions' ) ) {
-						if( $subscriptions = WC_Subscriptions_Manager::get_all_users_subscriptions() ) {
-							foreach( $subscriptions as $key => $user_subscription ) {
-								if( !empty( $user_subscription ) ) {
-									foreach( $user_subscription as $subscription )
-										$count++;
+				if( class_exists( 'WC_Subscriptions' ) ) {
+					if( method_exists( 'WC_Subscriptions', 'is_large_site' ) ) {
+						// Does this store have roughly more than 3000 Subscriptions
+						if( false === WC_Subscriptions::is_large_site() ) {
+							if( class_exists( 'WC_Subscriptions_Manager' ) ) {
+								// Check that the get_all_users_subscriptions() function exists
+								if( method_exists( 'WC_Subscriptions_Manager', 'get_all_users_subscriptions' ) ) {
+									if( $subscriptions = WC_Subscriptions_Manager::get_all_users_subscriptions() ) {
+										foreach( $subscriptions as $key => $user_subscription ) {
+											if( !empty( $user_subscription ) ) {
+												foreach( $user_subscription as $subscription )
+													$count++;
+											}
+										}
+										unset( $subscriptions, $subscription, $user_subscription );
+									}
 								}
 							}
-							unset( $subscriptions, $subscription, $user_subscription );
+						} else {
+							if( method_exists( 'WC_Subscriptions', 'get_total_subscription_count' ) )
+								$count = WC_Subscriptions::get_total_subscription_count();
+							else
+								$count = "~2500";
 						}
 					}
 				}
@@ -280,12 +291,20 @@ if( is_admin() ) {
 
 			case 'product_vendor':
 				$term_taxonomy = 'shop_vendor';
-				$count = wp_count_terms( $term_taxonomy );
+				if( taxonomy_exists( $term_taxonomy ) )
+					$count = wp_count_terms( $term_taxonomy );
+				break;
+
+			case 'commission':
+				$post_type = 'shop_commission';
+				if( post_type_exists( $post_type ) )
+					$count = wp_count_posts( $post_type );
 				break;
 
 			case 'shipping_class':
 				$term_taxonomy = 'product_shipping_class';
-				$count = wp_count_terms( $term_taxonomy );
+				if( taxonomy_exists( $term_taxonomy ) )
+					$count = wp_count_terms( $term_taxonomy );
 				break;
 
 			case 'attribute':
@@ -315,9 +334,9 @@ if( is_admin() ) {
 	}
 
 	// In-line display of export file and export details when viewed via WordPress Media screen
-	function woo_ce_read_csv_file( $post = null ) {
+	function woo_ce_read_export_file( $post = false ) {
 
-		if( !$post ) {
+		if( empty( $post ) ) {
 			if( isset( $_GET['post'] ) )
 				$post = get_post( $_GET['post'] );
 		}
@@ -325,7 +344,8 @@ if( is_admin() ) {
 		if( $post->post_type != 'attachment' )
 			return false;
 
-		if( !in_array( $post->post_mime_type, array( 'text/csv', 'xml/application', 'application/vnd.ms-excel' ) ) )
+		// Check if the Post matches one of our Post Mime Types
+		if( !in_array( $post->post_mime_type, array( 'text/csv', 'application/xml', 'application/vnd.ms-excel' ) ) )
 			return false;
 
 		$filename = $post->post_name;
@@ -349,6 +369,8 @@ if( is_admin() ) {
 		if( !empty( $contents ) )
 			include_once( WOO_CE_PATH . 'templates/admin/media-csv_file.php' );
 
+
+		// We can still show the Export Details for any supported Post Mime Type
 		$export_type = get_post_meta( $post->ID, '_woo_export_type', true );
 		$columns = get_post_meta( $post->ID, '_woo_columns', true );
 		$rows = get_post_meta( $post->ID, '_woo_rows', true );
@@ -362,7 +384,7 @@ if( is_admin() ) {
 		include_once( WOO_CE_PATH . 'templates/admin/media-export_details.php' );
 
 	}
-	add_action( 'edit_form_after_editor', 'woo_ce_read_csv_file' );
+	add_action( 'edit_form_after_editor', 'woo_ce_read_export_file' );
 
 	// Returns label of Export type slug used on Store Exporter screen
 	function woo_ce_export_type_label( $export_type = '', $echo = false ) {
@@ -380,47 +402,6 @@ if( is_admin() ) {
 
 	}
 
-	function woo_ce_export_options_export_format() {
-
-		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
-		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
-
-		ob_start(); ?>
-<tr>
-	<th>
-		<label><?php _e( 'Export format', 'woo_ce' ); ?></label>
-	</th>
-	<td>
-		<label><input type="radio" name="export_format" value="csv"<?php checked( 'csv', 'csv' ); ?> /> <?php _e( 'CSV', 'woo_ce' ); ?> <span class="description"><?php _e( '(Comma separated values)', 'woo_ce' ); ?></span></label><br />
-		<label><input type="radio" name="export_format" value="xml" disabled="disabled" /> <?php _e( 'XML', 'woo_ce' ); ?> <span class="description"><?php _e( '(EXtensible Markup Language)', 'woo_ce' ); ?> <span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label><br />
-		<label><input type="radio" name="export_format" value="xls" disabled="disabled" /> <?php _e( 'Excel (XLS)', 'woo_ce' ); ?> <span class="description"><?php _e( '(Microsoft Excel 2007)', 'woo_ce' ); ?> <span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label>
-		<p class="description"><?php _e( 'Adjust the export format to generate different export file formats.', 'woo_ce' ); ?></p>
-	</td>
-</tr>
-<?php
-		ob_end_flush();
-
-	}
-
-	function woo_ce_export_options_gallery_format() {
-
-		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
-		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
-
-		ob_start(); ?>
-<tr class="export-options product-options">
-	<th><label for=""><?php _e( 'Product gallery formatting', 'woo_ce' ); ?></label></th>
-	<td>
-		<label><input type="radio" name="product_gallery_formatting" value="0"<?php checked( 0, 0 ); ?> />&nbsp;<?php _e( 'Export Product Gallery as Post ID', 'woo_ce' ); ?></label><br />
-		<label><input type="radio" name="product_gallery_formatting" value="1" disabled="disabled" />&nbsp;<?php _e( 'Export Product Gallery as Image URL', 'woo_ce' ); ?> <span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label>
-		<p class="description"><?php _e( 'Choose the product gallery formatting that is accepted by your WooCommerce import Plugin (e.g. Product Importer Deluxe, Product Import Suite, etc.).', 'woo_ce' ); ?></p>
-	</td>
-</tr>
-<?php
-		ob_end_flush();
-
-	}
-
 	// Returns a list of archived exports
 	function woo_ce_get_archive_files() {
 
@@ -428,9 +409,10 @@ if( is_admin() ) {
 		$meta_key = '_woo_export_type';
 		$args = array(
 			'post_type' => $post_type,
-			'post_mime_type' => array( 'text/csv', 'xml/application', 'application/vnd.ms-excel' ),
+			'post_mime_type' => array( 'text/csv', 'application/xml', 'application/vnd.ms-excel' ),
 			'meta_key' => $meta_key,
 			'meta_value' => null,
+			'post_status' => 'any',
 			'posts_per_page' => -1
 		);
 		if( isset( $_GET['filter'] ) ) {
@@ -440,6 +422,28 @@ if( is_admin() ) {
 		}
 		$files = get_posts( $args );
 		return $files;
+
+	}
+
+	function woo_ce_nuke_archive_files() {
+
+		$post_type = 'attachment';
+		$meta_key = '_woo_export_type';
+		$args = array(
+			'post_type' => $post_type,
+			'post_mime_type' => array( 'text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/xml', 'application/rss+xml' ),
+			'meta_key' => $meta_key,
+			'meta_value' => null,
+			'post_status' => 'any',
+			'posts_per_page' => -1,
+			'fields' => 'ids'
+		);
+		$post_query = new WP_Query( $args );
+		if( !empty( $post_query->found_posts ) ) {
+			foreach( $post_query->posts as $post )
+				wp_delete_attachment( $post, true );
+			return true;
+		}
 
 	}
 
@@ -459,12 +463,7 @@ if( is_admin() ) {
 		$file->media_icon = wp_get_attachment_image( $file->ID, array( 80, 60 ), true );
 		if( $author_name = get_user_by( 'id', $file->post_author ) )
 			$file->post_author_name = $author_name->display_name;
-		$t_time = strtotime( $file->post_date, current_time( 'timestamp' ) );
-		$time = get_post_time( 'G', true, $file->ID, false );
-		if( ( abs( $t_diff = time() - $time ) ) < 86400 )
-			$file->post_date = sprintf( __( '%s ago' ), human_time_diff( $time ) );
-		else
-			$file->post_date = mysql2date( __( 'Y/m/d' ), $file->post_date );
+		$file->post_date = woo_ce_format_archive_date( $file->ID );
 		unset( $author_name, $t_time, $time );
 		return $file;
 
@@ -488,20 +487,20 @@ if( is_admin() ) {
 	// HTML template for displaying the number of each export type filter on the Archives screen
 	function woo_ce_archives_quicklink_count( $type = '' ) {
 
-		$output = '0';
 		$post_type = 'attachment';
 		$meta_key = '_woo_export_type';
 		$args = array(
 			'post_type' => $post_type,
 			'meta_key' => $meta_key,
 			'meta_value' => null,
-			'numberposts' => -1
+			'numberposts' => -1,
+			'post_status' => 'any',
+			'fields' => 'ids'
 		);
-		if( $type )
+		if( !empty( $type ) )
 			$args['meta_value'] = $type;
-		if( $posts = get_posts( $args ) )
-			$output = count( $posts );
-		echo $output;
+		$post_query = new WP_Query( $args );
+		return absint( $post_query->found_posts );
 
 	}
 
@@ -518,7 +517,16 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 	$export->columns = array();
 	$export->total_rows = 0;
 	$export->total_columns = 0;
+
+	$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter-deluxe/usage/';
+
 	set_transient( WOO_CE_PREFIX . '_running', time(), woo_ce_get_option( 'timeout', MINUTE_IN_SECONDS ) );
+
+	// Load up the fatal error notice if we 500 Internal Server Error (memory), hit a server timeout or encounter a fatal PHP error
+	add_action( 'shutdown', 'woo_ce_fatal_error' );
+
+	// Drop in our content filters here
+	add_filter( 'sanitize_key', 'woo_ce_sanitize_key' );
 
 	switch( $export_type ) {
 
@@ -529,10 +537,11 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 				foreach( $export->fields as $key => $field )
 					$export->columns[] = woo_ce_get_product_field( $key );
 			}
+			$export->total_columns = $size = count( $export->columns );
 			$export->data_memory_start = woo_ce_current_memory_usage();
 			if( $products = woo_ce_get_products( $export->args ) ) {
 				$export->total_rows = count( $products );
-				$export->total_columns = $size = count( $export->columns );
+				// Generate the export headers
 				if( in_array( $export->export_format, array( 'csv' ) ) ) {
 					for( $i = 0; $i < $size; $i++ ) {
 						if( $i == ( $size - 1 ) )
@@ -584,6 +593,7 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 				foreach( $export->fields as $key => $field )
 					$export->columns[] = woo_ce_get_category_field( $key );
 			}
+			$export->total_columns = $size = count( $export->columns );
 			$export->data_memory_start = woo_ce_current_memory_usage();
 			$category_args = array(
 				'orderby' => ( isset( $export->args['category_orderby'] ) ? $export->args['category_orderby'] : 'ID' ),
@@ -591,7 +601,7 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 			);
 			if( $categories = woo_ce_get_product_categories( $category_args ) ) {
 				$export->total_rows = count( $categories );
-				$export->total_columns = $size = count( $export->columns );
+				// Generate the export headers
 				if( in_array( $export->export_format, array( 'csv' ) ) ) {
 					for( $i = 0; $i < $size; $i++ ) {
 						if( $i == ( $size - 1 ) )
@@ -627,6 +637,7 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 				foreach( $export->fields as $key => $field )
 					$export->columns[] = woo_ce_get_tag_field( $key );
 			}
+			$export->total_columns = $size = count( $export->columns );
 			$export->data_memory_start = woo_ce_current_memory_usage();
 			$tag_args = array(
 				'orderby' => ( isset( $export->args['tag_orderby'] ) ? $export->args['tag_orderby'] : 'ID' ),
@@ -634,7 +645,7 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 			);
 			if( $tags = woo_ce_get_product_tags( $tag_args ) ) {
 				$export->total_rows = count( $tags );
-				$export->total_columns = $size = count( $export->columns );
+				// Generate the export headers
 				if( in_array( $export->export_format, array( 'csv' ) ) ) {
 					for( $i = 0; $i < $size; $i++ ) {
 						if( $i == ( $size - 1 ) )
@@ -670,9 +681,10 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 				foreach( $export->fields as $key => $field )
 					$export->columns[] = woo_ce_get_user_field( $key );
 			}
+			$export->total_columns = $size = count( $export->columns );
 			$export->data_memory_start = woo_ce_current_memory_usage();
 			if( $users = woo_ce_get_users( $export->args ) ) {
-				$export->total_columns = $size = count( $export->columns );
+				// Generate the export headers
 				if( in_array( $export->export_format, array( 'csv' ) ) ) {
 					$i = 0;
 					foreach( $export->columns as $column ) {
@@ -707,8 +719,16 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 			break;
 
 	}
+
+	// Remove our content filters here to play nice with other Plugins
+	remove_filter( 'sanitize_key', 'woo_ce_sanitize_key' );
+
+	// Remove our fatal error notice so not to conflict with the CRON or scheduled export engine	
+	remove_action( 'shutdown', 'woo_ce_fatal_error' );
+
 	// Export completed successfully
 	delete_transient( WOO_CE_PREFIX . '_running' );
+
 	// Check that the export file is populated, export columns have been assigned and rows counted
 	if( $output && $export->total_rows && $export->total_columns ) {
 		if( in_array( $export->export_format, array( 'csv' ) ) ) {
@@ -716,10 +736,51 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 			if( $export->export_format == 'csv' && $export->bom && ( WOO_CE_DEBUG == false ) )
 				$output = "\xEF\xBB\xBF" . $output;
 		}
-		if( WOO_CE_DEBUG && !$export->cron )
-			set_transient( WOO_CE_PREFIX . '_debug_log', base64_encode( $output ), woo_ce_get_option( 'timeout', MINUTE_IN_SECONDS ) );
-		else
+		if( WOO_CE_DEBUG && !$export->cron ) {
+			$response = set_transient( WOO_CE_PREFIX . '_debug_log', base64_encode( $output ), woo_ce_get_option( 'timeout', MINUTE_IN_SECONDS ) );
+			if( $response !== true ) {
+				$message = __( 'The export contents were too large to store in a single WordPress transient, use the Volume offset / Limit volume options to reduce the size of your export and try again.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)';
+				if( function_exists( 'woo_ce_admin_notice' ) )
+					woo_ce_admin_notice( $message, 'error' );
+				else
+					error_log( sprintf( '[store-exporter] woo_ce_export_dataset() - %s', $message ) );
+			}
+		} else {
 			return $output;
+		}
+	}
+
+}
+
+function woo_ce_fatal_error() {
+
+	global $export;
+
+	$troubleshooting_url = 'http://www.visser.com.au/documentation/store-exporter/usage/';
+
+	$error = error_get_last();
+	if( $error !== null ) {
+		$message = '';
+		$notice = sprintf( __( 'Refer to the following error and contact us on http://wordpress.org/plugins/woocommerce-exporter/ for further assistance. Error: <code>%s</code>', 'woo_ce' ), $error['message'] );
+		if ( substr( $error['message'], 0, 22 ) === 'Maximum execution time' ) {
+			$message = __( 'The server\'s maximum execution time is too low to complete this export. This is commonly due to a low timeout limit set by your hosting provider or PHP Safe Mode being enabled.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)';
+		} elseif ( substr( $error['message'], 0, 19 ) === 'Allowed memory size' ) {
+			$message = __( 'The server\'s maximum memory size is too low to complete this export. Consider increasing available memory to WordPress or reducing the size of your export.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)';
+		} else if( $error['type'] === E_ERROR ) {
+			$message = __( 'A fatal PHP error was encountered during the export process, we couldn\'t detect or diagnose it further.', 'woo_ce' ) . ' (<a href="' . $troubleshooting_url . '" target="_blank">' . __( 'Need help?', 'woo_ce' ) . '</a>)';
+		}
+		if( !empty( $message ) ) {
+
+			// Save a record to the PHP error log
+			error_log( sprintf( __( '[store-exporter] Fatal error: %s - PHP response: %s in %s on line %s', 'woo_ce' ), $message, $error['message'], $error['file'], $error['line'] ) );
+
+			// Only display the message if this is a manual export
+			if( ( !$export->cron && !$export->scheduled_export ) ) {
+				$output = '<div id="message" class="error"><p>' . sprintf( __( '<strong>[store-exporter]</strong> An unexpected error occurred. %s', 'woo_ce' ), $message ) . '</p><p>' . $notice . '</p></div>';
+				echo $output;
+			}
+
+		}
 	}
 
 }
@@ -727,12 +788,13 @@ function woo_ce_export_dataset( $export_type = null, &$output = null ) {
 // List of Export types used on Store Exporter screen
 function woo_ce_return_export_types() {
 
-	$types = array();
-	$types['product'] = __( 'Products', 'woo_ce' );
-	$types['category'] = __( 'Categories', 'woo_ce' );
-	$types['tag'] = __( 'Tags', 'woo_ce' );
-	$types['user'] = __( 'Users', 'woo_ce' );
-	$types = apply_filters( 'woo_ce_types', $types );
+	$types = array(
+		'product' => __( 'Products', 'woo_ce' ),
+		'category' => __( 'Categories', 'woo_ce' ),
+		'tag' => __( 'Tags', 'woo_ce' ),
+		'user' => __( 'Users', 'woo_ce' )
+	);
+	$types = apply_filters( 'woo_ce_export_types', $types );
 	return $types;
 
 }
@@ -749,7 +811,7 @@ function woo_ce_save_file_attachment( $filename = '', $post_mime_type = 'text/cs
 		);
 		$post_ID = wp_insert_attachment( $args, $filename );
 		if( is_wp_error( $post_ID ) )
-			error_log( sprintf( '[store-exporter-deluxe] save_file_attachment() - $s: %s', $filename, $result->get_error_message() ) );
+			error_log( sprintf( '[store-exporter] save_file_attachment() - $s: %s', $filename, $result->get_error_message() ) );
 		else
 			return $post_ID;
 	}
@@ -813,6 +875,23 @@ function woo_ce_post_statuses( $extra_status = array(), $override = false ) {
 
 }
 
+function woo_ce_return_mime_type_extension( $mime_type, $search_by = 'extension' ) {
+
+	$mime_types = array(
+		'csv' => 'text/csv',
+		'xls' => 'application/vnd.ms-excel',
+		'xml' => 'application/xml'
+	);
+	if( $search_by == 'extension' ) {
+		if( isset( $mime_types[$mime_type] ) )
+			return $mime_types[$mime_type];
+	} else if( $search_by == 'mime_type' ) {
+		if( $key = array_search( $mime_type, $mime_types ) )
+			return strtoupper( $key );
+	}
+
+}
+
 function woo_ce_add_missing_mime_type( $mime_types = array() ) {
 
 	// Add CSV mime type if it has been removed
@@ -850,10 +929,26 @@ function woo_ce_current_memory_usage() {
 
 }
 
+function woo_ce_get_start_of_week_day() {
+
+	global $wp_locale;
+
+	$output = 'Monday';
+	$start_of_week = get_option( 'start_of_week', 0 );
+	for( $day_index = 0; $day_index <= 6; $day_index++ ) {
+		if( $start_of_week == $day_index ) {
+			$output = $wp_locale->get_weekday( $day_index );
+			break;
+		}
+	}
+	return $output;
+
+}
+
 function woo_ce_get_option( $option = null, $default = false, $allow_empty = false ) {
 
-	$output = '';
-	if( isset( $option ) ) {
+	$output = false;
+	if( $option !== null ) {
 		$separator = '_';
 		$output = get_option( WOO_CE_PREFIX . $separator . $option, $default );
 		if( $allow_empty == false && $output != 0 && ( $output == false || $output == '' ) )
@@ -866,7 +961,7 @@ function woo_ce_get_option( $option = null, $default = false, $allow_empty = fal
 function woo_ce_update_option( $option = null, $value = null ) {
 
 	$output = false;
-	if( isset( $option ) && isset( $value ) ) {
+	if( $option !== null && $value !== null ) {
 		$separator = '_';
 		$output = update_option( WOO_CE_PREFIX . $separator . $option, $value );
 	}

@@ -15,17 +15,53 @@ if( is_admin() ) {
 <p><label><input type="checkbox" id="customers-filters-status" /> <?php _e( 'Filter Customers by Order Status', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
 <div id="export-customers-filters-status" class="separator">
 	<ul>
-<?php if( $order_statuses ) { ?>
+		<li>
+<?php if( !empty( $order_statuses ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a Order Status...', 'woo_ce' ); ?>" name="customer_filter_status[]" multiple class="chzn-select" style="width:95%;">
 	<?php foreach( $order_statuses as $order_status ) { ?>
-		<li><label><input type="checkbox" name="customer_filter_status[<?php echo $order_status->name; ?>]" value="<?php echo $order_status->name; ?>" disabled="disabled" /> <?php echo ucfirst( $order_status->name ); ?></label></li>
+				<option value="<?php echo $order_status->name; ?>"><?php echo ucfirst( $order_status->name ); ?></option>
 	<?php } ?>
+			</select>
 <?php } else { ?>
-		<li><?php _e( 'No Order Status\'s were found.', 'jigo_ce' ); ?></li>
+			<?php _e( 'No Order Status\'s were found.', 'woo_ce' ); ?>
 <?php } ?>
+		</li>
 	</ul>
 	<p class="description"><?php _e( 'Select the Order Status you want to filter exported Customers by. Default is to include all Order Status options.', 'woo_ce' ); ?></p>
 </div>
 <!-- #export-customers-filters-status -->
+<?php
+		ob_end_flush();
+
+	}
+
+	// HTML template for disabled Filter Customers by User Role widget on Store Exporter screen
+	function woo_ce_customers_filter_by_user_role() {
+
+		$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+		$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+		$user_roles = woo_ce_get_user_roles();
+
+		ob_start(); ?>
+<p><label><input type="checkbox" id="customers-filters-user_role" /> <?php _e( 'Filter Customers by User Role', 'woo_ce' ); ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label></p>
+<div id="export-customers-filters-user_role" class="separator">
+	<ul>
+		<li>
+<?php if( !empty( $user_roles ) ) { ?>
+			<select data-placeholder="<?php _e( 'Choose a User Role...', 'woo_ce' ); ?>" name="customer_filter_user_role[]" multiple class="chzn-select" style="width:95%;">
+	<?php foreach( $user_roles as $key => $user_role ) { ?>
+				<option value="<?php echo $key; ?>"><?php echo ucfirst( $user_role['name'] ); ?></option>
+	<?php } ?>
+			</select>
+<?php } else { ?>
+			<?php _e( 'No User Roles were found.', 'woo_ce' ); ?>
+<?php } ?>
+		</li>
+	</ul>
+	<p class="description"><?php _e( 'Select the User Roles you want to filter exported Customers by. Default is to include all User Role options.', 'woo_ce' ); ?></p>
+</div>
+<!-- #export-customers-filters-user_role -->
 <?php
 		ob_end_flush();
 
@@ -235,9 +271,13 @@ function woo_ce_get_customer_fields( $format = 'full' ) {
 		default:
 			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, woo_ce_sort_fields( 'order' ) );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 

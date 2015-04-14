@@ -1,7 +1,7 @@
 <div class="overview-left">
 
 	<h3><div class="dashicons dashicons-migrate"></div>&nbsp;<a href="<?php echo add_query_arg( 'tab', 'export' ); ?>"><?php _e( 'Export', 'woo_ce' ); ?></a></h3>
-	<p><?php _e( 'Export store details out of WooCommerce into a CSV-formatted file.', 'woo_ce' ); ?></p>
+	<p><?php _e( 'Export store details out of WooCommerce into common export files (e.g. CSV, XLSX, XML, etc.).', 'woo_ce' ); ?></p>
 	<ul class="ul-disc">
 		<li>
 			<a href="<?php echo add_query_arg( 'tab', 'export' ); ?>#export-product"><?php _e( 'Export Products', 'woo_ce' ); ?></a>
@@ -40,6 +40,10 @@
 			<span class="description">(<?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?>)</span>
 		</li>
 		<li>
+			<a href="<?php echo add_query_arg( 'tab', 'export' ); ?>#export-commission"><?php _e( 'Export Commissions', 'woo_ce' ); ?></a>
+			<span class="description">(<?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?>)</span>
+		</li>
+		<li>
 			<a href="<?php echo add_query_arg( 'tab', 'export' ); ?>#export-shipping_class"><?php _e( 'Export Shipping Classes', 'woo_ce' ); ?></a>
 			<span class="description">(<?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?>)</span>
 		</li>
@@ -73,6 +77,10 @@
 		</li>
 		<li>
 			<a href="<?php echo add_query_arg( 'tab', 'settings' ); ?>#cron-exports"><?php _e( 'CRON Exports', 'woo_ce' ); ?></a>
+			<span class="description">(<?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?>)</span>
+		</li>
+		<li>
+			<a href="<?php echo add_query_arg( 'tab', 'settings' ); ?>#orders-screen"><?php _e( 'Orders Screen', 'woo_ce' ); ?></a>
 			<span class="description">(<?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?>)</span>
 		</li>
 	</ul>
@@ -111,9 +119,11 @@
 		<li><?php _e( 'Schedule automatic exports with filtering options', 'woo_ce' ); ?></li>
 		<li><?php _e( 'Export to remote POST', 'woo_ce' ); ?></li>
 		<li><?php _e( 'Export to e-mail addresses', 'woo_ce' ); ?></li>
-		<li><?php _e( 'Export to remote FTP', 'woo_ce' ); ?></li>
+		<li><?php _e( 'Export to remote FTP or SFTP', 'woo_ce' ); ?></li>
 		<li><?php _e( 'Export to XML file', 'woo_ce' ); ?></li>
-		<li><?php _e( 'Export to Excel 2007 (XLS) file', 'woo_ce' ); ?></li>
+		<li><?php _e( 'Export to RSS file', 'woo_ce' ); ?></li>
+		<li><?php _e( 'Export to Excel 97-2003 (XLS) file', 'woo_ce' ); ?></li>
+		<li><?php _e( 'Export to Excel 2007-2013 (XLSX) file', 'woo_ce' ); ?></li>
 		<li><?php _e( 'Premium Support', 'woo_ce' ); ?></li>
 		<li><?php _e( '...and more.', 'woo_ce' ); ?></li>
 	</ul>

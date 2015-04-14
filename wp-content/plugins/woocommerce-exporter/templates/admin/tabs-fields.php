@@ -9,7 +9,7 @@
 			<tr>
 				<th scope="row"><label for="<?php echo $field['name']; ?>"><?php echo $field['name']; ?></label></th>
 				<td>
-					<input type="text" name="fields[<?php echo $field['name']; ?>]" placeholder="<?php echo $field['label']; ?>" value="<?php if( isset( $labels[$field['name']] ) ) { echo $labels[$field['name']]; } ?>" class="regular-text all-options" />
+					<input type="text" name="fields[<?php echo $field['name']; ?>]" title="<?php echo $field['name']; ?>" placeholder="<?php echo $field['label']; ?>" value="<?php if( isset( $labels[$field['name']] ) ) { echo $labels[$field['name']]; } ?>" class="regular-text all-options" />
 				</td>
 			</tr>
 		<?php } ?>

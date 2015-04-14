@@ -4,7 +4,7 @@ if( is_admin() ) {
 	/* Start of: WordPress Administration */
 
 	// HTML template for disabled Shipping Class Sorting widget on Store Exporter screen
-	function woo_ce_shipping_class_order_sorting() {
+	function woo_ce_shipping_class_sorting() {
 
 		$shipping_class_orderby = 'ID';
 		$shipping_class_order = 'DESC';
@@ -78,6 +78,15 @@ function woo_ce_get_shipping_class_fields( $format = 'full' ) {
 
 		case 'full':
 		default:
+			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
+			$size = count( $fields );
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
+				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 

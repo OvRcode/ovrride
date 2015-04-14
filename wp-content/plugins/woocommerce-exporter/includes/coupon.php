@@ -4,7 +4,7 @@ if( is_admin() ) {
 	/* Start of: WordPress Administration */
 
 	// HTML template for disabled Coupon Sorting widget on Store Exporter screen
-	function woo_ce_coupons_coupon_sorting() {
+	function woo_ce_coupon_sorting() {
 
 		ob_start(); ?>
 <p><label><?php _e( 'Coupon Sorting', 'woo_ce' ); ?></label></p>
@@ -124,9 +124,13 @@ function woo_ce_get_coupon_fields( $format = 'full' ) {
 		default:
 			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, woo_ce_sort_fields( 'order' ) );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
@@ -171,7 +175,8 @@ function woo_ce_get_coupons( $args = array() ) {
 		'offset' => $offset,
 		'posts_per_page' => $limit_volume,
 		'post_status' => woo_ce_post_statuses(),
-		'fields' => 'ids'
+		'fields' => 'ids',
+		'suppress_filters' => false
 	);
 	$coupons = array();
 	$coupon_ids = new WP_Query( $args );
@@ -184,4 +189,17 @@ function woo_ce_get_coupons( $args = array() ) {
 
 }
 
+function woo_ce_get_coupon_code_usage( $coupon_code = '' ) {
+
+	global $wpdb;
+
+	$count = 0;
+	if( $coupon_code ) {
+		$order_item_type = 'coupon';
+		$count_sql = $wpdb->prepare( "SELECT COUNT('order_item_id') FROM `" . $wpdb->prefix . "woocommerce_order_items` WHERE `order_item_type` = %s AND `order_item_name` = %s", $order_item_type, $coupon_code );
+		$count = $wpdb->get_var( $count_sql );
+	}
+	return $count;
+
+}
 ?>

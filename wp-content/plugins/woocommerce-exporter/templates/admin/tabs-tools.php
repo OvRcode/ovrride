@@ -3,7 +3,7 @@
 <div id="poststuff">
 
 	<div id="tools" class="postbox">
-		<h3 class="hndle"><?php _e( 'Tools', 'woo_pd' ); ?></h3>
+		<h3 class="hndle"><?php _e( 'Tools', 'woo_ce' ); ?></h3>
 		<div class="inside">
 			<table class="form-table">
 
