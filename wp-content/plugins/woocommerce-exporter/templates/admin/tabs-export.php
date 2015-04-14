@@ -1,7 +1,7 @@
 <ul class="subsubsub">
 	<li><a href="#export-type"><?php _e( 'Export Type', 'woo_ce' ); ?></a> |</li>
-	<li><a href="#export-options"><?php _e( 'Export Options', 'woo_ce' ); ?></a></li>
-	<li>| <a href="#export-modules"><?php _e( 'Export Modules', 'woo_ce' ); ?></a></li>
+	<li><a href="#export-options"><?php _e( 'Export Options', 'woo_ce' ); ?></a> |</li>
+	<li><a href="#export-modules"><?php _e( 'Export Modules', 'woo_ce' ); ?></a></li>
 	<?php do_action( 'woo_ce_export_quicklinks' ); ?>
 </ul>
 <!-- .subsubsub -->
@@ -125,6 +125,17 @@
 
 					<tr>
 						<th>
+							<input type="radio" id="commission" name="dataset" value="commission"<?php disabled( $commissions, 0 ); ?><?php checked( $export_type, 'commission' ); ?> />
+							<label for="commission"><?php _e( 'Commissions', 'woo_ce' ); ?></label>
+						</th>
+						<td>
+							<span class="description">(<?php echo $commissions; ?>)</span>
+							<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
+						</td>
+					</tr>
+
+					<tr>
+						<th>
 							<input type="radio" id="shipping_class" name="dataset" value="shipping_class"<?php disabled( $shipping_classes, 0 ); ?><?php checked( $export_type, 'shipping_class' ); ?> />
 							<label for="shipping_class"><?php _e( 'Shipping Classes', 'woo_ce' ); ?></label>
 						</th>
@@ -164,13 +175,17 @@
 				<div class="inside">
 	<?php if( $products ) { ?>
 					<p class="description"><?php _e( 'Select the Product fields you would like to export, your field selection is saved for future exports.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="product-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="product-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="product-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="product-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="product-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="product-fields" class="ui-sortable">
 
 		<?php foreach( $product_fields as $product_field ) { ?>
-						<tr>
+						<tr id="product-<?php echo $product_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $product_field['hover'] ) ) { ?> title="<?php echo $product_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="product_fields[<?php echo $product_field['name']; ?>]" class="product_field"<?php ( isset( $product_field['default'] ) ? checked( $product_field['default'], 1 ) : '' ); ?><?php disabled( $product_field['disabled'], 1 ); ?> />
 									<?php echo $product_field['label']; ?>
 									<?php if( $product_field['disabled'] ) { ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span><?php } ?>
@@ -224,16 +239,20 @@
 				</h3>
 				<div class="inside">
 					<p class="description"><?php _e( 'Select the Category fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="category-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="category-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="category-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="category-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="category-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="category-fields" class="ui-sortable">
 
 	<?php foreach( $category_fields as $category_field ) { ?>
-						<tr>
+						<tr id="category-<?php echo $category_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $category_field['hover'] ) ) { ?> title="<?php echo $category_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="category_fields[<?php echo $category_field['name']; ?>]" class="category_field"<?php ( isset( $category_field['default'] ) ? checked( $category_field['default'], 1 ) : '' ); ?><?php disabled( $category_field['disabled'], 1 ); ?> />
 									<?php echo $category_field['label']; ?>
-									<input type="hidden" name="category_fields_order[<?php echo $category_field['name']; ?>]" class="field_order" value="" />
+									<input type="hidden" name="category_fields_order[<?php echo $category_field['name']; ?>]" class="field_order" value="<?php echo $category_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -279,16 +298,20 @@
 				</h3>
 				<div class="inside">
 					<p class="description"><?php _e( 'Select the Tag fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="tag-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="tag-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="tag-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="tag-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="tag-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="tag-fields" class="ui-sortable">
 
 	<?php foreach( $tag_fields as $tag_field ) { ?>
-						<tr>
+						<tr id="tag-<?php echo $tag_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $tag_field['hover'] ) ) { ?> title="<?php echo $tag_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="tag_fields[<?php echo $tag_field['name']; ?>]" class="tag_field"<?php ( isset( $tag_field['default'] ) ? checked( $tag_field['default'], 1 ) : '' ); ?><?php disabled( $tag_field['disabled'], 1 ); ?> />
 									<?php echo $tag_field['label']; ?>
-									<input type="hidden" name="tag_fields_order[<?php echo $tag_field['name']; ?>]" class="field_order" value="" />
+									<input type="hidden" name="tag_fields_order[<?php echo $tag_field['name']; ?>]" class="field_order" value="<?php echo $tag_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -335,15 +358,20 @@
 				<div class="inside">
 	<?php if( $brands ) { ?>
 					<p class="description"><?php _e( 'Select the Brand fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="brand-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="brand-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="brand-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="brand-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="brand-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="brand-fields" class="ui-sortable">
 
 		<?php foreach( $brand_fields as $brand_field ) { ?>
-						<tr>
+						<tr id="brand-<?php echo $brand_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $brand_field['hover'] ) ) { ?> title="<?php echo $brand_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="brand_fields[<?php echo $brand_field['name']; ?>]" class="brand_field"<?php ( isset( $brand_field['default'] ) ? checked( $brand_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $brand_field['label']; ?>
+									<input type="hidden" name="brand_fields_order[<?php echo $brand_field['name']; ?>]" class="field_order" value="<?php echo $brand_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -394,15 +422,20 @@
 
 	<?php if( $orders ) { ?>
 					<p class="description"><?php _e( 'Select the Order fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="order-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="order-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="order-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="order-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> |
+						<a href="javascript:void(0)" id="order-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="order-fields" class="ui-sortable">
 
 		<?php foreach( $order_fields as $order_field ) { ?>
-						<tr>
+						<tr id="order-<?php echo $order_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $order_field['hover'] ) ) { ?> title="<?php echo $order_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="order_fields[<?php echo $order_field['name']; ?>]" class="order_field"<?php ( isset( $order_field['default'] ) ? checked( $order_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $order_field['label']; ?>
+									<input type="hidden" name="order_fields_order[<?php echo $order_field['name']; ?>]" class="field_order" value="<?php echo $order_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -452,15 +485,20 @@
 				<div class="inside">
 	<?php if( $customers ) { ?>
 					<p class="description"><?php _e( 'Select the Customer fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="customer-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="customer-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="customer-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="customer-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="customer-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="customer-fields" class="ui-sortable">
 
 		<?php foreach( $customer_fields as $customer_field ) { ?>
-						<tr>
+						<tr id="customer-<?php echo $customer_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $customer_field['hover'] ) ) { ?> title="<?php echo $customer_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="customer_fields[<?php echo $customer_field['name']; ?>]" class="customer_field"<?php ( isset( $customer_field['default'] ) ? checked( $customer_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $customer_field['label']; ?>
+									<input type="hidden" name="customer_fields_order[<?php echo $customer_field['name']; ?>]" class="field_order" value="<?php echo $customer_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -511,17 +549,21 @@
 				<div class="inside">
 	<?php if( $users ) { ?>
 					<p class="description"><?php _e( 'Select the User fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="user-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="user-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="user-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="user-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="user-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="user-fields" class="ui-sortable">
 
 		<?php foreach( $user_fields as $user_field ) { ?>
-						<tr>
+						<tr id="user-<?php echo $user_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $user_field['hover'] ) ) { ?> title="<?php echo $user_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="user_fields[<?php echo $user_field['name']; ?>]" class="user_field"<?php ( isset( $user_field['default'] ) ? checked( $user_field['default'], 1 ) : '' ); ?><?php disabled( $user_field['disabled'], 1 ); ?> />
 									<?php echo $user_field['label']; ?>
 									<?php if( $user_field['disabled'] ) { ?><span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span><?php } ?>
-									<input type="hidden" name="user_fields_order[<?php echo $user_field['name']; ?>]" class="field_order" value="" />
+									<input type="hidden" name="user_fields_order[<?php echo $user_field['name']; ?>]" class="field_order" value="<?php echo $user_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -571,15 +613,20 @@
 				<div class="inside">
 	<?php if( $coupons ) { ?>
 					<p class="description"><?php _e( 'Select the Coupon fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="coupon-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="coupon-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="coupon-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="coupon-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="coupon-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="coupon-fields" class="ui-sortable">
 
 		<?php foreach( $coupon_fields as $coupon_field ) { ?>
-						<tr>
+						<tr id="coupon-<?php echo $coupon_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $coupon_field['hover'] ) ) { ?> title="<?php echo $coupon_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="coupon_fields[<?php echo $coupon_field['name']; ?>]" class="coupon_field"<?php ( isset( $coupon_field['default'] ) ? checked( $coupon_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $coupon_field['label']; ?>
+									<input type="hidden" name="coupon_fields_order[<?php echo $coupon_field['name']; ?>]" class="field_order" value="<?php echo $coupon_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -629,15 +676,20 @@
 				<div class="inside">
 	<?php if( $subscriptions ) { ?>
 					<p class="description"><?php _e( 'Select the Subscription fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="subscription-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="subscription-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="subscription-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="subscription-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="subscription-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="subscription-fields" class="ui-sortable">
 
 		<?php foreach( $subscription_fields as $subscription_field ) { ?>
-						<tr>
+						<tr id="subscription-<?php echo $subscription_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $subscription_field['hover'] ) ) { ?> title="<?php echo $subscription_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="subscription_fields[<?php echo $subscription_field['name']; ?>]" class="subscription_field"<?php ( isset( $subscription_field['default'] ) ? checked( $subscription_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $subscription_field['label']; ?>
+									<input type="hidden" name="subscription_fields_order[<?php echo $subscription_field['name']; ?>]" class="field_order" value="<?php echo $subscription_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -655,6 +707,24 @@
 				<!-- .inside -->
 			</div>
 			<!-- .postbox -->
+
+			<div id="export-subscriptions-filters" class="postbox">
+				<h3 class="hndle"><?php _e( 'Subscription Filters', 'woo_ce' ); ?></h3>
+				<div class="inside">
+
+					<?php do_action( 'woo_ce_export_subscription_options_before_table' ); ?>
+
+					<table class="form-table">
+						<?php do_action( 'woo_ce_export_subscription_options_table' ); ?>
+					</table>
+
+					<?php do_action( 'woo_ce_export_subscription_options_after_table' ); ?>
+
+				</div>
+				<!-- .inside -->
+			</div>
+			<!-- .postbox -->
+
 		</div>
 		<!-- #export-subscription -->
 
@@ -669,15 +739,20 @@
 				<div class="inside">
 	<?php if( $product_vendors ) { ?>
 					<p class="description"><?php _e( 'Select the Product Vendor fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="product_vendor-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="product_vendor-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="product_vendor-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="product_vendor-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="product_vendor-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="product_vendor-fields" class="ui-sortable">
 
 		<?php foreach( $product_vendor_fields as $product_vendor_field ) { ?>
-						<tr>
+						<tr id="product_vendor-<?php echo $product_vendor_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $product_vendor_field['hover'] ) ) { ?> title="<?php echo $product_vendor_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="product_vendor_fields[<?php echo $product_vendor_field['name']; ?>]" class="product_vendor_field"<?php ( isset( $product_vendor_field['default'] ) ? checked( $product_vendor_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $product_vendor_field['label']; ?>
+									<input type="hidden" name="product_vendor_fields_order[<?php echo $product_vendor_field['name']; ?>]" class="field_order" value="<?php echo $product_vendor_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -700,6 +775,69 @@
 		<!-- #export-product_vendor -->
 
 <?php } ?>
+<?php if( $commission_fields ) { ?>
+		<div id="export-commission" class="export-types">
+
+			<div class="postbox">
+				<h3 class="hndle">
+					<?php _e( 'Commission Fields', 'woo_ce' ); ?>
+				</h3>
+				<div class="inside">
+	<?php if( $commissions ) { ?>
+					<p class="description"><?php _e( 'Select the Commission fields you would like to export.', 'woo_ce' ); ?></p>
+					<p>
+						<a href="javascript:void(0)" id="commission-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="commission-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="commission-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
+					<table id="commission-fields" class="ui-sortable">
+
+		<?php foreach( $commission_fields as $commission_field ) { ?>
+						<tr id="commission-<?php echo $commission_field['reset']; ?>">
+							<td>
+								<label<?php if( isset( $commission_field['hover'] ) ) { ?> title="<?php echo $commission_field['hover']; ?>"<?php } ?>>
+									<input type="checkbox" name="commission_fields[<?php echo $commission_field['name']; ?>]" class="commission_field"<?php ( isset( $commission_field['default'] ) ? checked( $commission_field['default'], 1 ) : '' ); ?> disabled="disabled" />
+									<?php echo $commission_field['label']; ?>
+									<input type="hidden" name="commission_fields_order[<?php echo $commission_field['name']; ?>]" class="field_order" value="<?php echo $commission_field['order']; ?>" />
+								</label>
+							</td>
+						</tr>
+
+		<?php } ?>
+					</table>
+					<p class="submit">
+						<input type="button" class="button button-disabled" value="<?php _e( 'Export Commissions', 'woo_ce' ); ?>" />
+					</p>
+					<p class="description"><?php _e( 'Can\'t find a particular Commission field in the above export list?', 'woo_ce' ); ?> <a href="<?php echo $troubleshooting_url; ?>" target="_blank"><?php _e( 'Get in touch', 'woo_ce' ); ?></a>.</p>
+	<?php } else { ?>
+					<p><?php _e( 'No Commissions were found.', 'woo_ce' ); ?></p>
+	<?php } ?>
+				</div>
+				<!-- .inside -->
+			</div>
+			<!-- .postbox -->
+
+			<div id="export-commissions-filters" class="postbox">
+				<h3 class="hndle"><?php _e( 'Commission Filters', 'woo_ce' ); ?></h3>
+				<div class="inside">
+
+					<?php do_action( 'woo_ce_export_commission_options_before_table' ); ?>
+
+					<table class="form-table">
+						<?php do_action( 'woo_ce_export_commission_options_table' ); ?>
+					</table>
+
+					<?php do_action( 'woo_ce_export_commission_options_after_table' ); ?>
+
+				</div>
+				<!-- .inside -->
+			</div>
+			<!-- .postbox -->
+
+		</div>
+		<!-- #export-commission -->
+
+<?php } ?>
 <?php if( $shipping_class_fields ) { ?>
 		<div id="export-shipping_class" class="export-types">
 
@@ -710,15 +848,20 @@
 				<div class="inside">
 	<?php if( $shipping_classes ) { ?>
 					<p class="description"><?php _e( 'Select the Shipping Class fields you would like to export.', 'woo_ce' ); ?></p>
-					<p><a href="javascript:void(0)" id="shipping_class-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | <a href="javascript:void(0)" id="shipping_class-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a></p>
+					<p>
+						<a href="javascript:void(0)" id="shipping_class-checkall" class="checkall"><?php _e( 'Check All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="shipping_class-uncheckall" class="uncheckall"><?php _e( 'Uncheck All', 'woo_ce' ); ?></a> | 
+						<a href="javascript:void(0)" id="shipping_class-resetsorting" class="resetsorting"><?php _e( 'Reset Sorting', 'woo_ce' ); ?></a>
+					</p>
 					<table id="shipping_class-fields" class="ui-sortable">
 
 		<?php foreach( $shipping_class_fields as $shipping_class_field ) { ?>
-						<tr>
+						<tr id="shipping_class-<?php echo $shipping_class_field['reset']; ?>">
 							<td>
-								<label>
+								<label<?php if( isset( $shipping_class_field['hover'] ) ) { ?> title="<?php echo $shipping_class_field['hover']; ?>"<?php } ?>>
 									<input type="checkbox" name="shipping_class_fields[<?php echo $shipping_class_field['name']; ?>]" class="shipping_class_field"<?php ( isset( $shipping_class_field['default'] ) ? checked( $shipping_class_field['default'], 1 ) : '' ); ?> disabled="disabled" />
 									<?php echo $shipping_class_field['label']; ?>
+									<input type="hidden" name="shipping_class_fields_order[<?php echo $shipping_class_field['name']; ?>]" class="field_order" value="<?php echo $shipping_class_field['order']; ?>" />
 								</label>
 							</td>
 						</tr>
@@ -763,7 +906,7 @@
 		<div class="postbox" id="export-options">
 			<h3 class="hndle"><?php _e( 'Export Options', 'woo_ce' ); ?></h3>
 			<div class="inside">
-				<p class="description"><?php _e( 'You can find additional export options under the Settings tab at the top of this screen.', 'woo_ce' ); ?></p>
+				<p class="description"><?php _e( 'You can find additional export options under the Settings tab at the top of this screen. Click the Export button above to apply these changes and generate your export file.', 'woo_ce' ); ?></p>
 
 				<?php do_action( 'woo_ce_export_options_before' ); ?>
 
@@ -794,6 +937,7 @@
 		<?php do_action( 'woo_ce_after_options' ); ?>
 
 		<input type="hidden" name="action" value="export" />
+		<?php wp_nonce_field( 'manual_export', 'woo_ce_export' ); ?>
 	</form>
 
 	<?php do_action( 'woo_ce_export_after_form' ); ?>

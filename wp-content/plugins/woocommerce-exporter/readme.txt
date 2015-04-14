@@ -2,10 +2,10 @@
 
 Contributors: visser
 Donate link: http://www.visser.com.au/#donations
-Tags: e-commerce, woocommerce, shop, cart, ecommerce, export, csv, xml, xls, excel, customers, products, sales, orders, coupons, users, attributes, subscriptions
+Tags: e-commerce, woocommerce, shop, cart, ecommerce, export, csv, xml, xls, xlsx, excel, customers, products, sales, orders, coupons, users, attributes, subscriptions
 Requires at least: 2.9.2
-Tested up to: 4.0
-Stable tag: 1.8.2
+Tested up to: 4.1.1
+Stable tag: 1.8.3
 
 == Description ==
 
@@ -30,6 +30,7 @@ Features include:
 * Export Users
 * Export Coupons (*)
 * Export Subscriptions (*)
+* Export Commissions (*)
 * Export Product Vendors (*)
 * Export Shipping Classes (*)
 * Export Attributes (*)
@@ -39,6 +40,7 @@ Features include:
 * Export to CSV file
 * Export to XML file (*)
 * Export to Excel 2007 (XLS) file (*)
+* Export to Excel 2013 (XLSX) file (*)
 * Export to WordPress Media
 * Export to e-mail addresses (*)
 * Export to remote POST (*)
@@ -48,9 +50,8 @@ Features include:
 
 (*) Requires the Pro upgrade to enable additional store export functionality.
 
-Just a few of the features unlocked in the Pro upgrade of Product Importer include:
+Just a few of the features unlocked in the Pro upgrade of Store Exporter include:
 
-- Compatibility with Product Importer Deluxe
 - Export All in One SEO Pack
 - Export Advanced Google Product Feed
 - Export Product Addons
@@ -68,6 +69,8 @@ Just a few of the features unlocked in the Pro upgrade of Product Importer inclu
 - Export WooCommerce PDF Invoices & Packing Slips
 - Export WooCommerce Checkout Add-ons
 - Export Product Vendors
+- Export WooCommerce Jetpack
+- Import fields for Product Importer Deluxe
 
 ... and more free and Premium extensions for WooCommerce.
 
@@ -109,6 +112,17 @@ http://www.visser.com.au/woocommerce/forums/
 9. Drag-and-drop export fields to your preferred ordering, sorting is saved between screen refreshes.
 
 == Changelog ==
+
+= 1.8.3 =
+* Added: Notice when fatal error is encountered from memory/timeout
+* Fixed: Default to Attribute Name if Label is empty
+* Fixed: Export Product Attributes in Product export
+* Added: Support for custom Attributes in Product export
+* Added: Default Attributes to Product export
+* Fixed: Attribute taxonomy missing from Order Items: Product Variation in WC 2.2+
+* Added: Support for Ship to Multiple Address for Order export
+* Fixed: Variables not being included in Product export when filtering by Categories/Tags/Brands/Vendors
+* Added: Delete All archives button to Archives screen
 
 = 1.8.2 =
 * Added: Order support for Extra Product Options

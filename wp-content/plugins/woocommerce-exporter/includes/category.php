@@ -4,7 +4,7 @@ if( is_admin() ) {
 	/* Start of: WordPress Administration */
 
 	// HTML template for Category Sorting widget on Store Exporter screen
-	function woo_ce_category_order_sorting() {
+	function woo_ce_category_sorting() {
 
 		$category_orderby = woo_ce_get_option( 'category_orderby', 'ID' );
 		$category_order = woo_ce_get_option( 'category_order', 'DESC' );
@@ -103,9 +103,13 @@ function woo_ce_get_category_fields( $format = 'full' ) {
 		default:
 			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, woo_ce_sort_fields( 'order' ) );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
@@ -168,6 +172,7 @@ function woo_ce_get_product_categories( $args = array() ) {
 	$categories = get_terms( $term_taxonomy, $args );
 	if( !empty( $categories ) && is_wp_error( $categories ) == false ) {
 		foreach( $categories as $key => $category ) {
+			$categories[$key]->description = woo_ce_format_description_excerpt( $category->description );
 			$categories[$key]->parent_name = '';
 			if( $categories[$key]->parent_id = $category->parent ) {
 				if( $parent_category = get_term( $categories[$key]->parent_id, $term_taxonomy ) ) {

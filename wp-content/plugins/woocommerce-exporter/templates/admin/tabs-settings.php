@@ -52,21 +52,25 @@
 	<?php } ?>
 					</select>
 <?php } else { ?>
+	<?php if( version_compare( phpversion(), '5', '<' ) ) { ?>
 					<p class="description"><?php _e( 'Character encoding options are unavailable in PHP 4, contact your hosting provider to update your site install to use PHP 5 or higher.', 'woo_ce' ); ?></p>
+	<?php } else { ?>
+					<p class="description"><?php _e( 'Character encoding options are unavailable as the required mb_list_encodings() function is missing, contact your hosting provider to have the mbstring extension installed.', 'woo_ce' ); ?></p>
+	<?php } ?>
 <?php } ?>
 				</td>
 			</tr>
 			<tr>
 				<th><?php _e( 'Date format', 'woo_ce' ); ?></th>
 				<td>
-					<fieldset>
-						<label title="F j, Y"><input type="radio" name="date_format" value="F j, Y"<?php checked( $date_format, 'F j, Y' ); ?>> <span><?php echo date( 'F j, Y' ); ?></span></label><br>
-						<label title="Y/m/d"><input type="radio" name="date_format" value="Y/m/d"<?php checked( $date_format, 'Y/m/d' ); ?>> <span><?php echo date( 'Y/m/d' ); ?></span></label><br>
-						<label title="m/d/Y"><input type="radio" name="date_format" value="m/d/Y"<?php checked( $date_format, 'm/d/Y' ); ?>> <span><?php echo date( 'm/d/Y' ); ?></span></label><br>
-						<label title="d/m/Y"><input type="radio" name="date_format" value="d/m/Y"<?php checked( $date_format, 'd/m/Y' ); ?>> <span><?php echo date( 'd/m/Y' ); ?></span></label><br>
-						<label><input type="radio" name="date_format" value="custom"<?php checked( in_array( $date_format, array( 'F j, Y', 'Y/m/d', 'm/d/Y', 'd/m/Y' ) ), false ); ?>/> <?php _e( 'Custom', 'woo_ce' ); ?>: </label><input type="text" name="date_format_custom" value="<?php echo sanitize_text_field( $date_format ); ?>" class="text" />
-						<p><a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank"><?php _e( 'Documentation on date and time formatting', 'woo_ce' ); ?></a>.</p>
-					</fieldset>
+					<ul style="margin-top:0.2em;">
+						<li><label title="F j, Y"><input type="radio" name="date_format" value="F j, Y"<?php checked( $date_format, 'F j, Y' ); ?>> <span><?php echo date( 'F j, Y' ); ?></span></label></li>
+						<li><label title="Y/m/d"><input type="radio" name="date_format" value="Y/m/d"<?php checked( $date_format, 'Y/m/d' ); ?>> <span><?php echo date( 'Y/m/d' ); ?></span></label></li>
+						<li><label title="m/d/Y"><input type="radio" name="date_format" value="m/d/Y"<?php checked( $date_format, 'm/d/Y' ); ?>> <span><?php echo date( 'm/d/Y' ); ?></span></label></li>
+						<li><label title="d/m/Y"><input type="radio" name="date_format" value="d/m/Y"<?php checked( $date_format, 'd/m/Y' ); ?>> <span><?php echo date( 'd/m/Y' ); ?></span></label></li>
+						<li><label><input type="radio" name="date_format" value="custom"<?php checked( in_array( $date_format, array( 'F j, Y', 'Y/m/d', 'm/d/Y', 'd/m/Y' ) ), false ); ?>/> <?php _e( 'Custom', 'woo_ce' ); ?>: </label><input type="text" name="date_format_custom" value="<?php echo sanitize_text_field( $date_format ); ?>" class="text" /></li>
+						<li><a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank"><?php _e( 'Documentation on date and time formatting', 'woo_ce' ); ?></a>.</li>
+					</ul>
 					<p class="description"><?php _e( 'The date format option affects how date\'s are presented within your export file. Default is set to DD/MM/YYYY.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
@@ -100,8 +104,8 @@
 					<label for="delimiter"><?php _e( 'Field delimiter', 'woo_ce' ); ?></label>
 				</th>
 				<td>
-					<input type="text" size="3" id="delimiter" name="delimiter" value="<?php echo esc_attr( $delimiter ); ?>" maxlength="1" class="text" />
-					<p class="description"><?php _e( 'The field delimiter is the character separating each cell in your CSV. This is typically the \',\' (comma) character.', 'woo_pc' ); ?></p>
+					<input type="text" size="3" id="delimiter" name="delimiter" value="<?php echo esc_attr( $delimiter ); ?>" maxlength="5" class="text" />
+					<p class="description"><?php _e( 'The field delimiter is the character separating each cell in your CSV. This is typically the \',\' (comma) character.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -109,8 +113,22 @@
 					<label for="category_separator"><?php _e( 'Category separator', 'woo_ce' ); ?></label>
 				</th>
 				<td>
-					<input type="text" size="3" id="category_separator" name="category_separator" value="<?php echo esc_attr( $category_separator ); ?>" maxlength="1" class="text" />
-					<p class="description"><?php _e( 'The Product Category separator allows you to assign individual Products to multiple Product Categories/Tags/Images at a time. It is suggested to use the \'|\' (vertical pipe) character between each item. For instance: <code>Clothing|Mens|Shirts</code>.', 'woo_ce' ); ?></p>
+					<input type="text" size="3" id="category_separator" name="category_separator" value="<?php echo esc_attr( $category_separator ); ?>" maxlength="5" class="text" />
+					<p class="description"><?php _e( 'The Product Category separator allows you to assign individual Products to multiple Product Categories/Tags/Images at a time. It is suggested to use the \'|\' (vertical pipe) character or \'LF\' for line breaks between each item. For instance: <code>Clothing|Mens|Shirts</code>.', 'woo_ce' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="line_ending"><?php _e( 'Line ending formatting', 'woo_ce' ); ?></label>
+				</th>
+				<td>
+					<select id="line_ending" name="line_ending">
+						<option value="windows" selected="selected"><?php _e( 'Windows', 'woo_ce' ); ?></option>
+						<option value="mac" disabled="disabled"><?php _e( 'Mac' ,'woo_ce' ); ?></option>
+						<option value="unix" disabled="disabled"><?php _e( 'Unix', 'woo_ce' ); ?></option>
+					</select>
+					<span class="description"> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span>
+					<p class="description"><?php _e( 'Choose the line ending formatting that suits the Operating System you plan to use the export file with (e.g. a Windows desktop, Mac laptop, etc.). Default is Windows.', 'woo_ce' ); ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -130,8 +148,10 @@
 					<label for="escape_formatting"><?php _e( 'Field escape formatting', 'woo_ce' ); ?></label>
 				</th>
 				<td>
-					<label><input type="radio" name="escape_formatting" value="all"<?php checked( $escape_formatting, 'all' ); ?> />&nbsp;<?php _e( 'Escape all fields', 'woo_ce' ); ?></label><br />
-					<label><input type="radio" name="escape_formatting" value="excel"<?php checked( $escape_formatting, 'excel' ); ?> />&nbsp;<?php _e( 'Escape fields as Excel would', 'woo_ce' ); ?></label>
+					<ul style="margin-top:0.2em;">
+						<li><label><input type="radio" name="escape_formatting" value="all"<?php checked( $escape_formatting, 'all' ); ?> />&nbsp;<?php _e( 'Escape all fields', 'woo_ce' ); ?></label></li>
+						<li><label><input type="radio" name="escape_formatting" value="excel"<?php checked( $escape_formatting, 'excel' ); ?> />&nbsp;<?php _e( 'Escape fields as Excel would', 'woo_ce' ); ?></label></li>
+					</ul>
 					<p class="description"><?php _e( 'Choose the field escape format that suits your spreadsheet software (e.g. Excel).', 'woo_ce' ); ?></p>
 				</td>
 			</tr>

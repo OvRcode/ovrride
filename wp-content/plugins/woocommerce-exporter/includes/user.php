@@ -4,7 +4,7 @@ if( is_admin() ) {
 	/* Start of: WordPress Administration */
 
 	// HTML template for User Sorting widget on Store Exporter screen
-	function woo_ce_users_user_sorting() {
+	function woo_ce_user_sorting() {
 
 		$orderby = woo_ce_get_option( 'user_orderby', 'ID' );
 		$order = woo_ce_get_option( 'user_order', 'ASC' );
@@ -173,9 +173,13 @@ function woo_ce_get_user_fields( $format = 'full' ) {
 		default:
 			$sorting = woo_ce_get_option( $export_type . '_sorting', array() );
 			$size = count( $fields );
-			for( $i = 0; $i < $size; $i++ )
+			for( $i = 0; $i < $size; $i++ ) {
+				$fields[$i]['reset'] = $i;
 				$fields[$i]['order'] = ( isset( $sorting[$fields[$i]['name']] ) ? $sorting[$fields[$i]['name']] : $i );
-			usort( $fields, woo_ce_sort_fields( 'order' ) );
+			}
+			// Check if we are using PHP 5.3 and above
+			if( version_compare( phpversion(), '5.3' ) >= 0 )
+				usort( $fields, woo_ce_sort_fields( 'order' ) );
 			return $fields;
 			break;
 
@@ -228,20 +232,39 @@ function woo_ce_get_user_field( $name = null, $format = 'name' ) {
 // Adds custom User columns to the User fields list
 function woo_ce_extend_user_fields( $fields = array() ) {
 
+	// WooCommerce User fields
 	if( class_exists( 'WC_Admin_Profile' ) ) {
 		$admin_profile = new WC_Admin_Profile();
-		$show_fields = $admin_profile->get_customer_meta_fields();
-		foreach( $show_fields as $fieldset ) {
-			foreach( $fieldset['fields'] as $key => $field ) {
+		if( method_exists( 'WC_Admin_Profile', 'get_customer_meta_fields' ) ) {
+			$show_fields = $admin_profile->get_customer_meta_fields();
+			foreach( $show_fields as $fieldset ) {
+				foreach( $fieldset['fields'] as $key => $field ) {
+					$fields[] = array(
+						'name' => $key,
+						'label' => sprintf( apply_filters( 'woo_ce_extend_user_fields_wc', '%s: %s' ), $fieldset['title'], esc_html( $field['label'] ) ),
+						'disabled' => 1
+					);
+				}
+			}
+			unset( $show_fields, $fieldset, $field );
+		}
+	}
+
+	// Custom User meta
+	$custom_users = woo_ce_get_option( 'custom_users', '' );
+	if( !empty( $custom_users ) ) {
+		foreach( $custom_users as $custom_user ) {
+			if( !empty( $custom_user ) ) {
 				$fields[] = array(
-					'name' => $key,
-					'label' => sprintf( '%s: %s', $fieldset['title'], esc_html( $field['label'] ) ),
+					'name' => $custom_user,
+					'label' => $custom_user,
 					'disabled' => 1
 				);
 			}
 		}
-		unset( $show_fields, $fieldset, $field );
+		unset( $custom_users, $custom_user );
 	}
+
 	return $fields;
 
 }
@@ -298,7 +321,7 @@ function woo_ce_get_user_data( $user_id = 0, $args = array() ) {
 		$user->user_role = $user_data->roles[0];
 		$user->first_name = $user_data->first_name;
 		$user->last_name = $user_data->last_name;
-		$user->full_name = sprintf( '%s %s', $user->first_name, $user->last_name );
+		$user->full_name = sprintf( apply_filters( 'woo_ce_get_user_data_full_name', '%s %s' ), $user->first_name, $user->last_name );
 		$user->nick_name = $user_data->user_nicename;
 		$user->email = $user_data->user_email;
 		$user->url = $user_data->user_url;

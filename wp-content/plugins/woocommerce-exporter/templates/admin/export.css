@@ -80,6 +80,9 @@
 	display:inline-block;
 	width:120px;
 }
+#woo-ce .auto_method_options li.ftp-options select {
+  width: 25em;
+}
 
 /* Support - Donate / Rate */
 

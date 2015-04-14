@@ -68,7 +68,6 @@ function woo_ce_template_header( $title = '', $icon = 'woocommerce' ) {
 	<div id="icon-<?php echo $icon; ?>" class="icon32 icon32-woocommerce-importer"><br /></div>
 	<h2>
 		<?php echo $output; ?>
-		<a href="<?php echo add_query_arg( array( 'tab' => 'export', 'empty' => null ) ); ?>" class="add-new-h2"><?php _e( 'Add New', 'woo_ce' ); ?></a>
 	</h2>
 <?php
 
@@ -79,6 +78,32 @@ function woo_ce_template_footer() { ?>
 </div>
 <!-- .wrap -->
 <?php
+
+}
+
+function woo_ce_export_options_export_format() {
+
+	$woo_cd_url = 'http://www.visser.com.au/woocommerce/plugins/exporter-deluxe/';
+	$woo_cd_link = sprintf( '<a href="%s" target="_blank">' . __( 'Store Exporter Deluxe', 'woo_ce' ) . '</a>', $woo_cd_url );
+
+	ob_start(); ?>
+<tr>
+	<th>
+		<label><?php _e( 'Export format', 'woo_ce' ); ?></label>
+	</th>
+	<td>
+		<label><input type="radio" name="export_format" value="csv"<?php checked( 'csv', 'csv' ); ?> /> <?php _e( 'CSV', 'woo_ce' ); ?> <span class="description"><?php _e( '(Comma Separated Values)', 'woo_ce' ); ?></span></label><br />
+		<label><input type="radio" name="export_format" value="xls" disabled="disabled" /> <?php _e( 'Excel (XLS)', 'woo_ce' ); ?> <span class="description"><?php _e( '(Excel 97-2003)', 'woo_ce' ); ?> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label><br />
+		<label><input type="radio" name="export_format" value="xlsx" disabled="disabled" /> <?php _e( 'Excel (XLSX)', 'woo_ce' ); ?> <span class="description"><?php _e( '(Excel 2007-2013)', 'woo_ce' ); ?> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label><br />
+		<label><input type="radio" name="export_format" value="xml" disabled="disabled" /> <?php _e( 'XML', 'woo_ce' ); ?> <span class="description"><?php _e( '(EXtensible Markup Language)', 'woo_ce' ); ?> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label><br />
+		<div class="export-options product-options">
+			<label><input type="radio" name="export_format" value="rss" disabled="disabled" /> <?php _e( 'RSS', 'woo_ce' ); ?> <span class="description"><?php printf( __( '(<attr title="%s">XML</attr> feed in RSS 2.0 format)', 'woo_ce' ), __( 'EXtensible Markup Language', 'woo_ce' ) ); ?> - <?php printf( __( 'available in %s', 'woo_ce' ), $woo_cd_link ); ?></span></label>
+		</div>
+		<p class="description"><?php _e( 'Adjust the export format to generate different export file formats.', 'woo_ce' ); ?></p>
+	</td>
+</tr>
+<?php
+	ob_end_flush();
 
 }
 
@@ -114,12 +139,13 @@ function woo_ce_admin_menu() {
 
 	$page = add_submenu_page( 'woocommerce', __( 'Store Exporter', 'woo_ce' ), __( 'Store Export', 'woo_ce' ), 'view_woocommerce_reports', 'woo_ce', 'woo_ce_html_page' );
 	add_action( 'admin_print_styles-' . $page, 'woo_ce_enqueue_scripts' );
+	add_action( 'current_screen', 'woo_ce_add_help_tab' );
 
 }
 add_action( 'admin_menu', 'woo_ce_admin_menu', 11 );
 
 // Load CSS and jQuery scripts for Store Exporter screen
-function woo_ce_enqueue_scripts( $hook ) {
+function woo_ce_enqueue_scripts() {
 
 	// Simple check that WooCommerce is activated
 	if( class_exists( 'WooCommerce' ) ) {
@@ -135,6 +161,10 @@ function woo_ce_enqueue_scripts( $hook ) {
 	wp_enqueue_script( 'jquery-ui-datepicker' );
 	wp_enqueue_style( 'jquery-ui-datepicker', plugins_url( '/templates/admin/jquery-ui-datepicker.css', WOO_CE_RELPATH ) );
 
+	// Time Picker, Date Picker Addon
+	wp_enqueue_script( 'jquery-ui-timepicker', plugins_url( '/js/jquery.timepicker.js', WOO_CE_RELPATH ), array( 'jquery', 'jquery-ui-datepicker' ) );
+	wp_enqueue_style( 'jquery-ui-datepicker', plugins_url( '/templates/admin/jquery-ui-timepicker.css', WOO_CE_RELPATH ) );
+
 	// Chosen
 	wp_enqueue_style( 'jquery-chosen', plugins_url( '/templates/admin/chosen.css', WOO_CE_RELPATH ) );
 	wp_enqueue_script( 'jquery-chosen', plugins_url( '/js/jquery.chosen.js', WOO_CE_RELPATH ), array( 'jquery' ) );
@@ -149,6 +179,44 @@ function woo_ce_enqueue_scripts( $hook ) {
 		wp_enqueue_script( 'jquery-csvToTable', plugins_url( '/js/jquery.csvToTable.js', WOO_CE_RELPATH ), array( 'jquery' ) );
 	}
 	wp_enqueue_style( 'woo_vm_styles', plugins_url( '/templates/admin/woocommerce-admin_dashboard_vm-plugins.css', WOO_CE_RELPATH ) );
+
+}
+
+function woo_ce_add_help_tab() {
+
+	$screen = get_current_screen();
+	if( $screen->id <> 'woocommerce_page_woo_ce' )
+		return;
+
+	$screen->add_help_tab( array(
+		'id' => 'woo_ce',
+		'title' => __( 'Store Exporter', 'woo_ce' ),
+		'content' => 
+			'<p>' . __( 'Thank you for using Store Exporter :) Should you need help using this Plugin please read the documentation, if an issue persists get in touch with us on the WordPress.org Support tab for this Plugin.', 'woo_ce' ) . '</p>' .
+			'<p><a href="' . 'http://www.visser.com.au/documentation/store-exporter/usage/' . '" target="_blank" class="button button-primary">' . __( 'Documentation', 'woo_ce' ) . '</a> <a href="' . 'http://wordpress.org/support/plugin/woocommerce-exporter' . '" target="_blank" class="button">' . __( 'Forum Support', 'woo_ce' ) . '</a></p>'
+	) );
+
+}
+
+function woo_ce_plugin_page_notices() {
+
+	global $pagenow;
+
+	if( $pagenow == 'plugins.php' ) {
+		if( woo_is_jigo_activated() || woo_is_wpsc_activated() ) {
+			$r_plugins = array(
+				'woocommerce-exporter/exporter.php',
+				'woocommerce-store-exporter/exporter.php'
+			);
+			$i_plugins = get_plugins();
+			foreach( $r_plugins as $path ) {
+				if( isset( $i_plugins[$path] ) ) {
+					add_action( 'after_plugin_row_' . $path, 'woo_ce_plugin_page_notice', 10, 3 );
+					break;
+				}
+			}
+		}
+	}
 
 }
 
@@ -207,34 +275,90 @@ function woo_ce_tab_template( $tab = '' ) {
 			$attributes = '999';
 			$subscriptions = '999';
 			$product_vendors = '999';
+			$commissions = '999';
 			$shipping_classes = '999';
 
+			add_action( 'woo_ce_export_options', 'woo_ce_export_options_export_format' );
 			if( $product_fields = woo_ce_get_product_fields() ) {
 				foreach( $product_fields as $key => $product_field )
 					$product_fields[$key]['disabled'] = ( isset( $product_field['disabled'] ) ? $product_field['disabled'] : 0 );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_product_category' );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_product_tag' );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_product_brand' );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_product_vendor' );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_product_status' );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_product_type' );
+				add_action( 'woo_ce_export_product_options_before_table', 'woo_ce_products_filter_by_stock_status' );
+				add_action( 'woo_ce_export_product_options_after_table', 'woo_ce_product_sorting' );
+				add_action( 'woo_ce_export_options', 'woo_ce_products_upsells_formatting' );
+				add_action( 'woo_ce_export_options', 'woo_ce_products_crosssells_formatting' );
+				add_action( 'woo_ce_export_options', 'woo_ce_export_options_gallery_format' );
+				add_action( 'woo_ce_export_after_form', 'woo_ce_products_custom_fields' );
 			}
 			if( $category_fields = woo_ce_get_category_fields() ) {
 				foreach( $category_fields as $key => $category_field )
 					$category_fields[$key]['disabled'] = ( isset( $category_field['disabled'] ) ? $category_field['disabled'] : 0 );
+				add_action( 'woo_ce_export_category_options_after_table', 'woo_ce_category_sorting' );
 			}
 			if( $tag_fields = woo_ce_get_tag_fields() ) {
 				foreach( $tag_fields as $key => $tag_field )
 					$tag_fields[$key]['disabled'] = ( isset( $tag_field['disabled'] ) ? $tag_field['disabled'] : 0 );
+				add_action( 'woo_ce_export_tag_options_after_table', 'woo_ce_tag_sorting' );
 			}
 			if( $brand_fields = woo_ce_get_brand_fields() ) {
 				foreach( $brand_fields as $key => $brand_field )
 					$brand_fields[$key]['disabled'] = ( isset( $brand_field['disabled'] ) ? $brand_field['disabled'] : 0 );
+				add_action( 'woo_ce_export_brand_options_before_table', 'woo_ce_brand_sorting' );
 			}
-			$order_fields = woo_ce_get_order_fields();
-			$customer_fields = woo_ce_get_customer_fields();
+			if( $order_fields = woo_ce_get_order_fields() ) {
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_date' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_status' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_customer' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_billing_country' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_shipping_country' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_user_role' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_coupon' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_product' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_product_category' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_product_tag' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_product_brand' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_order_id' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_payment_gateway' );
+				add_action( 'woo_ce_export_order_options_before_table', 'woo_ce_orders_filter_by_shipping_method' );
+				add_action( 'woo_ce_export_order_options_after_table', 'woo_ce_order_sorting' );
+				add_action( 'woo_ce_export_options', 'woo_ce_orders_items_formatting' );
+				add_action( 'woo_ce_export_options', 'woo_ce_orders_max_order_items' );
+				add_action( 'woo_ce_export_options', 'woo_ce_orders_items_types' );
+				add_action( 'woo_ce_export_after_form', 'woo_ce_orders_custom_fields' );
+			}
+			if( $customer_fields = woo_ce_get_customer_fields() ) {
+				add_action( 'woo_ce_export_customer_options_before_table', 'woo_ce_customers_filter_by_status' );
+				add_action( 'woo_ce_export_customer_options_before_table', 'woo_ce_customers_filter_by_user_role' );
+				add_action( 'woo_ce_export_after_form', 'woo_ce_customers_custom_fields' );
+			}
 			if( $user_fields = woo_ce_get_user_fields() ) {
 				foreach( $user_fields as $key => $user_field )
 					$user_fields[$key]['disabled'] = ( isset( $user_field['disabled'] ) ? $user_field['disabled'] : 0 );
+				add_action( 'woo_ce_export_user_options_after_table', 'woo_ce_user_sorting' );
+				add_action( 'woo_ce_export_after_form', 'woo_ce_users_custom_fields' );
 			}
-			$coupon_fields = woo_ce_get_coupon_fields();
-			$subscription_fields = woo_ce_get_subscription_fields();
+			if( $coupon_fields = woo_ce_get_coupon_fields() ) {
+				add_action( 'woo_ce_export_coupon_options_before_table', 'woo_ce_coupon_sorting' );
+			}
+			if( $subscription_fields = woo_ce_get_subscription_fields() ) {
+				add_action( 'woo_ce_export_subscription_options_before_table', 'woo_ce_subscriptions_filter_by_subscription_status' );
+				add_action( 'woo_ce_export_subscription_options_before_table', 'woo_ce_subscriptions_filter_by_subscription_product' );
+			}
 			$product_vendor_fields = woo_ce_get_product_vendor_fields();
-			$shipping_class_fields = woo_ce_get_shipping_class_fields();
+			if( $commission_fields = woo_ce_get_commission_fields() ) {
+				add_action( 'woo_ce_export_commission_options_before_table', 'woo_ce_commissions_filter_by_date' );
+				add_action( 'woo_ce_export_commission_options_before_table', 'woo_ce_commissions_filter_by_product_vendor' );
+				add_action( 'woo_ce_export_commission_options_before_table', 'woo_ce_commissions_filter_by_commission_status' );
+				add_action( 'woo_ce_export_commission_options_before_table', 'woo_ce_commission_sorting' );
+			}
+			if( $shipping_class_fields = woo_ce_get_shipping_class_fields() ) {
+				add_action( 'woo_ce_export_shipping_class_options_after_table', 'woo_ce_shipping_class_sorting' );
+			}
 			$attribute_fields = false;
 
 			// Export modules
@@ -285,6 +409,9 @@ function woo_ce_tab_template( $tab = '' ) {
 			if( $date_format == 1 || $date_format == '' )
 				$date_format = 'd/m/Y';
 			$file_encodings = ( function_exists( 'mb_list_encodings' ) ? mb_list_encodings() : false );
+			add_action( 'woo_ce_export_settings_top', 'woo_ce_export_settings_quicklinks' );
+			add_action( 'woo_ce_export_settings_after', 'woo_ce_export_settings_csv' );
+			add_action( 'woo_ce_export_settings_after', 'woo_ce_export_settings_cron' );
 			break;
 
 		case 'tools':
@@ -327,7 +454,7 @@ function woo_ce_tab_template( $tab = '' ) {
 
 }
 
-// List of WordPress Plugins that Product Importer Deluxe integrates with
+// List of WordPress Plugins that Store Exporter Deluxe integrates with
 function woo_ce_modules_list( $modules = array() ) {
 
 	$modules[] = array(
@@ -431,7 +558,7 @@ function woo_ce_modules_list( $modules = array() ) {
 		'title' => __( 'WooCommerce Sequential Order Numbers Pro', 'woo_ce' ),
 		'description' => __( 'Tame your WooCommerce Order Numbers.', 'woo_ce' ),
 		'url' => 'http://www.woothemes.com/products/sequential-order-numbers-pro/',
-		'class' => 'WC_Seq_Order_Number'
+		'class' => 'WC_Seq_Order_Number_Pro'
 	);
 	$modules[] = array(
 		'name' => 'print_invoice_delivery_note',
@@ -462,7 +589,7 @@ function woo_ce_modules_list( $modules = array() ) {
 		'title' => __( 'WooCommerce Checkout Manager Pro', 'woo_ce' ),
 		'description' => __( 'Manages the WooCommerce Checkout page and WooCommerce Checkout processes.', 'woo_ce' ),
 		'url' => 'http://www.trottyzone.com/product/woocommerce-checkout-manager-pro',
-		'function' => 'wccs_install'
+		'function' => array( 'wccs_install', 'wccs_install_pro' )
 	);
 	$modules[] = array(
 		'name' => 'pgsk',
@@ -528,6 +655,35 @@ function woo_ce_modules_list( $modules = array() ) {
 		'url' => 'http://codecanyon.net/item/woocommerce-extra-product-options/7908619',
 		'class' => 'TM_Extra_Product_Options'
 	);
+	$modules[] = array(
+		'name' => 'woocommerce_jetpack',
+		'title' => __( 'WooCommerce Jetpack', 'woo_ce' ),
+		'description' => __( 'Supercharge your WooCommerce site with these awesome powerful features.', 'woo_ce' ),
+		'url' => 'https://wordpress.org/plugins/woocommerce-jetpack/',
+		'slug' => 'woocommerce-jetpack',
+		'class' => 'WC_Jetpack'
+	);
+	$modules[] = array(
+		'name' => 'woocommerce_jetpack_plus',
+		'title' => __( 'WooCommerce Jetpack Plus', 'woo_ce' ),
+		'description' => __( 'Unlock all WooCommerce Jetpack features and supercharge your WordPress WooCommerce site even more.', 'woo_ce' ),
+		'url' => 'http://woojetpack.com/shop/wordpress-woocommerce-jetpack-plus/',
+		'class' => 'WC_Jetpack_Plus'
+	);
+	$modules[] = array(
+		'name' => 'woocommerce_brands',
+		'title' => __( 'WooCommerce Brands', 'woo_ce' ),
+		'description' => __( 'Woocommerce Brands Plugin. After Install and active this plugin you\'ll have some shortcode and some widget for display your brands in fornt-end website.', 'woo_ce' ),
+		'url' => 'http://proword.net/Woocommerce_Brands/',
+		'class' => 'woo_brands'
+	);
+	$modules[] = array(
+		'name' => 'woocommerce_bookings',
+		'title' => __( 'WooCommerce Bookings', 'woo_ce' ),
+		'description' => __( 'Setup bookable products such as for reservations, services and hires.', 'woo_ce' ),
+		'url' => 'http://www.woothemes.com/products/woocommerce-bookings/',
+		'class' => 'WC_Bookings'
+	);
 
 /*
 	$modules[] = array(
@@ -547,11 +703,31 @@ function woo_ce_modules_list( $modules = array() ) {
 			$modules[$key]['status'] = 'inactive';
 			// Check if each module is activated
 			if( isset( $module['function'] ) ) {
-				if( function_exists( $module['function'] ) )
-					$modules[$key]['status'] = 'active';
+				if( is_array( $module['function'] ) ) {
+					$size = count( $module['function'] );
+					for( $i = 0; $i < $size; $i++ ) {
+						if( function_exists( $module['function'][$i] ) ) {
+							$modules[$key]['status'] = 'active';
+							break;
+						}
+					}
+				} else {
+					if( function_exists( $module['function'] ) )
+						$modules[$key]['status'] = 'active';
+				}
 			} else if( isset( $module['class'] ) ) {
-				if( class_exists( $module['class'] ) )
+				if( is_array( $module['class'] ) ) {
+					$size = count( $module['class'] );
+					for( $i = 0; $i < $size; $i++ ) {
+						if( function_exists( $module['class'][$i] ) ) {
+							$modules[$key]['status'] = 'active';
+							break;
+						}
+					}
+				} else {
+					if( class_exists( $module['class'] ) )
 					$modules[$key]['status'] = 'active';
+				}
 			}
 			// Check if the Plugin has a slug and if current user can install Plugins
 			if( current_user_can( 'install_plugins' ) && isset( $module['slug'] ) )

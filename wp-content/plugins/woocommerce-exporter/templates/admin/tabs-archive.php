@@ -1,17 +1,17 @@
 <ul class="subsubsub">
-	<li><a href="<?php echo add_query_arg( 'filter', null ); ?>"<?php woo_ce_archives_quicklink_current( 'all' ); ?>><?php _e( 'All', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count(); ?>)</span></a> |</li>
-	<li><a href="<?php echo add_query_arg( 'filter', 'product' ); ?>"<?php woo_ce_archives_quicklink_current( 'product' ); ?>><?php _e( 'Products', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'product' ); ?>)</span></a> |</li>
-	<li><a href="<?php echo add_query_arg( 'filter', 'category' ); ?>"<?php woo_ce_archives_quicklink_current( 'category' ); ?>><?php _e( 'Categories', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'category' ); ?>)</span></a> |</li>
-	<li><a href="<?php echo add_query_arg( 'filter', 'tag' ); ?>"<?php woo_ce_archives_quicklink_current( 'tag' ); ?>><?php _e( 'Tags', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'tag' ); ?>)</span></a> |</li>
-	<li><?php _e( 'Brands', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'brand' ); ?>)</span> |</li>
-	<li><?php _e( 'Orders', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'order' ); ?>)</span> |</li>
-	<li><?php _e( 'Customers', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'customer' ); ?>)</span> |</li>
-	<li><a href="<?php echo add_query_arg( 'filter', 'user' ); ?>"<?php woo_ce_archives_quicklink_current( 'user' ); ?>><?php _e( 'Users', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'user' ); ?>)</span></a> |</li>
-	<li><?php _e( 'Coupon', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'coupon' ); ?>)</span> |</li>
-	<li><?php _e( 'Subscriptions', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'subscription' ); ?>)</span></li>
-	<li><?php _e( 'Product Vendors', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'product_vendor' ); ?>)</span> |</li>
-	<li><?php _e( 'Shipping Classes', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'shipping_class' ); ?>)</span> |</li>
-	<!-- <li><?php _e( 'Attributes', 'woo_ce' ); ?> <span class="count">(<?php woo_ce_archives_quicklink_count( 'attribute' ); ?>)</span></li> -->
+	<li><a href="<?php echo add_query_arg( 'filter', null ); ?>"<?php woo_ce_archives_quicklink_current( 'all' ); ?>><?php _e( 'All', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count(); ?>)</span></a> |</li>
+	<li><a href="<?php echo add_query_arg( 'filter', 'product' ); ?>"<?php woo_ce_archives_quicklink_current( 'product' ); ?>><?php _e( 'Products', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'product' ); ?>)</span></a> |</li>
+	<li><a href="<?php echo add_query_arg( 'filter', 'category' ); ?>"<?php woo_ce_archives_quicklink_current( 'category' ); ?>><?php _e( 'Categories', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'category' ); ?>)</span></a> |</li>
+	<li><a href="<?php echo add_query_arg( 'filter', 'tag' ); ?>"<?php woo_ce_archives_quicklink_current( 'tag' ); ?>><?php _e( 'Tags', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'tag' ); ?>)</span></a> |</li>
+	<li><?php _e( 'Brands', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'brand' ); ?>)</span> |</li>
+	<li><?php _e( 'Orders', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'order' ); ?>)</span> |</li>
+	<li><?php _e( 'Customers', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'customer' ); ?>)</span> |</li>
+	<li><a href="<?php echo add_query_arg( 'filter', 'user' ); ?>"<?php woo_ce_archives_quicklink_current( 'user' ); ?>><?php _e( 'Users', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'user' ); ?>)</span></a> |</li>
+	<li><?php _e( 'Coupon', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'coupon' ); ?>)</span> |</li>
+	<li><?php _e( 'Subscriptions', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'subscription' ); ?>)</span> |</li>
+	<li><?php _e( 'Product Vendors', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'product_vendor' ); ?>)</span> |</li>
+	<li><?php _e( 'Shipping Classes', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'shipping_class' ); ?>)</span></li>
+	<!-- <li><?php _e( 'Attributes', 'woo_ce' ); ?> <span class="count">(<?php echo woo_ce_archives_quicklink_count( 'attribute' ); ?>)</span></li> -->
 </ul>
 <!-- .subsubsub -->
 <br class="clear" />
