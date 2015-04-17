@@ -3893,16 +3893,14 @@ if ( is_woocommerce_active() ) {
 			 */
 			public function woocommerce_duplicate_coupon_post_meta($id, $new_id){
 				global $wpdb;
-				$post_meta_infos = $wpdb->get_results("SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$id AND meta_key NOT IN ('expiry_date','usage_count')");
+				$post_meta_infos = $wpdb->get_results("SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$id AND meta_key NOT IN ('expiry_date','usage_count','_used_by')");
 
 				if (count($post_meta_infos)!=0) {
 					$sql_query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
 					foreach ($post_meta_infos as $meta_info) {
 							$meta_key = $meta_info->meta_key;
-                            if ( $meta_key != "_used_by" ) {
-							    $meta_value = addslashes($meta_info->meta_value);
-							    $sql_query_sel[]= "SELECT $new_id, '$meta_key', '$meta_value'";
-                            }
+							$meta_value = addslashes($meta_info->meta_value);
+							$sql_query_sel[]= "SELECT $new_id, '$meta_key', '$meta_value'";
 					}
 					$sql_query.= implode(" UNION ALL ", $sql_query_sel);
 					$wpdb->query($sql_query);
@@ -4596,7 +4594,7 @@ if ( is_woocommerce_active() ) {
 									<select id="exclude_product_categories" name="exclude_product_categories[]" style="width: 50%;" class="<?php echo ( $this->is_wc_gte_23() ) ? 'wc-enhanced-select' : 'chosen_select'; ?>" multiple="multiple" data-placeholder="<?php _e( 'No categories', 'wc_smart_coupons' ); ?>">
 										<?php
 											$categories   = get_terms( 'product_cat', 'orderby=name&hide_empty=0' );
-
+																						
 											if ( $categories ) foreach ( $categories as $cat ) {
 												echo '<option value="' . esc_attr( $cat->term_id ) . '">' . esc_html( $cat->name ) . '</option>';
 											}
