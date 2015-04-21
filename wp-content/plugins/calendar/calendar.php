@@ -3008,7 +3008,7 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
 
   // Add Saranac header
   // #TODO Fix path, hardcoded path
-  $img_path = get_stylesheet_directory_uri() . "/images/Saranac-Cal.png";
+  $img_path = get_stylesheet_directory_uri() . "/images/Saranac-Cal-Spring.png";
   $calendar_body .= '<tr>
                       <td colspan="7"><img src="' . $img_path . '"></td>
                       </tr>';
