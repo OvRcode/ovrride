@@ -495,8 +495,8 @@ abstract class GFFeedAddOn extends GFAddOn {
 	public function form_settings_header() {
 		if ( $this->is_feed_list_page() ) {
 			$title = $this->form_settings_title();
-
-			return $title . " <a class='add-new-h2' href='" . add_query_arg( array( 'fid' => 0 ) ) . "'>" . __( 'Add New', 'gravityforms' ) . '</a>';
+			$url = add_query_arg( array( 'fid' => 0 ) );
+			return $title . " <a class='add-new-h2' href='" . esc_html( $url ) . "'>" . __( 'Add New', 'gravityforms' ) . '</a>';
 		}
 	}
 
@@ -598,7 +598,7 @@ abstract class GFFeedAddOn extends GFAddOn {
 
 	public function feed_list_title() {
 		$url = add_query_arg( array( 'fid' => '0' ) );
-
+		$url = esc_url( $url );
 		return sprintf( __( '%s Feeds', 'gravityforms' ), $this->get_short_title() ) . " <a class='add-new-h2' href='{$url}'>" . __( 'Add New' , 'gravityforms' ) . '</a>';
 	}
 
@@ -620,6 +620,7 @@ abstract class GFFeedAddOn extends GFAddOn {
 		$result   = false;
 
 		if ( $is_valid ) {
+			$settings = $this->filter_settings( $sections, $settings );
 			$feed_id = $this->save_feed_settings( $feed_id, $form_id, $settings );
 			if ( $feed_id ){
 				GFCommon::add_message( $this->get_save_success_message( $sections ) );
@@ -744,11 +745,11 @@ abstract class GFFeedAddOn extends GFAddOn {
 	}
 
 	protected function get_action_links() {
-		$feed_id  = '{id}';
+		$feed_id  = '_id_';
 		$edit_url = add_query_arg( array( 'fid' => $feed_id ) );
 		$links    = array(
-			'edit'   => '<a title="' . __( 'Edit this feed', 'gravityforms' ) . '" href="' . $edit_url . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
-			'delete' => '<a title="' . __( 'Delete this feed', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this item.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ gaddon.deleteFeed(\'' . $feed_id . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
+			'edit'   => '<a title="' . __( 'Edit this feed', 'gravityforms' ) . '" href="' . esc_html( $edit_url ) . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
+			'delete' => '<a title="' . __( 'Delete this feed', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this item.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ gaddon.deleteFeed(\'' . esc_js( $feed_id ) . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
 		);
 
 		return $links;
@@ -763,7 +764,8 @@ abstract class GFFeedAddOn extends GFAddOn {
 	 * @return string The message
 	 */
 	public function feed_list_no_item_message() {
-		return sprintf( __( "You don't have any feeds configured. Let's go %screate one%s!", 'gravityforms' ), "<a href='" . add_query_arg( array( 'fid' => 0 ) ) . "'>", '</a>' );
+		$url = add_query_arg( array( 'fid' => 0 ) );
+		return sprintf( __( "You don't have any feeds configured. Let's go %screate one%s!", 'gravityforms' ), "<a href='" . esc_url( $url ) . "'>", '</a>' );
 	}
 
 	/**
@@ -1180,9 +1182,9 @@ class GFAddOnFeedsTable extends WP_List_Table {
 
 		$actions = apply_filters( $this->_slug . '_feed_actions', $this->_action_links, $item, $column );
 
-		//replacing {id} merge variable with actual feed id
+		//replacing _id_ merge variable with actual feed id
 		foreach ( $actions as $action => &$link ) {
-			$link = str_replace( '{id}', $item['id'], $link );
+			$link = str_replace( '_id_', $item['id'], $link );
 		}
 
 		return sprintf( '%1$s %2$s', $value, $this->row_actions( $actions ) );

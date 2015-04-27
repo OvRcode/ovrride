@@ -182,7 +182,7 @@ class GFSelectColumns {
 				<?php
 				foreach ( $columns as $field_id => $field_info ) {
 					?>
-					<li id="<?php echo $field_id ?>"><?php echo esc_html( $field_info['label'] ) ?></li>
+					<li id="<?php echo esc_attr( $field_id ) ?>"><?php echo esc_html( $field_info['label'] ) ?></li>
 				<?php
 				}
 				?>
@@ -199,7 +199,7 @@ class GFSelectColumns {
 					/* @var GF_Field $field */
 					if ( RGFormsModel::get_input_type( $field ) == 'checkbox' && ! in_array( $field->id, $field_ids ) ) {
 						?>
-						<li id="<?php echo $field->id ?>"><?php echo esc_html( GFCommon::get_label( $field ) ) ?></li>
+						<li id="<?php echo esc_attr( $field->id ); ?>"><?php echo esc_html( GFCommon::get_label( $field ) ) ?></li>
 					<?php
 					}
 
@@ -209,13 +209,13 @@ class GFSelectColumns {
 						foreach ( $inputs as $input ) {
 							if ( ! in_array( $input['id'], $field_ids ) && ! ( $field->type == 'creditcard' && in_array( $input['id'], array( floatval( "{$field->id}.2" ), floatval( "{$field->id}.3" ), floatval( "{$field->id}.5" ) ) ) ) ) {
 								?>
-								<li id="<?php echo $input['id'] ?>"><?php echo esc_html( GFCommon::get_label( $field, $input['id'] ) ) ?></li>
+								<li id="<?php echo esc_attr( $input['id'] ); ?>"><?php echo esc_html( GFCommon::get_label( $field, $input['id'] ) ); ?></li>
 							<?php
 							}
 						}
 					} else if ( ! $field->displayOnly && ! in_array( $field->id, $field_ids ) && RGFormsModel::get_input_type( $field ) != 'list' ) {
 						?>
-						<li id="<?php echo $field->id ?>"><?php echo esc_html( GFCommon::get_label( $field ) ) ?></li>
+						<li id="<?php echo $field->id ?>"><?php echo esc_html( GFCommon::get_label( $field ) ); ?></li>
 					<?php
 					}
 				}

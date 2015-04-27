@@ -182,12 +182,6 @@ class GF_Field_FileUpload extends GF_Field {
 
 			$plupload_init = apply_filters( "gform_plupload_settings_{$form_id}", apply_filters( 'gform_plupload_settings', $plupload_init, $form_id, $this ), $form_id, $this );
 
-			// Multi-file uploading doesn't currently work in iOS Safari,
-			// single-file allows the built-in camera to be used as source for images
-			if ( wp_is_mobile() ) {
-				$plupload_init['multi_selection'] = false;
-			}
-
 			$drop_files_here_text = __( 'Drop files here or', 'gravityforms' );
 			$select_files_text    = __( 'Select files', 'gravityforms' );
 

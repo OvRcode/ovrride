@@ -268,7 +268,7 @@ class GFSettings {
 
 							foreach ( RGCurrency::get_currencies() as $code => $currency ) {
 								?>
-								<option value="<?php echo $code ?>" <?php echo $current_currency == $code ? "selected='selected'" : '' ?>><?php echo $currency['name'] ?></option>
+								<option value="<?php echo esc_attr( $code ) ?>" <?php echo $current_currency == $code ? "selected='selected'" : '' ?>><?php echo esc_html( $currency['name'] ) ?></option>
 							<?php
 							}
 							?>
@@ -305,7 +305,7 @@ class GFSettings {
 						<label for="gforms_captcha_public_key"><?php _e( 'reCAPTCHA Public Key', 'gravityforms' ); ?></label>  <?php gform_tooltip( 'settings_recaptcha_public' ) ?>
 					</th>
 					<td>
-						<input type="text" name="gforms_captcha_public_key" style="width:350px;" value="<?php echo get_option( 'rg_gforms_captcha_public_key' ) ?>" /><br />
+						<input type="text" name="gforms_captcha_public_key" style="width:350px;" value="<?php echo esc_attr( get_option( 'rg_gforms_captcha_public_key' ) ); ?>" /><br />
 						<span class="gf_settings_description"><?php _e( 'Required only if you decide to use the reCAPTCHA field.', 'gravityforms' ); ?> <?php printf( __( '%sSign up%s for a free account to get the key.', 'gravityforms' ), '<a target="_blank" href="http://www.google.com/recaptcha">', '</a>' ); ?></span>
 					</td>
 				</tr>
@@ -374,7 +374,7 @@ class GFSettings {
 			<tr valign="top">
 				<th scope="row"><label><?php _e( 'MySQL Version', 'gravityforms' ); ?></label></th>
 				<td class="installation_item_cell">
-					<strong><?php echo $wpdb->db_version(); ?></strong>
+					<strong><?php echo esc_html( $wpdb->db_version() ); ?></strong>
 				</td>
 				<td>
 					<?php
@@ -394,7 +394,7 @@ class GFSettings {
 			<tr valign="top">
 				<th scope="row"><label><?php _e( 'WordPress Version', 'gravityforms' ); ?></label></th>
 				<td class="installation_item_cell">
-					<strong><?php echo get_bloginfo( 'version' ); ?></strong>
+					<strong><?php echo esc_html( get_bloginfo( 'version' ) ); ?></strong>
 				</td>
 				<td>
 					<?php
@@ -414,7 +414,7 @@ class GFSettings {
 			<tr valign="top">
 				<th scope="row"><label><?php _e( 'Gravity Forms Version', 'gravityforms' ); ?></label></th>
 				<td class="installation_item_cell">
-					<strong><?php echo GFCommon::$version ?></strong>
+					<strong><?php echo esc_html( GFCommon::$version ) ?></strong>
 				</td>
 				<td>
 					<?php
@@ -423,7 +423,7 @@ class GFSettings {
 						<i class="fa fa-check gf_valid"></i>
 					<?php
 					} else {
-						echo sprintf( __( 'New version %s available. Automatic upgrade available on the %splugins page%s', 'gravityforms' ), $version_info['version'], '<a href="plugins.php">', '</a>' );
+						echo sprintf( __( 'New version %s available. Automatic upgrade available on the %splugins page%s', 'gravityforms' ), esc_html( $version_info['version'] ), '<a href="plugins.php">', '</a>' );
 					}
 					?>
 				</td>

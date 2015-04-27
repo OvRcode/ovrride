@@ -683,6 +683,7 @@ class GFEntryDetail {
 							default :
 								$value   = RGFormsModel::get_lead_field_value( $lead, $field );
 								$td_id   = 'field_' . $form_id . '_' . $field_id;
+								$td_id = esc_attr( $td_id );
 								$content = "<tr valign='top'><td class='detail-view' id='{$td_id}'><label class='detail-label'>" . esc_html( GFCommon::get_label( $field ) ) . '</label>' .
 									GFCommon::get_field_input( $field, $value, $lead['id'], $form_id, $form ) . '</td></tr>';
 
@@ -924,10 +925,10 @@ class GFEntryDetail {
 									<col class="entry-products-col4" />
 								</colgroup>
 								<thead>
-								<th scope="col"><?php echo apply_filters( "gform_product_{$form_id}", apply_filters( 'gform_product', __( 'Product', 'gravityforms' ), $form_id ), $form_id ) ?></th>
-								<th scope="col" class="textcenter"><?php echo apply_filters( "gform_product_qty_{$form_id}", apply_filters( 'gform_product_qty', __( 'Qty', 'gravityforms' ), $form_id ), $form_id ) ?></th>
-								<th scope="col"><?php echo apply_filters( "gform_product_unitprice_{$form_id}", apply_filters( 'gform_product_unitprice', __( 'Unit Price', 'gravityforms' ), $form_id ), $form_id ) ?></th>
-								<th scope="col"><?php echo apply_filters( "gform_product_price_{$form_id}", apply_filters( 'gform_product_price', __( 'Price', 'gravityforms' ), $form_id ), $form_id ) ?></th>
+								<th scope="col"><?php echo apply_filters( "gform_product_{$form_id}", apply_filters( 'gform_product', __( 'Product', 'gravityforms' ), $form_id ), $form_id ); ?></th>
+								<th scope="col" class="textcenter"><?php echo esc_html( apply_filters( "gform_product_qty_{$form_id}", apply_filters( 'gform_product_qty', __( 'Qty', 'gravityforms' ), $form_id ), $form_id ) ); ?></th>
+								<th scope="col"><?php echo esc_html( apply_filters( "gform_product_unitprice_{$form_id}", apply_filters( 'gform_product_unitprice', __( 'Unit Price', 'gravityforms' ), $form_id ), $form_id ) ); ?></th>
+								<th scope="col"><?php echo esc_html( apply_filters( "gform_product_price_{$form_id}", apply_filters( 'gform_product_price', __( 'Price', 'gravityforms' ), $form_id ), $form_id ) ); ?></th>
 								</thead>
 								<tbody>
 								<?php
@@ -937,7 +938,7 @@ class GFEntryDetail {
 									?>
 									<tr>
 										<td>
-											<div class="product_name"><?php echo $product['name']; ?></div>
+											<div class="product_name"><?php echo esc_html( $product['name'] ); ?></div>
 											<ul class="product_options">
 												<?php
 												$price = GFCommon::to_number( $product['price'] );
@@ -958,7 +959,7 @@ class GFEntryDetail {
 												?>
 											</ul>
 										</td>
-										<td class="textcenter"><?php echo $product['quantity'] ?></td>
+										<td class="textcenter"><?php echo esc_html( $product['quantity'] ); ?></td>
 										<td><?php echo GFCommon::to_money( $price, $lead['currency'] ) ?></td>
 										<td><?php echo GFCommon::to_money( $subtotal, $lead['currency'] ) ?></td>
 									</tr>
@@ -973,7 +974,7 @@ class GFEntryDetail {
 									?>
 									<tr>
 										<td colspan="2" rowspan="2" class="emptycell">&nbsp;</td>
-										<td class="textright shipping"><?php echo $products['shipping']['name'] ?></td>
+										<td class="textright shipping"><?php echo esc_html( $products['shipping']['name'] ); ?></td>
 										<td class="shipping_amount"><?php echo GFCommon::to_money( $products['shipping']['price'], $lead['currency'] ) ?>&nbsp;</td>
 									</tr>
 								<?php
@@ -1005,12 +1006,13 @@ class GFEntryDetail {
 	}
 
 	public static function entry_detail_pagination_link( $pos, $label = '', $class = '', $icon = '' ) {
+		$url = add_query_arg( array( 'pos' => $pos ), remove_query_arg( array( 'pos', 'lid' ) ) );
 
-		$href = ! rgblank( $pos ) ? 'href="' . add_query_arg( array( 'pos' => $pos ), remove_query_arg( array( 'pos', 'lid' ) ) ) . '"' : '';
+		$href = ! rgblank( $pos ) ? 'href="' . esc_url( $url ) . '"' : '';
 		$class .= ' gf_entry_pagination_link';
 		$class .= $pos !== false ? ' gf_entry_pagination_link_active' : ' gf_entry_pagination_link_inactive';
 
-		return '<a ' . $href . ' class="' . $class . '" title="' . $label . '"><i class="fa-lg ' . $icon . '"></i></a></li>';
+		return '<a ' . $href . ' class="' . $class . '" title="' . esc_attr( $label ) . '"><i class="fa-lg ' . esc_attr( $icon ) . '"></i></a></li>';
 	}
 
 	public static function payment_details_box( $lead, $form )
@@ -1032,7 +1034,7 @@ class GFEntryDetail {
 							?>
 							<div id="gf_payment_status" class="gf_payment_detail">
 								<?php echo __( 'Status', 'gravityforms' ) ?>:
-								<span id="gform_payment_status"><?php echo $payment_status?></span>
+								<span id="gform_payment_status"><?php echo $payment_status; // May contain HTML ?></span>
 							</div>
 
 							<?php
@@ -1042,7 +1044,7 @@ class GFEntryDetail {
 								?>
 								<div id="gf_payment_date" class="gf_payment_detail">
 									<?php echo $lead['transaction_type'] == 2 ? __( 'Start Date', 'gravityforms' ) : __( 'Date', 'gravityforms' ) ?>:
-									<span id='gform_payment_date'><?php echo $payment_date?></span>
+									<span id='gform_payment_date'><?php echo $payment_date; // May contain HTML ?></span>
 								</div>
 							<?php
 							}
@@ -1052,7 +1054,7 @@ class GFEntryDetail {
 								?>
 								<div id="gf_payment_transaction_id" class="gf_payment_detail">
 									<?php echo $lead['transaction_type'] == 2 ? __( 'Subscription Id', 'gravityforms' ) : __( 'Transaction Id', 'gravityforms' ); ?>:
-									<span id='gform_payment_transaction_id'><?php echo $transaction_id?></span>
+									<span id='gform_payment_transaction_id'><?php echo $transaction_id; // May contain HTML ?></span>
 								</div>
 							<?php
 							}
@@ -1062,7 +1064,7 @@ class GFEntryDetail {
 								?>
 								<div id="gf_payment_amount" class="gf_payment_detail">
 									<?php echo $lead['transaction_type'] == 2 ? __( 'Recurring Amount', 'gravityforms' ) : __( 'Amount', 'gravityforms' ); ?>:
-									<span id='gform_payment_amount'><?php echo  $payment_amount?></span>
+									<span id='gform_payment_amount'><?php echo $payment_amount; // May contain HTML ?></span>
 								</div>
 							<?php
 							}

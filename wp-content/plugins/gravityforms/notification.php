@@ -106,7 +106,8 @@ Class GFNotification {
 		}
 
 		if ( $is_update && $is_valid ) {
-			GFCommon::add_message( sprintf( __( 'Notification saved successfully. %sBack to notifications.%s', 'gravityforms' ), '<a href="' . remove_query_arg( 'nid' ) . '">', '</a>' ) );
+			$url = remove_query_arg( 'nid' );
+			GFCommon::add_message( sprintf( __( 'Notification saved successfully. %sBack to notifications.%s', 'gravityforms' ), '<a href="' . esc_url( $url ) . '">', '</a>' ) );
 		} else if ( $is_update && ! $is_valid ) {
 			GFCommon::add_error_message( __( 'Notification could not be updated. Please enter all required information below.', 'gravityforms' ) );
 		}
@@ -400,7 +401,7 @@ Class GFNotification {
 			?>
 			<input type="hidden" id="gform_routing_meta" name="gform_routing_meta" />
 			<input type="hidden" id="gform_conditional_logic_meta" name="gform_conditional_logic_meta" />
-			<input type="hidden" id="gform_notification_id" name="gform_notification_id" value="<?php echo $notification_id ?>" />
+			<input type="hidden" id="gform_notification_id" name="gform_notification_id" value="<?php echo esc_attr( $notification_id ) ?>" />
 
 			<table class="form-table gform_nofification_edit">
 				<?php array_map( array( 'GFFormSettings', 'output' ), $notification_ui_settings ); ?>
@@ -433,7 +434,7 @@ Class GFNotification {
 		?>
 
 		<h3><span><i class="fa fa-envelope-o"></i> <?php _e( 'Notifications', 'gravityforms' ) ?>
-				<a id="add-new-confirmation" class="add-new-h2" href="<?php echo $add_new_url ?>"><?php _e( 'Add New', 'gravityforms' ) ?></a></span>
+				<a id="add-new-confirmation" class="add-new-h2" href="<?php echo esc_url( $add_new_url ) ?>"><?php _e( 'Add New', 'gravityforms' ) ?></a></span>
 		</h3>
 
 		<script type="text/javascript">
@@ -593,7 +594,7 @@ Class GFNotification {
 		$is_invalid_email_to = ! $is_valid && ! self::is_valid_notification_to();
 		$send_to_class       = $is_invalid_email_to ? 'gfield_error' : '';
 		?>
-		<tr valign="top" class='<?php echo $send_to_class ?>' <?php echo $notification_to_type == 'hidden' ? 'style="display:none;"': ''; ?>>
+		<tr valign="top" class='<?php echo esc_attr( $send_to_class ) ?>' <?php echo $notification_to_type == 'hidden' ? 'style="display:none;"': ''; ?>>
 			<th scope="row">
 				<label for="gform_notification_to_email">
 					<?php _e( 'Send To', 'gravityforms' ); ?><span class="gfield_required">*</span>
@@ -627,7 +628,7 @@ Class GFNotification {
 		}
 		?>
 
-		<tr id="gform_notification_to_email_container" class="notification_to_container <?php echo $send_to_class ?>" <?php echo $notification_to_type != 'email' ? "style='display:none';" : '' ?>>
+		<tr id="gform_notification_to_email_container" class="notification_to_container <?php echo esc_attr( $send_to_class ) ?>" <?php echo $notification_to_type != 'email' ? "style='display:none';" : '' ?>>
 			<?php echo $subsetting_open; ?>
 			<th scope="row"><?php _e( 'Send to Email', 'gravityforms' ) ?></th>
 			<td>
@@ -646,7 +647,7 @@ Class GFNotification {
 		ob_clean(); ?>
 
 		<?php $email_fields = apply_filters( "gform_email_fields_notification_admin_{$form['id']}", apply_filters( 'gform_email_fields_notification_admin', GFCommon::get_email_fields( $form ), $form ), $form ); ?>
-		<tr id="gform_notification_to_field_container" class="notification_to_container <?php echo $send_to_class ?>" <?php echo $notification_to_type != 'field' ? "style='display:none';" : '' ?>>
+		<tr id="gform_notification_to_field_container" class="notification_to_container <?php echo esc_attr( $send_to_class ) ?>" <?php echo $notification_to_type != 'field' ? "style='display:none';" : '' ?>>
 			<?php echo $subsetting_open; ?>
 			<th scope="row"><?php _e( 'Send to Field', 'gravityforms' ) ?></th>
 			<td>
@@ -659,7 +660,7 @@ Class GFNotification {
 						$to_field = rgget( 'toType', $notification ) == 'field' ? rgget( 'to', $notification ) : '';
 						foreach ( $email_fields as $field ) {
 							?>
-							<option value="<?php echo $field->id ?>" <?php echo selected( $field->id, $to_field ) ?>><?php echo GFCommon::get_label( $field ) ?></option>
+							<option value="<?php echo esc_attr( $field->id ) ?>" <?php echo selected( $field->id, $to_field ) ?>><?php echo GFCommon::get_label( $field ) ?></option>
 						<?php
 						}
 						?>
@@ -679,7 +680,7 @@ Class GFNotification {
 		<?php $ui_settings['notification_to_email_field'] = ob_get_contents();
 		ob_clean(); ?>
 
-		<tr id="gform_notification_to_routing_container" class="notification_to_container <?php echo $send_to_class ?>" <?php echo $notification_to_type != 'routing' ? "style='display:none';" : '' ?>>
+		<tr id="gform_notification_to_routing_container" class="notification_to_container <?php echo esc_attr( $send_to_class ) ?>" <?php echo $notification_to_type != 'routing' ? "style='display:none';" : '' ?>>
 			<?php echo $subsetting_open; ?>
 			<td colspan="2">
 				<div id="gform_notification_to_routing_rules">
@@ -707,7 +708,7 @@ Class GFNotification {
 							?>
 							<div style='width:99%' <?php echo $class ?>>
 								<?php _e( 'Send to', 'gravityforms' ) ?>
-								<input type="text" id="routing_email_<?php echo $i ?>" value="<?php echo rgar( $routing, 'email' ); ?>" onkeyup="SetRouting(<?php echo $i ?>);" />
+								<input type="text" id="routing_email_<?php echo $i ?>" value="<?php echo esc_attr( rgar( $routing, 'email' ) ); ?>" onkeyup="SetRouting(<?php echo $i ?>);" />
 								<?php _e( 'if', 'gravityforms' ) ?>
 								<select id="routing_field_id_<?php echo $i ?>" class='gfield_routing_select' onchange='jQuery("#routing_value_<?php echo $i ?>").replaceWith(GetRoutingValues(<?php echo $i ?>, jQuery(this).val())); SetRouting(<?php echo $i ?>); '><?php echo self::get_routing_fields( $form, rgar( $routing, 'fieldId' ) ) ?></select>
 								<select id="routing_operator_<?php echo $i ?>" onchange="SetRouting(<?php echo $i ?>)" class="gform_routing_operator">
@@ -1144,7 +1145,7 @@ class GFNotificationTable extends WP_List_Table {
 		$singular = rgar( $this->_args, 'singular' );
 		?>
 
-		<table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>" cellspacing="0">
+		<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>" cellspacing="0">
 			<thead>
 			<tr>
 				<?php $this->print_column_headers(); ?>
@@ -1173,7 +1174,7 @@ class GFNotificationTable extends WP_List_Table {
 		static $row_class = '';
 		$row_class = ( $row_class == '' ? ' class="alternate"' : '' );
 
-		echo '<tr id="notification-' . $item['id'] . '" ' . $row_class . '>';
+		echo '<tr id="notification-' . esc_attr( $item['id'] ) . '" ' . $row_class . '>';
 		echo $this->single_row_columns( $item );
 		echo '</tr>';
 	}
@@ -1188,7 +1189,7 @@ class GFNotificationTable extends WP_List_Table {
 		}
 		$is_active = isset( $item['isActive'] ) ? $item['isActive'] : true;
 		?>
-		<img src="<?php echo GFCommon::get_base_url() ?>/images/active<?php echo intval( $is_active ) ?>.png" style="cursor: pointer;margin:-5px 0 0 8px;" alt="<?php $is_active ? __( 'Active', 'gravityforms' ) : __( 'Inactive', 'gravityforms' ); ?>" title="<?php echo $is_active ? __( 'Active', 'gravityforms' ) : __( 'Inactive', 'gravityforms' ); ?>" onclick="ToggleActive(this, '<?php echo $item['id'] ?>'); " />
+		<img src="<?php echo GFCommon::get_base_url() ?>/images/active<?php echo intval( $is_active ) ?>.png" style="cursor: pointer;margin:-5px 0 0 8px;" alt="<?php $is_active ? __( 'Active', 'gravityforms' ) : __( 'Inactive', 'gravityforms' ); ?>" title="<?php echo $is_active ? __( 'Active', 'gravityforms' ) : __( 'Inactive', 'gravityforms' ); ?>" onclick="ToggleActive(this, '<?php echo esc_js( $item['id'] ) ?>'); " />
 	<?php
 	}
 
@@ -1196,9 +1197,9 @@ class GFNotificationTable extends WP_List_Table {
 		$edit_url = add_query_arg( array( 'nid' => $item['id'] ) );
 		$actions  = apply_filters(
 			'gform_notification_actions', array(
-				'edit'      => '<a title="' . __( 'Edit this item', 'gravityforms' ) . '" href="' . $edit_url . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
-				'duplicate' => '<a title="' . __( 'Duplicate this notification', 'gravityforms' ) . '" onclick="javascript: DuplicateNotification(\'' . $item['id'] . '\');" style="cursor:pointer;">' . __( 'Duplicate', 'gravityforms' ) . '</a>',
-				'delete'    => '<a title="' . __( 'Delete this notification', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this notification.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ DeleteNotification(\'' . $item['id'] . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
+				'edit'      => '<a title="' . __( 'Edit this item', 'gravityforms' ) . '" href="' . esc_url( $edit_url ) . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
+				'duplicate' => '<a title="' . __( 'Duplicate this notification', 'gravityforms' ) . '" onclick="javascript: DuplicateNotification(\'' . esc_js( $item['id'] ) . '\');" style="cursor:pointer;">' . __( 'Duplicate', 'gravityforms' ) . '</a>',
+				'delete'    => '<a title="' . __( 'Delete this notification', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this notification.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ DeleteNotification(\'' . esc_js( $item['id'] ) . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
 			)
 		);
 
@@ -1208,7 +1209,7 @@ class GFNotificationTable extends WP_List_Table {
 
 		?>
 
-		<a href="<?php echo $edit_url; ?>"><strong><?php echo rgar( $item, 'name' ); ?></strong></a>
+		<a href="<?php echo esc_url( $edit_url ); ?>"><strong><?php echo esc_html( rgar( $item, 'name' ) ); ?></strong></a>
 		<div class="row-actions">
 
 			<?php
@@ -1232,7 +1233,7 @@ class GFNotificationTable extends WP_List_Table {
 	}
 
 	function no_items() {
-
-		printf( __( "This form doesn't have any notifications. Let's go %screate one%s.", 'gravityforms' ), "<a href='" . add_query_arg( array( 'nid' => 0 ) ) . "'>", '</a>' );
+		$url = add_query_arg( array( 'nid' => 0 ) );
+		printf( __( "This form doesn't have any notifications. Let's go %screate one%s.", 'gravityforms' ), "<a href='" . esc_url( $url ) . "'>", '</a>' );
 	}
 }
