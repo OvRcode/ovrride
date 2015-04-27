@@ -9,11 +9,11 @@ if ( ! class_exists( 'GFForms' ) ) {
 	var gforms_original_json;
 
 	function DeleteCustomChoice() {
-		if (!confirm("<?php _e("Delete this custom choice list? 'OK' to delete, 'Cancel' to abort.", "gravityforms") ?>"))
+		if (!confirm("<?php _e( "Delete this custom choice list? 'OK' to delete, 'Cancel' to abort.", 'gravityforms' ) ?>"))
 			return;
 
 		//Sending AJAX request
-		jQuery.post( ajaxurl, {action: "gf_delete_custom_choice", name: gform_selected_custom_choice, gf_delete_custom_choice: "<?php echo wp_create_nonce("gf_delete_custom_choice") ?>"});
+		jQuery.post( ajaxurl, {action: "gf_delete_custom_choice", name: gform_selected_custom_choice, gf_delete_custom_choice: "<?php echo wp_create_nonce( 'gf_delete_custom_choice' ) ?>"});
 
 		//Updating UI
 		delete gform_custom_choices[gform_selected_custom_choice];
@@ -41,7 +41,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 		var choices = jQuery('#gfield_bulk_add_input').val().split('\n');
 
 		//Sending AJAX request
-		jQuery.post(ajaxurl, {action: "gf_save_custom_choice", previous_name: gform_selected_custom_choice, new_name: name, choices: jQuery.toJSON(choices), gf_save_custom_choice: "<?php echo wp_create_nonce("gf_save_custom_choice") ?>"});
+		jQuery.post(ajaxurl, {action: "gf_save_custom_choice", previous_name: gform_selected_custom_choice, new_name: name, choices: jQuery.toJSON(choices), gf_save_custom_choice: "<?php echo wp_create_nonce( 'gf_save_custom_choice' ) ?>"});
 
 		//deleting existing custom choice
 		if (gform_selected_custom_choice.length > 0)
@@ -505,7 +505,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 
 	function DeleteField(fieldId) {
 
-		if (form.id == 0 || confirm('<?php _e("Warning! Deleting this field will also delete all entry data associated with it. \'Cancel\' to stop. \'OK\' to delete", 'gravityforms'); ?>')) {
+		if (form.id == 0 || confirm('<?php _e( "Warning! Deleting this field will also delete all entry data associated with it. \'Cancel\' to stop. \'OK\' to delete", 'gravityforms' ); ?>')) {
 
 			jQuery('#gform_fields li#field_' + fieldId).addClass('gform_pending_delete');
 			var mysack = new sack("<?php echo admin_url( 'admin-ajax.php' )?>");
@@ -524,7 +524,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 		}
 	}
 
-	function SetDefaultValues(field) {
+	function SetDefaultValues( field, index ) {
 
 		var inputType = GetInputType(field);
 		switch (inputType) {
@@ -616,8 +616,8 @@ if ( ! class_exists( 'GFForms' ) ) {
 
 				if (!field.label)
 					field.label = "<?php _e( 'Address', 'gravityforms' ); ?>";
-				field.inputs = [new Input(field.id + 0.1, '<?php echo esc_js(apply_filters("gform_address_street_" . rgget("id"), apply_filters("gform_address_street",__( 'Street Address', 'gravityforms' ), rgget("id")), rgget("id"))); ?>'), new Input(field.id + 0.2, '<?php echo apply_filters("gform_address_street2_" . rgget("id"), apply_filters("gform_address_street2",__( 'Address Line 2', 'gravityforms' ), rgget("id")), rgget("id")); ?>'), new Input(field.id + 0.3, '<?php echo apply_filters("gform_address_city_" . rgget("id"), apply_filters("gform_address_city",__( 'City', 'gravityforms' ), rgget("id")), rgget("id")); ?>'),
-					new Input(field.id + 0.4, '<?php echo esc_js(apply_filters("gform_address_state_" . rgget("id"), apply_filters("gform_address_state",__( 'State / Province', 'gravityforms' ), rgget("id")), rgget("id"))); ?>'), new Input(field.id + 0.5, '<?php echo apply_filters("gform_address_zip_" . rgget("id"), apply_filters("gform_address_zip",__( 'ZIP / Postal Code', 'gravityforms' ), rgget("id")), rgget("id")); ?>'), new Input(field.id + 0.6, '<?php echo apply_filters("gform_address_country_" . rgget("id"), apply_filters("gform_address_country",__( 'Country', 'gravityforms' ), rgget("id")), rgget("id")); ?>')];
+				field.inputs = [new Input(field.id + 0.1, '<?php echo esc_js( apply_filters( 'gform_address_street_' . rgget( 'id' ), apply_filters( 'gform_address_street', __( 'Street Address', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>'), new Input(field.id + 0.2, '<?php echo esc_js( apply_filters( 'gform_address_street2_' . rgget( 'id' ), apply_filters( 'gform_address_street2', __( 'Address Line 2', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>'), new Input(field.id + 0.3, '<?php echo esc_js( apply_filters( 'gform_address_city_' . rgget( 'id' ), apply_filters( 'gform_address_city', __( 'City', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>'),
+					new Input(field.id + 0.4, '<?php echo esc_js( apply_filters( 'gform_address_state_' . rgget( 'id' ), apply_filters( 'gform_address_state',__( 'State / Province', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>'), new Input(field.id + 0.5, '<?php echo esc_js( apply_filters( 'gform_address_zip_' . rgget( 'id' ), apply_filters( 'gform_address_zip', __( 'ZIP / Postal Code', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>'), new Input(field.id + 0.6, '<?php echo esc_js( apply_filters( 'gform_address_country_' . rgget( 'id' ), apply_filters( 'gform_address_country', __( 'Country', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>')];
 				break;
 			case "creditcard" :
 
@@ -625,13 +625,13 @@ if ( ! class_exists( 'GFForms' ) ) {
 					field.label = "<?php _e( 'Credit Card', 'gravityforms' ); ?>";
 				var ccNumber, ccExpirationMonth, ccExpirationYear, ccSecruityCode, ccCardType, ccName;
 
-				ccNumber = new Input(field.id + ".1", '<?php echo esc_js(apply_filters("gform_card_number_" . rgget("id"), apply_filters("gform_card_number",__( 'Card Number', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
-				ccExpirationMonth = new Input(field.id + ".2_month", '<?php echo esc_js(apply_filters("gform_card_expiration_" . rgget("id"), apply_filters("gform_card_expiration",__( 'Expiration Month', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
+				ccNumber = new Input(field.id + ".1", '<?php echo esc_js( apply_filters( 'gform_card_number_' . rgget( 'id' ), apply_filters( 'gform_card_number', __( 'Card Number', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
+				ccExpirationMonth = new Input(field.id + ".2_month", '<?php echo esc_js( apply_filters( 'gform_card_expiration_' . rgget( 'id' ), apply_filters( 'gform_card_expiration', __( 'Expiration Month', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
 				ccExpirationMonth.defaultLabel = '<?php echo esc_js( __( 'Expiration Date', 'gravityforms' ) ); ?>';
-				ccExpirationYear = new Input(field.id + ".2_year", '<?php echo esc_js(apply_filters("gform_card_expiration_" . rgget("id"), apply_filters("gform_card_expiration",__( 'Expiration Year', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
-				ccSecruityCode = new Input(field.id + ".3", '<?php echo esc_js(apply_filters("gform_card_security_code_" . rgget("id"), apply_filters("gform_card_security_code",__( 'Security Code', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
-				ccCardType = new Input(field.id + ".4", '<?php echo esc_js(apply_filters("gform_card_type_" . rgget("id"), apply_filters("gform_card_type",__( 'Card Type', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
-				ccName = new Input(field.id + ".5", '<?php echo esc_js(apply_filters("gform_card_name_" . rgget("id"), apply_filters("gform_card_name",__( 'Cardholder Name', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
+				ccExpirationYear = new Input(field.id + ".2_year", '<?php echo esc_js( apply_filters( 'gform_card_expiration_' . rgget( 'id' ), apply_filters( 'gform_card_expiration', __( 'Expiration Year', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
+				ccSecruityCode = new Input(field.id + ".3", '<?php echo esc_js( apply_filters( 'gform_card_security_code_' . rgget( 'id' ), apply_filters( 'gform_card_security_code', __( 'Security Code', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
+				ccCardType = new Input(field.id + ".4", '<?php echo esc_js( apply_filters( 'gform_card_type_' . rgget( 'id' ), apply_filters( 'gform_card_type',__( 'Card Type', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
+				ccName = new Input(field.id + ".5", '<?php echo esc_js( apply_filters( 'gform_card_name_' . rgget( 'id' ), apply_filters( 'gform_card_name', __( 'Cardholder Name', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
 				field.inputs = [ccNumber, ccExpirationMonth, ccExpirationYear, ccSecruityCode, ccCardType, ccName];
 				break;
 			case "email" :
@@ -823,7 +823,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 
 				break;
 
-			<?php do_action('gform_editor_js_set_default_values'); ?>
+			<?php do_action( 'gform_editor_js_set_default_values' ); ?>
 
 			default :
 				field.inputs = null;
@@ -838,16 +838,16 @@ if ( ! class_exists( 'GFForms' ) ) {
 	}
 
 	function GetAdvancedNameFieldInputs(field, prefixHidden, middleHidden, suffixHidden) {
-		var prefixInput = new Input(field.id + '.2', '<?php echo esc_js(apply_filters("gform_name_prefix_" . rgget("id"), apply_filters("gform_name_prefix", __( 'Prefix', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
+		var prefixInput = new Input(field.id + '.2', '<?php echo esc_js( apply_filters( 'gform_name_prefix_' . rgget( 'id' ), apply_filters( 'gform_name_prefix', __( 'Prefix', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
 		prefixInput.choices = GetDefaultPrefixChoices();
 		prefixInput.isHidden = prefixHidden;
 
-		var firstInput = new Input(field.id + '.3', '<?php echo apply_filters("gform_name_first_" . rgget("id"),apply_filters("gform_name_first",__( 'First', 'gravityforms' ), rgget("id")), rgget("id")); ?>');
-		var middleInput = new Input(field.id + '.4', '<?php echo apply_filters("gform_name_middle_" . rgget("id"),apply_filters("gform_name_middle",__( 'Middle', 'gravityforms' ), rgget("id")), rgget("id")); ?>');
+		var firstInput = new Input(field.id + '.3', '<?php echo apply_filters( 'gform_name_first_' . rgget( 'id' ), apply_filters( 'gform_name_first', __( 'First', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ); ?>');
+		var middleInput = new Input(field.id + '.4', '<?php echo apply_filters( 'gform_name_middle_' . rgget( 'id' ), apply_filters( 'gform_name_middle', __( 'Middle', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ); ?>');
 		middleInput.isHidden = middleHidden;
 
-		var lastInput = new Input(field.id + '.6', '<?php echo apply_filters("gform_name_last_" . rgget("id"), apply_filters("gform_name_last",__( 'Last', 'gravityforms' ), rgget("id")), rgget("id")); ?>');
-		var suffixInput = new Input(field.id + '.8', '<?php echo apply_filters("gform_name_suffix_" . rgget("id"), apply_filters("gform_name_suffix",__( 'Suffix', 'gravityforms' ), rgget("id")), rgget("id")); ?>');
+		var lastInput = new Input(field.id + '.6', '<?php echo apply_filters( 'gform_name_last_' . rgget( 'id' ), apply_filters( 'gform_name_last',__( 'Last', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ); ?>');
+		var suffixInput = new Input(field.id + '.8', '<?php echo apply_filters( 'gform_name_suffix_' . rgget( 'id' ), apply_filters( 'gform_name_suffix',__( 'Suffix', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ); ?>');
 		suffixInput.isHidden = suffixHidden;
 		prefixInput.inputType = 'radio';
 
@@ -922,12 +922,12 @@ if ( ! class_exists( 'GFForms' ) ) {
 		var legacyExpirationInput = GetInput(field, field.id + ".2");
 
 		if (legacyExpirationInput) {
-			var monthInput = new Input(field.id + ".2_month", '<?php echo esc_js(apply_filters("gform_card_expiration_" . rgget("id"), apply_filters("gform_card_expiration",__( 'Expiration Month', 'gravityforms' ), rgget("id")), rgget("id"))); ?>');
+			var monthInput = new Input(field.id + ".2_month", '<?php echo esc_js( apply_filters( 'gform_card_expiration_' . rgget( 'id' ), apply_filters( 'gform_card_expiration', __( 'Expiration Month', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>');
 			monthInput.defaultLabel = '<?php echo esc_js( __( 'Expiration Date', 'gravityforms' ) ); ?>';
 			var yearInput = new Input(field.id + ".2_year", '<?php echo esc_js( __( 'Expiration Year', 'gravityforms' ) ); ?>');
 			field.inputs.splice(1, 1, monthInput, yearInput);
 			var nameInput = GetInput(field, field.id + ".5");
-			nameInput.label = '<?php echo esc_js(apply_filters("gform_card_name_" . rgget("id"), apply_filters("gform_card_name",__( 'Cardholder Name', 'gravityforms' ), rgget("id")), rgget("id"))); ?>';
+			nameInput.label = '<?php echo esc_js( apply_filters( 'gform_card_name_' . rgget( 'id' ), apply_filters( 'gform_card_name',__( 'Cardholder Name', 'gravityforms' ), rgget( 'id' ) ), rgget( 'id' ) ) ); ?>';
 		}
 
 		return field;
@@ -937,15 +937,15 @@ if ( ! class_exists( 'GFForms' ) ) {
 		return new Array(new Choice("<?php echo esc_js( __( 'Mr.', 'gravityforms' ) ); ?>"), new Choice("<?php echo esc_js( __( 'Mrs.', 'gravityforms' ) ); ?>"), new Choice("<?php echo esc_js( __( 'Miss', 'gravityforms' ) ); ?>"), new Choice("<?php echo esc_js( __( 'Ms.', 'gravityforms' ) ); ?>"), new Choice("<?php echo esc_js( __( 'Dr.', 'gravityforms' ) ); ?>"), new Choice("<?php echo esc_js( __( 'Prof.', 'gravityforms' ) ); ?>"), new Choice("<?php echo esc_js( __( 'Rev.', 'gravityforms' ) ); ?>"));
 	}
 
-	function CreateField(id, type) {
+	function CreateField( id, type, index ) {
 		var field = new Field(id, type);
-		SetDefaultValues(field);
+		SetDefaultValues( field, index );
 
 		if (field.type == "captcha") {
 			<?php
-			$publickey = get_option("rg_gforms_captcha_public_key");
-			$privatekey = get_option("rg_gforms_captcha_private_key");
-			if(class_exists("ReallySimpleCaptcha") && (empty($publickey) || empty($privatekey))){
+			$publickey = get_option( 'rg_gforms_captcha_public_key' );
+			$privatekey = get_option( 'rg_gforms_captcha_private_key' );
+			if ( class_exists( 'ReallySimpleCaptcha' ) && ( empty( $publickey ) || empty( $privatekey ) ) ){
 				?>
 			field.captchaType = "simple_captcha";
 			<?php
@@ -1022,17 +1022,17 @@ if ( ! class_exists( 'GFForms' ) ) {
 		gf_vars["currentlyAddingField"] = true;
 
 		var nextId = GetNextFieldId();
-		var field = CreateField(nextId, type);
+		var field = CreateField( nextId, type, index );
 
-		var mysack = new sack("<?php echo admin_url("admin-ajax.php")?>?id=" + form.id);
+		var mysack = new sack("<?php echo admin_url( 'admin-ajax.php' )?>?id=" + form.id);
 		mysack.execute = 1;
 		mysack.method = 'POST';
 		mysack.setVar("action", "rg_add_field");
-		mysack.setVar("rg_add_field", "<?php echo wp_create_nonce("rg_add_field") ?>");
+		mysack.setVar("rg_add_field", "<?php echo wp_create_nonce( 'rg_add_field' ) ?>");
 		mysack.setVar("index", index);
 		mysack.setVar("field", jQuery.toJSON(field));
 		mysack.onError = function () {
-			alert('<?php echo esc_js(__( 'Ajax error while adding field', 'gravityforms' )) ?>')
+			alert('<?php echo esc_js( __( 'Ajax error while adding field', 'gravityforms' ) ) ?>')
 		};
 		mysack.runAJAX();
 
@@ -1043,7 +1043,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 
 		jQuery.post(ajaxurl + "?id=" + form.id, {
 				action            : "rg_duplicate_field",
-				rg_duplicate_field: "<?php echo wp_create_nonce("rg_duplicate_field") ?>",
+				rg_duplicate_field: "<?php echo wp_create_nonce( 'rg_duplicate_field' ) ?>",
 				field             : jQuery.toJSON(field),
 				source_field_id   : sourceFieldId},
 			function (data) {
@@ -1059,7 +1059,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 		if (!field)
 			field = GetSelectedField();
 		var fieldId = field.id,
-			data = {'action': 'rg_refresh_field_preview', 'rg_refresh_field_preview': '<?php echo wp_create_nonce("rg_refresh_field_preview") ?>', 'field': jQuery.toJSON(field), 'formId': form.id};
+			data = {'action': 'rg_refresh_field_preview', 'rg_refresh_field_preview': '<?php echo wp_create_nonce( 'rg_refresh_field_preview' ) ?>', 'field': jQuery.toJSON(field), 'formId': form.id};
 
 		jQuery.post(ajaxurl, data,
 			function (data) {
@@ -1095,14 +1095,14 @@ if ( ! class_exists( 'GFForms' ) ) {
 		field["inputType"] = type;
 		SetDefaultValues(field);
 
-		var mysack = new sack("<?php echo admin_url("admin-ajax.php")?>?id=" + form.id);
+		var mysack = new sack("<?php echo admin_url( 'admin-ajax.php' )?>?id=" + form.id);
 		mysack.execute = 1;
 		mysack.method = 'POST';
 		mysack.setVar("action", "rg_change_input_type");
-		mysack.setVar("rg_change_input_type", "<?php echo wp_create_nonce("rg_change_input_type") ?>");
+		mysack.setVar("rg_change_input_type", "<?php echo wp_create_nonce( 'rg_change_input_type' ) ?>");
 		mysack.setVar("field", jQuery.toJSON(field));
 		mysack.onError = function () {
-			alert('<?php echo esc_js(__( 'Ajax error while changing input type', 'gravityforms' )) ?>')
+			alert('<?php echo esc_js( __( 'Ajax error while changing input type', 'gravityforms' ) ) ?>')
 		};
 		mysack.runAJAX();
 
@@ -1192,7 +1192,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 		var fg = field.simpleCaptchaFontColor == undefined ? "" : field.simpleCaptchaFontColor;
 		var bg = field.simpleCaptchaBackgroundColor == undefined ? "" : field.simpleCaptchaBackgroundColor;
 
-		var url = "<?php echo admin_url("admin-ajax.php?action=rg_captcha_image")?>" + "&type=" + field.captchaType + "&pos=" + pos + "&size=" + size + "&fg=" + fg.replace("#", "%23") + "&bg=" + bg.replace("#", "%23");
+		var url = "<?php echo admin_url( 'admin-ajax.php?action=rg_captcha_image' )?>" + "&type=" + field.captchaType + "&pos=" + pos + "&size=" + size + "&fg=" + fg.replace("#", "%23") + "&bg=" + bg.replace("#", "%23");
 		return url;
 	}
 
@@ -1218,4 +1218,4 @@ if ( ! class_exists( 'GFForms' ) ) {
 
 <?php wp_print_scripts( array( 'gform_form_editor' ) ); ?>
 
-<?php do_action( "gform_editor_js" ); ?>
+<?php do_action( 'gform_editor_js' ); ?>

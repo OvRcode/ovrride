@@ -1,14 +1,17 @@
 <?php
 /*
   Plugin Name: WooCommerce - Gravity Forms Product Add-Ons
-  Plugin URI: http://woothemes.com/woocommerce
+  Plugin URI: http://woothemes.com/products/gravity-forms-add-ons/
   Description: Allows you to use Gravity Forms on individual WooCommerce products. Requires the Gravity Forms plugin to work.
-  Version: 2.9.1
-  Author: Lucas Stark
-  Author URI: http://lucasstark.com
+  Version: 2.9.3
+  Author: WooThemes
+  Author URI: http://woothemes.com/
+  Developer: Lucas Stark
+  Developer URI: http://lucasstark.com/
   Requires at least: 3.1
   Tested up to: 3.3
 
+  Copyright: © 2011-2014 WooThemes.
   Copyright: © 2009-2011 Lucas Stark.
   License: GNU General Public License v3.0
   License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -624,7 +627,7 @@ if ( is_woocommerce_active() ) {
 						add_filter( 'add_to_cart_redirect', array($this, 'get_redirect_url'), 99 );
 					}
 					if ( get_option( 'woocommerce_cart_redirect_after_add' ) == 'yes' ) {
-						$_SERVER['REQUEST_URI'] = add_query_arg( array('invalid' => 1) );
+						$_SERVER['REQUEST_URI'] = esc_url_raw( add_query_arg( array( 'invalid' => 1 ) ) );
 					}
 				}
 

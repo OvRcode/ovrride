@@ -1261,7 +1261,6 @@ class GFFormDisplay {
 		}
 
 		$is_valid = true;
-		$all_fields_empty = true;
 		foreach ( $form['fields'] as &$field ) {
 			/* @var GF_Field $field */
 
@@ -1283,10 +1282,6 @@ class GFFormDisplay {
 			$value = RGFormsModel::get_field_value( $field );
 
 			$input_type = RGFormsModel::get_input_type( $field );
-
-			if ( ! self::is_empty( $field, $form['id'] ) ){
-				$all_fields_empty = false;
-			}
 
 			//display error message if field is marked as required and the submitted value is empty
 			if ( $field->isRequired && self::is_empty( $field, $form['id'] ) ) {
@@ -1332,9 +1327,9 @@ class GFFormDisplay {
 			}
 		}
 
-		foreach ( $form['fields'] as &$field ) {
-			//if all fields are empty, fail validation on all fields
-			if ( $all_fields_empty ){
+		$is_last_page = self::get_target_page( $form, $page_number, $field_values ) == '0';
+		if ( $is_valid && $is_last_page && self::is_form_empty( $form ) ) {
+			foreach ( $form['fields'] as &$field ) {
 				$field->failed_validation = true;
 				$field->validation_message = esc_html__( 'At least one field must be filled out', 'gravityforms' );
 				$is_valid = false;
@@ -1347,6 +1342,16 @@ class GFFormDisplay {
 		$failed_validation_page = $validation_result['failed_validation_page'];
 
 		return $is_valid;
+	}
+
+	public static function is_form_empty( $form ) {
+
+		foreach ( $form['fields'] as $field ) {
+			if ( ! self::is_empty( $field, $form['id'] ) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static function failed_state_validation( $form_id, $field, $value ) {
@@ -1682,7 +1687,13 @@ class GFFormDisplay {
 
 			//get parameter value if pre-populate is enabled
 			if ( $field->allowsPrepopulate ) {
-				if ( is_array( $inputs ) ) {
+				if ( $input_type == 'checkbox' ){
+					$field_val = RGFormsModel::get_parameter_value( $field->inputName, $field_values, $field );
+					if ( ! is_array( $field_val ) ){
+						$field_val = explode( ',', $field_val );
+					}
+				}
+				else if ( is_array( $inputs ) ) {
 					$field_val = array();
 					foreach ( $inputs as $input ) {
 						$field_val[ "input_{$input['id']}" ] = RGFormsModel::get_parameter_value( rgar( $input, 'name' ), $field_values, $field );
@@ -1718,11 +1729,14 @@ class GFFormDisplay {
 						$choice_index++;
 					}
 
-					if ( rgar( $choice, 'isSelected' ) && $input_type == 'select' ) {
+					$is_prepopulated = is_array( $field_val ) ? in_array( $choice['value'], $field_val ) : $choice['value'] == $field_val;
+					$is_choice_selected = rgar( $choice, 'isSelected' ) ||  $is_prepopulated;
+
+					if ( $is_choice_selected && $input_type == 'select' ) {
 						$price = GFCommon::to_number( rgar( $choice, 'price' ) ) == false ? 0 : GFCommon::to_number( rgar( $choice, 'price' ) );
 						$val = $is_pricing_field && $field->type != 'quantity' ? $choice['value'] . '|' . $price: $choice['value'];
 						$default_values[ $field->id ] = $val;
-					} else if ( rgar( $choice, 'isSelected' ) ) {
+					} else if ( $is_choice_selected ) {
 						if ( ! isset( $default_values[ $field->id ] ) ) {
 							$default_values[ $field->id ] = array();
 						}
@@ -1735,11 +1749,11 @@ class GFFormDisplay {
 
 				$input_type = GFFormsModel::get_input_type( $field );
 
-				switch( $input_type ) {
+				switch ( $input_type ) {
 					case 'date':
 						// for date fields; that are multi-input; and where the field value is a string
 						// (happens with prepop, default value will always be an array for multi-input date fields)
-						if( is_array( $field->inputs ) && ( ! is_array( $field_val ) || ! isset( $field_val['m'] ) ) ) {
+						if ( is_array( $field->inputs ) && ( ! is_array( $field_val ) || ! isset( $field_val['m'] ) ) ) {
 
 							$format    = empty( $field->dateFormat ) ? 'mdy' : esc_attr( $field->dateFormat );
 							$date_info = GFcommon::parse_date( $field_val, $format );
@@ -1756,12 +1770,12 @@ class GFFormDisplay {
 					case 'address':
 
 						$state_input_id = sprintf( '%s.4', $field->id );
-						if( isset( $field_val[ $state_input_id ] ) && ! $field_val[ $state_input_id ] ) {
+						if ( isset( $field_val[ $state_input_id ] ) && ! $field_val[ $state_input_id ] ) {
 							$field_val[ $state_input_id ] = $field->defaultState;
 						}
 
 						$country_input_id = sprintf( '%s.6', $field->id );
-						if( isset( $field_val[ $country_input_id ] ) && ! $field_val[ $country_input_id ] ) {
+						if ( isset( $field_val[ $country_input_id ] ) && ! $field_val[ $country_input_id ] ) {
 							$field_val[ $country_input_id ] = $field->defaultCountry;
 						}
 
@@ -1771,7 +1785,6 @@ class GFFormDisplay {
 				$default_values[ $field->id ] = $field_val;
 
 			}
-
 		}
 
 		$button_conditional_script = '';
@@ -1783,11 +1796,11 @@ class GFFormDisplay {
 			$fields_with_logic[] = 0;
 
 			$button_conditional_script = "jQuery('#gform_{$form['id']}').submit(" .
-				"function(event, isButtonPress){" .
-				"    var visibleButton = jQuery('.gform_next_button:visible, .gform_button:visible, .gform_image_button:visible');" .
-				"    return visibleButton.length > 0 || isButtonPress == true;" .
-				"}" .
-				");";
+				'function(event, isButtonPress){' .
+				'    var visibleButton = jQuery(".gform_next_button:visible, .gform_button:visible, .gform_image_button:visible");' .
+				'    return visibleButton.length > 0 || isButtonPress == true;' .
+				'}' .
+				');';
 		}
 
 		if ( ! empty( $logics ) ) {
@@ -1810,15 +1823,15 @@ class GFFormDisplay {
 			"if(!window['gf_number_format'])" .
 			"window['gf_number_format'] = '" . $number_format . "';" .
 
-			"jQuery(document).ready(function(){" .
+			'jQuery(document).ready(function(){' .
 			"gf_apply_rules({$form['id']}, " . json_encode( $fields_with_logic ) . ', true);' .
 			"jQuery('#gform_wrapper_{$form['id']}').show();" .
 			"jQuery(document).trigger('gform_post_conditional_logic', [{$form['id']}, null, true]);" .
 			$button_conditional_script .
 
-			"} );" .
+			'} );' .
 
-			"} ";
+			'} ';
 
 		return $str;
 	}

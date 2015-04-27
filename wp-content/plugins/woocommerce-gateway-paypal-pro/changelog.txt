@@ -1,5 +1,8 @@
 *** PayPal Pro Changelog ***
 
+2015.04.17 - version 4.3.2
+* Added ability to remove the SSL nag notice
+
 2015.03.23 - version 4.3.1
 * Force api_request_url secure.
 * Updater fix.
