@@ -302,8 +302,8 @@ class GFCommon {
 		return true;
 	}
 
-	public static function get_label( $field, $input_id = 0, $input_only = false ) {
-		return RGFormsModel::get_label( $field, $input_id, $input_only );
+	public static function get_label( $field, $input_id = 0, $input_only = false, $allow_admin_label = true ) {
+		return RGFormsModel::get_label( $field, $input_id, $input_only, $allow_admin_label );
 	}
 
 	public static function get_input( $field, $id ) {
@@ -786,7 +786,10 @@ class GFCommon {
 	}
 
 	public static function replace_variables( $text, $form, $lead, $url_encode = false, $esc_html = true, $nl2br = true, $format = 'html' ) {
+
 		$text = $nl2br ? nl2br( $text ) : $text;
+
+		$text = apply_filters( 'gform_pre_replace_merge_tags', $text, $form, $lead, $url_encode, $esc_html, $nl2br, $format );
 
 		//Replacing field variables: {FIELD_LABEL:FIELD_ID} {My Field:2}
 		preg_match_all( '/{[^{]*?:(\d+(\.\d+)?)(:(.*?))?}/mi', $text, $matches, PREG_SET_ORDER );
@@ -863,21 +866,32 @@ class GFCommon {
 		}
 
 		//pricing fields
-		if ( strpos( $text, '{pricing_fields}' ) !== false ) {
-			$pricing_fields = self::get_submitted_pricing_fields( $form, $lead, $format );
-			if ( $format == 'html' ) {
-				$text = str_replace(
-					'{pricing_fields}', '<table width="99%" border="0" cellpadding="1" cellspacing="0" bgcolor="#EAEAEA">
-                                                           <tr><td>
-                                                                <table width="100%" border="0" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">' .
-					                    $pricing_fields .
-					                    '</table>
-                                                           </tr></td>
-                                                     </table>',
-					$text
-				);
-			} else {
-				$text = str_replace( '{pricing_fields}', $pricing_fields, $text );
+		$pricing_matches = array();
+		preg_match_all( "/{pricing_fields(:(.*?))?}/", $text, $pricing_matches, PREG_SET_ORDER );
+		foreach ( $pricing_matches as $match ) {
+			$options 		 = explode( ',', rgar( $match, 2 ) );
+			$use_value       = in_array( 'value', $options );
+			$use_admin_label = in_array( 'admin', $options );
+
+			//all submitted pricing fields using text
+			if ( strpos( $text, $match[0] ) !== false ) {
+				$pricing_fields = self::get_submitted_pricing_fields( $form, $lead, $format, ! $use_value, $use_admin_label );
+
+				if ( $format == 'html' ) {
+					$text = str_replace(
+						$match[0], '<table width="99%" border="0" cellpadding="1" cellspacing="0" bgcolor="#EAEAEA">
+															   <tr><td>
+																	<table width="100%" border="0" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">' .
+											$pricing_fields .
+											'</table>
+															   </tr></td>
+														 </table>',
+						$text
+					);
+				}
+				else {
+					$text = str_replace( $match[0], $pricing_fields, $text );
+				}
 			}
 		}
 
@@ -1091,7 +1105,7 @@ class GFCommon {
 		foreach ( $form['fields'] as $field ) {
 			$field_value = '';
 
-			$field_label = $use_admin_label && ! empty( $field->adminLabel ) ? $field->adminLabel : esc_html( GFCommon::get_label( $field ) );
+			$field_label = $use_admin_label && ! empty( $field->adminLabel ) ? $field->adminLabel : esc_html( GFCommon::get_label( $field, 0, false, $use_admin_label ) );
 
 			switch ( $field->type ) {
 				case 'captcha' :
@@ -4030,6 +4044,7 @@ class GFCommon {
 		$message_format = 'html';
 
 		$resume_url  = add_query_arg( array( 'gf_token' => $resume_token ), $embed_url );
+		$resume_url = esc_url( $resume_url );
 		$resume_link = "<a href='{$resume_url}'>{$resume_url}</a>";
 		$message .= $resume_link;
 

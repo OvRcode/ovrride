@@ -3,8 +3,8 @@ Contributors: woothemes, mikejolley, jameskoster, claudiosanches, barrykooij
 Tags: ecommerce, e-commerce, commerce, woothemes, wordpress ecommerce, affiliate, store, sales, sell, shop, shopping, cart, checkout, configurable, variable, widgets, reports, download, downloadable, digital, inventory, stock, reports, shipping, tax
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal@woothemes.com&item_name=Donation+for+WooCommerce
 Requires at least: 4.0
-Tested up to: 4.1
-Stable tag: 2.3.7
+Tested up to: 4.2
+Stable tag: 2.3.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -138,6 +138,32 @@ Yes you can! Join in on our [GitHub repository](http://github.com/woothemes/wooc
 
 == Changelog ==
 
+= 2.3.8 - 20/04/2015 =
+* Fix - Ensure coupon taxes are reset when calculating totals.
+* Fix - Downloads url sanitization to work correctly with shortcodes and urls.
+* Fix - State/Contry select2 issues with Internet Explorer.
+* Fix - Flat rate per item and per class if no additional costs added.
+* Fix - Simplify Commerce compatibility with free trial subscriptions.
+* Fix - Select2 z-index in the admin.
+* Fix - Postmeta records deletation on plugin uninstall.
+* Fix - List only approved comments in products reviews on API.
+* Fix - Improved variation SKU display.
+* Fix - Prices including tax within orders.
+* Fix - Ensure line taxes are stored when calculating tax theough the API.
+* Fix - Add null date check for download permissions.
+* Fix - PayPal Logging.
+* Fix - Coupon product id and category id checks should run for all coupon types.
+* Tweak - Hook in cart totals via action.
+* Tweak - Prevent errors when adding or deleting products for the coupon.
+* Tweak - Prevent errors when check customer capability to view orders.
+* Tweak - Ensure Price Filter links has a trailing slash to avoid pagination issues.
+* Tweak - Improved the check for mismatched totals in items lines for PayPal payment gateway.
+* Tweak - Use wc_stock_amount to format API orders stock amount.
+* Tweak - Ensure show_in_admin_all_list is respected for order statuses.
+* Tweak - Remove rounding from shipping costs for greater shipping tax precision.
+* Tweak - Only automatically cancel orders created via checkout + allow post_parent to be set.
+* Tweak - Deny all access to revisions through API.
+
 = 2.3.7 - 18/03/2015 =
 * Fix - Allow saving of empty download expiry date on orders.
 * Fix - get_total_discount() function with certain tax setups.
@@ -156,7 +182,7 @@ Yes you can! Join in on our [GitHub repository](http://github.com/woothemes/wooc
 * Fix - Settings API - allow multiselect fields to be emptied.
 * Fix - Saving an order needs to save the discount amount ex. tax like the cart.
 * Fix - Order again with custom attributes.
-* Fix - Prevent potential XSS within tooltips (discovered by FortiGuard Labs).
+* Fix - [CVE-2015-2329] Prevent potential XSS within tooltips (discovered by Fortinet FortiGuard Labs).
 * Fix - Paypal debug option.
 * Fix - Removed $q->query['wc_query'] = 'product_query' which broke redirects (#7703). Use $q->get('wc_query') instead.
 * Fix - Sanitize tax_rate_id when saving taxes in the backend to prevent potential SQL injection (discovered by WordFence).

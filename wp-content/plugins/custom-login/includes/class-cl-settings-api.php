@@ -11,7 +11,7 @@ class CL_Settings_API {
 	/**
 	 * Version
 	 */
-	var $api_version = '2.0.3';
+	var $api_version = '2.0.4';
 	
 	/**
 	 * @var array
@@ -205,11 +205,11 @@ class CL_Settings_API {
 					'options' 		=> isset( $option['options'] ) ? $option['options'] : '',
 					'default'		=> isset( $option['default'] ) ? $option['default'] : '',
 					'sanitize'		=> isset( $option['sanitize'] ) ? $option['sanitize'] : '',
-					'class'			=> isset( $option['class'] ) ? $option['class'] : $this,
+					'callback'		=> isset( $option['class'] ) ? $option['class'] : $this,
 				);
 				$args = wp_parse_args( $args, $option );
 				
-				add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $args['class'], 'callback_' . $type ), $section, $section, $args );
+				add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], array( $args['callback'], 'callback_' . $type ), $section, $section, $args );
 			}
 		}
 

@@ -277,7 +277,7 @@ function wc_customer_has_capability( $allcaps, $caps, $args ) {
 				$user_id = $args[1];
 				$order   = wc_get_order( $args[2] );
 
-				if ( $user_id == $order->user_id ) {
+				if ( $order && $user_id == $order->user_id ) {
 					$allcaps['view_order'] = true;
 				}
 			break;
@@ -401,6 +401,8 @@ function wc_get_customer_available_downloads( $customer_id ) {
 				permissions.access_expires IS NULL
 				OR
 				permissions.access_expires >= %s
+				OR
+				permissions.access_expires = '0000-00-00 00:00:00'
 			)
 		ORDER BY permissions.order_id, permissions.product_id, permissions.permission_id;
 		", $customer_id, date( 'Y-m-d', current_time( 'timestamp' ) ) ) );

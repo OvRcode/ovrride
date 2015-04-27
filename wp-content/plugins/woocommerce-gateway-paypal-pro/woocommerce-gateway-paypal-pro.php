@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
 Plugin URI: http://www.woothemes.com/products/paypal-pro/
 Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
-Version: 4.3.1
+Version: 4.3.2
 Author: WooThemes
 Author URI: http://woothemes.com/
 
@@ -58,6 +58,8 @@ class WC_PayPal_Pro {
 			add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
 			add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
 
+			add_action( 'admin_init', array( $this, 'update_ssl_nag' ) );
+
 		} else {
 
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
@@ -94,6 +96,26 @@ class WC_PayPal_Pro {
 	}
 
 	/**
+	 * Update SSL nag
+	 *
+	 * @since 4.3.2
+	 * @return bool
+	 */
+	public function update_ssl_nag() {
+		global $current_user;
+
+		get_currentuserinfo();
+
+		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( $_GET['_wpnonce'], 'wc_paypal_pro_ssl_nag_hide' ) ) {
+			return;
+		}
+
+		if ( isset( $_GET['wc_paypal_pro_ssl_nag'] ) && '1' === $_GET['wc_paypal_pro_ssl_nag'] ) {
+			add_user_meta( $current_user->ID, '_wc_paypal_pro_ssl_nag_hide', '1', true );
+		}
+	}
+
+	/**
 	 * Register the gateway for use
 	 */
 	public function register_gateway( $methods ) {
@@ -107,6 +129,10 @@ class WC_PayPal_Pro {
 	 * Show a notice if SSL is disabled
 	 */
 	public function ssl_check() {
+		global $current_user;
+
+		get_currentuserinfo();
+
 		$settings = get_option( 'woocommerce_paypal_pro_settings', array() );
 
 	 	// Show message if enabled and FORCE SSL is disabled and WordpressHTTPS plugin is not detected
@@ -115,8 +141,9 @@ class WC_PayPal_Pro {
 			&& isset( $settings['enabled'] )
 			&& $settings['enabled'] === 'yes'
 			&& $settings['testmode'] !== 'yes'
+			&& ! get_user_meta( $current_user->ID, '_wc_paypal_pro_ssl_nag_hide' )
 		) {
-			echo '<div class="error"><p>' . sprintf( __( 'PayPal Pro requires that the <a href="%s">Force secure checkout</a> option is enabled; your checkout may not be secure! Please enable SSL and ensure your server has a valid SSL certificate - PayPal Pro will only work in test mode.', 'woocommerce-gateway-paypal-pro'), admin_url('admin.php?page=woocommerce' ) ) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf( __( 'PayPal Pro requires that the <a href="%s">Force secure checkout</a> option is enabled; your checkout may not be secure! Please enable SSL and ensure your server has a valid SSL certificate - PayPal Pro will only work in test mode.', 'woocommerce-gateway-paypal-pro') . ' <a href="%s">' . __( 'Hide Notice', 'woocommerce' ) . '</a>', admin_url('admin.php?page=woocommerce' ), wp_nonce_url( add_query_arg( 'wc_paypal_pro_ssl_nag', '1' ), 'wc_paypal_pro_ssl_nag_hide' ) ) . '</p></div>';
 		}
 
 		return true;

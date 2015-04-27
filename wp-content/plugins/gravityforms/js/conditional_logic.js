@@ -401,7 +401,7 @@ function gf_reset_to_default(targetId, defaultValue){
 	});
 
 	//checkboxes and radio buttons
-	var elements = jQuery(targetId).find('input[type="radio"], input[type="checkbox"]');
+	var elements = jQuery(targetId).find('input[type="radio"], input[type="checkbox"]:not(".copy_values_activated")');
 
 	elements.each(function(){
 
