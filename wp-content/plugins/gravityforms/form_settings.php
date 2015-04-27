@@ -987,7 +987,7 @@ class GFFormSettings {
 		?>
 
 		<h3><span><i class="fa fa-envelope-o"></i> <?php _e( 'Confirmations', 'gravityforms' ) ?>
-				<a id="add-new-confirmation" class="add-new-h2" href="<?php echo $add_new_url ?>"><?php _e( 'Add New', 'gravityforms' ) ?></a></span>
+				<a id="add-new-confirmation" class="add-new-h2" href="<?php echo esc_url( $add_new_url ) ?>"><?php _e( 'Add New', 'gravityforms' ) ?></a></span>
 		</h3>
 
 		<?php $form = GFFormsModel::get_form_meta( $form_id ); ?>
@@ -1397,9 +1397,10 @@ class GFFormSettings {
 					if ( isset( $tab['query'] ) )
 						$query = array_merge( $query, $tab['query'] );
 
+					$url = add_query_arg( $query );
 					?>
 					<li <?php echo $current_tab == $tab['name'] ? "class='active'" : '' ?>>
-						<a href="<?php echo add_query_arg( $query ); ?>"><?php echo $tab['label'] ?></a><span></span>
+						<a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $tab['label'] ) ?></a><span></span>
 					</li>
 				<?php
 					}
@@ -1511,7 +1512,8 @@ class GFFormSettings {
 		$result = GFFormsModel::save_form_confirmations( $form['id'], $form['confirmations'] );
 
 		if ( $result !== false ) {
-			GFCommon::add_message( sprintf( __( 'Confirmation saved successfully. %sBack to confirmations.%s', 'gravityforms' ), '<a href="' . remove_query_arg( array( 'cid', 'duplicatedcid' ) ) . '">', '</a>' ) );
+			$url = remove_query_arg( array( 'cid', 'duplicatedcid' ) );
+			GFCommon::add_message( sprintf( __( 'Confirmation saved successfully. %sBack to confirmations.%s', 'gravityforms' ), '<a href="' . esc_url( $url ) . '">', '</a>' ) );
 		} else {
 			GFCommon::add_error_message( __( 'There was an issue saving this confirmation.', 'gravityforms' ) );
 		}
@@ -1784,9 +1786,9 @@ class GFConfirmationTable extends WP_List_Table {
 		$duplicate_url = add_query_arg( array( 'cid' => 0, 'duplicatedcid' => $item['id'] ) );
 		$actions       = apply_filters(
 			'gform_confirmation_actions', array(
-				'edit'      => '<a title="' . __( 'Edit this item', 'gravityforms' ) . '" href="' . $edit_url . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
-				'duplicate' => '<a title="' . __( 'Duplicate this confirmation', 'gravityforms' ) . '" href="' . $duplicate_url . '">' . __( 'Duplicate', 'gravityforms' ) . '</a>',
-				'delete'    => '<a title="' . __( 'Delete this item', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this confirmation.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ DeleteConfirmation(\'' . $item['id'] . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
+				'edit'      => '<a title="' . __( 'Edit this item', 'gravityforms' ) . '" href="' . esc_url( $edit_url ) . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
+				'duplicate' => '<a title="' . __( 'Duplicate this confirmation', 'gravityforms' ) . '" href="' . esc_url( $duplicate_url ) . '">' . __( 'Duplicate', 'gravityforms' ) . '</a>',
+				'delete'    => '<a title="' . __( 'Delete this item', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this confirmation.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ DeleteConfirmation(\'' . esc_js( $item['id'] ) . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
 			)
 		);
 
@@ -1797,7 +1799,7 @@ class GFConfirmationTable extends WP_List_Table {
 
 		?>
 
-		<a href="<?php echo $edit_url; ?>"><strong><?php echo rgar( $item, 'name' ); ?></strong></a>
+		<a href="<?php echo esc_url( $edit_url ); ?>"><strong><?php echo esc_html( rgar( $item, 'name' ) ); ?></strong></a>
 		<div class="row-actions">
 
 			<?php

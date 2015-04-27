@@ -126,22 +126,24 @@ function Currency(currency){
 }
 
 function gformCleanNumber(text, symbol_right, symbol_left, decimal_separator){
+    var clean_number = '',
+        float_number = '',
+        digit = '',
+        is_negative = false;
+
     //converting to a string if a number as passed
     text = text + " ";
 
     //Removing symbol in unicode format (i.e. &#4444;)
-    text = text.replace(/&.*?;/, "", text);
+    text = text.replace(/&.*?;/, "");
 
     //Removing symbol from text
     text = text.replace(symbol_right, "");
     text = text.replace(symbol_left, "");
 
-
     //Removing all non-numeric characters
-    var clean_number = "";
-    var is_negative = false;
     for(var i=0; i<text.length; i++){
-        var digit = text.substr(i,1);
+        digit = text.substr(i,1);
         if( (parseInt(digit) >= 0 && parseInt(digit) <= 9) || digit == decimal_separator )
             clean_number += digit;
         else if(digit == '-')
@@ -149,14 +151,11 @@ function gformCleanNumber(text, symbol_right, symbol_left, decimal_separator){
     }
 
     //Removing thousand separators but keeping decimal point
-    var float_number = "";
-
-    for(var i=0; i<clean_number.length; i++)
-    {
-        var char = clean_number.substr(i,1);
-        if (char >= '0' && char <= '9')
-            float_number += char;
-        else if(char == decimal_separator){
+    for(var i=0; i<clean_number.length; i++) {
+        digit = clean_number.substr(i,1);
+        if (digit >= '0' && digit <= '9')
+            float_number += digit;
+        else if(digit == decimal_separator){
             float_number += ".";
         }
     }

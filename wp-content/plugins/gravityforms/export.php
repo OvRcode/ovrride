@@ -844,9 +844,10 @@ class GFExport {
 					$query = array_merge( $query, $tab['query'] );
 				}
 
+				$url = add_query_arg( $query );
 				?>
 				<li <?php echo $current_tab == $tab['name'] ? "class='active'" : '' ?>>
-					<a href="<?php echo add_query_arg( $query ); ?>"><?php echo $tab['label'] ?></a>
+					<a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $tab['label'] ) ?></a>
 				</li>
 			<?php
 			}
