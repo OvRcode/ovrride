@@ -88,6 +88,7 @@ class WC_Cart {
 		'taxes'                       => array(),
 		'shipping_taxes'              => array(),
 		'discount_cart'               => 0,
+		'discount_cart_tax'           => 0,
 		'shipping_total'              => 0,
 		'shipping_tax_total'          => 0,
 		'coupon_discount_amounts'     => array(),
@@ -186,7 +187,7 @@ class WC_Cart {
 	private function set_cart_cookies( $set = true ) {
 		if ( $set ) {
 			wc_setcookie( 'woocommerce_items_in_cart', 1 );
-			wc_setcookie( 'woocommerce_cart_hash', md5( json_encode( $this->get_cart() ) ) );
+			wc_setcookie( 'woocommerce_cart_hash', md5( json_encode( $this->get_cart_for_session() ) ) );
 		} elseif ( isset( $_COOKIE['woocommerce_items_in_cart'] ) ) {
 			wc_setcookie( 'woocommerce_items_in_cart', 0, time() - HOUR_IN_SECONDS );
 			wc_setcookie( 'woocommerce_cart_hash', '', time() - HOUR_IN_SECONDS );
@@ -691,8 +692,7 @@ class WC_Cart {
 		 *
 		 * @return array contents of the cart
 		 */
-		private function get_cart_for_session() {
-
+		public function get_cart_for_session() {
 			$cart_session = array();
 
 			if ( $this->get_cart() ) {

@@ -354,7 +354,7 @@ class WC_Coupon {
 	 * Ensure coupon is valid for products in the cart is valid or throw exception
 	 */
 	private function validate_product_ids() {
-		if ( sizeof( $this->product_ids ) > 0 && ! $this->is_type( array( 'fixed_product', 'percent_product' ) ) ) {
+		if ( sizeof( $this->product_ids ) > 0 ) {
 			$valid_for_cart = false;
 			if ( sizeof( WC()->cart->get_cart() ) > 0 ) {
 				foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
@@ -373,13 +373,11 @@ class WC_Coupon {
 	 * Ensure coupon is valid for product categories in the cart is valid or throw exception
 	 */
 	private function validate_product_categories() {
-		if ( sizeof( $this->product_categories ) > 0 && ! $this->is_type( array( 'fixed_product', 'percent_product' ) ) ) {
+		if ( sizeof( $this->product_categories ) > 0 ) {
 			$valid_for_cart = false;
 			if ( sizeof( WC()->cart->get_cart() ) > 0 ) {
 				foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-
 					$product_cats = wp_get_post_terms( $cart_item['product_id'], 'product_cat', array( "fields" => "ids" ) );
-
 					if ( sizeof( array_intersect( $product_cats, $this->product_categories ) ) > 0 ) {
 						$valid_for_cart = true;
 					}
@@ -598,7 +596,6 @@ class WC_Coupon {
 		$discount = 0;
 
 		if ( $this->is_type( 'fixed_product' ) ) {
-
 			$discount = $discounting_amount < $this->coupon_amount ? $discounting_amount : $this->coupon_amount;
 
 			// If dealing with a line and not a single item, we need to multiple fixed discount by cart item qty.
@@ -624,7 +621,7 @@ class WC_Coupon {
 
 				if ( WC()->cart->subtotal_ex_tax ) {
 					// Uses price inc tax if prices include tax to work around https://github.com/woothemes/woocommerce/issues/7669
-					$discount_percent = ( $cart_item['data']->get_price() * $cart_item['quantity'] ) / ( wc_prices_include_tax() ? WC()->cart->subtotal : WC()->cart->subtotal_ex_tax );
+					$discount_percent = ( $cart_item['data']->get_price_excluding_tax() * $cart_item['quantity'] ) / WC()->cart->subtotal_ex_tax;
 				}
 
 				$discount = min( ( $this->coupon_amount * $discount_percent ) / $cart_item['quantity'], $discounting_amount );
