@@ -1,9 +1,11 @@
 <?php
 /*
  * Plugin Name: Facebook Like Box
- * Version: 2.7
+ * Version: 2.8
  * Plugin URI: http://wordpress.org/extend/plugins/facebook-like-box-widget/
- * Description: Facebook Like Box Widget is a social plugin that enables Facebook Page owners to attract and gain Likes from their own website. The Like Box enables users to: see how many users already like this page, and which of their friends like it too, read recent posts from the page and Like the page with one click, without needing to visit the page.
+ * Description: Facebook Like Box Widget is a social plugin that enables Facebook Page owners to attract and gain Likes from their own website. The Like Box enables users to: see how many users already like this page, and which of their friends like it too, read recent posts from the page and Like the page with one click, without needing to visit the page. 
+ Updated: With the release of Graph API v.2.3 the Like Box plugin is deprecated => Facebook: https://developers.facebook.com/docs/plugins/like-box-for-pages 
+ On Facebook Like Box Widget 2.8, I have added Facebook Page Plugin that allows you to embed a simple feed of content from a Page into your websites. 
  * Author: Sunento Agustiar Wu
  * Author URI: http://vivociti.com/component/option,com_remository/Itemid,40/
  * License: GNU/GPL http://www.gnu.org/copyleft/gpl.html
@@ -31,6 +33,12 @@ class FacebookLikeBoxWidget extends WP_Widget
 		$layoutMode = empty($instance['layoutMode']) ? 'xfbml' : $instance['layoutMode'];
                 //example of Page URL : http://www.facebook.com/pages/VivoCiticom-Joomla-Wordpress-Blogger-Drupal-DNN-Community/119691288064264
 		$pageURL = empty($instance['pageURL']) ? '' : $instance['pageURL'];
+		$pluginPageURL = empty($instance['pluginPageURL']) ? '' : $instance['pluginPageURL'];
+		$hideCoverPhoto = empty($instance['hideCoverPhoto']) ? '' : $instance['hideCoverPhoto'];
+		$showPagePosts = empty($instance['showPagePosts']) ? '' : $instance['showPagePosts'];
+		$showFacePile = empty($instance['showFacePile']) ? '' : $instance['showFacePile'];
+		$pagePluginWidth = empty($instance['pagePluginWidth']) ? '' : $instance['pagePluginWidth'];
+		$pagePluginHeight = empty($instance['pagePluginHeight']) ? '' : $instance['pagePluginHeight'];
 		$fblike_button_style = empty($instance['fblike_button_style']) ? 'standard' : $instance['fblike_button_style'];
 		$fblike_button_showFaces = empty($instance['fblike_button_showFaces']) ? 'no' : $instance['fblike_button_showFaces'];
 		$fblike_button_verb_to_display = empty($instance['fblike_button_verb_to_display']) ? 'recommend' : $instance['fblike_button_verb_to_display'];
@@ -108,6 +116,18 @@ class FacebookLikeBoxWidget extends WP_Widget
 			echo '<a href="http://twitter.com/' . $twitterUserName . '" title="Follow ' . $twitterUserName . ' "><img src="http://twithut.com/twitsigs/' . $twitterButtonStyle . '/' . $twitterUserName . '.png' .   '" border=0></a>';
 		}
 		switch ($pluginDisplayType) {
+			case 'page_plugin':
+				$renderedHTML  = "<div id=\"fb-root\"></div> \n";
+				$renderedHTML .= "<script>(function(d, s, id) {  \n";
+				$renderedHTML .= " var js, fjs = d.getElementsByTagName(s)[0]; \n";
+				$renderedHTML .= "  if (d.getElementById(id)) return; \n";
+				$renderedHTML .= "  js = d.createElement(s); js.id = id; \n";
+				$renderedHTML .= "  js.src = \"//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3\"; \n";
+				$renderedHTML .= "  fjs.parentNode.insertBefore(js, fjs); \n";
+				$renderedHTML .= "}(document, 'script', 'facebook-jssdk'));</script> \n";
+				$renderedHTML .= "<div class=\"fb-page\" data-href=\"$pluginPageURL\" data-width=\"$pagePluginWidth\" data-height=\"$pagePluginHeight\" data-hide-cover=\"$hideCoverPhoto\" data-show-facepile=\"$showFacePile\" data-show-posts=\"$showPagePosts\"><div class=\"fb-xfbml-parse-ignore\"><blockquote cite=\"$pluginPageURL\"><a href=\"$pluginPageURL\">Facebook</a></blockquote></div></div> \n";
+				break;
+				
 			case 'like_box' :
 				if (strcmp($layoutMode, "iframe") == 0) {
 					$renderedHTML = $like_box_iframe;
@@ -255,6 +275,12 @@ class FacebookLikeBoxWidget extends WP_Widget
 		$instance['pluginDisplayType'] = strip_tags(stripslashes($new_instance['pluginDisplayType']));
 		$instance['layoutMode'] = strip_tags(stripslashes($new_instance['layoutMode']));
 		$instance['pageURL'] = strip_tags(stripslashes($new_instance['pageURL']));
+		$instance['pluginPageURL'] = strip_tags(stripslashes($new_instance['pluginPageURL']));
+		$instance['hideCoverPhoto'] = strip_tags(stripslashes($new_instance['hideCoverPhoto']));
+		$instance['showPagePosts'] = strip_tags(stripslashes($new_instance['showPagePosts']));		
+		$instance['showFacePile'] = strip_tags(stripslashes($new_instance['showFacePile']));		
+		$instance['pagePluginWidth'] = strip_tags(stripslashes($new_instance['pagePluginWidth']));		
+		$instance['pagePluginHeight'] = strip_tags(stripslashes($new_instance['pagePluginHeight']));		
 		$instance['fblike_button_style'] = strip_tags(stripslashes($new_instance['fblike_button_style']));
 		$instance['fblike_button_showFaces'] = strip_tags(stripslashes($new_instance['fblike_button_showFaces']));
 		$instance['fblike_button_verb_to_display'] = strip_tags(stripslashes($new_instance['fblike_button_verb_to_display']));
@@ -271,12 +297,18 @@ class FacebookLikeBoxWidget extends WP_Widget
 	*/
 	function form($instance){
 		//Defaults
-		$instance = wp_parse_args( (array) $instance, array('title'=>'', 'pageID'=>'119691288064264', 'height'=>'255', 'width'=>'292', 'connection'=>'10', 'streams'=>'yes', 'colorScheme'=>'light', 'showFaces'=>'yes', 'borderColor'=>'AAAAAA','enableOtherSocialButtons'=>'no', 'addThisVerticalStyle'=>'1', 'addThisPubId'=>'', 'enableTwitterButtons'=>'no', 'twitterButtonStyle'=>'127', 'twitterUsername'=>'', 'enableAfterOrBeforeFBLikeBox'=>'before', 'header'=>'yes', 'creditOn'=>'no', 'pluginDisplayType'=>'like_box', 'layoutMode'=>'xfbml', 'pageURL'=>'http://www.facebook.com/pages/VivoCiticom-Joomla-Wordpress-Blogger-Drupal-DNN-Community/119691288064264', 'fblike_button_style'=>'standard', 'fblike_button_showFaces'=>'false','fblike_button_verb_to_display'=>'recommend','fblike_button_font'=>'arial', 'fblike_button_width'=>'292','fblike_button_colorScheme'=>'light') );
+		$instance = wp_parse_args( (array) $instance, array('title'=>'', 'pageID'=>'119691288064264', 'height'=>'255', 'width'=>'292', 'connection'=>'10', 'streams'=>'yes', 'colorScheme'=>'light', 'showFaces'=>'yes', 'borderColor'=>'AAAAAA','enableOtherSocialButtons'=>'no', 'addThisVerticalStyle'=>'1', 'addThisPubId'=>'', 'enableTwitterButtons'=>'no', 'twitterButtonStyle'=>'127', 'twitterUsername'=>'', 'enableAfterOrBeforeFBLikeBox'=>'before', 'header'=>'yes', 'creditOn'=>'no', 'pluginDisplayType'=>'page_plugin', 'layoutMode'=>'xfbml', 'pageURL'=>'http://www.facebook.com/pages/VivoCiticom-Joomla-Wordpress-Blogger-Drupal-DNN-Community/119691288064264', 'fblike_button_style'=>'standard', 'fblike_button_showFaces'=>'false','fblike_button_verb_to_display'=>'recommend','fblike_button_font'=>'arial', 'fblike_button_width'=>'292','fblike_button_colorScheme'=>'light', 'pluginPageURL'=>'https://www.facebook.com/facebook/', 'pagePluginHeight'=>'250', 'pagePluginWidth'=>'250') );
 		
 		$title = htmlspecialchars($instance['title']);		
-		$pluginDisplayType = empty($instance['pluginDisplayType']) ? 'like_box' : $instance['pluginDisplayType'];
+		$pluginDisplayType = empty($instance['pluginDisplayType']) ? 'page_plugin' : $instance['pluginDisplayType'];
 		$layoutMode = empty($instance['layoutMode']) ? 'xfbml' : $instance['layoutMode'];
 		$pageURL = empty($instance['pageURL']) ? 'http://www.facebook.com/pages/...' : $instance['pageURL'];
+		$pluginPageURL = empty($instance['pluginPageURL']) ? 'http://www.facebook.com/facebook/' : $instance['pluginPageURL'];
+		$hideCoverPhoto = empty($instance['hideCoverPhoto']) ? 'true' : $instance['hideCoverPhoto'];
+		$showPagePosts = empty($instance['showPagePosts']) ? 'false' : $instance['showPagePosts'];
+		$showFacePile = empty($instance['showFacePile']) ? 'false' : $instance['showFacePile'];
+		$pagePluginWidth = empty($instance['pagePluginWidth']) ? '250' : $instance['pagePluginWidth'];
+		$pagePluginHeight = empty($instance['pagePluginHeight']) ? '300' : $instance['pagePluginHeight'];
 		$fblike_button_style = empty($instance['fblike_button_style']) ? 'standard' : $instance['fblike_button_style'];
 		$fblike_button_showFaces = empty($instance['fblike_button_showFaces']) ? 'no' : $instance['fblike_button_showFaces'];
 		$fblike_button_verb_to_display = empty($instance['fblike_button_verb_to_display']) ? 'recommend' : $instance['fblike_button_verb_to_display'];
@@ -319,6 +351,13 @@ class FacebookLikeBoxWidget extends WP_Widget
 		$pluginDisplayType = htmlspecialchars($instance['pluginDisplayType']);
 		$layoutMode = htmlspecialchars($instance['layoutMode']);
 		$pageURL = htmlspecialchars($instance['pageURL']);
+		$pluginPageURL = htmlspecialchars($instance['pluginPageURL']);
+		$hideCoverPhoto = htmlspecialchars($instance['hideCoverPhoto']);
+		$showPagePosts = htmlspecialchars($instance['showPagePosts']);
+		$showFacePile = htmlspecialchars($instance['showFacePile']);
+		$pagePluginWidth = htmlspecialchars($instance['pagePluginWidth']);
+		$pagePluginHeight = htmlspecialchars($instance['pagePluginHeight']);
+		
 		$fblike_button_style = htmlspecialchars($instance['fblike_button_style']);
 		$fblike_button_showFaces = htmlspecialchars($instance['fblike_button_showFaces']);
 		$fblike_button_verb_to_display = htmlspecialchars($instance['fblike_button_verb_to_display']);
@@ -333,9 +372,10 @@ class FacebookLikeBoxWidget extends WP_Widget
 		# Fill Display Type Selection
 		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('pluginDisplayType') . '">' . __('Display:') . ' <select name="' . $this->get_field_name('pluginDisplayType')  . '" id="' . $this->get_field_id('pluginDisplayType')  . '">"';
 ?>
-		<option value="like_box" <?php if ($pluginDisplayType == 'like_box') echo 'selected="yes"'; ?> >Like Box</option>
+		<option value="page_plugin" <?php if ($pluginDisplayType == 'page_plugin') echo 'selected="yes"'; ?> >Page Plugin - New</option>
+		<option value="like_box" <?php if ($pluginDisplayType == 'like_box') echo 'selected="yes"'; ?> >Like Box - Deprecated</option>
 		<option value="like_button" <?php if ($pluginDisplayType == 'like_button') echo 'selected="yes"'; ?> >Like Button</option>			 
-		<option value="both" <?php if ($pluginDisplayType == 'both') echo 'selected="yes"'; ?> >Like Box &amp; Button</option>			 
+		<option value="both" <?php if ($pluginDisplayType == 'both') echo 'selected="yes"'; ?> >Like Box &amp; Button - Deprecated</option>			 
 <?php
 		echo '</select></label>';
 		# Fill Layout Mode Selection
@@ -345,6 +385,42 @@ class FacebookLikeBoxWidget extends WP_Widget
 		<option value="xfbml" <?php if ($layoutMode == 'xfbml') echo 'selected="yes"'; ?> >XFBML</option>		
 <?php
 		echo '</select></label>';
+		
+		echo '<hr/><p style="text-align:left;"><b>Page Plugin Setting</b></p>';
+		# Fill Plugin Page URL
+		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('pluginPageURL') . '">' . __('Plugin Page URL:') . ' <input style="width: 150px;" id="' . $this->get_field_id('pluginPageURL') . '" name="' . $this->get_field_name('pluginPageURL') . '" type="text" value="' . $pluginPageURL . '" /></label></p>';
+		
+		# Fill Plugin Page Width 
+		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('pagePluginWidth') . '">' . __('Plugin Page Width:') . ' <input style="width: 150px;" id="' . $this->get_field_id('pagePluginWidth') . '" name="' . $this->get_field_name('pagePluginWidth') . '" type="text" value="' . $pagePluginWidth . '" /></label></p>';
+		
+		# Fill Plugin Page Height
+		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('pagePluginHeight') . '">' . __('Plugin Page Height:') . ' <input style="width: 150px;" id="' . $this->get_field_id('pagePluginHeight') . '" name="' . $this->get_field_name('pagePluginHeight') . '" type="text" value="' . $pagePluginHeight . '" /></label></p>';
+		
+		# Fill Hide Cover Photo Selection
+		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('hideCoverPhoto') . '">' . __('Hide Cover Photo:') . ' <select name="' . $this->get_field_name('hideCoverPhoto')  . '" id="' . $this->get_field_id('hideCoverPhoto')  . '">"';
+?>
+		<option value="true" <?php if ($hideCoverPhoto == 'true') echo 'selected="yes"'; ?> >true</option>
+		<option value="false" <?php if ($hideCoverPhoto == 'false') echo 'selected="yes"'; ?> >false</option>				
+<?php
+		echo '</select></label>';
+		
+		# Fill Show Page Post Selection
+		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('showPagePosts') . '">' . __('Show Page Posts:') . ' <select name="' . $this->get_field_name('showPagePosts')  . '" id="' . $this->get_field_id('showPagePosts')  . '">"';
+?>
+		<option value="true" <?php if ($showPagePosts == 'true') echo 'selected="yes"'; ?> >true</option>
+		<option value="false" <?php if ($showPagePosts == 'false') echo 'selected="yes"'; ?> >false</option>				
+<?php
+		echo '</select></label>';
+		
+		# Fill Show Face Pile Selection
+		echo '<p style="text-align:right;"><label for="' . $this->get_field_name('showFacePile') . '">' . __('Hide Cover Photo:') . ' <select name="' . $this->get_field_name('showFacePile')  . '" id="' . $this->get_field_id('showFacePile')  . '">"';
+?>
+		<option value="true" <?php if ($showFacePile == 'true') echo 'selected="yes"'; ?> >true</option>
+		<option value="false" <?php if ($showFacePile == 'false') echo 'selected="yes"'; ?> >false</option>				
+<?php
+		echo '</select></label>';
+		
+		
 		echo '<hr/><p style="text-align:left;"><b>Like Box Setting</b></p>';
 		echo '<p style="text-align:left;"><i><strong>Fill Page ID Or Page URL below:</strong></i></p>';
 		# Fill Page ID
