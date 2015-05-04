@@ -3,11 +3,17 @@ Contributors: sunwu2007
 Donate link: http://bit.ly/9Njzpo
 Tags: facebook, facebook like, facebook badge, facebook button, facebook like button, fb like, facebook like box, badge, social network, seo, increase traffic, BuddyPress
 Requires at least: 2.8.6
-Tested up to: 3.7.1
+Tested up to: 4.2.1
 Stable tag: trunk
 
 == Description ==
 Facebook Like Box Widget is a social plugin that enables Facebook Page owners to attract and gain Likes & Recommendation Comments from their own website. The Like Box enables users to: see how many users already like this page, and which of their friends like it too, read recent posts from the page and Like the page with one click, without needing to visit the page.
+
+Updated: 
+With the release of Graph API v.2.3 the Like Box plugin is deprecated => Facebook: https://developers.facebook.com/docs/plugins/like-box-for-pages
+
+On Facebook Like Box Widget 2.8, I have added Facebook Page Plugin that allows you to embed a simple feed of content from a Page into your websites.
+You still can continue to use Facebook Like Box as Facebook mentioned if you continue to use Like Box plugin, it will automatically fall back to the Page Plugin by June 23rd 2015.
 
 
 == Installation ==
@@ -92,3 +98,7 @@ Removed support for iFrame per Wordpress Team feedback
 * Add 3 more styles for floating Social Buttons 
 * Enhance with Twitter Signature & Twitter Counter & Twitter Follow QR Code Integration
 * Tested with Wordpress 3.7.1
+
+= v2.8 04.29.2015 =
+* Introduce Facebook Page Plugin (The Page Plugin lets you easily embed and promote any Facebook Page on your website. Just like on Facebook, your visitors can like and share the Page without having to leave your site)
+* Deprecated Facebook Like Box - If you still continue use Facebook Like Box, it will automatically fall back to the Page Plugin by June 23rd 2015 - quoted from Facebook Developer's page

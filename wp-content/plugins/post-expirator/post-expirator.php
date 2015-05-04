@@ -4,7 +4,7 @@ Plugin Name: Post Expirator
 Plugin URI: http://wordpress.org/extend/plugins/post-expirator/
 Description: Allows you to add an expiration date (minute) to posts which you can configure to either delete the post, change it to a draft, or update the post categories at expiration time.
 Author: Aaron Axelsen
-Version: 2.1.3
+Version: 2.1.4
 Author URI: http://postexpirator.tuxdocs.net/
 Translation: Thierry (http://palijn.info)
 Text Domain: post-expirator
@@ -76,7 +76,7 @@ function expirationdate_show_value ($column_name) {
 	$id = $post->ID;
 	if ($column_name === 'expirationdate') {
 		$ed = get_post_meta($id,'_expiration-date',true);
-    		echo ($ed ? postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),get_option('date_format').' '.get_option('time_format')) : __("Never",'post-expirator'));
+    		echo ($ed ? get_date_from_gmt(gmdate('Y-m-d H:i:s',$ed),get_option('date_format').' '.get_option('time_format')) : __("Never",'post-expirator'));
   	}
 }
 add_action ('manage_posts_custom_column', 'expirationdate_show_value');
@@ -127,11 +127,11 @@ function expirationdate_meta_box($post) {
 				
 				if ( $tz ) date_default_timezone_set('UTC');
 			}
-			$defaultmonth 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'m');
-			$defaultday 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'d');
-			$defaultyear 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'Y');;
-			$defaulthour 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'H');
-			$defaultminute 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'i');
+			$defaultmonth 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'m');
+			$defaultday 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'d');
+			$defaultyear 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'Y');;
+			$defaulthour 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'H');
+			$defaultminute 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$ts),'i');
 		} 
 
 		$enabled = '';
@@ -147,11 +147,11 @@ function expirationdate_meta_box($post) {
 			$disabled='';
 		} 
 	} else {
-		$defaultmonth 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'m');
-		$defaultday 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'d');
-		$defaultyear 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'Y');
-		$defaulthour 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'H');
-		$defaultminute 	=	postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'i');
+		$defaultmonth 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'m');
+		$defaultday 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'d');
+		$defaultyear 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'Y');
+		$defaulthour 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'H');
+		$defaultminute 	=	get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),'i');
 		$enabled 	= 	' checked="checked"';
 		$disabled 	= 	'';
 		$opts 		= 	get_post_meta($post->ID,'_expiration-date-options',true);
@@ -1057,7 +1057,7 @@ function postexpirator_shortcode($atts) {
 	else if ($type == 'time')
 		$format = $timeformat;
 
-	return postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),$format);
+	return get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),$format);
 }
 add_shortcode('postexpirator', 'postexpirator_shortcode');
 
@@ -1084,9 +1084,9 @@ function postexpirator_add_footer($text) {
 		'EXPIRATIONTIME'
 	);
 	$replace = array(
-		postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),"$dateformat $timeformat"),
-		postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),$dateformat),
-		postexpirator_get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),$timeformat)
+		get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),"$dateformat $timeformat"),
+		get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),$dateformat),
+		get_date_from_gmt(gmdate('Y-m-d H:i:s',$expirationdatets),$timeformat)
 	);
 
 	$add_to_footer = '<p style="'.$expirationdateFooterStyle.'">'.str_replace($search,$replace,$expirationdateFooterContents).'</p>';
@@ -1264,17 +1264,17 @@ class Walker_PostExpirator_Category_Checklist extends Walker {
 		$this->disabled = 'disabled="disabled"';
 	}
 
-	function start_lvl(&$output, $depth, $args) {
+	function start_lvl(&$output, $depth = 0, $args = array()) {
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent<ul class='children'>\n";
 	}
 
-	function end_lvl(&$output, $depth, $args) {
+	function end_lvl(&$output, $depth = 0, $args = array()) {
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent</ul>\n";
 	}
 
-	function start_el(&$output, $category, $depth, $args) {
+	function start_el(&$output, $category, $depth = 0, $args = array(), $current_object_id = 0) {
 		extract($args);
 		if ( empty($taxonomy) )
 			$taxonomy = 'category';
@@ -1285,7 +1285,7 @@ class Walker_PostExpirator_Category_Checklist extends Walker {
 		$output .= "\n<li id='expirator-{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="'.$name.'[]" id="expirator-in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . disabled( empty( $args['disabled'] ), false, false ) . ' '.$this->disabled.'/> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
 	}
 	
-	function end_el(&$output, $category, $depth, $args) {
+	function end_el(&$output, $category, $depth = 0, $args = array()) {
 		$output .= "</li>\n";
 	}
 }
@@ -1337,21 +1337,4 @@ function _postExpiratorTaxonomy($opts) {
 
 	$rv[] = '</select>';
 	return implode("<br/>/n",$rv);
-}
-
-/**
- * TEMPORARY FUNCTION UNTIL TICKET 20328 IS FIXED
- */
-function postexpirator_get_date_from_gmt($string,$format = 'Y-m-d H:i:s') {
-	$tz = get_option('timezone_string');
-	if ( $tz ) {
-		$datetime = new DateTime( $string , new DateTimeZone('UTC') );
-		$datetime->setTimezone( new DateTimeZone($tz) );
-		$string_localtime = $datetime->format($format);
-	} else {
-		preg_match('#([0-9]{1,4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})#', $string, $matches);
-		$string_time = gmmktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
-		$string_localtime = gmdate($format, $string_time + get_option('gmt_offset')*3600);
-	}
-	return $string_localtime;
 }
