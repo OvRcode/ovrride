@@ -16,6 +16,7 @@
 				$this->list_table->display();
 				submit_button( __( 'Activate Products', 'woothemes-updater' ), 'button-primary' );
 				?>
+				<?php wp_nonce_field( 'wt-helper-activate-license', 'wt-helper-nonce' ); ?>
 			</form>
 		</div><!--/.col-wrap-->
 </div><!--/#col-container-->

@@ -125,9 +125,9 @@
     -moz-osx-font-smoothing: grayscale;
     vertical-align: top;
 }
-.dashboard_page_woothemes-helper .column-product_status {
+.dashboard_page_woothemes-helper .column-product_status, .index_page_woothemes-helper-network .column-product_status {
   width: 400px;
 }
-.dashboard_page_woothemes-helper .column-product_version {
+.dashboard_page_woothemes-helper .column-product_version, .index_page_woothemes-helper-network .column-product_version {
   width: 100px;
 }
