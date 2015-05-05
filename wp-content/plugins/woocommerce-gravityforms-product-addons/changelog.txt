@@ -1,6 +1,9 @@
 *** Gravity Forms Product Add-Ons Changelog ***
+2015.05.01 - version 2.9.4
+	* Fix:  Remove console.log debug statement to resolve problems with IE. 
+
 2015.04.21 - version 2.9.3
-* Fix - Potential XSS with add_query_arg
+	* Fix - Potential XSS with add_query_arg
 
 2015.04.16 - version 2.9.2
 	* Fix:  Respect the tax display setting when displaying the total at the bottom of a gravity form.  Prices in a gravity form option still need to be entered inclusive of tax. 

@@ -1,8 +1,8 @@
 jQuery( document ).ready(function( $ ) {
 	// Check if form is submitted and override
-	$( '.dashboard_page_woothemes-helper #activate-products' ).submit(function( event ) {
-		var license_keys_object = new Array();
-		$('input[name^="license_keys["]').each(function() {
+	$( '.woothemes-updater-wrap #activate-products' ).submit(function( event ) {
+		var license_keys_object = [];
+		$('input[name^="license_keys["]').each(function( i, item ) {
 			if ( $( this ).val().length > 0 ) {
 				var license_object = { name: $( this ).attr("name").replace( 'license_keys[', '' ).replace( ']', '' ), key: $( this ).val() };
 				license_keys_object.push( license_object );
