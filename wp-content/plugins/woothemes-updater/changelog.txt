@@ -1,5 +1,9 @@
 *** WooThemes Helper Changelog ***
 
+2015.05.05 - version 1.5.5
+ * Fix - Can't activate licenses on a Multisite
+ * Tweak - Copy & links on the Help tab
+
 2015.04.27 - version 1.5.4
  * Fix - Empty license table when using WP 4.2+
 
