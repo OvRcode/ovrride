@@ -41,7 +41,6 @@ function update_dynamic_price(gform_total) {
 jQuery(document).ready(function ($) {
 	if (window.gravityforms_params) {
 
-		console.log(gravityforms_params.previous_page);
 
 		if (gravityforms_params.previous_page === 0 && ($('.woocommerce-message').length)) {
 			window.location.hash = '';
