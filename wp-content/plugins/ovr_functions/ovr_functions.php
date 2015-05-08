@@ -3,9 +3,9 @@
  * Plugin Name: OvRride Custom Functions
  * Plugin URI: https://github.com/AJAlabs/aja_functions
  * Description: Custom WordPress functions.php for OvRride.
- * Author: AJ Acevedo
+ * Author: AJ Acevedo, Mike Barnard
  * Author URI: http://ajacevedo.com
- * Version: 0.2.0
+ * Version: 0.4.0
  * License: MIT License
  */
 
@@ -206,6 +206,47 @@ add_filter( 'widget_text', 'shortcode_unautop');
 // Enable shortcode in the text widgets
 add_filter('widget_text', 'do_shortcode');
 
+// Remove Gravity Form Data on submit ( Excludes contact form info )
+add_action( 'gform_after_submission', 'ovr_remove_gf_data' );
+/**
+ * Prevents Gravity Form entries from being stored in the database.
+ * From: https://thomasgriffin.io/prevent-gravity-forms-storing-entries-wordpress/
+ * @global object $wpdb The WP database object.
+ * @param array $entry  Array of entry data.
+ */
+function ovr_remove_gf_data( $entry ) {
+    
+    // Skip entries from contact form in case of email issues, also skip constant contact
+    if ( $entry["form_id"] != "10" || $entry["form_id"] != "4" || 
+        strpos($entry["source_url"], "ovrride.com/contact-us") === false) {
+            
+        global $wpdb;
+        // Prepare variables.
+        $lead_id                = $entry['id'];
+        $lead_table             = RGFormsModel::get_lead_table_name();
+        $lead_notes_table       = RGFormsModel::get_lead_notes_table_name();
+        $lead_detail_table      = RGFormsModel::get_lead_details_table_name();
+        $lead_detail_long_table = RGFormsModel::get_lead_details_long_table_name();
 
+        // Delete from lead detail long.
+        $sql = $wpdb->prepare( "DELETE FROM $lead_detail_long_table WHERE lead_detail_id IN(SELECT id FROM $lead_detail_table WHERE lead_id = %d)", $lead_id );
+        $wpdb->query( $sql );
+
+        // Delete from lead details.
+        $sql = $wpdb->prepare( "DELETE FROM $lead_detail_table WHERE lead_id = %d", $lead_id );
+        $wpdb->query( $sql );
+
+        // Delete from lead notes.
+        $sql = $wpdb->prepare( "DELETE FROM $lead_notes_table WHERE lead_id = %d", $lead_id );
+        $wpdb->query( $sql );
+
+        // Delete from lead.
+        $sql = $wpdb->prepare( "DELETE FROM $lead_table WHERE id = %d", $lead_id );
+        $wpdb->query( $sql );
+    
+        // Finally, ensure everything is deleted (like stuff from Addons).
+        GFAPI::delete_entry( $lead_id );
+    }
+}
 /* Place custom code above this line. */
 ?>
