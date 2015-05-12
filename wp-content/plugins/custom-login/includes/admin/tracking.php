@@ -264,7 +264,7 @@ class CL_Tracking {
 
 		if ( 
 			stristr( network_site_url( '/' ), 'dev'       ) !== false ||
-			stristr( network_site_url( '/' ), 'localhost' ) !== false ||
+			stristr( network_site_url( '/' ), '***REMOVED***' ) !== false ||
 			stristr( network_site_url( '/' ), ':8888'     ) !== false // This is common with MAMP on OS X
 		) {
 			update_option( 'custom_login_hide_tracking_notice', '1' ); // Don't update the notice in case someone pushes local to live? Maybe return.

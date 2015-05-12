@@ -28,7 +28,7 @@ class Chef
 
         @database_name = nil
         @table = nil
-        @host = 'localhost'
+        @host = '***REMOVED***'
         @privileges = [:all]
         @grant_option = false
         @require_ssl = false
