@@ -52,7 +52,7 @@ end
 
 include_recipe 'mysql::server'
 
-connection_info = { :host => 'localhost', :username => 'root', :password => node['mysql']['server_root_password'] }
+connection_info = { :host => '***REMOVED***', :username => 'root', :password => node['mysql']['server_root_password'] }
 
 search(:apps) do |app|
   (app['database_master_role'] & node.run_list.roles).each do |dbm_role|
@@ -63,7 +63,7 @@ search(:apps) do |app|
           connection connection_info
           action :create
         end
-        %W(% #{node['fqdn']} localhost).each do |h|
+        %W(% #{node['fqdn']} ***REMOVED***).each do |h|
           mysql_database_user db['username'] do
             connection connection_info
             password db['password']

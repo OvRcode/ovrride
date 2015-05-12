@@ -81,11 +81,11 @@ generated from attributes. Each key in `node['postgresql']['config']`
 is a postgresql configuration directive, and will be rendered in the
 config file. For example, the attribute:
 
-    node['postgresql']['config']['listen_addresses'] = 'localhost'
+    node['postgresql']['config']['listen_addresses'] = '***REMOVED***'
 
 Will result in the following line in the `postgresql.conf` file:
 
-    listen_addresses = 'localhost'
+    listen_addresses = '***REMOVED***'
 
 The attributes file contains default values for Debian and RHEL
 platform families (per the `node['platform_family']`). These defaults

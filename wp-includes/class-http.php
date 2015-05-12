@@ -203,7 +203,7 @@ class WP_Http {
 
 		// Determine if this request is to OUR install of WordPress.
 		$homeURL = parse_url( get_bloginfo( 'url' ) );
-		$r['local'] = 'localhost' == $arrURL['host'] || ( isset( $homeURL['host'] ) && $homeURL['host'] == $arrURL['host'] );
+		$r['local'] = '***REMOVED***' == $arrURL['host'] || ( isset( $homeURL['host'] ) && $homeURL['host'] == $arrURL['host'] );
 		unset( $homeURL );
 
 		/*
@@ -615,7 +615,7 @@ class WP_Http {
 	 * prevent plugins from working and core functionality, if you don't include api.wordpress.org.
 	 *
 	 * You block external URL requests by defining WP_HTTP_BLOCK_EXTERNAL as true in your wp-config.php
-	 * file and this will only allow localhost and your blog to make requests. The constant
+	 * file and this will only allow ***REMOVED*** and your blog to make requests. The constant
 	 * WP_ACCESSIBLE_HOSTS will allow additional hosts to go through for requests. The format of the
 	 * WP_ACCESSIBLE_HOSTS constant is a comma separated list of hostnames to allow, wildcard domains
 	 * are supported, eg *.wordpress.org will allow for all subdomains of wordpress.org to be contacted.
@@ -639,7 +639,7 @@ class WP_Http {
 		$home = parse_url( get_option('siteurl') );
 
 		// Don't block requests back to ourselves by default.
-		if ( 'localhost' == $check['host'] || ( isset( $home['host'] ) && $home['host'] == $check['host'] ) ) {
+		if ( '***REMOVED***' == $check['host'] || ( isset( $home['host'] ) && $home['host'] == $check['host'] ) ) {
 			/**
 			 * Filter whether to block local requests through the proxy.
 			 *
@@ -934,11 +934,11 @@ class WP_Http_Streams {
 		}
 
 		/*
-		 * Certain versions of PHP have issues with 'localhost' and IPv6, It attempts to connect
+		 * Certain versions of PHP have issues with '***REMOVED***' and IPv6, It attempts to connect
 		 * to ::1, which fails when the server is not set up for it. For compatibility, always
 		 * connect to the IPv4 address.
 		 */
-		if ( 'localhost' == strtolower( $connect_host ) )
+		if ( '***REMOVED***' == strtolower( $connect_host ) )
 			$connect_host = '127.0.0.1';
 
 		$connect_host = $secure_transport ? 'ssl://' . $connect_host : 'tcp://' . $connect_host;
@@ -1665,7 +1665,7 @@ class WP_Http_Curl {
  * <li>WP_PROXY_USERNAME - Proxy username, if it requires authentication.</li>
  * <li>WP_PROXY_PASSWORD - Proxy password, if it requires authentication.</li>
  * <li>WP_PROXY_BYPASS_HOSTS - Will prevent the hosts in this list from going through the proxy.
- * You do not need to have localhost and the blog host in this list, because they will not be passed
+ * You do not need to have ***REMOVED*** and the blog host in this list, because they will not be passed
  * through the proxy. The list should be presented in a comma separated list, wildcards using * are supported, eg. *.wordpress.org</li>
  * </ol>
  *
@@ -1673,7 +1673,7 @@ class WP_Http_Curl {
  *
  *     define('WP_PROXY_HOST', '192.168.84.101');
  *     define('WP_PROXY_PORT', '8080');
- *     define('WP_PROXY_BYPASS_HOSTS', 'localhost, www.example.com, *.wordpress.org');
+ *     define('WP_PROXY_BYPASS_HOSTS', '***REMOVED***, www.example.com, *.wordpress.org');
  *
  * @link https://core.trac.wordpress.org/ticket/4011 Proxy support ticket in WordPress.
  * @link https://core.trac.wordpress.org/ticket/14636 Allow wildcard domains in WP_PROXY_BYPASS_HOSTS
@@ -1790,7 +1790,7 @@ class WP_HTTP_Proxy {
 	/**
 	 * Whether URL should be sent through the proxy server.
 	 *
-	 * We want to keep localhost and the blog URL from being sent through the proxy server, because
+	 * We want to keep ***REMOVED*** and the blog URL from being sent through the proxy server, because
 	 * some proxies can not handle this. We also have the constant available for defining other
 	 * hosts that won't be sent through the proxy.
 	 *
@@ -1829,7 +1829,7 @@ class WP_HTTP_Proxy {
 		if ( ! is_null( $result ) )
 			return $result;
 
-		if ( 'localhost' == $check['host'] || ( isset( $home['host'] ) && $home['host'] == $check['host'] ) )
+		if ( '***REMOVED***' == $check['host'] || ( isset( $home['host'] ) && $home['host'] == $check['host'] ) )
 			return false;
 
 		if ( !defined('WP_PROXY_BYPASS_HOSTS') )

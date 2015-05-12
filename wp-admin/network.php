@@ -55,7 +55,7 @@ function network_domain_check() {
  */
 function allow_subdomain_install() {
 	$domain = preg_replace( '|https?://([^/]+)|', '$1', get_option( 'home' ) );
-	if( parse_url( get_option( 'home' ), PHP_URL_PATH ) || 'localhost' == $domain || preg_match( '|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain ) )
+	if( parse_url( get_option( 'home' ), PHP_URL_PATH ) || '***REMOVED***' == $domain || preg_match( '|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain ) )
 		return false;
 
 	return true;
@@ -262,11 +262,11 @@ function network_step1( $errors = false ) {
 
 		<h3><?php esc_html_e( 'Network Details' ); ?></h3>
 		<table class="form-table">
-		<?php if ( 'localhost' == $hostname ) : ?>
+		<?php if ( '***REMOVED***' == $hostname ) : ?>
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Sub-directory Install' ); ?></th>
 				<td><?php
-					_e( 'Because you are using <code>localhost</code>, the sites in your WordPress network must use sub-directories. Consider using <code>localhost.localdomain</code> if you wish to use sub-domains.' );
+					_e( 'Because you are using <code>***REMOVED***</code>, the sites in your WordPress network must use sub-directories. Consider using <code>***REMOVED***.localdomain</code> if you wish to use sub-domains.' );
 					// Uh oh:
 					if ( !allow_subdirectory_install() )
 						echo ' <strong>' . __( 'Warning!' ) . ' ' . __( 'The main site in a sub-directory install will need to use a modified permalink structure, potentially breaking existing links.' ) . '</strong>';

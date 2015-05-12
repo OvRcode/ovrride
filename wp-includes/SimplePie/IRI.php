@@ -118,7 +118,7 @@ class SimplePie_IRI
 			'port' => 2628
 		),
 		'file' => array(
-			'ihost' => 'localhost'
+			'ihost' => '***REMOVED***'
 		),
 		'http' => array(
 			'port' => 80,
