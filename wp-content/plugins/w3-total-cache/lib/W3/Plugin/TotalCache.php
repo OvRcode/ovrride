@@ -521,7 +521,7 @@ class W3_Plugin_TotalCache extends W3_Plugin {
                      * Add footer comment
                      */
                     $date = date_i18n('Y-m-d H:i:s');
-                    $host = (!empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '***REMOVED***');
+                    $host = (!empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost');
 
                     if (w3_is_preview_mode())
                         $buffer .= "\r\n<!-- W3 Total Cache used in preview mode -->";

@@ -130,7 +130,7 @@ function get_network_by_path( $domain, $path, $segments = null ) {
 
 	/*
 	 * It's possible one domain to search is 'com', but it might as well
-	 * be '***REMOVED***' or some other locally mapped domain.
+	 * be 'localhost' or some other locally mapped domain.
 	 */
 	while ( array_shift( $pieces ) ) {
 		if ( $pieces ) {

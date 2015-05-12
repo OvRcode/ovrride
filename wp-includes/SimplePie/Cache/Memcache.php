@@ -47,8 +47,8 @@
  *
  * Registered for URLs with the "memcache" protocol
  *
- * For example, `memcache://***REMOVED***:11211/?timeout=3600&prefix=sp_` will
- * connect to memcache on `***REMOVED***` on port 11211. All tables will be
+ * For example, `memcache://localhost:11211/?timeout=3600&prefix=sp_` will
+ * connect to memcache on `localhost` on port 11211. All tables will be
  * prefixed with `sp_` and data will expire after 3600 seconds
  *
  * @package SimplePie

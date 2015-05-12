@@ -5,7 +5,7 @@ backend default {
 
 acl purge {
     # Web server with plugin which will issue PURGE requests
-    "***REMOVED***";
+    "localhost";
 }
 
 sub vcl_recv {
