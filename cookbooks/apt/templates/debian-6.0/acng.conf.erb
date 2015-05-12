@@ -17,7 +17,7 @@ Port:<%= node['apt']['cacher_port'] %>
 #
 # Default: not set, will listen on all interfaces.
 #
-# BindAddress: ***REMOVED*** 192.168.7.254 publicNameOnMainInterface
+# BindAddress: localhost 192.168.7.254 publicNameOnMainInterface
 
 #Proxy: http://www-proxy.example.net:80
 #proxy: http://username:proxypassword@proxy.example.net:3128
@@ -30,7 +30,7 @@ Remap-debvol: file:debvol_mirror*.gz /debian-volatile ; file:backends_debvol
 Remap-cygwin: file:cygwin_mirrors /cygwin # ; file:backends_cygwin # incomplete, please create this file
 
 # Virtual page accessible in a web browser to see statistics and status
-# information, i.e. under http://***REMOVED***:3142/acng-report.html
+# information, i.e. under http://localhost:3142/acng-report.html
 ReportPage: acng-report.html
 
 # Socket file for accessing through local UNIX socket instead of TCP/IP. Can be

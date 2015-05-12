@@ -23,7 +23,7 @@ Port:<%= node['apt']['cacher_port'] %>
 #
 # Default: not set, will listen on all interfaces and protocols
 #
-# BindAddress: ***REMOVED*** 192.168.7.254 publicNameOnMainInterface
+# BindAddress: localhost 192.168.7.254 publicNameOnMainInterface
 
 # The specification of another proxy which shall be used for downloads.
 # Username and password are, and see manual for limitations.
@@ -44,7 +44,7 @@ Remap-debvol: file:debvol_mirror*.gz /debian-volatile ; file:backends_debvol # D
 # Remap-secdeb: security.debian.org
 
 # Virtual page accessible in a web browser to see statistics and status
-# information, i.e. under http://***REMOVED***:3142/acng-report.html
+# information, i.e. under http://localhost:3142/acng-report.html
 ReportPage: acng-report.html
 
 # Socket file for accessing through local UNIX socket instead of TCP/IP. Can be

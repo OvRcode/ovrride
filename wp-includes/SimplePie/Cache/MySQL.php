@@ -47,8 +47,8 @@
  *
  * Registered for URLs with the "mysql" protocol
  *
- * For example, `mysql://root:password@***REMOVED***:3306/mydb?prefix=sp_` will
- * connect to the `mydb` database on `***REMOVED***` on port 3306, with the user
+ * For example, `mysql://root:password@localhost:3306/mydb?prefix=sp_` will
+ * connect to the `mydb` database on `localhost` on port 3306, with the user
  * `root` and the password `password`. All tables will be prefixed with `sp_`
  *
  * @package SimplePie
