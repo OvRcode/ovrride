@@ -469,7 +469,7 @@ class GFEntryList {
 
 		function resetResendNotificationsUI() {
 
-			jQuery('#notification_admin, #notification_user').attr('checked', false);
+			jQuery(".gform_notifications").attr('checked', false);
 			jQuery('#notifications_container .message, #notifications_override_settings').hide();
 
 		}
@@ -746,11 +746,6 @@ class GFEntryList {
 				overflow: hidden;
 				white-space: nowrap;
 			}
-
-			.message {
-				margin: 15px 0 0 !important;
-			}
-
 			.gform-filter-operator {
 				width: 100px
 			}
@@ -1094,7 +1089,7 @@ class GFEntryList {
 					if ( $is_first_column ) {
 						?>
 						<td class="column-title">
-							<a href="admin.php?page=gf_entries&view=entry&id=<?php echo absint( $form_id ); ?>&lid=<?php echo esc_attr( $lead['id'] . $search_qs . $sort_qs . $dir_qs . $filter_qs ); ?>&paged=<?php echo( $page_index + 1 ) ?>&pos=<?php echo $position; ?>&field_id=<?php echo esc_attr( $search_field_id ); ?>&operator=<?php echo esc_attr( $search_operator ); ?>"><?php echo esc_attr( $value ); ?></a>
+							<a href="admin.php?page=gf_entries&view=entry&id=<?php echo absint( $form_id ); ?>&lid=<?php echo esc_attr( $lead['id'] . $search_qs . $sort_qs . $dir_qs . $filter_qs ); ?>&paged=<?php echo( $page_index + 1 ) ?>&pos=<?php echo $position; ?>&field_id=<?php echo esc_attr( $search_field_id ); ?>&operator=<?php echo esc_attr( $search_operator ); ?>"><?php echo $value; ?></a>
 
 							<?php $gf_entry_locking->lock_info( $lead['id'] ); ?>
 

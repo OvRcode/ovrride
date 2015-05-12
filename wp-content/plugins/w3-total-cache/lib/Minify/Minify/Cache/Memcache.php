@@ -10,7 +10,7 @@
  * <code>
  * // fall back to disk caching if memcache can't connect
  * $memcache = new Memcache;
- * if ($memcache->connect('***REMOVED***', 11211)) {
+ * if ($memcache->connect('localhost', 11211)) {
  *     Minify::setCache(new Minify_Cache_Memcache($memcache));
  * } else {
  *     Minify::setCache();

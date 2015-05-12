@@ -967,7 +967,7 @@ class GFFormDisplay {
 	private static function gform_footer( $form, $class, $ajax, $field_values, $previous_button, $display_title, $display_description, $tabindex = 1 ) {
 		$form_id      = absint( $form['id'] );
 		$footer       = "
-        <div class='" . $class . "'>";
+        <div class='" . esc_attr( $class ) . "'>";
 		$button_input = self::get_form_button( $form['id'], "gform_submit_button_{$form['id']}", $form['button'], __( 'Submit', 'gravityforms' ), 'gform_button', __( 'Submit', 'gravityforms' ), 0 );
 		$button_input = apply_filters( 'gform_submit_button', $button_input, $form );
 		$button_input = apply_filters( "gform_submit_button_{$form_id}", $button_input, $form );
@@ -992,6 +992,7 @@ class GFFormDisplay {
 		$save_inputs = '';
 		if ( rgars( $form, 'save/enabled' ) ) {
 			$resume_token = isset( $_POST['gform_resume_token'] ) ? $_POST['gform_resume_token'] : rgget( 'gf_token' );
+			$resume_token = esc_attr( $resume_token );
 			$save_inputs  = "<input type='hidden' class='gform_hidden' name='gform_save' id='gform_save_{$form_id}' value='' />
                              <input type='hidden' class='gform_hidden' name='gform_resume_token' id='gform_resume_token_{$form_id}' value='{$resume_token}' />";
 		}
@@ -2688,6 +2689,17 @@ class GFFormDisplay {
 
 		$action = esc_url( remove_query_arg( 'gf_token' ) );
 
+		$ajax = isset( $_POST['gform_ajax'] );
+
+		$has_pages = self::has_pages( $form );
+
+		$default_anchor = $has_pages || $ajax ? true : false;
+
+		$use_anchor     = apply_filters( "gform_confirmation_anchor_{$form_id}", apply_filters( 'gform_confirmation_anchor', $default_anchor ) );
+		if ( $use_anchor !== false ) {
+			$action .= "#gf_$form_id";
+		}
+
 		$html_input_type = RGFormsModel::is_html5_enabled() ? 'email' : 'text';
 
 		$resume_token = esc_attr( $resume_token );
@@ -2700,12 +2712,21 @@ class GFFormDisplay {
 			$nonce_input = wp_nonce_field( 'gform_send_resume_link', '_gform_send_resume_link_nonce', true, false );
 		}
 
+		$target = $ajax ? "target='gform_ajax_frame_{$form_id}'" : '';
+
+		$ajax_fields = '';
+		if ( $ajax ) {
+			$ajax_fields = "<input type='hidden' name='gform_ajax' value='" . esc_attr( "form_id={$form_id}&amp;title=1&amp;description=1&amp;tabindex=1" ) . "' />";
+			$ajax_fields .= "<input type='hidden' name='gform_field_values' value='' />";
+		}
+
 		$resume_form = "<div class='form_saved_message_emailform'>
-							<form action='{$action}' method='POST'>
+							<form action='{$action}' method='POST' id='gform_{$form_id}' {$target}>
+								{$ajax_fields}
 								<input type='{$html_input_type}' name='gform_resume_email' value='{$email_esc}'/>
 								<input type='hidden' name='gform_resume_token' value='{$resume_token}' />
 								<input type='hidden' name='gform_send_resume_link' value='{$form_id}' />
-	                            <input type='submit' name='gform_send_resume_link_button' value='{$resume_submit_button_text}' />
+	                            <input type='submit' name='gform_send_resume_link_button' id='gform_send_resume_link_button_{$form_id}' value='{$resume_submit_button_text}' />
 	                            {$validation_message}
 	                            {$nonce_input}
 							</form>
@@ -2735,6 +2756,18 @@ class GFFormDisplay {
 
 		$save_email_confirmation = GFCommon::replace_variables( $save_email_confirmation, $form, $entry, false, true, $nl2br );
 
+		$form_id = absint( $form['id'] );
+
+		$has_pages = self::has_pages( $form );
+
+		$default_anchor = $has_pages || $ajax ? true : false;
+
+		$use_anchor     = apply_filters( "gform_confirmation_anchor_{$form_id}", apply_filters( 'gform_confirmation_anchor', $default_anchor ) );
+
+		if ( $use_anchor !== false ) {
+			$save_email_confirmation = "<a id='gf_$form_id' name='gf_$form_id' class='gform_anchor' ></a>" . $save_email_confirmation;
+		}
+
 		if ( $ajax ) {
 			$save_email_confirmation = "<!DOCTYPE html><html><head><meta charset='UTF-8' /></head><body class='GF_AJAX_POSTBACK'>" . $save_email_confirmation . '</body></html>';
 		}
@@ -2748,6 +2781,23 @@ class GFFormDisplay {
 		$resume_email = isset( $_POST['gform_resume_email'] ) ? $_POST['gform_resume_email'] : null;
 		$confirmation_message = self::replace_save_variables( $confirmation_message, $form, $resume_token, $resume_email );
 		$confirmation_message       = "<div class='form_saved_message'><span>" . $confirmation_message . '</span></div>';
+
+		$form_id = absint( $form['id'] );
+
+		$has_pages = self::has_pages( $form );
+
+		$default_anchor = $has_pages || $ajax ? true : false;
+
+		$use_anchor     = apply_filters( "gform_confirmation_anchor_{$form_id}", apply_filters( 'gform_confirmation_anchor', $default_anchor ) );
+
+		if ( $use_anchor !== false ) {
+			$confirmation_message = "<a id='gf_{$form_id}' name='gf_{$form_id}' class='gform_anchor' ></a>" . $confirmation_message;
+		}
+
+		$wrapper_css_class = GFCommon::get_browser_class() . ' gform_wrapper';
+
+		$confirmation_message = "<div class='{$wrapper_css_class}' id='gform_wrapper_{$form_id}'>" . $confirmation_message . '</div>';
+
 		if ( $ajax ) {
 			$confirmation_message = "<!DOCTYPE html><html><head><meta charset='UTF-8' /></head><body class='GF_AJAX_POSTBACK'>" . $confirmation_message . '</body></html>';
 		}

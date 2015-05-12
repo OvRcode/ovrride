@@ -223,7 +223,7 @@
         # statistics.  This might be appropriate in an experimental setup or
         # if the Apache server is protected by a reverse proxy that will
         # filter URLs in some fashion.
-        Allow from ***REMOVED***
+        Allow from localhost
         Allow from 127.0.0.1
         SetHandler mod_pagespeed_statistics
     </Location>
@@ -267,7 +267,7 @@
     <Location /mod_pagespeed_console>
         Order allow,deny
         # This can be configured similarly to mod_pagespeed_statistics above.
-        Allow from ***REMOVED***
+        Allow from localhost
         Allow from 127.0.0.1
         SetHandler mod_pagespeed_console
     </Location>
@@ -281,12 +281,12 @@
     ModPagespeedMessageBufferSize 100000
 
     <Location /mod_pagespeed_message>
-        Allow from ***REMOVED***
+        Allow from localhost
         Allow from 127.0.0.1
         SetHandler mod_pagespeed_message
     </Location>
     <Location /mod_pagespeed_referer_statistics>
-        Allow from ***REMOVED***
+        Allow from localhost
         Allow from 127.0.0.1
         SetHandler mod_pagespeed_referer_statistics
     </Location>

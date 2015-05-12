@@ -125,7 +125,7 @@ class GF_Field_FileUpload extends GF_Field {
 
 		$max_upload_size = ! $is_admin && $this->maxFileSize > 0 ? $this->maxFileSize * 1048576 : wp_max_upload_size();
 		if ( $multiple_files ) {
-			$upload_action_url = trailingslashit( site_url() ) . '?gf_page=upload';
+			$upload_action_url = trailingslashit( site_url() ) . '?gf_page=' . GFCommon::get_upload_page_slug();
 			$max_files         = $this->maxFiles > 0 ? $this->maxFiles : 0;
 			$browse_button_id  = 'gform_browse_button_' . $form_id . '_' . $id;
 			$container_id      = 'gform_multifile_upload_' . $form_id . '_' . $id;

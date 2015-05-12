@@ -1,32 +1,73 @@
 -------------------------------------------------------------------------------------------------------------------
-Version 1.9.6.6
+Version 1.9.8.3
+	- Rolled back changes to wp_rg_lead_meta definition to fix errors during upgrade.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.8.2
+    - Updated styles for messages in Resend Notifications UI (on entry list and entry detail views).
+    - Updated styles for meta boxes on entry detail view (includes minor markup changes).
+    - Fixed bug where Resend Notifications Override setting was still visible after resending notifications (on entry detail view).
+    - Fixed bug where notification checkboxes were still checked after Resend Notifications UI was reset (in entry list view).
+    - AF: Added support for tooltips on sections.
+    - AF: Updated markup/styles for delay payment options to better match standard settings (appear on PayPal Standard feed).
+    - AF: Fixed an issue with repeater.js which could cause rows to be added in the incorrect order.
+    - API: Added gfMultiFileUploader.setup() to gravityforms.js to make it easier to set up the multi-file upload field.
+    - Fixed bug where rg_lead_meta table creation fails under some database storage engine and collation combination (e.g. MyISAM with utf8mb4)
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.8.1
+    - Fixed an issue with HTTPS/SSL and the math challenge type Captcha field.
+    - AF: Field map choices now have an empty first option when a field type is set.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.8
+    - Fixed an issue with the delete permanently action links on the form list page.
+    - Fixed an issue with the setup process.
+    - Fixed an issue with the duplicate and trash form action links on the form list page.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.7
+    - Added support for the ajax shortcode attribute and anchors in the save and continue confirmations.
+	- Added security enhancements to the Form Editor.
+    - Added security enhancements to the file upload process.
+    - Updated multi-file upload processing by deprecating the ?gf_page=upload page and supporting GFCommon::get_upload_page_slug() instead.
+    - Updated logging around saving entry field values.
+	- Updated Spanish (es_ES) translation.
+    - Updated GFCommon::date_display() to support an input and output format.
+	- Fixed issue with javascript total calculation taking options into account even when their associated product isn't selected.
+	- Fixed an issue with the checkbox field and resuming an incomplete submission which could result in the incorrect choices being selected.
+	- Fixed a low severity security vulnerability in the admin area which could be exploited by authenticated users with form administration permissions.
+	- Fixed an issue with the reCaptcha field where HTTPS/SSL may not be detected correctly under certain circumstances.
+	- Fixed an issue with the setup routine creating an infinite loop in some situations.
+    - Fixed issue in GFFormsModel::update_lead_property() where (in some cases) the $form object was not set.
+    - Fixed an issue with save and continue where tokens are not reissued when invalid tokens are reused to save the submission.
+    - Fixed an issue with the shortcode preview in WordPress 4.2.
+    - Fixed an issue on the entry list where the first column doesn't display correctly under certain circumstances.
 	- Fixed issue when prepopulating checkboxes hidden by conditional logic.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.6.5
-    - AF: Added "select_custom" field to allow for custom option in drop down
-        - When choice with the value "gf_custom" is selected, an input text field takes the drop down's place.
-        - Input field is saved to the setting name "{field_name}_custom"
-        - If no choices are found with the value "gf_custom", it is appended to the choices array with the label "Add New {field_label}"
-    - AF: Added "save_callback" field meta option for filtering settings fields before being saved
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.6.4
     - Fixed an issue with the multi-file upload on mobile devices where multiple file selection is not supported.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.6.3
     - Fixed an issue with a variable name in gravityforms.js using a reserved word.
     - Fixed PHP notices related to the math type Captcha field when the Really Simple Captcha plugin is not active.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.6.2
     - Fixed an issue with empty form validation occurring if the form has required fields which have already failed validation.
     - Fixed an issue with empty form validation of multi-page forms with pages hidden by conditional logic.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.6.1
     - Fixed an issue with the values in the Payment Details box on the entry detail page. This fixes an issue with the edit links generated by the PayPal Add-On.
+	- AF: Small style change to field map UI.
+	- AF: Added function to allow addons to change field map header.
+	- AF: Added handling of the date_created merge tag to the get_field_value function for instances where this function is used before the entry has been created.
+	- AF: Added ability to set a limit on the number of fields that may be added for fields of type dynamic_field_map.
+    - AF: Added support for displaying validation errors set for fields created as type dynamic_field_map.
+    - AF: Change "get_field_value" to use "get_full_name" and "get_full_address" functions to prevent access level conflict with MailChimp Add-On.
+	- AF: Fixed a bug where an error would be thrown if the function plugin_settings_page was not included in the add-on.
+	- AF: Added the ability to exclude certain field types from field mapping in the get_field_map_choices function.
+	- AF: Added "get_field_value" helper function to get value of a selected field.
+    - AF: Added support for disabling custom key option on dynamic field map setting.
+    - AF: Fixed issue where GFFeedAddon::get_single_submission_feed() would sometimes fail to return a valid feed.
+    - AF: Added support for multiple-select elements in repeater.js.
+    - AF: Fixed an issue where custom fields for dynamic field maps were indented.
+    - AF: Fixed an issue where multiple dynamic field map fields could not be used on the same page.
+    - AF: Added "select_custom" field to allow for custom option in drop down.
+    - AF: Added "save_callback" field meta option for filtering settings fields before being saved.
+	- API: Added GF_Field::_is_entry_detail to allow GF_Field::is_entry_detail() to be overridden.
+	- API: Added GF_Field_Select::get_choices() and GF_Field_MultiSelect::get_choices() to make it easier to extend those fields.
 
 -------------------------------------------------------------------------------------------------------------------
 Version 1.9.6

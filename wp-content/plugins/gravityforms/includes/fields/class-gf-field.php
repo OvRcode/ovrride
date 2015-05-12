@@ -19,6 +19,8 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 	private static $deprecation_notice_fired = false;
 
+	private $_is_entry_detail = null;
+
 	public function __construct( $data = array() ) {
 		if ( empty( $data ) ) {
 			return;
@@ -492,7 +494,7 @@ class GF_Field extends stdClass implements ArrayAccess {
 	}
 
 	public function is_entry_detail() {
-		return GFCommon::is_entry_detail();
+		return isset( $this->_is_entry_detail ) ? (bool) $this->_is_entry_detail : GFCommon::is_entry_detail();
 	}
 
 	public function is_entry_detail_edit() {
@@ -537,5 +539,43 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 			return $value;
 		}
+	}
+
+	public function sanitize_settings(){
+		$this->id = absint($this->id);
+		$this->type = wp_strip_all_tags($this->type);
+		$this->formId = absint( $this->formId );
+
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+		$this->label = wp_kses($this->label, $allowed_tags);
+		$this->adminLabel = wp_kses($this->adminLabel, $allowed_tags);
+		$this->description = wp_kses($this->description, $allowed_tags);
+
+		$this->isRequired = (bool) $this->isRequired;
+
+		if ( $this->size ) {
+			$this->size = wp_strip_all_tags($this->size);
+		}
+
+		if ( isset( $this->errorMessage ) ) {
+			$this->errorMessage = sanitize_text_field( $this->errorMessage );
+		}
+
+		if ( $this->labelPlacement ) {
+			$this->labelPlacement = wp_strip_all_tags($this->labelPlacement);
+		}
+
+		if ( isset( $this->descriptionPlacement ) ) {
+			$this->descriptionPlacement = wp_strip_all_tags($this->descriptionPlacement);
+		}
+
+		if ( isset ( $this->subLabelPlacement ) ) {
+			$this->subLabelPlacement = wp_strip_all_tags($this->subLabelPlacement);
+		}
+
+		if ( isset( $this->placeholder ) ) {
+			$this->placeholder = sanitize_text_field( $this->placeholder );
+		}
+
 	}
 }

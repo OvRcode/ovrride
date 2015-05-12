@@ -113,7 +113,7 @@
         	<?php _e('Make sure memcached is starts automatically on server boot:', 'w3-total-cache'); ?>
         	<pre class="console"># touch /etc/init.d/memcached
 # echo '#!/bin/sh -e' &gt;&gt; /etc/init.d/memcached
-# echo '/usr/local/bin/memcached -d -m 128 -p 11211 -u nobody -l ***REMOVED***' &gt;&gt; /etc/init.d/memcached
+# echo '/usr/local/bin/memcached -d -m 128 -p 11211 -u nobody -l localhost' &gt;&gt; /etc/init.d/memcached
 # chmod u+x /etc/init.d/memcached
 # echo '/etc/init.d/memcached' &gt;&gt; /etc/rc.local</pre>
 		</li>

@@ -128,7 +128,7 @@ class GFCommon {
 	}
 
 	public static function recursive_add_index_file( $dir ) {
-		if ( ! is_dir( $dir ) ) {
+		if ( ! is_dir( $dir ) || is_link( $dir ) ) {
 			return;
 		}
 
@@ -2151,13 +2151,18 @@ class GFCommon {
 		}
 	}
 
-	public static function date_display( $value, $format = 'mdy' ) {
-		$date = self::parse_date( $value, $format );
+	public static function date_display( $value, $input_format = 'mdy', $output_format = false ) {
+
+		if( ! $output_format ) {
+			$output_format = $input_format;
+		}
+
+		$date = self::parse_date( $value, $input_format );
 		if ( empty( $date ) ) {
 			return $value;
 		}
 
-		list( $position, $separator ) = rgexplode( '_', $format, 2 );
+		list( $position, $separator ) = rgexplode( '_', $output_format, 2 );
 		switch ( $separator ) {
 			case 'dash' :
 				$separator = '-';
@@ -2657,7 +2662,7 @@ class GFCommon {
 	}
 
 	public static function get_disallowed_file_extensions() {
-		return array( 'php', 'asp', 'exe', 'com', 'htaccess', 'phtml', 'php3', 'php4', 'php5', 'php6' );
+		return array( 'php', 'asp', 'aspx', 'cmd', 'csh', 'bat', 'html', 'hta', 'jar', 'exe', 'com', 'js', 'lnk', 'htaccess', 'phtml', 'ps1', 'ps2', 'php3', 'php4', 'php5', 'php6', 'py', 'rb', 'tmp' );
 	}
 
 	public static function match_file_extension( $file_name, $extensions ) {
@@ -4168,6 +4173,16 @@ class GFCommon {
 
 	public static function has_merge_tag( $string ) {
 		return preg_match( '/{.+}/', $string );
+	}
+
+	public static function get_upload_page_slug() {
+		$slug = get_option( 'gform_upload_page_slug' );
+		if ( empty( $slug ) ) {
+			$slug = substr( str_shuffle( wp_hash( microtime() ) ), 0, 15 );
+			update_option( 'gform_upload_page_slug', $slug );
+		}
+
+		return $slug;
 	}
 }
 
