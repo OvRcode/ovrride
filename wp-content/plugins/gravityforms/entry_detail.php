@@ -303,11 +303,14 @@ class GFEntryDetail {
 						if (response) {
 							displayMessage(response, "error", "#notifications_container");
 						} else {
-							displayMessage("<?php _e( 'Notifications were resent successfully.', 'gravityforms' ); ?>", "updated", "#notifications_container");
+							displayMessage("<?php _e( 'Notifications were resent successfully.', 'gravityforms' ); ?>", "updated", "#notifications_container" );
 
 							// reset UI
-							jQuery(".gform_notifications").attr('checked', false);
+							jQuery(".gform_notifications").attr( 'checked', false );
 							jQuery('#notification_override_email').val('');
+
+							toggleNotificationOverride();
+
 						}
 
 						jQuery('#please_wait_container').hide();
@@ -319,10 +322,8 @@ class GFEntryDetail {
 
 			}
 
-			function displayMessage(message, messageClass, container) {
-
-				jQuery(container).find('.message').hide().html(message).attr('class', 'message ' + messageClass).slideDown();
-
+			function displayMessage( message, messageClass, container ) {
+				jQuery( container ).find( '.message' ).hide().html( message ).attr( 'class', 'message ' + messageClass ).slideDown();
 			}
 
 			function toggleNotificationOverride(isInit) {
@@ -373,14 +374,13 @@ class GFEntryDetail {
 
 		<!-- INFO BOX -->
 		<div id="submitdiv" class="stuffbox">
-			<h3>
-				<span class="hndle"><?php _e( 'Entry', 'gravityforms' ); ?></span>
+			<h3 class="hndle" style="cursor:default;">
+				<span><?php _e( 'Entry', 'gravityforms' ); ?></span>
 			</h3>
 
 			<div class="inside">
 				<div id="submitcomment" class="submitbox">
 					<div id="minor-publishing" style="padding:10px;">
-						<br />
 						<?php _e( 'Entry Id', 'gravityforms' ); ?>: <?php echo absint( $lead['id'] ) ?><br /><br />
 						<?php _e( 'Submitted on', 'gravityforms' ); ?>: <?php echo esc_html( GFCommon::format_date( $lead['date_created'], false, 'Y/m/d' ) ) ?>
 						<br /><br />
@@ -520,10 +520,12 @@ class GFEntryDetail {
 		<?php if ( GFCommon::current_user_can_any( 'gravityforms_edit_entry_notes' ) ) { ?>
 			<!-- start notifications -->
 			<div class="postbox" id="notifications_container">
-				<h3 style="cursor:default;"><span><?php _e( 'Notifications', 'gravityforms' ); ?></span></h3>
+				<h3 class="hndle" style="cursor:default;">
+					<span><?php _e( 'Notifications', 'gravityforms' ); ?></span>
+				</h3>
 
 				<div class="inside">
-					<div class="message" style="display:none; padding:10px; margin:10px 0px;"></div>
+					<div class="message" style="display:none;padding:10px;"></div>
 					<div>
 						<?php
 
@@ -1020,9 +1022,8 @@ class GFEntryDetail {
 		?>
 		<!-- PAYMENT BOX -->
 		<div id="submitdiv" class="stuffbox">
-			<h3>
-                <span
-					class="hndle"><?php echo $lead['transaction_type'] == 2 ? __( 'Subscription Details', 'gravityforms' ) : __( 'Payment Details', 'gravityforms' ); ?></span>
+			<h3 class="hndle" style="cursor:default;">
+                <span><?php echo $lead['transaction_type'] == 2 ? __( 'Subscription Details', 'gravityforms' ) : __( 'Payment Details', 'gravityforms' ); ?></span>
 			</h3>
 
 			<div class="inside">

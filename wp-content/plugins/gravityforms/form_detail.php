@@ -867,7 +867,7 @@ class GFFormDetail {
 					$custom_field_names = RGFormsModel::get_custom_field_names();
 					foreach ( $custom_field_names as $name ) {
 						?>
-						<option value="<?php echo $name ?>"><?php echo $name ?></option>
+						<option value="<?php echo esc_attr( $name ); ?>"><?php echo esc_html( $name ) ?></option>
 					<?php
 					}
 					?>
@@ -2697,6 +2697,12 @@ class GFFormDetail {
 		$form_meta = json_decode( $form_json, true );
 		$form_meta = GFFormsModel::convert_field_objects( $form_meta );
 
+		if ( $id === 0 || ( isset( $form_meta['version'] ) && version_compare( $form_meta['version'], '1.9.6.10', '>=' ) ) ) {
+			$form_meta['version'] = GFForms::$version; // update version on save
+			$form_meta = self::sanitize_settings( $form_meta );
+		}
+
+
 		GFCommon::log_debug( 'GFFormDetail::save_form_info(): Form meta => ' . print_r( $form_meta, true ) );
 
 		if ( ! $form_meta ) {
@@ -2777,6 +2783,19 @@ class GFFormDetail {
 
 			return array( 'status' => $id * - 1, 'meta' => $form_meta );
 		}
+	}
+
+	public static function sanitize_settings( $form ){
+
+		if ( apply_filters( 'gform_disable_form_settings_sanitization', false ) ) {
+			return $form;
+		}
+
+		foreach( $form['fields'] as $field ) {
+			/* @var GF_Field $field */
+			$field->sanitize_settings();
+		}
+		return $form;
 	}
 
 	public static function save_form() {

@@ -53,7 +53,11 @@ class GF_Field_Select extends GF_Field {
 		$css_class = trim( esc_attr( $class ) . ' gfield_select' );
 		$tabindex              = $this->get_tabindex();
 		$disabled_text         = $is_form_editor ? 'disabled="disabled"' : '';
-		return sprintf( "<div class='ginput_container'><select name='input_%d' id='%s' $logic_event class='%s' $tabindex %s>%s</select></div>", $id, $field_id, $css_class, $disabled_text, GFCommon::get_select_choices( $this, $value ) );
+		return sprintf( "<div class='ginput_container'><select name='input_%d' id='%s' $logic_event class='%s' $tabindex %s>%s</select></div>", $id, $field_id, $css_class, $disabled_text, $this->get_choices( $value ) );
+	}
+
+	public function get_choices( $value){
+		return GFCommon::get_select_choices( $this, $value );
 	}
 
 	public function get_value_entry_list( $value, $entry, $field_id, $columns, $form ) {

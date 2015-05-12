@@ -227,6 +227,12 @@ class GFFormList {
 				jQuery("#forms_form")[0].submit();
 			}
 
+			function ConfirmDeleteForm(form_id){
+				if( confirm(' <?php esc_attr_e( 'WARNING: You are about to delete this form and ALL entries associated with it. ', 'gravityforms' ) . __( 'Cancel to stop, OK to delete.', 'gravityforms' ) ?> ') ){
+					DeleteForm(form_id);
+				}
+			}
+
 			function DuplicateForm(form_id) {
 				jQuery("#action_argument").val(form_id);
 				jQuery("#action").val("duplicate");
@@ -453,7 +459,8 @@ class GFFormList {
 									$form_actions['restore'] = array(
 										'label'        => __( 'Restore', 'gravityforms' ),
 										'title'        => __( 'Restore', 'gravityforms' ),
-										'url'          => 'javascript:RestoreForm(' . $form->id . ');',
+										'url'          => '#',
+										'onclick'      => 'RestoreForm(' . $form->id . ');',
 										'capabilities' => 'gravityforms_delete_forms',
 										'priority'     => 600,
 									);
@@ -461,7 +468,8 @@ class GFFormList {
 										'label'        => __( 'Delete permanently', 'gravityforms' ),
 										'title'        => __( 'Delete permanently', 'gravityforms' ),
 										'menu_class'   => 'delete',
-										'url'          => 'javascript: if(confirm("' . __( 'WARNING: You are about to delete this form and ALL entries associated with it. ', 'gravityforms' ) . __( '\"Cancel\" to stop, \"OK\" to delete.', 'gravityforms' ) . '")){ DeleteForm(' . $form->id . ');}',
+										'url'          => '#',
+										'onclick'      => 'ConfirmDeleteForm(' . $form->id. ');',
 										'capabilities' => 'gravityforms_delete_forms',
 										'priority'     => 500,
 									);
@@ -474,7 +482,8 @@ class GFFormList {
 									$form_actions['duplicate'] = array(
 										'label'        => __( 'Duplicate', 'gravityforms' ),
 										'title'        => __( 'Duplicate this form', 'gravityforms' ),
-										'url'          => 'javascript:DuplicateForm(' . $form->id . ');',
+										'url'         => '#',
+										'onclick'          => 'DuplicateForm(' . $form->id . ');return false;',
 										'capabilities' => 'gravityforms_create_form',
 										'priority'     => 600,
 									);
@@ -482,7 +491,8 @@ class GFFormList {
 									$form_actions['trash'] = array(
 										'label'        => __( 'Trash', 'gravityforms' ),
 										'title'        => __( 'Move this form to the trash', 'gravityforms' ),
-										'url'          => 'javascript:TrashForm(' . $form->id . ');',
+										'url'         => '#',
+										'onclick'          => 'TrashForm(' . $form->id . ');return false;',
 										'capabilities' => 'gravityforms_delete_forms',
 										'menu_class'   => 'trash',
 										'priority'     => 500,

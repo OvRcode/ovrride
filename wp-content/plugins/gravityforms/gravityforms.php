@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.9.6.6
+Version: 1.9.8.3
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 Text Domain: gravityforms
@@ -112,7 +112,7 @@ add_action( 'plugins_loaded', array( 'GFForms', 'loaded' ) );
 
 class GFForms {
 
-	public static $version = '1.9.6.6';
+	public static $version = '1.9.8.3';
 
 	public static function loaded() {
 
@@ -318,18 +318,27 @@ class GFForms {
 			return;
 		}
 
-		if ( 'upload' === rgget( 'gf_page' ) ) {
+		$page = rgget( 'gf_page' );
+
+		$is_legacy_upload_page = $_SERVER['REQUEST_METHOD'] == 'POST' && $page == 'upload';
+
+		if ( $is_legacy_upload_page && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+			_doing_it_wrong( 'gf_page=upload', 'gf_page=upload is now deprecated. Use GFCommon::get_upload_page_slug() instead', '1.9.6.13' );
+		}
+
+		$is_upload_page = $_SERVER['REQUEST_METHOD'] == 'POST' && $page == GFCommon::get_upload_page_slug();
+
+		if ( $is_upload_page || $is_legacy_upload_page ) {
 			require_once( GFCommon::get_base_path() . '/includes/upload.php' );
 			exit();
 		}
-
 
 		//ensure users are logged in
 		if ( ! is_user_logged_in() ) {
 			auth_redirect();
 		}
 
-		switch ( rgget( 'gf_page' ) ) {
+		switch ( $page ) {
 			case 'preview':
 				require_once( GFCommon::get_base_path() . '/preview.php' );
 				break;
@@ -609,7 +618,7 @@ class GFForms {
 	 * Renames files with a .bak extension if they have a file extension that is not allowed in the Gravity Forms uploads folder.
 	 */
 	private static function rename_suspicious_files_recursive( $dir, $flag_security_alert = false ) {
-		if ( ! is_dir( $dir ) ) {
+		if ( ! is_dir( $dir ) || is_link( $dir ) ) {
 			return;
 		}
 
@@ -624,7 +633,7 @@ class GFForms {
 			if ( is_dir( $dir . DIRECTORY_SEPARATOR . $file ) && $file != '.' && $file != '..' ) {
 				$flag_security_alert = self::rename_suspicious_files_recursive( $dir . DIRECTORY_SEPARATOR . $file, $flag_security_alert );
 			} elseif ( GFCommon::file_name_has_disallowed_extension( $file )
-			           && ! GFCommon::match_file_extension( $file, array( 'htaccess', 'bak' ) ) ) {
+			           && ! GFCommon::match_file_extension( $file, array( 'htaccess', 'bak', 'html' ) ) ) {
 				$mini_hash = substr( wp_hash( $file ), 0, 6 );
 				$newName   = sprintf( '%s/%s.%s.bak', $dir, $file, $mini_hash );
 				rename( $dir . '/' . $file, $newName );
@@ -2522,14 +2531,15 @@ class GFForms {
 						$label        = rgar( $menu_item, 'label' );
 						$sub_menu_str = self::toolbar_sub_menu_items( $sub_menu_items, $compact );
 					}
-					$link_class = rgar( $menu_item, 'link_class' );
+					$link_class = esc_attr( rgar( $menu_item, 'link_class' ) );
 					$icon       = rgar( $menu_item, 'icon' );
-					$url        = rgar( $menu_item, 'url' );
-					$title      = rgar( $menu_item, 'title' );
-					$onclick    = rgar( $menu_item, 'onclick' );
+					$url        = esc_url( rgar( $menu_item, 'url' ) );
+					$title      = esc_attr( rgar( $menu_item, 'title' ) );
+					$onclick    = esc_js( rgar( $menu_item, 'onclick' ) );
+					$label 		= esc_html( $label );
+					$target 	= rgar( $menu_item, 'target' );
 
-					$target = rgar( $menu_item, 'target' );
-					$link   = "<a class='{$link_class}' onclick='{$onclick}' title='{$title}' href='{$url}' target='{$target}'>{$icon} {$label}</a>" . $sub_menu_str;
+					$link   	= "<a class='{$link_class}' onclick='{$onclick}' title='{$title}' href='{$url}' target='{$target}'>{$icon} {$label}</a>" . $sub_menu_str;
 					if ( $compact ) {
 						if ( $key == 'delete' ) {
 							$link = apply_filters( 'gform_form_delete_link', $link );
@@ -2556,6 +2566,8 @@ class GFForms {
 
 	public static function get_toolbar_menu_items( $form_id, $compact = false ) {
 		$menu_items = array();
+
+		$form_id = absint( $form_id );
 
 		//---- Form Editor ----
 		$edit_capabilities = array( 'gravityforms_edit_forms' );
@@ -2631,11 +2643,11 @@ class GFForms {
 		$sub_menu_items_string = '';
 		foreach ( $menu_items as $menu_item ) {
 			if ( GFCommon::current_user_can_any( rgar( $menu_item, 'capabilities' ) ) ) {
-				$menu_class = rgar( $menu_item, 'menu_class' );
-				$link_class = rgar( $menu_item, 'link_class' );
-				$url        = rgar( $menu_item, 'url' );
-				$label      = rgar( $menu_item, 'label' );
-				$target     = rgar( $menu_item, 'target' );
+				$menu_class = esc_attr( rgar( $menu_item, 'menu_class' ) );
+				$link_class = esc_attr( rgar( $menu_item, 'link_class' ) );
+				$url        = esc_url( rgar( $menu_item, 'url' ) );
+				$label      = esc_html( rgar( $menu_item, 'label' ) );
+				$target     = esc_attr( rgar( $menu_item, 'target' ) );
 				$sub_menu_items_string .= "<li class='{$menu_class}'><a href='{$url}' class='{$link_class}' target='{$target}'>{$label}</a></li>";
 			}
 		}

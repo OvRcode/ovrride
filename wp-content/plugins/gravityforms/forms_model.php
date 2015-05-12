@@ -662,7 +662,7 @@ class GFFormsModel {
 				// if property is status, prev value is spam and new value is active
 				if ( $property_name == 'status' && $previous_value == 'spam' && $property_value == 'active' && ! rgar( $lead, 'post_id' ) ) {
 					$lead[ $property_name ] = $property_value;
-					$lead['post_id']      = GFCommon::create_post( $form, $lead );
+					$lead['post_id']      = GFCommon::create_post( isset( $form ) ? $form : GFAPI::get_form( $lead['form_id'] ), $lead );
 				}
 
 				do_action( "gform_update_{$property_name}", $lead_id, $property_value, $previous_value );
@@ -1274,11 +1274,11 @@ class GFFormsModel {
 	public static function save_lead( $form, &$lead ) {
 		global $wpdb;
 
-		GFCommon::log_debug( 'GFFormsModel::save_lead(): Saving entry.' );
+		GFCommon::log_debug( __METHOD__ . '(): Saving entry.' );
 
-		$is_form_editor = GFCommon::is_form_editor();
+		$is_form_editor  = GFCommon::is_form_editor();
 		$is_entry_detail = GFCommon::is_entry_detail();
-		$is_admin = $is_form_editor || $is_entry_detail;
+		$is_admin        = $is_form_editor || $is_entry_detail;
 
 		if ( $is_admin && ! GFCommon::current_user_can_any( 'gravityforms_edit_entries' ) ) {
 			die( __( "You don't have adequate permission to edit entries.", 'gravityforms' ) );
@@ -1305,7 +1305,7 @@ class GFFormsModel {
 			$lead_id = $wpdb->insert_id;
 			$lead    = array( 'id' => $lead_id );
 
-			GFCommon::log_debug( "GFFormsModel::save_lead(): Entry record created in the database. ID: {$lead_id}." );
+			GFCommon::log_debug( __METHOD__ . "(): Entry record created in the database. ID: {$lead_id}." );
 		}
 
 		$current_fields   = $wpdb->get_results( $wpdb->prepare( "SELECT id, field_number FROM $lead_detail_table WHERE lead_id=%d", $lead['id'] ) );
@@ -1315,7 +1315,7 @@ class GFFormsModel {
 		$calculation_fields = array();
 		$recalculate_total  = false;
 
-		GFCommon::log_debug( 'GFFormsModel::save_lead(): Saving entry fields.' );
+		GFCommon::log_debug( __METHOD__ . '(): Saving entry fields.' );
 
 		foreach ( $form['fields'] as $field ) {
 			/* @var $field GF_Field */
@@ -1350,14 +1350,11 @@ class GFFormsModel {
 					continue;
 				}
 
-				GFCommon::log_debug( "GFFormsModel::save_lead(): Saving field {$field->label}(#{$field->id} - {$field->type})." );
-
 				if ( $field->type == 'post_category' ) {
 					$field = GFCommon::add_categories_as_choices( $field, '' );
 				}
 
 				$inputs = $field->get_entry_inputs();
-
 				if ( is_array( $inputs ) ) {
 					foreach ( $inputs as $input ) {
 						self::save_input( $form, $field, $lead, $current_fields, $input['id'] );
@@ -1370,11 +1367,7 @@ class GFFormsModel {
 
 		if ( ! empty( $calculation_fields ) ) {
 			foreach ( $calculation_fields as $calculation_field ) {
-
-				GFCommon::log_debug( "GFFormsModel::save_lead(): Saving calculated field {$calculation_field->label}(#{$calculation_field->id} - {$calculation_field->type})." );
-
 				$inputs = $calculation_field->get_entry_inputs();
-
 				if ( is_array( $inputs ) ) {
 					foreach ( $inputs as $input ) {
 						self::save_input( $form, $calculation_field, $lead, $current_fields, $input['id'] );
@@ -1391,11 +1384,11 @@ class GFFormsModel {
 		//saving total field as the last field of the form.
 		if ( ! empty( $total_fields ) ) {
 			foreach ( $total_fields as $total_field ) {
-				GFCommon::log_debug( 'GFFormsModel::save_lead(): Saving total field.' );
 				self::save_input( $form, $total_field, $lead, $current_fields, $total_field->id );
 				self::refresh_lead_field_value( $lead['id'], $total_field['id'] );
 			}
 		}
+		GFCommon::log_debug( __METHOD__ . '(): Finished saving entry fields.' );
 	}
 
 	public static function create_lead( $form ) {
@@ -1881,6 +1874,8 @@ class GFFormsModel {
 		}
 		global $wpdb;
 
+		$table = self::get_incomplete_submissions_table_name();
+
 		$submitted_values = array();
 		foreach ( $form['fields'] as $field ) {
 			/* @var GF_Field $field */
@@ -1895,11 +1890,21 @@ class GFFormsModel {
 		$submission['page_number']     = $page_number;
 		$submission['files']           = $files;
 		$submission['gform_unique_id'] = $form_unique_id;
+
+		// Issue a new token if no longer valid
+		if ( ! empty( $resume_token ) ) {
+			$sql = $wpdb->prepare("SELECT COUNT(*) FROM {$table} WHERE uuid = %s", $resume_token );
+			$count = $wpdb->get_var( $sql );
+			if ( $count != 1 ) {
+				$resume_token = false;
+			}
+		}
+
 		if ( empty( $resume_token ) ) {
 			$resume_token = self::get_uuid();
 
 			$result = $wpdb->insert(
-				self::get_incomplete_submissions_table_name(),
+				$table,
 				array(
 					'uuid'         => $resume_token,
 					'form_id'      => $form['id'],
@@ -1919,7 +1924,7 @@ class GFFormsModel {
 			);
 		} else {
 			$result = $wpdb->update(
-				self::get_incomplete_submissions_table_name(),
+				$table,
 				array(
 					'form_id'      => $form['id'],
 					'date_created' => current_time( 'mysql', true ),
@@ -2832,12 +2837,13 @@ class GFFormsModel {
 		$value = self::prepare_value( $form, $field, $value, $input_name, rgar( $lead, 'id' ) );
 
         //ignore fields that have not changed
-        if( $lead != null && isset( $lead[ $input_id ] ) && $value === rgget( (string) $input_id, $lead ) ){
+        if ( $lead != null && isset( $lead[ $input_id ] ) && $value === rgget( (string) $input_id, $lead ) ) {
             return;
         }
 
 		$lead_detail_id = self::get_lead_detail_id( $current_fields, $input_id );
-		self::update_lead_field_value( $form, $lead, $field, $lead_detail_id, $input_id, $value );
+		$result         = self::update_lead_field_value( $form, $lead, $field, $lead_detail_id, $input_id, $value );
+		GFCommon::log_debug( __METHOD__ . "(): Saving: {$field->label}(#{$input_id} - {$field->type}). Result: " . var_export( $result, 1 ) );
 
 	}
 

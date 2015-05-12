@@ -60,13 +60,13 @@ class GF_Field_CAPTCHA extends GF_Field {
 
 				//finding second number
 				for ( $second = 0; $second < 10; $second ++ ) {
-					if ( $captcha_obj->check( $prefixes[2], $second ) ){
+					if ( $captcha_obj->check( $prefixes[2], $second ) ) {
 						break;
 					}
 				}
 
 				//if it is a +, perform the sum
-				if ( $captcha_obj->check( $prefixes[1], '+' ) ){
+				if ( $captcha_obj->check( $prefixes[1], '+' ) ) {
 					$result = $first + $second;
 				} else {
 					$result = $first - $second;
@@ -165,7 +165,7 @@ class GF_Field_CAPTCHA extends GF_Field {
 					$options   = "<script type='text/javascript'>" . apply_filters( 'gform_cdata_open', '' ) . " var RecaptchaOptions = {theme : '$theme'}; if(parseInt('{$tabindex}') > 0) {RecaptchaOptions.tabindex = {$tabindex2};}" .
 					             apply_filters( 'gform_recaptcha_init_script', '', $form_id, $this ) . apply_filters( 'gform_cdata_close', '' ) . '</script>';
 
-					$is_ssl = ! empty( $_SERVER['HTTPS'] );
+					$is_ssl = GFCommon::is_ssl();
 
 					return $options . "<div class='ginput_container' id='$field_id'>" . recaptcha_get_html( $publickey, null, $is_ssl, $language ) . '</div>';
 				}
@@ -291,6 +291,10 @@ class GF_Field_CAPTCHA extends GF_Field {
 		$filename = $captcha->generate_image( $prefix, $word );
 		$url      = RGFormsModel::get_upload_url( 'captcha' ) . '/' . $filename;
 		$path     = $captcha->tmp_dir . $filename;
+
+		if ( GFCommon::is_ssl() && strpos( $url, 'http:' ) !== false ) {
+			$url = str_replace( 'http:', 'https:', $url );
+		}
 
 		return array( 'path' => $path, 'url' => $url, 'height' => $captcha->img_size[1], 'width' => $captcha->img_size[0], 'prefix' => $prefix );
 	}

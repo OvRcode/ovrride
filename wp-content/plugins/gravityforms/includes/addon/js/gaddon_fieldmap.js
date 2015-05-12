@@ -1,5 +1,7 @@
 var gfieldmap = function( options ) {
 	
+	var self = this;
+	
 	self.options = options;
 	self.UI = jQuery( '#gaddon-setting-row-'+ self.options.fieldName );
 	
@@ -62,7 +64,7 @@ var gfieldmap = function( options ) {
 		self.data = jQuery.parseJSON( jQuery( '#' + self.options.fieldId ).val() );
 		
 		if ( ! self.data ) {
-			data = [ {
+			self.data = [ {
 				key: '',
 				value: '',
 				custom_key: ''
@@ -72,10 +74,18 @@ var gfieldmap = function( options ) {
 	}
 	
 	self.setupRepeater = function() {
+
+		var limit;
+		if (self.options.limit > 0){
+			limit = self.options.limit;
+		}
+		else{
+			limit = 0;
+		}
 		
 		self.UI.find( 'tbody.repeater' ).repeater( {
 			
-			limit:              0,
+			limit:              limit,
 			items:              self.data,
 			addButtonMarkup:    '<img src="'+ self.options.baseURL +'/images/add.png" style="cursor:pointer;" />',
 			removeButtonMarkup: '<img src="'+ self.options.baseURL +'/images/remove.png" style="cursor:pointer;" />',
@@ -105,7 +115,7 @@ var gfieldmap = function( options ) {
 						delete data[i].custom_key;
 						
 					}
-					
+										
 					jQuery( '#'+ self.options.fieldId ).val( jQuery.toJSON( data ) );
 					
 				}

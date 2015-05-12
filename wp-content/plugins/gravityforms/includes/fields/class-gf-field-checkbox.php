@@ -215,7 +215,7 @@ class GF_Field_Checkbox extends GF_Field {
 					$id = $form_id . '_' . $this->id . '_' . $choice_number ++;
 				}
 
-				if ( empty( $_POST ) && rgar( $choice, 'isSelected' ) ) {
+				if ( ! isset( $_GET['gf_token'] ) && empty( $_POST ) && rgar( $choice, 'isSelected' ) ) {
 					$checked = "checked='checked'";
 				} else if ( is_array( $value ) && RGFormsModel::choice_value_match( $this, $choice, rgget( $input_id, $value ) ) ) {
 					$checked = "checked='checked'";

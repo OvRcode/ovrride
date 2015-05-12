@@ -19,6 +19,7 @@
 	margin-top: 10px;
 	margin-left: 165px;
 }
+.settings-field-map-table .repeater th { padding-left: 0px; }
 
 .settings-field-map-table .custom-key-reset:hover, .gaddon-setting-select-custom-container .select-custom-reset:hover { background-position-x: -10px; }
 .settings-field-map-table .custom-key-container:hover .custom-key-reset, .gaddon-setting-select-custom-container:hover .select-custom-reset { display:block; }
