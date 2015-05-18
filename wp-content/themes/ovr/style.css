@@ -999,10 +999,7 @@ payment_methods methods {
 	font-weight: bold;
 	text-decoration: none;
 }
-/* TODO: REMOVE WHEN THEME UPGRADE IS COMPLETE*/
-.ovr_soc_pad{
-  vertical-align: -5%
-}
+
 .ovr_soc_icon {
 	margin:0px 3px 0px 0px !important;
 }

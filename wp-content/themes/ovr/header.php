@@ -89,19 +89,19 @@
         <div class="social-media-icons">
           <ul style="margin-top:5px;" id="topnav">
             <li class="ovr_soc_icon">
-              <a href="/contact-us/" title="Contact Us"><i class="icon-envelope icon-large"></i></a>
+              <a href="/contact-us/" title="Contact Us"><i class="fa fa-envelope fa-lg"></i></a>
             </li>
             <li class="ovr_soc_icon">
-              <a href="https://www.facebook.com/ovrride" title="Like Us on Facebook" target="_blank"><i class="icon-facebook-sign icon-large"></i></a>
+              <a href="https://www.facebook.com/ovrride" title="Like Us on Facebook" target="_blank"><i class="fa fa-facebook-square fa-lg"></i></a>
             </li>
             <li class="ovr_soc_icon">
-              <a href="http://twitter.com/ovrride" title="Follow Us on Twitter" target="_blank"><i class="icon-twitter-sign icon-large"></i></a>
+              <a href="http://twitter.com/ovrride" title="Follow Us on Twitter" target="_blank"><i class="fa fa-twitter-square fa-lg"></i></a>
             </li>
-            <li class="ovr_soc_icon ovr_soc_pad">
-              <a href="http://instagram.com/ovrride" title="Follow Us on Instagram" target="_blank"><i class="icon-instagram icon-large"></i></a>
+            <li class="ovr_soc_icon">
+              <a href="http://instagram.com/ovrride" title="Follow Us on Instagram" target="_blank"><i class="fa fa-instagram fa-lg"></i></a>
             </li>
-            <li class="ovr_soc_icon_end ovr_soc_pad">
-              <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="icon-youtube-sign icon-large"></i></a>
+            <li class="ovr_soc_icon_end">
+              <a href="http://www.youtube.com/user/ovrrideTV" title="Watch Us on YouTube" target="_blank"><i class="fa fa-youtube-square fa-lg"></i></a>
             </li>
             <li>
               <a href="/cart">CART</a>
