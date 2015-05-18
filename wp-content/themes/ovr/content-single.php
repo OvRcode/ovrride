@@ -47,7 +47,7 @@
 				// Only show the tags on the Single Post page
 				quark_entry_meta();
 			} ?>
-			<?php edit_post_link( __( 'Edit', 'quark' ) . ' <i class="icon-angle-right"></i>', '<div class="edit-link">', '</div>' ); ?>
+			<?php edit_post_link( __( 'Edit', 'quark' ) . ' <i class="fa fa-angle-right"></i>', '<div class="edit-link">', '</div>' ); ?>
 			<?php if ( is_singular() && get_the_author_meta( 'description' ) && is_multi_author() ) { // If a user has filled out their description and this is a multi-author blog, show a bio on their entries. ?>
 				<div class="author-info clearfix">
 					<div class="author-avatar">
@@ -58,16 +58,16 @@
 						<p><?php the_author_meta( 'description' ); ?></p>
 						<p class="social-meta">
 							<?php if ( get_the_author_meta( 'url' ) ) { ?>
-								<a href="<?php the_author_meta( 'url' ) ?>" title="Website"><i class="icon-link"></i></a>
+								<a href="<?php the_author_meta( 'url' ) ?>" title="Website"><i class="fa fa-link"></i></a>
 							<?php } ?>
 							<?php if ( get_the_author_meta( 'twitter' ) ) { ?>
-								<a href="<?php the_author_meta( 'twitter' ) ?>" title="Twitter"><i class="icon-twitter"></i></a>
+								<a href="<?php the_author_meta( 'twitter' ) ?>" title="Twitter"><i class="fa fa-twitter"></i></a>
 							<?php } ?>
 							<?php if ( get_the_author_meta( 'facebook' ) ) { ?>
-								<a href="<?php the_author_meta( 'facebook' ) ?>" title="Facebook"><i class="icon-facebook-sign"></i></a>
+								<a href="<?php the_author_meta( 'facebook' ) ?>" title="Facebook"><i class="fa fa-facebook-sign"></i></a>
 							<?php } ?>
 							<?php if ( get_the_author_meta( 'googleplus' ) ) { ?>
-								<a href="<?php the_author_meta( 'googleplus' ) ?>" title="Google+"><i class="icon-google-plus"></i></a>
+								<a href="<?php the_author_meta( 'googleplus' ) ?>" title="Google+"><i class="fa fa-google-plus"></i></a>
 							<?php } ?>
 						</p>
 						<div class="author-link">
