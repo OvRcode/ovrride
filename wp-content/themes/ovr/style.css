@@ -4607,3 +4607,162 @@ and (-webkit-min-device-pixel-ratio: 1)  {
 .offset_3 { margin-left: 23.78% !important; }
 .offset_2 { margin-left: 15.32% !important; }
 .offset_1 { margin-left: 6.86% !important; }
+
+/* Woocommerce overrides
+  Theme declares colors which are overriding colors set by woocommerce colors plugin.
+  Setting CSS properties from theme to default values to cancel out effect.
+*/
+h1.page-title {
+	font-family: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+	color: inherit;
+	margin-top: 0;
+}
+
+h1.page-title { 
+	font-size: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.woocommerce .woocommerce-info:before,
+.woocommerce-page .woocommerce-info:before,
+.woocommerce .woocommerce-message:before,
+.woocommerce-page .woocommerce-message:before {
+	color: inherit;
+}
+
+.woocommerce .woocommerce-info,
+.woocommerce-page .woocommerce-info,
+.woocommerce .woocommerce-message,
+.woocommerce-page .woocommerce-message {
+	border-color: inherit;
+}
+
+.woocommerce #content div.product p.price,
+.woocommerce #content div.product span.price,
+.woocommerce div.product p.price,
+.woocommerce div.product span.price,
+.woocommerce-page #content div.product p.price,
+.woocommerce-page #content div.product span.price,
+.woocommerce-page div.product p.price,
+.woocommerce-page div.product span.price,
+.woocommerce ul.products li.product .price,
+.woocommerce-page ul.products li.product .price,
+.woocommerce ul.products li.product .price,
+.woocommerce-page ul.products li.product .price {
+	color: inherit;
+}
+
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #content input.button.alt,
+.woocommerce #respond input#submit.alt,
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce input.button.alt,
+.woocommerce-page #content input.button.alt,
+.woocommerce-page #respond input#submit.alt,
+.woocommerce-page a.button.alt,
+.woocommerce-page button.button.alt,
+.woocommerce-page input.button.alt {
+  font-weight: normal;
+	background-color: transparent;
+	background-image: none;
+	border: none;
+	border-color: none;
+  color: transparent;
+	text-shadow: none;
+	padding: none;
+}
+
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover,
+.woocommerce #content input.button.alt:hover,
+.woocommerce #respond input#submit.alt:hover,
+.woocommerce a.button.alt:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce input.button.alt:hover,
+.woocommerce-page #content input.button.alt:hover,
+.woocommerce-page #respond input#submit.alt:hover,
+.woocommerce-page a.button.alt:hover,
+.woocommerce-page button.button.alt:hover,
+.woocommerce-page input.button.alt:hover {
+	background-color: transparent;
+	background-image: none;
+	border: none;
+	border-color: none;
+  color:none;
+	text-shadow: none;
+	padding: none;
+}
+
+.woocommerce span.onsale,
+.woocommerce-page span.onsale {
+	line-height: inherit;
+	min-height: 0;
+	min-width: 0;
+	background-color: transparent;
+	background-image: none;
+}
+
+.woocommerce #content nav.woocommerce-pagination ul li span.current,
+.woocommerce nav.woocommerce-pagination ul li span.current,
+.woocommerce-page #content nav.woocommerce-pagination ul li span.current,
+.woocommerce-page nav.woocommerce-pagination ul li span.current {
+	background-color: transparent;
+	color: none;
+}
+
+.woocommerce nav.woocommerce-pagination li a.page-numbers,
+.woocommerce nav.woocommerce-pagination li span.page-numbers {
+	padding: 0;
+	padding: 0;
+	border: none;
+	text-decoration: none;
+	line-height: inherit;
+}
+
+.woocommerce nav.woocommerce-pagination ul.page-numbers li {
+	margin: 0;
+	border: none;
+}
+
+.woocommerce nav.woocommerce-pagination ul.page-numbers {
+	border: none;
+}
+
+.woocommerce nav.woocommerce-pagination li a.prev,
+.woocommerce nav.woocommerce-pagination li a.next,
+.woocommerce nav.woocommerce-pagination li span.dots {
+	border: none;
+}
+
+.woocommerce nav.woocommerce-pagination li a:hover.page-numbers {
+	background-color: transparent;
+	color: transparent;
+}
+
+.woocommerce nav.woocommerce-pagination li a:hover.prev,
+.woocommerce nav.woocommerce-pagination li a:hover.next {
+	background-color: transparent;
+	color: transparent;
+}
+
+.woocommerce .grid_12_of_12 .related ul li.product,
+.woocommerce .grid_12_of_12 .related ul.products li.product,
+.woocommerce .grid_12_of_12 .upsells.products ul li.product,
+.woocommerce .grid_12_of_12 .upsells.products ul.products li.product,
+.woocommerce-page .grid_12_of_12 .related ul li.product,
+.woocommerce-page .grid_12_of_12 .related ul.products li.product,
+.woocommerce-page .grid_12_of_12 .upsells.products ul li.product,
+.woocommerce-page .grid_12_of_12 .upsells.products ul.products li.product {
+	width: auto;
+}
+
+.shipping-calculator-button {
+	text-decoration: none;
+}
