@@ -78,8 +78,15 @@ function optionsframework_options() {
 
 	$options[] = array(
 		'name' => esc_html__( 'Social Media Settings', 'quark' ),
-		'desc' => esc_html__( 'Enter the URLs for your Social Media platforms', 'quark' ),
+		'desc' => esc_html__( 'Enter the URLs for your Social Media platforms. You can also optionally specify whether you want these links opened in a new browser tab/window.', 'quark' ),
 		'type' => 'info' );
+
+	$options[] = array(
+		'name' => esc_html__('Open links in new Window/Tab', 'quark'),
+		'desc' => esc_html__('Open the social media links in a new browser tab/window', 'quark'),
+		'id' => 'social_newtab',
+		'std' => '0',
+		'type' => 'checkbox');
 
 	$options[] = array(
 		'name' => esc_html__( 'Twitter', 'quark' ),
@@ -110,9 +117,37 @@ function optionsframework_options() {
 		'type' => 'text' );
 
 	$options[] = array(
+		'name' => esc_html__( 'Dribbble', 'quark' ),
+		'desc' => esc_html__( 'Enter your Dribbble URL.', 'quark' ),
+		'id' => 'social_dribbble',
+		'std' => '',
+		'type' => 'text' );
+
+	$options[] = array(
+		'name' => esc_html__( 'Tumblr', 'quark' ),
+		'desc' => esc_html__( 'Enter your Tumblr URL.', 'quark' ),
+		'id' => 'social_tumblr',
+		'std' => '',
+		'type' => 'text' );
+
+	$options[] = array(
 		'name' => esc_html__( 'GitHub', 'quark' ),
 		'desc' => esc_html__( 'Enter your GitHub URL.', 'quark' ),
 		'id' => 'social_github',
+		'std' => '',
+		'type' => 'text' );
+
+	$options[] = array(
+		'name' => esc_html__( 'Bitbucket', 'quark' ),
+		'desc' => esc_html__( 'Enter your Bitbucket URL.', 'quark' ),
+		'id' => 'social_bitbucket',
+		'std' => '',
+		'type' => 'text' );
+
+	$options[] = array(
+		'name' => esc_html__( 'Foursquare', 'quark' ),
+		'desc' => esc_html__( 'Enter your Foursquare URL.', 'quark' ),
+		'id' => 'social_foursquare',
 		'std' => '',
 		'type' => 'text' );
 
