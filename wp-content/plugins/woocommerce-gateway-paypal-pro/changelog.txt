@@ -1,5 +1,8 @@
 *** PayPal Pro Changelog ***
 
+2015.05.16 - version 4.3.3
+* Explicitly pass currencycode to prevent currency mismatch issue for capture
+
 2015.04.17 - version 4.3.2
 * Added ability to remove the SSL nag notice
 
