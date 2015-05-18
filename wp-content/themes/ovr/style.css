@@ -4072,7 +4072,8 @@ li span.dots {
 .main-navigation .current-menu-item > a,
 .main-navigation .current-menu-ancestor > a,
 .main-navigation .current_page_item > a,
-.main-navigation .current_page_ancestor > a {
+.main-navigation .current_page_ancestor > a,
+.main-navigation .current_page_parent > a {
 	color: #09bdeb; /* Nav bar link color for current menu item or ancestor */
 }
 
