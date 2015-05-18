@@ -285,5 +285,11 @@ function ovr_delete_old_gf_data_schedule(){
 }
 add_action('daily_ovr_delete_old_gf_data', 'ovr_delete_old_gf_data');
 
+function ovr_get_coupon_url($code) {
+    global $wpdb;
+    $ID = $wpdb->get_var( $wpdb->prepare("SELECT `ID` from {$wpdb->prefix}posts WHERE post_title =%s", $code) );
+    $url = home_url("wp-admin/post.php?post=".$ID."&action=edit", "https");
+    return $url;
+}
 /* Place custom code above this line. */
 ?>

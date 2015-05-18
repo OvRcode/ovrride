@@ -602,6 +602,8 @@ if ( is_woocommerce_active() ) {
 										<div class="generated_coupon_details">
 											<p><strong><?php _e( 'Sender', 'wc_smart_coupons' ); ?>:</strong> <?php echo $from; ?></p>
 											<p><strong><?php _e( 'Receiver', 'wc_smart_coupons' ); ?>:</strong> <?php echo $coupon_data['email']; ?></p>
+                                            <p><a href="<?php echo ovr_get_coupon_url($coupon->code); ?>" target="_new">View coupon</a></p>
+                                            
 											<?php if ( !empty( $coupon_data['message'] ) ) { ?>                                        
 												<p><strong><?php _e( 'Message', 'wc_smart_coupons' ); ?>:</strong> <?php echo $coupon_data['message']; ?></p>
 											<?php } ?>
