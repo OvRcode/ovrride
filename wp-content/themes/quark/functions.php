@@ -84,17 +84,51 @@ if ( ! function_exists( 'quark_setup' ) ) {
 				'height' => 80
 			) );
 
+		/*
+		 * Let WordPress manage the document title.
+		 * By adding theme support, we declare that this theme does not use a
+		 * hard-coded <title> tag in the document head, and expect WordPress to
+		 * provide it for us.
+		 */
+		add_theme_support( 'title-tag' );
+
+		// Enable support for WooCommerce
+		add_theme_support( 'woocommerce' );
+
 		// Enable support for Theme Options.
 		// Rather than reinvent the wheel, we're using the Options Framework by Devin Price, so huge props to him!
 		// http://wptheming.com/options-framework-theme/
 		if ( !function_exists( 'optionsframework_init' ) ) {
 			define( 'OPTIONS_FRAMEWORK_DIRECTORY', trailingslashit( get_template_directory_uri() ) . 'inc/' );
 			require_once trailingslashit( dirname( __FILE__ ) ) . 'inc/options-framework.php';
+
+			// Loads options.php from child or parent theme
+			$optionsfile = locate_template( 'options.php' );
+			load_template( $optionsfile );
 		}
 
+		// If WooCommerce is running, check if we should be displaying the Breadcrumbs
+		if( quark_is_woocommerce_active() && !of_get_option( 'woocommerce_breadcrumbs', '1' ) ) {
+			add_action( 'init', 'quark_remove_woocommerce_breadcrumbs' );
+		}
 	}
 }
 add_action( 'after_setup_theme', 'quark_setup' );
+
+
+/**
+ * Enable backwards compatability for title-tag support
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( '_wp_render_title_tag' ) ) {
+	function quark_slug_render_title() { ?>
+		<title><?php wp_title( '|', true, 'right' ); ?></title>
+	<?php }
+	add_action( 'wp_head', 'quark_slug_render_title' );
+}
 
 
 /**
@@ -340,7 +374,7 @@ function quark_scripts_styles() {
 	 */
 
 	// Start off with a clean base by using normalise. If you prefer to use a reset stylesheet or something else, simply replace this
-	wp_register_style( 'normalize', trailingslashit( get_template_directory_uri() ) . 'css/normalize.css' , array(), '3.0.1', 'all' );
+	wp_register_style( 'normalize', trailingslashit( get_template_directory_uri() ) . 'css/normalize.css' , array(), '3.0.2', 'all' );
 	wp_enqueue_style( 'normalize' );
 
 	// Register and enqueue our icon font
@@ -405,42 +439,6 @@ function quark_scripts_styles() {
 
 }
 add_action( 'wp_enqueue_scripts', 'quark_scripts_styles' );
-
-
-/**
- * Creates a nicely formatted and more specific title element text
- * for output in head of document, based on current view.
- *
- * @since Quark 1.0
- *
- * @param string $title Default title text for current view.
- * @param string $sep Optional separator.
- * @return string The filtered title.
- */
-function quark_wp_title( $title, $sep ) {
-	global $paged, $page;
-
-	if ( is_feed() ) {
-		return $title;
-	}
-
-	// Add the blog name.
-	$title .= get_bloginfo( 'name' );
-
-	// Add the blog description for the home/front page.
-	$site_description = get_bloginfo( 'description', 'display' );
-	if ( $site_description && ( is_home() || is_front_page() ) ) {
-		$title = "$title $sep $site_description";
-	}
-
-	// Add a page number if necessary.
-	if ( $paged >= 2 || $page >= 2 ) {
-		$title = "$title $sep " . sprintf( esc_html__( 'Page %s', 'quark' ), max( $paged, $page ) );
-	}
-
-	return $title;
-}
-add_filter( 'wp_title', 'quark_wp_title', 10, 2 );
 
 
 /**
@@ -873,7 +871,7 @@ if ( ! function_exists( 'quark_get_social_media' ) ) {
 				$output .= sprintf( '<li><a href="%1$s" title="%2$s"%3$s><span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa %4$s fa-stack-1x fa-inverse"></i></span></a></li>',
 					esc_url( $value ),
 					$key['title'],
-					( !of_get_option( 'social_newtab' ) ? '' : ' target="_blank"' ),
+					( !of_get_option( 'social_newtab', '0' ) ? '' : ' target="_blank"' ),
 					$key['icon']
 				);
 			}
@@ -969,3 +967,139 @@ add_filter( 'meta_content', 'convert_smilies' );
 add_filter( 'meta_content', 'convert_chars'  );
 add_filter( 'meta_content', 'wpautop' );
 add_filter( 'meta_content', 'shortcode_unautop'  );
+
+
+/**
+ * Unhook the WooCommerce Wrappers
+ */
+remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
+remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
+
+
+/**
+ * Outputs the opening container div for WooCommerce
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_before_woocommerce_wrapper' ) ) {
+	function quark_before_woocommerce_wrapper() {
+		echo '<div id="primary" class="site-content row" role="main">';
+	}
+}
+
+
+/**
+ * Outputs the closing container div for WooCommerce
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_after_woocommerce_wrapper' ) ) {
+	function quark_after_woocommerce_wrapper() {
+		echo '</div> <!-- /#primary.site-content.row -->';
+	}
+}
+
+
+/**
+ * Check if WooCommerce is active
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+function quark_is_woocommerce_active() {
+	if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+/**
+ * Check if WooCommerce is active and a WooCommerce template is in use and output the containing div
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_setup_woocommerce_wrappers' ) ) {
+	function quark_setup_woocommerce_wrappers() {
+		if ( quark_is_woocommerce_active() && is_woocommerce() ) {
+				add_action( 'quark_before_woocommerce', 'quark_before_woocommerce_wrapper', 10, 0 );
+				add_action( 'quark_after_woocommerce', 'quark_after_woocommerce_wrapper', 10, 0 );		
+		}
+	}
+	add_action( 'template_redirect', 'quark_setup_woocommerce_wrappers', 9 );
+}
+
+
+/**
+ * Outputs the opening wrapper for the WooCommerce content
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_woocommerce_before_main_content' ) ) {
+	function quark_woocommerce_before_main_content() {
+		if( ( is_shop() && !of_get_option( 'woocommerce_shopsidebar', '1' ) ) || ( is_product() && !of_get_option( 'woocommerce_productsidebar', '1' ) ) ) {
+			echo '<div class="col grid_12_of_12">';
+		}
+		else {
+			echo '<div class="col grid_8_of_12">';
+		}
+	}
+	add_action( 'woocommerce_before_main_content', 'quark_woocommerce_before_main_content', 10 );
+}
+
+
+/**
+ * Outputs the closing wrapper for the WooCommerce content
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_woocommerce_after_main_content' ) ) {
+	function quark_woocommerce_after_main_content() {
+		echo '</div>';
+	}
+	add_action( 'woocommerce_after_main_content', 'quark_woocommerce_after_main_content', 10 );
+}
+
+
+/**
+ * Remove the sidebar from the WooCommerce templates
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_remove_woocommerce_sidebar' ) ) {
+	function quark_remove_woocommerce_sidebar(){
+		if( ( is_shop() && !of_get_option( 'woocommerce_shopsidebar', '1' ) ) || ( is_product() && !of_get_option( 'woocommerce_productsidebar', '1' ) ) ) {
+			remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10 );
+		}
+	}
+	add_action('woocommerce_before_main_content', 'quark_remove_woocommerce_sidebar' );
+}
+
+
+/**
+ * Remove the breadcrumbs from the WooCommerce pages
+ *
+ * @since Quark 1.3
+ *
+ * @return void
+ */
+if ( ! function_exists( 'quark_remove_woocommerce_breadcrumbs' ) ) {
+	function quark_remove_woocommerce_breadcrumbs(){
+		remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 0 );
+	}
+}

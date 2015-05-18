@@ -4,7 +4,7 @@
  * @author    Devin Price <devin@wptheming.com>
  * @license   GPL-2.0+
  * @link      http://wptheming.com
- * @copyright 2013 WP Theming
+ * @copyright 2010-2014 WP Theming
  */
 
 class Options_Framework_Media_Uploader {
@@ -31,10 +31,9 @@ class Options_Framework_Media_Uploader {
 
 	static function optionsframework_uploader( $_id, $_value, $_desc = '', $_name = '' ) {
 
-		$optionsframework_settings = get_option( 'optionsframework' );
-
 		// Gets the unique option id
-		$option_name = $optionsframework_settings['id'];
+		$options_framework = new Options_Framework;
+	    $option_name = $options_framework->get_option_name();
 
 		$output = '';
 		$id = '';
@@ -107,7 +106,7 @@ class Options_Framework_Media_Uploader {
 
 		$menu = Options_Framework_Admin::menu_settings();
 
-		if ( 'appearance_page_' . $menu['menu_slug'] != $hook )
+        if ( substr( $hook, -strlen( $menu['menu_slug'] ) ) !== $menu['menu_slug'] )
 	        return;
 
 		if ( function_exists( 'wp_enqueue_media' ) )

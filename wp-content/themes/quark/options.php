@@ -6,14 +6,9 @@
  */
 
 function optionsframework_option_name() {
-
-	// This gets the theme name from the stylesheet
 	$themename = get_option( 'stylesheet' );
 	$themename = preg_replace( "/\W/", "_", strtolower( $themename ) );
-
-	$optionsframework_settings = get_option( 'optionsframework' );
-	$optionsframework_settings['id'] = $themename;
-	update_option( 'optionsframework', $optionsframework_settings );
+	return $themename;
 }
 
 /**
@@ -227,6 +222,39 @@ function optionsframework_options() {
 		'type' => 'select',
 		'class' => 'mini',
 		'options' => $footer_position_settings );
+
+	if( quark_is_woocommerce_active() ) {
+		$options[] = array(
+		'name' => esc_html__( 'WooCommerce settings', 'quark' ),
+		'type' => 'heading' );
+
+		$options[] = array(
+			'name' => esc_html__('Shop sidebar', 'quark'),
+			'desc' => esc_html__('Display the sidebar on the WooCommerce Shop page', 'quark'),
+			'id' => 'woocommerce_shopsidebar',
+			'std' => '1',
+			'type' => 'checkbox');
+
+		$options[] = array(
+			'name' => esc_html__('Products sidebar', 'quark'),
+			'desc' => esc_html__('Display the sidebar on the WooCommerce Single Product page', 'quark'),
+			'id' => 'woocommerce_productsidebar',
+			'std' => '1',
+			'type' => 'checkbox');
+
+		$options[] = array(
+			'name' => esc_html__( 'Cart, Checkout & My Account sidebars', 'quark' ),
+			'desc' => esc_html__( 'The &lsquo;Cart&rsquo;, &lsquo;Checkout&rsquo; and &lsquo;My Account&rsquo; pages are displayed using shortcodes. To remove the sidebar from these Pages, simply edit each Page and change the Template (in the Page Attributes Panel) to the &lsquo;Full-width Page Template&rsquo;.', 'quark' ),
+			'type' => 'info' );
+
+		$options[] = array(
+			'name' => esc_html__('Shop Breadcrumbs', 'quark'),
+			'desc' => esc_html__('Display the breadcrumbs on the WooCommerce pages', 'quark'),
+			'id' => 'woocommerce_breadcrumbs',
+			'std' => '1',
+			'type' => 'checkbox');
+
+	}
 
 	return $options;
 }

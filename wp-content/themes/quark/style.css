@@ -3,8 +3,8 @@ Theme Name: Quark
 Theme URI: http://quarktheme.com
 Author: Anthony Hortin
 Author URI: http://maddisondesigns.com/
-Description: Quark is your basic building block for creating beautiful, responsive custom themes. It's not a convoluted or confusing framework that's hard to learn or even harder to modify. It's a simple and elegant starter theme built on HTML5 & CSS3. Its base is a responsive, 12 column grid. It incorporates custom Theme Options that are easy to modify, a set of common templates, support for WordPress Post Formats and the gorgeous, retina friendly Font Awesome icon font. Quark is now Multilingual Ready (WPML) and translated into Spanish and German.
-Version: 1.2.12
+Description: Quark is your basic building block for creating beautiful, responsive custom themes. It's not a convoluted or confusing framework that's hard to learn or even harder to modify. It's a simple and elegant starter theme built on HTML5 & CSS3. Its base is a responsive, 12 column grid. It incorporates custom theme options that are easy to modify, a set of common templates, support for WordPress Post Formats and the gorgeous, retina friendly Font Awesome icon font. Quark is WooCommerce compatible, Multilingual Ready (WPML) and translated into Spanish, German and French.
+Version: 1.3
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: black, gray, dark, light, one-column, two-columns, right-sidebar, fluid-layout, responsive-layout, custom-background, custom-header, custom-menu, editor-style, featured-image-header, featured-images, full-width-template, microformats, post-formats, sticky-post, theme-options, threaded-comments, translation-ready
@@ -1518,7 +1518,7 @@ form label.error {
 
 .site-footer a:focus { 
 	outline: thin dotted;
-	color: rgb(0,0,0);
+	color: #2997ab;
 }
 
 .site-footer .widget-area .widget {
@@ -1876,7 +1876,8 @@ li span.dots {
 .main-navigation .current-menu-item > a,
 .main-navigation .current-menu-ancestor > a,
 .main-navigation .current_page_item > a,
-.main-navigation .current_page_ancestor > a {
+.main-navigation .current_page_ancestor > a,
+.main-navigation .current_page_parent > a {
 	color: #2997ab; /* Nav bar link color for current menu item or ancestor */
 }
 
@@ -1946,6 +1947,184 @@ li span.dots {
 #lang_sel_footer .iclflag,
 #lang_sel_footer .icl_lang_sel_current {
 	margin-top: 6px;
+}
+
+/* ==========================================================================
+   WooCommerce
+   ========================================================================== */
+
+h1.page-title {
+	font-family: 'Arvo', Georgia, "Times New Roman", Times, serif;
+	font-style: normal;
+	font-weight: 400;
+	color: #333;
+	margin-top: 0;
+}
+
+h1.page-title { 
+	font-size: 48px;
+	font-size: 3rem;
+	line-height: 1.25;
+}
+
+.woocommerce .woocommerce-info:before,
+.woocommerce-page .woocommerce-info:before,
+.woocommerce .woocommerce-message:before,
+.woocommerce-page .woocommerce-message:before {
+	background-color: #2997ab;
+}
+
+.woocommerce .woocommerce-info,
+.woocommerce-page .woocommerce-info,
+.woocommerce .woocommerce-message,
+.woocommerce-page .woocommerce-message {
+	border-color: #2997ab;
+}
+
+.woocommerce #content div.product p.price,
+.woocommerce #content div.product span.price,
+.woocommerce div.product p.price,
+.woocommerce div.product span.price,
+.woocommerce-page #content div.product p.price,
+.woocommerce-page #content div.product span.price,
+.woocommerce-page div.product p.price,
+.woocommerce-page div.product span.price,
+.woocommerce ul.products li.product .price,
+.woocommerce-page ul.products li.product .price,
+.woocommerce ul.products li.product .price,
+.woocommerce-page ul.products li.product .price {
+	color: #2997ab;
+}
+
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #content input.button.alt,
+.woocommerce #respond input#submit.alt,
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce input.button.alt,
+.woocommerce-page #content input.button.alt,
+.woocommerce-page #respond input#submit.alt,
+.woocommerce-page a.button.alt,
+.woocommerce-page button.button.alt,
+.woocommerce-page input.button.alt {
+	background-color: #2997ab;
+	*background-color: #2997ab;
+	background-image: -ms-linear-gradient(top, #36c1da, #2997ab);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36c1da), to(#2997ab));
+	background-image: -webkit-linear-gradient(top, #36c1da, #2997ab);
+	background-image: -o-linear-gradient(top, #36c1da, #2997ab);
+	background-image: linear-gradient(top, #36c1da, #2997ab);
+	background-image: -moz-linear-gradient(top, #36c1da, #2997ab);
+	border: 1px solid #237e8f;
+	*border: 0;
+	border-color: rgba(35, 126, 143, 0.1) rgba(35, 126, 143, 0.1) rgba(35, 126, 143, 0.25);
+	border-color: #2997ab #2997ab #237e8f;
+	border-bottom-color: #237e8f;
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='#36c1da', endColorstr='#2997ab');
+	color: #fff;
+	text-shadow: none;
+}
+
+.woocommerce a.button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover,
+.woocommerce #content input.button.alt:hover,
+.woocommerce #respond input#submit.alt:hover,
+.woocommerce a.button.alt:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce input.button.alt:hover,
+.woocommerce-page #content input.button.alt:hover,
+.woocommerce-page #respond input#submit.alt:hover,
+.woocommerce-page a.button.alt:hover,
+.woocommerce-page button.button.alt:hover,
+.woocommerce-page input.button.alt:hover {
+	background-color: #208294;
+	*background-color: #208294;
+	background-image: -ms-linear-gradient(top, #2caec5, #208294);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2caec5), to(#208294));
+	background-image: -webkit-linear-gradient(top, #2caec5, #208294);
+	background-image: -o-linear-gradient(top, #2caec5, #208294);
+	background-image: linear-gradient(top, #2caec5, #208294);
+	background-image: -moz-linear-gradient(top, #2caec5, #208294);
+	border: 1px solid #237e8f;
+	*border: 0;
+	border-color: rgba(35, 126, 143, 0.1) rgba(35, 126, 143, 0.1) rgba(35, 126, 143, 0.25);
+	border-color: #208294 #208294 #237e8f;
+	border-bottom-color: #237e8f;
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='#2caec5', endColorstr='#208294');
+}
+
+.woocommerce span.onsale,
+.woocommerce-page span.onsale {
+	line-height: 1.8333;
+	background-color: #2997ab;
+	*background-color: #2997ab;
+	background-image: -ms-linear-gradient(top, #36c1da, #2997ab);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36c1da), to(#2997ab));
+	background-image: -webkit-linear-gradient(top, #36c1da, #2997ab);
+	background-image: -o-linear-gradient(top, #36c1da, #2997ab);
+	background-image: linear-gradient(top, #36c1da, #2997ab);
+	background-image: -moz-linear-gradient(top, #36c1da, #2997ab);
+}
+
+.woocommerce #content nav.woocommerce-pagination ul li span.current,
+.woocommerce nav.woocommerce-pagination ul li span.current,
+.woocommerce-page #content nav.woocommerce-pagination ul li span.current,
+.woocommerce-page nav.woocommerce-pagination ul li span.current {
+	background-color: #333;
+	color: #fff;
+}
+
+.woocommerce nav.woocommerce-pagination li a.page-numbers,
+.woocommerce nav.woocommerce-pagination li span.page-numbers {
+	padding: 5px;
+	padding: 0.3125rem;
+	border: 1px solid #333;
+	text-decoration: none;
+	line-height: 1.25;
+}
+
+.woocommerce nav.woocommerce-pagination ul.page-numbers li {
+	margin: 0 .1rem;
+	border: none;
+}
+
+.woocommerce nav.woocommerce-pagination ul.page-numbers {
+	border: none;
+}
+
+.woocommerce nav.woocommerce-pagination li a.prev,
+.woocommerce nav.woocommerce-pagination li a.next,
+.woocommerce nav.woocommerce-pagination li span.dots {
+	border: none;
+}
+
+.woocommerce nav.woocommerce-pagination li a:hover.page-numbers {
+	background-color: #2997ab;
+	color: #fff;
+}
+
+.woocommerce nav.woocommerce-pagination li a:hover.prev,
+.woocommerce nav.woocommerce-pagination li a:hover.next {
+	background-color: transparent;
+	color: #2997ab;
+}
+
+.woocommerce .grid_12_of_12 .related ul li.product,
+.woocommerce .grid_12_of_12 .related ul.products li.product,
+.woocommerce .grid_12_of_12 .upsells.products ul li.product,
+.woocommerce .grid_12_of_12 .upsells.products ul.products li.product,
+.woocommerce-page .grid_12_of_12 .related ul li.product,
+.woocommerce-page .grid_12_of_12 .related ul.products li.product,
+.woocommerce-page .grid_12_of_12 .upsells.products ul li.product,
+.woocommerce-page .grid_12_of_12 .upsells.products ul.products li.product {
+	width: 24%;
+}
+
+.shipping-calculator-button {
+	text-decoration: none;
 }
 
 /* ==========================================================================
