@@ -18,10 +18,10 @@ if ( ! function_exists( 'quark_woocommerce_before_main_content' ) ) {
 	add_action( 'woocommerce_before_main_content', 'quark_woocommerce_before_main_content', 10 );
 }
 
-add_action( 'after_setup_theme', 'woocommerce_support' );
+/*add_action( 'after_setup_theme', 'woocommerce_support' );
 function woocommerce_support() {
     add_theme_support( 'woocommerce' );
-}
+}*/
 //fix for pingback security issue
 add_filter( 'xmlrpc_methods', 'remove_xmlrpc_pingback_ping' );
 function remove_xmlrpc_pingback_ping( $methods ) {
