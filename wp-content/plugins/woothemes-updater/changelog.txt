@@ -1,5 +1,8 @@
 *** WooThemes Helper Changelog ***
 
+2015.05.15 - version 1.5.6
+ * Fix - JS error on non helper pages
+
 2015.05.05 - version 1.5.5
  * Fix - Can't activate licenses on a Multisite
  * Tweak - Copy & links on the Help tab

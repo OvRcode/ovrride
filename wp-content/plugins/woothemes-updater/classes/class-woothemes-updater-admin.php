@@ -214,7 +214,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 
 		add_action( 'load-' . $this->hook, array( $this, 'process_request' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_print_scripts-' . $this->hook, array( $this, 'enqueue_scripts' ) );
 	} // End register_settings_screen()
 
 	/**
@@ -425,7 +425,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	 * @since   1.2.0
 	 * @return  void
 	 */
-	public function enqueue_scripts ( $hook ) {
+	public function enqueue_scripts () {
 		$screen = get_current_screen();
 		wp_enqueue_script( 'post' );
 		wp_register_script( 'woothemes-updater-admin', $this->assets_url . 'js/admin.js', array( 'jquery' ) );
