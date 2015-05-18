@@ -4595,3 +4595,15 @@ and (-webkit-min-device-pixel-ratio: 1)  {
         width: 100%;
     }
 }
+/* Bootstrap style column offsets */
+.offset_11 { margin-left: 91.46% !important; }
+.offset_10 { margin-left: 83% !important; }
+.offset_9 { margin-left: 74.54% !important; }
+.offset_8 { margin-left: 66.08% !important; }
+.offset_7 { margin-left: 57.62% !important; }
+.offset_6 { margin-left: 49.16% !important; }
+.offset_5 { margin-left: 40.7% !important; }
+.offset_4 { margin-left: 32.24% !important; }
+.offset_3 { margin-left: 23.78% !important; }
+.offset_2 { margin-left: 15.32% !important; }
+.offset_1 { margin-left: 6.86% !important; }
