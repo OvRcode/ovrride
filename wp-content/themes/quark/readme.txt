@@ -1,10 +1,10 @@
 === Quark ===
 Contributors: ahortin
 Donate link: http://quarktheme.com
-Tags: black, gray, dark, light, one-column, two-columns, right-sidebar, flexible-width, custom-background, custom-header, custom-menu, editor-style, featured-image-header, featured-images, full-width-template, microformats, post-formats, sticky-post, theme-options, threaded-comments, translation-ready
+Tags: black, gray, dark, light, one-column, two-columns, right-sidebar, fluid-layout, responsive-layout, custom-background, custom-header, custom-menu, editor-style, featured-image-header, featured-images, full-width-template, microformats, post-formats, sticky-post, theme-options, threaded-comments, translation-ready
 Requires at least: 3.6
-Tested up to: 3.7
-Stable tag: 1.2.6
+Tested up to: 3.8
+Stable tag: 1.2.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -161,6 +161,20 @@ Quark utilises the following awesomeness:
 
 
 == Changelog ==
+
+= 1.2.9 =
+- Removed Google Analytics script as requested by theme reviewer. This is best left for plugins so please ensure you add one if you were using this feature
+
+= 1.2.8 =
+- Fixed undefined function error on sanitization methods that were introduced due to Options Framework changing to class based code
+
+= 1.2.7 =
+- Updated Font Awesome icon font to v4.0.3
+- Updated Options Framework to v1.7.1
+- Updated Modernizr to v2.7.1
+- Updated comments to be enclosed in <section> rather than <div>. Props @gnotaras
+- Removed pubdate from post/comment meta. Replaced with itemprop
+- Removed invalid attribute from email input box. Props @gnotaras
 
 = 1.2.6 =
 - Updated normalize.css to v2.1.3

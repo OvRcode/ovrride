@@ -340,12 +340,12 @@ function quark_scripts_styles() {
 	 */
 
 	// Start off with a clean base by using normalise. If you prefer to use a reset stylesheet or something else, simply replace this
-	wp_register_style( 'normalize', trailingslashit( get_template_directory_uri() ) . 'css/normalize.css' , array(), '2.1.1', 'all' );
+	wp_register_style( 'normalize', trailingslashit( get_template_directory_uri() ) . 'css/normalize.css' , array(), '2.1.3', 'all' );
 	wp_enqueue_style( 'normalize' );
 
 	// Register and enqueue our icon font
 	// We're using the awesome Font Awesome icon font. http://fortawesome.github.io/Font-Awesome
-	wp_register_style( 'fontawesome', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome.min.css' , array(), '4.0.0', 'all' );
+	wp_register_style( 'fontawesome', trailingslashit( get_template_directory_uri() ) . 'css/font-awesome.min.css' , array(), '4.0.3', 'all' );
 	wp_enqueue_style( 'fontawesome' );
 
 	// Our styles for setting up the grid.
@@ -376,7 +376,7 @@ function quark_scripts_styles() {
 	 */
 
 	// Load Modernizr at the top of the document, which enables HTML5 elements and feature detects
-	wp_register_script( 'modernizr', trailingslashit( get_template_directory_uri() ) . 'js/modernizr-2.6.2-min.js', array(), '2.6.2', false );
+	wp_register_script( 'modernizr', trailingslashit( get_template_directory_uri() ) . 'js/modernizr-2.7.1-min.js', array(), '2.7.1', false );
 	wp_enqueue_script( 'modernizr' );
 
 	// Adds JavaScript to pages with the comment form to support sites with threaded comments (when in use)
@@ -398,14 +398,6 @@ function quark_scripts_styles() {
 			'email'  => esc_html__( 'Please enter a valid email address', 'quark' ),
 			'comment' => esc_html__( 'Please add a comment', 'quark' ) )
 		);
-	}
-
-	// Load Google Analytics Tracking script only if the GA ID is specified in the Theme Options
-	if ( of_get_option( 'ga_trackingid', '' ) ) {
-		wp_register_script( 'analytics', trailingslashit( get_template_directory_uri() ) . 'js/google-analytics.js', array(), '1.0', true );
-
-		wp_enqueue_script( 'analytics' );
-		wp_localize_script( 'analytics', 'analytics_object', array( 'gatrackingid' => sanitize_text_field( of_get_option( 'ga_trackingid', '' ) ) ) );
 	}
 
 	// Include this script to envoke a button toggle for the main navigation menu on small screens
@@ -542,7 +534,7 @@ if ( ! function_exists( 'quark_comment' ) ) {
 							get_comment_author_link(),
 							// If current post author is also comment author, make it known visually.
 							( $comment->user_id === $post->post_author ) ? '<span> ' . esc_html__( 'Post author', 'quark' ) . '</span>' : '' );
-						printf( '<a href="%1$s" title="Posted %2$s"><time pubdate datetime="%3$s">%4$s</time></a>',
+						printf( '<a href="%1$s" title="Posted %2$s"><time itemprop="datePublished" datetime="%3$s">%4$s</time></a>',
 							esc_url( get_comment_link( $comment->comment_ID ) ),
 							sprintf( esc_html__( '%1$s @ %2$s', 'quark' ), esc_html( get_comment_date() ), esc_attr( get_comment_time() ) ),
 							get_comment_time( 'c' ),
@@ -588,7 +580,7 @@ function quark_comment_form_default_fields( $fields ) {
 
 	$fields[ 'author' ] = '<p class="comment-form-author">' . '<label for="author">' . esc_html__( 'Name', 'quark' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' . '<input id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30"' . $aria_req . ' /></p>';
 
-	$fields[ 'email' ] =  '<p class="comment-form-email"><label for="email">' . esc_html__( 'Email', 'quark' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' . '<input id="email" email" name="email" type="text" value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' /></p>';
+	$fields[ 'email' ] =  '<p class="comment-form-email"><label for="email">' . esc_html__( 'Email', 'quark' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' . '<input id="email" name="email" type="text" value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' /></p>';
 
 	$fields[ 'url' ] =  '<p class="comment-form-url"><label for="url">' . esc_html__( 'Website', 'quark' ) . '</label>' . '<input id="url" name="url" type="text" value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" /></p>';
 
@@ -661,7 +653,7 @@ if ( ! function_exists( 'quark_posted_on' ) ) {
 		}
 
 		// Translators: 1: Icon 2: Permalink 3: Post date and time 4: Publish date in ISO format 5: Post date
-		$date = sprintf( '<i class="fa %1$s"></i> <a href="%2$s" title="Posted %3$s" rel="bookmark"><time class="entry-date" datetime="%4$s" pubdate>%5$s</time></a>',
+		$date = sprintf( '<i class="fa %1$s"></i> <a href="%2$s" title="Posted %3$s" rel="bookmark"><time class="entry-date" datetime="%4$s" itemprop="datePublished">%5$s</time></a>',
 			$post_icon,
 			esc_url( get_permalink() ),
 			sprintf( esc_html__( '%1$s @ %2$s', 'quark' ), esc_html( get_the_date() ), esc_attr( get_the_time() ) ),
@@ -936,13 +928,14 @@ function quark_theme_options_styles() {
 
 	$background = of_get_option( 'banner_background', $background_defaults );
 	if ( $background ) {
+		$bkgrnd_color = apply_filters( 'of_sanitize_color', $background['color'] );
 		$output .= "#bannercontainer { ";
-		$output .= "background: " . ( of_validate_hex( $background['color'] ) ? $background['color'] : '' ) . " url('" . esc_url( $background['image'] ) . "') " . $background['repeat'] . " " . $background['attachment'] . " " . $background['position'] . ";";
+		$output .= "background: " . $bkgrnd_color . " url('" . esc_url( $background['image'] ) . "') " . $background['repeat'] . " " . $background['attachment'] . " " . $background['position'] . ";";
 		$output .= " }";
 	}
 
-	$footerColour = of_get_option( 'footer_color', '#222222' );
-	if ( of_validate_hex( $footerColour ) ) {
+	$footerColour = apply_filters( 'of_sanitize_color', of_get_option( 'footer_color', '#222222' ) );
+	if ( !empty( $footerColour ) ) {
 		$output .= "\n#footercontainer { ";
 		$output .= "background-color: " . $footerColour . ";";
 		$output .= " }";
