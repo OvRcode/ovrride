@@ -1,23 +1,54 @@
 -------------------------------------------------------------------------------------------------------------------
-Version 1.9.8.3
-	- Rolled back changes to wp_rg_lead_meta definition to fix errors during upgrade.
+Version 1.9.9.4
+	- Fixed issue with conditional logic 'less than' operator not saving properly.
 
 -------------------------------------------------------------------------------------------------------------------
-Version 1.9.8.2
+Version 1.9.9.3
+    - Fixed a PHP notice in the form editor when saving a form with a Page field without next button conditional logic.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.9.2
+	- Added a javascript hook gform_pre_conditional_logic. Fires before conditional logic is executed.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.9.1
+	- Fixed an issue with the formatting of Paragraph, Post Body and Post Excerpt field values when merge tags are processed in some situations.
+	- Fixed an issue with the input mask setting in the form editor where the mask is not saved correctly.
+	- AF: Fixed styling issues with the app settings uninstall tab.
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.9.9
+	- Added gform_is_form_editor, gform_is_entry_detail, gform_is_entry_detail_view, gform_is_entry_detail_edit filters.
+	- Added security enhancements.
+    - Added 'gf_placeholder' class to placeholder option for selects to support special styling and easier selection via JS.
+	- Added gform_form_pre_update_entry filter to allow dynamically populated fields to get populated before the entry is updated.
     - Updated styles for messages in Resend Notifications UI (on entry list and entry detail views).
     - Updated styles for meta boxes on entry detail view (includes minor markup changes).
+    - Fixed an issue with the saving of entry field values (log gave the impression that the honeypot field was being saved).
+	- Fixed a PHP notice related to the HTML5 attributes of the year input of the Date field.
+	- Fixed an issue with the form list where the filter labels may not be displayed.
+	- Fixed an issue with the settings page which may prevent the settings being saved in some situations.
+	- Fixed an issue with the bulk printing of entries for some field types. This fixes an issue with the Survey Add-On where values are lost on bulk printing of entries.
+	- Fixed issue with the addon browser where the license key wasn't getting sent along with the remote request.
+	- Fixed an issue with the formatting of Paragraph, Post Body and Post Excerpt field values when merge tags are processed in some situations.
+    - Fixed a database error on setup in certain scenarios.
+    - Fixed uninstall process to drop also rg_incomplete_submissions table.
+    - Fixed issue when upgrading indexes using utf8mb4 (default since WP 4.2).
+    - Fixed bug where entry list would display icon with invalid link if multi-file upload field was an empty array.
     - Fixed bug where Resend Notifications Override setting was still visible after resending notifications (on entry detail view).
     - Fixed bug where notification checkboxes were still checked after Resend Notifications UI was reset (in entry list view).
+    - Fixed bug where rg_lead_meta table creation fails under some database storage engine and collation combination (e.g. MyISAM with utf8mb4)
+    - Fixed an issue with HTTPS/SSL and the math challenge type Captcha field.
+    - AF: Added editor support to the textarea settings field (enable using the "use_editor" argument)
+    - AF: Fixed an issue with the date_created case in GFAddOn::get_field_value() which could prevent the date being returned in some situations.
+    - AF: Fixed issue "checkbox_and_select"; if checkbox name property was provided it would not display the select on load when enabled.
+    - AF: Fixed an issue which could prevent the gf_addon_feed table from being created in some situations.
+    - AF: Added "checkbox_and_select" field setting; check the checkbox and the select will appear with additional options.
     - AF: Added support for tooltips on sections.
     - AF: Updated markup/styles for delay payment options to better match standard settings (appear on PayPal Standard feed).
     - AF: Fixed an issue with repeater.js which could cause rows to be added in the incorrect order.
-    - API: Added gfMultiFileUploader.setup() to gravityforms.js to make it easier to set up the multi-file upload field.
-    - Fixed bug where rg_lead_meta table creation fails under some database storage engine and collation combination (e.g. MyISAM with utf8mb4)
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.8.1
-    - Fixed an issue with HTTPS/SSL and the math challenge type Captcha field.
     - AF: Field map choices now have an empty first option when a field type is set.
+    - API: Added gfMultiFileUploader.setup() to gravityforms.js to make it easier to set up the multi-file upload field.
 
 -------------------------------------------------------------------------------------------------------------------
 Version 1.9.8

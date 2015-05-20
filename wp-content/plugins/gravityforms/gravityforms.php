@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 1.9.8.3
+Version: 1.9.9.4
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 Text Domain: gravityforms
@@ -48,7 +48,7 @@ $gf_recaptcha_public_key = '';
 
 //-- OR ---//
 
-//You can also add the reCAPTCHA keys to your wp-config.php file to automatically populate on activation
+//You can  also add the reCAPTCHA keys to your wp-config.php file to automatically populate on activation
 //Add the two lines of code in the comment below to your wp-config.php to do so:
 //define('GF_RECAPTCHA_PRIVATE_KEY','YOUR_PRIVATE_KEY_GOES_HERE');
 //define('GF_RECAPTCHA_PUBLIC_KEY','YOUR_PUBLIC_KEY_GOES_HERE');
@@ -71,7 +71,7 @@ define( 'GF_MIN_WP_VERSION', '3.7' );
 define( 'GF_SUPPORTED_WP_VERSION', version_compare( get_bloginfo( 'version' ), GF_MIN_WP_VERSION, '>=' ) );
 
 if ( ! defined( 'GRAVITY_MANAGER_URL' ) ) {
-	define( 'GRAVITY_MANAGER_URL', 'http://www.gravityhelp.com/wp-content/plugins/gravitymanager' );
+	define( 'GRAVITY_MANAGER_URL', 'https://www.gravityhelp.com/wp-content/plugins/gravitymanager' );
 }
 
 if ( ! defined( 'GRAVITY_MANAGER_PROXY_URL' ) ) {
@@ -112,7 +112,7 @@ add_action( 'plugins_loaded', array( 'GFForms', 'loaded' ) );
 
 class GFForms {
 
-	public static $version = '1.9.8.3';
+	public static $version = '1.9.9.4';
 
 	public static function loaded() {
 
@@ -426,6 +426,13 @@ class GFForms {
 		//Fixes issue with dbDelta lower-casing table names, which cause problems on case sensitive DB servers.
 		add_filter( 'dbdelta_create_queries', array( 'RGForms', 'dbdelta_fix_case' ) );
 
+		/*
+		 * Indexes have a maximum size of 767 bytes. Historically, we haven't need to be concerned about that.
+		 * As of 4.2, however, WP core moved to utf8mb4, which uses 4 bytes per character. This means that an index which
+		 * used to have room for floor(767/3) = 255 characters, now only has room for floor(767/4) = 191 characters.
+		 */
+		$max_index_length = 191;
+
 		//------ FORM -----------------------------------------------
 		$form_table_name = RGFormsModel::get_form_table_name();
 		$sql             = 'CREATE TABLE ' . $form_table_name . " (
@@ -538,11 +545,18 @@ class GFForms {
             ) $charset_collate;";
 		dbDelta( $sql );
 
-		//droping outdated form_id index (if one exists)
+		// dropping outdated form_id index (if one exists)
 		self::drop_index( $lead_detail_long_table_name, 'lead_detail_key' );
 
 		//------ LEAD META ------------------------------------------
 		$lead_meta_table_name = RGFormsModel::get_lead_meta_table_name();
+
+		// dropping meta_key and form_id_meta_key (if they exist) to prevent duplicate keys error on upgrade
+		if ( version_compare( get_option( 'rg_form_version' ), '1.9.8.12', '<' ) ) {
+			self::drop_index( $lead_meta_table_name, 'meta_key' );
+			self::drop_index( $lead_meta_table_name, 'form_id_meta_key' );
+		}
+
 		$sql                  = 'CREATE TABLE ' . $lead_meta_table_name . " (
               id bigint(20) unsigned not null auto_increment,
               form_id mediumint(8) unsigned not null default 0,
@@ -550,9 +564,9 @@ class GFForms {
               meta_key varchar(255),
               meta_value longtext,
               PRIMARY KEY  (id),
-              KEY meta_key (meta_key),
+              KEY meta_key (meta_key($max_index_length)),
               KEY lead_id (lead_id),
-              KEY form_id_meta_key (form_id,meta_key)
+              KEY form_id_meta_key (form_id,meta_key($max_index_length))
             ) $charset_collate;";
 		dbDelta( $sql );
 
@@ -962,10 +976,23 @@ class GFForms {
 
 	public static function drop_index( $table, $index ) {
 		global $wpdb;
-		$has_index = $wpdb->get_var( "SHOW INDEX FROM {$table} WHERE Key_name='{$index}'" );
-		if ( $has_index ) {
-			$wpdb->query( "DROP INDEX {$index} ON {$table}" );
+
+		if ( ! GFFormsModel::is_valid_table( $table ) || ! GFFormsModel::is_valid_index( $index ) ) {
+			return;
 		}
+
+		// check first if the table exists to prevent errors on first install
+		$has_table = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
+		if ( $has_table ) {
+
+			$has_index = $wpdb->get_var( $wpdb->prepare( "SHOW INDEX FROM {$table} WHERE Key_name=%s", $index ) );
+
+			if ( $has_index ) {
+				$wpdb->query( "DROP INDEX {$index} ON {$table}" );
+			}
+		}
+		
+
 	}
 
 	public static function validate_upgrade( $do_upgrade, $hook_extra ) {
@@ -1611,12 +1638,12 @@ class GFForms {
 		wp_register_style( 'gf_thickbox', $base_url . '/js/thickbox.css', array(), $version );
 		wp_localize_script(
 			'gf_thickbox', 'thickboxL10n', array(
-				'next'             => __( 'Next &gt;', 'gravityforms' ),
-				'prev'             => __( '&lt; Prev', 'gravityforms' ),
-				'image'            => __( 'Image', 'gravityforms' ),
-				'of'               => __( 'of', 'gravityforms' ),
-				'close'            => __( 'Close', 'gravityforms' ),
-				'noiframes'        => __( 'This feature requires inline frames. You have iframes disabled or your browser does not support them.', 'gravityforms' ),
+				'next'             => esc_html__( 'Next >', 'gravityforms' ),
+				'prev'             => esc_html__( '< Prev', 'gravityforms' ),
+				'image'            => esc_html__( 'Image', 'gravityforms' ),
+				'of'               => esc_html__( 'of', 'gravityforms' ),
+				'close'            => esc_html__( 'Close', 'gravityforms' ),
+				'noiframes'        => esc_html__( 'This feature requires inline frames. You have iframes disabled or your browser does not support them.', 'gravityforms' ),
 				'loadingAnimation' => includes_url( 'js/thickbox/loadingAnimation.gif' ),
 				'closeImage'       => includes_url( 'js/thickbox/tb-close.png' )
 			)
@@ -1972,8 +1999,8 @@ class GFForms {
 	public static function get_addon_info( $api, $action, $args ) {
 
 		if ( $action == 'plugin_information' && empty( $api ) && ( ! rgempty( 'rg', $_GET ) || $args->slug == 'gravityforms' ) ) {
-
-			$raw_response = GFCommon::post_to_manager( 'api.php', "op=get_plugin&slug={$args->slug}", array() );
+			$key = GFCommon::get_key();
+			$raw_response = GFCommon::post_to_manager( 'api.php', "op=get_plugin&slug={$args->slug}&key={$key}", array() );
 
 			if ( is_wp_error( $raw_response ) || $raw_response['response']['code'] != 200 ) {
 				return false;

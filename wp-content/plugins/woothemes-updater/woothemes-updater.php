@@ -37,6 +37,6 @@ if ( is_admin() ) {
 	require_once( 'classes/class-woothemes-updater.php' );
 
 	global $woothemes_updater;
-	$woothemes_updater = new WooThemes_Updater( __FILE__, '1.5.0' );
+	$woothemes_updater = new WooThemes_Updater( __FILE__, '1.5.6' );
 }
 ?>

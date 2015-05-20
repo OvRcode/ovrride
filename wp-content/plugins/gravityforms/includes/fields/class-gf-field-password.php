@@ -45,7 +45,7 @@ class GF_Field_Password extends GF_Field {
 		if ( $password != $confirm ) {
 			$this->failed_validation  = true;
 			$this->validation_message = __( 'Your passwords do not match.', 'gravityforms' );
-		} else if ( $this->passwordStrengthEnabled && ! empty( $this->minPasswordStrength ) && ! empty( $password ) ) {
+		} elseif ( $this->passwordStrengthEnabled && ! empty( $this->minPasswordStrength ) && ! empty( $password ) ) {
 			$strength = $_POST[ 'input_' . $this->id . '_strength' ];
 
 			$levels = array( 'short' => 1, 'bad' => 2, 'good' => 3, 'strong' => 4 );

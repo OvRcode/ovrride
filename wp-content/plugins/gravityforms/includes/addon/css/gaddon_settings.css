@@ -42,3 +42,14 @@ table.settings-field-map-table tbody td { padding: 0px 0px 8px 0px;}
 }
 
 .repeater-buttons .add-item { margin-right: 6px; }
+
+.mt-gaddon-editor {
+	float: right;
+	position: relative;
+	right: 21px;
+	top: 70px;
+}
+
+.mt-gaddon-editor ~ .wp-editor-wrap {
+	margin-right: 23px;
+}

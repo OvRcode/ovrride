@@ -134,6 +134,8 @@ class GFSettings {
 			RGForms::setup( true );
 		}
 
+		require_once( 'currency.php' );
+
 		if ( isset( $_POST['submit'] ) ) {
 			check_admin_referer( 'gforms_update_settings', 'gforms_update_settings' );
 
@@ -141,16 +143,16 @@ class GFSettings {
 				die( __( "You don't have adequate permission to edit settings.", 'gravityforms' ) );
 			}
 
-			RGFormsModel::save_key( $_POST['gforms_key'] );
-			update_option( 'rg_gforms_disable_css', rgpost( 'gforms_disable_css' ) );
-			update_option( 'rg_gforms_enable_html5', rgpost( 'gforms_enable_html5' ) );
-			update_option( 'gform_enable_noconflict', rgpost( 'gform_enable_noconflict' ) );
-			update_option( 'gform_enable_background_updates', rgpost( 'gform_enable_background_updates' ) );
-			update_option( 'rg_gforms_enable_akismet', rgpost( 'gforms_enable_akismet' ) );
-			update_option( 'rg_gforms_captcha_public_key', rgpost( 'gforms_captcha_public_key' ) );
-			update_option( 'rg_gforms_captcha_private_key', rgpost( 'gforms_captcha_private_key' ) );
+			RGFormsModel::save_key( sanitize_text_field( $_POST['gforms_key'] ) );
+			update_option( 'rg_gforms_disable_css', (bool) rgpost( 'gforms_disable_css' ) );
+			update_option( 'rg_gforms_enable_html5', (bool) rgpost( 'gforms_enable_html5' ) );
+			update_option( 'gform_enable_noconflict', (bool) rgpost( 'gform_enable_noconflict' ) );
+			update_option( 'gform_enable_background_updates', (bool) rgpost( 'gform_enable_background_updates' ) );
+			update_option( 'rg_gforms_enable_akismet', (bool) rgpost( 'gforms_enable_akismet' ) );
+			update_option( 'rg_gforms_captcha_public_key', sanitize_text_field( rgpost( 'gforms_captcha_public_key' ) ) );
+			update_option( 'rg_gforms_captcha_private_key', sanitize_text_field( rgpost( 'gforms_captcha_private_key' ) ) );
 
-			if ( ! rgempty( 'gforms_currency' ) ) {
+			if ( ! rgempty( 'gforms_currency' ) && in_array( rgpost( 'gforms_currency' ), array_keys( RGCurrency::get_currencies() ) ) ) {
 				update_option( 'rg_gforms_currency', rgpost( 'gforms_currency' ) );
 			}
 
@@ -263,7 +265,6 @@ class GFSettings {
 						<select id="gforms_currency" name="gforms_currency" <?php echo $disabled ?>>
 							<option><?php _e( 'Select a Currency', 'gravityforms' ) ?></option>
 							<?php
-							require_once( 'currency.php' );
 							$current_currency = GFCommon::get_currency();
 
 							foreach ( RGCurrency::get_currencies() as $code => $currency ) {

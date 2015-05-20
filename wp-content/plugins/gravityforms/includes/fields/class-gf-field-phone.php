@@ -33,7 +33,7 @@ class GF_Field_Phone extends GF_Field {
 		);
 	}
 
-	public function is_conditional_logic_supported(){
+	public function is_conditional_logic_supported() {
 		return true;
 	}
 
@@ -89,6 +89,15 @@ class GF_Field_Phone extends GF_Field {
 		}
 		return $script;
 	}
+
+	public function sanitize_settings() {
+		parent::sanitize_settings();
+
+		if ( $this->phoneFormat && ! in_array( $this->phoneFormat, array( 'standard', 'international' ) ) ) {
+			$this->phoneFormat = 'standard';
+		}
+	}
+
 
 }
 

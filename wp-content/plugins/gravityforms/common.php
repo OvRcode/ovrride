@@ -814,7 +814,7 @@ class GFCommon {
 
 				$modifier = strtolower( rgar( $match, 4 ) );
 
-				$value = $field->get_value_merge_tag( $value, $input_id, $lead, $form, $modifier, $raw_value, $url_encode, $esc_html, $format );
+				$value = $field->get_value_merge_tag( $value, $input_id, $lead, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br );
 
 				if ( $modifier == 'label' ) {
 					$value = empty( $value ) ? '' : $field->label;
@@ -2336,7 +2336,7 @@ class GFCommon {
 
 			if ( GFFormsModel::get_input_type( $field ) == 'select' && ! empty( $field->placeholder ) ) {
 				$selected = empty( $value ) ? "selected='selected'" : '';
-				$choices .= sprintf( "<option value='' %s>%s</option>", $selected, esc_html( $field->placeholder ) );
+				$choices .= sprintf( "<option value='' %s class='gf_placeholder'>%s</option>", $selected, esc_html( $field->placeholder ) );
 			}
 
 			foreach ( $field->choices as $choice ) {
@@ -4156,19 +4156,23 @@ class GFCommon {
     }
 
 	public static function is_form_editor(){
-		return GFForms::get_page() == 'form_editor' || ( defined( 'DOING_AJAX' ) && DOING_AJAX && in_array( rgpost( 'action' ), array( 'rg_add_field', 'rg_refresh_field_preview', 'rg_duplicate_field', 'rg_delete_field', 'rg_change_input_type' ) ) );
+		$is_form_editor = GFForms::get_page() == 'form_editor' || ( defined( 'DOING_AJAX' ) && DOING_AJAX && in_array( rgpost( 'action' ), array( 'rg_add_field', 'rg_refresh_field_preview', 'rg_duplicate_field', 'rg_delete_field', 'rg_change_input_type' ) ) );
+		return apply_filters( 'gform_is_form_editor', $is_form_editor );
 	}
 
 	public static function is_entry_detail(){
-		return GFForms::get_page() == 'entry_detail_edit' || GFForms::get_page() == 'entry_detail' ;
+		$is_entry_detail = GFForms::get_page() == 'entry_detail_edit' || GFForms::get_page() == 'entry_detail' ;
+		return apply_filters( 'gform_is_entry_detail', $is_entry_detail );
 	}
 
 	public static function is_entry_detail_view(){
-		return GFForms::get_page() == 'entry_detail' ;
+		$is_entry_detail_view = GFForms::get_page() == 'entry_detail' ;
+		return apply_filters( 'gform_is_entry_detail_view', $is_entry_detail_view );
 	}
 
 	public static function is_entry_detail_edit(){
-		return GFForms::get_page() == 'entry_detail_edit';
+		$is_entry_detail_edit = GFForms::get_page() == 'entry_detail_edit';
+		return apply_filters( 'gform_is_entry_detail_edit', $is_entry_detail_edit );
 	}
 
 	public static function has_merge_tag( $string ) {
@@ -4183,6 +4187,42 @@ class GFCommon {
 		}
 
 		return $slug;
+	}
+
+	/**
+	 * Whitelists a value. Returns the value or the first value in the array.
+	 *
+	 * @param $value
+	 * @param $whitelist
+	 *
+	 * @return mixed
+	 */
+	public static function whitelist( $value, $whitelist ) {
+
+		if ( ! in_array( $value, $whitelist ) ) {
+			$value = $whitelist[0];
+		}
+		return $value;
+	}
+
+	/**
+	 * Forces an integer into a range of integers. Returns the value or the minimum if it's outside the range.
+	 *
+	 * @param $value
+	 * @param $min
+	 * @param $max
+	 *
+	 * @return int
+	 */
+	public static function int_range( $value, $min, $max ) {
+		$value = (int) $value;
+		$min   = (int) $min;
+		$max   = (int) $max;
+
+		return filter_var( $value, FILTER_VALIDATE_INT, array(
+			'min_range' => $min,
+			'max_range' => $max
+		) ) ? $value : $min;
 	}
 }
 

@@ -91,6 +91,8 @@ class GFFormSettings {
 			$updated_form['requireLogin']        = rgpost( 'form_require_login' );
 			$updated_form['requireLoginMessage'] = $updated_form['requireLogin'] ? rgpost( 'form_require_login_message' ) : '';
 
+			$updated_form = GFFormsModel::maybe_sanitize_form_settings( $updated_form );
+
 			if ( $updated_form['save']['enabled'] ) {
 				$updated_form = self::activate_save( $updated_form );
 			} else {
@@ -265,8 +267,10 @@ class GFFormSettings {
 				});
 
 				window.onbeforeunload = function () {
-					if (hasUnsavedChanges)
-						return 'You have unsaved changes.';
+					if (hasUnsavedChanges){
+						return '<?php echo esc_js( 'You have unsaved changes.', 'gravityforms' ); ?>';
+					}
+
 				}
 
 			}
@@ -1692,6 +1696,8 @@ class GFFormSettings {
 
 		return $form;
 	}
+
+
 }
 
 
