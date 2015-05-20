@@ -1320,6 +1320,11 @@ class GFFormsModel {
 		foreach ( $form['fields'] as $field ) {
 			/* @var $field GF_Field */
 
+			// ignore the honeypot field
+			if ( $field->type == 'honeypot' ) {
+				continue;
+			}
+
 			//Ignore fields that are marked as display only
 			if ( $field->displayOnly && $field->type != 'password' ) {
 				continue;
@@ -3088,6 +3093,7 @@ class GFFormsModel {
 			self::get_meta_table_name(),
 			self::get_form_table_name(),
 			self::get_lead_meta_table_name(),
+			self::get_incomplete_submissions_table_name(),
 		);
 	}
 
@@ -4669,6 +4675,29 @@ class GFFormsModel {
 		return $charset_collate;
 	}
 
+	public static function is_valid_table( $table_name ){
+		global $wpdb;
+
+		$tables = array(
+			GFFormsModel::get_form_table_name(), GFFormsModel::get_form_view_table_name(), GFFormsModel::get_meta_table_name(),
+			GFFormsModel::get_lead_table_name(), GFFormsModel::get_lead_notes_table_name(), GFFormsModel::get_lead_details_table_name(),
+			GFFormsModel::get_lead_details_long_table_name(), GFFormsModel::get_lead_meta_table_name(), GFFormsModel::get_incomplete_submissions_table_name(),
+			"{$wpdb->prefix}gf_addon_feed", "{$wpdb->prefix}gf_addon_payment_transaction", "{$wpdb->prefix}gf_addon_payment_callback",
+		);
+
+		return in_array( $table_name, $tables );
+	}
+
+	public static function is_valid_index( $index_name ){
+
+		$indexes = array(
+			'id', 'form_id', 'status', 'lead_id', 'lead_user_key', 'lead_field_number', 'lead_detail_id', 'lead_detail_key', 'meta_key',
+			'form_id_meta_key', 'uuid', 'transaction_type', 'type_lead', 'slug_callback_id', 'addon_slug_callback_id', 'addon_form',
+		);
+
+		return in_array( $index_name, $indexes );
+	}
+
 	/**
 	 * Trims values inside choice texts, choice values, input labels, field labels and field conditionalLogic
 	 *
@@ -4831,6 +4860,146 @@ class GFFormsModel {
 
 		return $entry;
 	}
+
+	public static function maybe_sanitize_form_settings( $form ) {
+		if (  isset( $form['version'] ) && version_compare( $form['version'], '1.9.6.10', '>=' ) ) {
+			$form = self::sanitize_settings( $form );
+		}
+		return $form;
+	}
+
+	public static function sanitize_settings( $form ) {
+
+		$form['version'] = GFForms::$version;
+
+		if ( apply_filters( 'gform_disable_form_settings_sanitization', false ) ) {
+			return $form;
+		}
+
+		// -- standard form settings --
+
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+
+		$form['title'] = sanitize_text_field( rgar( $form, 'title' ) );
+		if ( isset ( $form['description'] ) ) {
+			$form['description'] = wp_kses( $form['description'], $allowed_tags );
+		}
+
+		if ( isset ( $form['labelPlacement'] ) ) {
+			$form['labelPlacement'] = GFCommon::whitelist( $form['labelPlacement'], array( 'top_label', 'left_label', 'right_label' ) );
+		}
+		if ( isset ( $form['descriptionPlacement'] ) ) {
+			$form['descriptionPlacement'] = GFCommon::whitelist( $form['descriptionPlacement'], array( 'below', 'above' ) );
+		}
+
+		if ( isset ( $form['subLabelPlacement'] ) ) {
+			$form['subLabelPlacement']    = GFCommon::whitelist( $form['subLabelPlacement'], array( 'below', 'above' ) );
+		}
+
+		// -- advanced form settings --
+
+		if ( isset ( $form['cssClass'] ) ) {
+			$form['cssClass'] = sanitize_text_field( $form['cssClass'] );
+		}
+
+		if ( isset ( $form['enableHoneypot'] ) ) {
+			$form['enableHoneypot']  = (bool) $form['enableHoneypot'];
+		}
+
+		if ( isset ( $form['enableAnimation'] ) ) {
+			$form['enableAnimation'] = (bool) $form['enableAnimation'];
+		}
+
+		// form button settings
+		if ( isset ( $form['button'] ) ) {
+			$form['button']['type']     = GFCommon::whitelist( $form['button']['type'], array( 'text', 'image' ) );
+			$form['button']['text']     = $form['button']['type'] == 'text' ? sanitize_text_field( $form['button']['text'] ) : '';
+			$form['button']['imageUrl'] = $form['button']['type'] == 'image' ? sanitize_text_field( $form['button']['imageUrl'] ) : '';
+		}
+		if ( isset( $form['button']['conditionalLogic'] ) ) {
+			$form['button']['conditionalLogic'] = self::sanitize_conditional_logic( $form['button']['conditionalLogic'] );
+		}
+
+		// Save and Continue settings
+		if ( isset ( $form['save'] ) ) {
+			$form['save']['enabled']        = (bool) $form['save']['enabled'] ;
+			$form['save']['button']['type'] = 'link';
+			$form['save']['button']['text'] = sanitize_text_field( $form['save']['button']['text'] );
+		}
+
+
+		// limit entries settings
+		if ( isset ( $form['limitEntries'] ) ) {
+			$form['limitEntries']        = (bool) $form['limitEntries'];
+			$form['limitEntriesCount']   = $form['limitEntries'] ? absint( $form['limitEntriesCount'] ) : '';
+			$form['limitEntriesPeriod']  = $form['limitEntries'] ? GFCommon::whitelist( $form['limitEntriesPeriod'], array( '', 'day', 'week', 'month', 'year' ) ) : '';
+			$form['limitEntriesMessage'] = $form['limitEntries'] ? wp_kses( $form['limitEntriesMessage'], $allowed_tags ) : '';
+		}
+
+		// form scheduling settings
+		if ( isset ( $form['scheduleForm'] ) ) {
+			$form['scheduleForm']           = (bool) $form['scheduleForm'];
+			$form['scheduleStart']          = $form['scheduleForm'] ? preg_replace( '([^0-9/])', '', $form['scheduleStart'] ) : '';
+			$form['scheduleStartHour']      = $form['scheduleForm'] ? GFCommon::int_range( $form['scheduleStartHour'], 1, 12 ) : '';
+			$form['scheduleStartMinute']    = $form['scheduleForm'] ? GFCommon::int_range( $form['scheduleStartMinute'], 1, 60 ) : '';
+			$form['scheduleStartAmpm']      = $form['scheduleForm'] ? GFCommon::whitelist( $form['scheduleStartAmpm'], array( 'am', 'pm' ) ) : '';
+			$form['scheduleEnd']            = $form['scheduleForm'] ? preg_replace( '([^0-9/])', '', $form['scheduleEnd'] ) : '';
+			$form['scheduleEndHour']        = $form['scheduleForm'] ? GFCommon::int_range( $form['scheduleEndHour'], 1, 12 ) : '';
+			$form['scheduleEndMinute']      = $form['scheduleForm'] ? GFCommon::int_range( $form['scheduleEndMinute'], 1, 60 ) : '';
+			$form['scheduleEndAmpm']        = $form['scheduleForm'] ? GFCommon::whitelist( $form['scheduleEndAmpm'], array( 'am', 'pm' ) ) : '';
+			$form['schedulePendingMessage'] = $form['scheduleForm'] ? wp_kses( $form['schedulePendingMessage'], $allowed_tags ) : '';
+			$form['scheduleMessage']        = $form['scheduleForm'] ? wp_kses( $form['scheduleMessage'], $allowed_tags ) : '';
+
+		}
+
+		// require login settings
+		if ( isset ( $form['requireLogin'] ) ) {
+			$form['requireLogin']        = (bool) $form['requireLogin'];
+			$form['requireLoginMessage'] = $form['requireLogin'] ? wp_kses( $form['requireLoginMessage'], $allowed_tags ) : '';
+		}
+
+
+		if ( isset ( $form['fields'] ) ) {
+			foreach ( $form['fields'] as $field ) {
+				/* @var GF_Field $field */
+				$field->sanitize_settings();
+			}
+		}
+
+		return $form;
+	}
+
+	public static function sanitize_conditional_logic( $logic ) {
+		if ( ! is_array( $logic ) ) {
+			return $logic;
+		}
+
+		if ( isset( $logic['actionType'] ) && ! in_array( $logic['actionType'], array( 'show', 'hide' ) ) ) {
+			$logic['actionType'] = 'show';
+		}
+		if (  isset( $logic['logicType'] ) && ! in_array( $logic['logicType'], array( 'all', 'any' ) ) ) {
+			$logic['logicType'] = 'all';
+		}
+
+		if ( is_array( $logic['rules'] ) ) {
+			foreach ( $logic['rules'] as &$rule ) {
+				if ( isset( $rule['fieldId'] ) ) {
+					// Strip everything except numbers and dots
+					$rule['fieldId'] = preg_replace( '/[^0-9.]+/', '', $rule['fieldId'] );
+				}
+				if ( isset( $rule['operator'] ) ) {
+					$is_valid_operator = in_array( $rule['operator'], array('is', 'isnot', '>', '<', 'contains', 'starts_with', 'ends_with') );
+					$rule['operator'] = $is_valid_operator ? $rule['operator'] : 'is';
+				}
+
+				if ( isset( $rule['value'] ) ) {
+					$rule['value'] = wp_strip_all_tags( $rule['value'] );
+				}
+			}
+		}
+		return $logic;
+	}
+
 }
 
 class RGFormsModel extends GFFormsModel {

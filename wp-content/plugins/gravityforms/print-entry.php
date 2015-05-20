@@ -120,7 +120,12 @@ foreach ( $lead_ids as $lead_id ) {
 
 	do_action( 'gform_print_entry_header', $form, $lead );
 
+	// Separate each entry inside a form element so radio buttons don't get treated as a single group across multiple entries.
+	echo '<form>';
+
 	GFEntryDetail::lead_detail_grid( $form, $lead );
+
+	echo '</form>';
 
 	if ( rgget( 'notes' ) ) {
 		$notes = RGFormsModel::get_lead_notes( $lead['id'] );

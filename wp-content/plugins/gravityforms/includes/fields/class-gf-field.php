@@ -127,7 +127,7 @@ class GF_Field extends stdClass implements ArrayAccess {
 		return $value;
 	}
 
-	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format ) {
+	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
 		return $value;
 	}
 
@@ -269,7 +269,7 @@ class GF_Field extends stdClass implements ArrayAccess {
 			$value = GFFormsModel::maybe_trim_input( $value, $form_id, $this );
 
 			return $value;
-		} else if ( $this->allowsPrepopulate ) {
+		} elseif ( $this->allowsPrepopulate ) {
 			return GFFormsModel::get_parameter_value( $custom_name, $field_values, $this );
 		}
 
@@ -325,7 +325,7 @@ class GF_Field extends stdClass implements ArrayAccess {
 				}
 
 				return false;
-			} else if ( $this->enablePrice ) {
+			} elseif ( $this->enablePrice ) {
 				list( $label, $price ) = explode( '|', $value );
 				$is_empty = ( strlen( trim( $price ) ) <= 0 );
 
@@ -541,41 +541,144 @@ class GF_Field extends stdClass implements ArrayAccess {
 		}
 	}
 
-	public function sanitize_settings(){
-		$this->id = absint($this->id);
-		$this->type = wp_strip_all_tags($this->type);
+	/**
+	 * Forces settings into expected values while saving the form object.
+	 *
+	 * No escaping should be done at this stage to prevent double escaping on output.
+	 *
+	 * Currently called only for forms created after version 1.9.6.10.
+	 *
+	 */
+	public function sanitize_settings() {
+		$this->id     = absint( $this->id );
+		$this->type   = wp_strip_all_tags( $this->type );
 		$this->formId = absint( $this->formId );
 
-		$allowed_tags = wp_kses_allowed_html( 'post' );
-		$this->label = wp_kses($this->label, $allowed_tags);
-		$this->adminLabel = wp_kses($this->adminLabel, $allowed_tags);
-		$this->description = wp_kses($this->description, $allowed_tags);
+		$allowed_tags      = wp_kses_allowed_html( 'post' );
+		$this->label       = wp_kses( $this->label, $allowed_tags );
+		$this->adminLabel  = wp_kses( $this->adminLabel, $allowed_tags );
+		$this->description = wp_kses( $this->description, $allowed_tags );
 
 		$this->isRequired = (bool) $this->isRequired;
 
-		if ( $this->size ) {
-			$this->size = wp_strip_all_tags($this->size);
+		$this->allowsPrepopulate = (bool) $this->allowsPrepopulate;
+
+		$this->inputMask = (bool) $this->inputMask;
+		$this->inputMaskValue = wp_strip_all_tags( $this->inputMaskValue );
+
+		if ( $this->inputType ) {
+			$this->inputType = wp_strip_all_tags( $this->inputType );
 		}
 
-		if ( isset( $this->errorMessage ) ) {
+		if ( $this->size ) {
+			$this->size = wp_strip_all_tags( $this->size );
+		}
+
+		if ( $this->errorMessage ) {
 			$this->errorMessage = sanitize_text_field( $this->errorMessage );
 		}
 
 		if ( $this->labelPlacement ) {
-			$this->labelPlacement = wp_strip_all_tags($this->labelPlacement);
+			$this->labelPlacement = wp_strip_all_tags( $this->labelPlacement );
 		}
 
-		if ( isset( $this->descriptionPlacement ) ) {
-			$this->descriptionPlacement = wp_strip_all_tags($this->descriptionPlacement);
+		if ( $this->descriptionPlacement ) {
+			$this->descriptionPlacement = wp_strip_all_tags( $this->descriptionPlacement );
 		}
 
-		if ( isset ( $this->subLabelPlacement ) ) {
-			$this->subLabelPlacement = wp_strip_all_tags($this->subLabelPlacement);
+		if ( $this->subLabelPlacement ) {
+			$this->subLabelPlacement = wp_strip_all_tags( $this->subLabelPlacement );
 		}
 
-		if ( isset( $this->placeholder ) ) {
+		if ( $this->placeholder ) {
 			$this->placeholder = sanitize_text_field( $this->placeholder );
 		}
 
+		if ( $this->cssClass ) {
+			$this->cssClass = wp_strip_all_tags( $this->cssClass );
+		}
+
+		if ( $this->inputName ) {
+			$this->inputName = wp_strip_all_tags( $this->inputName );
+		}
+
+		$this->adminOnly = (bool) $this->adminOnly;
+
+		$this->noDuplicates = (bool) $this->noDuplicates;
+
+		if ( $this->defaultValue ) {
+			$this->defaultValue = wp_kses( $this->defaultValue, $allowed_tags );
+		}
+
+		if ( is_array( $this->inputs ) ) {
+			foreach ( $this->inputs as &$input ) {
+				if ( isset ( $input['id'] ) ) {
+					$input['id'] = wp_strip_all_tags( $input['id'] );
+				}
+				if ( isset ( $input['customLabel'] ) ) {
+					$input['customLabel'] = wp_kses( $input['customLabel'], $allowed_tags );
+				}
+				if ( isset ( $input['label'] ) ) {
+					$input['label'] = wp_kses( $input['label'], $allowed_tags );
+				}
+				if ( isset ( $input['name'] ) ) {
+					$input['name'] = wp_strip_all_tags( $input['name'] );
+				}
+
+				if ( isset ( $input['placeholder'] ) ) {
+					$input['placeholder'] = sanitize_text_field( $input['placeholder'] );
+				}
+
+				if ( isset ( $input['defaultValue'] ) ) {
+					$input['defaultValue'] = wp_strip_all_tags( $input['defaultValue'] );
+				}
+			}
+		}
+
+		$this->sanitize_settings_choices();
+		$this->sanitize_settings_conditional_logic();
+
+	}
+
+	public function sanitize_settings_choices( $choices = null ) {
+
+		if ( is_null( $choices ) ) {
+			$choices = &$this->choices;
+		}
+
+		if ( ! is_array( $choices ) ) {
+			return $choices;
+		}
+
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+		foreach ( $choices as &$choice ) {
+			if ( isset ( $choice['isSelected'] ) ) {
+				$choice['isSelected'] = (bool) $choice['isSelected'];
+			}
+
+			if ( isset ( $choice['price'] ) && ! empty( $choice['price'] ) ) {
+				$price_number = GFCommon::to_number( $choice['price'] );
+				$choice['price'] = GFCommon::to_money( $price_number );
+			}
+
+			if ( isset ( $choice['text'] ) ) {
+				$choice['text'] = wp_kses( $choice['text'], $allowed_tags );
+			}
+
+			if ( isset ( $choice['value'] ) ) {
+				$choice['value'] = wp_kses( $choice['value'], $allowed_tags );
+			}
+		}
+
+		return $choices;
+	}
+
+	public function sanitize_settings_conditional_logic( $logic = null ) {
+
+		if ( is_null( $logic ) ) {
+			$logic = &$this->conditionalLogic;
+		}
+		$logic = GFFormsModel::sanitize_conditional_logic( $logic );
+		return $logic;
 	}
 }
