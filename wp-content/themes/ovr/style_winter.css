@@ -1,7 +1,7 @@
 /*
  Theme Name:   OvRride
  Theme URI:    http://yourwebsite.com/twentyfourteen-child/
- Description:  Theme for OvRride, based on quark theme, summer version (yellow)
+ Description:  Theme for OvRride, based on quark theme, winter version blue
  Author:       Robert Chapman, Mike Barnard
  Author URI:   http://chapcode.com
  Template:     quark
@@ -18,9 +18,9 @@
 /* Using rem font sizing (Root em’s) with fallback to px for ie8 and below - http://snook.ca/archives/html_and_css/font-size-with-rem */
 body { margin: 0; font-size: 16px; font-size: 1rem; line-height: 1.5; }
 
-::-webkit-selection { background: #fed208; color: #fff; text-shadow: none; }
-::-moz-selection { background: #fed208; color: #fff; text-shadow: none; }
-::selection { background: #fed208; color: #fff; text-shadow: none; }
+::-webkit-selection { background: #09bdeb; color: #fff; text-shadow: none; }
+::-moz-selection { background: #09bdeb; color: #fff; text-shadow: none; }
+::selection { background: #09bdeb; color: #fff; text-shadow: none; }
 
 a { color: #333; text-decoration: underline; }
 a:visited { color: #333; }
@@ -341,18 +341,15 @@ a:visited {
 
 a:focus { 
 	outline: thin dotted;
-	color: #fed208;
+	color: #09bdeb;
 }
 
 a:hover, a:active { 
-  color: #fed208;
+	outline: 0;
+	color: #09bdeb;
 	text-decoration:underline;
 }
-.upcoming-title a:hover, .srp-post-title a:hover {
-  background: #fed208; 
-  color: #fff; 
-  text-shadow: none;
-}
+
 .alignleft {
 	display: inline;
 	float: left;
@@ -438,7 +435,7 @@ blockquote.pull-right p, blockquote.pull-right small {
 	height:10px;
 }
 .gfield_select:focus{
-	border:1px solid #fed208;
+	border:1px solid #09bdeb;
 }
 .ui-tabs-panel {
         padding: .8em .4em !important;
@@ -514,15 +511,15 @@ blockquote.pull-right p, blockquote.pull-right small {
 
 .seats-left p {
   margin: 0px;
-  color: #fed208;
+  color: #09bdeb;
   font-size: 17px;
 }
 .calnk a {
-	background-color:#fed208 !important;
+	background-color:#09bdeb !important;
 }
 
 .seats-left a {
-  color: #fed208;
+  color: #09bdeb;
   font-weight: bold;
   text-shadow:1px 1px 1px #333;
 }
@@ -964,7 +961,7 @@ div.kjo-link p{
 	display:none;
 }
 .calnk a:hover span {
-	background:#fed208 !important; 
+	background:#09bdeb !important; 
 }
 
 
@@ -993,12 +990,12 @@ payment_methods methods {
 	width: 48%;
 }
 .myaccount_user a{
-	color: #fed208;
+	color: #09bdeb;
 	font-weight: bold;
 	text-decoration: underline;
 }
 .myaccount_user a:hover{
-	color: #fed208;
+	color: #09bdeb;
 	font-weight: bold;
 	text-decoration: none;
 }
@@ -1203,17 +1200,17 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #ffe469, #fed208);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffe469), to(#fed208));
-	background-image: -webkit-linear-gradient(top, #ffe469, #fed208);
-	background-image: -o-linear-gradient(top, #ffe469, #fed208);
-	background-image: linear-gradient(top, #ffe469, #fed208);
-	background-image: -moz-linear-gradient(top, #ffe469, #fed208);
+	background-image: -ms-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2bc9f1), to(#09bdeb));
+	background-image: -webkit-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -o-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -moz-linear-gradient(top, #2bc9f1, #09bdeb);
 	background-repeat: repeat-x;
-  border: 1px solid #CCC;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-color: #d7bb39 #d7bb39 #BFBFBF;
-  border-bottom-color: #B3B3B3;
+	border: 1px solid #CCC;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	border-color: #46a4e3 #46a4e3 #BFBFBF;
+	border-bottom-color: #B3B3B3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -1226,8 +1223,8 @@ payment_methods methods {
 .book-btn:hover {
 	color: #333333;
 	text-decoration: none;
-  background-color: #eac621;
-  *background-color: #eac621; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-color: #3cd4fb;
+	*background-color: #3cd4fb; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1236,8 +1233,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn:active {
-	background-color: #fed208;
-	background-color: #fed208 \9;
+	background-color: #09bdeb;
+	background-color: #09bdeb \9;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1260,17 +1257,17 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #ffe469, #fed208);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffe469), to(#fed208));
-	background-image: -webkit-linear-gradient(top, #ffe469, #fed208);
-	background-image: -o-linear-gradient(top, #ffe469, #fed208);
-	background-image: linear-gradient(top, #ffe469, #fed208);
-	background-image: -moz-linear-gradient(top, #ffe469, #fed208);
+	background-image: -ms-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2bc9f1), to(#09bdeb));
+	background-image: -webkit-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -o-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -moz-linear-gradient(top, #2bc9f1, #09bdeb);
 	background-repeat: repeat-x;
 	border: 1px solid #CCC;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  	border-color: #d7bb39 #d7bb39 #BFBFBF;
-  	border-bottom-color: #B3B3B3;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	border-color: #46a4e3 #46a4e3 #BFBFBF;
+	border-bottom-color: #B3B3B3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -1283,8 +1280,8 @@ payment_methods methods {
 .book-btn-smll:hover {
 	color: #333333;
 	text-decoration: none;
-  background-color: #eac621;
-  *background-color: #eac621; /* Buttons in IE7 don't get borders, so darken on hover */
+	background-color: #3cd4fb;
+	*background-color: #3cd4fb; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1293,8 +1290,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn-smll:active {
-	background-color: #fed208;
-	background-color: #fed208 \9;
+	background-color: #09bdeb;
+	background-color: #09bdeb \9;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1346,7 +1343,7 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	color:#FFF;
 }
 .eventful {
-	background:#fed208;
+	background:#09bdeb;
 	border:1px solid #CCC !important;
 }
    
@@ -2599,8 +2596,6 @@ p.srp-widget-date {
 	font-weight: bold;
 	font-size:1.3em !important;
 	margin:0px;
-  color: #333333;
-  text-decoration:underline;
 }
 
 .out-of-stock {
@@ -2765,7 +2760,7 @@ p.srp-widget-date {
 	width: 100%;
 }
 a.read-more {
-	color:#fed208;
+	color:#09bdeb;
 	text-decoration:none;
 }
 a.read-more:hover {
@@ -2941,7 +2936,7 @@ a.read-more:hover {
 }
 
 .social-media-icons a:hover, .social-media-icons a:active { 
-	color: #fed208;
+	color: #09bdeb;
 	text-decoration:underline;
 }
 
@@ -2984,7 +2979,7 @@ iframe ul {
 }
 
 .entry-header h1 a:hover {
-	color: #fed208;
+	color: #09bdeb;
 }
 
 article.sticky .featured-post {
@@ -3029,7 +3024,7 @@ article.sticky {
 }
 
 .header-meta a:hover {
-	color: #fed208;
+	color: #09bdeb;
 }
 
 .entry-content {
@@ -3058,7 +3053,7 @@ article.sticky {
 
 .post-categories a:hover,
 .post-tags a:hover {
-	background-color: #fed208;
+	background-color: #09bdeb;
 	color: #fff;
 }
 
@@ -3111,7 +3106,7 @@ article.sticky {
 }
 
 .page-links a:hover .page-numbers {
-	background-color: #fed208;
+	background-color: #09bdeb;
 	color: #fff;
 }
 
@@ -3304,7 +3299,7 @@ article.sticky {
 .author-link a:hover,
 .author-link a:active { 
 	outline: 0;
-	color: #fed208;
+	color: #09bdeb;
 }
 
 .author.archive .author-info {
@@ -3663,7 +3658,7 @@ form label.error {
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 }
 #footercontainer a {
-	color:#fed208;
+	color:#09bdeb;
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 	text-decoration:none;
 	text-transform:uppercase;
@@ -3704,7 +3699,7 @@ form label.error {
 }
 
 .site-footer a:hover { 
-	color: #fed208;
+	color: #09bdeb;
 }
 
 .site-footer a:focus { 
@@ -3737,7 +3732,7 @@ form label.error {
 }
 
 .smallprint a:hover { 
-	color: #fed208;
+	color: #09bdeb;
 }
 
 
@@ -3917,14 +3912,14 @@ li a:visited.page-numbers {
 }
 
 li a:hover.page-numbers {
-	background-color: #fed208;
+	background-color: #09bdeb;
 	color: #fff;
 }
 
 li a:hover.prev,
 li a:hover.next {
 	background-color: transparent;
-	color: #fed208;
+	color: #09bdeb;
 }
 
 .page-numbers li {
@@ -4079,7 +4074,7 @@ li span.dots {
 .main-navigation .current_page_item > a,
 .main-navigation .current_page_ancestor > a,
 .main-navigation .current_page_parent > a {
-	color: #fed208; /* Nav bar link color for current menu item or ancestor */
+	color: #09bdeb; /* Nav bar link color for current menu item or ancestor */
 }
 
 .main-navigation ul .divider {
@@ -4772,7 +4767,4 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
 
 .shipping-calculator-button {
 	text-decoration: none;
-}
-.quickshare-container a:hover {
-  color:#fed208;
 }
