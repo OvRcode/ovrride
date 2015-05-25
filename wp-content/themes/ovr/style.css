@@ -4777,13 +4777,15 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
   color:#fed208;
 }
 
-.includes {
-  list-style: disc; 
+.includes{
   font-size: 0.9rem; 
   line-height: 1.4;
-}
-.includes li {
   border: 0;
   padding: 0;
-  margin: 0;
+}
+.includes li {
+  list-style: disc;
+  border: 0;
+  padding: 0;
+  margin: 0 0 0 15px;
 }
