@@ -4776,3 +4776,14 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
 .quickshare-container a:hover {
   color:#fed208;
 }
+
+.includes {
+  list-style: disc; 
+  font-size: 0.9rem; 
+  line-height: 1.4;
+}
+.includes li {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
