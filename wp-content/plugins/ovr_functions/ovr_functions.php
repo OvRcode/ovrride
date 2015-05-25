@@ -291,5 +291,14 @@ function ovr_get_coupon_url($code) {
     $url = home_url("wp-admin/post.php?post=".$ID."&action=edit", "https");
     return $url;
 }
+
+/* sort woocommerce categories by SKU */
+add_filter('woocommerce_get_catalog_ordering_args', 'am_woocommerce_catalog_orderby');
+function am_woocommerce_catalog_orderby( $args ) {
+	$args['orderby'] = 'sku';
+	$args['order'] = 'asc';
+	$args['meta_key'] = '';
+    return $args;
+}
 /* Place custom code above this line. */
 ?>
