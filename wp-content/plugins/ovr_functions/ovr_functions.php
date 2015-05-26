@@ -295,9 +295,9 @@ function ovr_get_coupon_url($code) {
 /* sort woocommerce categories by SKU */
 add_filter('woocommerce_get_catalog_ordering_args', 'am_woocommerce_catalog_orderby');
 function am_woocommerce_catalog_orderby( $args ) {
-	$args['orderby'] = 'sku';
+	$args['orderby'] = 'meta_value';
 	$args['order'] = 'asc';
-	$args['meta_key'] = '';
+	$args['meta_key'] = '_sku';
     return $args;
 }
 /* Place custom code above this line. */
