@@ -114,7 +114,6 @@ function getTripData(){
     messages.removeAll();
     $.get("api/trip/" + trip + "/" + bus + "/" + statuses, function(data){
         var apiData = jQuery.parseJSON(data);
-        console.log(apiData);
         if ( apiData ){
           jQuery.each(apiData, function(id,dataObject){
               jQuery.each(dataObject, function(key, value){

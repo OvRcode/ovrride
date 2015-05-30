@@ -273,8 +273,6 @@ function listHTML(ID, order){
     if( settings.isSet('Pickup') ) {
         var pickupHTML = '<div class="buttonCell col-xs-5 col-md-3 flexPickup">' + order.Pickup + '</div>';
         output = output.concat(pickupHTML);
-    } else if ( settings.isSet('Rockaway') ) {
-      console.log(order);
     }
     var packageHTML = "<div class='buttonCell col-xs-5 col-md-3 flexPackage visible-md visible-lg'>\
                         " + order.Package + "</div>\
@@ -501,12 +499,7 @@ function setupListener(ID){
     });
     if ( settings.get('bus') != "All" ){
       $("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
-        //$("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
-        //$("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("singletap", function(){
             changeStatus($(this).parent());
-            console.log($(this).attr('id'));
-            console.log($(this));
-            console.log('clicked');
         });
     }
 }
