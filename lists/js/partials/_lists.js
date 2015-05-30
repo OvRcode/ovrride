@@ -14,7 +14,7 @@ $(function() {
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         $("#walkonPackage").append(dd.get('packages'));
-        if ( !settings.isSet('Pickup') ){
+        if ( !settings.isSet('Pickup') && !settings.isSet('Rockaway')){
             $("#pickupDiv").remove();
         } else {
             $("#pickup").change(function(){ addWalkonButton(); });
@@ -273,6 +273,8 @@ function listHTML(ID, order){
     if( settings.isSet('Pickup') ) {
         var pickupHTML = '<div class="buttonCell col-xs-5 col-md-3 flexPickup">' + order.Pickup + '</div>';
         output = output.concat(pickupHTML);
+    } else if ( settings.isSet('Rockaway') ) {
+      console.log(order);
     }
     var packageHTML = "<div class='buttonCell col-xs-5 col-md-3 flexPackage visible-md visible-lg'>\
                         " + order.Package + "</div>\
