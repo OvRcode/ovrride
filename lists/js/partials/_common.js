@@ -114,14 +114,16 @@ function getTripData(){
     messages.removeAll();
     $.get("api/trip/" + trip + "/" + bus + "/" + statuses, function(data){
         var apiData = jQuery.parseJSON(data);
-        console.log(apiData);
         if ( apiData ){
           jQuery.each(apiData, function(id,dataObject){
               jQuery.each(dataObject, function(key, value){
                   if ( key == 'Data' ){
                       orders.set(id,value);
-                      if ( 'Pickup' in value )
+                      if ( 'Pickup' in value ) {
                           settings.set('Pickup', 1);
+                      } else if ( 'Transit To Rockaway' in value ) {
+                          settings.set('Rockaway', 1);
+                      }
                     } else if ( key == 'HTML' ){
                       initialHTML.set(id,value);
                     } else if ( key == 'State' && value !== null) {

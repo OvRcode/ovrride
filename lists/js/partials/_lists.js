@@ -14,7 +14,7 @@ $(function() {
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         $("#walkonPackage").append(dd.get('packages'));
-        if ( !settings.isSet('Pickup') ){
+        if ( !settings.isSet('Pickup') && !settings.isSet('Rockaway')){
             $("#pickupDiv").remove();
         } else {
             $("#pickup").change(function(){ addWalkonButton(); });
@@ -499,12 +499,7 @@ function setupListener(ID){
     });
     if ( settings.get('bus') != "All" ){
       $("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
-        //$("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
-        //$("#" + split[0] + "\\:" + split[1] + " div.row.primary").children().not(".noClick").on("singletap", function(){
             changeStatus($(this).parent());
-            console.log($(this).attr('id'));
-            console.log($(this));
-            console.log('clicked');
         });
     }
 }

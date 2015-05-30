@@ -428,6 +428,10 @@ AAA;
 
         if ( isset($orderData['Pickup']) ) {
             $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup ' . $pickupVisible . '">'.$orderData['Pickup'].'</div>';
+        } else if ( isset($orderData['Transit To Rockaway']) ) {
+            $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup ' . $pickupVisible . '">To Rockaway: "';
+            $output .= $orderData['Transit To Rockaway'] . '<br /> From Rockaway: ' . $orderData['Transit From Rockaway'];
+            $output .= '</div>';
         }
         $output .=<<<BBB
                 <div class="buttonCell col-xs-5 col-md-3 flexPackage {$packageVisible}"> {$orderData['Package']}</div>
