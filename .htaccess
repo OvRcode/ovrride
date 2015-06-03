@@ -53,3 +53,6 @@ RewriteRule ^beta$ http://beta.ovrride.com/ [R=301,L]
 
 # Webmail Redirect
 Redirect 301 /mail https://webmail.ovrride.com
+
+# Temporary Redirects for Waiver url change
+Redirect 301 "/OvR 2014-15WAIVER.pdf.zip" /wp-content/uploads/2015/05/OvR-2014-15WAIVER.pdf.zip
