@@ -61,7 +61,7 @@ $pickups["Mount Everest"]["instructions"] = "corner of Washington & 3rd St";
                             </v:roundrect>
                         <![endif]-->
 
-                        <a href="<?php echo get_site_url();?>//wp-content/uploads/2015/05/OvR-2014-15WAIVER.pdf.zip" style="background-color:#2BC9F1;border:1px solid ##2BC9F1;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">Download Waiver</a>
+                        <a href="<?php echo get_site_url();?>/wp-content/uploads/2015/05/OvR-2014-15WAIVER.pdf.zip" style="background-color:#2BC9F1;border:1px solid ##2BC9F1;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">Download Waiver</a>
                     </div>
                 </td>
             </tr>
