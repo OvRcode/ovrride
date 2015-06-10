@@ -1,0 +1,37 @@
+{
+  "name": "hhvm",
+  "version": "0.6.0",
+  "description": "Installs/Configures hhvm",
+  "long_description": "# hhvm [![Build Status](https://travis-ci.org/jubianchi/hhvm-cookbook.svg?branch=master)](https://travis-ci.org/jubianchi/hhvm-cookbook)\n\n## Requirements\n\n* Chef `>= 11.6.0`\n* Ruby `>= 1.9.3`\n\n## Platforms\n\n|              | Debian 7   | Ubuntu 12.04   | Ubuntu 13.10   | Ubuntu 14.04   | CentOS 6.4   | Centos 6.5   | Centos 6.6   | Centos 6.7   |\n| -----------: | :--------: | :------------: | :------------: | :------------: | :----------: | :----------: | :----------: | :----------: |\n| **Source**   | X          | X              | X              | X              |              |              |              |              |\n| **Package**  | X          | X              | X              | X              | X            | X            | X            | X            |\n\n**The cookbook was tested on the previous platforms using the provided [`Vagrantfile`](Vagrantfile).**\n\n## Cookbooks\n\n### Requirements\n\n* [apt cookbook](https://github.com/opscode-cookbooks/apt)\n* [yum cookbook](https://github.com/opscode-cookbooks/yum)\n\n**All the requirements are decribed in the cookbook's [`metadata.rb`](metadata.rb) file and are locked using Berkshelf's lock file.**\n\n### Attributes\n\n| Attribute                                         | Default                                | Description/Values                                                          |\n| ------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------- |\n| `node['hhvm']['installation_type']`               | package                                | Installation method ([`package`](#hhvmpackage) or [`source`](#hhvmsource))  |\n| **Package installation**                          |                                        |                                                                             |\n| `node['hhvm']['package']['type']`                 | default                                | Which HHVM package to install (one of dbg, nightly, nightly-dbg or default) |\n| `node['hhvm']['setup_centos_hhvm_repo']`          | true                                   | If true, hop5.in will be installed on Centos hosts                          |\n| `node['hhvm']['setup_centos_epel_repo']`          | true                                   | If true, EPEL will be installed on Centos hosts                             |\n| **Source installation**                           |                                        |                                                                             |\n| `node['hhvm']['source']['make_jobs']`             | 1                                      | Number of parallel jobs when running `make` commands                        |\n| `node['hhvm']['source']['hhvm_repository']`       | git://github.com/facebook/hhvm.git     | HHVM git repository URL                                                     |\n| `node['hhvm']['source']['hhvm_revision']`         | master                                 | Revision to checkout when installing from sources                           |\n| `node['hhvm']['source']['libevent_repository']`   | git://github.com/libevent/libevent.git | libevent git repository URL                                                 |\n| `node['hhvm']['source']['libevent_revision']`     | eb8122f26 (release-1.4.14b-stable)     | libevent version to checkout to build HHVM                                  |\n| `node['hhvm']['source']['layout']['working_dir']` | /usr/src                               | Directory in which repositories will be cloned                              |\n| `node['hhvm']['source']['layout']['prefix']`      | /usr                                   | Prefix used when building HHVM                                              |\n| `node['hhvm']['source']['dependencies'][...]`     | _very long list of packages_           | List of packages to install before being able to build HHVM                 |\n\n**All the default attributes are available in the [`attributes/default.rb`](attributes/default.rb) file.**\n\n### Recipes\n\n#### hhvm::default\n\nThis will install HHVM using packages which is the default installation method.\n\n#### hhvm::package\n\nThis will install HHVM using packages which is the default installation method.\n\n#### hhvm::source\n\nThis will install HHVM from sources.\n\n## License\n\nSee [LICENSE](LICENSE) file.\n",
+  "maintainer": "jubianchi",
+  "maintainer_email": "contact@jubianchi.fr",
+  "license": "MIT",
+  "platforms": {
+    "debian": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0",
+    "centos": ">= 0.0.0"
+  },
+  "dependencies": {
+    "apt": ">= 0.0.0",
+    "yum": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "hhvm": "Installs hhvm",
+    "hhvm::package": "Installs hhvm using packages.",
+    "hhvm::source": "Installs hhvm from source."
+  }
+}
