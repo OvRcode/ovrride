@@ -1,0 +1,8 @@
+# DO NOT COMMIT CHANGES TO THIS FILE, this file is here for structure only
+# Please use "git update-index --assume-unchanged vagrant.yml" to avoid commiting changes
+s3:
+    secret_key:
+    access_key:
+twilio:
+    sid:
+    auth:
