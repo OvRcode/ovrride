@@ -16,9 +16,12 @@ mysql_database 'ovrride' do
   action :create
 end
 
+#execute 'download backup' do
+#  command "/vagrant/chef/getDB.sh"
+#end*/
 
-execute 'download and import' do
-  command "/vagrant/chef/getDB.sh && mysql -f -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/ovrride.sql"
+execute 'import backup' do
+  command "mysql -f -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/ovrride.sql"
 end
 
 execute 'update' do

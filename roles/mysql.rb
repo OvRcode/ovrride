@@ -10,5 +10,8 @@ override_attributes(
 )
 
 run_list(
-"recipe[mysql::server]"
+"recipe[mysql::server]",
+"recipe[database::mysql]",
+"recipe[s3cmd]",
+"recipe[database::import]"
 )
