@@ -11,3 +11,4 @@ error_log
 .vagrant/
 !dev.sql
 Gemfile.lock
+chef/s3cfg
