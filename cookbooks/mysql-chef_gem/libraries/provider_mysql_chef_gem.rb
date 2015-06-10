@@ -7,24 +7,45 @@ class Chef
         true
       end
 
-      def action_install
-        converge_by 'install mysql chef_gem and dependencies' do
-          recipe_eval do
-            run_context.include_recipe 'build-essential::default'
-          end
+      action :install do
+        # We're going to need compilers to build the gem's native
+        # extentions.
+        recipe_eval do
+          run_context.include_recipe 'build-essential::default'
+        end
 
-          recipe_eval do
-            run_context.include_recipe 'mysql::client'
-          end
+        directory "#{Chef::Config[:file_cache_path]}/connector" do
+          action :create
+        end
 
-          chef_gem 'mysql' do
-            action :install
-          end
+        remote_file ::File.basename(new_resource.connectors_url) do
+          path "#{Chef::Config[:file_cache_path]}/mysql-connector.tar.gz"
+          source new_resource.connectors_url
+          checksum new_resource.connectors_checksum
+          notifies :run, 'bash[unpack connector]', :immediately
+          action :create
+        end
+
+        bash 'unpack connector' do
+          code <<-EOF
+          tar xzf #{Chef::Config[:file_cache_path]}/mysql-connector.tar.gz \
+          -C #{Chef::Config[:file_cache_path]}/connector \
+          --strip-components 1
+          EOF
+          action :nothing
+        end
+
+        gem_package 'mysql' do
+          gem_binary RbConfig::CONFIG['bindir'] + '/gem'
+          version new_resource.gem_version
+          options "-- --with-mysql-dir=#{Chef::Config[:file_cache_path]}/connector"
+          action :install
         end
       end
 
-      def action_remove
-        chef_gem 'mysql' do
+      action :remove do
+        gem_package 'mysql' do
+          gem_binary RbConfig::CONFIG['bindir'] + '/gem'
           action :remove
         end
       end

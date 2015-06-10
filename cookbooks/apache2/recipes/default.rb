@@ -2,7 +2,8 @@
 # Cookbook Name:: apache2
 # Recipe:: default
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2008-2013, Chef Software, Inc.
+# Copyright 2014-2015, Alexander van Zoest
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,21 +22,6 @@ package 'apache2' do
   package_name node['apache']['package']
 end
 
-service 'apache2' do
-  service_name node['apache']['package']
-  case node['platform_family']
-  when 'rhel'
-    reload_command '/sbin/service httpd graceful'
-  when 'debian'
-    provider Chef::Provider::Service::Debian
-  when 'arch'
-    service_name 'httpd'
-  end
-  supports [:start, :restart, :reload, :status]
-  action [:enable, :start]
-  only_if "#{node['apache']['binary']} -t", :environment => { 'APACHE_LOG_DIR' => node['apache']['log_dir'] }, :timeout => 2
-end
-
 %w(sites-available sites-enabled mods-available mods-enabled conf-available conf-enabled).each do |dir|
   directory "#{node['apache']['dir']}/#{dir}" do
     mode '0755'
@@ -44,15 +30,16 @@ end
   end
 end
 
-%w(default 000-default).each do |site|
-  file "#{node['apache']['dir']}/sites-enabled/#{site}" do
+%w(default default.conf 000-default 000-default.conf).each do |site|
+  link "#{node['apache']['dir']}/sites-enabled/#{site}" do
     action :delete
-    backup false
+    not_if { site == "#{node['apache']['default_site_name']}.conf" && node['apache']['default_site_enabled'] }
   end
 
   file "#{node['apache']['dir']}/sites-available/#{site}" do
     action :delete
     backup false
+    not_if { site == "#{node['apache']['default_site_name']}.conf" && node['apache']['default_site_enabled'] }
   end
 end
 
@@ -69,6 +56,11 @@ end
 package node['apache']['perl_pkg']
 
 %w(a2ensite a2dissite a2enmod a2dismod a2enconf a2disconf).each do |modscript|
+  link "/usr/sbin/#{modscript}" do
+    action :delete
+    only_if { ::File.symlink?("/usr/sbin/#{modscript}") }
+  end
+
   template "/usr/sbin/#{modscript}" do
     source "#{modscript}.erb"
     mode '0700'
@@ -134,6 +126,16 @@ end
   end
 end
 
+directory node['apache']['lock_dir'] do
+  mode '0755'
+  if node['platform_family'] == 'debian' && node['apache']['version'] == '2.2'
+    owner node['apache']['user']
+  else
+    owner 'root'
+  end
+  group node['apache']['root_group']
+end
+
 # Set the preferred execution binary - prefork or worker
 template "/etc/sysconfig/#{node['apache']['package']}" do
   source 'etc-sysconfig-httpd.erb'
@@ -182,7 +184,11 @@ end
 
 if node['apache']['version'] == '2.4' && !platform_family?('freebsd')
   # on freebsd the prefork mpm is staticly compiled in
-  include_recipe "apache2::mpm_#{node['apache']['mpm']}"
+  if node['apache']['mpm_support'].include?(node['apache']['mpm'])
+    include_recipe "apache2::mpm_#{node['apache']['mpm']}"
+  else
+    Chef::Log.warn("apache2: #{node['apache']['mpm']} module is not supported and must be handled separately!")
+  end
 end
 
 node['apache']['default_modules'].each do |mod|
@@ -190,12 +196,25 @@ node['apache']['default_modules'].each do |mod|
   include_recipe "apache2::#{module_recipe_name}"
 end
 
-web_app 'default' do
-  template 'default-site.conf.erb'
-  path "#{node['apache']['dir']}/sites-available/default.conf"
-  enable node['apache']['default_site_enabled']
+if node['apache']['default_site_enabled']
+  web_app node['apache']['default_site_name'] do
+    template 'default-site.conf.erb'
+    enable node['apache']['default_site_enabled']
+  end
 end
 
-apache_site '000-default' do
-  enable node['apache']['default_site_enabled']
+service 'apache2' do
+  service_name node['apache']['service_name']
+  case node['platform_family']
+  when 'rhel'
+    restart_command '/sbin/service httpd restart && sleep 1' if node['apache']['version'] == '2.2'
+    reload_command '/sbin/service httpd graceful'
+  when 'debian'
+    provider Chef::Provider::Service::Debian
+  when 'arch'
+    service_name 'httpd'
+  end
+  supports [:start, :restart, :reload, :status]
+  action [:enable, :start]
+  only_if "#{node['apache']['binary']} -t", :environment => { 'APACHE_LOG_DIR' => node['apache']['log_dir'] }, :timeout => 10
 end

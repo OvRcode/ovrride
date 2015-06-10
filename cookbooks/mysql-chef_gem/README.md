@@ -1,74 +1,68 @@
-Mysql chef gem Cookbook
+Mysql chef_gem Cookbook
 =======================
 
-Making custom Chef resource mysql chef gem.
+The Mysql chef_gem is a library cookbook that provides an LWRP for use
+in recipes. It provides a wrapper around `chef_gem` called
+`mysql_chef_gem`, that eases the installation process, collecting the
+prerequisites and side-stepping the compilation phase arms race.
 
 Scope
 -----
-This cookbook is concerned with mysql chef gem.
-This cookbook does not do everything.
+This cookbook is concerned with the installation of the `mysql`
+Rubygem into Chef's gem path. Installation into other Ruby
+environments, or installation of related gems such as `mysql2`
 
 Requirements
 ------------
 * Chef 11 or higher
 * Ruby 1.9 (preferably from the Chef full-stack installer)
-
-Resources / Providers
----------------------
-### mysql_chef_gem
-
-The `mysql_chef_gem` resource configures things.
-
-### Example
-
-    mysql_chef_gem 'default' do
-      action :install
-    end
-
-Recipes
--------
-### mysql_chef_gem::default
-
-This recipe calls a `mysql_chef_gem` resource, passing parameters
-from node attributes.
-
+ 
 Usage
 -----
-The  `crossplat_thing` resource is designed to do things.
+Place a dependency on the mysql cookbook in your cookbook's  metadata.rb
+```ruby
+depends 'mysql-chef_gem', '~> 1.0'
+```
 
-### run_list
+Then, in a recipe:
 
-Include `'recipe[mysql_chef_gem::default]'`
+```ruby
+mysql_chef_gem 'default' do
+  action [:install]
+end
 
-### Wrapper cookbook
+Resources Overview
+------------------
+### mysql_chef_gem
 
-    node.default['mysql_chef_gem']['an_attribute'] = 'Chef'
+The `mysql_chef_gem` resource the build dependencies and installation
+of the `mysql` rubygem into Chef's Ruby environment
 
-    include_recipe 'mysql_chef_gem::default'
 
-    ruby_block 'wat' do
-      notifies :restart, mysql_chef_gem[wat]'
-    end
+#### Example
+```ruby
+mysql_chef_gem 'default' do
+  gem_version '2.9.1'
+  connectors_url 'http://internal.computers.biz/mysql-connector-c-6.1.5-linux-glibc2.5-x86_64.tar.gz'
+  connectors_checksum '38dea02ea8593359037aef7df7df3d388c9baac3604635f398bae9e1e8eaa4d2'
+  action :install
+end
+```
 
-### Used directly in a recipe
+#### Parameters
+- `gem_version` - The version of the `mysql` Rubygem to install into
+  the Chef environment. Defaults to '2.9.1'
+- `connectors_url` - URL of a tarball containing pre-compiled MySQL
+  connector libraries  
+- `connectors_checksum` - sha256sum of the `connectors_url` tarball
 
-    mysql_chef_gem 'wat' do
-      action :create
-    end
-
-    ruby_block 'wat' do
-      notifies :restart, mysql_chef_gem[wat]'
-    end
-
-Attributes
-----------
-
-    default['mysql_chef_gem']['resource_name'] = 'default'
-    default['mysql_chef_gem']['an_attribute'] = 'chef'
+#### Actions
+- `:install` - Build and install the gem into the Chef environment
+- `:remove` - Delete the gem from the Chef environment
 
 License & Authors
 -----------------
-- Author:: Sean OMeara (<someara@opscode.com>)
+- Author:: Sean OMeara (<sean@chef.io>)
 
 ```text
 Copyright:: 2009-2014 Chef Software, Inc
