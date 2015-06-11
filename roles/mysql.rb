@@ -1,17 +1,16 @@
 name "mysql"
-override_attributes(
+default_attributes(
   :mysql => {
     :bind_address => "0.0.0.0",
     :server_root_password => 'iloverandompasswordsbutthiswilldo',
     :server_repl_password => 'iloverandompasswordsbutthiswilldo',
     :server_debian_password => 'iloverandompasswordsbutthiswilldo',
-    :allow_remote_root => true
+    :allow_remote_root => true,
+    :version => '5.5'
   }
 )
 
 run_list(
 "recipe[mysql::server]",
-"recipe[database::mysql]",
-"recipe[s3cmd]",
 "recipe[database::import]"
 )

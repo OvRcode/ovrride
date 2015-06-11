@@ -1,6 +1,6 @@
 {
   "name": "mysql-chef_gem",
-  "version": "1.0.0",
+  "version": "0.0.4",
   "description": "Provides the mysql_chef_gem resource",
   "long_description": "",
   "maintainer": "Chef Software, Inc.",
@@ -13,10 +13,12 @@
     "scientific": ">= 0.0.0",
     "fedora": ">= 0.0.0",
     "debian": ">= 0.0.0",
-    "ubuntu": ">= 0.0.0"
+    "ubuntu": ">= 0.0.0",
+    "smartos": ">= 0.0.0"
   },
   "dependencies": {
-    "build-essential": ">= 0.0.0"
+    "build-essential": ">= 0.0.0",
+    "mysql": ">= 0.0.0"
   },
   "recommendations": {
   },

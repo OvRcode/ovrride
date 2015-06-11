@@ -3,30 +3,43 @@
 #
 
 include_recipe "apache2"
+include_recipe "apache2::mod_actions"
+include_recipe "apache2::mod_rewrite"
+include_recipe "apache2::mod_fastcgi"
+include_recipe "apache2::mpm_worker"
+include_recipe "apache2::mod_ssl"
 
-#web_app "ovr" do
-#  server_name "local.ovrride.com"
-#  server_aliases ["http://local.ovrride.com"]
-#  directory_index "index.php"
-#  docroot "/var/www/"
-#  allow_override "All"
+execute "copy php-fpm config" do
+  command "cp /vagrant/chef/php-fpm.conf /etc/apache2/conf-available/"
+end
+execute "enable php-fpm config" do
+  command "a2enconf php-fpm"
+end
+execute "check SSL key/cert" do
+  command "/vagrant/chef/certCheck.sh"
+end
+
+execute "remove /var/www" do
+  command "rm -r /var/www "
+end
+
+execute "link vagrant to www" do
+  command "ln -s /vagrant /var/www"
+end
+execute "copy site" do
+  command "cp /vagrant/chef/ovr.conf /etc/apache2/sites-available/"
+end
+execute "enable site" do
+  command "a2ensite ovr"
+end
+
+#execute "install gd" do
+#  command "sudo apt-get install -y php5-gd"
 #end
 
-execute "link config" do
-  command <<-EOT
-  if [ ! -h /etc/apache2/sites-enabled/ovr.conf ];then
-    sudo ln -s /vagrant/chef/ovr.conf /etc/apache2/sites-enabled/ovr.conf
-  fi
-  EOT
-end
-
-execute "install imagemagic" do
-  command "sudo apt-get install -y php5-gd"
-end
-
-execute "sync images from S3" do
-  command "/vagrant/chef/getImages.sh"
-end
+#execute "sync images from S3" do
+#  command "/vagrant/chef/getImages.sh"
+#end
 execute "reboot apache" do
   command "sudo service apache2 restart"
 end
