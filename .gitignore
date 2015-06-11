@@ -12,3 +12,5 @@ error_log
 !dev.sql
 Gemfile.lock
 chef/s3cfg
+local.ovrride.com.key
+local.ovrride.com.cert
