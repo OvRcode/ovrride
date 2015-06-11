@@ -36,12 +36,10 @@ boxes = [
 ]
 
 Vagrant.configure(2) do |config|
+  
+  # One box to rule them all (works on Fusion and VirtualBox)
+  config.vm.box = "phusion/ubuntu-14.04-amd64"
 
-  config.vm.box = "ubuntu/trusty64;"
-
-  config.vm.provider "vmware_fusion" do |v, override|
-    override.vm.box = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vmwarefusion.box"
-  end
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   boxes.each do |opts|
@@ -61,7 +59,7 @@ Vagrant.configure(2) do |config|
         config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       else
         config.vm.hostname = opts[:hostname]
-        config.vm.synced_folder ".", "/var/www/"
+        #config.vm.synced_folder ".", "/var/www/"
       end
 
 
@@ -76,11 +74,17 @@ Vagrant.configure(2) do |config|
       end
       
       config.vm.provision "chef_solo" do |chef|
+        # Resolves Chef SSL Error on provisioning
         chef.custom_config_path = "Vagrantfile.chef"
+        
         chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
         chef.roles_path = "roles"
         chef.data_bags_path = "data_bags"
-        chef.add_role opts[:name]
+        if opts[:name] == "web1" || opts[:name] == "web2"
+          chef.add_role "web"
+        else
+          chef.add_role opts[:name]
+        end
       end
     end
   end

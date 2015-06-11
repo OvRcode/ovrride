@@ -11,4 +11,5 @@ cookbook 'php'
 cookbook 'openssl'
 cookbook 'aws'
 cookbook 's3cmd'
-cookbook 'hhvm'
+#cookbook 'hhvm' coming back to this  one
+# going to get a working setup before swapping configs around
