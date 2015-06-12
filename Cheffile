@@ -13,5 +13,6 @@ cookbook 'openssl'
 cookbook 'haproxy', '1.6.6'
 cookbook 'aws'
 cookbook 's3cmd'
+cookbook 'gzip', '~> 0.1.0'
 #cookbook 'hhvm' coming back to this  one
 # going to get a working setup before swapping configs around

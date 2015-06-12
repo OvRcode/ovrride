@@ -9,8 +9,9 @@ default_attributes(
     :version => '5.5'
   }
 )
-
 run_list(
+"recipe[gzip::default]",
+"recipe[s3cmd::add_keys]",
 "recipe[mysql::server]",
 "recipe[database::import]"
 )

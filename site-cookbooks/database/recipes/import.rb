@@ -16,10 +16,9 @@ mysql_database 'ovrride' do
   action :create
 end
 
-=begin Probably going to move this to a script outside of repo
 execute 'download backup' do
   command "/vagrant/chef/getDB.sh"
-=end
+end
 
 execute 'import backup' do
   command "mysql -f -u root -p\"#{node['mysql']['server_root_password']}\" ovrride < /vagrant/ovrride.sql"
