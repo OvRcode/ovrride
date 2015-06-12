@@ -1,5 +1,6 @@
 wp-content/themes/quark/error_log
 wp-content/uploads/20*
+wp-content/uploads/wc-logs/
 wp-content/cache/*
 wp-content/plugins/special-recent-posts/cache/*
 !wp-content/plugins/special-recent-posts/cache/.placeholder
@@ -11,6 +12,7 @@ error_log
 .vagrant/
 !dev.sql
 Gemfile.lock
-chef/s3cfg
 local.ovrride.com.key
-local.ovrride.com.cert
+local.ovrride.com.crt
+local.ovrride.com.csr
+data_bags/secret_keys/
