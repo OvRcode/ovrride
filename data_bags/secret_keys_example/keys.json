@@ -1,0 +1,8 @@
+{
+  // Insert authorization keys for services here
+  "id": "keys",
+  "TWILIO_SID": "KEY HERE",
+  "TWILIO_AUTH": "KEY HERE",
+  "S3_ACCESS_KEY": "KEY HERE",
+  "S3_SECRET_KEY": "KEY HERE"
+}
