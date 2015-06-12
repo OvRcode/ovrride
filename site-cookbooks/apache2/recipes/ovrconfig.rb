@@ -33,10 +33,9 @@ execute "enable site" do
   command "a2ensite ovr"
 end
 
-#execute "install gd
-# do
-#  command "sudo apt-get install -y php5-gd"
-#end
+execute "check for ssl cert" do
+  command "/vagrant/chef/certCheck.sh"
+end
 
 #execute "sync images from S3" do
 #  command "/vagrant/chef/getImages.sh"
