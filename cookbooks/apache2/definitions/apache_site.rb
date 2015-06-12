@@ -2,7 +2,7 @@
 # Cookbook Name:: apache2
 # Definition:: apache_site
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2008-2013, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ define :apache_site, :enable => true do
       notifies :reload, 'service[apache2]', :delayed
       not_if do
         ::File.symlink?("#{node['apache']['dir']}/sites-enabled/#{conf_name}") ||
-        ::File.symlink?("#{node['apache']['dir']}/sites-enabled/000-#{conf_name}")
+          ::File.symlink?("#{node['apache']['dir']}/sites-enabled/000-#{conf_name}")
       end
       only_if { ::File.exist?("#{node['apache']['dir']}/sites-available/#{conf_name}") }
     end
@@ -37,7 +37,7 @@ define :apache_site, :enable => true do
       notifies :reload, 'service[apache2]', :delayed
       only_if do
         ::File.symlink?("#{node['apache']['dir']}/sites-enabled/#{conf_name}") ||
-        ::File.symlink?("#{node['apache']['dir']}/sites-enabled/000-#{conf_name}")
+          ::File.symlink?("#{node['apache']['dir']}/sites-enabled/000-#{conf_name}")
       end
     end
   end

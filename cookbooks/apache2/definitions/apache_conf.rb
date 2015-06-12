@@ -2,7 +2,7 @@
 # Cookbook Name:: apache2
 # Definition:: apache_conf
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2008-2013, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 #
 
 define :apache_conf, :enable => true do
+  include_recipe 'apache2::default'
 
   conf_name = "#{params[:name]}.conf"
   params[:conf_path] = params[:conf_path] || "#{node['apache']['dir']}/conf-available"
@@ -27,7 +28,8 @@ define :apache_conf, :enable => true do
   end
 
   template "#{params[:conf_path]}/#{conf_name}" do
-    source "#{conf_name}.erb"
+    source params[:source] || "#{conf_name}.erb"
+    cookbook params[:cookbook] if params[:cookbook]
     owner 'root'
     group node['apache']['root_group']
     backup false
@@ -40,5 +42,4 @@ define :apache_conf, :enable => true do
       enable true
     end
   end
-
 end

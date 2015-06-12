@@ -4,7 +4,11 @@
 #
 
 execute 'SRP cache permissions' do
-  command "sudo chmod -R 755 /vagrant/wp-content/plugins/special-recent-posts/cache"
+  command "sudo chmod -R 755 /vagrant/wp-content/plugins/special-recent-posts/cache/"
+end
+
+execute 'Uploads permissions' do
+  command "sudo chmod -R 777 /vagrant/wp-content/uploads/"
 end
 
 execute 'Theme font permissions' do

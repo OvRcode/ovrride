@@ -2,7 +2,7 @@
 # Cookbook Name:: yum
 # Resource:: repository
 #
-# Author:: Sean OMeara <someara@getchef.com>
+# Author:: Sean OMeara <someara@chef.io>
 # Copyright 2013, Chef
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,6 +86,7 @@ attribute :proxy_username, :kind_of => String, :regex => /.*/, :default => nil
 attribute :recent, :kind_of => String, :regex => /^\d+$/, :default => nil
 attribute :releasever, :kind_of => String, :regex => /.*/, :default => nil
 attribute :repo_gpgcheck, :kind_of => [TrueClass, FalseClass], :default => nil
+attribute :reposdir, :kind_of => String, :regex => /.*/, :default => nil
 attribute :reset_nice, :kind_of => [TrueClass, FalseClass], :default => nil
 attribute :rpmverbosity, :kind_of => String, :equal_to => %w(info critical emergency error warn debug), :default => nil
 attribute :showdupesfromrepos, :kind_of => [TrueClass, FalseClass], :default => nil

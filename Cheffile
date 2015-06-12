@@ -4,10 +4,15 @@
 site 'https://supermarket.getchef.com/api/v1'
 cookbook 'apt'
 cookbook 'apache2'
-cookbook 'mysql-chef_gem'
-cookbook 'database'
-cookbook 'mysql'
+cookbook 'mysql', '~>5.6.1'
+cookbook 'mysql-chef_gem', '0.0.4'
+cookbook 'database', '2.3.0'
 cookbook 'php'
+cookbook 'php-fpm'
 cookbook 'openssl'
+cookbook 'haproxy', '1.6.6'
 cookbook 'aws'
 cookbook 's3cmd'
+cookbook 'gzip', '~> 0.1.0'
+#cookbook 'hhvm' coming back to this  one
+# going to get a working setup before swapping configs around

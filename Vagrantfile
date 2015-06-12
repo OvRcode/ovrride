@@ -1,28 +1,89 @@
 # -*- mode: ruby -*-
+
 # vi: set ft=ruby :
 
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
+boxes = [
+    {
+        :name => "haproxy",
+        :hostname => "haproxy.local.ovrride.com",
+        :eth1 => "192.168.50.4",
+        :mem => "512",
+        :cpu => "1"
+    },
+    {
+        :name => "web1",
+        :hostname => "web1.local.ovrride.com",
+        :eth1 => "192.168.50.5",
+        :mem => "512",
+        :cpu => "1"
+    },
+    {
+        :name => "web2",
+        :hostname => "web2.local.ovrride.com",
+        :eth1 => "192.168.50.6",
+        :mem => "512",
+        :cpu => "1"
+    },
+    {
+        :name => "mysql",
+        :hostname => "mysql.local.ovrride.com",
+        :eth1 => "192.168.50.7",
+        :mem => "512",
+        :cpu => "1"
+    }
+]
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  # ubuntu 14.04 64bit base
-  config.vm.box = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vmwarefusion.box"
+Vagrant.configure(2) do |config|
+  
+  # One box to rule them all (works on Fusion and VirtualBox)
+  config.vm.box = "phusion/ubuntu-14.04-amd64"
+
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
-  config.vm.host_name = "local.ovrride.com"
-  config.vm.network "private_network", ip: "192.168.50.4"
-  config.vm.network "public_network"
-  config.vm.synced_folder ".", "/var/www/"
-  
-  config.vm.provider "vmware_fusion" do |v|
-    v.vmx["memsize"] = "2048"
-    v.vmx["numvcpus"] = "2"
-  end
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      
+      # Take care of that pesky stdin error message on provisioning
+      config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+      
+      # Automatically Add hostnames to HOST hosts file
+      config.hostmanager.enabled = true
+      config.hostmanager.manage_host = true
+      config.vm.network "public_network"
+      config.vm.network :private_network, ip: opts[:eth1]
 
-  config.vm.provision "chef_solo" do |chef|
-    chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
-    chef.roles_path = "roles"
-    chef.data_bags_path = "data_bags"
-    chef.add_role "ovr-dev-box"
+      if opts[:name] == "haproxy"
+        config.vm.hostname = "local.ovrride.com"
+        config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+      else
+        config.vm.hostname = opts[:hostname]
+        #config.vm.synced_folder ".", "/var/www/"
+      end
+
+
+      config.vm.provider "vmware_fusion" do |v|
+        v.vmx["memsize"] = opts[:mem]
+        v.vmx["numvcpus"] = opts[:cpu]
+      end
+
+      config.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+        v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+      end
+      
+      config.vm.provision "chef_solo" do |chef|
+        # Resolves Chef SSL Error on provisioning
+        chef.custom_config_path = "Vagrantfile.chef"
+        
+        chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
+        chef.roles_path = "roles"
+        chef.data_bags_path = "data_bags"
+        if opts[:name] == "web1" || opts[:name] == "web2"
+          chef.add_role "web"
+        else
+          chef.add_role opts[:name]
+        end
+      end
+    end
   end
 end
