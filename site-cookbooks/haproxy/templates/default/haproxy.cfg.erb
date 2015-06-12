@@ -1,0 +1,104 @@
+global
+   log 127.0.0.1  local0
+   log 127.0.0.1  local1 notice
+   #log loghost   local0 info
+   maxconn 4096
+   # chroot /usr/share/haproxy
+   user haproxy
+   group haproxy
+   daemon
+   stats socket /etc/haproxy/haproxysock level admin
+   #debug
+   #quiet
+
+defaults
+   log   global
+   mode  http
+   option   httplog
+   option   dontlognull
+   retries  3
+   option redispatch
+   maxconn  2000
+   timeout connect  5000
+   timeout client  50000
+   timeout server  50000
+
+listen HAProxy-Statistics *:25001
+    mode http
+    option httplog
+    option httpclose
+    stats enable
+    stats uri /
+    stats refresh 20s
+    stats show-node
+    stats show-legends
+    stats show-desc Workaround haproxy for SSL
+    stats auth admin:ifIruledTheWorld
+
+frontend ssl_relay <%= node['haproxy']['bind_address'] %>:<%= node['haproxy']['https_port']%>
+    # this only works with 1.5 haproxy
+    mode tcp
+    option tcplog
+    option socket-stats
+    # option nolinger
+    maxconn  300
+    # use tcp content accepts to detects ssl client and server hello.
+    # acl clienthello req_ssl_hello_type 1 -> seems to not work
+    tcp-request inspect-delay 5s
+    tcp-request content accept if { req_ssl_hello_type 1 }
+    # leaving this here for splitting lists to seperate server
+    #use_backend %[req.ssl_sni,lower,map(/etc/haproxy/ssl_map.map,ssl_web)]
+    use_backend ssl_web
+
+frontend http <%= node['haproxy']['bind_address'] %>:<%= node['haproxy']['http_port'] %>
+    mode http
+    #use_backend %[req.hdr(host),lower,map(/etc/haproxy/map.map,web)]
+    use_backend web
+
+backend web
+    mode http
+    balance roundrobin
+    option forwardfor
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    option httpchk HEAD / HTTP/1.1\r\nHost:localhost
+    <% node['haproxy']['web_servers'].each do |name, ip| %>
+        server <%= name %> <%= ip %>:<%= node['haproxy']['http_port']%> check
+    <% end %>
+    # TODO: implement maintenace page in dev env
+    #server maintenance 192.168.50.4:9000 backup
+    
+
+backend ssl_web
+   mode tcp
+   #option nolinger
+   option tcplog
+   balance roundrobin
+   hash-type consistent
+   option srvtcpka
+
+    # maximum SSL session ID length is 32 bytes.
+    stick-table type binary len 32 size 30k expire 30m
+
+    # make sure we cover type 1 (fallback)
+    acl clienthello req_ssl_hello_type 1
+    acl serverhello rep_ssl_hello_type 2
+
+    # use tcp content accepts to detects ssl client and server hello.
+    tcp-request inspect-delay 5s
+    tcp-request content accept if clienthello
+
+    # no timeout on response inspect delay by default.
+    tcp-response content accept if serverhello
+    # SSL session ID (SSLID) may be present on a client or server hello.
+    # Its length is coded on 1 byte at offset 43 and its value starts
+    # at offset 44.
+    # Match and learn on request if client hello.
+    stick on payload_lv(43,1) if clienthello
+    # Learn on response if server hello.
+    stick store-response payload_lv(43,1) if serverhello
+
+    #option ssl-hello-chk
+    <% node['haproxy']['ssl_web_servers'].each do |name, ip| %>
+        server <%= name %> <%= ip %>:<%= node['haproxy']['https_port']%> check
+    <% end %>

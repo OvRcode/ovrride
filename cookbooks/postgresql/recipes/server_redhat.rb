@@ -56,7 +56,7 @@ end
 # Use the postgresql-setup script instead.
 
 unless platform_family?("fedora") and node['platform_version'].to_i >= 16
-  
+
   directory "/etc/sysconfig/pgsql" do
     mode "0644"
     recursive true
@@ -77,13 +77,21 @@ if platform_family?("fedora") and node['platform_version'].to_i >= 16
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
-else !platform_family?("suse") 
+elsif platform?("redhat") and node['platform_version'].to_i >= 7
+
+  execute "postgresql#{node['postgresql']['version'].split('.').join}-setup initdb #{svc_name}" do
+    not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
+  end
+
+else !platform_family?("suse")
 
   execute "/sbin/service #{svc_name} initdb #{initdb_locale}" do
     not_if { ::FileTest.exist?(File.join(dir, "PG_VERSION")) }
   end
 
 end
+
+include_recipe "postgresql::server_conf"
 
 service "postgresql" do
   service_name svc_name

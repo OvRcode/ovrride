@@ -1,7 +1,9 @@
 apache2 Cookbook
 ================
-[![Build Status](https://secure.travis-ci.org/onehealth-cookbooks/apache2.png?branch=master)](http://travis-ci.org/onehealth-cookbooks/apache2)
-[![Gitter Chat](https://badges.gitter.im/onehealth-cookbooks/apache2.png)](https://gitter.im/onehealth-cookbooks/apache2)
+[![Cookbook Version](https://img.shields.io/cookbook/v/apache2.svg?style=flat)](https://supermarket.chef.io/cookbooks/apache2)
+[![Build Status](https://travis-ci.org/svanzoest-cookbooks/apache2.svg?branch=master)](https://travis-ci.org/svanzoest-cookbooks/apache2)
+[![Dependency Status](http://img.shields.io/gemnasium/svanzoest-cookbooks/apache2.svg?style=flat)](https://gemnasium.com/svanzoest-cookbooks/apache2)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/svanzoest-cookbooks/apache2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 This cookbook provides a complete Debian/Ubuntu style Apache HTTPD
 configuration. Non-Debian based distributions such as Red Hat/CentOS,
@@ -35,12 +37,11 @@ As of v1.2.0, this cookbook makes use of `node['platform_family']` to
 simplify platform selection logic. This attribute was introduced in
 Ohai v0.6.12. The recipe methods were introduced in Chef v0.10.10. If
 you must run an older version of Chef or Ohai, use [version 1.1.16 of
-this cookbook](https://supermarket.getchef.com/cookbooks/apache2/versions/1.1.16).
+this cookbook](https://supermarket.chef.io/cookbooks/apache2/versions/1.1.16).
 
 ## Cookbooks:
 
-This cookbook doesn't have direct dependencies on other cookbooks, as
-none are needed for the default recipe or the general use cases.
+This cookbook has no direct external dependencies.
 
 Depending on your OS configuration and security policy, you may need
 additional recipes or cookbooks for this cookbook's recipes to
@@ -56,7 +57,7 @@ settings may affect the behavior of this cookbook:
 On Ubuntu/Debian, use Opscode's `apt` cookbook to ensure the package
 cache is updated so Chef can install packages, or consider putting
 apt-get in your bootstrap process or
-[knife bootstrap template](http://wiki.opscode.com/display/chef/Knife+Bootstrap).
+[knife bootstrap template](http://docs.chef.io/knife_bootstrap.html)
 
 On RHEL, SELinux is enabled by default. The `selinux` cookbook
 contains a `permissive` recipe that can be used to set SELinux to
@@ -64,7 +65,7 @@ contains a `permissive` recipe that can be used to set SELinux to
 by the user to address SELinux permissions.
 
 The easiest but **certainly not ideal way** to deal with IPtables is
-to flush all rules. Opscode does provide an `iptables` cookbook but is
+to flush all rules. Chef Software does provide an `iptables` cookbook but is
 migrating from the approach used there to a more robust solution
 utilizing a general "firewall" LWRP that would have an "iptables"
 provider. Alternately, you can use ufw, with Opscode's `ufw` and
@@ -82,10 +83,6 @@ you also need the `pacman` cookbook for the `pacman_aur` LWRP. Put
 role). This is not an explicit dependency because it is only required
 for this single recipe and platform; the pacman default recipe
 performs `pacman -Sy` to keep pacman's package cache updated.
-
-The `apache2::god_monitor` recipe uses a definition from the `god`
-cookbook. Include `recipe[god]` in the node's expanded run list to
-ensure that the cookbook is available to the node, and to set up `god`.
 
 ## Platforms:
 
@@ -127,7 +124,7 @@ Tests
 =====
 
 This cookbook in the
-[source repository](https://github.com/onehealth-cookbooks/apache2)
+[source repository](https://github.com/svanzoest-cookbooks/apache2/)
 contains chefspec, serverspec and cucumber tests. This is an initial proof of
 concept that will be fleshed out with more supporting infrastructure
 at a future time.
@@ -167,6 +164,7 @@ the top of the file.
 * `node['apache']['lib_dir']` - Location for shared libraries
 * `node['apache']['default_site_enabled']` - Default site enabled. Default is false.
 * `node['apache']['ext_status']` - if true, enables ExtendedStatus for `mod_status`
+* `node['apache']['locale'] - Locale to set in sysconfig or envvars and used for subprocesses and modules (like mod_dav and mod_wsgi). On debian systems Uses system-local if set to 'system', defaults to 'C'.
 
 General settings
 ----------------
@@ -174,7 +172,7 @@ General settings
 These are general settings used in recipes and templates. Default
 values are noted.
 
-* `node['apache']['version']` - Specifing 2.4 triggers apache 2.4 support. If the platform is known during our test to install 2.4 by default, it will be set to 2.4 for you. Otherwise it falls back to 2.2.
+* `node['apache']['version']` - Specifing 2.4 triggers apache 2.4 support. If the platform is known during our test to install 2.4 by default, it will be set to 2.4 for you. Otherwise it falls back to 2.2. This value should be specified as a string.
 * `node['apache']['listen_addresses']` - Addresses that httpd should listen on. Default is any ("*").
 * `node['apache']['listen_ports']` - Ports that httpd should listen on. Default is port 80.
 * `node['apache']['contact']` - Value for ServerAdmin directive. Default "ops@example.com".
@@ -228,16 +226,14 @@ configuration.
 * `node['apache']['event']['maxrequestworkers']` - Maximum number of connections that will be processed simultaneously.
 * `node['apache']['event']['maxconnectionsperchild']`  - Limit on the number of connections that an individual child server will handle during its life.
 
-ITK Attributes
---------------
+Other/Unsupported MPM
+---------------------
 
-ITK attributes are used for tuning the experimental Apache HTTPD itk MPM configuration.
+To use the cookbook with an unsupported mpm (other than prefork, event or worker):
 
-* `node['apache']['itk']['startservers']` - Initial number of child server processes created at startup. Default 16.
-* `node['apache']['itk']['minspareservers']` - Minimum number of spare servers. Default 16.
-* `node['apache']['itk']['maxspareservers']` - Maximum number of spare servers. Default 16.
-* `node['apache']['itk']['maxrequestworkers']` - Maximum number of connections that will be processed simultaneously.
-* `node['apache']['itk']['maxconnectionsperchild']`  - Limit on the number of connections that an individual child server will handle during its life.
+* set `node['apache']['mpm']` to the name of the module (e.g. `itk`)
+* in your cookbook, after `include_recipe 'apache2'` use the `apache_module` definition to enable/disable the required module(s)
+
 
 mod\_auth\_openid attributes
 ----------------------------
@@ -257,12 +253,33 @@ they're logistically unrelated to the others, being specific to the
 mod\_ssl attributes
 -------------------
 
-* `node['apache']['mod_ssl']['cipher_suite']` - sets the
-  SSLCiphersuite value to the specified string. The default is
-  considered "sane" but you may need to change it for your local
-  security policy, e.g. if you have PCI-DSS requirements. Additional
+For general information on this attributes see http://httpd.apache.org/docs/current/mod/mod_ssl.html
+
+* `node['apache']['mod_ssl']['cipher_suite']` - sets the SSLCiphersuite value to the specified string. The default is
+  considered "sane" but you may need to change it for your local security policy, e.g. if you have PCI-DSS requirements. Additional
   commentary on the
-  [original pull request](https://github.com/onehealth-cookbooks/apache2/pull/15#commitcomment-1605406).
+  [original pull request](https://github.com/svanzoest-cookbooks/apache2/pull/15#commitcomment-1605406).
+* `node['apache']['mod_ssl']['honor_cipher_order']` - Option to prefer the server's cipher preference order. Default 'On'.
+* `node['apache']['mod_ssl']['insecure_renegotiation']` - Option to enable support for insecure renegotiation. Default 'Off'.
+* `node['apache']['mod_ssl']['strict_sni_vhost_check']` - Whether to allow non-SNI clients to access a name-based virtual host. Default 'Off'.
+* `node['apache']['mod_ssl']['session_cache']` - Configures the OCSP stapling cache. Default `shmcb:/var/run/apache2/ssl_scache`
+* `node['apache']['mod_ssl']['session_cache_timeout']` - Number of seconds before an SSL session expires in the Session Cache. Default 300.
+* `node['apache']['mod_ssl']['compression']` - 	Enable compression on the SSL level. Default 'Off'.
+* `node['apache']['mod_ssl']['use_stapling']` - Enable stapling of OCSP responses in the TLS handshake. Default 'Off'.
+* `node['apache']['mod_ssl']['stapling_responder_timeout']` - 	Timeout for OCSP stapling queries. Default 5
+* `node['apache']['mod_ssl']['stapling_return_responder_errors']` - Pass stapling related OCSP errors on to client. Default 'Off'
+* `node['apache']['mod_ssl']['stapling_cache']` - Configures the OCSP stapling cache. Default `shmcb:/var/run/ocsp(128000)`
+* `node['apache']['mod_ssl']['pass_phrase_dialog']` - Configures SSLPassPhraseDialog. Default `builtin`
+* `node['apache']['mod_ssl']['mutex']` - Configures SSLMutex. Default `file:/var/run/apache2/ssl_mutex`
+* `node['apache']['mod_ssl']['directives']` - Hash for add any custom directive.
+
+For more information on these directives and how to best secure your site see
+- https://bettercrypto.org/
+- https://wiki.mozilla.org/Security/Server_Side_TLS
+- https://www.insecure.ws/linux/apache_ssl.html
+- https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+- https://istlsfastyet.com/
+- https://www.ssllabs.com/projects/best-practices/
 
 Recipes
 =======
@@ -293,13 +310,6 @@ default
 The default recipe does a number of things to set up Apache HTTPd. It
 also includes a number of modules based on the attribute
 `node['apache']['default_modules']` as recipes.
-
-logrotate
----------
-
-Logrotate adds a logrotate entry for your apache2 logs. This recipe
-requires the `logrotate` cookbook; ensure that `recipe[logrotate]` is
-in the node's expanded run list.
 
 mod\_auth\_cas
 --------------
@@ -383,24 +393,14 @@ On Red Hat family distributions including Fedora, the php.conf that
 comes with the package is removed. On RHEL platforms less than v6, the
 `php53` package is used.
 
+* `node['apache']['mod_php5']['install_method']` - default `package` can be overridden to avoid package installs.
+
 mod\_ssl
 --------
 
 Besides installing and enabling `mod_ssl`, this recipe will append
 port 443 to the `node['apache']['listen_ports']` attribute array and
 update the ports.conf.
-
-god\_monitor
-------------
-
-Sets up a `god` monitor for Apache. External requirements are the
-`god` and `runit` cookbooks from Opscode. When using this recipe,
-include `recipe[god]` in the node's expanded run list to ensure the
-client downloads it; `god` depends on runit so that will also be
-downloaded.
-
-**Note** This recipe is not tested under test-kitchen yet and is
-  pending fix in COOK-744.
 
 Definitions
 ===========
@@ -426,6 +426,8 @@ Enable or disable an Apache config file in
 ### Parameters:
 
 * `name` - Name of the config enabled or disabled with the `a2enconf` or `a2disconf` scripts.
+* `source`  - The location of a template file. The default `name.erb`.
+* `cookbook` - The cookbook in which the configuration template is located (if it is not located in the current cookbook). The default value is the current cookbook.
 * `enable` - Default true, which uses `a2enconf` to enable the config. If false, the config will be disabled with `a2disconf`.
 
 ### Examples:
@@ -613,6 +615,17 @@ a recipe, see __Examples__.
 
 ### Examples:
 
+The recommended way to use the `web_app` definition is in a application specific cookbook named "my_app".
+The following example would look for a template named 'web_app.conf.erb' in your cookbook containing
+the apache httpd directives defining the `VirtualHost` that would serve up "my_app".
+
+``````
+    web_app "my_app" do
+       template 'web_app.conf.erb'
+       server_name node['my_app']['hostname']
+    end
+``````
+
 All parameters are passed into the template. You can use whatever you
 like. The apache2 cookbook comes with a `web_app.conf.erb` template as
 an example. The following parameters are used in the template:
@@ -632,6 +645,7 @@ To use the default web_app, for example:
       server_name node['hostname']
       server_aliases [node['fqdn'], "my-site.example.com"]
       docroot "/srv/www/my_site"
+      cookbook 'apache2'
     end
 ``````
 
@@ -644,7 +658,7 @@ The parameters specified will be used as:
 In the template. When you write your own, the `@` is significant.
 
 For more information about Definitions and parameters, see the
-[Chef Wiki](http://wiki.opscode.com/display/chef/Definitions)
+[Chef Wiki](http://docs.chef.io/definitions.html)
 
 Usage
 =====
@@ -676,8 +690,8 @@ respective sections above.
 License and Authors
 ===================
 
-* Author:: Adam Jacob <adam@opscode.com>
-* Author:: Joshua Timberman <joshua@opscode.com>
+* Author:: Adam Jacob <adam@chef.io>
+* Author:: Joshua Timberman <joshua@chef.io>
 * Author:: Bryan McLellan <bryanm@widemile.com>
 * Author:: Dave Esposito <esposito@espolinux.corpnet.local>
 * Author:: David Abdemoulaie <github@hobodave.com>
@@ -687,16 +701,18 @@ License and Authors
 * Author:: Matthew Kent <mkent@magoazul.com>
 * Author:: Nathen Harvey <nharvey@customink.com>
 * Author:: Ringo De Smet <ringo.de.smet@amplidata.com>
-* Author:: Sean OMeara <someara@opscode.com>
-* Author:: Seth Chisamore <schisamo@opscode.com>
+* Author:: Sean OMeara <someara@chef.io>
+* Author:: Seth Chisamore <schisamo@chef.io>
 * Author:: Gilles Devaux <gilles@peerpong.com>
-* Author:: Sander van Zoest <svanzoest@onehealth.com>
-* Author:: Taylor Price <tprice@onehealth.com>
+* Author:: Sander van Zoest <sander+cookbooks@vanzoest.com>
+* Author:: Taylor Price <tayworm@gmail.com>
 
-* Copyright:: 2009-2012, Opscode, Inc
+* Copyright:: 2009-2012, Chef Software, Inc
 * Copyright:: 2011, Atriso
 * Copyright:: 2011, CustomInk, LLC.
 * Copyright:: 2013-2014, OneHealth Solutions, Inc.
+* Copyright:: 2014, Viverae, Inc.
+* Copyright:: 2015, Alexander van Zoest
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -1,15 +1,17 @@
 #!/bin/bash
-sudo apt-get -y install gzip
 LOCALFILE=$(ls /vagrant | egrep 'ovrride.*\.sql\.gz')
-REMOTEFILE=$(s3cmd -c /vagrant/chef/s3cfg ls S3://ovrdatabase/latest/ | egrep '(ovrride.{19}(Mon|Tues|Wednes|Thurs|Fri|Sat|Sun)day.*)' | cut -c54-95)
+REMOTEFILE=$(s3cmd ls S3://ovrdatabase/latest/ | egrep '(ovrride.{19}(Mon|Tues|Wednes|Thurs|Fri|Sat|Sun)day.*)' | cut -c54-95)
 
-if [ $LOCALFILE != $REMOTEFILE ];then
-  echo 'Different file on server, delete local copy'
-  rm /vagrant/$LOCALFILE
-  rm /vagrant/ovrride.sql
-  echo 'Download new compressed database from server'
-  s3cmd -c /vagrant/chef/s3cfg get S3://ovrdatabase/latest/$REMOTEFILE /vagrant/
-  echo 'Decompress database'
+if [ ! -f /vagrant/ovrride.*.gz ] || [ $LOCALFILE != $REMOTEFILE ];then
+  if [ -f /vagrant/$LOCALFILE ];then
+    rm /vagrant/$LOCALFILE
+  fi
+  if [ -f /vagrant/ovrride.sql ];then
+    rm /vagrant/ovrride.sql
+  fi
+  echo 'Downloading new compressed database from server'
+  s3cmd get S3://ovrdatabase/latest/$REMOTEFILE /vagrant/
+  echo 'Decompressing database'
   zcat /vagrant/$REMOTEFILE > /vagrant/ovrride.sql
 else
   echo 'File is the same'

@@ -1,6 +1,52 @@
-aws Cookbook CHANGELOG
-======================
-This file is used to list changes made in each version of the aws cookbook.
+v2.7.1 (2015-06-04)
+-------------------
+- Adding support for aws_session_token
+
+v2.7.0 (2015-04-06)
+-------------------
+- Support for encrypted EBS volumes
+- secondary_ip resource and provider
+- Improvement of resource_tag id regex
+- Add ChefSpec matchers for aws cookbook resources
+
+v2.6.6 (2015-05-06)
+-------------------
+- [#123] Cleans up README and adds more metadata
+
+v2.6.5 (2015-03-19)
+-------------------
+
+- #110, fixes `chef_gem` compile time usage, also in conjunction with `chef-sugar` and Chef 11
+
+v2.6.4 (2015-02-18)
+-------------------
+- Reverting all `chef_gem` `compile_time` edits
+
+v2.6.3 (2015-02-18)
+-------------------
+- Fixing `chef_gem` with `Chef::Resource::ChefGem.method_defined?(:compile_time)`
+
+v2.6.2 (2015-02-18)
+-------------------
+- Fixing `chef_gem` for Chef below 12.1.0
+
+v2.6.1 (2015-02-17)
+-------------------
+- Being explicit about usage of the `chef_gem`'s `compile_time` property.
+- Eliminating future deprecation warnings in Chef 12.1.0.
+
+v2.6.0 (2015-02-10)
+-------------------
+- Convert to use aws-sdk instead of right_aws
+
+v2.5.0 (2014-10-22)
+-------------------
+- [#60] Updates to CHANGELOG
+- [#85] Lots of testing harness goodness
+- [#89] Add a recipe to setup ec2 hints in ohai
+- [#74] README and CHANGELOG updates
+- [#65] Add a resource for enabling CloudWatch Detailed Monitoring
+- [#90] Add tests for aws_instance_monitoring
 
 v2.4.0 (2014-08-07)
 -------------------
@@ -34,26 +80,27 @@ v2.1.0 (2014-02-25)
 
 v2.0.0 (2014-02-19)
 -------------------
-[COOK-2755] Add allocate action to the elastic ip resource
-[COOK-2829] Expose AWS credentials for ebs_raid LWRP as parameters
-[COOK-2935] 
-[COOK-4213] Use use_inline_resources
-[COOK-3467] Support IAM role
-[COOK-4344] Add support for mounting existing raids and reusing volume
-[COOK-3859] Add VPC support (allocation_id) to AWS elastic_ip LWRPJoseph Smith
+
+- [COOK-2755] Add allocate action to the elastic ip resource
+- [COOK-2829] Expose AWS credentials for ebs_raid LWRP as parameters
+- [COOK-2935] 
+- [COOK-4213] Use use_inline_resources
+- [COOK-3467] Support IAM role
+- [COOK-4344] Add support for mounting existing raids and reusing volume
+- [COOK-3859] Add VPC support (allocation_id) to AWS elastic_ip LWRPJoseph Smith
 
 
 v1.0.0
 ------
 ### Improvement
-- [COOK-2829] -Expose AWS credentials for ebs_raid LWRP as parameters
+- [COOK-2829] - Expose AWS credentials for ebs_raid LWRP as parameters
 - Changing attribute defaults begs a major version bump
 
 
 v0.101.6
 --------
 ### Bug
-- **[COOK-3475](https://tickets.opscode.com/browse/COOK-3475)** - Fix an issuw were invoking action detach in the `ebs_volume `provider when the volume is already detached resulted in a failure
+- **[COOK-3475](https://tickets.opscode.com/browse/COOK-3475)** - Fix an issue where invoking action detach in the `ebs_volume` provider when the volume is already detached resulted in a failure
 
 v0.101.4
 --------
