@@ -1,8 +1,6 @@
 # -*- mode: ruby -*-
 
 # vi: set ft=ruby :
-require 'yaml'
-settings = YAML.load_file 'vagrant.yml'
 
 boxes = [
     {

@@ -1,13 +1,13 @@
 ## OvRride.com
 
-OvRride.com is built using WordPress 4.1, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
+OvRride.com is built using WordPress 4.2.2, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
 
 
 ### Dependancies:
 
 [normalize.css v2.1.2](git.io/normalize)  
 [Font Awesome v3.2.1](http://fortawesome.github.io/Font-Awesome/)  
-[Quark Starter Theme v1.2.4](https://github.com/maddisondesigns/Quark)  
+[Quark Starter Theme v1.3.1](https://github.com/maddisondesigns/Quark)  
 
 ### Running a local development copy of ovrride.com on Mac OS X:
 
@@ -19,7 +19,9 @@ OvRride.com is built using WordPress 4.1, and the WooCommerce plugin. The OvRrid
     - once rvm is installed ```rvm install 2.1```
   - [Chef](https://downloads.getchef.com/chef-dk/mac/#/)
   - [Vagrant](http://vagrantup.com) - Virtual machine manager
-  - [VMware Fusion 7](http://store.vmware.com/store/vmware/en_US/DisplayProductDetailsPage/ThemeID.2485600/productID.304322400)
+  - Your choice of hypervisor:
+    - [VMware Fusion 7](http://store.vmware.com/store/vmware/en_US/DisplayProductDetailsPage/ThemeID.2485600/productID.304322400)
+    - [VirtualBox](http://virtualbox.org)
   - Kife solo gem - part of chef solo which is used to configure the virtual machine the development environment runs on
   - librian-chef - helps manage chef cookbooks
   - Both can be installed by running ```bundle install```
@@ -28,21 +30,40 @@ OvRride.com is built using WordPress 4.1, and the WooCommerce plugin. The OvRrid
 2. Clone repository to your machine
   - if you have a copy of the wp-content/uploads directory then copy it to the correct location
   - if you don't it could take up to 40min to download from amazon, it is automated by chef during the vagrant up/provision process
-3. Change permissions on special recent posts
-  - ```chmod -R 777 wp-content/plugins/special-recent-posts/cache/```
-  - without this step you will get errors from the plugin
+3. Add the 'secret_keys' data bag to the ```/data_bags/``` directory
+  - This contains keys for Amazon S3 access and Twilio
+  - If you are working with OvR contact devops@ovrride.com for a copy of this file
+  - If you are not working with OvR, sorry guys I can't leave access keys for this stuff in the open.
+    - There is an example version commited that just needs some keys filled in
 4. install vmware fusion provider
   - ```vagrant plugin install vagrant-vmware-fusion```
   - install licence for plugin: ```vagrant plugin license vagrant-vmware-fusion ~/license.lic```
   - check plugin installation: ```vagrant plugin list```
 5. Start virtual machine
   - ```vagrant up``` this needs to be run in terminal from inside the project folder
+  - Grab a cold beverage, this is going to spin up 4 VMs and will probably take at lease a few minutes
 
   - The VM looks at the project directory for files so changes will show up immediately
   - checkout http://local.ovrride.com to see your local copy of the site
-  - ```vagrant provision``` (run on first vagrant up) will pull most recent backup of production DB and sync images from S3
-    - if you need to update DB/images run the provision command from the root of the project directory
+ 
+**Architecture**
+- All hosts are running ubuntu server 14.04 64bit
+- There are 4 hosts that make up the web site
+    1) haproxy.local.ovrride.com
+      - load balancer
+    2) web1.local.ovrride.com
+      - web server
+      - apache 2.4, with fastcgi/php5-fpm
+    3) web2.local.ovrride.com
+      - same as web1
+    4) mysql.local.ovrride.com
+      - mysql 5.5
+    
 
+**Vagrant Management**
+- running ```vagrant up```, ```vagrant provision```, ```vagrant halt``` will effect ALL hosts
+- you can add the name of any box after a normal vagrant command to apply to one box only ```vagrant provision web1```
+- check the [vagrant docs](http://docs.vagrantup.com/v2/multi-machine/) for more details
 
 **NOTES:**
 - Email is setup on a development key, errors will no be generated but emails will not be sent from the dev system
