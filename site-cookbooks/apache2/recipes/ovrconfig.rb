@@ -37,9 +37,6 @@ execute "check for ssl cert" do
   command "/vagrant/chef/certCheck.sh"
 end
 
-#execute "sync images from S3" do
-#  command "/vagrant/chef/getImages.sh"
-#end
 
 execute "reboot apache" do
   command "sudo service apache2 restart"

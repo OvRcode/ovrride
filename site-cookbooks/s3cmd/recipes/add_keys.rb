@@ -5,7 +5,7 @@ keys = begin
             { "S3_ACCESS_KEY" => "FALSE", "S3_SECRET_KEY" => "FALSE" }
           end
 
-node.set[:s3cmd][:users] = ["vagrant"]
+node.set[:s3cmd][:users] = ["vagrant", :root]
 node.set[:s3cmd][:access_key] = keys['S3_ACCESS_KEY']
 node.set[:s3cmd][:secret_key] = keys['S3_SECRET_KEY']
 

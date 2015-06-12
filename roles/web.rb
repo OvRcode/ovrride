@@ -28,7 +28,9 @@ override_attributes(
 run_list(
 "recipe[build-essential]",
 "recipe[apt]",
+"recipe[s3cmd::add_keys]",
 "recipe[php::modules]",
 "recipe[php-fpm]",
-"recipe[apache2::ovrconfig]"
+"recipe[apache2::ovrconfig]",
+"recipe[ovr::get_images]"
 )

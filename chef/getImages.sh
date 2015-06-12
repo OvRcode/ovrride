@@ -1,2 +1,2 @@
 #!/bin/bash
-s3cmd sync S3://ovrride/ /vagrant/wp-content/uploads/
+s3cmd -v sync S3://ovrride/ /vagrant/wp-content/uploads/
