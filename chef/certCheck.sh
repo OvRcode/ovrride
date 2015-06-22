@@ -1,5 +1,4 @@
 #!/bin/bash
-
 function generate_key {
   openssl genrsa -des3 -passout pass:x -out /vagrant/local.ovrride.com.pass.key 2048
   
@@ -9,11 +8,13 @@ function generate_key {
 }
 
 function generate_signing_request {
-  openssl req -new -key /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.csr -subj "/C=US/ST=NY/L=NYC/O=*.local.ovrride.com/OU=IT/CN=OvRride/emailAddress=devops@ovrride.com"
+  openssl req -new -out /vagrant/local.ovrride.com.csr -key /vagrant/local.ovrride.com.key -config /vagrant/chef/openssl.cnf
+  #openssl req -new -key /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.csr -subj "/C=US/ST=NY/L=NYC/O=*.local.ovrride.com/OU=IT/CN=OvRride/emailAddress=devops@ovrride.com"
 }
 
 function generate_certificate {
-  openssl x509 -req -days 365 -in /vagrant/local.ovrride.com.csr -signkey /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.crt
+  openssl x509 -req -days 3650 -in /vagrant/local.ovrride.com.csr -signkey /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.crt-extensions v3_req -extfile /vagrant/chef/openssl.cnf
+  #openssl x509 -req -days 365 -in /vagrant/local.ovrride.com.csr -signkey /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.crt
 }
 
 # Verify key,csr,crt are present
