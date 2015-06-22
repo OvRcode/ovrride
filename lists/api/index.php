@@ -409,10 +409,16 @@ class Lists {
         if ( ! isset($orderData['Package']) ) {
             $orderData['Package'] = "";
         }
+        if ( isset($orderData['Is this guest at least 21 years of age?']) ) {
+            $underAge = "<i class='fa fa-child fa-lg'></i>";
+        } else {
+            $underAge = "";
+        }
         $output = <<<AAA
             <div class="row listButton {$htmlClass}" id="{$orderData['num']}:{$orderData['item_num']}">
               <div class="row primary">
                   <div class="buttonCell name col-xs-7 col-md-4">
+                  <span class="underage">{$underAge}</span>
                   <span class="icon">{$icon}</span>
                       <span class="first">&nbsp;{$orderData['First']}</span>
                       <span class="last">{$orderData['Last']}</span>
