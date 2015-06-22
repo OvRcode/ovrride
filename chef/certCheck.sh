@@ -1,28 +1,4 @@
 #!/bin/bash
-function generate_config {
-  cat << EOF >> /vagrant/openssl.cnf
-  [req]
-  distinguished_name = req_distinguished_name
-  req_extensions = v3_req
-  [req_distinguished_name]
-  countryName = US
-  stateOrProvinceName = NY
-  localityName = New York
-  organizationalUnitName	= IT
-  commonName = OvRride LLC
-  commonName_max	= 64
-
-  [ v3_req ]
-  # Extensions to add to a certificate request
-  basicConstraints = CA:FALSE
-  keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-  subjectAltName = @alt_names
-
-  [alt_names]
-  DNS.1 = local.ovrride.com
-  DNS.2 = *.local.ovrride.com
-EOF
-}
 function generate_key {
   openssl genrsa -des3 -passout pass:x -out /vagrant/local.ovrride.com.pass.key 2048
   
@@ -32,12 +8,12 @@ function generate_key {
 }
 
 function generate_signing_request {
-  openssl req -new -out /vagrant/local.ovrride.com.csr -key /vagrant/local.ovrride.com.key -config openssl.cnf
+  openssl req -new -out /vagrant/local.ovrride.com.csr -key /vagrant/local.ovrride.com.key -config /vagrant/chef/openssl.cnf
   #openssl req -new -key /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.csr -subj "/C=US/ST=NY/L=NYC/O=*.local.ovrride.com/OU=IT/CN=OvRride/emailAddress=devops@ovrride.com"
 }
 
 function generate_certificate {
-  openssl x509 -req -days 3650 -in /vagrant/local.ovrride.com.csr -signkey /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.crt-extensions v3_req -extfile openssl.cnf
+  openssl x509 -req -days 3650 -in /vagrant/local.ovrride.com.csr -signkey /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.crt-extensions v3_req -extfile /vagrant/chef/openssl.cnf
   #openssl x509 -req -days 365 -in /vagrant/local.ovrride.com.csr -signkey /vagrant/local.ovrride.com.key -out /vagrant/local.ovrride.com.crt
 }
 
@@ -54,7 +30,7 @@ elif [ ! -f /vagrant/local.ovrride.com.crt ]; then
 else
   echo "All Files present"
 fi
-generate_config
+
 # Verify key and crt match
 crt="$(openssl x509 -noout -modulus -in /vagrant/local.ovrride.com.crt | openssl md5)"
 key="$(openssl rsa -noout -modulus -in /vagrant/local.ovrride.com.key | openssl md5)"
