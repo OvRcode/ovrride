@@ -79,6 +79,8 @@ class WC_Install {
 	 * Install WC
 	 */
 	public static function install() {
+		global $wpdb;
+
 		if ( ! defined( 'WC_INSTALLING' ) ) {
 			define( 'WC_INSTALLING', true );
 		}
@@ -124,6 +126,20 @@ class WC_Install {
 		// Flush rules after install
 		flush_rewrite_rules();
 		delete_transient( 'wc_attribute_taxonomies' );
+
+		/*
+		 * Deletes all expired transients. The multi-table delete syntax is used
+		 * to delete the transient record from table a, and the corresponding
+		 * transient_timeout record from table b.
+		 *
+		 * Based on code inside core's upgrade_network() function.
+		 */
+		$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
+			WHERE a.option_name LIKE %s
+			AND a.option_name NOT LIKE %s
+			AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
+			AND b.option_value < %d";
+		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
 		// Redirect to welcome screen
 		if ( ! is_network_admin() && ! isset( $_GET['activate-multi'] ) ) {
@@ -596,7 +612,7 @@ CREATE TABLE {$wpdb->prefix}woocommerce_tax_rate_locations (
 		$transient_name = 'wc_upgrade_notice_' . $args['Version'];
 
 		if ( false === ( $upgrade_notice = get_transient( $transient_name ) ) ) {
-			$response = wp_remote_get( 'https://plugins.svn.wordpress.org/woocommerce/trunk/readme.txt' );
+			$response = wp_safe_remote_get( 'https://plugins.svn.wordpress.org/woocommerce/trunk/readme.txt' );
 
 			if ( ! is_wp_error( $response ) && ! empty( $response['body'] ) ) {
 				$upgrade_notice = self::parse_update_notice( $response['body'] );
