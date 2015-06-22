@@ -1,5 +1,26 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.06.18 - version 3.0
+ * Fix: When applying discounts for store credit, usage restrictions related to product & product categories was not considered (Thanks to: Steven Taumoepeau)
+ * Update: Use of WooCommerce Coupon's meta box for displaying coupon data fields under 'Bulk Generate Coupons'
+ * Update: Remove process of combining similar coupons
+ * Update: Added POT file for translation
+ * Tweak: Limit height of 'Available coupons' on cart, checkout & my account page, and make it scrollable
+ * Tweak: Limit height of 'Coupons Received' on my account page & 'Coupons Sent' on order admin page. Additionally make it scrollable
+ * Tweak: Removed admin menu 'Smart Coupons', can now be accessed from 'Coupons'
+ * Tweak: By default, hide associated coupon details on product page
+
+2015.05.20 - version 2.9
+ * New: Support for auto-debit from store credit in subscription renewals, when the store credit is applied during sign-up / first purchase of subscription
+ * New: Welcome page with features & faqs
+ * Fix: Don't copy meta '_used_by' after duplicating coupon
+ * Fix: Not passing discounts added by store credit to PayPal & Mijireh
+ * Fix: $order->get_total_discount() returns zero when store credit used in order
+ * Fix: CSS of Smart Coupons conflicting with CSS of other post_types
+ * Fix: Smart Coupon's CSS file added on unrequired admin pages, causing broken fields from other plugins
+ * Update: Don't show friend's coupons to sender
+ * Update: Instead of deleting fully used store credit, trash it, so that it can be retrieved later, if required
+
 2015.04.09 - version 2.8.6
  * Fix: Incorrect discount calculation when store credit applied along with other discount type in cart
 

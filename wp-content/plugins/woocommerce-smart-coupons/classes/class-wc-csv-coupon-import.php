@@ -96,7 +96,7 @@
                                 case 2:
                                         check_admin_referer( 'import-woocommerce-coupon' );
 
-                                        if(!isset($_POST['sc_export_and_import']) && !isset($_POST['generate_and_import']) ){
+                                        if ( ! isset( $_POST['smart_coupons_generate_action'] ) && ! isset($_POST['generate_and_import'] ) ){
                                             
                                             $this->id = (int) $_POST['import_id'];
                                             $this->file_url = esc_attr( $_POST['import_url'] );
@@ -112,7 +112,7 @@
                                             $file = $woocommerce_smart_coupon->export_coupon($_POST,'','');
                                         }
                                         
-                                        if ( isset( $_POST['woo_sc_is_email_imported_coupons'] ) ) {
+                                        if ( ( ! empty( $_POST['smart_coupons_generate_action'] ) && $_POST['smart_coupons_generate_action'] == 'woo_sc_is_email_imported_coupons' ) || ( isset( $_POST['woo_sc_is_email_imported_coupons'] ) ) ) {
                                             update_option( 'woo_sc_is_email_imported_coupons', 'yes' );
                                         }
 
@@ -141,7 +141,7 @@
                 /**
                 * Display pre-import options
                 */
-                public function import( ){
+                public function import(){
                         global $wpdb;
 
                         wp_suspend_cache_invalidation( true );
@@ -227,6 +227,7 @@
                                 foreach ( $post['postmeta'] as $meta ) {
                                     $postmeta[ $meta['key'] ] = $meta['value'];
                                 }
+                                
                                 foreach ( $postmeta as $meta_key => $meta_value ) {
                                     switch( $meta_key ) {
 
@@ -236,6 +237,14 @@
 
                                         case 'coupon_amount':
                                             $coupon_amount = maybe_unserialize( $meta_value );
+                                            break;
+
+                                        case 'expiry_date':
+                                            if ( empty( $expiry_date ) && ! empty( $postmeta['sc_coupon_validity'] ) && ! empty( $postmeta['validity_suffix'] ) ) {
+                                                $sc_coupon_validity = $postmeta['sc_coupon_validity'];
+                                                $validity_suffix = $postmeta['validity_suffix'];
+                                                $meta_value = date( 'Y-m-d', strtotime( "+$sc_coupon_validity $validity_suffix" ) );
+                                            }
                                             break;
 
                                         case 'discount_type':
