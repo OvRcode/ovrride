@@ -1,4 +1,8 @@
 *** Gravity Forms Product Add-Ons Changelog ***
+2015.06.09 - version 2.9.5
+	* Update: Change the way the gravity forms scripts are enqueued when using the product_page shortcode. Ensures compatibility with later versions of gravity forms
+	* Update: Add support for the Time field. 
+	
 2015.05.01 - version 2.9.4
 	* Fix:  Remove console.log debug statement to resolve problems with IE. 
 
