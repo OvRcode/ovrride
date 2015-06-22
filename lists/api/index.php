@@ -214,6 +214,7 @@ class Lists {
                             OR `meta_key` = 'Package'
                             OR `meta_key` = 'Pickup'
                             OR `meta_key` = 'Pickup Location'
+                            OR `meta_key` = 'Is This Guest At Least 21 Years Of Age?'
                             OR `meta_key` = 'Transit To Rockaway'
                             OR `meta_key` = 'Transit From Rockaway')
                             AND `order_item_id` = '$orderItem'";
