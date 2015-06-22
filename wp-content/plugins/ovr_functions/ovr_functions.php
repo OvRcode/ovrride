@@ -206,8 +206,9 @@ add_filter( 'widget_text', 'shortcode_unautop');
 // Enable shortcode in the text widgets
 add_filter('widget_text', 'do_shortcode');
 
+// Temporarily disabling auto GF data clearing
 // Remove Gravity Form Data on submit ( Excludes contact form info )
-add_action( 'gform_after_submission', 'ovr_remove_gf_data' );
+//add_action( 'gform_after_submission', 'ovr_remove_gf_data' );
 /**
  * Prevents Gravity Form entries from being stored in the database.
  * From: https://thomasgriffin.io/prevent-gravity-forms-storing-entries-wordpress/
@@ -275,7 +276,7 @@ function ovr_delete_old_gf_data(){
     }
 }
 
-register_activation_hook(__FILE__, 'ovr_delete_old_gf_data_schedule');
+//register_activation_hook(__FILE__, 'ovr_delete_old_gf_data_schedule');
 function ovr_delete_old_gf_data_schedule(){
     $timestamp = wp_next_scheduled('daily_ovr_delete_old_gf_data');
     
@@ -283,7 +284,7 @@ function ovr_delete_old_gf_data_schedule(){
         wp_schedule_event( time(), 'daily', 'daily_ovr_delete_old_gf_data');
     }
 }
-add_action('daily_ovr_delete_old_gf_data', 'ovr_delete_old_gf_data');
+//add_action('daily_ovr_delete_old_gf_data', 'ovr_delete_old_gf_data');
 
 function ovr_get_coupon_url($code) {
     global $wpdb;
