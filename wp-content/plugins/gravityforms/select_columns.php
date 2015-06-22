@@ -174,10 +174,10 @@ class GFSelectColumns {
 		$form = self::get_selectable_entry_meta( $form );
 		$form = GFFormsModel::convert_field_objects( $form );
 		?>
-		<div class="panel-instructions"><?php _e( 'Drag & drop to order and select which columns are displayed in the entries table.', 'gravityforms' ) ?></div>
+		<div class="panel-instructions"><?php esc_html_e( 'Drag & drop to order and select which columns are displayed in the entries table.', 'gravityforms' ) ?></div>
 		<div class="gcolumn_wrapper">
 			<div class="gcolumn_container_left">
-				<div class="gform_select_column_heading"><?php _e( 'Active Columns', 'gravityforms' ); ?></div>
+				<div class="gform_select_column_heading"><?php esc_html_e( 'Active Columns', 'gravityforms' ); ?></div>
 				<ul id="sortable_selected" class="sortable_connected">
 				<?php
 				foreach ( $columns as $field_id => $field_info ) {
@@ -192,7 +192,7 @@ class GFSelectColumns {
 			<div class="column-arrow-mid"></div>
 
 			<div class="gcolumn_container_right" id="available_column">
-				<div class="gform_select_column_heading"> <?php _e( 'Inactive Columns', 'gravityforms' ); ?></div>
+				<div class="gform_select_column_heading"> <?php esc_html_e( 'Inactive Columns', 'gravityforms' ); ?></div>
 				<ul id="sortable_available" class="sortable_connected">
 				<?php
 				foreach ( $form['fields'] as $field ) {
@@ -225,8 +225,8 @@ class GFSelectColumns {
 		</div>
 
 		<div class="panel-buttons">
-			<input type="button" value="  <?php _e( 'Save', 'gravityforms' ); ?>  " class="button-primary" onclick="SelectColumns();" />&nbsp;
-			<input type="button" value="<?php _e( 'Cancel', 'gravityforms' ); ?>" class="button" onclick="self.parent.tb_remove();" />
+			<input type="button" value="  <?php esc_attr_e( 'Save', 'gravityforms' ); ?>  " class="button-primary" onclick="SelectColumns();" />&nbsp;
+			<input type="button" value="<?php esc_attr_e( 'Cancel', 'gravityforms' ); ?>" class="button" onclick="self.parent.tb_remove();" />
 		</div>
 
 		</body>
