@@ -286,7 +286,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			}
 
 			// Currency check
-			if ( ! in_array( get_option( 'woocommerce_currency' ), apply_filters( 'woocommerce_paypal_pro_allowed_currencies', array( 'AUD', 'CAD', 'CZK', 'DKK', 'EUR', 'HUF', 'JPY', 'NOK', 'NZD', 'PLN', 'GBP', 'SGD', 'SEK', 'CHF', 'USD' ) ) ) ) {
+			if ( ! in_array( get_woocommerce_currency(), apply_filters( 'woocommerce_paypal_pro_allowed_currencies', array( 'AUD', 'CAD', 'CZK', 'DKK', 'EUR', 'HUF', 'JPY', 'NOK', 'NZD', 'PLN', 'GBP', 'SGD', 'SEK', 'CHF', 'USD' ) ) ) ) {
 				return false;
 			}
 
@@ -327,9 +327,9 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	public function validate_fields() {
 		try {
 
-			$card_number    = isset( $_POST['paypal_pro-card-number'] ) ? woocommerce_clean( $_POST['paypal_pro-card-number'] ) : '';
-			$card_cvc       = isset( $_POST['paypal_pro-card-cvc'] ) ? woocommerce_clean( $_POST['paypal_pro-card-cvc'] ) : '';
-			$card_expiry    = isset( $_POST['paypal_pro-card-expiry'] ) ? woocommerce_clean( $_POST['paypal_pro-card-expiry'] ) : '';
+			$card_number    = isset( $_POST['paypal_pro-card-number'] ) ? wc_clean( $_POST['paypal_pro-card-number'] ) : '';
+			$card_cvc       = isset( $_POST['paypal_pro-card-cvc'] ) ? wc_clean( $_POST['paypal_pro-card-cvc'] ) : '';
+			$card_expiry    = isset( $_POST['paypal_pro-card-expiry'] ) ? wc_clean( $_POST['paypal_pro-card-expiry'] ) : '';
 
 			// Format values
 			$card_number    = str_replace( array( ' ', '-' ), '', $card_number );
@@ -376,9 +376,9 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		$this->log( 'Processing order #' . $order_id );
 
-		$card_number    = isset( $_POST['paypal_pro-card-number'] ) ? woocommerce_clean( $_POST['paypal_pro-card-number'] ) : '';
-		$card_cvc       = isset( $_POST['paypal_pro-card-cvc'] ) ? woocommerce_clean( $_POST['paypal_pro-card-cvc'] ) : '';
-		$card_expiry    = isset( $_POST['paypal_pro-card-expiry'] ) ? woocommerce_clean( $_POST['paypal_pro-card-expiry'] ) : '';
+		$card_number    = isset( $_POST['paypal_pro-card-number'] ) ? wc_clean( $_POST['paypal_pro-card-number'] ) : '';
+		$card_cvc       = isset( $_POST['paypal_pro-card-cvc'] ) ? wc_clean( $_POST['paypal_pro-card-cvc'] ) : '';
+		$card_expiry    = isset( $_POST['paypal_pro-card-expiry'] ) ? wc_clean( $_POST['paypal_pro-card-expiry'] ) : '';
 
 		// Format values
 		$card_number    = str_replace( array( ' ', '-' ), '', $card_number );
@@ -387,7 +387,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		$card_exp_year  = $card_expiry[1];
 
 		if ( isset( $_POST['paypal_pro-card-start'] ) ) {
-			$card_start       = woocommerce_clean( $_POST['paypal_pro-card-start'] );
+			$card_start       = wc_clean( $_POST['paypal_pro-card-start'] );
 			$card_start       = array_map( 'trim', explode( '/', $card_start ) );
 			$card_start_month = str_pad( $card_start[0], 2, "0", STR_PAD_LEFT );
 			$card_start_year  = $card_start[1];
@@ -499,7 +499,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 									'card_exp_month'   => $card_exp_month,
 									'card_exp_year'    => $card_exp_year,
 									'card_start_month' => $card_start_month,
-									'card_start_year'  => $card_start_year
+									'card_start_year'  => $card_start_year,
+									'order_id'         => $order_id
 						        ) ) ); ?>">
 						        <noscript>
 						        	<div class="woocommerce_message"><?php _e( 'Processing your Payer Authentication Transaction', 'woocommerce-gateway-paypal-pro' ); ?> - <?php _e( 'Please click Submit to continue the processing of your transaction.', 'woocommerce-gateway-paypal-pro' ); ?>  <input type="submit" class="button" id="3ds_submit" value="Submit" /></div>
@@ -628,10 +629,11 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		$pares         = ! empty( $_POST['PaRes'] ) ? $_POST['PaRes'] : '';
 		$merchant_data = ! empty( $_POST['MD'] ) ? (array) json_decode( urldecode( $_POST['MD'] ) ) : '';
-		$order_id      = WC()->session->get( "paypal_pro_orderid" );
+		$order_id      = absint( ! empty( $merchant_data['order_id'] ) ? $merchant_data['order_id'] : WC()->session->get( "paypal_pro_orderid" ) );
 		$order         = new WC_Order( $order_id );
 
 		$this->log( 'authorise_3dsecure() for order ' . absint( $order_id ) );
+		$this->log( 'authorise_3dsecure() PARes ' . print_r( $pares, true ) );
 
 	    /******************************************************************************/
 	    /*                                                                            */
@@ -639,7 +641,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	    /*                                                                            */
 	    /******************************************************************************/
 
-	    if (strcasecmp('', $pares )!= 0 && $pares != null) {
+	    if ( strcasecmp( '', $pares ) != 0 && $pares != null ) {
 
 	        $centinelClient = new CentinelClient;
 
@@ -706,8 +708,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 					// If we are here we can process the card
 					$this->do_payment( $order, $merchant_data['card'], $merchant_data['type'], $merchant_data['card_exp_month'], $merchant_data['card_exp_year'], $merchant_data['csc'], $merchant_data['card_start_month'], $merchant_data['card_start_year'], $pa_res_status, "Y", $cavv, $eci_flag, $xid );
 
-					$this->clear_centinel_session();
-
 				} else {
 					$order->update_status( 'failed', sprintf(__('3D Secure error: %s', 'woocommerce-gateway-paypal-pro' ), $error_desc ) );
 					throw new Exception( __( 'Payer Authentication failed.  Please try a different payment method.','woocommerce-gateway-paypal-pro' ) );
@@ -760,7 +760,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				'METHOD'            => 'DoDirectPayment',
 				'PAYMENTACTION'     => $this->paymentaction,
 				'IPADDRESS'         => $this->get_user_ip(),
-				'AMT'               => $order->get_total(),
+				'AMT'               => number_format( $order->get_total(), 2, '.', ',' ),
 				'INVNUM'            => $order->get_order_number(),
 				'CURRENCYCODE'      => $order->get_order_currency(),
 				'CREDITCARDTYPE'    => $card_type,
@@ -802,6 +802,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 					foreach ( $order->get_items() as $item ) {
 						$_product = $order->get_product_from_item( $item );
+
 						if ( $item['qty'] ) {
 							$item_name = $item['name'];
 
@@ -813,7 +814,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 							$post_data[ 'L_NUMBER' . $item_loop ] = $item_loop;
 							$post_data[ 'L_NAME' . $item_loop ]   = $item_name;
-							$post_data[ 'L_AMT' . $item_loop ]    = $order->get_item_total( $item, true );
+							$post_data[ 'L_AMT' . $item_loop ]    = $order->get_item_subtotal( $item, false );
 							$post_data[ 'L_QTY' . $item_loop ]    = $item['qty'];
 
 							$ITEMAMT += $order->get_item_total( $item, true ) * $item['qty'];
@@ -835,10 +836,10 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 					}
 
 					// Discount
-					if ( $order->get_order_discount() > 0 ) {
+					if ( $order->get_total_discount() > 0 ) {
 						$post_data[ 'L_NUMBER' . $item_loop ] = $item_loop;
 						$post_data[ 'L_NAME' . $item_loop ]   = 'Order Discount';
-						$post_data[ 'L_AMT' . $item_loop ]    = '-' . $order->get_order_discount();
+						$post_data[ 'L_AMT' . $item_loop ]    = '-' . round( $order->get_total_discount(), 2 );
 						$post_data[ 'L_QTY' . $item_loop ]    = 1;
 
 						$item_loop++;
@@ -854,7 +855,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 						$post_data[ 'L_QTY' . $item_loop ]    = 1;
 					}
 
-					$post_data[ 'ITEMAMT' ] = $order->get_total();
+					$post_data['ITEMAMT'] = round( ( $order->get_subtotal() + $order->get_total_shipping() ) - $order->get_total_discount(), 2 );
+					$post_data['TAXAMT']  = round( $order->get_total_tax() + $order->get_shipping_tax(), 2 );
 				}
 			}
 
@@ -1013,7 +1015,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		switch ( strtolower( $parsed_response['ACK'] ) ) {
 			case 'success':
 			case 'successwithwarning':
-
 				return $parsed_response;
 			break;
 		}

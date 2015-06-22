@@ -68,7 +68,7 @@ $page_break = rgget( 'page_break' ) ? 'print-page-break' : false;
 sort( $lead_ids );
 
 if ( empty( $form_id ) || empty( $lead_ids ) ) {
-	die( __( 'Form Id and Lead Id are required parameters.', 'gravityforms' ) );
+	die( esc_html__( 'Form Id and Lead Id are required parameters.', 'gravityforms' ) );
 }
 
 $form = RGFormsModel::get_form_meta( $form_id );
@@ -90,7 +90,7 @@ $min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] 
 	<title>
 		Print Preview :
 		<?php echo esc_html( $form['title'] ) ?> :
-		<?php echo count( $lead_ids ) > 1 ? __( 'Entry # ', 'gravityforms' ) . $lead_ids[0] : 'Bulk Print' ?>
+		<?php echo count( $lead_ids ) > 1 ? esc_html__( 'Entry # ', 'gravityforms' ) . $lead_ids[0] : esc_html__( 'Bulk Print', 'gravityforms' ); ?>
 	</title>
 	<link rel='stylesheet' href='<?php echo GFCommon::get_base_url() ?>/css/print<?php echo $min; ?>.css' type='text/css' />
 <?php
@@ -106,7 +106,7 @@ if ( ! empty( $styles ) ) {
 
 <div id="print_preview_hdr" style="display:none">
 	<div>
-		<span class="actionlinks"><a href="javascript:;" onclick="window.print();" class="header-print-link">print this page</a> | <a href="javascript:window.close()" class="close_window"><?php _e( 'close window', 'gravityforms' ) ?></a></span><?php _e( 'Print Preview', 'gravityforms' ) ?>
+		<span class="actionlinks"><a href="javascript:;" onclick="window.print();" class="header-print-link">print this page</a> | <a href="javascript:window.close()" class="close_window"><?php esc_html_e( 'close window', 'gravityforms' ) ?></a></span><?php esc_html_e( 'Print Preview', 'gravityforms' ) ?>
 	</div>
 </div>
 <div id="view-container">

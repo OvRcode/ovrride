@@ -172,7 +172,7 @@ class WC_Admin_Post_Types {
 	 * @param  string $column
 	 */
 	public function render_product_columns( $column ) {
-		global $post;
+		global $post, $the_product;
 
 		if ( empty( $the_product ) || $the_product->id != $post->ID ) {
 			$the_product = wc_get_product( $post );
@@ -478,7 +478,7 @@ class WC_Admin_Post_Types {
 			break;
 			case 'customer_message' :
 				if ( $the_order->customer_message ) {
-					echo '<span class="note-on tips" data-tip="' . esc_attr( wc_sanitize_tooltip( $the_order->customer_message ) ) . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
+					echo '<span class="note-on tips" data-tip="' . wc_sanitize_tooltip( $the_order->customer_message ) . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
 				} else {
 					echo '<span class="na">&ndash;</span>';
 				}
@@ -546,11 +546,11 @@ class WC_Admin_Post_Types {
 					$latest_note = current( $latest_notes );
 
 					if ( $post->comment_count == 1 ) {
-						echo '<span class="note-on tips" data-tip="' . esc_attr( wc_sanitize_tooltip( $latest_note->comment_content ) ) . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
+						echo '<span class="note-on tips" data-tip="' . wc_sanitize_tooltip( $latest_note->comment_content ) . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
+					} elseif ( isset( $latest_note->comment_content ) ) {
+						echo '<span class="note-on tips" data-tip="' . wc_sanitize_tooltip( $latest_note->comment_content . '<br/><small style="display:block">' . sprintf( _n( 'plus %d other note', 'plus %d other notes', ( $post->comment_count - 1 ), 'woocommerce' ), $post->comment_count - 1 ) . '</small>' ) . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
 					} else {
-						$note_tip = isset( $latest_note->comment_content ) ? esc_attr( wc_sanitize_tooltip( $latest_note->comment_content ) . '<small style="display:block">' . sprintf( _n( 'plus %d other note', 'plus %d other notes', ( $post->comment_count - 1 ), 'woocommerce' ), ( $post->comment_count - 1 ) ) . '</small>' ) : sprintf( _n( '%d note', '%d notes', $post->comment_count, 'woocommerce' ), $post->comment_count );
-
-						echo '<span class="note-on tips" data-tip="' . $note_tip . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
+						echo '<span class="note-on tips" data-tip="' . wc_sanitize_tooltip( sprintf( _n( '%d note', '%d notes', $post->comment_count, 'woocommerce' ), $post->comment_count ) ) . '">' . __( 'Yes', 'woocommerce' ) . '</span>';
 					}
 
 				} else {
@@ -571,17 +571,17 @@ class WC_Admin_Post_Types {
 			break;
 			case 'order_title' :
 
-				$customer_tip = '';
+				$customer_tip = array();
 
 				if ( $address = $the_order->get_formatted_billing_address() ) {
-					$customer_tip .= __( 'Billing:', 'woocommerce' ) . ' ' . $address . '<br/><br/>';
+					$customer_tip[] = __( 'Billing:', 'woocommerce' ) . ' ' . $address . '<br/><br/>';
 				}
 
 				if ( $the_order->billing_phone ) {
-					$customer_tip .= __( 'Tel:', 'woocommerce' ) . ' ' . $the_order->billing_phone;
+					$customer_tip[] = __( 'Tel:', 'woocommerce' ) . ' ' . $the_order->billing_phone;
 				}
 
-				echo '<div class="tips" data-tip="' . esc_attr( wc_sanitize_tooltip( $customer_tip ) ) . '">';
+				echo '<div class="tips" data-tip="' . wc_sanitize_tooltip( implode( "<br/>", $customer_tip ) ) . '">';
 
 				if ( $the_order->user_id ) {
 					$user_info = get_userdata( $the_order->user_id );
@@ -1521,7 +1521,7 @@ class WC_Admin_Post_Types {
 			$user_string = esc_html( $user->display_name ) . ' (#' . absint( $user->ID ) . ' &ndash; ' . esc_html( $user->user_email );
 		}
 		?>
-		<input type="hidden" class="wc-customer-search" name="_customer_user" data-placeholder="<?php _e( 'Search for a customer&hellip;', 'woocommerce' ); ?>" data-selected="<?php echo esc_attr( $user_string ); ?>" value="<?php echo $user_id; ?>" data-allow_clear="true" />
+		<input type="hidden" class="wc-customer-search" name="_customer_user" data-placeholder="<?php _e( 'Search for a customer&hellip;', 'woocommerce' ); ?>" data-selected="<?php echo htmlspecialchars( $user_string ); ?>" value="<?php echo $user_id; ?>" data-allow_clear="true" />
 		<?php
 	}
 

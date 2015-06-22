@@ -56,7 +56,6 @@ Class GFNotification {
 			//clear out notification because it could have legacy data populated
 			$notification = array( 'isActive' => isset( $notification['isActive'] ) ? rgar( $notification, 'isActive' ) : true );
 
-
 			$is_update = true;
 
 			if ( $is_new_notification ) {
@@ -66,19 +65,38 @@ Class GFNotification {
 				$notification['id'] = $notification_id;
 			}
 
-			$notification['name']              = rgpost( 'gform_notification_name' );
-			$notification['event']             = rgpost( 'gform_notification_event' );
+			$notification['name']              = sanitize_text_field( rgpost( 'gform_notification_name' ) );
+			$notification['event']             = sanitize_text_field( rgpost( 'gform_notification_event' ) );
 			$notification['to']                = rgpost( 'gform_notification_to_type' ) == 'field' ? rgpost( 'gform_notification_to_field' ) : rgpost( 'gform_notification_to_email' );
-			$notification['toType']            = rgpost( 'gform_notification_to_type' );
+			$to_type = rgpost( 'gform_notification_to_type' );
+			if ( ! in_array( $to_type, array( 'email', 'field', 'routing', 'hidden' ) ) ) {
+				$to_type = 'email';
+			}
+			$notification['toType']            = $to_type;
+
 			$notification['bcc']               = rgpost( 'gform_notification_bcc' );
-			$notification['subject']           = rgpost( 'gform_notification_subject' );
+			$notification['subject']           = sanitize_text_field( rgpost( 'gform_notification_subject' ) );
+
 			$notification['message']           = rgpost( 'gform_notification_message' );
-			$notification['from']              = rgpost( 'gform_notification_from' );
-			$notification['fromName']          = rgpost( 'gform_notification_from_name' );
+
+			$notification['from']              = sanitize_text_field( rgpost( 'gform_notification_from' ) );
+			$notification['fromName']          = sanitize_text_field( rgpost( 'gform_notification_from_name' ) );
+
 			$notification['replyTo']           = rgpost( 'gform_notification_reply_to' );
-			$notification['routing']           = ! rgempty( 'gform_routing_meta' ) ? GFCommon::json_decode( rgpost( 'gform_routing_meta' ), true ) : null;
-			$notification['conditionalLogic']  = ! rgempty( 'gform_conditional_logic_meta' ) ? GFCommon::json_decode( rgpost( 'gform_conditional_logic_meta' ), true ) : null;
-			$notification['disableAutoformat'] = rgpost( 'gform_notification_disable_autoformat' );
+			$routing          = ! rgempty( 'gform_routing_meta' ) ? GFCommon::json_decode( rgpost( 'gform_routing_meta' ), true ) : null;
+			if ( ! empty ( $routing ) ) {
+				$routing_logic = array( 'rules' => $routing );
+				$routing_logic = GFFormsModel::sanitize_conditional_logic( $routing_logic );
+				$notification['routing'] = $routing_logic['rules'];
+			}
+
+			$notification['routing'] = $routing;
+
+			$conditional_logic  = ! rgempty( 'gform_conditional_logic_meta' ) ? GFCommon::json_decode( rgpost( 'gform_conditional_logic_meta' ), true ) : null;
+
+			$notification['conditionalLogic'] = GFFormsModel::sanitize_conditional_logic( $conditional_logic );
+
+			$notification['disableAutoformat'] = (bool) rgpost( 'gform_notification_disable_autoformat' );
 
 			if ( rgpost( 'gform_is_default' ) ) {
 				$notification['isDefault'] = true;
@@ -107,13 +125,13 @@ Class GFNotification {
 
 		if ( $is_update && $is_valid ) {
 			$url = remove_query_arg( 'nid' );
-			GFCommon::add_message( sprintf( __( 'Notification saved successfully. %sBack to notifications.%s', 'gravityforms' ), '<a href="' . esc_url( $url ) . '">', '</a>' ) );
+			GFCommon::add_message( sprintf( esc_html__( 'Notification saved successfully. %sBack to notifications.%s', 'gravityforms' ), '<a href="' . esc_url( $url ) . '">', '</a>' ) );
 		} else if ( $is_update && ! $is_valid ) {
-			GFCommon::add_error_message( __( 'Notification could not be updated. Please enter all required information below.', 'gravityforms' ) );
+			GFCommon::add_error_message( esc_html__( 'Notification could not be updated. Please enter all required information below.', 'gravityforms' ) );
 		}
 
 		// moved page header loading here so the admin messages can be set upon saving and available for the header to print out
-		GFFormSettings::page_header( __( 'Notifications', 'gravityforms' ) );
+		GFFormSettings::page_header( esc_html__( 'Notifications', 'gravityforms' ) );
 
 		$notification_ui_settings = self::get_notification_ui_settings( $notification );
 
@@ -149,8 +167,8 @@ Class GFNotification {
 		function MaybeAddSaveLinkMergeTag(mergeTags, elementId, hideAllFields, excludeFieldTypes, isPrepop, option){
 			var event = document.getElementById('gform_notification_event').value;
 			if ( event == 'form_saved' || event == 'form_save_email_requested' ) {
-				mergeTags["other"].tags.push({ tag: '{save_link}', label: '<?php _e( 'Save &amp; Continue Link', 'gravityforms' ) ?>' });
-				mergeTags["other"].tags.push({ tag: '{save_token}', label: '<?php _e( 'Save &amp; Continue Token', 'gravityforms' ) ?>' });
+				mergeTags["other"].tags.push({ tag: '{save_link}', label: <?php echo json_encode( esc_html__( 'Save & Continue Link', 'gravityforms' ) ); ?> });
+				mergeTags["other"].tags.push({ tag: '{save_token}', label: <?php echo json_encode( esc_html__( 'Save & Continue Token', 'gravityforms' ) ); ?> });
 			}
 
 			return mergeTags;
@@ -190,16 +208,16 @@ Class GFNotification {
 				var endsWithSelected = routings[i].operator == 'ends_with' ? "selected='selected'" : '';
 				var email = routings[i]["email"] ? routings[i]["email"] : '';
 
-				str += "<div style='width:99%'><?php _e( 'Send to', 'gravityforms' )  ?> <input type='text' id='routing_email_" + i + "' value='" + email + "' onkeyup='SetRouting(" + i + ");'/>";
-				str += " <?php _e( 'if', 'gravityforms' )  ?> " + GetRoutingFields(i, routings[i].fieldId);
+				str += "<div style='width:99%'>" + <?php echo json_encode( esc_html__( 'Send to', 'gravityforms' ) ); ?> + " <input type='text' id='routing_email_" + i + "' value='" + email + "' onkeyup='SetRouting(" + i + ");'/>";
+				str += " " + <?php echo json_encode( esc_html__( 'if', 'gravityforms' ) ); ?> + " " + GetRoutingFields(i, routings[i].fieldId);
 				str += "<select id='routing_operator_" + i + "' onchange='SetRouting(" + i + ");' class='gform_routing_operator'>";
-				str += "<option value='is' " + isSelected + "><?php _e( 'is', 'gravityforms' )  ?></option>";
-				str += "<option value='isnot' " + isNotSelected + "><?php _e( 'is not', 'gravityforms' )  ?></option>";
-				str += "<option value='>' " + greaterThanSelected + "><?php _e( 'greater than', 'gravityforms' )  ?></option>";
-				str += "<option value='<' " + lessThanSelected + "><?php _e( 'less than', 'gravityforms' )  ?></option>";
-				str += "<option value='contains' " + containsSelected + "><?php _e( 'contains', 'gravityforms' )  ?></option>";
-				str += "<option value='starts_with' " + startsWithSelected + "><?php _e( 'starts with', 'gravityforms' )  ?></option>";
-				str += "<option value='ends_with' " + endsWithSelected + "><?php _e( 'ends with', 'gravityforms' )  ?></option>";
+				str += "<option value='is' " + isSelected + ">" + <?php echo json_encode( esc_html__( 'is', 'gravityforms' ) ); ?> + "</option>";
+				str += "<option value='isnot' " + isNotSelected + ">" + <?php echo json_encode( esc_html__( 'is not', 'gravityforms' ) ); ?> + "</option>";
+				str += "<option value='>' " + greaterThanSelected + ">" + <?php echo json_encode( esc_html__( 'greater than', 'gravityforms' ) ); ?> + "</option>";
+				str += "<option value='<' " + lessThanSelected + ">" + <?php echo json_encode( esc_html__( 'less than', 'gravityforms' ) ); ?> + "</option>";
+				str += "<option value='contains' " + containsSelected + ">" + <?php echo json_encode( esc_html__( 'contains', 'gravityforms' ) ); ?> + "</option>";
+				str += "<option value='starts_with' " + startsWithSelected + ">" + <?php echo json_encode( esc_html__( 'starts with', 'gravityforms' ) ); ?> + "</option>";
+				str += "<option value='ends_with' " + endsWithSelected + ">" + <?php echo json_encode( esc_html__( 'ends with', 'gravityforms' ) ); ?> + "</option>";
 				str += "</select>";
 				str += GetRoutingValues(i, routings[i].fieldId, routings[i].value);
 				str += "<a class='gf_insert_field_choice' title='add another rule' onclick=\"InsertRouting(" + (i + 1) + ");\"><i class='gficon-add'></i></a>";
@@ -313,7 +331,7 @@ Class GFNotification {
 					);
 
 					//will be replaced by real drop down during the ajax callback
-					str = "<select id='gfield_ajax_placeholder_" + index + "' class='gfield_routing_select'><option><?php _e( 'Loading...', 'gravityforms' ) ; ?></option></select>";
+					str = "<select id='gfield_ajax_placeholder_" + index + "' class='gfield_routing_select'><option>" + <?php json_encode( esc_html__( 'Loading...', 'gravityforms' ) ); ?> + "</option></select>";
 				}
 			}
 			else if (field.choices) {
@@ -337,7 +355,7 @@ Class GFNotification {
 			else {
 				selectedValue = selectedValue ? selectedValue.replace(/'/g, "&#039;") : "";
 				//create a text field for fields that don't have choices (i.e text, textarea, number, email, etc...)
-				str = "<input type='text' placeholder='<?php _e( 'Enter value', 'gravityforms' ) ; ?>' class='gfield_routing_select' id='routing_value_" + index + "' value='" + selectedValue.replace(/'/g, "&#039;") + "' onchange='SetRouting(" + index + ");' onkeyup='SetRouting(" + index + ");'>";
+				str = "<input type='text' placeholder='" + <?php echo json_encode( esc_html__( 'Enter value', 'gravityforms' ) ); ?> +"' class='gfield_routing_select' id='routing_value_" + index + "' value='" + selectedValue.replace(/'/g, "&#039;") + "' onchange='SetRouting(" + index + ");' onkeyup='SetRouting(" + index + ");'>";
 			}
 			return str;
 		}
@@ -410,7 +428,7 @@ Class GFNotification {
 			<p class="submit">
 				<?php
 				$button_label = $is_new_notification ? __( 'Save Notification', 'gravityforms' ) : __( 'Update Notification', 'gravityforms' );
-				$notification_button = '<input class="button-primary" type="submit" value="' . $button_label . '" name="save"/>';
+				$notification_button = '<input class="button-primary" type="submit" value="' . esc_attr( $button_label ) . '" name="save"/>';
 				echo apply_filters( 'gform_save_notification_button', $notification_button );
 				?>
 			</p>
@@ -429,12 +447,12 @@ Class GFNotification {
 
 		$form = RGFormsModel::get_form_meta( $form_id );
 
-		GFFormSettings::page_header( __( 'Notifications', 'gravityforms' ) );
+		GFFormSettings::page_header( esc_html__( 'Notifications', 'gravityforms' ) );
 		$add_new_url = add_query_arg( array( 'nid' => 0 ) );
 		?>
 
-		<h3><span><i class="fa fa-envelope-o"></i> <?php _e( 'Notifications', 'gravityforms' ) ?>
-				<a id="add-new-confirmation" class="add-new-h2" href="<?php echo esc_url( $add_new_url ) ?>"><?php _e( 'Add New', 'gravityforms' ) ?></a></span>
+		<h3><span><i class="fa fa-envelope-o"></i> <?php esc_html_e( 'Notifications', 'gravityforms' ) ?>
+				<a id="add-new-confirmation" class="add-new-h2" href="<?php echo esc_url( $add_new_url ) ?>"><?php esc_html_e( 'Add New', 'gravityforms' ) ?></a></span>
 		</h3>
 
 		<script type="text/javascript">
@@ -442,11 +460,11 @@ Class GFNotification {
 				var is_active = img.src.indexOf("active1.png") >= 0
 				if (is_active) {
 					img.src = img.src.replace("active1.png", "active0.png");
-					jQuery(img).attr('title', '<?php _e( 'Inactive', 'gravityforms' )  ?>').attr('alt', '<?php _e( 'Inactive', 'gravityforms' )  ?>');
+					jQuery(img).attr('title', <?php echo json_encode( esc_html__( 'Inactive', 'gravityforms' ) ); ?>).attr('alt', <?php echo json_encode( esc_html__( 'Inactive', 'gravityforms' ) );  ?>);
 				}
 				else {
 					img.src = img.src.replace("active0.png", "active1.png");
-					jQuery(img).attr('title', '<?php _e( 'Active', 'gravityforms' )  ?>').attr('alt', '<?php _e( 'Active', 'gravityforms' )  ?>');
+					jQuery(img).attr('title', <?php echo json_encode( esc_html__( 'Active', 'gravityforms' ) ); ?>).attr('alt', <?php echo json_encode( esc_html__( 'Active', 'gravityforms' ) ); ?>);
 				}
 
 				var mysack = new sack("<?php echo admin_url( 'admin-ajax.php' )?>");
@@ -458,7 +476,7 @@ Class GFNotification {
 				mysack.setVar("notification_id", notification_id);
 				mysack.setVar("is_active", is_active ? 0 : 1);
 				mysack.onError = function () {
-					alert('<?php echo esc_js( __( 'Ajax error while updating notification', 'gravityforms' ) ) ?>')
+					alert(<?php echo json_encode( esc_html__( 'Ajax error while updating notification', 'gravityforms' ) ) ?>)
 				};
 				mysack.runAJAX();
 
@@ -498,17 +516,17 @@ Class GFNotification {
 			case 'delete':
 				$notification_deleted = GFNotification::delete_notification( $object_id, rgget( 'id' ) );
 				if ( $notification_deleted ) {
-					GFCommon::add_message( __( 'Notification deleted.', 'gravityforms' ) );
+					GFCommon::add_message( esc_html__( 'Notification deleted.', 'gravityforms' ) );
 				} else {
-					GFCommon::add_error_message( __( 'There was an issue deleting this notification.', 'gravityforms' ) );
+					GFCommon::add_error_message( esc_html__( 'There was an issue deleting this notification.', 'gravityforms' ) );
 				}
 				break;
 			case 'duplicate':
 				$notification_duplicated = GFNotification::duplicate_notification( $object_id, rgget( 'id' ) );
 				if ( $notification_duplicated ) {
-					GFCommon::add_message( __( 'Notification duplicates.', 'gravityforms' ) );
+					GFCommon::add_message( esc_html__( 'Notification duplicates.', 'gravityforms' ) );
 				} else {
-					GFCommon::add_error_message( __( 'There was an issue duplicating this notification.', 'gravityforms' ) );
+					GFCommon::add_error_message( esc_html__( 'There was an issue duplicating this notification.', 'gravityforms' ) );
 				}
 				break;
 		}
@@ -542,7 +560,7 @@ Class GFNotification {
 		<tr valign="top" <?php echo rgar( $notification, 'isDefault' ) ? "style='display:none'" : '' ?> >
 			<th scope="row">
 				<label for="gform_notification_name">
-					<?php _e( 'Name', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Name', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_name' ) ?>
 				</label>
 			</th>
@@ -554,10 +572,10 @@ Class GFNotification {
 		ob_clean(); ?>
 
 		<?php
-		$notification_events = array( 'form_submission' => __( 'Form is submitted', 'gravityforms' ) );
+		$notification_events = array( 'form_submission' => esc_html__( 'Form is submitted', 'gravityforms' ) );
 		if ( rgars( $form, 'save/enabled' ) ) {
-			$notification_events['form_saved'] = __( 'Form is saved', 'gravityforms' );
-			$notification_events['form_save_email_requested'] = __( 'Save and continue email is requested', 'gravityforms' );
+			$notification_events['form_saved'] = esc_html__( 'Form is saved', 'gravityforms' );
+			$notification_events['form_save_email_requested'] = esc_html__( 'Save and continue email is requested', 'gravityforms' );
 		}
 		$notification_events = apply_filters( 'gform_notification_events', $notification_events, $form );
 		$event_style         = count( $notification_events ) == 1 || rgar( $notification, 'isDefault' ) ? "style='display:none'" : '';
@@ -565,7 +583,7 @@ Class GFNotification {
 		<tr valign="top" <?php echo $event_style ?>>
 			<th scope="row">
 				<label for="gform_notification_event">
-					<?php _e( 'Event', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Event', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_event' ) ?>
 				</label>
 
@@ -597,7 +615,7 @@ Class GFNotification {
 		<tr valign="top" class='<?php echo esc_attr( $send_to_class ) ?>' <?php echo $notification_to_type == 'hidden' ? 'style="display:none;"': ''; ?>>
 			<th scope="row">
 				<label for="gform_notification_to_email">
-					<?php _e( 'Send To', 'gravityforms' ); ?><span class="gfield_required">*</span>
+					<?php esc_html_e( 'Send To', 'gravityforms' ); ?><span class="gfield_required">*</span>
 					<?php gform_tooltip( 'notification_send_to_email' ) ?>
 				</label>
 
@@ -605,17 +623,17 @@ Class GFNotification {
 			<td>
 				<input type="radio" id="gform_notification_to_type_email" name="gform_notification_to_type" <?php checked( 'email', $notification_to_type ); ?> value="email" onclick="jQuery('.notification_to_container').hide(); jQuery('#gform_notification_to_email_container').show('slow');" />
 				<label for="gform_notification_to_type_email" class="inline">
-					<?php _e( 'Enter Email', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Enter Email', 'gravityforms' ); ?>
 				</label>
 				&nbsp;&nbsp;
 				<input type="radio" id="gform_notification_to_type_field" name="gform_notification_to_type" <?php checked( 'field', $notification_to_type ); ?> value="field" onclick="jQuery('.notification_to_container').hide(); jQuery('#gform_notification_to_field_container').show('slow');" />
 				<label for="gform_notification_to_type_field" class="inline">
-					<?php _e( 'Select a Field', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Select a Field', 'gravityforms' ); ?>
 				</label>
 				&nbsp;&nbsp;
 				<input type="radio" id="gform_notification_to_type_routing" name="gform_notification_to_type" <?php checked( 'routing', $notification_to_type ); ?> value="routing" onclick="jQuery('.notification_to_container').hide(); jQuery('#gform_notification_to_routing_container').show('slow');" />
 				<label for="gform_notification_to_type_routing" class="inline">
-					<?php _e( 'Configure Routing', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Configure Routing', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_send_to_routing' ) ?>
 				</label>
 			</td>
@@ -630,7 +648,7 @@ Class GFNotification {
 
 		<tr id="gform_notification_to_email_container" class="notification_to_container <?php echo esc_attr( $send_to_class ) ?>" <?php echo $notification_to_type != 'email' ? "style='display:none';" : '' ?>>
 			<?php echo $subsetting_open; ?>
-			<th scope="row"><?php _e( 'Send to Email', 'gravityforms' ) ?></th>
+			<th scope="row"><?php esc_html_e( 'Send to Email', 'gravityforms' ) ?></th>
 			<td>
 				<?php
 				$to_email = rgget( 'toType', $notification ) == 'email' ? rgget( 'to', $notification ) : '';
@@ -638,7 +656,7 @@ Class GFNotification {
 				<input type="text" name="gform_notification_to_email" id="gform_notification_to_email" value="<?php echo esc_attr( $to_email ) ?>" class="fieldwidth-1" />
 
 				<?php if ( rgpost( 'gform_notification_to_type' ) == 'email' && $is_invalid_email_to ) { ?>
-					<span class="validation_message"><?php _e( 'Please enter a valid email address', 'gravityforms' ) ?>.</span>
+					<span class="validation_message"><?php esc_html_e( 'Please enter a valid email address', 'gravityforms' ) ?>.</span>
 				<?php } ?>
 			</td>
 			<?php echo $subsetting_close; ?>
@@ -649,13 +667,13 @@ Class GFNotification {
 		<?php $email_fields = apply_filters( "gform_email_fields_notification_admin_{$form['id']}", apply_filters( 'gform_email_fields_notification_admin', GFCommon::get_email_fields( $form ), $form ), $form ); ?>
 		<tr id="gform_notification_to_field_container" class="notification_to_container <?php echo esc_attr( $send_to_class ) ?>" <?php echo $notification_to_type != 'field' ? "style='display:none';" : '' ?>>
 			<?php echo $subsetting_open; ?>
-			<th scope="row"><?php _e( 'Send to Field', 'gravityforms' ) ?></th>
+			<th scope="row"><?php esc_html_e( 'Send to Field', 'gravityforms' ) ?></th>
 			<td>
 				<?php
 				if ( ! empty( $email_fields ) ) {
 					?>
 					<select name="gform_notification_to_field" id="gform_notification_to_field">
-						<option value=""><?php _e( 'Select an email field', 'gravityforms' ); ?></option>
+						<option value=""><?php esc_html_e( 'Select an email field', 'gravityforms' ); ?></option>
 						<?php
 						$to_field = rgget( 'toType', $notification ) == 'field' ? rgget( 'to', $notification ) : '';
 						foreach ( $email_fields as $field ) {
@@ -669,7 +687,7 @@ Class GFNotification {
 				} else {
 					?>
 					<div class="error_base">
-						<p><?php _e( 'Your form does not have an email field. Add an email field to your form and try again.', 'gravityforms' ) ?></p>
+						<p><?php esc_html_e( 'Your form does not have an email field. Add an email field to your form and try again.', 'gravityforms' ) ?></p>
 					</div>
 				<?php
 				}
@@ -689,7 +707,7 @@ Class GFNotification {
 					if ( empty( $routing_fields ) ) {
 						?>
 						<div class="gold_notice">
-							<p><?php _e( 'To use notification routing, your form must have a field supported by conditional logic.', 'gravityforms' ); ?></p>
+							<p><?php esc_html_e( 'To use notification routing, your form must have a field supported by conditional logic.', 'gravityforms' ); ?></p>
 						</div>
 					<?php
 					} else {
@@ -707,18 +725,18 @@ Class GFNotification {
 							$class           = $is_invalid_rule ? "class='grouting_rule_error'" : '';
 							?>
 							<div style='width:99%' <?php echo $class ?>>
-								<?php _e( 'Send to', 'gravityforms' ) ?>
+								<?php esc_html_e( 'Send to', 'gravityforms' ) ?>
 								<input type="text" id="routing_email_<?php echo $i ?>" value="<?php echo esc_attr( rgar( $routing, 'email' ) ); ?>" onkeyup="SetRouting(<?php echo $i ?>);" />
-								<?php _e( 'if', 'gravityforms' ) ?>
+								<?php esc_html_e( 'if', 'gravityforms' ) ?>
 								<select id="routing_field_id_<?php echo $i ?>" class='gfield_routing_select' onchange='jQuery("#routing_value_<?php echo $i ?>").replaceWith(GetRoutingValues(<?php echo $i ?>, jQuery(this).val())); SetRouting(<?php echo $i ?>); '><?php echo self::get_routing_fields( $form, rgar( $routing, 'fieldId' ) ) ?></select>
 								<select id="routing_operator_<?php echo $i ?>" onchange="SetRouting(<?php echo $i ?>)" class="gform_routing_operator">
-									<option value="is" <?php echo rgar( $routing, 'operator' ) == 'is' ? "selected='selected'" : '' ?>><?php _e( 'is', 'gravityforms' ) ?></option>
-									<option value="isnot" <?php echo rgar( $routing, 'operator' ) == 'isnot' ? "selected='selected'" : '' ?>><?php _e( 'is not', 'gravityforms' ) ?></option>
-									<option value=">" <?php echo rgar( $routing, 'operator' ) == '>' ? "selected='selected'" : '' ?>><?php _e( 'greater than', 'gravityforms' ) ?></option>
-									<option value="<" <?php echo rgar( $routing, 'operator' ) == '<' ? "selected='selected'" : '' ?>><?php _e( 'less than', 'gravityforms' ) ?></option>
-									<option value="contains" <?php echo rgar( $routing, 'operator' ) == 'contains' ? "selected='selected'" : '' ?>><?php _e( 'contains', 'gravityforms' ) ?></option>
-									<option value="starts_with" <?php echo rgar( $routing, 'operator' ) == 'starts_with' ? "selected='selected'" : '' ?>><?php _e( 'starts with', 'gravityforms' ) ?></option>
-									<option value="ends_with" <?php echo rgar( $routing, 'operator' ) == 'ends_with' ? "selected='selected'" : '' ?>><?php _e( 'ends with', 'gravityforms' ) ?></option>
+									<option value="is" <?php echo rgar( $routing, 'operator' ) == 'is' ? "selected='selected'" : '' ?>><?php esc_html_e( 'is', 'gravityforms' ) ?></option>
+									<option value="isnot" <?php echo rgar( $routing, 'operator' ) == 'isnot' ? "selected='selected'" : '' ?>><?php esc_html_e( 'is not', 'gravityforms' ) ?></option>
+									<option value=">" <?php echo rgar( $routing, 'operator' ) == '>' ? "selected='selected'" : '' ?>><?php esc_html_e( 'greater than', 'gravityforms' ) ?></option>
+									<option value="<" <?php echo rgar( $routing, 'operator' ) == '<' ? "selected='selected'" : '' ?>><?php esc_html_e( 'less than', 'gravityforms' ) ?></option>
+									<option value="contains" <?php echo rgar( $routing, 'operator' ) == 'contains' ? "selected='selected'" : '' ?>><?php esc_html_e( 'contains', 'gravityforms' ) ?></option>
+									<option value="starts_with" <?php echo rgar( $routing, 'operator' ) == 'starts_with' ? "selected='selected'" : '' ?>><?php esc_html_e( 'starts with', 'gravityforms' ) ?></option>
+									<option value="ends_with" <?php echo rgar( $routing, 'operator' ) == 'ends_with' ? "selected='selected'" : '' ?>><?php esc_html_e( 'ends with', 'gravityforms' ) ?></option>
 								</select>
 								<?php echo self::get_field_values( $i, $form, rgar( $routing, 'fieldId' ), rgar( $routing, 'value' ) ) ?>
 
@@ -733,7 +751,7 @@ Class GFNotification {
 
 						if ( $is_invalid_rule ) {
 							?>
-							<span class="validation_message"><?php _e( 'Please enter a valid email address for all highlighted routing rules above.', 'gravityforms' ) ?></span>
+							<span class="validation_message"><?php esc_html_e( 'Please enter a valid email address for all highlighted routing rules above.', 'gravityforms' ) ?></span>
 						<?php } ?>
 						<input type="hidden" name="routing_count" id="routing_count" value="<?php echo $routing_list ?>" />
 					<?php
@@ -749,7 +767,7 @@ Class GFNotification {
 		<tr valign="top">
 			<th scope="row">
 				<label for="gform_notification_from_name">
-					<?php _e( 'From Name', 'gravityforms' ); ?>
+					<?php esc_html_e( 'From Name', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_from_name' ) ?>
 				</label>
 			</th>
@@ -763,7 +781,7 @@ Class GFNotification {
 		<tr valign="top">
 			<th scope="row">
 				<label for="gform_notification_from">
-					<?php _e( 'From Email', 'gravityforms' ); ?>
+					<?php esc_html_e( 'From Email', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_from_email' ) ?>
 				</label>
 			</th>
@@ -777,12 +795,16 @@ Class GFNotification {
 		<tr valign="top">
 			<th scope="row">
 				<label for="gform_notification_reply_to">
-					<?php _e( 'Reply To', 'gravityforms' ); ?>
+					<?php
+					$is_invalid_reply_to = ! $is_valid && ! self::is_valid_notification_email( rgar( $notification, 'replyTo' ) );
+					$class           = $is_invalid_reply_to ? ' gfield_error' : '';
+					?>
+					<?php esc_html_e( 'Reply To', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_reply_to' ) ?>
 				</label>
 			</th>
 			<td>
-				<input type="text" name="gform_notification_reply_to" id="gform_notification_reply_to" class="merge-tag-support mt-hide_all_fields" value="<?php echo esc_attr( rgget( 'replyTo', $notification ) ) ?>" class="fieldwidth-2" />
+				<input type="text" name="gform_notification_reply_to" id="gform_notification_reply_to" class="merge-tag-support mt-hide_all_fields fieldwidth-2<?php echo $class ?>" value="<?php echo esc_attr( rgget( 'replyTo', $notification ) ) ?>" />
 			</td>
 		</tr> <!-- / reply to -->
 		<?php $ui_settings['notification_reply_to'] = ob_get_contents();
@@ -791,12 +813,16 @@ Class GFNotification {
 		<tr valign="top">
 			<th scope="row">
 				<label for="gform_notification_bcc">
-					<?php _e( 'BCC', 'gravityforms' ); ?>
+					<?php esc_html_e( 'BCC', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_bcc' ) ?>
 				</label>
 			</th>
 			<td>
-				<input type="text" name="gform_notification_bcc" id="gform_notification_bcc" value="<?php echo esc_attr( rgget( 'bcc', $notification ) ) ?>" class="fieldwidth-1" />
+				<?php
+				$is_invalid_bcc = ! $is_valid && ! self::is_valid_notification_email( rgar( $notification, 'bcc' ) );
+				$class           = $is_invalid_bcc ? ' gfield_error' : '';
+				?>
+				<input type="text" name="gform_notification_bcc" id="gform_notification_bcc" value="<?php echo esc_attr( rgget( 'bcc', $notification ) ) ?>" class="merge-tag-support mt-hide_all_fields fieldwidth-2<?php echo $class ?>" />
 			</td>
 		</tr> <!-- / bcc -->
 		<?php $ui_settings['notification_bcc'] = ob_get_contents();
@@ -809,7 +835,7 @@ Class GFNotification {
 		<tr valign="top" <?php echo $subject_class ?>>
 			<th scope="row">
 				<label for="gform_notification_subject">
-					<?php _e( 'Subject', 'gravityforms' ); ?><span class="gfield_required">*</span>
+					<?php esc_html_e( 'Subject', 'gravityforms' ); ?><span class="gfield_required">*</span>
 				</label>
 			</th>
 			<td>
@@ -817,7 +843,7 @@ Class GFNotification {
 				<?php
 				if ( $is_invalid_subject ) {
 					?>
-					<span class="validation_message"><?php _e( 'Please enter a subject for the notification email', 'gravityforms' ) ?></span><?php
+					<span class="validation_message"><?php esc_html_e( 'Please enter a subject for the notification email', 'gravityforms' ) ?></span><?php
 				}
 				?>
 			</td>
@@ -832,7 +858,7 @@ Class GFNotification {
 		<tr valign="top" <?php echo $message_class ?>>
 			<th scope="row">
 				<label for="gform_notification_message">
-					<?php _e( 'Message', 'gravityforms' ); ?><span class="gfield_required">*</span>
+					<?php esc_html_e( 'Message', 'gravityforms' ); ?><span class="gfield_required">*</span>
 				</label>
 			</th>
 			<td>
@@ -849,7 +875,7 @@ Class GFNotification {
 
 				if ( $is_invalid_message ) {
 					?>
-					<span class="validation_message"><?php _e( 'Please enter a message for the notification email', 'gravityforms' ) ?></span><?php
+					<span class="validation_message"><?php esc_html_e( 'Please enter a message for the notification email', 'gravityforms' ) ?></span><?php
 				}
 				?>
 			</td>
@@ -860,14 +886,14 @@ Class GFNotification {
 		<tr valign="top">
 			<th scope="row">
 				<label for="gform_notification_disable_autoformat">
-					<?php _e( 'Auto-formatting', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Auto-formatting', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_autoformat' ) ?>
 				</label>
 			</th>
 			<td>
 				<input type="checkbox" name="gform_notification_disable_autoformat" id="gform_notification_disable_autoformat" value="1" <?php echo empty( $notification['disableAutoformat'] ) ? '' : "checked='checked'" ?>/>
 				<label for="form_notification_disable_autoformat" class="inline">
-					<?php _e( 'Disable auto-formatting', 'gravityforms' ); ?>
+					<?php esc_html_e( 'Disable auto-formatting', 'gravityforms' ); ?>
 					<?php gform_tooltip( 'notification_autoformat' ) ?>
 				</label>
 			</td>
@@ -880,12 +906,12 @@ Class GFNotification {
 		<tr valign="top" <?php echo rgar( $notification, 'isDefault' ) ? 'style=display:none;' : ''; ?> >
 			<th scope="row">
 				<label for="gform_notification_conditional_logic">
-					<?php _e( 'Conditional Logic', 'gravityforms' ) ?><?php gform_tooltip( 'notification_conditional_logic' ) ?>
+					<?php esc_html_e( 'Conditional Logic', 'gravityforms' ) ?><?php gform_tooltip( 'notification_conditional_logic' ) ?>
 				</label>
 			</th>
 			<td>
 				<input type="checkbox" id="notification_conditional_logic" onclick="SetConditionalLogic(this.checked); ToggleConditionalLogic(false, 'notification');" <?php checked( is_array( rgar( $notification, 'conditionalLogic' ) ), true ) ?> />
-				<label for="notification_conditional_logic" class="inline"><?php _e( 'Enable conditional logic', 'gravityforms' ) ?><?php gform_tooltip( 'notification_conditional_logic' ) ?></label>
+				<label for="notification_conditional_logic" class="inline"><?php esc_html_e( 'Enable conditional logic', 'gravityforms' ) ?><?php gform_tooltip( 'notification_conditional_logic' ) ?></label>
 				<br />
 			</td>
 		</tr> <!-- / conditional logic -->
@@ -909,6 +935,18 @@ Class GFNotification {
 
 	private static function validate_notification() {
 		$is_valid = self::is_valid_notification_to() && ! rgempty( 'gform_notification_subject' ) && ! rgempty( 'gform_notification_message' );
+
+		$bcc = rgpost( 'gform_notification_bcc' );
+		if ( ! empty( $bcc ) && ! self::is_valid_notification_email( $bcc ) ) {
+			$is_valid = false;
+			GFCommon::add_error_message( esc_html__( 'Please enter a valid email address or merge tag in the BCC field.', 'gravityforms' ) );
+		}
+
+		$reply_to = rgpost( 'gform_notification_reply_to' );
+		if ( ! empty( $reply_to ) && ! self::is_valid_notification_email( $reply_to ) ) {
+			$is_valid = false;
+			GFCommon::add_error_message( esc_html__( 'Please enter a valid email address or merge tag in the Reply To field.', 'gravityforms' ) );
+		}
 
 		return $is_valid;
 	}
@@ -1028,7 +1066,7 @@ Class GFNotification {
 			$str .= '</select>';
 		} else {
 			//create a text field for fields that don't have choices (i.e text, textarea, number, email, etc...)
-			$str = "<input type='text' placeholder='" . __( 'Enter value', 'gravityforms' ) . "' class='gfield_routing_select' id='routing_value_" . $i . "' value='" . esc_attr( $selected_value ) . "' onchange='SetRouting(" . $i . ");' onkeyup='SetRouting(" . $i . ");'>";
+			$str = "<input type='text' placeholder='" . esc_html__( 'Enter value', 'gravityforms' ) . "' class='gfield_routing_select' id='routing_value_" . $i . "' value='" . esc_attr( $selected_value ) . "' onchange='SetRouting(" . $i . ");' onkeyup='SetRouting(" . $i . ");'>";
 		}
 
 		return $str;
@@ -1127,11 +1165,12 @@ class GFNotificationTable extends WP_List_Table {
 		$this->_column_headers = array(
 			array(
 				'cb'      => '',
-				'name'    => __( 'Name', 'gravityforms' ),
-				'subject' => __( 'Subject', 'gravityforms' )
+				'name'    => esc_html__( 'Name', 'gravityforms' ),
+				'subject' => esc_html__( 'Subject', 'gravityforms' )
 			),
 			array(),
 			array(),
+			'name',
 		);
 
 		parent::__construct();
@@ -1189,7 +1228,7 @@ class GFNotificationTable extends WP_List_Table {
 		}
 		$is_active = isset( $item['isActive'] ) ? $item['isActive'] : true;
 		?>
-		<img src="<?php echo GFCommon::get_base_url() ?>/images/active<?php echo intval( $is_active ) ?>.png" style="cursor: pointer;margin:-5px 0 0 8px;" alt="<?php $is_active ? __( 'Active', 'gravityforms' ) : __( 'Inactive', 'gravityforms' ); ?>" title="<?php echo $is_active ? __( 'Active', 'gravityforms' ) : __( 'Inactive', 'gravityforms' ); ?>" onclick="ToggleActive(this, '<?php echo esc_js( $item['id'] ) ?>'); " />
+		<img src="<?php echo GFCommon::get_base_url() ?>/images/active<?php echo intval( $is_active ) ?>.png" style="cursor: pointer;margin:-5px 0 0 8px;" alt="<?php $is_active ? esc_attr__( 'Active', 'gravityforms' ) : esc_attr__( 'Inactive', 'gravityforms' ); ?>" title="<?php echo $is_active ? esc_attr__( 'Active', 'gravityforms' ) : esc_attr__( 'Inactive', 'gravityforms' ); ?>" onclick="ToggleActive(this, '<?php echo esc_js( $item['id'] ) ?>'); " />
 	<?php
 	}
 
@@ -1197,9 +1236,9 @@ class GFNotificationTable extends WP_List_Table {
 		$edit_url = add_query_arg( array( 'nid' => $item['id'] ) );
 		$actions  = apply_filters(
 			'gform_notification_actions', array(
-				'edit'      => '<a title="' . __( 'Edit this item', 'gravityforms' ) . '" href="' . esc_url( $edit_url ) . '">' . __( 'Edit', 'gravityforms' ) . '</a>',
-				'duplicate' => '<a title="' . __( 'Duplicate this notification', 'gravityforms' ) . '" onclick="javascript: DuplicateNotification(\'' . esc_js( $item['id'] ) . '\');" style="cursor:pointer;">' . __( 'Duplicate', 'gravityforms' ) . '</a>',
-				'delete'    => '<a title="' . __( 'Delete this notification', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . __( 'WARNING: You are about to delete this notification.', 'gravityforms' ) . __( "\'Cancel\' to stop, \'OK\' to delete.", 'gravityforms' ) . '\')){ DeleteNotification(\'' . esc_js( $item['id'] ) . '\'); }" style="cursor:pointer;">' . __( 'Delete', 'gravityforms' ) . '</a>'
+				'edit'      => '<a title="' . esc_attr__( 'Edit this item', 'gravityforms' ) . '" href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Edit', 'gravityforms' ) . '</a>',
+				'duplicate' => '<a title="' . esc_attr__( 'Duplicate this notification', 'gravityforms' ) . '" onclick="javascript: DuplicateNotification(\'' . esc_js( $item['id'] ) . '\');" style="cursor:pointer;">' . esc_html__( 'Duplicate', 'gravityforms' ) . '</a>',
+				'delete'    => '<a title="' . esc_attr__( 'Delete this notification', 'gravityforms' ) . '" class="submitdelete" onclick="javascript: if(confirm(\'' . esc_js( esc_html__( 'WARNING: You are about to delete this notification.', 'gravityforms' ) ) . esc_js( esc_html__( "'Cancel' to stop, 'OK' to delete.", 'gravityforms' ) ) . '\')){ DeleteNotification(\'' . esc_js( $item['id'] ) . '\'); }" style="cursor:pointer;">' . esc_html__( 'Delete', 'gravityforms' ) . '</a>'
 			)
 		);
 
@@ -1234,6 +1273,6 @@ class GFNotificationTable extends WP_List_Table {
 
 	function no_items() {
 		$url = add_query_arg( array( 'nid' => 0 ) );
-		printf( __( "This form doesn't have any notifications. Let's go %screate one%s.", 'gravityforms' ), "<a href='" . esc_url( $url ) . "'>", '</a>' );
+		printf( esc_html__( "This form doesn't have any notifications. Let's go %screate one%s.", 'gravityforms' ), "<a href='" . esc_url( $url ) . "'>", '</a>' );
 	}
 }

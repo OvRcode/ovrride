@@ -1,5 +1,9 @@
 *** PayPal Pro Changelog ***
 
+2015.06.18 - version 4.3.4
+* Tweak 3DS auth code.
+* Fix PayPal Pro taxes not sent as separate line item when "send line items" is enabled
+
 2015.05.16 - version 4.3.3
 * Explicitly pass currencycode to prevent currency mismatch issue for capture
 

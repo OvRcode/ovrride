@@ -3,7 +3,7 @@
   Plugin Name: WooCommerce - Gravity Forms Product Add-Ons
   Plugin URI: http://woothemes.com/products/gravity-forms-add-ons/
   Description: Allows you to use Gravity Forms on individual WooCommerce products. Requires the Gravity Forms plugin to work.
-  Version: 2.9.4
+  Version: 2.9.5
   Author: WooThemes
   Author URI: http://woothemes.com/
   Developer: Lucas Stark
@@ -52,7 +52,7 @@ if ( is_woocommerce_active() ) {
 			add_action( 'init', array($this, 'on_init') );
 
 			// Enqueue Gravity Forms Scripts
-			add_action( 'wp_enqueue_scripts', array($this, 'woocommerce_gravityform_enqueue_scripts'), 10 );
+			add_action( 'wp_enqueue_scripts', array($this, 'woocommerce_gravityform_enqueue_scripts'), 99 );
 
 			// Addon display
 			add_action( 'woocommerce_before_add_to_cart_button', array($this, 'woocommerce_gravityform'), 10 );
@@ -107,7 +107,6 @@ if ( is_woocommerce_active() ) {
 
 			//Modify Add to Cart Buttons
 			add_action( 'init', array($this, 'get_gravity_products') );
-			add_action( 'wp', array($this, 'get_embedded_products') );
 		}
 
 		function on_init() {
@@ -146,7 +145,7 @@ if ( is_woocommerce_active() ) {
 		function get_add_to_cart_link( $anchor, $product, $link ) {
 			if ( is_array( $this->gravity_products ) && in_array( $product->id, $this->gravity_products ) ) {
 				$link['url'] = apply_filters( 'variable_add_to_cart_url', get_permalink( $product->id ) );
-				$link['label'] = apply_filters( 'gravityforms_add_to_cart_text', apply_filters( 'variable_add_to_cart_text', __( 'Select options', 'woocommerce' ) ));
+				$link['label'] = apply_filters( 'gravityforms_add_to_cart_text', apply_filters( 'variable_add_to_cart_text', __( 'Select options', 'woocommerce' ) ) );
 				return sprintf( '<a href="%s" rel="nofollow" data-product_id="%s" data-product_sku="%s" class="%s button product_type_%s">%s</a>', esc_url( $link['url'] ), esc_attr( $product->id ), esc_attr( $product->get_sku() ), esc_attr( $link['class'] ), esc_attr( 'variable' ), esc_html( $link['label'] ) );
 			} else {
 				return $anchor;
@@ -156,7 +155,7 @@ if ( is_woocommerce_active() ) {
 		function get_add_to_cart_link21( $link, $product ) {
 			if ( is_array( $this->gravity_products ) && in_array( $product->id, $this->gravity_products ) ) {
 				$label = $product->is_purchasable() && $product->is_in_stock() ? __( 'Select options', 'woocommerce' ) : __( 'Read More', 'woocommerce' );
-				$label = apply_filters( 'gravityforms_add_to_cart_text', apply_filters( 'woocommerce_product_add_to_cart_text', $label, $product ));
+				$label = apply_filters( 'gravityforms_add_to_cart_text', apply_filters( 'woocommerce_product_add_to_cart_text', $label, $product ) );
 
 				return sprintf( '<a href="%s" rel="nofollow" data-product_id="%s" data-product_sku="%s" class="button add_to_cart_button product_type_%s">%s</a>', get_permalink( $product->id ), esc_attr( $product->id ), esc_attr( $product->get_sku() ), 'variable', esc_html( $label ) );
 			} else {
@@ -243,7 +242,7 @@ if ( is_woocommerce_active() ) {
 						<?php
 						echo '<select id="gravityform-id" name="gravityform-id"><option value="">' . __( 'None', 'wc_gf_addons' ) . '</option>';
 						foreach ( RGFormsModel::get_forms() as $form ) {
-							echo '<option ' . selected( $form->id, (isset($gravity_form_data['id']) ? $gravity_form_data['id'] : 0) ) . ' value="' . esc_attr( $form->id ) . '">' . wptexturize( $form->title ) . '</option>';
+							echo '<option ' . selected( $form->id, (isset( $gravity_form_data['id'] ) ? $gravity_form_data['id'] : 0 ) ) . ' value="' . esc_attr( $form->id ) . '">' . wptexturize( $form->title ) . '</option>';
 						}
 						echo '</select>';
 						?>
@@ -437,29 +436,27 @@ if ( is_woocommerce_active() ) {
 					gravity_form_enqueue_scripts( $gravity_form_data['id'], false );
 					wp_enqueue_script( 'wc-gravityforms-product-addons', woocommerce_gravityforms::plugin_url() . '/assets/js/gravityforms-product-addons.js', array('jquery'), true );
 				}
-			} elseif ( $this->shortcode_product_id ) {
-				$gravity_form_data = get_post_meta( $this->shortcode_product_id, '_gravity_form_data', true );
-				if ( $gravity_form_data && is_array( $gravity_form_data ) ) {
-					//wp_enqueue_script("gforms_gravityforms", GFCommon::get_base_url() . "/js/gravityforms.js", array("jquery"), GFCommon::$version, false);
+			} else {
+				$enqueue = false;
+				$forms = array();
+				if ( preg_match_all( '/\[product_page[s]? +.*?((id=.+?)|(name=.+?))\]/is', $post->post_content, $matches, PREG_SET_ORDER ) ) {
+					$ajax = false;
+					foreach ( $matches as $match ) {
+						//parsing shortcode attributes
+						$attr = shortcode_parse_atts( $match[1] );
+						$product_id = isset( $attr['id'] ) ? $attr['id'] : false;
 
-					gravity_form_enqueue_scripts( $gravity_form_data['id'], false );
-					wp_enqueue_script( 'wc-gravityforms-product-addons', woocommerce_gravityforms::plugin_url() . '/assets/js/gravityforms-product-addons.js', array('jquery'), true );
-				}
-			}
-		}
-
-		public function get_embedded_products() {
-			global $post;
-			if ( !is_admin() ) {
-				if ( $post ) {
-					$pattern = get_shortcode_regex();
-
-					if ( preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'product_page', $matches[2] ) ) {
-						if ( preg_match( '~\[product_page\s+id\s*=\s*("|\')(?<id>.*?)\1\s*\]~i', $post->post_content, $m ) ) {
-							if ( isset( $m['id'] ) ) {
-								$this->shortcode_product_id = (int) $m['id'];
+						if ( !empty( $product_id ) ) {
+							$gravity_form_data = get_post_meta( $product_id, '_gravity_form_data', true );
+							if ( $gravity_form_data && is_array( $gravity_form_data ) ) {
+								$enqueue = true;
+								gravity_form_enqueue_scripts( $gravity_form_data['id'], false );
 							}
 						}
+					}
+
+					if ( $enqueue ) {
+						wp_enqueue_script( 'wc-gravityforms-product-addons', woocommerce_gravityforms::plugin_url() . '/assets/js/gravityforms-product-addons.js', array('jquery'), true );
 					}
 				}
 			}
@@ -611,9 +608,17 @@ if ( is_woocommerce_active() ) {
 
 					$value = RGFormsModel::get_lead_field_value( $lead, $field );
 
-					if ( isset( $field['inputs'] ) && is_array( $field['inputs'] ) ) {
-						foreach ( $field['inputs'] as $input ) {
-							$cart_item_meta['_gravity_form_lead'][strval( $input['id'] )] = $value[strval( $input['id'] )];
+
+					$inputs = $field instanceof GF_Field ? $field->get_entry_inputs() : rgar( $field, 'inputs' );
+					if ( is_array( $inputs ) ) {
+						//making sure values submitted are sent in the value even if
+						//there isn't an input associated with it
+						$lead_field_keys = array_keys( $lead );
+						natsort( $lead_field_keys );
+						foreach ( $lead_field_keys as $input_id ) {
+							if ( is_numeric( $input_id ) && absint( $input_id ) == absint( $field->id ) ) {
+								$cart_item_meta['_gravity_form_lead'][strval( $input_id )] = $value[strval( $input_id )];
+							}
 						}
 					} else {
 						$cart_item_meta['_gravity_form_lead'][strval( $field['id'] )] = $value;
@@ -627,7 +632,7 @@ if ( is_woocommerce_active() ) {
 						add_filter( 'add_to_cart_redirect', array($this, 'get_redirect_url'), 99 );
 					}
 					if ( get_option( 'woocommerce_cart_redirect_after_add' ) == 'yes' ) {
-						$_SERVER['REQUEST_URI'] = esc_url_raw( add_query_arg( array( 'invalid' => 1 ) ) );
+						$_SERVER['REQUEST_URI'] = esc_url_raw( add_query_arg( array('invalid' => 1) ) );
 					}
 				}
 
@@ -695,7 +700,7 @@ if ( is_woocommerce_active() ) {
 							$display_value = GFCommon::get_lead_field_display( $field, $value, isset( $lead["currency"] ) ? $lead["currency"] : false, false );
 							$price_adjustement = false;
 							$display_value = apply_filters( "gform_entry_field_value", $display_value, $field, $lead, $form_meta );
-							
+
 							$display_text = GFCommon::get_lead_field_display( $field, $value, isset( $lead["currency"] ) ? $lead["currency"] : false, apply_filters( 'woocommerce_gforms_use_label_as_value', true, $value, $field, $lead, $form_meta ) );
 							$display_text = apply_filters( "woocommerce_gforms_field_display_text", $display_text, $display_value, $field, $lead, $form_meta );
 
