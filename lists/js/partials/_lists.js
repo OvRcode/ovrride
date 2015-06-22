@@ -261,9 +261,14 @@ function getPickups(){
 }
 function listHTML(ID, order){
     var split = ID.split(":");
+    var underAge = "";
+    if ( order['Is this guest at least 21 years of age?'] == "No" ) {
+      underAge = "<i class='fa fa-child fa-lg'></i>";
+    }
     var output = "<div class='row listButton bg-none' id='" + ID + "'>\
                       <div class='row primary'>\
                           <div class='buttonCell name col-xs-7 col-md-4'>\
+                              <span class='underAge'>" + underAge + "</span> \
                               <span class='icon'></span>\
                               <span class='first'>&nbsp;" + order.First + "</span>\
                               <span class='last'>" + order.Last + "</span>\
