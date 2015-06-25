@@ -51,9 +51,9 @@
     <footer class="site-footer row clearfix" role="contentinfo">
       <div class="col grid_3_of_12">
         <a href="http://www.blades.com" title="Blades" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/blades.png" /></a>
-        <a href="http://skatebrooklynny.com" title="Skate Brooklyn" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/Sbrooklyn.jpg" /></a>
-        <a href="http://aegirboardworks.com" title="Aegir Boardworks" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/aegir.jpg" /></a>
-        <a href="http://www.burton.com/default/stores-nyc.html" title="Burton Store NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/burton.jpg" /></a>
+        <a href="http://skatebrooklynny.com" title="Skate Brooklyn" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/Sbrooklyn.png" /></a>
+        <a href="http://aegirboardworks.com" title="Aegir Boardworks" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/aegir.png" /></a>
+        <a href="http://www.burton.com/default/stores-nyc.html" title="Burton Store NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/burton.png" /></a>
       </div>
 
       <div class="col grid_6_of_12" style="text-align:center;">
@@ -75,9 +75,9 @@
       </div>
 
       <div style="text-align:right;" class="col grid_3_of_12">
-        <a href="http://www.homagebrooklyn.com/site/" title="Homage Brooklyn" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/homage.jpg" /></a>
-        <a href="http://www.rei.com/stores/soho.html" title="REI SoHo NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/rei.jpg" /></a>
-        <a href="http://www.shutnyc.com" title="SHUT Skateboards NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/shut.jpg" /></a> 
+        <a href="http://www.homagebrooklyn.com/site/" title="Homage Brooklyn" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/homage.png" /></a>
+        <a href="http://www.rei.com/stores/soho.html" title="REI SoHo NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/rei.png" /></a>
+        <a href="http://www.shutnyc.com" title="SHUT Skateboards NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/shut.png" /></a> 
       </div>
     </footer>
   </div> <!-- /.footercontainer -->
