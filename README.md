@@ -45,7 +45,9 @@ OvRride.com is built using WordPress 4.2.2, and the WooCommerce plugin. The OvRr
 
   - The VM looks at the project directory for files so changes will show up immediately
   - checkout http://local.ovrride.com to see your local copy of the site
- 
+6. After the web servers have been provisioned make sure to add ```local.ovrride.com.crt``` to your keychain file
+  - This will help avoid SSL errors due to self signed certificate for development
+  - It is recommended to set trust setting to "Always Trust"
 **Architecture**
 - All hosts are running ubuntu server 14.04 64bit
 - There are 4 hosts that make up the web site

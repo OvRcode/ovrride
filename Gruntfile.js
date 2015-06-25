@@ -264,7 +264,7 @@ module.exports = function(grunt){
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks("grunt-phplint");
+  grunt.loadNpmTasks('grunt-phplint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
