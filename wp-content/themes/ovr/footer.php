@@ -50,7 +50,7 @@
   <div id="footercontainer">
     <footer class="site-footer row clearfix" role="contentinfo">
       <div class="col grid_3_of_12">
-        <a href="http://www.blades.com" title="Blades" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/blades.jpg" /></a>
+        <a href="http://www.blades.com" title="Blades" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/blades.png" /></a>
         <a href="http://skatebrooklynny.com" title="Skate Brooklyn" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/Sbrooklyn.jpg" /></a>
         <a href="http://aegirboardworks.com" title="Aegir Boardworks" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/aegir.jpg" /></a>
         <a href="http://www.burton.com/default/stores-nyc.html" title="Burton Store NYC" target="_blank"><img style="width:40px;height:40px;margin:0px 3px 0px 0px;" src="<?php echo get_stylesheet_directory_uri();?>/images/shops/burton.jpg" /></a>
