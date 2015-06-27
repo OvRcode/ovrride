@@ -1,21 +1,32 @@
 <?php
+require_once('PasswordHashClass.php');
+require_once('db.php');
+session_start();
 
-// show negative messages
-if ($login->errors) {
-    foreach ($login->errors as $error) {
-        echo $error;    
+# Send to main app if already logged in
+if ( isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === TRUE ) {
+    header("Location: ../index.php");
+}
+# Check user/pass if post vars are set
+
+if ( isset($_POST['user_name']) && isset($_POST['user_password']) ) {
+    $db = new PDO('mysql:host='. DB_HOST .';dbname='. DB_NAME .';charset=utf8', DB_USER, DB_PASS);
+    $userCheck = $db->prepare('SELECT * FROM ovr_lists_login WHERE user_name = :user');
+    $userCheck->execute(array('user' => $_POST['user_name']));
+    if ( $userCheck->rowCount() == 1 ) {
+        $user = $userCheck->fetch(PDO::FETCH_ASSOC);
+        if ( $user['activated'] ){
+            if ( PasswordHash::validate_password($_POST['user_password'], $user['user_password_hash'])) {
+                $_SESSION['logged_in'] = TRUE;
+                header("Location: ../index.php");
+            }
+        } else {
+            echo "User is not active";
+        }
     }
 }
-
-// show positive messages
-if ($login->messages) {
-    foreach ($login->messages as $message) {
-        echo $message;
-    }
-}
-
 ?>
-<html lang="en" manifest="manifest.appcache">
+<html lang="en">
   <head>
     <title>OvR Trip Lists</title>
     <!-- Mobile view properties & enable iOS Web App-->
@@ -27,14 +38,14 @@ if ($login->messages) {
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <!-- favicon and apple-touch-icon --> 
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
-    <link rel="apple-touch-icon" href="../../images/ios/iconset/Icon-60@2x.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="../../images/ios/iconset/Icon-60@3x.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../../images/ios/iconset/Icon-76.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="../../images/ios/iconset/Icon-76@2x.png" />
-    <link rel="apple-touch-icon" sizes="58x58" href="../../images/ios/iconset/Icon-Small@2x.png" />
+    <link rel="apple-touch-icon" href="../images/ios/iconset/Icon-60@2x.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/ios/iconset/Icon-60@3x.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="../images/ios/iconset/Icon-76.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="../images/ios/iconset/Icon-76@2x.png" />
+    <link rel="apple-touch-icon" sizes="58x58" href="../images/ios/iconset/Icon-Small@2x.png" />
     <!-- Apple Splash Screens -->
     <!-- iPhone -->
-    <link href="../../images/startup-320x460.png"
+    <link href="../images/startup-320x460.png"
       media="(device-width: 320px) and (device-height: 480px)
         and (-webkit-device-pixel-ratio: 1)"
       rel="apple-touch-startup-image" />
@@ -44,7 +55,7 @@ if ($login->messages) {
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
-    <link href="../../css/application.min.css" rel="stylesheet">
+    <link href="../css/application.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="container login-window">
@@ -53,11 +64,11 @@ if ($login->messages) {
           <div class="panel panel-info">
             <div class="panel-heading">
               <h3 class="panel-title logo">
-                <img src="../../images/logo.jpg">
+                <img src="../images/logo.jpg">
               </h3>
             </div>
             <div class="panel-body">
-              <form accept-charset="UTF-8" role="form" method="post" action="index.php" name="loginform">
+              <form accept-charset="UTF-8" role="form" method="post" action="login.php" name="loginform">
                 <fieldset>
                   <div class="form-group">
                     <input id="login_input_username" class="form-control login_input" placeholder="Username" name="user_name" type="text" required />
@@ -73,6 +84,6 @@ if ($login->messages) {
         </div>
       </div>
     </div>
-    <script src="../../js/uncompressed/vendor.js"></script>
+    <script src="../js/uncompressed/vendor.js"></script>
   </body>
 </html>
