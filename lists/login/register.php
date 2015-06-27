@@ -1,6 +1,8 @@
 <?php
 require_once('PasswordHashClass.php');
 require_once('db.php');
+require_once('Mandrill.php');
+
 if ( isset($_POST['user_name']) && isset($_POST['user_password']) && isset($_POST['user_email']) && isset($_POST['Register'])) {
     $db = new PDO('mysql:host='. DB_HOST .';dbname='. DB_NAME .';charset=utf8', DB_USER, DB_PASS);
     $userCheck = $db->prepare('SELECT * FROM ovr_lists_login WHERE user_name = :user');
@@ -22,8 +24,32 @@ if ( isset($_POST['user_name']) && isset($_POST['user_password']) && isset($_POS
         $userId = $db->lastInsertId();
         $activation_hash_string = $userId . $_POST['user_name'] . $_POST['user_email'] . $passwordHash;
         $activation = urlencode(hash_hmac('sha256', $activation_hash_string, $passwordHash));
-        echo $userId."<br />";
-        echo $activation;
+        $mandrillAPI = new Mandrill(getenv('MANDRILL_API'));
+        $textBody = "Lists account request for " . $_POST['user_name'] . ", " . $_POST['user_email'];
+        $textBody = <<<AAA
+            Lists account request\n
+            User: {$_POST['user_name']}\n
+            Email: {$_POST['user_email']}\n
+            \n
+            Activation Link: https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}\n
+AAA;
+$htmlBody = <<<BBB
+    Lists account request<br />
+    User: {$_POST['user_name']}<br />
+    Email: {$_POST['user_email']}<br />
+    \n
+    Activation Link: <a href="https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}">https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}</a><br />
+BBB;
+		$message = new stdClass();
+		$message->html = $bodyHTML;
+		$message->text = $textBody;
+		$message->subject = "Lists: User Account";
+		$message->from_email = "devops@ovrride.com";
+		$message->from_name  = "OvR";                                                                                                                                  
+		$message->to = array(array("email" => "devops@ovrride.com"));                                                                                                   
+		$message->track_opens = true;                                                                                                                                  
+
+		$response = $mandrillAPI->messages->send($message); 
     }
 }
 
