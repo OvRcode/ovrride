@@ -40,16 +40,15 @@ $htmlBody = <<<BBB
     \n
     Activation Link: <a href="https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}">https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}</a><br />
 BBB;
-		$message = new stdClass();
-		$message->html = $bodyHTML;
-		$message->text = $textBody;
-		$message->subject = "Lists: User Account";
-		$message->from_email = "devops@ovrride.com";
-		$message->from_name  = "OvR";                                                                                                                                  
-		$message->to = array(array("email" => "devops@ovrride.com"));                                                                                                   
-		$message->track_opens = true;                                                                                                                                  
-
-		$response = $mandrillAPI->messages->send($message); 
+        $message = new stdClass();
+        $message->html = $bodyHTML;
+        $message->text = $textBody;
+        $message->subject = "Lists: User Account";
+        $message->from_email = "devops@ovrride.com";
+        $message->from_name  = "OvR";
+        $message->to = array(array("email" => "devops@ovrride.com"));
+        $message->track_opens = true;
+        $response = $mandrillAPI->messages->send($message);
     }
 }
 
