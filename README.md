@@ -90,7 +90,6 @@ Authentication is utilizing [php-login.net](http://php-login.net)
 [jQuery Chained v0.9.8](http://www.appelsiini.net/projects/chained)
 [Flight PHP v1.1.10](http://http://flightphp.com/)
 
-[We are using a customized version php-login.net - 1-minimal version from September 21st 2013](https://github.com/panique/php-login)
 
 Installing and getting Grunt.js configured can be pretty daunting. Check out the [Getting Started](http://gruntjs.com/getting-started) and [here is a great write-up](http://blog.raddevon.com/becoming-self-sufficient-with-grunt-js/)
 
