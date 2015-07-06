@@ -12,17 +12,17 @@
 # error_reporting(E_ALL|E_STRICT);
 # ini_set('display_errors','On');
 
-session_regenerate_id();
 session_start();
 
 # Start Session with a 1 day persistent session lifetime
 $cookieLifetime = 60 * 60 * 24 * 1;
 setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
-# Session Validation - Is User logged in?
-# else redirect to login page
-if (!(isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] != ''))
-  header ("Location: /login/index.php");
+# Bounce to login if user is not logged in
+if ( !isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    header("HTTP/1.0 401 Unauthorized");
+    header("Location: login/login.php");
+}
 
 # get version from file
 $version = file_get_contents('lists.version');
