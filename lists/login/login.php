@@ -79,6 +79,9 @@ if ( isset($_POST['user_name']) && isset($_POST['user_password']) ) {
                   <input class="btn btn-lg btn-primary btn-block" type="submit" name="login" value="Log in">
                 </fieldset>
               </form>
+                  <div class="col-xs-10 col-xs-offset-1">
+                  <a href="register.php" class="btn btn-success btn-sm">Register for account</a>&nbsp;&nbsp;<a href="reset.php" class="btn btn-warning btn-sm">Reset password</a>
+              </div>
             </div>
           </div>
         </div>
