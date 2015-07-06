@@ -25,7 +25,6 @@ if ( isset($_POST['user_name']) && isset($_POST['user_password']) && isset($_POS
         $activation_hash_string = $userId . $_POST['user_name'] . $_POST['user_email'] . $passwordHash;
         $activation = urlencode(hash_hmac('sha256', $activation_hash_string, $passwordHash));
         $mandrillAPI = new Mandrill(getenv('MANDRILL_API'));
-        $textBody = "Lists account request for " . $_POST['user_name'] . ", " . $_POST['user_email'];
         $textBody = <<<AAA
             Lists account request\n
             User: {$_POST['user_name']}\n
@@ -33,12 +32,14 @@ if ( isset($_POST['user_name']) && isset($_POST['user_password']) && isset($_POS
             \n
             Activation Link: https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}\n
 AAA;
-$htmlBody = <<<BBB
-    Lists account request<br />
-    User: {$_POST['user_name']}<br />
-    Email: {$_POST['user_email']}<br />
-    \n
-    Activation Link: <a href="https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}">https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}</a><br />
+        $htmlBody = <<<BBB
+            Lists account request<br />
+        User: {$_POST['user_name']}<br />
+        Email: {$_POST['user_email']}<br />
+        <br />
+        Activation Link: <a href="https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}">
+                            https://{$_SERVER['SERVER_NAME']}/login/activate.php?user={$userId}&key={$activation}
+                        </a><br />
 BBB;
         $message = new stdClass();
         $message->html = $bodyHTML;

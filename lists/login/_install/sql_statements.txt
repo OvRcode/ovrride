@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `***REMOVED***`.`ovr_lists_login` (
   `user_name` varchar(64) COLLATE utf8_general_ci NOT NULL COMMENT 'user''s name',
   `user_password_hash` varchar(255) COLLATE utf8_general_ci NOT NULL COMMENT 'user''s password in salted and hashed format',
   `user_email` varchar(64) COLLATE utf8_general_ci NOT NULL COMMENT 'user''s email',
+  `activated` tinyint(1) COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT 'activation status',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_name` (`user_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='user data' AUTO_INCREMENT=1 ;
