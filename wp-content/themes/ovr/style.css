@@ -4792,3 +4792,6 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
 .dob .ginput_container {
   width: 40%;
 }
+.ui-tabs-panel {
+  overflow: scroll;
+}
