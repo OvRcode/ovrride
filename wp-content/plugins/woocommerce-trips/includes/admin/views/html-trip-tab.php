@@ -1,0 +1,1 @@
+<li class="trips_tab trips_packages_tab advanced_options show_if_trip" style="display: none;"><a href="#trips_packages">Packages</a></li>
