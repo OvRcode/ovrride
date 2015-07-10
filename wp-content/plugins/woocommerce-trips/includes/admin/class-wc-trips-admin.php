@@ -13,7 +13,7 @@ class WC_Trips_Admin {
         //add_action( 'woocommerce_product_write_panels', array( $this, 'booking_panels' ) );
         //add_action( 'admin_enqueue_scripts', array( $this, 'styles_and_scripts' ) );
         //add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
-        //add_action( 'woocommerce_product_options_general_product_data', array( $this, 'booking_data' ) );
+        add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
         //add_filter( 'product_type_options', array( $this, 'booking_product_type_options' ) );
         //add_action( 'load-options-general.php', array( $this, 'reset_ics_exporter_timezone_cache' ) );
 
@@ -37,6 +37,9 @@ class WC_Trips_Admin {
     
     public function add_tab() {
         include( 'views/html-trip-tab.php' );
+    }
+    public function general_tab() {
+        include( 'views/html-trip-general.php' );
     }
 }
 new WC_Trips_Admin();

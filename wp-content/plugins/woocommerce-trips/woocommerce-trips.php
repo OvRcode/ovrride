@@ -22,6 +22,7 @@ if ( ! function_exists( 'is_woocommerce_active' ) ) {
 
 if ( is_woocommerce_active() ) {
 class WC_Trips {
+    
     public function __construct() {
         define( 'WC_TRIPS_VERSION', '0.0.1' );
         
@@ -32,16 +33,19 @@ class WC_Trips {
         }
         register_activation_hook( __FILE__, array( $this, 'install' ) );
     }
+    
     public function install() {
         add_action( 'shutdown', array( $this, 'delayed_install' ) );
     }
+    
     public function delayed_install() {
-		if ( ! get_term_by( 'slug', sanitize_title( 'trip' ), 'product_type' ) ) {
-			wp_insert_term( 'trip', 'product_type' );
-		}
+        if ( ! get_term_by( 'slug', sanitize_title( 'trip' ), 'product_type' ) ) {
+            wp_insert_term( 'trip', 'product_type' );
+        }
     }
+    
     public function includes() {
-        include( 'includes/class-wc-product-booking.php' );
+        include( 'includes/class-wc-product-trip.php' );
         // More includes here eventually
     }
 }

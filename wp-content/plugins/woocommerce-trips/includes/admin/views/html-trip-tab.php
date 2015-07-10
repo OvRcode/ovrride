@@ -1,1 +1,9 @@
-<li class="trips_tab trips_packages_tab advanced_options show_if_trip" style="display: none;"><a href="#trips_packages">Packages</a></li>
+<li class="trips_tab trips_pickup_locations advanced_options show_if_trip">
+    <a href="#trips_pickup_locations">Pickup Locations</a>
+</li>
+<li class="trips_tab trips_primary_packages_tab shipping_options show_if_trip">
+    <a href="#trips_primary_packages">Primary Packages</a>
+</li>
+<li class="trips_tab trips_secondary_packages_tab shipping_options show_if_trip">
+    <a href="#trips_secondary_packages">Secondary Packages</a>
+</li>
