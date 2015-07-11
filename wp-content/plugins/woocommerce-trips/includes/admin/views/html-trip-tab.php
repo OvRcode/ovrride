@@ -1,4 +1,4 @@
-<li class="trips_tab trips_pickup_locations advanced_options show_if_trip">
+<li class="trips_tab trips_pickup_location advanced_options show_if_trip">
     <a href="#trips_pickup_locations">Pickup Locations</a>
 </li>
 <li class="trips_tab trips_primary_packages_tab shipping_options show_if_trip">

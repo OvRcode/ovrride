@@ -14,7 +14,7 @@ class WC_Trips_Admin {
         add_filter( 'product_type_options', array( $this, 'product_type_options' ) );
         add_filter( 'product_type_selector' , array( $this, 'product_type_selector' ) );
         add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'add_tab' ), 5 );
-        //add_action( 'woocommerce_product_write_panels', array( $this, 'booking_panels' ) );
+        add_action( 'woocommerce_product_write_panels', array( $this, 'trip_panels' ) );
         //add_action( 'admin_enqueue_scripts', array( $this, 'styles_and_scripts' ) );
         add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
@@ -59,12 +59,12 @@ class WC_Trips_Admin {
 
         // Save meta from general tab
         $meta_to_save = array(
-            '_wc_trip_base_price'       => 'float',
-            '_wc_trip_destination'      => 'string',
-            '_wc_trip_type'             => 'string',
-            '_wc_trip_start_date'       => 'date',
-            '_wc_trip_end_date'         => 'date',
-            '_wc_trip_stock'            => 'int'
+            '_wc_trip_base_price'               => 'float',
+            '_wc_trip_destination'              => 'string',
+            '_wc_trip_type'                     => 'string',
+            '_wc_trip_start_date'               => 'date',
+            '_wc_trip_end_date'                 => 'date',
+            '_wc_trip_stock'                    => 'int'
             );
         foreach ( $meta_to_save as $meta_key => $sanitize ) {
             $value = ! empty( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '';
@@ -80,6 +80,14 @@ class WC_Trips_Admin {
             }
             update_post_meta( $post_id, $meta_key, $value );
         }
+    }
+    
+    public function trip_panels() {
+        global $post;
+        $post_id = $post->ID;
+        include( 'views/html-trip-primary-packages.php' );
+        include( 'views/html-trip-secondary-packages.php' );
+        //include( 'views/html-trip-pickup-location.php');
     }
 }
 new WC_Trips_Admin();
