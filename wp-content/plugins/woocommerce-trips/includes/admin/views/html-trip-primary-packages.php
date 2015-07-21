@@ -1,6 +1,7 @@
 <div id="trips_primary_packages" class="woocommerce_options_panel panel wc-metaboxes-wrapper">
-	<div class="options_group" id="primary-packages-options">
+    <div class="options_group" id="primary-packages-options">
        <?php woocommerce_wp_checkbox( array( 'id' => '_wc_trip_primary_package_stock', 'label' => 'Enable package stock', 'description' => 'Enable this option to manage stock on some or all primary packages', 'desc_tip' => true, 'value' => get_post_meta( $post_id, '_wc_trip_primary_package_stock', true ) ) ); ?>
+       <p>Stock on packages is limited by the stock of the product. Leaving a stock field blank will not impose an addition restriction on the package</p>
     </div>
     <div class="options_group" id="primary-packages">
 
@@ -11,7 +12,16 @@
         </div>
 
         <div class="woocommerce_trip_primary_packages wc-metaboxes">
-
+            <table class="woocommerce_trip_primary_packages">
+                <thead>
+                    <tr>
+                        <th class="sort" width="1%">&nbsp;</th>
+                        <th>Description</th>
+                        <th>Cost</th>
+                        <th class="primary_package_stock">Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
             <?php
                 global $post;
 
@@ -42,10 +52,17 @@ PPMessage;
                     }
                 }*/
             ?>
+            </tbody>
+        </table>
         </div>
 
         <p class="toolbar">
-            <button type="button" class="button button-primary add_package">Add primary package</button>
+            <button type="button" class="button button-primary add_package" id="primary_package_add" data-row="<tr>
+                <td class='sort'>&nbsp;</td>
+                <td><input type='text' name='_wc_trips_primary_package_description' id='_wc_trips_primary_package_description'></input></td>
+                <td><input type='text' name='_wc_trips_primary_package_cost' id='_wc_trips_primary_package_cost'></input></td>
+                <td class='primary_package_stock'><input type='number' name='_wc_trips_primary_package_stock' id='_wc_trips_primary_package_stock'></input></td>
+            </tr>">Add primary package</button>
         </p>
     </div>
 </div>

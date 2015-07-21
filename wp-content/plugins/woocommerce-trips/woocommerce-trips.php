@@ -25,7 +25,9 @@ class WC_Trips {
     
     public function __construct() {
         define( 'WC_TRIPS_VERSION', '0.0.1' );
-        
+        define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+        define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
+
         add_action( 'woocommerce_loaded', array( $this, 'includes' ) );
         
         if ( is_admin() ) {

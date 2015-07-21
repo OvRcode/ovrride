@@ -15,7 +15,7 @@ class WC_Trips_Admin {
         add_filter( 'product_type_selector' , array( $this, 'product_type_selector' ) );
         add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'add_tab' ), 5 );
         add_action( 'woocommerce_product_write_panels', array( $this, 'trip_panels' ) );
-        //add_action( 'admin_enqueue_scripts', array( $this, 'styles_and_scripts' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'script_style_includes' ) );
         add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
         //add_filter( 'product_type_options', array( $this, 'booking_product_type_options' ) );
@@ -85,9 +85,26 @@ class WC_Trips_Admin {
     public function trip_panels() {
         global $post;
         $post_id = $post->ID;
+        wp_enqueue_script( 'wc_trips_admin_js' );
         include( 'views/html-trip-primary-packages.php' );
         include( 'views/html-trip-secondary-packages.php' );
         include( 'views/html-trip-pickup-locations.php');
+    }
+    
+    public function script_style_includes() {
+        global $post, $woocommerce, $wp_scripts;
+        
+        $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+        wp_register_script( 'wc_trips_admin_js', WC_TRIPS_PLUGIN_URL . '/assets/js/trips_admin' . $suffix . '.js', array( 'jquery' ) );
+        $params = array(
+            //'nonce_delete_person'    => wp_create_nonce( 'delete-bookable-person' ),
+            //'nonce_add_person'       => wp_create_nonce( 'add-bookable-person' ),
+            'post'                   => isset( $post->ID ) ? $post->ID : '',
+            'plugin_url'             => $woocommerce->plugin_url(),
+            'ajax_url'               => admin_url( 'admin-ajax.php' )
+        );
+
+        wp_localize_script( 'wc_trips_admin_js', 'wc_trips_admin_js_params', $params );
     }
 }
 new WC_Trips_Admin();

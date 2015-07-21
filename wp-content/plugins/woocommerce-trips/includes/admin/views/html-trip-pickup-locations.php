@@ -8,7 +8,6 @@
         </div>
 
         <div class="woocommerce_trip_pickup_locations wc-metaboxes">
-
             <?php
                 global $post;
 
@@ -38,7 +37,7 @@ PPMessage;
         </div>
 
         <p class="toolbar">
-            <button type="button" class="button button-primary add_pickup">Add pickup location</button>
+            <button type="button" class="button button-primary add_pickup" data-row = "<td class='sort'>">Add pickup location</button>
         </p>
     </div>
 </div>

@@ -11,8 +11,7 @@ $end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
 <div class="options_group show_if_trip">
     <p class="form-field">
        <label for="_wc_trip_stock">Stock</label>
-       <!-- TODO: Move style to external CSS -->
-       <input type="number" name="_wc_trip_stock" id="_wc_trip_stock" min="0" style="width: 6em;" value="<?php echo $stock; ?>">
+       <input type="number" name="_wc_trip_stock" id="_wc_trip_stock" min="0" class="trip_stock" value="<?php echo $stock; ?>">
        </input> 
     </p>
     <p class="form-field">
@@ -59,29 +58,3 @@ $end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
        <input type="text" name="_wc_trip_end_date" id="_wc_trip_end_date" value="<?php echo $end_date; ?>"></input> 
     </p>
 </div>
-<script>
-// TODO: Factor this into external JS
-jQuery(function(){
-    jQuery( "#_wc_trip_start_date, #_wc_trip_end_date" ).datepicker({
-        changeMonth: true,
-        changeYear: true
-    });
-    jQuery("#_wc_trip_base_price").change(function() {
-        var valid = /^\d{0,4}(\.\d{0,2})?$/.test(this.value),
-        val = this.value;
-    
-    if(!valid){
-        alert("Please enter a valid price");
-    }
-    });
-    jQuery( "#_wc_trip_end_date").change(function() {
-        var start = jQuery("#_wc_trip_start_date");
-        var end = jQuery(this);
-        if ( end.val() < start.val() ) {
-            end.val("");
-            end.focus();
-            alert("Please set an end date that is greater than or equal to the start date");
-        }
-    });
-});
-</script>
