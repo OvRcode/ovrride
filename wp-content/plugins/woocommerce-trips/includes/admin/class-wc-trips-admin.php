@@ -87,7 +87,7 @@ class WC_Trips_Admin {
         $post_id = $post->ID;
         include( 'views/html-trip-primary-packages.php' );
         include( 'views/html-trip-secondary-packages.php' );
-        //include( 'views/html-trip-pickup-location.php');
+        include( 'views/html-trip-pickup-locations.php');
     }
 }
 new WC_Trips_Admin();
