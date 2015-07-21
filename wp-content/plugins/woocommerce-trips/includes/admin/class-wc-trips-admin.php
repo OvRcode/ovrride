@@ -79,7 +79,33 @@ class WC_Trips_Admin {
                     $value = sanitize_text_field( $value );
             }
             update_post_meta( $post_id, $meta_key, $value );
+            unset($_POST[ $meta_key ]);
         }
+        // Primary packages
+        $primary_packages = array();
+        $packages = ( isset($_POST['wc_trips_primary_package_description']) ? sizeof($_POST['wc_trips_primary_package_description']) : 0 );
+        for ( $i = 0; $i < $packages; $i++ ) {
+            $primary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_primary_package_description'][$i] );
+            $primary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_primary_package_cost'][$i] );
+            if ( isset($_POST['_wc_trip_primary_package_stock']) && $_POST['_wc_trip_primary_package_stock'] ) {
+                $primary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_primary_package_stock'][$i] );
+            }
+        }
+        update_post_meta( $post_id, '_wc_trip_primary_package_stock', $_POST['_wc_trip_primary_package_stock']);
+        update_post_meta( $post_id, '_wc_trip_primary_packages', $primary_packages );
+        
+        // Secondary packages
+        $secondary_packages = array();
+        $packages = ( isset($_POST['wc_trips_secondary_package_description']) ? sizeof($_POST['wc_trips_secondary_package_description']) : 0 );
+        for ( $i = 0; $i < $packages; $i++ ) {
+            $secondary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_secondary_package_description'][$i] );
+            $secondary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_secondary_package_cost'][$i] );
+            if ( isset($_POST['_wc_trip_secondary_package_stock']) && $_POST['_wc_trip_secondary_package_stock'] ) {
+                $secondary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_secondary_package_stock'][$i] );
+            }
+        }
+        update_post_meta( $post_id, '_wc_trip_secondary_package_stock', $_POST['_wc_trip_secondary_package_stock']);
+        update_post_meta( $post_id, '_wc_trip_secondary_packages', $secondary_packages );
     }
     
     public function trip_panels() {
@@ -95,10 +121,11 @@ class WC_Trips_Admin {
         global $post, $woocommerce, $wp_scripts;
         
         $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+        wp_enqueue_style( 'wc_trips_admin_styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_admin' . $suffix . '.css', null, WC_TRIPS_VERSION );
         wp_register_script( 'wc_trips_admin_js', WC_TRIPS_PLUGIN_URL . '/assets/js/trips_admin' . $suffix . '.js', array( 'jquery' ) );
         $params = array(
-            //'nonce_delete_person'    => wp_create_nonce( 'delete-bookable-person' ),
-            //'nonce_add_person'       => wp_create_nonce( 'add-bookable-person' ),
+//            'nonce_delete_primary_package'    => wp_create_nonce( 'delete-primary-package' ),
+//            'nonce_add_primary_package'       => wp_create_nonce( 'add-primary-package' ),
             'post'                   => isset( $post->ID ) ? $post->ID : '',
             'plugin_url'             => $woocommerce->plugin_url(),
             'ajax_url'               => admin_url( 'admin-ajax.php' )

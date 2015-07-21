@@ -7,7 +7,6 @@
 
         <div class="toolbar">
             <h3>Primary Packages</h3>
-            <a href="#" class="close_all">Close All</a><a href="#" class="expand_all">Expand All</a>
             <br />
         </div>
 
@@ -15,26 +14,37 @@
             <table class="woocommerce_trip_primary_packages">
                 <thead>
                     <tr>
-                        <th class="sort" width="1%">&nbsp;</th>
-                        <th>Description</th>
-                        <th>Cost</th>
+                        <th class="sorting">&nbsp;</th>
+                        <th class="description">Description</th>
+                        <th class="cost">Cost</th>
                         <th class="primary_package_stock">Stock</th>
+                        <th class="delete_column">&nbsp;</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="primary_package_rows">
             <?php
-                global $post;
-
-                $primary_packages = get_posts( array(
-                    'post_type'      => 'trips_primary_package',
-                    'post_status'    => 'publish',
-                    'posts_per_page' => -1,
-                    'orderby'        => 'menu_order',
-                    'order'          => 'asc',
-                    'post_parent'    => $post->ID
-                ) );
-
-                if ( sizeof( $primary_packages ) == 0 ) {
+                $primary_package = get_post_meta($post_id, "_wc_trip_primary_packages", true);
+                foreach ( $primary_package as $key => $values ) {
+                    echo <<< PRIMARYROW
+                        <tr>
+                            <td class='sorter'>&nbsp;</td>
+                            <td>
+                                <input type='text' name='wc_trips_primary_package_description[]' value='{$values['description']}'>
+                                </input>
+                            </td>
+                            <td>
+                                <input type='text' name='wc_trips_primary_package_cost[]' value='{$values['cost']}'>
+                                </input>
+                            </td>
+                            <td class='primary_package_stock'>
+                                <input type='number' name='wc_trips_primary_package_stock[]' value='{$values['stock']}'>
+                                </input>
+                            </td>
+                            <td class='delete'>&nbsp;</td>
+                        </tr>
+PRIMARYROW;
+                }
+                if ( sizeof( $primary_package ) == 0 ) {
                     echo <<< PPMessage
                         <div id="message" class="inline woocommerce-message" style="margin: 1em 0;">
                             <div class="squeezer">
@@ -43,14 +53,6 @@
                         </div>
 PPMessage;
                 }
-
-                /*if ( $primary_packages ) {
-                    $count = 0;
-
-                    foreach ( $person_types as $person_type ) {
-                        // sort out what to do with post here
-                    }
-                }*/
             ?>
             </tbody>
         </table>
@@ -58,10 +60,11 @@ PPMessage;
 
         <p class="toolbar">
             <button type="button" class="button button-primary add_package" id="primary_package_add" data-row="<tr>
-                <td class='sort'>&nbsp;</td>
-                <td><input type='text' name='_wc_trips_primary_package_description' id='_wc_trips_primary_package_description'></input></td>
-                <td><input type='text' name='_wc_trips_primary_package_cost' id='_wc_trips_primary_package_cost'></input></td>
-                <td class='primary_package_stock'><input type='number' name='_wc_trips_primary_package_stock' id='_wc_trips_primary_package_stock'></input></td>
+                <td class='sorter'>&nbsp;</td>
+                <td><input type='text' name='wc_trips_primary_package_description[]'></input></td>
+                <td><input type='text' name='wc_trips_primary_package_cost[]'></input></td>
+                <td class='primary_package_stock'><input type='number' name='wc_trips_primary_package_stock[]'></input></td>
+                <td class='delete'>&nbsp;</td>
             </tr>">Add primary package</button>
         </p>
     </div>

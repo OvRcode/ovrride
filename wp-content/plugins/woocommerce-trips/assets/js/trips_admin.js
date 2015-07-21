@@ -22,7 +22,7 @@ jQuery(document).ready(function($){
       }
   });
   
-  // Primary package add button
+  // Package stock checkboxes
   showHideStock("primary");
   $("#_wc_trip_primary_package_stock").change(function(){
       showHideStock("primary");
@@ -30,15 +30,54 @@ jQuery(document).ready(function($){
   $("#_wc_trip_secondary_package_stock").change(function(){
       showHideStock("secondary");
   });
-  jQuery( '.add_package' ).click(function(){
+  
+  // Add package buttons
+  $( '.add_package' ).click(function(){
       if ( $(this).prop("id") == "primary_package_add" ) {
         $("table.woocommerce_trip_primary_packages").append( $(this).data( 'row' ) );
         showHideStock("primary");
-      } else if ( $(this).prop("id") == "secondary_package_add" ) {
+      } 
+      else if ( $(this).prop("id") == "secondary_package_add" ) {
         $("table.woocommerce_trip_secondary_packages").append( $(this).data( 'row' ) );
         showHideStock("secondary");
       }
+      
+      if ( $(".sorter:visible").size() > 1 ) {
+        $(".sorter:visible").css("visibility","visible");
+      }
   });
+  
+  // Remove package rows
+	$('body').on('click', 'td.delete', function(){
+		$(this).closest('tr').remove();
+    if ( $(".sorter:visible").size() <= 1 ) {
+      $(".sorter:visible").css("visibility","hidden");
+    }
+		return false;
+	});
+  
+  // Sorting for packages
+  $( "#primary_package_rows" ).sortable({
+    items: 'tr',
+		cursor:'move',
+		axis:'y',
+		handle: '.sorter',
+		scrollSensitivity:40,
+		forcePlaceholderSize: true,
+		helper: 'clone',
+		opacity: 0.65,
+		placeholder: 'wc-metabox-sortable-placeholder',
+		start:function(event,ui){
+			ui.item.css('background-color','#f6f6f6');
+		},
+		stop:function(event,ui){
+			ui.item.removeAttr('style');
+		}
+	});
+  // Hide sort button if there is only one row
+  if ( $(".sorter:visible").size() <= 1 ) {
+    $(".sorter:visible").css("visibility", "hidden");
+  }
 });
 
 function showHideStock( StockType ) {
@@ -55,8 +94,18 @@ function showHideStock( StockType ) {
             break;
     }
     if ( selector.prop("checked") ) {
-        cssElement.css("display", "block");
+        cssElement.css("visibility", "visible");
+        jQuery(".sorting").css("width", "2%");
+        jQuery(".description").css("width", "54%");
+        jQuery(".cost").css("width", "22%");
+        jQuery(".primary_package_stock, .secondary_package_stock").css("width", "20%");
+        jQuery(".delete_column").css("width", "2%");
     } else {
-        cssElement.css("display", "none");
+        cssElement.css("visibility", "collapse");
+        jQuery(".sorting").css("width", "2%");
+        jQuery(".description").css("width", "59%");
+        jQuery(".cost").css("width", "27%");
+        jQuery(".primary_package_stock, .secondary_package_stock").css("width", "0");
+        jQuery(".delete_column").css("width", "2%");
     }
 }

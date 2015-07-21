@@ -6,13 +6,13 @@ module.exports = function(grunt){
           ids: false,
           important: false
         },
-        src: ['assets/css/admin.css']
+        src: ['assets/css/trip_admin.css']
       },
     },
     cssmin: {
       target: {
-        src: ['assets/css/admin.css'],
-        dest: 'assets/css/admin.min.css',
+        src: ['assets/css/trip_admin.css'],
+        dest: 'assets/css/trip_admin.min.css',
       }
     },
     phplint: {
@@ -61,7 +61,7 @@ module.exports = function(grunt){
         tasks: ['phplint:adminPHP'],
       },
       adminCSS: {
-        files: ['assets/css/admin.css'],
+        files: ['assets/css/trip_admin.css'],
         tasks: ['csslint', 'cssmin'],
       },
       mainPHP: {
