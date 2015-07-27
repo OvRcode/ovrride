@@ -1,6 +1,6 @@
 <?php
 // TODO: Add code to pull destinations when they are setup
-$destinations       = array("MT Snow","Killington");
+$destinations       = array("MT Snow","Killington","Jay Peak");
 $stock              = get_post_meta( $post_id, '_wc_trip_stock', true );
 $base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
 $saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );

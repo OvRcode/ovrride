@@ -24,13 +24,17 @@ jQuery(document).ready(function($){
   
   // Package stock checkboxes
   showHideStock("primary");
+  showHideStock("secondary");
+  showHideStock("tertiary");
   $("#_wc_trip_primary_package_stock").change(function(){
       showHideStock("primary");
   });
   $("#_wc_trip_secondary_package_stock").change(function(){
       showHideStock("secondary");
   });
-  
+  $("#_wc_trip_tertiary_package_stock").change(function(){
+      showHideStock("tertiary");
+  });
   // Add package buttons
   $( '.add_package' ).click(function(){
       if ( $(this).prop("id") == "primary_package_add" ) {
@@ -40,6 +44,10 @@ jQuery(document).ready(function($){
       else if ( $(this).prop("id") == "secondary_package_add" ) {
         $("table.woocommerce_trip_secondary_packages").append( $(this).data( 'row' ) );
         showHideStock("secondary");
+      }
+      else if ( $(this).prop("id") == "tertiary_package_add" ) {
+        $("table.woocommerce_trip_tertiary_packages").append( $(this).data( 'row' ) );
+        showHideStock("tertiary");
       }
       
       if ( $(".sorter:visible").size() > 1 ) {
@@ -57,7 +65,7 @@ jQuery(document).ready(function($){
 	});
   
   // Sorting for packages
-  $( "#primary_package_rows" ).sortable({
+  $( "#primary_package_rows, #secondary_package_rows, #tertiary_package_rows" ).sortable({
     items: 'tr',
 		cursor:'move',
 		axis:'y',
@@ -92,20 +100,23 @@ function showHideStock( StockType ) {
             selector = jQuery("#_wc_trip_secondary_package_stock");
             cssElement = jQuery(".secondary_package_stock");
             break;
+        case "tertiary":
+            selector = jQuery("#_wc_trip_tertiary_package_stock");
+            cssElement = jQuery(".tertiary_package_stock");
     }
     if ( selector.prop("checked") ) {
         cssElement.css("visibility", "visible");
         jQuery(".sorting").css("width", "2%");
         jQuery(".description").css("width", "54%");
         jQuery(".cost").css("width", "22%");
-        jQuery(".primary_package_stock, .secondary_package_stock").css("width", "20%");
+        jQuery(".primary_package_stock, .secondary_package_stock, .tertiary_package_stock").css("width", "20%");
         jQuery(".delete_column").css("width", "2%");
     } else {
         cssElement.css("visibility", "collapse");
         jQuery(".sorting").css("width", "2%");
         jQuery(".description").css("width", "59%");
         jQuery(".cost").css("width", "27%");
-        jQuery(".primary_package_stock, .secondary_package_stock").css("width", "0");
+        jQuery(".primary_package_stock, .secondary_package_stock, .tertiary_package_stock").css("width", "0");
         jQuery(".delete_column").css("width", "2%");
     }
 }

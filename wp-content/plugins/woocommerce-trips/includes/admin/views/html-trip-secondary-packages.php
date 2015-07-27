@@ -4,9 +4,9 @@
        <p>Stock on packages is limited by the stock of the product. Leaving a stock field blank will not impose an addition restriction on the package</p>
     </div>
     <div class="options_group" id="secondary-packages">
-
+        <?php woocommerce_wp_text_input( array( 'id' => '_wc_trip_secondary_package_label', 'label' => 'Secondary Package label', 'description' => 'Label to be shown on product page', 'desc_tip' => false, 'value' => get_post_meta( $post_id, '_wc_trip_secondary_package_label', true ) ) );?>
         <div class="toolbar">
-            <h3>Primary Packages</h3>
+            <h3>Secondary Packages</h3>
             <br />
         </div>
 

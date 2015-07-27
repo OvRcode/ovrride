@@ -7,3 +7,6 @@
 <li class="trips_tab trips_secondary_packages_tab shipping_options show_if_trip">
     <a href="#trips_secondary_packages">Secondary Packages</a>
 </li>
+<li class="trips_tab trips_tertiary_packages_tab shipping_options show_if_trip">
+    <a href="#trips_tertiary_packages">Tertiary Packages</a>
+</li>

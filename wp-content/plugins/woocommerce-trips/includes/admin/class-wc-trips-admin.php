@@ -11,6 +11,7 @@ class WC_Trips_Admin {
         
         //add_action( 'admin_init', array( $this, 'include_meta_box_handlers' ) );
         //add_action( 'admin_init', array( $this, 'redirect_new_add_booking_url' ) );
+        //add_action('admin_menu', 'register_location_menu');
         add_filter( 'product_type_options', array( $this, 'product_type_options' ) );
         add_filter( 'product_type_selector' , array( $this, 'product_type_selector' ) );
         add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'add_tab' ), 5 );
@@ -18,8 +19,6 @@ class WC_Trips_Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'script_style_includes' ) );
         add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
-        //add_filter( 'product_type_options', array( $this, 'booking_product_type_options' ) );
-        //add_action( 'load-options-general.php', array( $this, 'reset_ics_exporter_timezone_cache' ) );
 
         // Ajax
         //add_action( 'wp_ajax_woocommerce_add_bookable_resource', array( $this, 'add_bookable_resource' ) );
@@ -83,6 +82,7 @@ class WC_Trips_Admin {
         }
         // Primary packages
         $primary_packages = array();
+        $primary_label = ( isset($_POST['_wc_trip_primary_package_label']) ? wc_clean($_POST['_wc_trip_primary_package_label']) : '');
         $packages = ( isset($_POST['wc_trips_primary_package_description']) ? sizeof($_POST['wc_trips_primary_package_description']) : 0 );
         for ( $i = 0; $i < $packages; $i++ ) {
             $primary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_primary_package_description'][$i] );
@@ -91,11 +91,13 @@ class WC_Trips_Admin {
                 $primary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_primary_package_stock'][$i] );
             }
         }
+        update_post_meta( $post_id, '_wc_trip_primary_package_label', $primary_label);
         update_post_meta( $post_id, '_wc_trip_primary_package_stock', $_POST['_wc_trip_primary_package_stock']);
         update_post_meta( $post_id, '_wc_trip_primary_packages', $primary_packages );
         
         // Secondary packages
         $secondary_packages = array();
+        $secondary_label = ( isset($_POST['_wc_trip_secondary_package_label']) ? wc_clean($_POST['_wc_trip_secondary_package_label']) : '');
         $packages = ( isset($_POST['wc_trips_secondary_package_description']) ? sizeof($_POST['wc_trips_secondary_package_description']) : 0 );
         for ( $i = 0; $i < $packages; $i++ ) {
             $secondary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_secondary_package_description'][$i] );
@@ -104,8 +106,24 @@ class WC_Trips_Admin {
                 $secondary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_secondary_package_stock'][$i] );
             }
         }
+        update_post_meta( $post_id, '_wc_trip_secondary_package_label', $secondary_label );
         update_post_meta( $post_id, '_wc_trip_secondary_package_stock', $_POST['_wc_trip_secondary_package_stock']);
         update_post_meta( $post_id, '_wc_trip_secondary_packages', $secondary_packages );
+        
+        // Tertiary packages
+        $tertiary_packages = array();
+        $tertiary_label = ( isset($_POST['_wc_trip_tertiary_package_label']) ? wc_clean($_POST['_wc_trip_tertiary_package_label']) : '');
+        $packages = ( isset($_POST['wc_trips_tertiary_package_description']) ? sizeof($_POST['wc_trips_tertiary_package_description']) : 0 );
+        for ( $i = 0; $i < $packages; $i++ ) {
+            $tertiary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_tertiary_package_description'][$i] );
+            $tertiary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_tertiary_package_cost'][$i] );
+            if ( isset($_POST['_wc_trip_tertiary_package_stock']) && $_POST['_wc_trip_tertiary_package_stock'] ) {
+                $tertiary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_tertiary_package_stock'][$i] );
+            }
+        }
+        update_post_meta( $post_id, '_wc_trip_tertiary_package_label', $tertiary_label);
+        update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', $_POST['_wc_trip_tertiary_package_stock']);
+        update_post_meta( $post_id, '_wc_trip_tertiary_packages', $tertiary_packages );
     }
     
     public function trip_panels() {
@@ -114,7 +132,8 @@ class WC_Trips_Admin {
         wp_enqueue_script( 'wc_trips_admin_js' );
         include( 'views/html-trip-primary-packages.php' );
         include( 'views/html-trip-secondary-packages.php' );
-        include( 'views/html-trip-pickup-locations.php');
+        include( 'views/html-trip-tertiary-packages.php' );
+        include( 'views/html-trip-pickup-locations.php' );
     }
     
     public function script_style_includes() {
@@ -133,5 +152,6 @@ class WC_Trips_Admin {
 
         wp_localize_script( 'wc_trips_admin_js', 'wc_trips_admin_js_params', $params );
     }
+    
 }
 new WC_Trips_Admin();
