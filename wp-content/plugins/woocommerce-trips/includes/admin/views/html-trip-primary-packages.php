@@ -24,8 +24,10 @@
                 <tbody id="primary_package_rows">
             <?php
                 $primary_package = get_post_meta($post_id, "_wc_trip_primary_packages", true);
-                foreach ( $primary_package as $key => $values ) {
-                    echo <<< PRIMARYROW
+                
+                if (is_array($primary_package) || is_object($primary_package)) {
+                    foreach ( $primary_package as $key => $values ) {
+                        echo <<< PRIMARYROW
                         <tr>
                             <td class='sorter'>&nbsp;</td>
                             <td>
@@ -43,8 +45,8 @@
                             <td class='delete'>&nbsp;</td>
                         </tr>
 PRIMARYROW;
-                }
-                if ( sizeof( $primary_package ) == 0 ) {
+                    }
+                } else {
                     echo <<< PPMessage
                         <div id="message" class="inline woocommerce-message" style="margin: 1em 0;">
                             <div class="squeezer">

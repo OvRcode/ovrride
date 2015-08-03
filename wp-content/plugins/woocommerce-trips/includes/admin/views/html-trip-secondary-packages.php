@@ -24,8 +24,9 @@
                 <tbody id="secondary_package_rows">
             <?php
                 $secondary_package = get_post_meta($post_id, "_wc_trip_secondary_packages", true);
-                foreach ( $secondary_package as $key => $values ) {
-                    echo <<< PRIMARYROW
+                if (is_array($secondary_package) || is_object($secondary_package)) {
+                    foreach ( $secondary_package as $key => $values ) {
+                        echo <<< PRIMARYROW
                         <tr>
                             <td class='sorter'>&nbsp;</td>
                             <td>
@@ -43,6 +44,7 @@
                             <td class='delete'>&nbsp;</td>
                         </tr>
 PRIMARYROW;
+                    }
                 }
                 if ( sizeof( $secondary_package ) == 0 ) {
                     echo <<< PPMessage

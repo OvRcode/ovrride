@@ -24,6 +24,9 @@ module.exports = function(grunt){
       },
       mainPHP: {
         src: ['woocommerce-trips.php']
+      },
+      includePHP: {
+        src: ['includes/*.php']
       }
     },
     uglify: {
@@ -68,6 +71,10 @@ module.exports = function(grunt){
           files: ['woocommerce-trips.php'],
           tasks: ['phplint:mainPHP'],
         },
+      includePHP: {
+        files: ['includes/*.php'],
+        tasks: ['phplint:includePHP'],
+      },
       adminJS: {
         files: ['assets/js/trips_admin.js'],
         tasks: ['jshint:admin', 'uglify:admin']
