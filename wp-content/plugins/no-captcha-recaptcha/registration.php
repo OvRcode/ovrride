@@ -24,7 +24,7 @@ class Ncr_Registration_Captcha extends Ncr_No_Captcha_Recaptcha {
 	 * @return WP_Error|WP_user
 	 */
 	public static function validate_captcha_registration_field( $errors, $sanitized_user_login, $user_email ) {
-		if ( isset( $_POST['g-recaptcha-response'] ) && ! self::captcha_verification() ) {
+		if ( ! isset( $_POST['g-recaptcha-response'] ) || ! self::captcha_verification() ) {
 			$errors->add( 'failed_verification', self::$error_message );
 		}
 
