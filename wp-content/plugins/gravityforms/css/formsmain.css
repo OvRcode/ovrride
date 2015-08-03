@@ -239,15 +239,32 @@ html>body .entry ul, .gform_wrapper ul { text-indent: 0 }
 .gform_wrapper .left_label li.hidden_label input, .gform_wrapper .right_label li.hidden_label input { margin-left: 3.7% }
 .gform_wrapper .left_label li.gfield .gfield_password_strength, .gform_wrapper .right_label li.gfield .gfield_password_strength { margin-left: 30% }
 body .gform_wrapper label.gfield_label + div.ginput_container { margin-top: .375em }
-.gform_wrapper .hidden_label .gfield_label { display: none !important }
+
+.gform_wrapper .hidden_label .gfield_label {
+	clip: rect(1px, 1px, 1px, 1px);
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+}
+
 .gfield.right_label, .gfield.left_label { padding-top: 10px }
 .gform_wrapper li.hidden_label input { margin-top: .75em }
-.gform_wrapper label.hidden_sub_label { display: none }
+
 .gform_wrapper .field_sublabel_hidden_label .ginput_complex.ginput_container input[type=text], .gform_wrapper .field_sublabel_hidden_label .ginput_complex.ginput_container select { margin-bottom: .75em }
 .gform_wrapper .left_label ul.gfield_checkbox, .gform_wrapper .right_label ul.gfield_checkbox, .gform_wrapper .left_label ul.gfield_radio, .gform_wrapper .right_label ul.gfield_radio {
     margin-left: 30% !important;
     overflow: hidden;
 }
+
+.gform_wrapper label.screen-reader-text, .gform_wrapper label.hidden_sub_label {
+ 	clip: rect(1px, 1px, 1px, 1px);
+ 	position: absolute !important;
+ 	height: 1px;
+ 	width: 1px;
+ 	overflow: hidden;
+ }
+
 .gform_wrapper .top_label input.small, .gform_wrapper .top_label select.small { width: 25% }
 .gform_wrapper .top_label input.medium, .gform_wrapper .top_label select.medium { width: 47.5% }
 .gform_wrapper .top_label input.large, .gform_wrapper .top_label select.large, .gform_wrapper .hidden_label input.large, .gform_wrapper .hidden_label select.large { width: 97.5% }
@@ -1356,3 +1373,6 @@ body .gform_wrapper img.add_list_item, body .gform_wrapper img.delete_list_item 
 }
 .gform_wrapper ul li.gfield.field_sublabel_above.field_description_below + li.gfield { margin-top: 1em }
 .gform_wrapper li.gfield ul.gfield_radio li input[type="radio"] + input[type="text"] { width: 45.25% }
+.gform_wrapper table.recaptchatable {
+    table-layout: auto;
+}
