@@ -207,7 +207,11 @@ class GF_Field_List extends GF_Field {
 		}
 		$input_info = array( 'type' => 'text' );
 
-		$input_info = apply_filters( "gform_column_input_{$form_id}_{$this->id}_{$column_index}", apply_filters( 'gform_column_input', $input_info, $this, rgar( $column, 'text' ), $value, $form_id ), $this, rgar( $column, 'text' ), $value, $form_id );
+		$input_info = gf_apply_filters( 'gform_column_input', array(
+			$form_id,
+			$this->id,
+			$column_index
+		), $input_info, $this, rgar( $column, 'text' ), $value, $form_id );
 
 		switch ( $input_info['type'] ) {
 
@@ -240,11 +244,11 @@ class GF_Field_List extends GF_Field {
 				break;
 		}
 
-		return apply_filters(
-			"gform_column_input_content_{$form_id}_{$this->id}_{$column_index}",
-			apply_filters( 'gform_column_input_content', $input, $input_info, $this, rgar( $column, 'text' ), $value, $form_id ),
-			$input_info, $this, rgar( $column, 'text' ), $value, $form_id
-		);
+		return gf_apply_filters( 'gform_column_input_content', array(
+			$form_id,
+			$this->id,
+			$column_index
+		), $input, $input_info, $this, rgar( $column, 'text' ), $value, $form_id );
 
 	}
 
@@ -465,6 +469,37 @@ class GF_Field_List extends GF_Field {
 	public function sanitize_settings() {
 		parent::sanitize_settings();
 		$this->maxRows = absint( $this->maxRows );
+	}
+
+	public function get_value_export( $entry, $input_id = '', $use_text = false, $is_csv = false ) {
+		if ( empty( $input_id ) ) {
+			$input_id = $this->id;
+		} elseif ( ! ctype_digit( $input_id ) ) {
+			$field_id_array = explode( '.', $input_id );
+			$input_id       = rgar( $field_id_array, 0 );
+			$column_num     = rgar( $field_id_array, 1 );
+		}
+
+		$value = rgar( $entry, $input_id );
+		if ( empty( $value ) || $is_csv ) {
+
+			return $value;
+		}
+
+		$list_values = $column_values = unserialize( $value );
+
+		if ( ! empty( $column_num ) && $this->enableColumns ) {
+			$column        = rgars( $this->choices, "{$column_num}/text" );
+			$column_values = array();
+			foreach ( $list_values as $value ) {
+				$column_values[] = rgar( $value, $column );
+			}
+		} elseif ( $this->enableColumns ) {
+
+			return json_encode( $list_values );
+		}
+
+		return GFCommon::implode_non_blank( ', ', $column_values );
 	}
 
 }

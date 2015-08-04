@@ -526,7 +526,7 @@ class GF_Field extends stdClass implements ArrayAccess {
 		//allow HTML for certain field types
 		$allow_html = $this->allow_html();
 
-		$allowable_tags = apply_filters( "gform_allowable_tags_{$form_id}", apply_filters( 'gform_allowable_tags', $allow_html, $this, $form_id ), $this, $form_id );
+		$allowable_tags = gf_apply_filters( 'gform_allowable_tags', $form_id, $allow_html, $this, $form_id );
 
 
 		if ( $allowable_tags !== true ) {
@@ -685,5 +685,21 @@ class GF_Field extends stdClass implements ArrayAccess {
 	public function get_input_type() {
 
 		return empty( $this->inputType ) ? $this->type : $this->inputType;
+	}
+
+	/**
+	 * @param array $entry The entry currently being processed.
+	 * @param string $input_id The field or input ID.
+	 * @param bool|false $use_text When processing choice based fields should the choice text be returned instead of the value.
+	 * @param bool|false $is_csv Is the value going to be used in the .csv entries export?
+	 *
+	 * @return string
+	 */
+	public function get_value_export( $entry, $input_id = '', $use_text = false, $is_csv = false ) {
+		if ( empty( $input_id ) ) {
+			$input_id = $this->id;
+		}
+
+		return rgar( $entry, $input_id );
 	}
 }

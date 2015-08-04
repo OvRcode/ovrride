@@ -1,10 +1,10 @@
 === Plugin Name ===
-Contributors: collizo4sky
+Contributors: Collizo4sky
 Donate link: https://flattr.com/submit/auto?user_id=tech4sky&url=http%3A%2F%2Fw3guy.com
 Tags: comments, spam, login, registration, captcha, recaptcha, spammers, bot
 Requires at least: 3.4
 Tested up to: 4.0.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,7 +44,10 @@ Any question? post it in the support forum.
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.2 =
+* Fix error where Captcha could be bypassed by disabling Javascript
+
+= 1.0.1 =
 * Fixed header already sent error
 
 = 1.0 =

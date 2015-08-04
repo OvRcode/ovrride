@@ -24,7 +24,7 @@ class Ncr_Login_Captcha extends Ncr_No_Captcha_Recaptcha {
 	 */
 	public static function validate_captcha( $user, $password ) {
 
-		if ( isset( $_POST['g-recaptcha-response'] ) && ! self::captcha_verification() ) {
+		if ( ! isset( $_POST['g-recaptcha-response'] ) || ! self::captcha_verification() ) {
 			return new WP_Error( 'empty_captcha', self::$error_message );
 		}
 

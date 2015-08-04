@@ -531,9 +531,13 @@ img#gfield_input_datepicker_icon {
     padding-bottom:10px;
 }
 
-.gfield label.hidden_sub_label {
-    display:none;
-}
+.gfield label.screen-reader-text, .gfield label.hidden_sub_label {
+ 	clip: rect(1px, 1px, 1px, 1px);
+ 	position: absolute !important;
+ 	height: 1px;
+ 	width: 1px;
+ 	overflow: hidden;
+ }
 
 .gfield .copy_values_option_container {
     padding-bottom: 10px;
@@ -4448,3 +4452,21 @@ div.wrap.gf_browser_chrome .gfield_checkbox li input {
 .gfield_settings_input_choices_container {
 	max-height: 222px
 }
+
+/* Installation Wizard Styles */
+
+#gform_installation_progress li {
+    display: inline-block;
+    padding: 10px 25px 10px 0;
+}
+
+.gform_installation_progress_current_step,
+.gform_installation_progress_step_wrap p,
+.gform_installation_progress_step_complete{
+    color: black;
+}
+
+.gform_installation_progress_step_pending{
+    color: silver;
+}
+

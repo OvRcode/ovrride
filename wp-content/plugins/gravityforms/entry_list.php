@@ -89,7 +89,6 @@ class GFEntryList {
 				'value'    => $val,
 			);
 
-
 		}
 
 		$update_message = '';
@@ -186,7 +185,7 @@ class GFEntryList {
 		$sort_field_meta = RGFormsModel::get_field( $form, $sort_field );
 		$is_numeric      = $sort_field_meta['type'] == 'number';
 
-		$page_size        = apply_filters( 'gform_entry_page_size', apply_filters( "gform_entry_page_size_{$form_id}", 20, $form_id ), $form_id );
+		$page_size        = gf_apply_filters( 'gform_entry_page_size', $form_id, 20, $form_id );
 		$first_item_index = $page_index * $page_size;
 
 		if ( ! empty( $sort_field ) ) {

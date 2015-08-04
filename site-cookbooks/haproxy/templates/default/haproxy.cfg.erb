@@ -35,7 +35,7 @@ listen HAProxy-Statistics *:25001
     stats show-desc Workaround haproxy for SSL
     stats auth admin:ifIruledTheWorld
 
-frontend ssl_relay <%= node['haproxy']['bind_address'] %>:<%= node['haproxy']['https_port']%>
+frontend ssl_relay *:<%= node['haproxy']['https_port']%>
     # this only works with 1.5 haproxy
     mode tcp
     option tcplog
@@ -50,7 +50,7 @@ frontend ssl_relay <%= node['haproxy']['bind_address'] %>:<%= node['haproxy']['h
     #use_backend %[req.ssl_sni,lower,map(/etc/haproxy/ssl_map.map,ssl_web)]
     use_backend ssl_web
 
-frontend http <%= node['haproxy']['bind_address'] %>:<%= node['haproxy']['http_port'] %>
+frontend http *:<%= node['haproxy']['http_port'] %>
     mode http
     #use_backend %[req.hdr(host),lower,map(/etc/haproxy/map.map,web)]
     use_backend web
