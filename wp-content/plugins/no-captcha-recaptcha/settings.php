@@ -328,7 +328,7 @@ class Ncr_Settings_Page {
 
 			update_option( 'ncr_options', $saved_options );
 
-			wp_redirect( '?page=ncr-config&settings-updated=true' );
+			wp_redirect( '?page=ncr-config&settings-updated=true' ); exit;
 		}
 	}
 }

@@ -1,5 +1,11 @@
 *** WooThemes Helper Changelog ***
 
+2015.07.07 - version 1.5.9
+ * Fix - Deactivate/Activate nonce check fail on network installs
+
+2015.06.26 - version 1.5.8
+ * Fix - Deactivate plugins nonce issue
+
 2015.05.21 - version 1.5.7
  * Fix - WooThemes Helper update message not going away
 

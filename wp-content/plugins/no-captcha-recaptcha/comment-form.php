@@ -60,7 +60,7 @@ class Ncr_Comment_Captcha extends Ncr_No_Captcha_Recaptcha {
 	 */
 	public static function validate_captcha_comment_field( $commentdata ) {
 
-		if ( isset( $_POST['g-recaptcha-response'] ) && ! (self::captcha_verification()) ) {
+		if ( ! isset( $_POST['g-recaptcha-response'] ) || ! (self::captcha_verification()) ) {
 			self::$captcha_error = 'failed';
 		}
 
