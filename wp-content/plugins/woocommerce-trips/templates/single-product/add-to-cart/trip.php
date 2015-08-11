@@ -18,17 +18,45 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 <form class="cart" method="post" enctype='multipart/form-data'>
 
         <div id="wc-trips-form">
-
+        <p class="form-field form-field-wide" id="wc_trip_first">
+            <label for="wc_trip_first">First</label>
+            <input type="text" name="wc_trip_first" />
+        </p>
+        <p class="form-field form-field-wide" id="wc_trip_last">
+            <label for="wc_trip_last">Last</label>
+            <input type="text" name="wc_trip_last" />
+        </p><br /><br />
+        <p class="form-field form-field-wide" id="wc_trip_email">
+            <label for="wc_trip_email">Email</label>
+            <input type="text" name="wc_trip_email" />
+        </p>
+        <p class="form-field form-field-wide" id="wc_trip_phone">
+            <label for="wc_trip_phone">Phone</label>
+            <input type="text" name="wc_trip_phone" />
+        </p>
         <?php 
-        echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . get_post_meta( $product->id, '_wc_trip_type', true) . "' />";
-        
-        foreach ( $fields as $key => $field ) {
-            echo <<<FIELD
-                <p class="form-field form-field-wide">
-                    <label for="wc_trip_{$field}">{$field}</label><br />
-                    <input type="text" name="wc_trip_{$field}"></input>
-                </p>
-FIELD;
+        $trip_type = get_post_meta( $product->id, '_wc_trip_type', true);
+        echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . $trip_type . "' />";
+        switch ( $trip_type ) {
+            case "international_flight":
+                echo <<<PASSPORT
+                    <p class="form-field form-field-wide" id="wc_trip_passport_num">
+                        <label for="wc_trip_passport_num">Passport #</label>
+                        <input type="text" name="wc_trip_passport_num">
+                    </p>
+                    <p class="form-field form-field-wide" id="wc_trip_passport_country">
+                        <label for="wc_trip_passport_country">Passport Country of Issue</label>
+                        <input type="text" name="wc_trip_passport_country" />
+                    </p>
+PASSPORT;
+            case "domestic_flight":
+                echo <<<DOB
+                    <p class="form-field form-field-wide" id="wc_trip_dob">
+                        <label for="wc_trip_dob">Date of Birth ( MM/DD/YYYY )</label>
+                        <input type="text" name="wc_trip_dob" max-length="9" />
+                    </p>
+DOB;
+                break;
         }
         $packages = [
             "primary"   => $product->output_packages("primary"),
@@ -45,7 +73,7 @@ FIELD;
                         <option value="">Select option</option>
 PACKAGE;
                 foreach ( $info['packages'] as $key => $array ) {
-                    if ( "" !== $array['cost'] ) {
+                    if ( "" !== $array['cost'] && $array['cost'] != "0") {
                         $data_cost = "data-cost='" . $array['cost'] . "'" ;
                         $cost_label = " +" . $array['cost'];
                     } else {

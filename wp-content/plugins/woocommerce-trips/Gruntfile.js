@@ -49,6 +49,9 @@ module.exports = function(grunt){
       admin: {
         src: ['assets/js/trips_admin.js'],
       },
+      frontEnd: {
+        src: ['assets/js/front_end.js'],
+      }
     },
     watch: {
       grunt: {
@@ -79,6 +82,10 @@ module.exports = function(grunt){
         files: ['assets/js/trips_admin.js'],
         tasks: ['jshint:admin', 'uglify:admin']
       },
+      frontEndJS: {
+        files: ['assets/js/front_end.js'],
+        tasks: ['jshint:frontEnd'],
+      }
     },
   });
   // Load plugins

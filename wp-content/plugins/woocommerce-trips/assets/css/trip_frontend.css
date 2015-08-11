@@ -1,0 +1,19 @@
+#wc_trip_first {
+  width: 50%;
+  float: left;
+}
+#wc_trip_last {
+  width: 50%;
+  float:right;
+}
+#wc_trip_email {
+  width: 100%;
+  clear: both;
+}
+.woocommerce select {
+  line-height: 1.5;
+  font-size: 14pt;
+}
+#wc_trips_form input, label {
+    display:block;
+}
