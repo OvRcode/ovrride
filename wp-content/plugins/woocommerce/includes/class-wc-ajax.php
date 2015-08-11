@@ -32,7 +32,7 @@ class WC_AJAX {
 	 * @return string
 	 */
 	public static function get_endpoint( $request = '' ) {
-		return esc_url_raw( add_query_arg( 'wc-ajax', $request ) );
+		return esc_url_raw( add_query_arg( 'wc-ajax', $request, remove_query_arg( array( 'remove_item', 'add-to-cart', 'added-to-cart' ) ) ) );
 	}
 
 	/**
@@ -2670,7 +2670,7 @@ class WC_AJAX {
 	 */
 	private static function variation_bulk_action_variable_regular_price( $variations, $data ) {
 		if ( empty( $data['value'] ) ) {
-			break;
+			return;
 		}
 
 		foreach ( $variations as $variation_id ) {
@@ -2696,7 +2696,7 @@ class WC_AJAX {
 	 */
 	private static function variation_bulk_action_variable_sale_price( $variations, $data ) {
 		if ( empty( $data['value'] ) ) {
-			break;
+			return;
 		}
 
 		foreach ( $variations as $variation_id ) {
@@ -2722,7 +2722,7 @@ class WC_AJAX {
 	 */
 	private static function variation_bulk_action_variable_stock( $variations, $data ) {
 		if ( empty( $data['value'] ) ) {
-			break;
+			return;
 		}
 
 		$value = wc_clean( $data['value'] );
@@ -2820,7 +2820,7 @@ class WC_AJAX {
 	 */
 	private static function variation_bulk_action_variable_sale_schedule( $variations, $data ) {
 		if ( ! isset( $data['date_from'] ) && ! isset( $data['date_to'] ) ) {
-			break;
+			return;
 		}
 
 		foreach ( $variations as $variation_id ) {
