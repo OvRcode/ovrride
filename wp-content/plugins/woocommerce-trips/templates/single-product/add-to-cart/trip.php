@@ -64,7 +64,6 @@ DOB;
             "tertiary"  => $product->output_packages("tertiary")
         ];
         foreach ( $packages as $type => $info ) {
-            // only output packages if there is data there
             if ( $info ) {
                 echo <<<PACKAGE
                     <p class='form-field'>
@@ -72,19 +71,7 @@ DOB;
                         <select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package">
                         <option value="">Select option</option>
 PACKAGE;
-                foreach ( $info['packages'] as $key => $array ) {
-                    if ( "" !== $array['cost'] && $array['cost'] != "0") {
-                        $data_cost = "data-cost='" . $array['cost'] . "'" ;
-                        $cost_label = " +" . $array['cost'];
-                    } else {
-                        $data_cost = "";
-                        $cost_label = "";
-                    }
-                    
-                    echo <<<OPTION
-                        <option value="{$array['description']}" {$data_cost}>{$array['description']} {$cost_label}</option>
-OPTION;
-                }
+                echo $info['html'];
                 echo "</select></p>";
             }
         }

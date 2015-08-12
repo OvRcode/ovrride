@@ -9,7 +9,7 @@ jQuery(document).ready(function($){
     enableDisableCart($);
   });
   
-  // TODO: Auto formate Birthday
+  // TODO: Auto format Birthday
 });
 // Sets up array of fields present on page
 function fieldSetup($) {
