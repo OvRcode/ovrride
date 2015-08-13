@@ -19,7 +19,10 @@ class WC_Trips_Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'script_style_includes' ) );
         add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
-
+        add_action( 'add_meta_boxes_pickup_locations', array( $this, 'pickup_locations_meta_boxes' ) );
+        add_action( 'save_post', array($this,'save_pickup_meta') );
+        add_filter( 'manage_pickup_locations_posts_columns', array($this, 'pickup_column_head' ) );
+        add_action( 'manage_pickup_locations_posts_custom_column', array($this, 'pickup_column' ), 10, 2 );
         // Ajax
         //add_action( 'wp_ajax_woocommerce_add_bookable_resource', array( $this, 'add_bookable_resource' ) );
         //add_action( 'wp_ajax_woocommerce_remove_bookable_resource', array( $this, 'remove_bookable_resource' ) );
@@ -153,5 +156,69 @@ class WC_Trips_Admin {
         wp_localize_script( 'wc_trips_admin_js', 'wc_trips_admin_js_params', $params );
     }
     
+    public function pickup_locations_meta_boxes() {
+        add_meta_box( 
+                'wc_trips_pickup_locations_meta',
+                __( 'Location Details' ),
+                array($this, 'render_pickup_meta_boxes'),
+                'pickup_locations',
+                'normal',
+                'default'
+            );
+    }
+    
+    public function render_pickup_meta_boxes( $post ) {
+        $nonce = wp_create_nonce( 'pickup_location'.$post->ID );
+        $time = get_post_meta( $post->ID, '_pickup_location_time', true);
+        $address = get_post_meta( $post->ID, '_pickup_location_address', true);
+        $cross_st = get_post_meta( $post->ID, '_pickup_location_cross_st', true);
+        echo <<<META
+        <input type="hidden" name="pickup_location_nonce" id="pickup_location_nonce" value="{$nonce}" />
+        
+        <label for="_pickup_location_time">Time</label>
+        <input type="time" name="_pickup_location_time" value="{$time}" />
+        
+        <label for="_pickup_location_address">Street address</label>
+        <input type="text" name="_pickup_location_address" value="{$address}" />
+        
+        <label for="_pickup_location_cross_st">Cross Streets</label>
+        <input type="text" name="_pickup_location_cross_st" value="{$cross_st}" />
+META;
+    
+    }
+    
+    public function save_pickup_meta( $post_id ) {
+        $nonce_check = wp_verify_nonce( $_POST['pickup_location_nonce'], 'pickup_location'.$post_id );
+        // Check nonce is valid
+        if ( 1 == $nonce_check || 2 == $nonce_check ) {
+            // verify if this is an auto save routine. If it is our form has not been submitted, so we dont want to do anything
+            if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
+                return $post_id;
+            }
+            
+            // Check permissions
+            if ( !current_user_can( 'edit_post', $post_id ) ) {
+                return $post_id;
+            }
+            error_log("Made it to save!");
+            update_post_meta( $post_id, '_pickup_location_time', sanitize_text_field( $_POST['_pickup_location_time'] ) );
+            update_post_meta( $post_id, '_pickup_location_address', sanitize_text_field( $_POST['_pickup_location_address'] ) );
+            update_post_meta( $post_id, '_pickup_location_cross_st', sanitize_texT_field( $_POST['_pickup_location_cross_st'] ) );
+        } else {
+            return $post_id;
+        }
+    }
+    
+    public function pickup_column_head( $defaults ) {
+        $defaults['pickup_time'] = 'Pickup Time';
+        return $defaults;
+    }
+    
+    public function pickup_column( $column_name, $post_id ) {
+        if ( "pickup_time" == $column_name ){
+            $time = get_post_meta( $post_id, '_pickup_location_time', true);
+            echo date("g:i a", strtotime($time));
+        }
+    }
 }
 new WC_Trips_Admin();

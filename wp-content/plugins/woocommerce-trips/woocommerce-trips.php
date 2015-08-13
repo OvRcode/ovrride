@@ -30,6 +30,7 @@ class WC_Trips {
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
         add_action( 'woocommerce_loaded', array( $this, 'includes' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_form_styles' ) );
+        add_action( 'init', array( $this, 'init_post_types' ) );
         
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
@@ -58,6 +59,32 @@ class WC_Trips {
         wp_enqueue_style( 'wc-trips-styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_frontend.css', null, WC_TRIPS_VERSION );
         wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'); 
         wp_enqueue_script( 'wc-trips-frontend-js', WC_TRIPS_PLUGIN_URL . '/assets/js/front_end.js', array('jquery'), WC_TRIPS_VERSION, TRUE );
+    }
+    public function init_post_types() {
+        $labels = array(
+          'name'               => _x( 'Pickup Locations', 'woocommerce-trips' ),
+          'singular_name'      => _x( 'Pickup Location', 'woocommerce-trips'),
+          'add_new'            => _x( 'Add Location', 'woocommerce-trips'),
+          'add_new_item'       => __( 'Add New Location' ),
+          'edit_item'          => __( 'Edit Location' ),
+          'new_item'           => __( 'New Location' ),
+          'all_items'          => __( 'All Pickup Locations' ),
+          'view_item'          => __( 'View Pickup Locations' ),
+          'search_items'       => __( 'Search Pickup Locations' ),
+          'not_found'          => __( 'No pickup locations found' ),
+          'not_found_in_trash' => __( 'No pickup locations found in the Trash' ), 
+          'parent_item_colon'  => '',
+          'menu_name'          => 'Pickup Locations'
+        );
+        $args = array(
+          'labels'        => $labels,
+          'description'   => 'Pickup Locations for all trips',
+          'public'        => true,
+          'menu_position' => 40,
+          'supports'      => array( 'title', 'thumbnail'),
+          'has_archive'   => true,
+        );
+        register_post_type( 'pickup_locations', $args );
     }
 }
 $GLOBALS['wc_trips'] = new WC_Trips();
