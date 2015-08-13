@@ -8,10 +8,6 @@ class WC_Trips_Admin {
         global $post;
 
         $post_id = $post->ID;
-        
-        //add_action( 'admin_init', array( $this, 'include_meta_box_handlers' ) );
-        //add_action( 'admin_init', array( $this, 'redirect_new_add_booking_url' ) );
-        //add_action('admin_menu', 'register_location_menu');
         add_filter( 'product_type_options', array( $this, 'product_type_options' ) );
         add_filter( 'product_type_selector' , array( $this, 'product_type_selector' ) );
         add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'add_tab' ), 5 );
@@ -19,10 +15,13 @@ class WC_Trips_Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'script_style_includes' ) );
         add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
+        // Pickup Post type specific
         add_action( 'add_meta_boxes_pickup_locations', array( $this, 'pickup_locations_meta_boxes' ) );
         add_action( 'save_post', array($this,'save_pickup_meta') );
-        add_filter( 'manage_pickup_locations_posts_columns', array($this, 'pickup_column_head' ) );
-        add_action( 'manage_pickup_locations_posts_custom_column', array($this, 'pickup_column' ), 10, 2 );
+        add_filter( 'manage_pickup_locations_posts_columns', array($this, 'pickup_columns_head' ) );
+        add_action( 'manage_pickup_locations_posts_custom_column', array($this, 'pickup_columns' ), 10, 2 );
+        add_action( 'admin_action_wc_trips_duplicate_pickup', array( $this, 'wc_trips_duplicate_pickup'));
+        add_filter( 'post_row_actions', array($this, 'wc_trip_pickup_location_duplicate_post_link'), 10, 2 );
         // Ajax
         //add_action( 'wp_ajax_woocommerce_add_bookable_resource', array( $this, 'add_bookable_resource' ) );
         //add_action( 'wp_ajax_woocommerce_remove_bookable_resource', array( $this, 'remove_bookable_resource' ) );
@@ -200,7 +199,7 @@ META;
             if ( !current_user_can( 'edit_post', $post_id ) ) {
                 return $post_id;
             }
-            error_log("Made it to save!");
+            
             update_post_meta( $post_id, '_pickup_location_time', sanitize_text_field( $_POST['_pickup_location_time'] ) );
             update_post_meta( $post_id, '_pickup_location_address', sanitize_text_field( $_POST['_pickup_location_address'] ) );
             update_post_meta( $post_id, '_pickup_location_cross_st', sanitize_texT_field( $_POST['_pickup_location_cross_st'] ) );
@@ -209,16 +208,93 @@ META;
         }
     }
     
-    public function pickup_column_head( $defaults ) {
-        $defaults['pickup_time'] = 'Pickup Time';
+    public function pickup_columns_head( $defaults ) {
+        // Remove dynamic gallery columns, these columns are not applicable to this post type
+        unset( $defaults['dfcg_desc_col'] );
+        unset( $defaults['dfcg_image_col']);
+        
+        // Remove expiration column
+        unset( $defaults['expirationdate'] );
+        
+        // Add Pickup Time column
+        // Chop up defaults array to get new column next to title
+        $defaultsBeginning = array_slice($defaults, 0, 2, true);
+        $defaultsEnd = array_slice($defaults,2,true);
+        $defaults = array_merge($defaultsBeginning, array("pickup_time" => 'Pickup Time'), $defaultsEnd);
+        
         return $defaults;
     }
     
-    public function pickup_column( $column_name, $post_id ) {
+    public function pickup_columns( $column_name, $post_id ) {
         if ( "pickup_time" == $column_name ){
             $time = get_post_meta( $post_id, '_pickup_location_time', true);
             echo date("g:i a", strtotime($time));
         }
+    }
+    
+    public function wc_trips_duplicate_pickup() {
+        global $wpdb;
+        
+        if (! ( isset( $_GET['post']) || isset( $_POST['post'])  || ( isset($_REQUEST['action']) && 'wc_trips_duplicate_post_as_draft' == $_REQUEST['action'] ) ) ) {
+            wp_die('No post to duplicate has been supplied!');
+        }
+        
+        $post_id = (isset($_GET['post']) ? $_GET['post'] : $_POST['post']);
+        
+        $post = get_post( $post_id );
+        
+        $current_user = wp_get_current_user();
+        $new_post_author = $current_user->ID;
+        
+        if ( isset( $post ) && $post != null ) {
+            $args = array(
+                'comment_status' => $post->comment_status,
+                'ping_status'    => $post->ping_status,
+                'post_author'    => $new_post_author,
+                'post_content'   => $post->post_content,
+                'post_excerpt'   => $post->post_excerpt,
+                'post_name'      => $post->post_name,
+                'post_parent'    => $post->post_parent,
+                'post_password'  => $post->post_password,
+                'post_status'    => 'draft',
+                'post_title'     => $post->post_title,
+                'post_type'      => $post->post_type,
+                'to_ping'        => $post->to_ping,
+                'menu_order'     => $post->menu_order
+            );
+            
+            $new_post_id = wp_insert_post( $args );
+            $taxonomies = get_object_taxonomies($post->post_type);
+            foreach ($taxonomies as $taxonomy) {
+                $post_terms = wp_get_object_terms($post_id, $taxonomy, array('fields' => 'slugs'));
+                wp_set_object_terms($new_post_id, $post_terms, $taxonomy, false);
+            }
+            
+            $post_meta_infos = $wpdb->get_results("SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$post_id");
+            if (count($post_meta_infos)!=0) {
+                $sql_query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
+                foreach ($post_meta_infos as $meta_info) {
+                    $meta_key = $meta_info->meta_key;
+                    $meta_value = addslashes($meta_info->meta_value);
+                    $sql_query_sel[]= "SELECT $new_post_id, '$meta_key', '$meta_value'";
+                }
+                $sql_query.= implode(" UNION ALL ", $sql_query_sel);
+                $wpdb->query($sql_query);
+            }
+            
+            wp_redirect( admin_url( 'post.php?action=edit&post=' . $new_post_id ) );
+            exit;
+        } else {
+            wp_die( 'Pickup Location duplication failed for id:' . $post_id);
+        }
+    }
+    
+    function wc_trip_pickup_location_duplicate_post_link( $actions, $post ) {
+        $screen = get_current_screen();
+    	if (current_user_can('edit_posts') && "pickup_locations" == $screen->post_type) {
+    		$actions['duplicate'] = '<a href="admin.php?action=wc_trips_duplicate_pickup&amp;post=' . $post->ID . '" title="Duplicate this item" rel="permalink">Duplicate</a>';
+    	}
+    	return $actions;
     }
 }
 new WC_Trips_Admin();
