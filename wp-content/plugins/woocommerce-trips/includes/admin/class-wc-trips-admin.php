@@ -23,11 +23,8 @@ class WC_Trips_Admin {
         add_action( 'admin_action_wc_trips_duplicate_pickup', array( $this, 'wc_trips_duplicate_pickup'));
         add_filter( 'post_row_actions', array($this, 'wc_trip_pickup_location_duplicate_post_link'), 10, 2 );
         // Ajax
-        //add_action( 'wp_ajax_woocommerce_add_bookable_resource', array( $this, 'add_bookable_resource' ) );
-        //add_action( 'wp_ajax_woocommerce_remove_bookable_resource', array( $this, 'remove_bookable_resource' ) );
-
-        //add_action( 'wp_ajax_woocommerce_add_bookable_person', array( $this, 'add_bookable_person' ) );
-        //add_action( 'wp_ajax_woocommerce_remove_bookable_person', array( $this, 'remove_bookable_person' ) );
+        add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
+        //add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_bookable_resource' ) );
     }
     
     public function product_type_options( $options ) {
@@ -43,11 +40,13 @@ class WC_Trips_Admin {
     public function add_tab() {
         include( 'views/html-trip-tab.php' );
     }
+    
     public function general_tab() {
 		global $post;
 		$post_id = $post->ID;
         include( 'views/html-trip-general.php' );
     }
+    
     public function save_product_data() {
         global $wpdb;
         global $post;
@@ -145,8 +144,8 @@ class WC_Trips_Admin {
         wp_enqueue_style( 'wc_trips_admin_styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_admin' . $suffix . '.css', null, WC_TRIPS_VERSION );
         wp_register_script( 'wc_trips_admin_js', WC_TRIPS_PLUGIN_URL . '/assets/js/trips_admin' . $suffix . '.js', array( 'jquery' ) );
         $params = array(
-//            'nonce_delete_primary_package'    => wp_create_nonce( 'delete-primary-package' ),
-//            'nonce_add_primary_package'       => wp_create_nonce( 'add-primary-package' ),
+            'nonce_add_pickup_location' => wp_create_nonce( 'add_pickup_location' ),
+            'nonce_remove_pickup_location' => wp_create_nonce( 'remove_pickup_location' ),
             'post'                   => isset( $post->ID ) ? $post->ID : '',
             'plugin_url'             => $woocommerce->plugin_url(),
             'ajax_url'               => admin_url( 'admin-ajax.php' )
@@ -289,12 +288,59 @@ META;
         }
     }
     
-    function wc_trip_pickup_location_duplicate_post_link( $actions, $post ) {
+    public function wc_trip_pickup_location_duplicate_post_link( $actions, $post ) {
         $screen = get_current_screen();
     	if (current_user_can('edit_posts') && "pickup_locations" == $screen->post_type) {
     		$actions['duplicate'] = '<a href="admin.php?action=wc_trips_duplicate_pickup&amp;post=' . $post->ID . '" title="Duplicate this item" rel="permalink">Duplicate</a>';
     	}
     	return $actions;
+    }
+    
+    public function add_pickup_location() {
+        check_ajax_referer( "add_pickup_location", 'nonce');
+        
+        $post_id          = intval( $_POST['post_id'] );
+        $pickup_count     = intval( $_POST['pickupCount'] );
+        $new_pickup_id    = intval( $_POST['new_pickup_id'] );
+        $new_pickup_name  = intval( $_POST['new_pickup_name'] );
+        
+        if ( ! empty($new_pickup_id) ) {
+            $existing_pickups = get_post_meta( $post_id, '_wc_trip_pickups', true);
+        }
+        
+        header( 'Content-Type: application/jsonl charset=utf-8');
+        
+        if ( in_array( $post_id, $existing_pickups) ) {
+            die( json_encode( array( 'error' => 'Pickup already linked to this trip') ) );
+        }
+        
+        if ( ! $new_pickup_id ) {
+            $pickup = array(
+                'post_title' => $new_pickup_name,
+                'post_content' => '',
+                'post_status' => 'publish',
+                'post_author' => get_current_user_id(),
+                'post_type' => 'pickup_location'
+            );
+            $pickup_id = wp_insert_post( $pickup );
+        } else {
+            $pickup_id = $new_pickup_id;
+        }
+        
+        if ( $pickup_id ) {
+            // Update pickups on trip
+            $updated_pickups = array_merge($existing_pickups, array($pickup_id));
+            update_post_meta( $pickup_id, '_wc_trip_pickups',$updated_pickups);
+            
+            // Send HTML back to JS
+            $location_id = $pickup_id;
+            $count = $pickup_count;
+            ob_start();
+            include( 'views/html-trip-pickup-location.php' );
+            die( json_encode( array( 'html' => ob_get_clean() ) ) );
+        }
+        
+        die( json_encode( array( 'error' => 'Unable to add pickup location' ) ) );
     }
 }
 new WC_Trips_Admin();

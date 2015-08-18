@@ -54,6 +54,45 @@ jQuery(document).ready(function($){
         $(".sorter:visible").css("visibility","visible");
       }
   });
+  // Add a pickup location
+  $( 'button.add_pickup').on('click', function(){
+    $(".woocommerce_trip_pickup_locations").block( { message: null, overlayCSS: { background: '#ffffff url(' + wc_trips_admin_js_params.plugin_url + '/assets/images/select2-spinner.gif) no-repeat center', opacity: 0.6} } );
+    var pickupCount = $( ".woocommerce_trip_pickup_location" ).size();
+    var new_pickup_id = $( ".add_pickup_location_id" ).val();
+    var new_pickup_name = '';
+    
+    if ( ! new_pickup_id ) {
+      new_pickup_name = prompt( 'New Pickup Location Name: ' );
+      
+      if ( ! new_pickup_name ) {
+        return false;
+      }
+    }
+    
+    var post_data = {
+      action: 'woocommerce_add_pickup_location',
+      post_id: wc_trips_admin_js_params.post,
+      pickupCount: pickupCount,
+      new_pickup_id: new_pickup_id,
+      new_pickup_name: new_pickup_name,
+      nonce: wc_trips_admin_js_params.nonce_add_pickup_location
+    };
+    
+    $.post( wc_trips_admin_js_params.ajax_url, post_data, function(response){
+      if ( response.error ) {
+        alert(response.error);
+      } else {
+        $( ".woocommerce_trip_pickup_locations" ).append( response.html ).unblock();
+        $( ".woocommerce_trip_pickup_locations" ).sortable( pickup_sortable_options );
+        if ( new_pickup_id ) {
+          $( ".new_pickup_id" ).find( 'option[value=' + new_pickup_id + ']' ).remove();
+        }
+      }
+    });
+    
+    return false;
+  });
+  // Remove a pickup location
   
   // Remove package rows
 	$('body').on('click', 'td.delete', function(){
@@ -63,7 +102,27 @@ jQuery(document).ready(function($){
     }
 		return false;
 	});
-  
+  // Sorting for pickups
+	var pickup_sortable_options = {
+		items: '.woocommerce_trip_pickup_location',
+		cursor: 'move',
+		axis: 'y',
+		handle: 'h3',
+		scrollSensitivity: 40,
+		forcePlaceholderSize: true,
+		helper: 'clone',
+		opacity: 0.65,
+		placeholder: 'wc-metabox-sortable-placeholder',
+		start: function( event, ui ) {
+			ui.item.css( 'background-color', '#f6f6f6' );
+		},
+		stop: function ( event, ui ) {
+			ui.item.removeAttr( 'style' );
+			pickup_row_indexes();
+		}
+	};
+
+	$( '.woocommerce_trip_pickup_locations' ).sortable( pickup_sortable_options );
   // Sorting for packages
   $( "#primary_package_rows, #secondary_package_rows, #tertiary_package_rows" ).sortable({
     items: 'tr',
@@ -120,4 +179,9 @@ function showHideStock( StockType ) {
         jQuery(".primary_package_stock, .secondary_package_stock, .tertiary_package_stock").css("width", "0");
         jQuery(".delete_column").css("width", "2%");
     }
+}
+function pickup_row_indexes() {
+  jQuery('.woocommerce_trip_pickup_locations .woocommerce_trip_pickup_location').each(function(index, el){
+    jQuery('.pickup_location_menu_order', el).val( parseInt( jQuery(el).index('.woocommerce_trip_pickup_locations .woocommerce_trip_pickup_location') ) );
+  });
 }

@@ -4,7 +4,6 @@
 .delete {
   display: block;
   width: 16px !important;
-  height: 16px;
   padding-bottom: 10px;
   cursor: pointer;
   background: url(../images/close_o.png) no-repeat;
@@ -23,4 +22,18 @@
 #primary_package_rows input, #secondary_package_rows input, #tertiary_package_rows input {
   width: 85% !important;
   margin: auto;
+}
+
+.edit_pickup_location {
+  float: right;
+  padding-right: 10px;
+}
+.pickup_manage {
+  float: left;
+}
+.add_pickup {
+  float: right;
+}
+.add_pickup_location {
+  float: right !important;
 }
