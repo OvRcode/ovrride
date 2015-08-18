@@ -409,7 +409,7 @@ class Lists {
         if ( ! isset($orderData['Package']) ) {
             $orderData['Package'] = "";
         }
-        if ( isset($orderData['Is this guest at least 21 years of age?']) ) {
+        if ( isset($orderData['Is this guest at least 21 years of age?']) && $orderData['Is this guest at least 21 years of age?'] == "No" ) {
             $underAge = "<i class='fa fa-child fa-lg'></i>";
         } else {
             $underAge = "";
