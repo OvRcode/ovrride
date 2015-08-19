@@ -16,21 +16,22 @@
                     'orderby'        => 'menu_order',
                     'order'          => 'asc'
                 ) );
-                //$pickup_locations = array("49894", "49891", "49892", "49893");
-                $pickup_location = get_post_meta( $post->ID, '_wc_trip_pickups', true);
+                
+                $pickup_locations = get_post_meta( $post->ID, '_wc_trip_pickups', true);
                 $count = 0;
-                // MISSING DATA WHEN ADDED TO ADMIN PANEL
-                foreach( $pickup_locations as $location_id) {
-                    $location = get_post( $location_id );
-                    if ( "No Bus" == $location->post_title) {
-                        $location_time = "";
-                    } else {
-                        $location_time = " - " . date("g:i a", strtotime($location_time));
+                if ( gettype($pickup_locations) == "array" ){
+                    foreach( $pickup_locations as $location_id) {
+                        $location = get_post( $location_id );
+                        if ( "No Bus" == $location->post_title) {
+                            $location_time = "";
+                        } else {
+                            $location_time = " - " . date("g:i a", strtotime($location_time));
+                        }
+                        
+                        include('html-trip-pickup-location.php');
+                        
+                        $count++;
                     }
-                    
-                    include('html-trip-pickup-location.php');
-                    
-                    $count++;
                 }
             ?>
         </div>

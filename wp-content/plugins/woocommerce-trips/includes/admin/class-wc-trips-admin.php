@@ -302,15 +302,18 @@ META;
         $post_id          = intval( $_POST['post_id'] );
         $pickup_count     = intval( $_POST['pickupCount'] );
         $new_pickup_id    = intval( $_POST['new_pickup_id'] );
-        $new_pickup_name  = intval( $_POST['new_pickup_name'] );
+        $new_pickup_name  = wc_clean( $_POST['new_pickup_name'] );
         
-        if ( ! empty($new_pickup_id) ) {
+        if ( 0 !== $new_pickup_id ) {
             $existing_pickups = get_post_meta( $post_id, '_wc_trip_pickups', true);
         }
+        if ( ! isset($existing_pickups) || gettype($existing_pickups) != "array"){
+            $existing_pickups = array();
+        }
         
-        header( 'Content-Type: application/jsonl charset=utf-8');
+        header( 'Content-Type: application/json charset=utf-8');
         
-        if ( in_array( $post_id, $existing_pickups) ) {
+        if ( in_array( $new_pickup_id, $existing_pickups) ) {
             die( json_encode( array( 'error' => 'Pickup already linked to this trip') ) );
         }
         
@@ -320,7 +323,7 @@ META;
                 'post_content' => '',
                 'post_status' => 'publish',
                 'post_author' => get_current_user_id(),
-                'post_type' => 'pickup_location'
+                'post_type' => 'pickup_locations'
             );
             $pickup_id = wp_insert_post( $pickup );
         } else {
@@ -330,10 +333,11 @@ META;
         if ( $pickup_id ) {
             // Update pickups on trip
             $updated_pickups = array_merge($existing_pickups, array($pickup_id));
-            update_post_meta( $pickup_id, '_wc_trip_pickups',$updated_pickups);
+            update_post_meta( $post_id, '_wc_trip_pickups',$updated_pickups);
             
             // Send HTML back to JS
             $location_id = $pickup_id;
+            $location = get_post( $location_id );   
             $count = $pickup_count;
             ob_start();
             include( 'views/html-trip-pickup-location.php' );
