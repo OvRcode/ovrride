@@ -94,7 +94,36 @@ jQuery(document).ready(function($){
     return false;
   });
   // Remove a pickup location
-  
+  $( 'button.remove_trip_pickup_location' ).on( 'click', function(e){
+    e.preventDefault();
+    
+    var checkRemove = confirm( "Are you sure you want to remove this location?" );
+    var entry = $(this).parent().parent();
+    if ( checkRemove ) {
+      $( entry ).block( { message: null, overlayCSS: { background: '#ffffff url(' + wc_trips_admin_js_params.plugin_url + '/assets/images/select2-spinner.gif) no-repeat center', opacity: 0.6} } );
+      
+      var removeData = {
+        action: 'woocommerce_remove_pickup_location',
+        post_id: wc_trips_admin_js_params.post,
+        location_id: $(this).attr('rel'),
+        nonce: wc_trips_admin_js_params.nonce_remove_pickup_location
+      };
+      
+      $.post( wc_trips_admin_js_params.ajax_url, removeData, function(response){
+        if ( response.removed ) {
+          $( entry ).fadeOut( '400', function(){
+            $( entry ).remove();
+          });
+        } else {
+          $( entry ).unblock();
+          if ( response.error ) {
+            alert(response.error);
+          }
+        }
+      });
+    }
+    return false;
+  });
   // Remove package rows
 	$('body').on('click', 'td.delete', function(){
 		$(this).closest('tr').remove();
