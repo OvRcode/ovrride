@@ -24,7 +24,7 @@ class WC_Trips_Admin {
         add_filter( 'post_row_actions', array($this, 'wc_trip_pickup_location_duplicate_post_link'), 10, 2 );
         // Ajax
         add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
-        //add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_bookable_resource' ) );
+        add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_pickup_location' ) );
     }
     
     public function product_type_options( $options ) {

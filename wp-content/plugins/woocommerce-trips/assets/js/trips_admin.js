@@ -81,6 +81,7 @@ jQuery(document).ready(function($){
     $.post( wc_trips_admin_js_params.ajax_url, post_data, function(response){
       if ( response.error ) {
         alert(response.error);
+        $(".woocommerce_trip_pickup_locations").unblock();
       } else {
         $( ".woocommerce_trip_pickup_locations" ).append( response.html ).unblock();
         $( ".woocommerce_trip_pickup_locations" ).sortable( pickup_sortable_options );
