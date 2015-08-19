@@ -24,7 +24,7 @@ class WC_Trips_Admin {
         add_filter( 'post_row_actions', array($this, 'wc_trip_pickup_location_duplicate_post_link'), 10, 2 );
         // Ajax
         add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
-        //add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_bookable_resource' ) );
+        add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_pickup_location' ) );
     }
     
     public function product_type_options( $options ) {
@@ -345,6 +345,39 @@ META;
         }
         
         die( json_encode( array( 'error' => 'Unable to add pickup location' ) ) );
+    }
+    
+    public function remove_pickup_location() {
+        
+        check_ajax_referer( "remove_pickup_location", 'nonce');
+        
+        header( 'Content-Type: application/json charset=utf-8');
+        
+        $post_id = absint( $_POST['post_id'] );
+        $location_id = absint( $_POST['location_id'] );
+        $locations = get_post_meta( $post_id, '_wc_trip_pickups', true);
+        $removed = FALSE;
+        
+        if ( gettype($locations) !== "array" ) {
+            $removed = TRUE; 
+            /* Location was never saved but somehow made it to the UI
+            and no locations have been saved to this trip
+            */
+        } else {
+            if ( in_array($location_id, $locations) ) {
+                unset( $locations[array_search( $location_id, $locations )] );
+                $removed = TRUE;
+                if ( ! update_post_meta( $post_id, '_wc_trip_pickups', $locations) ) {
+                    $removed = FALSE;
+                } 
+            }
+        }
+        
+        if ( $removed ) {
+            die( json_encode( array( 'removed' => TRUE ) ) );
+        } else {
+            die( json_encode( array( 'error' => 'unable to remove location' ) ) );
+        }
     }
 }
 new WC_Trips_Admin();
