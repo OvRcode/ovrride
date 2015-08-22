@@ -10,6 +10,9 @@ class WC_Product_Trip extends WC_Product {
         $this->manage_stock = 'yes';
         parent::__construct( $product );
     }
+    public function get_price() {
+        error_log( "DEBUG::::::TESTING!");
+    }
     public function get_price_html() {
         if ( ! $this->is_purchasable() ) {
             echo "<p class='stock out-of-stock'>Out of stock</p>";

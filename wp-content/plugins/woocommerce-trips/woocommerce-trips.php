@@ -31,7 +31,7 @@ class WC_Trips {
         add_action( 'woocommerce_loaded', array( $this, 'includes' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_form_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
-        
+        add_filter( 'woocommerce_product_tabs', array( $this, 'pickup_tab'), 98 );
         
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
@@ -86,6 +86,50 @@ class WC_Trips {
           'has_archive'   => true,
         );
         register_post_type( 'pickup_locations', $args );
+    }
+    public function pickup_tab( $tabs ) {
+        global $product;
+        
+        $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
+        if ( ! empty( $pickups ) ){
+            $tabs['pickups'] = array(
+                'title' 	=> 'Bus Times',
+                'priority' 	=> 50,
+                'callback' 	=> array( $this, 'bus_times_content')
+                );
+            }
+        return $tabs;
+    }
+    public function bus_times_content() {
+        global $product;
+        
+        $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
+        
+        echo "<h2> Bus Times</h2>";
+        foreach ( $pickups as $pickup ) {
+            echo $this->pickup_html($pickup);
+        }
+    }
+    public function pickup_html( $post_id ) {
+        $pickup = get_post( $post_id );
+        $address = get_post_meta( $post_id, '_pickup_location_address', true );
+        $output = "";
+        if ( $address ) {
+            $cross_st = get_post_meta( $post_id, '_pickup_location_cross_st', true);
+            $address = explode(",", ucwords( strtolower( $address ) ), 2);
+            $time = get_post_meta( $post_id, '_pickup_location_time', true);
+            $output = <<<PICKUPHTML
+            <div class="pickup">
+                <strong>{$pickup->post_title}</strong><br />
+                {$address[0]}<br />
+                {$cross_st}<br />
+                {$address[1]}<br />
+                <strong><a href="http://maps.google.com/?q={$address[0]}{$address[1]}" target="_blank">View Map</a></strong>
+            </div>
+PICKUPHTML;
+        }
+
+        return $output;
     }
 }
 $GLOBALS['wc_trips'] = new WC_Trips();
