@@ -19,41 +19,40 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 
         <div id="wc-trips-form">
         <p class="form-field form-field-wide" id="wc_trip_first">
-            <label for="wc_trip_first">First</label>
-            <input type="text" name="wc_trip_first" />
+            <label for="wc_trip_first">First <span class="required">*</span></label>
+            <input type="text" name="wc_trip_first" data-required="true" />
         </p>
         <p class="form-field form-field-wide" id="wc_trip_last">
-            <label for="wc_trip_last">Last</label>
-            <input type="text" name="wc_trip_last" />
+            <label for="wc_trip_last">Last <span class="required">*</span></label>
+            <input type="text" name="wc_trip_last" data-required="true" />
         </p><br /><br />
         <p class="form-field form-field-wide" id="wc_trip_email">
-            <label for="wc_trip_email">Email</label>
-            <input type="text" name="wc_trip_email" />
+            <label for="wc_trip_email">Email <span class="required">*</span></label>
+            <input type="text" name="wc_trip_email" data-required="true" />
         </p>
         <p class="form-field form-field-wide" id="wc_trip_phone">
-            <label for="wc_trip_phone">Phone</label>
-            <input type="text" name="wc_trip_phone" />
+            <label for="wc_trip_phone">Phone <span class="required">*</span></label>
+            <input type="text" name="wc_trip_phone" data-required="true" />
         </p>
         <?php 
-        $trip_type = get_post_meta( $product->id, '_wc_trip_type', true);
-        echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . $trip_type . "' />";
+        echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . $trip_type . "' data-required='true' />";
         switch ( $trip_type ) {
             case "international_flight":
                 echo <<<PASSPORT
                     <p class="form-field form-field-wide" id="wc_trip_passport_num">
                         <label for="wc_trip_passport_num">Passport #</label>
-                        <input type="text" name="wc_trip_passport_num">
+                        <input type="text" name="wc_trip_passport_num" data-required="false" />
                     </p>
                     <p class="form-field form-field-wide" id="wc_trip_passport_country">
                         <label for="wc_trip_passport_country">Passport Country of Issue</label>
-                        <input type="text" name="wc_trip_passport_country" />
+                        <input type="text" name="wc_trip_passport_country" data-required="false" />
                     </p>
 PASSPORT;
             case "domestic_flight":
                 echo <<<DOB
                     <p class="form-field form-field-wide" id="wc_trip_dob">
-                        <label for="wc_trip_dob">Date of Birth ( MM/DD/YYYY )</label>
-                        <input type="text" name="wc_trip_dob" max-length="9" />
+                        <label for="wc_trip_dob">Date of Birth ( MM/DD/YYYY ) <span class="required">*</span></label>
+                        <input type="text" name="wc_trip_dob" max-length="9" data-required="true" />
                     </p>
 DOB;
                 break;
@@ -67,26 +66,37 @@ DOB;
             if ( $info ) {
                 echo <<<PACKAGE
                     <p class='form-field'>
-                        <label for="wc_trip_{$type}_package">{$info['label']}</label>
-                        <select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package">
+                        <label for="wc_trip_{$type}_package" >{$info['label']} <span class="required">*</span></label>
+                        <select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package" data-required="true">
                         <option value="">Select option</option>
 PACKAGE;
                 echo $info['html'];
                 echo "</select></p>";
             }
         }
+        
+        if ( $pickups ) {
+            echo <<<PICKUPS
+                <p class='form-field'>
+                    <label for="wc_trip_pickup_location">Pickup Location <span class="required">*</span></label>
+                    <select name="wc_trip_pickup_location" id="wc_trip_pickup_location" data-required="true">
+                        {$pickups}
+                    </select>
+                </p>
+PICKUPS;
+        }
         ?>
-
+        
         <?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
-
+        
         <div class="wc-trip-cost" style="display:none"></div>
 
     </div>
 
     <input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
-
+    
     <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
-
+    
     <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 
 </form>

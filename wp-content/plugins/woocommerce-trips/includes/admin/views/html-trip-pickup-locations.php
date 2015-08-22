@@ -22,10 +22,11 @@
                 if ( gettype($pickup_locations) == "array" ){
                     foreach( $pickup_locations as $location_id) {
                         $location = get_post( $location_id );
-                        if ( "No Bus" == $location->post_title) {
-                            $location_time = "";
-                        } else {
+                        $location_time = get_post_meta( $location_id, '_pickup_location_time', true);
+                        if ( $location_time ) {
                             $location_time = " - " . date("g:i a", strtotime($location_time));
+                        } else {
+                            $location_time = "";
                         }
                         
                         include('html-trip-pickup-location.php');
@@ -46,15 +47,16 @@
                 <?php
                     if ( $all_pickup_locations ) {
                         foreach( $all_pickup_locations as $pickup ) {
-                            $time = get_post_meta( $pickup->ID, '_pickup_location_time', true);
-                            if ( "No Bus" == $pickup->post_title) {
-                                $time = "";
-                            } else {
-                                $time = " - " . date("g:i a", strtotime($time));
+                            if ( ! in_array($pickup->ID, $pickup_locations) ) {
+                                $time = get_post_meta( $pickup->ID, '_pickup_location_time', true);
+                                if ( $time) {
+                                    $time = " - " . date("g:i a", strtotime($time));
+                                } else {
+                                    $time = "";
+                                }
+                                echo '<option value="' .esc_attr($pickup->ID).'">'. esc_html( $pickup->post_title ) . $time . '</option>';}
                             }
-                            echo '<option value="' .esc_attr($pickup->ID).'">'. esc_html( $pickup->post_title ) . $time . '</option>';
                         }
-                    }
                 ?>
             </select>
         </p>

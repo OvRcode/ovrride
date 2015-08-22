@@ -1,14 +1,22 @@
 <?php
 // TODO: Add code to pull destinations when they are setup
 $destinations       = array("MT Snow","Killington","Jay Peak");
-$stock              = get_post_meta( $post_id, '_wc_trip_stock', true );
+$stock              = get_post_meta( $post_id, '_stock', true );
 $base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
 $saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );
 $trip_type          = get_post_meta( $post_id, '_wc_trip_type', true );
 $start_date         = get_post_meta( $post_id, '_wc_trip_start_date', true );
 $end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
+$stock_status       = get_post_meta( $post_id, '_stock_status', true);
 ?>
 <div class="options_group show_if_trip">
+    <p class="form-field">
+       <label for="_wc_trip_stock_status">Stock Status</label>
+       <select name="_wc_trip_stock_status" id="_wc_trip_stock_status">
+           <option value="outofstock" <?php echo ( $stock_status == "outofstock" ? 'selected' : ''); ?>>Out of Stock</option>
+           <option value="instock" <?php echo ( $stock_status == "instock" ? 'selected' : ''); ?>>In Stock</option>
+       </select>
+    </p>
     <p class="form-field">
        <label for="_wc_trip_stock">Stock</label>
        <input type="number" name="_wc_trip_stock" id="_wc_trip_stock" min="0" class="trip_stock" value="<?php echo $stock; ?>">

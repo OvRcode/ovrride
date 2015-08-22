@@ -4,14 +4,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Product_Trip extends WC_Product {
+    
     public function __construct( $product ) {
         $this->product_type = 'trip';
+        $this->manage_stock = 'yes';
         parent::__construct( $product );
+    }
+    public function get_price_html() {
+        if ( ! $this->is_purchasable() ) {
+            echo "<p class='stock out-of-stock'>Out of stock</p>";
+        } else if ( $this->stock <= 10 ) {
+            echo "<p class='stock low-in-stock'>Low stock,&nbsp;" . $this->stock . " left</p>";
+        } else {
+            echo "<p class='stock in-stock'>In Stock</p>";
+        }
     }
     public function is_purchasable() {
         // insert purchaseable checks here
-        return true;
+        if ( "outofstock" == $this->stock_status) {
+            return false;
+        } else {
+            return true;
+        }
     }
+    
+    public function is_sold_individually() {
+        return false;
+    }
+    
     public function output_packages( $type ) {
         $packages = get_post_meta( $this->id, "_wc_trip_" . $type . "_packages", true );
         $stock = get_post_meta( $this->id, "_wc_trip_" . $type . "_package_stock", true );
@@ -44,7 +64,5 @@ class WC_Product_Trip extends WC_Product {
             return false;
         }
     }
-    public function primary_packages() {
-        //get_post_meta ( int $post_id, string $key = '', bool $single = false )
-    }
+
 }

@@ -32,6 +32,7 @@ class WC_Trips {
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_form_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
         
+        
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
         }

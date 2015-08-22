@@ -52,7 +52,7 @@ class WC_Trips_Admin {
         global $post;
         $post_id = $post->ID;
         $product_type = empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
-
+        
         if ( 'trip' !== $product_type ) {
             return;
         }
@@ -64,7 +64,8 @@ class WC_Trips_Admin {
             '_wc_trip_type'                     => 'string',
             '_wc_trip_start_date'               => 'date',
             '_wc_trip_end_date'                 => 'date',
-            '_wc_trip_stock'                    => 'int'
+            '_wc_trip_stock'                    => 'int',
+            '_wc_trip_stock_status'             => 'stockStatus'
             );
         foreach ( $meta_to_save as $meta_key => $sanitize ) {
             $value = ! empty( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '';
@@ -75,10 +76,20 @@ class WC_Trips_Admin {
                 case 'float' :
                     $value = floatval( $value );
                     break;
+                case 'stockStatus':
+                    $value = ( $value == "instock" || $value == "outofstock" ? $value : '');
+                    break;
                 default :
                     $value = sanitize_text_field( $value );
             }
-            update_post_meta( $post_id, $meta_key, $value );
+            if ( "_wc_trip_stock" == $meta_key ) {
+                update_post_meta( $post_id, "_stock", $value );
+            } else if ( "_wc_trip_stock_status" == $meta_key ) {
+                update_post_meta( $post_id, "_stock_status", $value );
+            } else {
+                update_post_meta( $post_id, $meta_key, $value );
+            }
+            error_log( $meta_key . " : ".$value);
             unset($_POST[ $meta_key ]);
         }
         // Primary packages
@@ -227,7 +238,11 @@ META;
     public function pickup_columns( $column_name, $post_id ) {
         if ( "pickup_time" == $column_name ){
             $time = get_post_meta( $post_id, '_pickup_location_time', true);
-            echo date("g:i a", strtotime($time));
+            if ( ! $time || "" === $time) {
+                echo "";
+            } else {
+                echo date("g:i a", strtotime($time));
+            }
         }
     }
     
@@ -303,11 +318,9 @@ META;
         $pickup_count     = intval( $_POST['pickupCount'] );
         $new_pickup_id    = intval( $_POST['new_pickup_id'] );
         $new_pickup_name  = wc_clean( $_POST['new_pickup_name'] );
+        $existing_pickups = get_post_meta( $post_id, '_wc_trip_pickups', true);
         
-        if ( 0 !== $new_pickup_id ) {
-            $existing_pickups = get_post_meta( $post_id, '_wc_trip_pickups', true);
-        }
-        if ( ! isset($existing_pickups) || gettype($existing_pickups) != "array"){
+        if ( ! $existing_pickups){
             $existing_pickups = array();
         }
         
@@ -332,14 +345,18 @@ META;
         
         if ( $pickup_id ) {
             // Update pickups on trip
-            $updated_pickups = array_merge($existing_pickups, array($pickup_id));
+            $updated_pickups = array_merge($existing_pickups, array(0 => $pickup_id));
             update_post_meta( $post_id, '_wc_trip_pickups',$updated_pickups);
             
             // Send HTML back to JS
+            ob_start();
             $location_id = $pickup_id;
             $location = get_post( $location_id );   
             $count = $pickup_count;
-            ob_start();
+            $location_time = get_post_meta( $location_id, '_pickup_location_time ', true);
+            if ( $location_time ) {
+                $location_time = " - " . date("g:i a", strtotime($location_time));
+            }
             include( 'views/html-trip-pickup-location.php' );
             die( json_encode( array( 'html' => ob_get_clean() ) ) );
         }

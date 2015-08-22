@@ -86,7 +86,7 @@ jQuery(document).ready(function($){
         $( ".woocommerce_trip_pickup_locations" ).append( response.html ).unblock();
         $( ".woocommerce_trip_pickup_locations" ).sortable( pickup_sortable_options );
         if ( new_pickup_id ) {
-          $( ".new_pickup_id" ).find( 'option[value=' + new_pickup_id + ']' ).remove();
+          $('.add_pickup_location_id option[value=' + new_pickup_id + ']').remove();
         }
       }
     });
@@ -101,7 +101,7 @@ jQuery(document).ready(function($){
     var entry = $(this).parent().parent();
     if ( checkRemove ) {
       $( entry ).block( { message: null, overlayCSS: { background: '#ffffff url(' + wc_trips_admin_js_params.plugin_url + '/assets/images/select2-spinner.gif) no-repeat center', opacity: 0.6} } );
-      
+      var appendHTML = '<option value="' + $(this).attr("rel") + '">' + $(this).siblings('strong').text() + '</option>';
       var removeData = {
         action: 'woocommerce_remove_pickup_location',
         post_id: wc_trips_admin_js_params.post,
@@ -111,8 +111,9 @@ jQuery(document).ready(function($){
       
       $.post( wc_trips_admin_js_params.ajax_url, removeData, function(response){
         if ( response.removed ) {
+          $( ".add_pickup_location_id" ).append( appendHTML );
           $( entry ).fadeOut( '400', function(){
-            $( entry ).remove();
+          $( entry ).remove();
           });
         } else {
           $( entry ).unblock();
