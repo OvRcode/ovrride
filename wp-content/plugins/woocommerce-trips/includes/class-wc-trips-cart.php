@@ -25,8 +25,9 @@ class WC_Trips_Cart {
             if ( WC()->session->__isset( $cart_item_key . "_" . $key ) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
                     wc_add_order_item_meta( $item_id, WC()->session->get($cart_item_key . "_" . $key . "_label"), WC()->session->get( $cart_item_key . "_" . $key ));
+                } else {
+                    wc_add_order_item_meta( $item_id, $value, WC()->session->get( $cart_item_key . "_" . $key ));
                 }
-                wc_add_order_item_meta( $item_id, $value, WC()->session->get( $cart_item_key . "_" . $key ));
             }
         }
     }
