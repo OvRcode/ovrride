@@ -10,6 +10,12 @@ jQuery(document).ready(function($){
   $("#wc-trips-form input").on("keyup", function(){
     enableDisableCart();
   });
+  $("select[name$=_package]").on("change", function(){
+    var name = $(this).attr('name');
+    var cost = $(this).find(":selected").data('cost');
+    $("input[name='" + name + "_cost']").val( cost );
+    
+  });
   // TODO: Auto format Birthday
   // Enables/disables cart button based on fields being filled out
   function enableDisableCart() {

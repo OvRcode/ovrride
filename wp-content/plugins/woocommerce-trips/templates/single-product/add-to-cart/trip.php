@@ -72,6 +72,8 @@ DOB;
 PACKAGE;
                 echo $info['html'];
                 echo "</select></p>";
+                echo "<input type='hidden' name='wc_trip_{$type}_package_label' value='{$info['label']}' />";
+                echo "<input type='hidden' name='wc_trip_{$type}_package_cost' value='' />";
             }
         }
         

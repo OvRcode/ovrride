@@ -11,7 +11,9 @@ class WC_Product_Trip extends WC_Product {
         parent::__construct( $product );
     }
     public function get_price() {
-        error_log( "DEBUG::::::TESTING!");
+       // error_log( "DEBUG::get_price");
+    //    error_log("Base Price: " . $this->wc_trip_base_price);
+        return $this->wc_trip_base_price;
     }
     public function get_price_html() {
         if ( ! $this->is_purchasable() ) {
@@ -57,7 +59,7 @@ class WC_Product_Trip extends WC_Product {
                 $costLabel = " +" . $values['cost'];
             }
             
-            $htmlOutput .= '<option value="' . $values['description'] . '" ' . $data_cost . ' ' . $disabled . '>' .$outOfStock . $values['description'] . $costLabel . '</option>';
+            $htmlOutput .= '<option value="' . $values['description'] . '" ' . $dataCost . ' ' . $disabled . '>' .$outOfStock . $values['description'] . $costLabel . '</option>';
 
             
         }
