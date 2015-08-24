@@ -7,7 +7,6 @@ class WC_Trips_Cart {
     public $fields;
     public function __construct() {
        add_action( 'woocommerce_trip_add_to_cart', array( $this, 'add_to_cart' ), 30 );
-       add_filter( 'woocommerce_add_cart_item', array( $this, 'add_cart_item' ), 10, 1 );
        add_filter( 'woocommerce_report_out_of_stock_query_from', array($this, 'out_of_stock'), 10, 1 );
        add_action( 'woocommerce_add_to_cart', array( $this, 'save_trip_fields'), 1, 5 );
        add_filter( 'woocommerce_cart_item_name', array( $this, 'render_meta_on_cart_item'), 1, 3 );
@@ -24,13 +23,16 @@ class WC_Trips_Cart {
         foreach ( $this->fields as $key => $value ) {
             if ( WC()->session->__isset( $cart_item_key . "_" . $key ) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
-                    wc_add_order_item_meta( $item_id, WC()->session->get($cart_item_key . "_" . $key . "_label"), WC()->session->get( $cart_item_key . "_" . $key ));
+                    $label = WC()->session->get($cart_item_key . "_" . $key . "_label");
+                    $value = WC()->session->get( $cart_item_key . "_" . $key );
+                    wc_add_order_item_meta( $item_id, $label, $value);
                 } else {
                     wc_add_order_item_meta( $item_id, $value, WC()->session->get( $cart_item_key . "_" . $key ));
                 }
             }
         }
     }
+    
     public function force_individual_cart_items( $cart_item_data, $product_id ) {
         $unique_cart_item_key = md5( microtime().rand() );
         $cart_item_data['unique_key'] = $unique_cart_item_key;
@@ -104,25 +106,6 @@ CARTMETA;
         $template_data = array('fields' => $fields, 'trip_type' => $trip_type, 'pickups' => $pickups);
         wc_get_template( 'single-product/add-to-cart/trip.php', $template_data, 'woocommerce-trips', WC_TRIPS_TEMPLATE_PATH );
         
-    }
-    public function add_cart_item( $passed) {
-//        error_log("DEBUG:::CART_ITEM");
-        //error_log(print_r($passed, true));
-    /*    var_dump($passed);
-        $product = wc_get_product($passed->product_id);
-        var_dump($product);
-        /*var_dump(print_r($product, true));
-        if ( $product->product_type !== 'trip' ) {
-            return $passed;
-        }
-        error_log(" PASSED PRODUCT CHECK");
-        $this->getPostedData();
-        */
-        return $passed;
-    }
-    public function getPostedData() {
-        var_dump($_POST);
-        //error_log( print_r($_POST, true));
     }
     private function pickupField( $post_id ) {
         $pickup_ids = get_post_meta( $post_id, '_wc_trip_pickups', true);
