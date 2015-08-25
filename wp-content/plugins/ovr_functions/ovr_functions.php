@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo, Mike Barnard
  * Author URI: http://ajacevedo.com
- * Version: 0.4.0
+ * Version: 0.5.0
  * License: MIT License
  */
 
@@ -126,6 +126,13 @@ function woocommerce_remove_reviews($tabs){
 }
 add_filter('woocommerce_product_tabs', 'woocommerce_remove_reviews', 98);
 
+// Remove Dynamic content gallery columns from product admin page
+add_filter( 'manage_edit-product_columns', 'products_column_header' );
+function products_column_header( $defaults ) {
+    unset( $defaults['dfcg_image_col'] );
+    unset( $defaults['dfcg_desc_col'] );
+    return $defaults;
+}
 // Adds Google Analytics to the footer
 add_action('wp_footer', 'add_google_analytics');
   function add_google_analytics() { ?>
