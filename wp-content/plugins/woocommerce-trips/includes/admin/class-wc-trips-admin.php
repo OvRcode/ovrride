@@ -8,6 +8,7 @@ class WC_Trips_Admin {
         global $post;
 
         $post_id = $post->ID;
+        
         add_filter( 'product_type_options', array( $this, 'product_type_options' ) );
         add_filter( 'product_type_selector' , array( $this, 'product_type_selector' ) );
         add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'add_tab' ), 5 );
@@ -15,13 +16,16 @@ class WC_Trips_Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'script_style_includes' ) );
         add_action( 'woocommerce_process_product_meta', array( $this,'save_product_data' ), 20 );
         add_action( 'woocommerce_product_options_general_product_data', array( $this, 'general_tab' ) );
+        
         // Pickup Post type specific
         add_action( 'add_meta_boxes_pickup_locations', array( $this, 'pickup_locations_meta_boxes' ) );
         add_action( 'save_post', array($this,'save_pickup_meta') );
         add_filter( 'manage_pickup_locations_posts_columns', array($this, 'pickup_columns_head' ) );
+        add_filter( 'manage_destinations_posts_columns', array($this, 'destination_columns_head' ) );
         add_action( 'manage_pickup_locations_posts_custom_column', array($this, 'pickup_columns' ), 10, 2 );
         add_action( 'admin_action_wc_trips_duplicate_pickup', array( $this, 'wc_trips_duplicate_pickup'));
         add_filter( 'post_row_actions', array($this, 'wc_trip_pickup_location_duplicate_post_link'), 10, 2 );
+        
         // Ajax
         add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
         add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_pickup_location' ) );
@@ -42,8 +46,22 @@ class WC_Trips_Admin {
     }
     
     public function general_tab() {
-		global $post;
-		$post_id = $post->ID;
+        global $post;
+        $post_id = $post->ID;
+        $args = array('post_type' => 'destinations',
+                      'posts_per_page' => '-1',
+                      'post_status' => 'publish',
+                      'orderby' => 'title',
+                      'order' => 'ASC');
+        $destinations       = get_posts( $args );
+        error_log( print_r($destinations, true));
+        $stock              = get_post_meta( $post_id, '_stock', true );
+        $base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
+        $saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );
+        $trip_type          = get_post_meta( $post_id, '_wc_trip_type', true );
+        $start_date         = get_post_meta( $post_id, '_wc_trip_start_date', true );
+        $end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
+        $stock_status       = get_post_meta( $post_id, '_stock_status', true);
         include( 'views/html-trip-general.php' );
     }
     
@@ -218,10 +236,19 @@ META;
         }
     }
     
+    public function destination_columns_head( $defaults ) {
+        unset( $defaults['dfcg_image_col'] );
+        unset( $defaults['dfcg_desc_col'] );
+        
+        unset( $defaults['expirationdate'] );
+        
+        return $defaults;
+    }
+    
     public function pickup_columns_head( $defaults ) {
         // Remove dynamic gallery columns, these columns are not applicable to this post type
         unset( $defaults['dfcg_desc_col'] );
-        unset( $defaults['dfcg_image_col']);
+        unset( $defaults['dfcg_image_col'] );
         
         // Remove expiration column
         unset( $defaults['expirationdate'] );

@@ -1,13 +1,7 @@
 <?php
-// TODO: Add code to pull destinations when they are setup
-$destinations       = array("MT Snow","Killington","Jay Peak");
-$stock              = get_post_meta( $post_id, '_stock', true );
-$base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
-$saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );
-$trip_type          = get_post_meta( $post_id, '_wc_trip_type', true );
-$start_date         = get_post_meta( $post_id, '_wc_trip_start_date', true );
-$end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
-$stock_status       = get_post_meta( $post_id, '_stock_status', true);
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 ?>
 <div class="options_group show_if_trip">
     <p class="form-field">
@@ -34,8 +28,8 @@ $stock_status       = get_post_meta( $post_id, '_stock_status', true);
             <option value="" default>Select a destination</option>
             <?php
             foreach( $destinations as $destination ) {
-                $destination_selected = ($destination == $saved_destination ? "selected" : "");
-                echo sprintf('<option value="%s" %s>%s</option>',$destination, $destination_selected, $destination);
+                $destination_selected = ($destination->post_title == $saved_destination ? "selected" : "");
+                echo sprintf('<option value="%s" %s>%s</option>',$destination->post_title, $destination_selected, $destination->post_title);
             }
             ?>
         </select>

@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 include( 'includes/wc-checks.php' );
 
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
-	function is_woocommerce_active() {
-		return WC_Checks::woocommerce_active_check();
-	}
+    function is_woocommerce_active() {
+        return WC_Checks::woocommerce_active_check();
+    }
 }
 
 if ( is_woocommerce_active() ) {
@@ -61,8 +61,9 @@ class WC_Trips {
         wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'); 
         wp_enqueue_script( 'wc-trips-frontend-js', WC_TRIPS_PLUGIN_URL . '/assets/js/front_end.js', array('jquery'), WC_TRIPS_VERSION, TRUE );
     }
+    
     public function init_post_types() {
-        $labels = array(
+        $pickupLabels = array(
           'name'               => _x( 'Pickup Locations', 'woocommerce-trips' ),
           'singular_name'      => _x( 'Pickup Location', 'woocommerce-trips'),
           'add_new'            => _x( 'Add Location', 'woocommerce-trips'),
@@ -77,16 +78,41 @@ class WC_Trips {
           'parent_item_colon'  => '',
           'menu_name'          => 'Pickup Locations'
         );
-        $args = array(
-          'labels'        => $labels,
+        $pickupArgs = array(
+          'labels'        => $pickupLabels,
           'description'   => 'Pickup Locations for all trips',
           'public'        => true,
           'menu_position' => 40,
           'supports'      => array( 'title', 'thumbnail'),
           'has_archive'   => true,
         );
-        register_post_type( 'pickup_locations', $args );
+        register_post_type( 'pickup_locations', $pickupArgs );
+        $destinationLabels = array(
+          'name'               => _x( 'Destinations', 'woocommerce-trips' ),
+          'singular_name'      => _x( 'Destination', 'woocommerce-trips'),
+          'add_new'            => _x( 'Add Destination', 'woocommerce-trips'),
+          'add_new_item'       => __( 'Add New Destination' ),
+          'edit_item'          => __( 'Edit Destination' ),
+          'new_item'           => __( 'New Destination' ),
+          'all_items'          => __( 'All Destinations' ),
+          'view_item'          => __( 'View Destinations' ),
+          'search_items'       => __( 'Search Destinations' ),
+          'not_found'          => __( 'No Destinations found' ),
+          'not_found_in_trash' => __( 'No Destinations found in the Trash' ), 
+          'parent_item_colon'  => '',
+          'menu_name'          => 'Destinations'
+        );
+        $destinationArgs = array(
+          'labels'        => $destinationLabels,
+          'description'   => 'Destinations for all trips',
+          'public'        => true,
+          'menu_position' => 40,
+          'supports'      => array( 'title', 'thumbnail'),
+          'has_archive'   => true,
+        );
+        register_post_type( 'destinations', $destinationArgs );
     }
+    
     public function pickup_tab( $tabs ) {
         global $product;
         
@@ -100,6 +126,7 @@ class WC_Trips {
             }
         return $tabs;
     }
+    
     public function bus_times_content() {
         global $product;
         
@@ -110,6 +137,7 @@ class WC_Trips {
             echo $this->pickup_html($pickup);
         }
     }
+    
     public function pickup_html( $post_id ) {
         $pickup = get_post( $post_id );
         $address = get_post_meta( $post_id, '_pickup_location_address', true );
@@ -131,6 +159,7 @@ PICKUPHTML;
 
         return $output;
     }
+    
 }
 $GLOBALS['wc_trips'] = new WC_Trips();
 }

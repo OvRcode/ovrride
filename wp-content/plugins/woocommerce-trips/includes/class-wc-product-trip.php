@@ -11,8 +11,6 @@ class WC_Product_Trip extends WC_Product {
         parent::__construct( $product );
     }
     public function get_price() {
-       // error_log( "DEBUG::get_price");
-    //    error_log("Base Price: " . $this->wc_trip_base_price);
         return $this->wc_trip_base_price;
     }
     public function get_price_html() {
