@@ -415,9 +415,6 @@ function wc_scheduled_sales() {
 
 			// Sync parent
 			if ( $parent ) {
-				// We can force variable product price to sync up by removing their min price meta
-				delete_post_meta( $parent, '_min_variation_price' );
-
 				// Grouped products need syncing via a function
 				$this_product = wc_get_product( $product_id );
 				if ( $this_product->is_type( 'simple' ) ) {
@@ -426,6 +423,7 @@ function wc_scheduled_sales() {
 			}
 		}
 
+		WC_Cache_Helper::get_transient_version( 'product', true );
 		delete_transient( 'wc_products_onsale' );
 	}
 }
@@ -632,7 +630,7 @@ function wc_get_product_variation_attributes( $variation_id ) {
 	foreach ( $parent_attributes as $attribute_name => $options ) {
 		$attribute                 = 'attribute_' . sanitize_title( $attribute_name );
 		$found_parent_attributes[] = $attribute;
-		if ( ! array_key_exists( $attribute, $variation_attributes ) ) {
+		if ( ! empty( $options['is_variation'] ) && ! array_key_exists( $attribute, $variation_attributes ) ) {
 			$variation_attributes[ $attribute ] = ''; // Add it - 'any' will be asumed
 		}
 	}

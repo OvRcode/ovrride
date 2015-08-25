@@ -675,7 +675,7 @@ class GFFormDisplay {
 			$default_anchor = $has_pages || $ajax ? true : false;
 			$use_anchor     = gf_apply_filters( 'gform_confirmation_anchor', $form_id, $default_anchor );
 			if ( $use_anchor !== false ) {
-				$form_string .= "<a id='gf_$form_id' name='gf_$form_id' class='gform_anchor' ></a>";
+				$form_string .= "<a id='gf_$form_id' class='gform_anchor' ></a>";
 				$action .= "#gf_$form_id";
 			}
 			$target = $ajax ? "target='gform_ajax_frame_{$form_id}'" : '';
@@ -761,7 +761,7 @@ class GFFormDisplay {
 					$field->conditionalLogicFields = self::get_conditional_logic_fields( $form, $field->id );
 
 					if ( is_array( $submitted_values ) ) {
-						$field_value = $submitted_values[ $field->id ];
+						$field_value = rgar( $submitted_values, $field->id );
 					} else {
 						$field_value = GFFormsModel::get_field_value( $field, $field_values );
 					}
@@ -959,7 +959,7 @@ class GFFormDisplay {
 		if ( $button['type'] == 'text' || $button['type'] == 'link' || empty( $button['imageUrl'] ) ) {
 			$button_text = ! empty( $button['text'] ) ? $button['text'] : $default_text;
 			if ( $button['type'] == 'link' ) {
-				$button_input = "<a href='javascript:void(0);' id='{$button_input_id}_link' class='{$class}' alt='{$alt}' title='{$alt}' {$tabindex} {$onclick}>{$button_text}</a>";
+				$button_input = "<a href='javascript:void(0);' id='{$button_input_id}_link' class='{$class}' {$tabindex} {$onclick}>{$button_text}</a>";
 			} else {
 				$class .= ' button';
 				$button_input = "<input type='{$input_type}' id='{$button_input_id}' class='{$class}' value='" . esc_attr( $button_text ) . "' {$tabindex} {$onclick} />";
@@ -1180,7 +1180,7 @@ class GFFormDisplay {
 
 		if ( $form['confirmation']['type'] == 'message' ) {
 			$default_anchor = self::has_pages( $form ) ? 1 : 0;
-			$anchor         = gf_apply_filters( 'gform_confirmation_anchor', $form['id'], $default_anchor ) ? "<a id='gf_{$form['id']}' name='gf_{$form['id']}' class='gform_anchor' ></a>" : '';
+			$anchor         = gf_apply_filters( 'gform_confirmation_anchor', $form['id'], $default_anchor ) ? "<a id='gf_{$form['id']}' class='gform_anchor' ></a>" : '';
 			$nl2br          = rgar( $form['confirmation'], 'disableAutoformat' ) ? false : true;
 			$cssClass       = rgar( $form, 'cssClass' );
 			$confirmation   = empty( $form['confirmation']['message'] ) ? "{$anchor} " : "{$anchor}<div id='gform_confirmation_wrapper_{$form['id']}' class='gform_confirmation_wrapper {$cssClass}'><div id='gform_confirmation_message_{$form['id']}' class='gform_confirmation_message_{$form['id']} gform_confirmation_message'>" . GFCommon::replace_variables( $form['confirmation']['message'], $form, $lead, false, true, $nl2br ) . '</div></div>';
@@ -1789,8 +1789,10 @@ class GFFormDisplay {
 						}
 						break;
 					case 'time':
-						$ampm_key = key( array_slice( $field_val, -1, 1, true ) );
-						$field_val[ $ampm_key ] = strtolower( $field_val[ $ampm_key ] );
+						if ( is_array( $field_val ) ) {
+							$ampm_key = key( array_slice( $field_val, - 1, 1, true ) );
+							$field_val[ $ampm_key ] = strtolower( $field_val[ $ampm_key ] );
+						}
 						break;
 					case 'address':
 
@@ -2792,7 +2794,7 @@ class GFFormDisplay {
 		$use_anchor     = gf_apply_filters( 'gform_confirmation_anchor', $form_id, $default_anchor );
 
 		if ( $use_anchor !== false ) {
-			$save_email_confirmation = "<a id='gf_$form_id' name='gf_$form_id' class='gform_anchor' ></a>" . $save_email_confirmation;
+			$save_email_confirmation = "<a id='gf_$form_id' class='gform_anchor' ></a>" . $save_email_confirmation;
 		}
 
 		if ( $ajax ) {
@@ -2818,7 +2820,7 @@ class GFFormDisplay {
 		$use_anchor     = gf_apply_filters( 'gform_confirmation_anchor', $form_id, $default_anchor );
 
 		if ( $use_anchor !== false ) {
-			$confirmation_message = "<a id='gf_{$form_id}' name='gf_{$form_id}' class='gform_anchor' ></a>" . $confirmation_message;
+			$confirmation_message = "<a id='gf_{$form_id}' class='gform_anchor' ></a>" . $confirmation_message;
 		}
 
 		$wrapper_css_class = GFCommon::get_browser_class() . ' gform_wrapper';

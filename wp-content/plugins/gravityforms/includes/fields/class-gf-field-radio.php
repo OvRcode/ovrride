@@ -112,7 +112,7 @@ class GF_Field_Radio extends GF_Field {
 				// handle 'other' choice
 				if ( rgar( $choice, 'isOtherChoice' ) ) {
 
-					$onfocus = ! $is_admin ? 'jQuery(this).prev("input").attr("checked", true); if(jQuery(this).val() == "' . $other_default_value . '") { jQuery(this).val(""); }' : '';
+					$onfocus = ! $is_admin ? 'jQuery(this).prev("input")[0].click(); if(jQuery(this).val() == "' . $other_default_value . '") { jQuery(this).val(""); }' : '';
 					$onblur  = ! $is_admin ? 'if(jQuery(this).val().replace(" ", "") == "") { jQuery(this).val("' . $other_default_value . '"); }' : '';
 					$onkeyup = $this->get_conditional_logic_event( 'keyup' );
 

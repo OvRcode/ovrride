@@ -577,6 +577,14 @@ abstract class GFFeedAddOn extends GFAddOn {
 
 	protected function feed_edit_page( $form, $feed_id ) {
 
+		$title = '<h3><span>' . $this->feed_settings_title() . '</span></h3>';
+
+		if ( ! $this->can_create_feed() ) {
+			echo $title . '<div>' . $this->configure_addon_message() . '</div>';
+
+			return;
+		}
+
 		// Save feed if appropriate
 		$feed_id = $this->maybe_save_feed_settings( $feed_id, $form['id'] );
 
@@ -586,10 +594,9 @@ abstract class GFFeedAddOn extends GFAddOn {
 		<script type="text/javascript">
 			<?php GFFormSettings::output_field_scripts() ?>
 		</script>
-
-		<h3><span><?php echo $this->feed_settings_title() ?></span></h3>
-
 		<?php
+
+		echo $title;
 
 		$feed = $this->get_feed( $feed_id );
 		$this->set_settings( $feed['meta'] );

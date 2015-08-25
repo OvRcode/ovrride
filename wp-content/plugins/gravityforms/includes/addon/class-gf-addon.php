@@ -3463,7 +3463,7 @@ abstract class GFAddOn {
 	 * @return bool
 	 */
 	public function has_plugin_settings_page() {
-		return $this->method_is_overridden( 'plugin_settings_fields' ) || $this->method_is_overridden( 'plugin_settings' );
+		return $this->method_is_overridden( 'plugin_settings_fields' ) || $this->method_is_overridden( 'plugin_settings_page' ) || $this->method_is_overridden( 'plugin_settings' );
 	}
 
 	/**

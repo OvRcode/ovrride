@@ -159,7 +159,7 @@ class GFExport {
 		$form_ids = GFAPI::add_forms( $forms );
 
 		if ( is_wp_error( $form_ids ) ) {
-			$form_ids = 0;
+			$form_ids = array();
 		} else {
 			foreach ( $form_ids as $key => $form_id ){
 				$forms[ $key ]['id'] = $form_id;

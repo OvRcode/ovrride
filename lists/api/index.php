@@ -79,15 +79,17 @@ class Lists {
             }
             $output .= $header;
             foreach ( $orders as $ID => $data ) {
+                $first      = ( isset( $data['Data']['First'] ) ? $data['Data']['First'] : '' );
+                $last       = ( isset( $data['Data']['Last'] ) ? $data['Data']['Last'] : '' );
+                $phone      = ( isset( $data['Data']['Phone'] ) ? $data['Data']['Phone'] : '' );
+                $pickup     = ( isset( $data['Data']['Pickup'] ) ? $data['Data']['Pickup'] : 'X' );
+                $package    = ( isset( $data['Data']['Package'] ) ? $data['Data']['Package'] : '' );
+                
                 $order = preg_split("/:/",$ID);
                 $order = $order[0];
-                $row = "\"" . $data['Data']['First'] . "\",\"" . $data['Data']['Last'] . "\",\"" . $data['Data']['Phone'] . "\"";
-                if ( isset($data['Data']['Pickup']) ){
-                    $row .= ",\"" . $data['Data']['Pickup'] . "\"";
-                } else{
-                    $row .= ",\"X\"";
-                }
-                $row .= ",\"" . $data['Data']['Package'] . "\",\"" . $order . "\"";
+                $row = "\"" . $first . "\",\"" . $last . "\",\"" . $phone . "\"";
+                $row .= ",\"" . $pickup . "\"";
+                $row .= ",\"" . $package . "\",\"" . $order . "\"";
                 
                 if ( $data['State'] == "AM" ) {
                     $state = ",\"X\",\"\",\"\",\"\"\n";
@@ -111,15 +113,16 @@ class Lists {
             }
             $output .= $header;
             foreach( $orders as $ID => $data ) {
+                $first = (isset($data['Data']['First']) ? $data['Data']['First'] : '');
+                $last = (isset($data['Data']['Last']) ? $data['Data']['Last'] : '');
+                $package = (isset($data['Data']['Package']) ? $data['Data']['Package'] : '');
+                $pickup = (isset($data['Data']['Pickup']) ? $data['Data']['Pickup'] : '');
+                $email = ( isset($data['Data']['Email']) ? $data['Data']['Email'] : 'none');
                 $row = "";
-                if ( isset($data['Data']['Email']) ) {
-                    $row .= "\"" . $data['Data']['Email'] . ",\"";
-                } else {
-                    $row .= "\"none\"";
-                }
-                $row .= ",\"" . $data['Data']['First'] . "\",\"" . $data['Data']['Last'] . "\",\"" . $data['Data']['Package'];
+                $row .= "\"" . $email . ",\"";
+                $row .= ",\"" . $first . "\",\"" . $last . "\",\"" . $package;
                 if ( $this->pickup ) {
-                  $row .= "\",\"" . $data['Data']['Pickup'];  
+                  $row .= "\",\"" . $pickup;  
                 }
                 $row .= "\"\n";
                 $output .= $row;
@@ -409,7 +412,7 @@ class Lists {
         if ( ! isset($orderData['Package']) ) {
             $orderData['Package'] = "";
         }
-        if ( isset($orderData['Is this guest at least 21 years of age?']) ) {
+        if ( isset($orderData['Is this guest at least 21 years of age?']) && $orderData['Is this guest at least 21 years of age?'] == "No" ) {
             $underAge = "<i class='fa fa-child fa-lg'></i>";
         } else {
             $underAge = "";

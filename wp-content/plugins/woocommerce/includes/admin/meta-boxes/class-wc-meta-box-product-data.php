@@ -252,24 +252,35 @@ class WC_Meta_Box_Product_Data {
 					echo '<div class="options_group show_if_simple show_if_external show_if_variable">';
 
 						// Tax
-						woocommerce_wp_select( array( 'id' => '_tax_status', 'label' => __( 'Tax Status', 'woocommerce' ), 'options' => array(
-							'taxable' 	=> __( 'Taxable', 'woocommerce' ),
-							'shipping' 	=> __( 'Shipping only', 'woocommerce' ),
-							'none' 		=> _x( 'None', 'Tax status', 'woocommerce' )
-						) ) );
+						woocommerce_wp_select( array(
+							'id'      => '_tax_status',
+							'label'   => __( 'Tax Status', 'woocommerce' ),
+							'options' => array(
+								'taxable' 	=> __( 'Taxable', 'woocommerce' ),
+								'shipping' 	=> __( 'Shipping only', 'woocommerce' ),
+								'none' 		=> _x( 'None', 'Tax status', 'woocommerce' )
+							),
+							'desc_tip'    => 'true',
+							'description' => __( 'Define whether or not the entire product is taxable, or just the cost of shipping it.', 'woocommerce' )
+						) );
 
 						$tax_classes         = WC_Tax::get_tax_classes();
 						$classes_options     = array();
 						$classes_options[''] = __( 'Standard', 'woocommerce' );
 
 						if ( ! empty( $tax_classes ) ) {
-
 							foreach ( $tax_classes as $class ) {
 								$classes_options[ sanitize_title( $class ) ] = esc_html( $class );
 							}
 						}
 
-						woocommerce_wp_select( array( 'id' => '_tax_class', 'label' => __( 'Tax Class', 'woocommerce' ), 'options' => $classes_options ) );
+						woocommerce_wp_select( array(
+							'id'          => '_tax_class',
+							'label'       => __( 'Tax Class', 'woocommerce' ),
+							'options'     => $classes_options,
+							'desc_tip'    => 'true',
+							'description' => __( 'Choose a tax class for this product. Tax classes are used to apply different tax rates specific to certain types of product.', 'woocommerce' )
+						) );
 
 						do_action( 'woocommerce_product_options_tax' );
 
@@ -403,14 +414,31 @@ class WC_Meta_Box_Product_Data {
 			</div>
 
 			<div id="product_attributes" class="panel wc-metaboxes-wrapper">
+				<div class="toolbar toolbar-top">
+					<span class="expand-close">
+						<a href="#" class="expand_all"><?php _e( 'Expand', 'woocommerce' ); ?></a> / <a href="#" class="close_all"><?php _e( 'Close', 'woocommerce' ); ?></a>
+					</span>
+					<select name="attribute_taxonomy" class="attribute_taxonomy">
+						<option value=""><?php _e( 'Custom product attribute', 'woocommerce' ); ?></option>
+						<?php
+							global $wc_product_attributes;
+
+							// Array of defined attribute taxonomies
+							$attribute_taxonomies = wc_get_attribute_taxonomies();
+
+							if ( $attribute_taxonomies ) {
+								foreach ( $attribute_taxonomies as $tax ) {
+									$attribute_taxonomy_name = wc_attribute_taxonomy_name( $tax->attribute_name );
+									$label = $tax->attribute_label ? $tax->attribute_label : $tax->attribute_name;
+									echo '<option value="' . esc_attr( $attribute_taxonomy_name ) . '">' . esc_html( $label ) . '</option>';
+								}
+							}
+						?>
+					</select>
+					<button type="button" class="button add_attribute"><?php _e( 'Add', 'woocommerce' ); ?></button>
+				</div>
 				<div class="product_attributes wc-metaboxes">
-
 					<?php
-						global $wc_product_attributes;
-
-						// Array of defined attribute taxonomies
-						$attribute_taxonomies = wc_get_attribute_taxonomies();
-
 						// Product attributes - taxonomies and custom, ordered, with visibility and variation attributes set
 						$attributes           = maybe_unserialize( get_post_meta( $thepostid, '_product_attributes', true ) );
 
@@ -445,24 +473,12 @@ class WC_Meta_Box_Product_Data {
 						}
 					?>
 				</div>
-
-				<p class="toolbar">
-					<button type="button" class="button button-primary add_attribute"><?php _e( 'Add', 'woocommerce' ); ?></button>
-					<select name="attribute_taxonomy" class="attribute_taxonomy">
-						<option value=""><?php _e( 'Custom product attribute', 'woocommerce' ); ?></option>
-						<?php
-							if ( $attribute_taxonomies ) {
-								foreach ( $attribute_taxonomies as $tax ) {
-									$attribute_taxonomy_name = wc_attribute_taxonomy_name( $tax->attribute_name );
-									$label = $tax->attribute_label ? $tax->attribute_label : $tax->attribute_name;
-									echo '<option value="' . esc_attr( $attribute_taxonomy_name ) . '">' . esc_html( $label ) . '</option>';
-								}
-							}
-						?>
-					</select>
-
-					<button type="button" class="button save_attributes"><?php _e( 'Save attributes', 'woocommerce' ); ?></button>
-				</p>
+				<div class="toolbar">
+					<span class="expand-close">
+						<a href="#" class="expand_all"><?php _e( 'Expand', 'woocommerce' ); ?></a> / <a href="#" class="close_all"><?php _e( 'Close', 'woocommerce' ); ?></a>
+					</span>
+					<button type="button" class="button save_attributes button-primary"><?php _e( 'Save Attributes', 'woocommerce' ); ?></button>
+				</div>
 				<?php do_action( 'woocommerce_product_options_attributes' ); ?>
 			</div>
 			<div id="linked_product_data" class="panel woocommerce_options_panel">
@@ -717,7 +733,10 @@ class WC_Meta_Box_Product_Data {
 					<div class="clear"></div>
 				</div>
 
-				<div class="woocommerce_variations wc-metaboxes" data-attributes="<?php echo esc_attr( json_encode( $attributes ) ); ?>" data-total="<?php echo $variations_count; ?>" data-total_pages="<?php echo $variations_total_pages; ?>" data-page="1" data-edited="false">
+				<div class="woocommerce_variations wc-metaboxes" data-attributes="<?php
+					// esc_attr does not double encode - htmlspecialchars does
+					echo htmlspecialchars( json_encode( $attributes ) );
+				?>" data-total="<?php echo $variations_count; ?>" data-total_pages="<?php echo $variations_total_pages; ?>" data-page="1" data-edited="false">
 				</div>
 
 				<div class="toolbar">
@@ -1104,7 +1123,7 @@ class WC_Meta_Box_Product_Data {
 				update_post_meta( $post_id, '_stock', '' );
 			}
 
-		} else {
+		} elseif ( 'variable' !== $product_type ) {
 			wc_update_product_stock_status( $post_id, wc_clean( $_POST['_stock_status'] ) );
 		}
 

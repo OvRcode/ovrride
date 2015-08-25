@@ -1446,7 +1446,7 @@ class WC_Admin_Post_Types {
 
 		foreach ( $post_ids as $post_id ) {
 			$order = wc_get_order( $post_id );
-			$order->update_status( $new_status, __( 'Order status changed by bulk edit:', 'woocommerce' ) );
+			$order->update_status( $new_status, __( 'Order status changed by bulk edit:', 'woocommerce' ), true );
 			do_action( 'woocommerce_order_edit_status', $post_id, $new_status );
 			$changed++;
 		}
@@ -1765,8 +1765,13 @@ class WC_Admin_Post_Types {
 
 			// Filter the orders by the posted customer.
 			if ( isset( $_GET['_customer_user'] ) && $_GET['_customer_user'] > 0 ) {
-				$vars['meta_key'] = '_customer_user';
-				$vars['meta_value'] = (int) $_GET['_customer_user'];
+				$vars['meta_query'] = array(
+					array(
+						'key'   => '_customer_user',
+						'value' => (int) $_GET['_customer_user'],
+						'compare' => '='
+					)
+				);
 			}
 
 			// Sorting

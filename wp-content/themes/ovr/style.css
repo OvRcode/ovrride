@@ -4795,3 +4795,9 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
 .ui-tabs-panel {
   overflow: scroll;
 }
+.linkFix {
+  line-height: 30px;
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+}

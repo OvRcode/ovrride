@@ -1381,13 +1381,16 @@ var gform = {
 
         });
 
-        function getAllFiles(){
-            var selector = '#gform_uploaded_files_' + formID,
-                $uploadedFiles = $(selector), files;
-            files = $uploadedFiles.val();
-            files = '' === files ? {} : $.parseJSON(files);
-            return files;
-        }
+		function getAllFiles(){
+			var selector = '#gform_uploaded_files_' + formID,
+				$uploadedFiles = $(selector), files;
+
+			files = $uploadedFiles.val();
+			files = (typeof files === "undefined") || files === '' ? {} : $.parseJSON(files);
+
+			return files;
+		}
+
 
         function getFiles(fieldID){
             var allFiles = getAllFiles();

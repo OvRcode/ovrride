@@ -309,6 +309,7 @@ class GF_Field_List extends GF_Field {
 			$items = '';
 			foreach ( $value as $key => $item ) {
 				if ( ! empty( $item ) ) {
+					$item = wp_kses_post( $item );
 					switch ( $format ) {
 						case 'text' :
 							$items .= $item . ', ';
@@ -351,6 +352,8 @@ class GF_Field_List extends GF_Field {
 							$list .= "\n\n" . $this->label . ': ';
 						}
 
+						$item = array_map( 'wp_kses_post', $item );
+
 						$list .= implode( ',', array_values( $item ) );
 
 						$is_first_row = false;
@@ -359,6 +362,7 @@ class GF_Field_List extends GF_Field {
 
 				case 'url' :
 					foreach ( $value as $item ) {
+						$item = array_map( 'wp_kses_post', $item );
 						$list .= implode( "|", array_values( $item ) ) . ',';
 					}
 					if ( ! empty( $list ) ) {
@@ -382,6 +386,7 @@ class GF_Field_List extends GF_Field {
 							$list .= '<tr>';
 							foreach ( $columns as $column ) {
 								$val = rgar( $item, $column );
+								$val = wp_kses_post( $val );
 								$list .= "<td style='padding: 6px 10px; border-right: 1px solid #DFDFDF; border-bottom: 1px solid #DFDFDF; border-top: 1px solid #FFF; font-family: sans-serif; font-size:12px;'>{$val}</td>\n";
 							}
 
@@ -403,6 +408,7 @@ class GF_Field_List extends GF_Field {
 							$list .= '<tr>';
 							foreach ( $columns as $column ) {
 								$val = rgar( $item, $column );
+								$val = wp_kses_post( $val );
 								$list .= "<td>{$val}</td>\n";
 							}
 
