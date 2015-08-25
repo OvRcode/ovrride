@@ -1,57 +1,49 @@
 -------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.11
-	- Fixed an issue with the field filters for the name field.
-	- Fixed an empty translation string.
-	- AF: Updated get_plugin_settings() and get_plugin_setting() to be public methods.
+Version 1.9.13
 
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.10
-	- Fixed issue with form meta caching on multi-site installs.
+    - Added security enhancements. Credits to Jonathan Desrosiers & Aaron Ware of Linchpin and Thomas Kräftner (http://kraftner.com).
 
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.9
-    - Updated the 'gform_after_update_entry' action hook to include $original_entry as the third parameters; added form specific version.
-    - Updated German and Spanish (es_ES) translations.
-    - API: Updated the 'gform_post_update_entry' action in GFAPI::update_entry() to include a form specific version.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.8
-    - AF: Added the 'gform_submission_data_pre_process_payment' filter, including form specific version; Allowing the submission data, such as payment amount, line items etc. to be modified before it is used by the payment add-on. See https://www.gravityhelp.com/documentation/article/gform_submission_data_pre_process_payment/
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.7
-    - Updated jQuery events in gformInitPriceFields() to use .on().
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.6
-    - Fixed PHP notices when product info being prepared during submission, caused by Shipping field with placeholder selected.
-    - Removed the 'other choice' setting from the radio button type Shipping field.
-    - Updated Time field max hour to 24.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.5
+    - Updated the German translation.
+    - Updated the Spanish (es_ES) translation.
     - Updated Finnish translation.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.4
+    - Updated Swedish translation.
+    - Updated the 'gform_after_update_entry' action hook to include $original_entry as the third parameters; added form specific version.
+    - Updated jQuery events in gformInitPriceFields() to use .on().
+    - Updated Time field max hour to 24.
     - Updated entry exports to use GF_Field::get_value_export().
     - Updated the gform_after_create_post action hook to include a form specific version; Added $entry and $form objects as the second and third parameters.
-	- AF: Updated validation error icon for checkbox fields, adding it after the first checkbox item.
+    - Updated Sub-Label Placement string.
 
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.3
+    - Fixed a php notice which could occur when resuming a saved incomplete submission.
+    - Fixed an issue with the radio button field 'other' choice feature.
+    - Fixed an issue with the Time field when conditional logic is activated.
+    - Fixed an issue where field values would not appear in notifications.
+    - Fixed issue with multi-file uploader creating a javascript error on certain situations.
+    - Fixed an issue with the field filters for the name field.
+    - Fixed an empty translation string.
+    - Fixed issue with form meta caching on multi-site installs.
+    - Fixed PHP notices when product info being prepared during submission, caused by Shipping field with placeholder selected.
     - Fixed a layout issue with reCAPTCHA and the Twenty Fifteen theme.
-    - AF: Fixed an issue with the display of the total pages count on the sales/results page.
-
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.2
     - Fixed an issue with the translation of some strings.
-    - API: Added GF_Field::get_value_export() so the field entry value can be processed before being used by add-ons etc.
+
+    - Removed alt and title attributes from save and continue link to enhance accessibility.
+    - Removed name attribute from confirmation anchor to enhance accessibility.
+    - Removed the 'other choice' setting from the radio button type Shipping field.
+
+    - AF: Fixed an issue with GFToken not saving tokens for asynchronous API calls.
+    - AF: Updated feed edit page to show configure_addon_message() if can_create_feed() is false.
+    - AF: Updated has_plugin_settings_page() to check if plugin_settings_page() has been overridden.
+    - AF: Fixed an issue with the shipping line item in the payment framework Submission Data; item ID was missing which could cause an issue for some gateways.
+    - AF: Updated get_plugin_settings() and get_plugin_setting() to be public methods.
+    - AF: Added the 'gform_submission_data_pre_process_payment' filter, including form specific version; Allowing the submission data, such as payment amount, line items etc. to be modified before it is used by the payment add-on. See https://www.gravityhelp.com/documentation/article/gform_submission_data_pre_process_payment/
+    - AF: Updated validation error icon for checkbox fields, adding it after the first checkbox item.
+    - AF: Fixed an issue with the display of the total pages count on the sales/results page
     - AF: Updated get_field_value(), get_full_address(), get_full_name(), and get_list_field_value() to use GF_Field::get_value_export().
 
--------------------------------------------------------------------------------------------------------------------
-Version 1.9.12.1
-    - Added security enhancements.
+    - API: Updated the GET /entries/[ID] and GET /forms/[ID]/entries endpoints to return List field values in JSON format instead of serialized strings.
+    - API: Updated the PUT /entries/[ID] and POST /forms/[ID]/entries endpoints to accept List field values in JSON format in addition to serialized strings.
+    - API: Updated the 'gform_post_update_entry' action in GFAPI::update_entry() to include a form specific version.
+    - API: Added GF_Field::get_value_export() so the field entry value can be processed before being used by add-ons etc.
 
 -------------------------------------------------------------------------------------------------------------------
 Version 1.9.12

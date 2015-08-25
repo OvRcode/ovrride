@@ -1,0 +1,245 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: No CAPTCHA reCAPTCHA\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/No-CAPTCHA-"
+"reCAPTCHA\n"
+"POT-Creation-Date: 2015-07-21 14:56:29+00:00\n"
+"PO-Revision-Date: 2015-07-23 11:11+0100\n"
+"Last-Translator: Fabien Quatravaux <fabien.quatravaux@1nterval.com>\n"
+"Language-Team: Fabien Quatravaux <fabien.quatravaux@1nterval.com>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: base-class.php:123
+msgid "<strong>ERROR</strong>: Please retry CAPTCHA"
+msgstr "<strong>ERREUR</strong>: Merci de réessayer le CAPTCHA"
+
+#. #-#-#-#-#  No-CAPTCHA-reCAPTCHA.pot (No CAPTCHA reCAPTCHA 1.0.2)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: settings.php:52
+msgid "No CAPTCHA reCAPTCHA"
+msgstr "No CAPTCHA reCAPTCHA"
+
+#: settings.php:54
+msgid ""
+"Protect WordPress login, registration and comment form with the new No "
+"CAPTCHA reCAPTCHA"
+msgstr ""
+"Protège les formulaires de connexion, d'inscription et de commentaire avec "
+"la nouvelle méthode No CAPTCHA reCAPTCHA"
+
+#: settings.php:58
+msgid "Settings saved"
+msgstr "Paramètres enregistrés"
+
+#: settings.php:74 settings.php:126
+msgid "Click to toggle"
+msgstr "Cliquer pour inverser"
+
+#: settings.php:75
+msgid "reCAPTCHA Keys"
+msgstr "Clés reCAPTCHA"
+
+#: settings.php:81
+msgid "Site key"
+msgstr "Clé du site"
+
+#: settings.php:89
+msgid "Used for displaying the CAPTCHA."
+msgstr "Utilisé pour afficher le CAPTCHA."
+
+#: settings.php:92 settings.php:110
+msgid "Grab it <a href=\"%s\" target=\"_blank\">Here</a>"
+msgstr "Obtenez-la <a href=\"%s\" target=\"_blank\">ici</a>"
+
+#: settings.php:99
+msgid "Secret key"
+msgstr "Clé secrète"
+
+#: settings.php:107
+msgid "Used for communication between your site and Google."
+msgstr "Utilisé pour la communication entre votre site et Google."
+
+#: settings.php:119 settings.php:173 settings.php:263
+msgid "Save All Changes"
+msgstr "Sauvegarder tous les changements"
+
+#: settings.php:127
+msgid "Display Settings"
+msgstr "Paramètres d'affichage"
+
+#: settings.php:132
+msgid "Login Form"
+msgstr "Formulaire de connexion"
+
+#: settings.php:139
+msgid "Check to enable CAPTCHA in login form"
+msgstr "Cocher pour activer le CAPTCHA sur le formulaire de login"
+
+#: settings.php:146
+msgid "Registration Form"
+msgstr "Formulaire d'inscription"
+
+#: settings.php:153
+msgid "Check to enable CAPTCHA in WordPress registration form"
+msgstr ""
+"Cocher pour activer le CAPTCHA sur le formulaire d'inscription de WordPress"
+
+#: settings.php:158
+msgid "Comment Form"
+msgstr "Formulaire de commentaire"
+
+#: settings.php:165
+msgid "Check to enable CAPTCHA in WordPress comment system"
+msgstr ""
+"Cocher pour activer le CAPTCHA pour le système de commentaire de WordPress"
+
+#: settings.php:182
+msgid "General Settings"
+msgstr "Paramètres généraux"
+
+#: settings.php:189
+msgid "Theme"
+msgstr "Thème"
+
+#: settings.php:192
+msgid "Light"
+msgstr "Clair"
+
+#: settings.php:193
+msgid "Dark"
+msgstr "Foncé"
+
+#: settings.php:197
+msgid "The theme colour of the widget."
+msgstr "Le thème de couleur du widget."
+
+#: settings.php:206
+msgid "Language"
+msgstr "Langage"
+
+#: settings.php:214
+msgid "Auto Detect"
+msgstr "Détection automatique"
+
+#: settings.php:240
+msgid "Forces the widget to render in a specific language"
+msgstr "Force le widget à s'afficher dans un langage spécifique"
+
+#: settings.php:248
+msgid "Error Message"
+msgstr "Message d'erreur"
+
+#: settings.php:255
+msgid ""
+"Message or text to display when CAPTCHA is ignored or the test is failed."
+msgstr ""
+"Message ou texte à afficher quand le CAPTCHA est ignoré ou quand le test est "
+"raté."
+
+#: settings.php:277
+msgid "Developer"
+msgstr "Développeur"
+
+#: settings.php:281
+msgid "Made with lots of love by"
+msgstr "Fait avec amour par"
+
+#. #-#-#-#-#  No-CAPTCHA-reCAPTCHA.pot (No CAPTCHA reCAPTCHA 1.0.2)  #-#-#-#-#
+#. translators: plugin author name
+#. #-#-#-#-#  No-CAPTCHA-reCAPTCHA.pot (No CAPTCHA reCAPTCHA 1.0.2)  #-#-#-#-#
+#. Author of the plugin/theme
+#: settings.php:283
+msgid "Agbonghama Collins"
+msgstr ""
+
+#: settings.php:290
+msgid "Support Plugin"
+msgstr "Soutenir l'extension"
+
+#: settings.php:300
+msgid ""
+"Is this plugin useful for you? If so, please help support its ongoing "
+"development and improvement with a <a href=\"%s\" target=\"_blank"
+"\">donation</a>."
+msgstr ""
+"Cette extension est-elle utile pour vous ? Si c'est le cas, merci de "
+"soutenir le développement et les améliorations en cours avec un <a href=\"%s"
+"\" target=\"_blank\">don</a>."
+
+#: settings.php:301
+msgid "Or, if you are short on funds, there are other ways you can help out:"
+msgstr "Ou, si vous manquez de fonds, il y a d'autre moyens de contribuer :"
+
+#: settings.php:303
+msgid ""
+"Leave a positive review on the plugin's <a href=\"%s\">WordPress listing</a>"
+msgstr ""
+"Laisser une opinion positive à propos de cette extension sur le site <a href="
+"\"%s\">WordPress</a>"
+
+#: settings.php:304
+msgid ""
+"Vote \"Works\" on the plugin's <a href=\"%s\" target=\"_blank\">WordPress "
+"listing</a>"
+msgstr ""
+"Votez \"Works\" sur <a href=\"%s\" target=\"_blank\">la page WordPress</a> "
+"de l'extension"
+
+#: settings.php:305
+msgid "<a href=\"%s\" target=\"_blank\">Share your thoughts on Twitter</a>"
+msgstr "<a href=\"%s\" target=\"_blank\">Partagez vos idées sur Twitter</a>"
+
+#. #-#-#-#-#  No-CAPTCHA-reCAPTCHA.pot (No CAPTCHA reCAPTCHA 1.0.2)  #-#-#-#-#
+#. Plugin URI of the plugin/theme
+#. #-#-#-#-#  No-CAPTCHA-reCAPTCHA.pot (No CAPTCHA reCAPTCHA 1.0.2)  #-#-#-#-#
+#. Author URI of the plugin/theme
+msgid "http://w3guy.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Protect WordPress login, registration and comment form from spam with the "
+"new No CAPTCHA reCAPTCHA"
+msgstr ""
+"Protège les formulaires de connexion, d'inscription et de commentaire du "
+"spam avec la nouvelle méthode No CAPTCHA reCAPTCHA"
+
+#~ msgid ""
+#~ "Used for displaying the CAPTCHA. Grab it <a href=\"https://www.google.com/"
+#~ "recaptcha/admin\" target=\"_blank\">Here</a>"
+#~ msgstr ""
+#~ "Utilisée pour afficher le CAPTCHA. Obtenez-la <a href=\"https://www."
+#~ "google.com/recaptcha/admin\" target=\"_blank\">ici</a>"
+
+#~ msgid ""
+#~ "Used for communication between your site and Google. Grab it <a href="
+#~ "\"https://www.google.com/recaptcha/admin\" target=\"_blank\">Here</a>"
+#~ msgstr ""
+#~ "Utilisée pour communiquer entre votre site et Google. Obtenez-la <a href="
+#~ "\"https://www.google.com/recaptcha/admin\" target=\"_blank\">ici</a>"
+
+#~ msgid "English"
+#~ msgstr "Anglais"
+
+#~ msgid "Arabic"
+#~ msgstr "Arabe"
+
+#~ msgid "German"
+#~ msgstr "Allemand"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "Italian"
+#~ msgstr "Italien"
