@@ -436,7 +436,7 @@ class GFFormSettings {
         <tr id="sub_label_placement_setting">
             <th>
                 ' .
-			__( 'Sub-label placement', 'gravityforms' ) . ' ' .
+			__( 'Sub-Label Placement', 'gravityforms' ) . ' ' .
 			gform_tooltip( 'form_sub_label_placement', '', true ) .
 			'
 			</th>

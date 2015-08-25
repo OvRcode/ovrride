@@ -14,6 +14,8 @@ window.GFToken = null;
 		this.init = function() {
 		
 			var GFTokenObj = this;
+			
+			this.tokens = {};
 
 			/* Initialize spinner. */
 			if ( ! this.isAjax )
@@ -56,45 +58,30 @@ window.GFToken = null;
 		
 		this.processTokens = function() {
 			
-			/* Setup object to store token information. */
-			var tokens = {};
-			
 			/* Process feeds. */
 			for ( var feed_id in this.feeds ) {
 				
+				this.active_feed = this.feeds[feed_id];
+				
 				/* Create new feed object so we can store the billing information. */
-				var active_feed = this.feeds[feed_id],
-					feed = {
-						'billing_fields': {},
-						'id': active_feed.id,
-						'name': active_feed.name
-					},
-					token = {
-						'feed_id': active_feed.id,
-						'response': ''
-					};
+				var feed = {
+					'billing_fields': {},
+					'id': this.active_feed.id,
+					'name': this.active_feed.name
+				};
 				
 				/* Add billing information to feed object. */
-				for ( var billing_field in active_feed.billing_fields ) {
+				for ( var billing_field in this.active_feed.billing_fields ) {
 					
-					field_id = active_feed.billing_fields[ billing_field ];
+					field_id = this.active_feed.billing_fields[ billing_field ];
 					feed.billing_fields[ billing_field ] = this.entry_data[ field_id ];
 					
 				}
 				
 				/* Get credit card token response. */
-				token.response = window[ this.callback ].createToken( feed );
-				
-				/* Add token response to tokens array. */
-				tokens[ active_feed.id ] = token;
+				window[ this.callback ].createToken( feed, this );
 				
 			}
-			
-			/* Add tokens to form. */
-			this.form.find( this.responseField ).val( $.toJSON( tokens ) );
-			
-			/* Submit the form. */
-			this.form.submit();
 			
 		}
 
@@ -115,6 +102,26 @@ window.GFToken = null;
 				
 			} );
 		
+		}
+		
+		this.saveToken = function( token ) {
+			
+			/* Add token response to tokens array. */
+			this.tokens[ this.active_feed.id ] = {
+				'feed_id': this.active_feed.id,
+				'response': token
+			};
+			
+			if ( this.tokens.length == this.feeds.length ) {
+				
+				/* Add tokens to form. */
+				this.form.find( this.responseField ).val( $.toJSON( this.tokens ) );
+				
+				/* Submit the form. */
+				this.form.submit();
+				
+			}
+			
 		}
 
 		this.init();
