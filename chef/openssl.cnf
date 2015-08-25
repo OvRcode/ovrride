@@ -1,40 +1,22 @@
-[req]
-  distinguished_name = req_distinguished_name
-  req_extensions = v3_req
-  [req_distinguished_name]
-  countryName = US
-  stateOrProvinceName = NY
-  localityName = New York
-  organizationalUnitName	= IT
-  commonName = OvRride LLC
-  commonName_max	= 64
-
-  [ v3_req ]
-  # Extensions to add to a certificate request
-  basicConstraints = CA:FALSE
-  keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-  subjectAltName = @alt_names
-
-  [alt_names]
-  DNS.1 = local.ovrride.com
-  DNS.2 = *.local.ovrride.com
-  [req]
-  distinguished_name = req_distinguished_name
-  req_extensions = v3_req
-  [req_distinguished_name]
-  countryName = US
-  stateOrProvinceName = NY
-  localityName = New York
-  organizationalUnitName	= IT
-  commonName = OvRride LLC
-  commonName_max	= 64
-
-  [ v3_req ]
-  # Extensions to add to a certificate request
-  basicConstraints = CA:FALSE
-  keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-  subjectAltName = @alt_names
-
-  [alt_names]
-  DNS.1 = local.ovrride.com
-  DNS.2 = *.local.ovrride.com
+[ req ]
+prompt = no
+default_bits = 2048
+default_keyfile = local.ovrride.com.key
+encrypt_key = no
+distinguished_name = req_distinguished_name
+ 
+string_mask = utf8only
+ 
+req_extensions = v3_req
+ 
+[ req_distinguished_name ]
+O=OvRride LLC
+L=New York
+ST=New York
+C=US
+CN=*.local.ovrride.com
+ 
+[ v3_req ]
+ 
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
