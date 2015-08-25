@@ -21,15 +21,16 @@ class Ncr_No_Captcha_Recaptcha {
 
 		self::$plugin_options = get_option( 'ncr_options' );
 
-		self::$site_key = self::$plugin_options['site_key'];
+		self::$site_key = isset( self::$plugin_options['site_key'] ) ? self::$plugin_options['site_key'] : '';
 
-		self::$secret_key = self::$plugin_options['secrete_key'];
+		self::$secret_key = isset( self::$plugin_options['secrete_key'] ) ? self::$plugin_options['secrete_key'] : '';
 
-		self::$theme = self::$plugin_options['theme'];
+		self::$theme = isset( self::$plugin_options['theme'] ) ? self::$plugin_options['theme'] : 'light';
 
-		self::$language = self::$plugin_options['language'];
+		self::$language = isset( self::$plugin_options['language'] ) ? self::$plugin_options['language'] : '';
 
-		self::$error_message = self::$plugin_options['error_message'];
+		self::$error_message = isset( self::$plugin_options['error_message'] ) ? self::$plugin_options['error_message'] : wp_kses( __( '<strong>ERROR</strong>: Please retry CAPTCHA', 'ncr-catpcha' ), array(  'strong' => array() ) );
+
 
 
 		add_action( 'plugins_loaded', array( __CLASS__, 'load_plugin_textdomain' ) );
@@ -44,13 +45,13 @@ class Ncr_No_Captcha_Recaptcha {
 	}
 
 	public static function load_plugin_textdomain() {
-		load_plugin_textdomain( 'espw-plugin', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'ncr-captcha', false, basename( dirname( __FILE__ ) ) . '/lang/' );
 	}
 
 	/** reCAPTCHA header script */
 	public static function header_script() {
 
-		$lang_option = self::$plugin_options['language'];
+		$lang_option = self::$language;
 
 		// if language is empty (auto detected chosen) do nothing otherwise add the lang query to the
 		// reCAPTCHA script url
@@ -120,7 +121,7 @@ class Ncr_No_Captcha_Recaptcha {
 			'captcha_registration' => 'yes',
 			'captcha_comment'      => 'yes',
 			'theme'                => 'light',
-			'error_message'        => '<strong>ERROR</strong>: Please retry CAPTCHA'
+			'error_message'        => wp_kses( __( '<strong>ERROR</strong>: Please retry CAPTCHA', 'ncr-catpcha' ), array(  'strong' => array() ) ),
 		);
 
 		add_option( 'ncr_options', $default_options );

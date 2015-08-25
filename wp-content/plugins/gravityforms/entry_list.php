@@ -852,6 +852,12 @@ class GFEntryList {
 				</select>
 				<?php
 				$apply_button = '<input type="submit" class="button" value="' . esc_attr__( 'Apply', 'gravityforms' ) . '" onclick="return handleBulkApply(\'bulk_action\');" />';
+
+				/**
+				 * Allows for the modification of the Entry apply button HTML (When modifying entries)
+				 *
+				 * @param string $apply_button The Entry apply button HTML
+				 */
 				echo apply_filters( 'gform_entry_apply_button', $apply_button );
 
 				if ( in_array( $filter, array( 'trash', 'spam' ) ) ) {
@@ -998,7 +1004,7 @@ class GFEntryList {
 					$dir = $sort_direction == 'ASC' ? 'DESC' : 'ASC';
 				}
 				?>
-				<th scope="col" class="manage-column entry_nowrap" onclick="Search('<?php echo esc_js( $field_id ); ?>', '<?php echo esc_js( $dir ); ?>', <?php echo absint( $form_id ); ?>, '<?php echo esc_js( $search ); ?>', '<?php echo esc_js( $star ); ?>', '<?php echo esc_js( $read ); ?>', '<?php echo esc_js( $filter ); ?>');" style="cursor:pointer;"><?php echo esc_html( $field_info['label'] ) ?></th>
+				<th scope="col" class="manage-column entry_nowrap" onclick="Search('<?php echo esc_js( $field_id ); ?>', '<?php echo esc_js( $dir ); ?>', <?php echo absint( $form_id ); ?>, '<?php echo esc_js( $search ); ?>', '<?php echo esc_js( $star );?>', '<?php echo esc_js( $read ); ?>', '<?php echo esc_js( $filter ); ?>', '<?php echo esc_js( $search_field_id ); ?>', '<?php echo esc_js( $search_operator ); ?>');" style="cursor:pointer;"><?php echo esc_html( $field_info['label'] ) ?></th>
 			<?php
 			}
 			?>
@@ -1114,6 +1120,12 @@ class GFEntryList {
 											<span class="delete">
                                                 <?php
 												$delete_link = '<a data-wp-lists="delete:gf_entry_list:lead_row_' . esc_attr( $lead['id'] ) . '::status=delete&entry=' . esc_attr( $lead['id'] ) . '" title="' . esc_attr__( 'Delete this entry permanently', 'gravityforms' ) . '"  href="' . wp_nonce_url( '?page=gf_entries', 'gf_delete_entry' ) . '">' . esc_html__( 'Delete Permanently', 'gravityforms' ) . '</a>';
+
+                                                /**
+                                                 * Allows for modification of a Form entry "delete" link
+                                                 *
+                                                 * @param string $delete_link The Entry Delete Link (Formatted in HTML)
+                                                 */
 												echo apply_filters( 'gform_delete_entry_link', $delete_link );
 												?>
                                             </span>
@@ -1139,6 +1151,12 @@ class GFEntryList {
 											<span class="delete">
                                                 <?php
 												$delete_link = '<a data-wp-lists="delete:gf_entry_list:lead_row_' . esc_attr( $lead['id'] ) . '::status=delete&entry=' . esc_attr( $lead['id'] ) . '" title="' . esc_attr__( 'Delete this entry permanently', 'gravityforms' ) . '"  href="' . wp_nonce_url( '?page=gf_entries', 'gf_delete_entry' ) . '">' . esc_html__( 'Delete Permanently', 'gravityforms' ) . '</a>';
+
+                                                /**
+                                                 * Allows for modification of a Form entry "delete" link
+                                                 *
+                                                 * @param string $delete_link The Entry Delete Link (Formatted in HTML)
+                                                 */
 												echo apply_filters( 'gform_delete_entry_link', $delete_link );
 												?>
                                             </span>
@@ -1294,6 +1312,12 @@ class GFEntryList {
 				</select>
 				<?php
 				$apply_button = '<input type="submit" class="button" value="' . esc_attr__( 'Apply', 'gravityforms' ) . '" onclick="return handleBulkApply(\'bulk_action2\');" />';
+
+				/**
+				 * Allows for the modification of the Entry apply button HTML (When modifying entries)
+				 *
+				 * @param string $apply_button The Entry apply button HTML
+				 */
 				echo apply_filters( 'gform_entry_apply_button', $apply_button );
 				?>
 			</div>
@@ -1307,7 +1331,6 @@ class GFEntryList {
 		</div>
 	<?php
 	}
-
 
 	public static function get_icon_url( $path ) {
 		$info = pathinfo( $path );

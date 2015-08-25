@@ -3,7 +3,12 @@ ob_start();
 class Ncr_Settings_Page {
 
 	public static function initialize() {
-		add_action( 'admin_menu', array( __CLASS__, 'register_menu_page' ) );
+		if( function_exists( 'is_plugin_active_for_network' )
+		  && is_plugin_active_for_network( basename( dirname( __FILE__ ) ) . '/no-captcha-recaptcha.php' ) ){
+			add_action( 'network_admin_menu', array( __CLASS__, 'register_menu_page' ) );
+		} else {
+			add_action( 'admin_menu', array( __CLASS__, 'register_menu_page' ) );
+		}
 	}
 
 
@@ -49,13 +54,13 @@ class Ncr_Settings_Page {
 		<div class="wrap">
 
 		<div id="icon-options-general" class="icon32"></div>
-		<h2>No CAPTCHA reCAPTCHA</h2>
+		<h2><?php _e( 'No CAPTCHA reCAPTCHA', 'ncr-captcha'); ?></h2>
 
-		<p>Protect WordPress login, registration and comment form with the new No CAPTCHA reCAPTCHA</p>
+		<p><?php _e( 'Protect WordPress login, registration and comment form with the new No CAPTCHA reCAPTCHA', 'ncr-captcha'); ?></p>
 
 		<?php
 		if ( isset( $_GET['settings-updated'] ) && ( $_GET['settings-updated'] ) ) {
-			echo '<div id="message" class="updated"><p><strong>Settings saved. </strong></p></div>';
+			echo '<div id="message" class="updated"><p><strong>' . __('Settings saved', 'ncr-captcha') . '</strong></p></div>';
 		}
 		?>
 		<div id="poststuff">
@@ -71,7 +76,7 @@ class Ncr_Settings_Page {
 
 		<div class="postbox">
 
-			<div title="Click to toggle" class="handlediv"><br></div>
+			<div title="<?php _e( 'Click to toggle', 'ncr-captcha'); ?>" class="handlediv"><br></div>
 			<h3 class="hndle"><span><?php _e( 'reCAPTCHA Keys', 'ncr-captcha' ); ?></span></h3>
 
 			<div class="inside">
@@ -85,8 +90,13 @@ class Ncr_Settings_Page {
 							       value="<?php echo $site_key; ?>">
 
 							<p class="description">
-								<?php _e( 'Used for displaying the CAPTCHA. Grab it <a href="https://www.google.com/recaptcha/admin" target="_blank">Here</a>', 'ncr-captcha' ); ?>
-
+								<?php
+									_e( 'Used for displaying the CAPTCHA.', 'ncr-captcha' );
+									echo ' ';
+									// escape the URL properly
+									$url = 'https://www.google.com/recaptcha/admin';
+									printf( wp_kses( __( 'Grab it <a href="%s" target="_blank">Here</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $url ) );
+								?>
 							</p>
 						</td>
 					</tr>
@@ -99,7 +109,13 @@ class Ncr_Settings_Page {
 							       value="<?php echo $secrete_key; ?>">
 
 							<p class="description">
-								<?php _e( 'Used for communication between your site and Google. Grab it <a href="https://www.google.com/recaptcha/admin" target="_blank">Here</a>', 'ncr-captcha' ); ?>
+								<?php
+									_e( 'Used for communication between your site and Google.', 'ncr-captcha' );
+									echo ' ';
+									// escape the URL properly
+									$url = 'https://www.google.com/recaptcha/admin';
+									printf( wp_kses( __( 'Grab it <a href="%s" target="_blank">Here</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $url ) );
+								?>
 							</p>
 						</td>
 					</tr>
@@ -107,14 +123,14 @@ class Ncr_Settings_Page {
 				<p>
 					<?php wp_nonce_field( 'ncr_settings_nonce' ); ?>
 					<input class="button-primary" type="submit" name="settings_submit"
-					       value="Save All Changes">
+					       value="<?php _e( 'Save All Changes', 'ncr-captcha' ); ?>">
 				</p>
 			</div>
 		</div>
 
 		<div class="postbox">
 
-			<div title="Click to toggle" class="handlediv"><br></div>
+			<div title="<?php _e( 'Click to toggle', 'ncr-captcha'); ?>" class="handlediv"><br></div>
 			<h3 class="hndle"><span><?php _e( 'Display Settings', 'ncr-captcha' ); ?></span></h3>
 
 			<div class="inside">
@@ -161,7 +177,7 @@ class Ncr_Settings_Page {
 				<p>
 					<?php wp_nonce_field( 'ncr_settings_nonce' ); ?>
 					<input class="button-primary" type="submit" name="settings_submit"
-					       value="Save All Changes">
+					       value="<?php _e( 'Save All Changes', 'ncr-captcha' ); ?>">
 				</p>
 			</div>
 		</div>
@@ -180,8 +196,8 @@ class Ncr_Settings_Page {
 								for="theme"><?php _e( 'Theme', 'ncr-captcha' ); ?></label></th>
 						<td>
 							<select id="theme" name="ncr_options[theme]">
-								<option value="light" <?php selected( 'light', $theme ); ?>>Light</option>
-								<option value="dark" <?php selected( 'dark', $theme ); ?>>Dark</option>
+								<option value="light" <?php selected( 'light', $theme ); ?>><?php _e( 'Light', 'ncr-captcha' ); ?></option>
+								<option value="dark" <?php selected( 'dark', $theme ); ?>><?php _e( 'Dark', 'ncr-captcha' ); ?></option>
 							</select>
 
 							<p class="description">
@@ -199,52 +215,31 @@ class Ncr_Settings_Page {
 						<td>
 							<select id="theme" name="ncr_options[language]">
 								<?php
-								$languages = array(
-									__( 'Auto Detect', 'ncr-captcha' )         => '',
-									__( 'English', 'ncr-captcha' )             => 'en',
-									__( 'Arabic', 'ncr-captcha' )              => 'ar',
-									__( 'Bulgarian', 'ncr-captcha' )           => 'bg',
-									__( 'Catalan Valencian', 'ncr-captcha' )   => 'ca',
-									__( 'Czech', 'ncr-captcha' )               => 'cs',
-									__( 'Danish', 'ncr-captcha' )              => 'da',
-									__( 'German', 'ncr-captcha' )              => 'de',
-									__( 'Greek', 'ncr-captcha' )               => 'el',
-									__( 'British English', 'ncr-captcha' )     => 'en_gb',
-									__( 'Spanish', 'ncr-captcha' )             => 'es',
-									__( 'Persian', 'ncr-captcha' )             => 'fa',
-									__( 'French', 'ncr-captcha' )              => 'fr',
-									__( 'Canadian French', 'ncr-captcha' )     => 'fr_ca',
-									__( 'Hindi', 'ncr-captcha' )               => 'hi',
-									__( 'Croatian', 'ncr-captcha' )            => 'hr',
-									__( 'Hungarian', 'ncr-captcha' )           => 'hu',
-									__( 'Indonesian', 'ncr-captcha' )          => 'id',
-									__( 'Italian', 'ncr-captcha' )             => 'it',
-									__( 'Hebrew', 'ncr-captcha' )              => 'iw',
-									__( 'Jananese', 'ncr-captcha' )            => 'ja',
-									__( 'Korean', 'ncr-captcha' )              => 'ko',
-									__( 'Lithuanian', 'ncr-captcha' )          => 'lt',
-									__( 'Latvian', 'ncr-captcha' )             => 'lv',
-									__( 'Dutch', 'ncr-captcha' )               => 'nl',
-									__( 'Norwegian', 'ncr-captcha' )           => 'no',
-									__( 'Polish', 'ncr-captcha' )              => 'pl',
-									__( 'Portuguese', 'ncr-captcha' )          => 'pt',
-									__( 'Romanian', 'ncr-captcha' )            => 'ro',
-									__( 'Russian', 'ncr-captcha' )             => 'ru',
-									__( 'Slovak', 'ncr-captcha' )              => 'sk',
-									__( 'Slovene', 'ncr-captcha' )             => 'sl',
-									__( 'Serbian', 'ncr-captcha' )             => 'sr',
-									__( 'Swedish', 'ncr-captcha' )             => 'sv',
-									__( 'Thai', 'ncr-captcha' )                => 'th',
-									__( 'Turkish', 'ncr-captcha' )             => 'tr',
-									__( 'Ukrainian', 'ncr-captcha' )           => 'uk',
-									__( 'Vietnamese', 'ncr-captcha' )          => 'vi',
-									__( 'Simplified Chinese', 'ncr-captcha' )  => 'zh_cn',
-									__( 'Traditional Chinese', 'ncr-captcha' ) => 'zh_tw'
-								);
+									printf(
+										'<option value="" %s>%s</option>',
+										selected( '', $language, false ),
+										__( 'Auto Detect', 'ncr-captcha' )
+									);
 
-								foreach ( $languages as $key => $value ) {
-									echo "<option value='$value'" . selected( $value, $language, true ) . ">$key</option>";
-								}
+									/** WordPress Translation Install API */
+									require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+
+									// display the list of available languages in WP core
+									$available_languages = get_available_languages();
+									$available_translations = wp_get_available_translations();
+									foreach ( $available_languages as $l ) {
+										printf(
+											'<option value="%s" lang="%s"%s>%s</option>',
+											esc_attr( $l ),
+											esc_attr( current( $available_translations[$l]['iso'] ) ),
+											selected( $l, $language, false ),
+											esc_html( $available_translations[$l]['native_name'] )
+										);
+									}
+									printf(
+										'<option value="en_US" lang="en"%s>English (United States)</option>',
+										selected( 'en_US', $language, false )
+									);
 								?>
 							</select>
 
@@ -272,7 +267,7 @@ class Ncr_Settings_Page {
 				<p>
 					<?php wp_nonce_field( 'settings_nonce' ); ?>
 					<input class="button-primary" type="submit" name="settings_submit"
-					       value="Save All Changes">
+					       value="<?php _e( 'Save All Changes', 'ncr-captcha' ); ?>">
 				</p>
 			</div>
 		</div>
@@ -290,8 +285,9 @@ class Ncr_Settings_Page {
 					</h3>
 
 					<div class="inside">
-						<div style="text-align: center; margin: auto">Made with lots of love by <br> <a
-								href="http://w3guy.com"><strong>Agbonghama Collins</strong></a></div>
+						<div style="text-align: center; margin: auto"><?php _e( 'Made with lots of love by', 'ncr-captcha' );?> <br>
+						<?php /* translators: plugin author name */ ?>
+						 <a href="http://w3guy.com"><strong><?php _e( 'Agbonghama Collins', 'ncr-captcha' );?></strong></a></div>
 					</div>
 				</div>
 
@@ -301,14 +297,21 @@ class Ncr_Settings_Page {
 						<span><?php _e( 'Support Plugin', 'ncr-captcha' ); ?></span>
 					</h3><div class="inside">
 						<div style="text-align: center; margin: auto">
-							<p>
-								Is this plugin useful for you? If so, please help support its ongoing development and improvement with a <a href="https://flattr.com/submit/auto?user_id=tech4sky&url=https%3A%2F%2Fwordpress.org%2Fplugins%2Fno-captcha-recaptcha%2F" target="_blank">donation</a>.</p>
-						<p>Or, if you are short on funds, there are other ways you can help out:</p>
-						<ul>
-							<li>Leave a positive review on the plugin's <a href="https://wordpress.org/support/view/plugin-reviews/no-captcha-recaptcha">WordPress listing</a></li>
-							<li>Vote "Works" on the plugin's <a href="https://wordpress.org/plugins/no-captcha-recaptcha/#compatibility" target="_blank">WordPress listing</a></li>
-							<li><a href="http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/no-captcha-recaptcha/" target="_blank">Share your thoughts on Twitter</a></li>
-						</ul></div>
+							<?php 
+								// escape the URLs properly
+								$flattr_url = 'https://flattr.com/submit/auto?user_id=tech4sky&url=https%3A%2F%2Fwordpress.org%2Fplugins%2Fno-captcha-recaptcha%2F';
+								$review_url = 'https://wordpress.org/support/view/plugin-reviews/no-captcha-recaptcha';
+								$compatibility_url = 'https://wordpress.org/plugins/no-captcha-recaptcha/#compatibility';
+								$twitter_url = 'http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/no-captcha-recaptcha/';
+							?>
+							<p><?php printf( wp_kses( __( 'Is this plugin useful for you? If so, please help support its ongoing development and improvement with a <a href="%s" target="_blank">donation</a>.', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $flattr_url ) ); ?></p>
+							<p><?php _e( 'Or, if you are short on funds, there are other ways you can help out:', 'ncr-captcha' ); ?></p>
+							<ul>
+								<li><?php printf( wp_kses( __( 'Leave a positive review on the plugin\'s <a href="%s">WordPress listing</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $review_url ) ); ?></li>
+								<li><?php printf( wp_kses( __( 'Vote "Works" on the plugin\'s <a href="%s" target="_blank">WordPress listing</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $compatibility_url ) ); ?></li>
+								<li><?php printf( wp_kses( __( '<a href="%s" target="_blank">Share your thoughts on Twitter</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $twitter_url ) ); ?></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>

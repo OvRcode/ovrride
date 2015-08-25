@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: Collizo4sky
 Donate link: https://flattr.com/submit/auto?user_id=tech4sky&url=http%3A%2F%2Fw3guy.com
-Tags: comments, spam, login, registration, captcha, recaptcha, spammers, bot
+Tags: comments, spam, login, registration, captcha, recaptcha, spammers, bot, registration
 Requires at least: 3.4
-Tested up to: 4.0.1
-Stable tag: 1.0.2
+Tested up to: 4.2.4
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,12 @@ Any question? post it in the support forum.
 6. CAPTCHA in action at login form
 
 == Changelog ==
+
+= 1.0.3 =
+* allow the plugin to be activated network-wide, and in this case display the settings page on the network admin side.
+* make the plugin fully translation-ready, and provide the french translation
+* remove warnings that display on first activation, when all options are not set
+* list the available language for CAPTCHA from the WordPress language packs. To add another language, simply install a new core language pack. This way, the list will only show the languages you are interested in.
 
 = 1.0.2 =
 * Fix error where Captcha could be bypassed by disabling Javascript

@@ -234,9 +234,21 @@ class GF_Field extends stdClass implements ArrayAccess {
 			'creditcard'
 		);
 		$duplicate_field_link = ! in_array( $this->type, $duplicate_disabled ) ? "<a class='field_duplicate_icon' id='gfield_duplicate_{$this->id}' title='" . esc_attr__( 'click to duplicate this field', 'gravityforms' ) . "' href='#' onclick='StartDuplicateField(this); return false;'><i class='fa fa-files-o fa-lg'></i></a>" : '';
+
+		/**
+		 * This filter allows for modification of the form field duplicate link. This will change the link for all fields
+		 *
+		 * @param string $duplicate_field_link The Duplicate Field Link (in HTML)
+		 */
 		$duplicate_field_link = apply_filters( 'gform_duplicate_field_link', $duplicate_field_link );
 
 		$delete_field_link = "<a class='field_delete_icon' id='gfield_delete_{$this->id}' title='" . esc_attr__( 'click to delete this field', 'gravityforms' ) . "' href='#' onclick='StartDeleteField(this); return false;'><i class='fa fa-times fa-lg'></i></a>";
+
+		/**
+		 * This filter allows for modification of a form field delete link. This will change the link for all fields
+		 *
+		 * @param string $delete_field_link The Delete Field Link (in HTML)
+		 */
 		$delete_field_link = apply_filters( 'gform_delete_field_link', $delete_field_link );
 		$field_type_title  = esc_html( GFCommon::get_field_type_title( $this->type ) );
 
