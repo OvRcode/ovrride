@@ -12,11 +12,14 @@ class WC_Trips_Cart {
        add_filter( 'woocommerce_cart_item_name', array( $this, 'render_meta_on_cart_item'), 1, 3 );
        add_filter( 'woocommerce_add_cart_item_data',array($this, 'force_individual_cart_items'), 10, 2 );
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
+//       add_filter( 'woocommerce_get_availability', array( $this, 'custom_stock_totals' ), 20, 3);
+       
        $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
         "wc_trip_dob" => "Date of birth", "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
     }
+    
     public function order_item_meta( $item_id, $values, $cart_item_key) {
         global $woocommerce;
         error_log("ORDER_ITEM_META!");
