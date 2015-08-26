@@ -25,6 +25,13 @@ boxes = [
         :cpu => "1"
     },
     {
+        :name => "lists",
+        :hostname => "lists.local.ovrride.com",
+        :eth1 => "192.168.50.8",
+        :mem => "512",
+        :cpu => "1"
+    },
+    {
         :name => "mysql",
         :hostname => "mysql.local.ovrride.com",
         :eth1 => "192.168.50.7",
@@ -57,7 +64,6 @@ Vagrant.configure(2) do |config|
         config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       else
         config.vm.hostname = opts[:hostname]
-        #config.vm.synced_folder ".", "/var/www/"
       end
 
 

@@ -27,10 +27,10 @@ execute "link vagrant to www" do
   command "ln -s /vagrant /var/www"
 end
 execute "copy site" do
-  command "cp /vagrant/chef/ovr.conf /etc/apache2/sites-available/"
+  command "cp /vagrant/chef/lists.conf /etc/apache2/sites-available/"
 end
 execute "enable site" do
-  command "a2ensite ovr"
+  command "a2ensite lists"
 end
 
 execute "check for ssl cert" do
