@@ -24,7 +24,7 @@ execute "remove /var/www" do
 end
 
 execute "link vagrant to www" do
-  command "ln -s /vagrant /var/www"
+  command "ln -s /vagrant/lists /var/www"
 end
 execute "copy site" do
   command "cp /vagrant/chef/lists.conf /etc/apache2/sites-available/"

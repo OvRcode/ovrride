@@ -9,11 +9,11 @@ include_recipe "apache2::mod_fastcgi"
 include_recipe "apache2::mpm_worker"
 include_recipe "apache2::mod_ssl"
 
-execute "copy php-fpm config" do
-  command "cp /vagrant/chef/fastcgi.conf /etc/apache2/conf-available/"
+execute "copy fastcgi config" do
+  command "cp /vagrant/chef/hhvm_fastcgi_proxy.conf /etc/apache2/conf-available/"
 end
-execute "enable php-fpm config" do
-  command "a2enconf fastcgi"
+execute "enable fastcgi config" do
+  command "a2enconf hhvm_fastcgi_proxy"
 end
 execute "check SSL key/cert" do
   command "/vagrant/chef/certCheck.sh"
