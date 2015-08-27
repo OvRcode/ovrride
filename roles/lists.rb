@@ -1,5 +1,5 @@
-name "web"
-# Role shared by all OvR Web Server VMs
+name "lists"
+# Lists using php-fpm due to HHVM incompatibility with Flight PHP
 default_attributes(
 'build-essential' => {
   'compile_time' => true
@@ -29,7 +29,7 @@ run_list(
 "recipe[build-essential]",
 "recipe[apt]",
 "recipe[s3cmd::add_keys]",
-"recipe[hhvm::default]",
-"recipe[apache2::webconfig]",
-"recipe[ovr::get_images]"
+"recipe[php::modules]",
+"recipe[php-fpm]",
+"recipe[apache2::listsconfig]"
 )

@@ -1,4 +1,3 @@
-LoadModule ssl_module /usr/lib/apache2/modules/mod_ssl.so
 <VirtualHost *:80>
   ServerName local.ovrride.com
   ServerAdmin devops@ovrride.com
@@ -8,21 +7,13 @@ LoadModule ssl_module /usr/lib/apache2/modules/mod_ssl.so
 </VirtualHost>
 <VirtualHost *:443>
   ServerName local.ovrride.com
-  DocumentRoot /var/www/
+  ServerAdmin devops@ovrride.com
+  DocumentRoot /var/www
   SSLEngine on
   SSLCertificateFile /var/www/local.ovrride.com.crt
   SSLCertificateKeyFile /var/www/local.ovrride.com.key
-</VirtualHost>
-<VirtualHost *:80>
-  ServerName lists.local.ovrride.com
-  Redirect permanent / https://lists.local.ovrride.com/
-</VirtualHost>
-<VirtualHost *:443>
-  ServerName lists.local.ovrride.com
-  DocumentRoot /var/www/lists/
-  SSLEngine on
-  SSLCertificateFile /var/www/local.ovrride.com.crt
-  SSLCertificateKeyFile /var/www/local.ovrride.com.key
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 <Directory /var/www/>
   Options Indexes FollowSymLinks MultiViews
@@ -31,4 +22,8 @@ LoadModule ssl_module /usr/lib/apache2/modules/mod_ssl.so
   Allow from All
   Require all granted
 </Directory>
+<% @env.each do |config, value| %>
+<%= "Setenv #{config} #{value} "%>
+<% end %>
+
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

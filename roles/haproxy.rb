@@ -1,5 +1,8 @@
 name "haproxy"
 default_attributes(
+"apt" => {
+  "compile_time_update" => true
+},
 "haproxy" => {
   "bind_address" => "192.168.50.4",
   "hostname" => "local.ovrride.com",
@@ -13,8 +16,19 @@ default_attributes(
     "web1ssl" => "192.168.50.5",
     "web2ssl" => "192.168.50.6",
   },
+  "lists_servers" => {
+    "lists1" => "192.168.50.8"
+  },
+  "map" => {
+    "lists.local.ovrride.com" => "lists",
+    "local.ovrride.com" => "web"
+  },
+  "ssl_map" => {
+    "local.ovrride.com" => "ssl_web",
+    "lists.local.ovrride.com" => "ssl_lists"
+  },
   "package" => {
-    "version" => "1.5.3-1~ubuntu14.04.1"
+    "version" => "1.5*"
   }
 }
 )
