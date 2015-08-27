@@ -12,9 +12,15 @@ include_recipe "apache2::mod_ssl"
 execute "copy php-fpm config" do
   command "cp /vagrant/chef/fastcgi.conf /etc/apache2/conf-available/"
 end
+
 execute "enable php-fpm config" do
   command "a2enconf fastcgi"
 end
+
+execute "enable site" do
+  command "a2ensite lists"
+end
+
 execute "check SSL key/cert" do
   command "/vagrant/chef/certCheck.sh"
 end
@@ -26,18 +32,27 @@ end
 execute "link vagrant to www" do
   command "ln -s /vagrant/lists /var/www"
 end
-execute "copy site" do
-  command "cp /vagrant/chef/lists.conf /etc/apache2/sites-available/"
-end
-execute "enable site" do
-  command "a2ensite lists"
+
+# Get enviromental vars from data bags
+envvars = data_bag_item("mysql","config")
+envvars = envvars.merge(data_bag_item("secret_keys", "keys"))
+envvars = envvars.merge(data_bag_item("wordpress", "local_keys"))
+envvars.delete("chef_type")
+envvars.delete("data_bag")
+envvars.delete("id")
+
+template "/etc/apache2/sites-available/lists.conf" do
+  source "web.conf.erb"
+  variables( :env => envvars)
 end
 
 execute "check for ssl cert" do
   command "/vagrant/chef/certCheck.sh"
 end
 
-
+execute "enable site" do
+  command "a2ensite lists"
+end
 execute "reboot apache" do
   command "sudo service apache2 restart"
 end

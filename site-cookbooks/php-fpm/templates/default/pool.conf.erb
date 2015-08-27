@@ -414,7 +414,3 @@ security.limit_extensions = <%=@security_limit_extensions || ".php" %>
 <% @php_options.each do |name,value| %>
 <%= "#{name} = #{value}" %>
 <% end %>
-
-<% @env.each do |config, value| %>
-<%= "env[#{config}]=\"#{value}\"" %>
-<% end %>
