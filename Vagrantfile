@@ -25,6 +25,13 @@ boxes = [
         :cpu => "1"
     },
     {
+        :name => "lists",
+        :hostname => "lists1.local.ovrride.com",
+        :eth1 => "192.168.50.8",
+        :mem => "512",
+        :cpu => "1"
+    },
+    {
         :name => "mysql",
         :hostname => "mysql.local.ovrride.com",
         :eth1 => "192.168.50.7",
@@ -42,7 +49,10 @@ Vagrant.configure(2) do |config|
   config.hostmanager.manage_host = true
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|
-      
+      if opts[:name] == "haproxy"
+        config.hostmanager.aliases = %w(lists.local.ovrride.com)
+      end
+      config.hostmanager.aliases
       # Take care of that pesky stdin error message on provisioning
       config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
       
@@ -57,7 +67,6 @@ Vagrant.configure(2) do |config|
         config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       else
         config.vm.hostname = opts[:hostname]
-        #config.vm.synced_folder ".", "/var/www/"
       end
 
 
