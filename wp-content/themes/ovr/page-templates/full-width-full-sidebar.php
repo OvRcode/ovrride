@@ -49,19 +49,15 @@ get_header(); ?>
                         $alt_thumb = wp_get_attachment_image_src( get_field( 'alternative_thumbnail', $post->ID ), 'full' );
                 
                         $trip_dates[] = $trip_date;
-                        $trip_titles[] = get_the_title();
+                        $trip_titles[] = $post->post_title;
                         $trip_links[] = get_permalink();
                         $trip_thumbs[] = $alt_thumb[0];
                         $product = wc_get_product( $post->ID );
                         $spots_left[] = $product->get_stock_quantity();
-
+                        
                         }
-                        // Added checks for array type to silence warnings in logs
-                        array_multisort( (gettype( $trip_dates ) == "NULL" ? array() : $trip_dates),
-                                        (gettype( $trip_titles ) == "NULL" ? array() : $trip_titles),
-                                        (gettype( $trip_links ) == "NULL" ? array() : $trip_links),
-                                        (gettype( $trip_thumbs ) == "NULL" ? array() : $trip_thumbs),
-                                        (gettype( $spots_left ) == "NULL" ? array() : $spots_left) );
+                        
+                        array_multisort( $trip_dates, $trip_titles, $trip_links, $trip_thumbs, $spots_left );
                     endwhile;
                     
                     // count how many trips are listed, if less than 8 have date_picker fields set, set to that number
