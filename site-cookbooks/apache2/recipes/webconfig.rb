@@ -13,6 +13,11 @@ include_recipe "apache2::mod_rewrite"
 include_recipe "apache2::mpm_worker"
 include_recipe "apache2::mod_ssl"
 
+# Disable modules to match production modules list
+execute "disable actions and authz_groupfile" do
+  command "sudo a2dismod actions; sudo a2dismod authz_groupfile"
+end
+
 execute "check SSL key/cert" do
   command "/vagrant/chef/certCheck.sh"
 end
@@ -37,14 +42,14 @@ template "/etc/apache2/sites-available/web.conf" do
   source "web.conf.erb"
   variables( :env => envvars)
 end
-execute "enable site" do
-  command "a2ensite web"
-end
 
 execute "check for ssl cert" do
   command "/vagrant/chef/certCheck.sh"
 end
 
+execute "enable site" do
+  command "a2ensite web"
+end
 
 execute "reboot apache" do
   command "sudo service apache2 restart"

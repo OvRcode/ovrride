@@ -9,6 +9,11 @@ include_recipe "apache2::mod_fastcgi"
 include_recipe "apache2::mpm_worker"
 include_recipe "apache2::mod_ssl"
 
+# Disable modules to match production modules list
+execute "disable actions and authz_groupfile" do
+  command "sudo a2dismod actions; sudo a2dismod authz_groupfile"
+end
+
 execute "copy php-fpm config" do
   command "cp /vagrant/chef/fastcgi.conf /etc/apache2/conf-available/"
 end
