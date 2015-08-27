@@ -3,18 +3,16 @@
 #
 
 include_recipe "apache2"
+
+execute "Enable HHVM FASTCGI" do
+  command "sudo /usr/share/hhvm/install_fastcgi.sh"
+end
+
 include_recipe "apache2::mod_actions"
 include_recipe "apache2::mod_rewrite"
-include_recipe "apache2::mod_fastcgi"
 include_recipe "apache2::mpm_worker"
 include_recipe "apache2::mod_ssl"
 
-execute "copy fastcgi config" do
-  command "cp /vagrant/chef/hhvm_fastcgi_proxy.conf /etc/apache2/conf-available/"
-end
-execute "enable fastcgi config" do
-  command "a2enconf hhvm_fastcgi_proxy"
-end
 execute "check SSL key/cert" do
   command "/vagrant/chef/certCheck.sh"
 end
@@ -26,8 +24,18 @@ end
 execute "link vagrant to www" do
   command "ln -s /vagrant /var/www"
 end
-execute "copy site" do
-  command "cp /vagrant/chef/web.conf /etc/apache2/sites-available/"
+
+# Get enviromental vars from data bags
+envvars = data_bag_item("mysql","config")
+envvars = envvars.merge(data_bag_item("secret_keys", "keys"))
+envvars = envvars.merge(data_bag_item("wordpress", "local_keys"))
+envvars.delete("chef_type")
+envvars.delete("data_bag")
+envvars.delete("id")
+
+template "/etc/apache2/sites-available/web.conf" do
+  source "web.conf.erb"
+  variables( :env => envvars)
 end
 execute "enable site" do
   command "a2ensite web"

@@ -29,8 +29,7 @@ run_list(
 "recipe[build-essential]",
 "recipe[apt]",
 "recipe[s3cmd::add_keys]",
-"recipe[php::modules]",
-"recipe[php-fpm]",
+"recipe[hhvm::default]",
 "recipe[apache2::webconfig]",
 "recipe[ovr::get_images]"
 )
