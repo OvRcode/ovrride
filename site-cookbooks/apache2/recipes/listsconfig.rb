@@ -9,9 +9,9 @@ include_recipe "apache2::mod_fastcgi"
 include_recipe "apache2::mpm_worker"
 include_recipe "apache2::mod_ssl"
 
-# Disable modules to match production modules list
-execute "disable actions and authz_groupfile" do
-  command "sudo a2dismod actions; sudo a2dismod authz_groupfile"
+# Disable module to match production modules list
+execute "disable authz_groupfile" do
+  command "sudo a2dismod authz_groupfile"
 end
 
 execute "copy php-fpm config" do
@@ -20,10 +20,6 @@ end
 
 execute "enable php-fpm config" do
   command "a2enconf fastcgi"
-end
-
-execute "enable site" do
-  command "a2ensite lists"
 end
 
 execute "check SSL key/cert" do
@@ -36,6 +32,14 @@ end
 
 execute "link vagrant to www" do
   command "ln -s /vagrant/lists /var/www"
+end
+
+execute "link cert" do
+  command "ln -s /vagrant/local.ovrride.com.crt /var/www/"
+end
+
+execute "link key" do
+  command "ln -s /vagrant/local.ovrride.com.key /var/www/"
 end
 
 # Get enviromental vars from data bags
@@ -51,17 +55,14 @@ template "/etc/apache2/sites-available/lists.conf" do
   variables( :env => envvars)
 end
 
-execute "check for ssl cert" do
-  command "/vagrant/chef/certCheck.sh"
-end
-
 execute "enable site" do
   command "a2ensite lists"
-end
-execute "reboot apache" do
-  command "sudo service apache2 restart"
 end
 
 execute "setup wp cron" do
   command 'sudo crontab -r;echo "*/1 * * * * wget -q -O - http://local.ovrride.com/wp-cron.php?doing_wp_cron=1 >/dev/null 2>&1" | sudo crontab -'
+end
+
+execute "reboot apache" do
+  command "sudo service apache2 restart"
 end
