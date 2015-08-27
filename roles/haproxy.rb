@@ -1,5 +1,8 @@
 name "haproxy"
 default_attributes(
+"apt" => {
+  "compile_time_update" => true
+},
 "haproxy" => {
   "bind_address" => "192.168.50.4",
   "hostname" => "local.ovrride.com",
@@ -14,7 +17,7 @@ default_attributes(
     "web2ssl" => "192.168.50.6",
   },
   "package" => {
-    "version" => "1.5.3-1~ubuntu14.04.1"
+    "version" => "1.5*"
   }
 }
 )
