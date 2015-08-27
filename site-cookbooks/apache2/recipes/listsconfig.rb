@@ -15,11 +15,11 @@ execute "disable authz_groupfile" do
 end
 
 execute "copy php-fpm config" do
-  command "cp /vagrant/chef/fastcgi.conf /etc/apache2/conf-available/"
+  command "cp /vagrant/chef/php_fastcgi.conf /etc/apache2/conf-available/"
 end
 
 execute "enable php-fpm config" do
-  command "a2enconf fastcgi"
+  command "a2enconf php_fastcgi"
 end
 
 execute "check SSL key/cert" do
@@ -32,6 +32,10 @@ end
 
 execute "link vagrant to www" do
   command "ln -s /vagrant/lists /var/www"
+end
+
+execute "remove linked cert files" do
+  command "rm /var/www/local.ovrride.com.*"
 end
 
 execute "link cert" do

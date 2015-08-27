@@ -1,12 +1,9 @@
 <VirtualHost *:80>
-  ServerName local.ovrride.com
-  ServerAdmin devops@ovrride.com
-  DocumentRoot /var/www/
-  ErrorLog ${APACHE_LOG_DIR}/error.log
-  CustomLog ${APACHE_LOG_DIR}/access.log combined
+	ServerName lists.local.ovrride.com
+	Redirect permanent / https://lists.local.ovrride.com/
 </VirtualHost>
 <VirtualHost *:443>
-  ServerName local.ovrride.com
+  ServerName lists.local.ovrride.com
   ServerAdmin devops@ovrride.com
   DocumentRoot /var/www
   SSLEngine on
