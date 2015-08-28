@@ -134,12 +134,10 @@ RewriteEngine On
     <IfModule mod_headers.c>
         Header append Vary User-Agent env=!dont-vary
     </IfModule>
-    <IfModule mod_filter.c>
         AddOutputFilterByType DEFLATE text/css text/x-component application/x-javascript application/javascript text/javascript text/x-js text/html text/richtext image/svg+xml text/plain text/xsd text/xsl text/xml image/x-icon application/json
     <IfModule mod_mime.c>
         # DEFLATE by extension
         AddOutputFilter DEFLATE js css htm html xml
-    </IfModule>
     </IfModule>
 </IfModule>
 <FilesMatch "\.(css|htc|less|js|js2|js3|js4|CSS|HTC|LESS|JS|JS2|JS3|JS4)$">
@@ -167,26 +165,6 @@ RewriteEngine On
     </IfModule>
 </FilesMatch>
 # END W3TC Browser Cache
-# BEGIN W3TC Page Cache core
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-    RewriteCond %{HTTPS} =on
-    RewriteRule .* - [E=W3TC_SSL:_ssl]
-    RewriteCond %{SERVER_PORT} =443
-    RewriteRule .* - [E=W3TC_SSL:_ssl]
-    RewriteCond %{HTTP:Accept-Encoding} gzip
-    RewriteRule .* - [E=W3TC_ENC:_gzip]
-    RewriteCond %{HTTP_COOKIE} w3tc_preview [NC]
-    RewriteRule .* - [E=W3TC_PREVIEW:_preview]
-    RewriteCond %{REQUEST_METHOD} !=POST
-    RewriteCond %{QUERY_STRING} =""
-    RewriteCond %{REQUEST_URI} \/$
-    RewriteCond %{HTTP_COOKIE} !(comment_author|wp\-postpass|w3tc_logged_out|wordpress_logged_in|wptouch_switch_toggle) [NC]
-    RewriteCond "%{DOCUMENT_ROOT}/wp-content/cache/page_enhanced/%{HTTP_HOST}/%{REQUEST_URI}/_index%{ENV:W3TC_SSL}%{ENV:W3TC_PREVIEW}.html%{ENV:W3TC_ENC}" -f
-    RewriteRule .* "/wp-content/cache/page_enhanced/%{HTTP_HOST}/%{REQUEST_URI}/_index%{ENV:W3TC_SSL}%{ENV:W3TC_PREVIEW}.html%{ENV:W3TC_ENC}" [L]
-</IfModule>
-# END W3TC Page Cache core
 # BEGIN W3TC Skip 404 error handling by WordPress for static files
 <IfModule mod_rewrite.c>
     RewriteEngine On
