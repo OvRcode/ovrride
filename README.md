@@ -27,6 +27,8 @@ OvRride.com is built using WordPress 4.2.2, and the WooCommerce plugin. The OvRr
   - Both can be installed by running ```bundle install```
   - vagrant-hostmanager - lets vagrant write to /etc/hosts
     - ```vagrant plugin install vagrant-hostmanager```
+  - vagrant-omnibus
+    - ``` vagrant plugin install vagrant-omnibus```
 2. Clone repository to your machine
   - if you have a copy of the wp-content/uploads directory then copy it to the correct location
   - if you don't it could take up to 40min to download from amazon, it is automated by chef during the vagrant up/provision process

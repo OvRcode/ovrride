@@ -47,6 +47,7 @@ Vagrant.configure(2) do |config|
 
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
+  config.omnibus.chef_version = "12.3.0"
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|
       if opts[:name] == "haproxy"
