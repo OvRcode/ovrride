@@ -5,7 +5,7 @@
  Author:       Robert Chapman, Mike Barnard
  Author URI:   http://chapcode.com
  Template:     quark
- Version:      0.0.2
+ Version:      0.1.0
  Text Domain:  ovr
 */
 /* ==========================================================================
@@ -2765,6 +2765,35 @@ p.srp-widget-date {
   background-position: 0px -195px;
   width: 117px;
   vertical-align: -30%;
+}
+.shop {
+  background-image:url(images/shops.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  width:44px;
+  height:40px;
+}
+.shop.blades {
+  background-position: 0px -100px;
+  
+}
+.shop.skate-brooklyn {
+  background-position: -2px -4px;
+}
+.shop.aegir {
+  background-position: -2px -52px;
+}
+.shop.burton {
+  background-position: -2px -148px;
+}
+.shop.homage {
+  background-position: 0 -195px;
+}
+.shop.rei {
+  background-position: 0 -244px;
+}
+.shop.shut {
+  background-position: 0 -294px;
 }
 .fb_iframe_widget {
 	background: #C3C3C3;
