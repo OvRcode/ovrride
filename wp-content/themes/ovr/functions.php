@@ -18,13 +18,25 @@ if ( ! function_exists( 'quark_woocommerce_before_main_content' ) ) {
 	add_action( 'woocommerce_before_main_content', 'quark_woocommerce_before_main_content', 10 );
 }
 
-/*add_action( 'after_setup_theme', 'woocommerce_support' );
-function woocommerce_support() {
-    add_theme_support( 'woocommerce' );
-}*/
 //fix for pingback security issue
 add_filter( 'xmlrpc_methods', 'remove_xmlrpc_pingback_ping' );
 function remove_xmlrpc_pingback_ping( $methods ) {
 	unset( $methods['pingback.ping'] );
  	return $methods;
 } ;
+
+// Custom login
+add_filter( 'login_headerurl', 'ovr_login_url' );
+add_filter( 'login_headertitle', 'ovr_login_url_title' );
+add_action( 'login_enqueue_scripts', 'ovr_login_stylesheet' );
+function ovr_login_url() {
+    return home_url();
+}
+function ovr_login_url_title() {
+    return 'Get Away The Right Way!';
+}
+function ovr_login_stylesheet() {
+    error_log(get_template_directory_uri());
+    wp_enqueue_style( 'custom-login', get_stylesheet_directory_uri() . '/login.css' );
+    //wp_enqueue_script( 'custom-login', get_template_directory_uri() . '/style-login.js' );
+}

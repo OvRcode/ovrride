@@ -1,0 +1,28 @@
+body.login {
+  background: #333333;
+}
+body.login div#login {
+  padding:40px 0 0;
+}
+body.login div#login h1 a {
+  background-image: url(images/ovr-logo.png);
+  background-size: 280px;
+  padding: 0;
+  width: 280px;
+  height: 198px;
+}
+body.login div#login form#loginform {
+  background: #999999;
+}
+body.login div#login form#loginform p label {
+  color: black;
+}
+body.login div#login p#nav a, div#login p#backtoblog a {
+  color: white;
+}
+body.login div#login form#loginform p.submit input#wp-submit {
+  display: block;
+  width: 100%;
+  background-color: #00BCE7;
+  margin-top: 20px;
+}
