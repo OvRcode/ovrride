@@ -2701,6 +2701,71 @@ p.srp-widget-date {
 .destinations #squelch-taas-header-6 {
   background-position: 0 -37px;
 }
+.location{
+  background-image:url(images/destination-imgs/destinations.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  width:40px;
+  height:30px;
+}
+.location.hunter {
+  background-position: 0px  -150px;
+} 
+.location.windham {
+  background-position: 0px -530px;
+  vertical-align: -40%;
+  height: 40px;
+}
+.location.camelback {
+  background-position: 0px -80px;
+  vertical-align: -20%;
+}
+.location.stratton {
+  background-position: 0px -377px;
+}
+.location.mount-snow {
+  background-position: 0px 5px;
+}
+.location.killington {
+  background-position: 0px -232px;
+  vertical-align: -22%;
+}
+.location.stowe {
+  background-position: 0px -340px;
+  vertical-align: -2%;
+}
+.location.sugarbush {
+  background-position: 0px -420px;
+  vertical-align: -15%;
+}
+.location.tahoe {
+  background-position: 0px -460px;
+  vertical-align: -30%;
+}
+.location.breckenridge {
+  background-position: 0px -270px;
+  vertical-align: -25%;
+}
+.location.snowbird {
+  background-position: 0px -306px;
+  vertical-align: -15%;
+}
+.location.chile {
+  background-position: 0px -117px;
+  vertical-align: -20%;
+}
+.location.argentina {
+  background-position: 0px -42px;
+  vertical-align: -25%;
+}
+.location.whistler {
+  background-position: 0px  -490px;
+}
+.location.japan {
+  background-position: 0px -195px;
+  width: 117px;
+  vertical-align: -30%;
+}
 .fb_iframe_widget {
 	background: #C3C3C3;
 	height: 205px;
