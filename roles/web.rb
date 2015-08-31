@@ -29,7 +29,8 @@ run_list(
 "recipe[build-essential]",
 "recipe[apt]",
 "recipe[s3cmd::add_keys]",
-"recipe[hhvm::default]",
+"recipe[memcached::default]",
+"recipe[hhvm::memcache]",
 "recipe[apache2::webconfig]",
 "recipe[ovr::get_images]"
 )
