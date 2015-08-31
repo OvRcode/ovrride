@@ -2675,26 +2675,31 @@ p.srp-widget-date {
 	width: 100%;
 	margin: 0px 0px 3px 0px;
 }
+.destinations h3 {
+  background: #cecece;
+  background-image:url(images/destination-imgs/destinations_map.png);
+  background-repeat: no-repeat;
+  }
 .destinations #squelch-taas-header-0 {
-  background:url(images/destination-imgs/newyork.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -75px;
 }
 .destinations #squelch-taas-header-1 {
-  background:url(images/destination-imgs/penn.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -115px;
 }
 .destinations #squelch-taas-header-2 {
-  background:url(images/destination-imgs/vermont.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -190px;
 }
 .destinations #squelch-taas-header-3 {
-  background:url(images/destination-imgs/westcoast.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -227px;
 }
 .destinations #squelch-taas-header-4 {
-  background:url(images/destination-imgs/samerica.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -152px;
 }
 .destinations #squelch-taas-header-5 {
-  background:url(images/destination-imgs/canada.png) 4px 4px no-repeat #cecece;
+  background-position: 0 0;
 }
 .destinations #squelch-taas-header-6 {
-  background:url(images/destination-imgs/japan.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -37px;
 }
 .fb_iframe_widget {
 	background: #C3C3C3;
