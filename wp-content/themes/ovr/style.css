@@ -5,7 +5,7 @@
  Author:       Robert Chapman, Mike Barnard
  Author URI:   http://chapcode.com
  Template:     quark
- Version:      0.0.1
+ Version:      0.1.0
  Text Domain:  ovr
 */
 /* ==========================================================================
@@ -2675,26 +2675,125 @@ p.srp-widget-date {
 	width: 100%;
 	margin: 0px 0px 3px 0px;
 }
+.destinations h3 {
+  background: #cecece;
+  background-image:url(images/destination-imgs/destinations_map.png);
+  background-repeat: no-repeat;
+  }
 .destinations #squelch-taas-header-0 {
-  background:url(images/destination-imgs/newyork.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -75px;
 }
 .destinations #squelch-taas-header-1 {
-  background:url(images/destination-imgs/penn.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -115px;
 }
 .destinations #squelch-taas-header-2 {
-  background:url(images/destination-imgs/vermont.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -190px;
 }
 .destinations #squelch-taas-header-3 {
-  background:url(images/destination-imgs/westcoast.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -227px;
 }
 .destinations #squelch-taas-header-4 {
-  background:url(images/destination-imgs/samerica.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -152px;
 }
 .destinations #squelch-taas-header-5 {
-  background:url(images/destination-imgs/canada.png) 4px 4px no-repeat #cecece;
+  background-position: 0 0;
 }
 .destinations #squelch-taas-header-6 {
-  background:url(images/destination-imgs/japan.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -37px;
+}
+.location{
+  background-image:url(images/destination-imgs/destinations.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  width:40px;
+  height:30px;
+}
+.location.hunter {
+  background-position: 0px  -150px;
+} 
+.location.windham {
+  background-position: 0px -530px;
+  vertical-align: -40%;
+  height: 40px;
+}
+.location.camelback {
+  background-position: 0px -80px;
+  vertical-align: -20%;
+}
+.location.stratton {
+  background-position: 0px -377px;
+}
+.location.mount-snow {
+  background-position: 0px 5px;
+}
+.location.killington {
+  background-position: 0px -232px;
+  vertical-align: -22%;
+}
+.location.stowe {
+  background-position: 0px -340px;
+  vertical-align: -2%;
+}
+.location.sugarbush {
+  background-position: 0px -420px;
+  vertical-align: -15%;
+}
+.location.tahoe {
+  background-position: 0px -460px;
+  vertical-align: -30%;
+}
+.location.breckenridge {
+  background-position: 0px -270px;
+  vertical-align: -25%;
+}
+.location.snowbird {
+  background-position: 0px -306px;
+  vertical-align: -15%;
+}
+.location.chile {
+  background-position: 0px -117px;
+  vertical-align: -20%;
+}
+.location.argentina {
+  background-position: 0px -42px;
+  vertical-align: -25%;
+}
+.location.whistler {
+  background-position: 0px  -490px;
+}
+.location.japan {
+  background-position: 0px -195px;
+  width: 117px;
+  vertical-align: -30%;
+}
+.shop {
+  background-image:url(images/shops.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  width:44px;
+  height:40px;
+}
+.shop.blades {
+  background-position: 0px -100px;
+  
+}
+.shop.skate-brooklyn {
+  background-position: -2px -4px;
+}
+.shop.aegir {
+  background-position: -2px -52px;
+}
+.shop.burton {
+  background-position: -2px -148px;
+}
+.shop.homage {
+  background-position: 0 -195px;
+}
+.shop.rei {
+  background-position: 0 -244px;
+}
+.shop.shut {
+  background-position: 0 -294px;
 }
 .fb_iframe_widget {
 	background: #C3C3C3;
