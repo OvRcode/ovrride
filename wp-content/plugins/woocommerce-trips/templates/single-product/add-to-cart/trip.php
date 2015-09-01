@@ -56,6 +56,25 @@ PASSPORT;
                     </p>
 DOB;
                 break;
+            default:
+            echo <<<AGECHECK
+                <p class="form-field form-field-wide" id="wc_trip_age_check">
+                    <label for="wc_trip_age_check">Is this guest at least 18 years of age?<span class="required">*</span>
+                    <br />
+                    <input type="radio" name="wc_trip_age_check" value="yes" data-required="true"> Yes
+                    <br />
+                    <input type="radio" name="wc_trip_age_check" value="no" data-required="true"> No
+                    <br />
+                    <div class="DOB">
+                    	<label for="wc_trip_dob" class="dob_label">Date of Birth<span class="required">*</span></label>
+                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
+                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
+                        <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
+                    </div>
+                    <p>Guests under 18 years of age are welcome to join us as long as they abide by the terms of the <a href="http://ovrride.com/ovrride-age-policy/" target="_blank"><strong>OvRride Age Policy</strong></a>, and we are aware of the underage guest.</p>
+                </p>
+AGECHECK;
+                break;
         }
         $packages = [
             "primary"   => $product->output_packages("primary"),

@@ -17,3 +17,19 @@
 #wc_trips_form input, label {
     display:block;
 }
+
+#wc_trip_dob_day, #wc_trip_dob_month {
+  width: 2.5em;
+  display: none;
+}
+.dob_label {
+  display:none;
+}
+#wc_trip_dob_year {
+  width:4em;
+  display: none;
+}
+.dob {
+  display: none;
+  visibility: none;
+}
