@@ -12,9 +12,6 @@ class WC_Trips_Cart {
        add_filter( 'woocommerce_cart_item_name', array( $this, 'render_meta_on_cart_item'), 1, 3 );
        add_filter( 'woocommerce_add_cart_item_data',array($this, 'force_individual_cart_items'), 10, 2 );
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
-       //add_filter('woocommerce_add_cart_item', array( $this, 'add_cart_item'), 10, 1);
-       //add_filter( 'woocommerce_add_cart_item_data', array( $this, 'add_cart_item_data' ), 10, 2 );
-       //add_filter('woocommerce_get_price', array( $this, 'return_custom_price'), 10, 2);
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
        
        $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
@@ -34,30 +31,6 @@ class WC_Trips_Cart {
             }
         }
     }
-   /* public function add_cart_item( $price, $product ) {
-        if ( "trip" == $product->product_type ) {
-            error_log("ADJUSTING PRICE!");
-            $product_id = $cart_item['data']->id;
-            $packages = get_post_meta($product_id, '_wc_trip_primary_packages', true);
-            $base_cost = (get_post_meta($product_id, '_price', true) ?: 0);
-            $cost = 0;
-            
-            if ( isset($_POST['wc_trip_primary_package']) ) {
-                $cost += $this->get_package_cost( $_POST['wc_trip_primary_package'], $packages );
-            }
-            if ( isset($_POST['wc_trip_secondary_package']) ) {
-                $cost += $this->get_package_cost( $_POST['wc_trip_primary_package'], $packages );
-            }
-            if ( isset($_POST['wc_trip_tertiary_package']) ) {
-                $cost += $this->get_package_cost( $_POST['wc_trip_tertiary_package'], $package);
-            }
-            error_log("COST:" . $cost );
-            error_log("Base Cost:" . $base_cost);
-            error_log("Total cost:" . ($base_cost+$cost));
-            $cart_item['data']->set_price($base_cost + $cost);
-        }
-        return $price;
-    }*/
     private function get_package_cost( $description, $packages ) {
         foreach( $packages as $key => $array ) {
             if ( $description == $array['description'] ) {
@@ -84,7 +57,6 @@ class WC_Trips_Cart {
             }
         }
     }
-    
     public function force_individual_cart_items( $cart_item_data, $product_id ) {
         $unique_cart_item_key = md5( microtime().rand() );
         $cart_item_data['unique_key'] = $unique_cart_item_key;
