@@ -11,7 +11,7 @@ class WC_Product_Trip extends WC_Product {
         parent::__construct( $product );
     }
     
-    public function is_in_stock() {
+/*    public function is_in_stock() {
         if ( true === $this->managing_stock() ) {
             if ( 0 == $this->get_stock_quantity() ) {
                 return false;
@@ -46,7 +46,7 @@ class WC_Product_Trip extends WC_Product {
             }
         }
             return true;
-    }
+    }*/
     public function is_purchasable() {
         return true;
     }

@@ -12,17 +12,66 @@ class WC_Trips_Cart {
        add_filter( 'woocommerce_cart_item_name', array( $this, 'render_meta_on_cart_item'), 1, 3 );
        add_filter( 'woocommerce_add_cart_item_data',array($this, 'force_individual_cart_items'), 10, 2 );
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
-//       add_filter( 'woocommerce_get_availability', array( $this, 'custom_stock_totals' ), 20, 3);
+       //add_filter('woocommerce_add_cart_item', array( $this, 'add_cart_item'), 10, 1);
+       //add_filter( 'woocommerce_add_cart_item_data', array( $this, 'add_cart_item_data' ), 10, 2 );
+       //add_filter('woocommerce_get_price', array( $this, 'return_custom_price'), 10, 2);
+       add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
        
        $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
-        "wc_trip_dob" => "Date of birth", "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
+        "wc_trip_dob_field" => "Date of birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
+        "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
     }
-    
+
+    public function add_costs( $cart_object ) {
+        global $woocommerce;
+        foreach ( $cart_object->cart_contents as $key => $value ) {
+            if( WC()->session->__isset( $key.'_cost' ) ) {
+                $base_price = intval( $value['data']->price );
+                $additional_costs = WC()->session->get( $key.'_cost' );
+                $value['data']->price = $base_price + $additional_costs;
+            }
+        }
+    }
+   /* public function add_cart_item( $price, $product ) {
+        if ( "trip" == $product->product_type ) {
+            error_log("ADJUSTING PRICE!");
+            $product_id = $cart_item['data']->id;
+            $packages = get_post_meta($product_id, '_wc_trip_primary_packages', true);
+            $base_cost = (get_post_meta($product_id, '_price', true) ?: 0);
+            $cost = 0;
+            
+            if ( isset($_POST['wc_trip_primary_package']) ) {
+                $cost += $this->get_package_cost( $_POST['wc_trip_primary_package'], $packages );
+            }
+            if ( isset($_POST['wc_trip_secondary_package']) ) {
+                $cost += $this->get_package_cost( $_POST['wc_trip_primary_package'], $packages );
+            }
+            if ( isset($_POST['wc_trip_tertiary_package']) ) {
+                $cost += $this->get_package_cost( $_POST['wc_trip_tertiary_package'], $package);
+            }
+            error_log("COST:" . $cost );
+            error_log("Base Cost:" . $base_cost);
+            error_log("Total cost:" . ($base_cost+$cost));
+            $cart_item['data']->set_price($base_cost + $cost);
+        }
+        return $price;
+    }*/
+    private function get_package_cost( $description, $packages ) {
+        foreach( $packages as $key => $array ) {
+            if ( $description == $array['description'] ) {
+                if ( isset( $array['cost']) ) {
+                    return $array['cost'];
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
     public function order_item_meta( $item_id, $values, $cart_item_key) {
         global $woocommerce;
-        error_log("ORDER_ITEM_META!");
+//        error_log("ORDER_ITEM_META!");
         foreach ( $this->fields as $key => $value ) {
             if ( WC()->session->__isset( $cart_item_key . "_" . $key ) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
@@ -46,8 +95,12 @@ class WC_Trips_Cart {
         foreach( $this->fields as $key => $value ) {
             if( isset( $_REQUEST[$key]) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
+                    $packages = get_post_meta($product_id, '_' . $key ."s", true);
+                    $cost = $this->get_package_cost( $_REQUEST[$key], $packages );
                     WC()->session->set( $cart_item_key . "_" . $key . "_label", $_REQUEST[$key . "_label"]);
-                    WC()->session->set( $cart_item_key . "_" . $key . "_cost", $_REQUEST[$key . "_cost"]);
+                    $stored_cost = WC()->session->get( $cart_item_key . "_cost" );
+                    $stored_cost += $cost;
+                    WC()->session->set( $cart_item_key . "_cost", $stored_cost );
                 }
                 WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
             }
@@ -62,10 +115,6 @@ class WC_Trips_Cart {
                 $key_parts = explode( "_", $key);
                 if ( isset($key_parts[3]) && "package" == $key_parts[3] ) {
                     $label = WC()->session->get( $cart_item_key . "_" . $key . "_label");
-                    $cost = WC()->session->get( $cart_item_key . "_" . $key . "_cost");
-                    if ( "" !== $cost ) {
-                        $cost = " +" . $cost;
-                    }
                 } else {
                     $label = $value;
                 }
@@ -78,7 +127,7 @@ class WC_Trips_Cart {
                 }
                 echo<<<CARTMETA
                 <dt class="variation-{$label}">{$label}: </dt>
-                <dd class="variation-{$label}">{$inputValue}{$cost}{$time}</dd>
+                <dd class="variation-{$label}">{$inputValue}{$time}</dd>
 CARTMETA;
                 unset($cost);
                 unset($time);
@@ -89,7 +138,7 @@ CARTMETA;
     public function out_of_stock() {
         echo "<h1>Out of Stock</h1>";
     }
-    public function add_to_cart() {
+    public function add_to_cart( $cart_item_key ) {
         global $product;
         
         $meta = get_post_meta($product->id);
@@ -108,7 +157,11 @@ CARTMETA;
         $pickups = $this->pickupField( $product->id );
         $template_data = array('fields' => $fields, 'trip_type' => $trip_type, 'pickups' => $pickups);
         wc_get_template( 'single-product/add-to-cart/trip.php', $template_data, 'woocommerce-trips', WC_TRIPS_TEMPLATE_PATH );
-        
+        if (   !isset($_POST['wc_trip_primary_package']) 
+            || !isset($_POST['wc_trip_secondary_package']) 
+            || !isset($_POST['wc_trip_tertiary_package']) ) {
+            WC()->session->__unset( $cart_item_key . "_cost" );
+        }
     }
     private function pickupField( $post_id ) {
         $pickup_ids = get_post_meta( $post_id, '_wc_trip_pickups', true);

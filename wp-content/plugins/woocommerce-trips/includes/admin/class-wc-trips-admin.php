@@ -54,7 +54,7 @@ class WC_Trips_Admin {
                       'orderby' => 'title',
                       'order' => 'ASC');
         $destinations       = get_posts( $args );
-        error_log( print_r($destinations, true));
+        
         $stock              = get_post_meta( $post_id, '_stock', true );
         $base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
         $saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );
@@ -107,7 +107,7 @@ class WC_Trips_Admin {
             } else {
                 update_post_meta( $post_id, $meta_key, $value );
             }
-            error_log( $meta_key . " : ".$value);
+            
             unset($_POST[ $meta_key ]);
         }
         // Primary packages

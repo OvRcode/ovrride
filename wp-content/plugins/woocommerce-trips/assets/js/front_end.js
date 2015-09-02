@@ -7,15 +7,11 @@ jQuery(document).ready(function($){
   $("#wc-trips-form select").on("change", function(){
     enableDisableCart();
   });
+  
   $("#wc-trips-form input").on("keyup", function(){
     enableDisableCart();
   });
-  $("select[name$=_package]").on("change", function(){
-    var name = $(this).attr('name');
-    var cost = $(this).find(":selected").data('cost');
-    $("input[name='" + name + "_cost']").val( cost );
-    
-  });
+  
   $("input[name=wc_trip_age_check]").on("change", function(){
     enableDisableCart();
     var fields = [$("label[for=wc_trip_dob]"), $("#wc_trip_dob_month"), $("#wc_trip_dob_day"), $("#wc_trip_dob_year")];
@@ -34,7 +30,13 @@ jQuery(document).ready(function($){
     }
     enableDisableCart();
   });
-  // TODO: Auto format Birthday
+  
+  $("input[name^=wc_trip_dob_]").on("keyup", function(){
+    var month = $("input[name=wc_trip_dob_month]").val();
+    var day = $("input[name=wc_trip_dob_day]").val();
+    var year = $("input[name=wc_trip_dob_year]").val();
+    $("input[name=wc_trip_dob]").val(month + "/" + day + "/" + year);
+  });
   // Enables/disables cart button based on fields being filled out
   function enableDisableCart() {
     var fieldsOK = true;

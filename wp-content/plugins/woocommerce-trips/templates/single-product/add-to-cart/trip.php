@@ -51,8 +51,12 @@ PASSPORT;
             case "domestic_flight":
                 echo <<<DOB
                     <p class="form-field form-field-wide" id="wc_trip_dob">
-                        <label for="wc_trip_dob">Date of Birth ( MM/DD/YYYY ) <span class="required">*</span></label>
-                        <input type="text" name="wc_trip_dob" max-length="9" data-required="true" />
+                    <div class="DOB">
+                        <label for="wc_trip_dob" class="dob_label">Date of Birth<span class="required">*</span></label>
+                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
+                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
+                        <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
+                    </div>
                     </p>
 DOB;
                 break;
@@ -70,6 +74,7 @@ DOB;
                         <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
                         <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
                         <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
+                        <input type="hidden" id="wc_trip_dob_field" value="" />
                     </div>
                     <p>Guests under 18 years of age are welcome to join us as long as they abide by the terms of the <a href="http://ovrride.com/ovrride-age-policy/" target="_blank"><strong>OvRride Age Policy</strong></a>, and we are aware of the underage guest.</p>
                 </p>
@@ -92,7 +97,6 @@ PACKAGE;
                 echo $info['html'];
                 echo "</select></p>";
                 echo "<input type='hidden' name='wc_trip_{$type}_package_label' value='{$info['label']}' />";
-                echo "<input type='hidden' name='wc_trip_{$type}_package_cost' value='' />";
             }
         }
         
