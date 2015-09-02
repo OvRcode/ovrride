@@ -14,25 +14,46 @@ class WC_Trips_Cart {
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
        add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
-        
+       //add_action( 'woocommerce_order_status_completed', array( $this, 'testing') );
+       add_action( 'woocommerce_product_set_stock', array( $this, 'testing'), 10, 4);
        $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
         "wc_trip_dob_field" => "Date of birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
     }
-    
+    public function testing( $instance ) {
+        // Found stock function
+        // HOW TO ACCESS ORDER META INFO
+        // ADD SELECTED PACKAGES TO PRODUCT THEN READ HERE
+        error_log( $instance->wc_trip_primary_package_stock);
+    }
     public function validate_add_cart_item( $passed, $product_id, $qty ) {
         $product      = get_product( $product_id );
-        error_log("validation");
         if ( $product->product_type !== 'trip' ) {
             return $passed;
         }
-//        error_log($_POST['wc_trip_primary_package']);
-//        error_log($_POST['wc_trip_secondary_package']);
-//        error_log($_POST['wc_trip_tertiary_package']);
-        //error_log( $product->check_package_stock( "primary", $_POST['wc_trip_primary_package'] ) );
-        return $passed;
+        $package_types = array("primary", "secondary", "tertiary");
+        $stockOk = false;
+        foreach( $package_types as $package ) {
+            if ( isset($_POST['wc_trip_' . $package . "_package"]) ){
+                $post = $_POST['wc_trip_' . $package . "_package"];
+                $stockCheck = $product->check_package_stock( $package, $post);
+                if ( $stockCheck ) {
+                    $product->{'selected_' . $package . '_package'} = $post;
+                    $stockOk = true;
+                } else {
+                    wc_add_notice("Sorry, " . $post . " is out of stock", 'error');
+                    return false;
+                }
+            }
+        }
+        if ( $stockOk ) {
+            return true;
+        } else {
+            wc_add_notice("Couldn't find specified packages, try again", 'error');
+            return false;
+        }
     }
     public function add_costs( $cart_object ) {
         global $woocommerce;

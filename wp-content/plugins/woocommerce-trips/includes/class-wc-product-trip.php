@@ -4,25 +4,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Product_Trip extends WC_Product {
-    
+    public $selected_primary_package;
+    public $selected_secondary_package;
+    public $selected_tertiary_package;
     public function __construct( $product ) {
         $this->product_type = 'trip';
         $this->manage_stock = 'yes';
         parent::__construct( $product );
     }
-    /*
+
     public function check_package_stock( $type, $description ) {
-        $packages = $this->{"wc_trip_" . $type . "_package"};
-        if ( "" == $this->{"wc_trip_" . $type . "_stock"} ) {
+        $packages = $this->{"wc_trip_" . $type . "_packages"};
+        if ( "" == $this->{"wc_trip_" . $type . "_package_stock"} ) {
             return true;
         } else {
-            $index = array_search($description, $packages);
-            if ( $index ) {
-                error_log(print_r($packages, true));
+            foreach( $packages as $key => $values ) {
+                if ( $values['description'] == $description ) {
+                    if ( "" === strval($values['stock']) || intval($values['stock']) > 0 ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
             }
+            return false;
         }
-        return $this->wc_trip_tertiary_package_label;
-    }*/
+    }
+    
     public function is_purchasable() {
         return true;
     }
