@@ -25,9 +25,8 @@ class WC_Trips_Cart {
         global $woocommerce;
         foreach ( $cart_object->cart_contents as $key => $value ) {
             if( WC()->session->__isset( $key.'_cost' ) ) {
-                $base_price = intval( $value['data']->price );
                 $additional_costs = WC()->session->get( $key.'_cost' );
-                $value['data']->price = $base_price + $additional_costs;
+                $value['data']->price = $additional_costs;
             }
         }
     }
@@ -64,6 +63,11 @@ class WC_Trips_Cart {
         return $cart_item_data;
     }
     public function save_trip_fields( $cart_item_key, $product_id = null, $quantity= null, $variation_id= null, $variation= null) {
+        if ( ! WC()->session->__isset($cart_item_key . "_cost") ) {
+            $base_price = get_post_meta($product_id, '_wc_trip_base_price', true);
+            WC()->session->set( $cart_item_key . "_cost", $base_price);
+            error_log("BASE SET");
+        }
         foreach( $this->fields as $key => $value ) {
             if( isset( $_REQUEST[$key]) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
@@ -71,6 +75,7 @@ class WC_Trips_Cart {
                     $cost = $this->get_package_cost( $_REQUEST[$key], $packages );
                     WC()->session->set( $cart_item_key . "_" . $key . "_label", $_REQUEST[$key . "_label"]);
                     $stored_cost = WC()->session->get( $cart_item_key . "_cost" );
+                    error_log("Stored Cost " . $stored_cost);
                     $stored_cost += $cost;
                     WC()->session->set( $cart_item_key . "_cost", $stored_cost );
                 }
@@ -113,7 +118,6 @@ CARTMETA;
     public function add_to_cart( $cart_item_key ) {
         global $product;
         
-        $meta = get_post_meta($product->id);
         $type = get_post_meta( $product->id, '_wc_trip_type', true );
         $fields = array("first","last","email","phone");
         switch( $type ) {
@@ -129,11 +133,6 @@ CARTMETA;
         $pickups = $this->pickupField( $product->id );
         $template_data = array('fields' => $fields, 'trip_type' => $trip_type, 'pickups' => $pickups);
         wc_get_template( 'single-product/add-to-cart/trip.php', $template_data, 'woocommerce-trips', WC_TRIPS_TEMPLATE_PATH );
-        if (   !isset($_POST['wc_trip_primary_package']) 
-            || !isset($_POST['wc_trip_secondary_package']) 
-            || !isset($_POST['wc_trip_tertiary_package']) ) {
-            WC()->session->__unset( $cart_item_key . "_cost" );
-        }
     }
     private function pickupField( $post_id ) {
         $pickup_ids = get_post_meta( $post_id, '_wc_trip_pickups', true);
