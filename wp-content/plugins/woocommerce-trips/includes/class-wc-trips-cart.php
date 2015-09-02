@@ -13,32 +13,35 @@ class WC_Trips_Cart {
        add_filter( 'woocommerce_add_cart_item_data',array($this, 'force_individual_cart_items'), 10, 2 );
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
-       //add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
-       
+       add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
+        
        $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
         "wc_trip_dob_field" => "Date of birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
     }
-    /*public function validate_add_cart_item( $passed, $product_id, $qty ) {
+    
+    public function validate_add_cart_item( $passed, $product_id, $qty ) {
         $product      = get_product( $product_id );
-        
+        error_log("validation");
         if ( $product->product_type !== 'trip' ) {
             return $passed;
         }
 //        error_log($_POST['wc_trip_primary_package']);
 //        error_log($_POST['wc_trip_secondary_package']);
 //        error_log($_POST['wc_trip_tertiary_package']);
-        error_log( $product->check_package_stock( "primary", $_POST['wc_trip_primary_package'] ) );
+        //error_log( $product->check_package_stock( "primary", $_POST['wc_trip_primary_package'] ) );
         return $passed;
-    }*/
+    }
     public function add_costs( $cart_object ) {
         global $woocommerce;
         foreach ( $cart_object->cart_contents as $key => $value ) {
-            if( WC()->session->__isset( $key.'_cost' ) ) {
-                $additional_costs = WC()->session->get( $key.'_cost' );
-                $value['data']->price = $additional_costs;
+            if ( "trip" == $value['data']->product_type) {
+                if( WC()->session->__isset( $key.'_cost' ) ) {
+                    $additional_costs = WC()->session->get( $key.'_cost' );
+                    $value['data']->price = $additional_costs;
+                }
             }
         }
     }

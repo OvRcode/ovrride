@@ -28,7 +28,7 @@ class WC_Product_Trip extends WC_Product {
     }
     
     public function is_sold_individually() {
-        return false;
+        return true;
     }
     
     public function output_packages( $type ) {
