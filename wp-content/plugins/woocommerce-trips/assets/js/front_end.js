@@ -1,5 +1,4 @@
 jQuery(document).ready(function($){
-  
   // disabled add to cart button on load
   enableDisableCart();
   
@@ -11,7 +10,19 @@ jQuery(document).ready(function($){
   $("#wc-trips-form input").on("keyup", function(){
     enableDisableCart();
   });
-  
+  $("input[name=wc_trip_email]").verimail({
+    messageElement: "p#emailValidation"
+  });
+  $("input[name=wc_trip_email]").on("change", function(){
+    var status = $("input[name=wc_trip_email]").getVerimailStatus();
+    if ( "success" !== status ) {
+      $("#emailValidation").show();
+      $(this).css({background: '#CC0000', color: '#FFFFFF'}).focus();
+    } else {
+      $("#emailValidation").hide();
+      $(this).css({background: '#FFFFFF', color: '#000000'});
+    }
+  });
   $("input[name=wc_trip_age_check]").on("change", function(){
     enableDisableCart();
     var fields = [$("label[for=wc_trip_dob]"), $("#wc_trip_dob_month"), $("#wc_trip_dob_day"), $("#wc_trip_dob_year")];

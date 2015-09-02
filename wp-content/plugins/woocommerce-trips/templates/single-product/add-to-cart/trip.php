@@ -26,10 +26,12 @@ do_action( 'woocommerce_before_add_to_cart_form' );
             <label for="wc_trip_last">Last <span class="required">*</span></label>
             <input type="text" name="wc_trip_last" data-required="true" />
         </p><br /><br />
+        <p id="firstValidation"></p>
         <p class="form-field form-field-wide" id="wc_trip_email">
             <label for="wc_trip_email">Email <span class="required">*</span></label>
             <input type="text" name="wc_trip_email" data-required="true" />
         </p>
+        <p id="emailValidation"></p>
         <p class="form-field form-field-wide" id="wc_trip_phone">
             <label for="wc_trip_phone">Phone <span class="required">*</span></label>
             <input type="text" name="wc_trip_phone" data-required="true" />

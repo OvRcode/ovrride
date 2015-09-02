@@ -13,6 +13,7 @@ class WC_Trips_Cart {
        add_filter( 'woocommerce_add_cart_item_data',array($this, 'force_individual_cart_items'), 10, 2 );
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
+       //add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
        
        $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
@@ -20,7 +21,18 @@ class WC_Trips_Cart {
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
     }
-
+    /*public function validate_add_cart_item( $passed, $product_id, $qty ) {
+        $product      = get_product( $product_id );
+        
+        if ( $product->product_type !== 'trip' ) {
+            return $passed;
+        }
+//        error_log($_POST['wc_trip_primary_package']);
+//        error_log($_POST['wc_trip_secondary_package']);
+//        error_log($_POST['wc_trip_tertiary_package']);
+        error_log( $product->check_package_stock( "primary", $_POST['wc_trip_primary_package'] ) );
+        return $passed;
+    }*/
     public function add_costs( $cart_object ) {
         global $woocommerce;
         foreach ( $cart_object->cart_contents as $key => $value ) {
@@ -43,7 +55,6 @@ class WC_Trips_Cart {
     }
     public function order_item_meta( $item_id, $values, $cart_item_key) {
         global $woocommerce;
-//        error_log("ORDER_ITEM_META!");
         foreach ( $this->fields as $key => $value ) {
             if ( WC()->session->__isset( $cart_item_key . "_" . $key ) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
@@ -66,7 +77,6 @@ class WC_Trips_Cart {
         if ( ! WC()->session->__isset($cart_item_key . "_cost") ) {
             $base_price = get_post_meta($product_id, '_wc_trip_base_price', true);
             WC()->session->set( $cart_item_key . "_cost", $base_price);
-            error_log("BASE SET");
         }
         foreach( $this->fields as $key => $value ) {
             if( isset( $_REQUEST[$key]) ) {
@@ -75,7 +85,6 @@ class WC_Trips_Cart {
                     $cost = $this->get_package_cost( $_REQUEST[$key], $packages );
                     WC()->session->set( $cart_item_key . "_" . $key . "_label", $_REQUEST[$key . "_label"]);
                     $stored_cost = WC()->session->get( $cart_item_key . "_cost" );
-                    error_log("Stored Cost " . $stored_cost);
                     $stored_cost += $cost;
                     WC()->session->set( $cart_item_key . "_cost", $stored_cost );
                 }

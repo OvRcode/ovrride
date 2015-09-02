@@ -10,42 +10,18 @@ class WC_Product_Trip extends WC_Product {
         $this->manage_stock = 'yes';
         parent::__construct( $product );
     }
-    
-/*    public function is_in_stock() {
-        if ( true === $this->managing_stock() ) {
-            if ( 0 == $this->get_stock_quantity() ) {
-                return false;
-            } else {
-                error_log("Package Stock:" .  $this->check_package_stock());
-                if ( $this->check_package_stock() ) {
-                    return $this->stock_status === 'instock';
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return $this->stock_status === 'instock';
-        }
-    }
-    
-    public function check_package_stock() {
-        
-        foreach( array("primary", "secondary", "tertiary") as $package_type ) {
-            if ( 'yes' == $this->{'wc_trip_' . $package_type . '_package_stock'} ) {
-                $packageStock = 0;
-                foreach( $this->{'wc_trip_' . $package_type . '_packages'} as $index => $array ) {
-                    if ( '' === $array['stock'] || intval($array['stock']) > 0 ) {
-                        $packageStock++;
-                    }
-                }
-                if ( 0 == $packageStock ) {
-                    return false;
-                }
-            } else {
-                return true;
-            }
-        }
+    /*
+    public function check_package_stock( $type, $description ) {
+        $packages = $this->{"wc_trip_" . $type . "_package"};
+        if ( "" == $this->{"wc_trip_" . $type . "_stock"} ) {
             return true;
+        } else {
+            $index = array_search($description, $packages);
+            if ( $index ) {
+                error_log(print_r($packages, true));
+            }
+        }
+        return $this->wc_trip_tertiary_package_label;
     }*/
     public function is_purchasable() {
         return true;

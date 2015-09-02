@@ -10,6 +10,12 @@
   width: 100%;
   clear: both;
 }
+#emailValidation {
+  display: none;
+}
+#firstValidation {
+  display: none;
+}
 .woocommerce select {
   line-height: 1.5;
   font-size: 14pt;
