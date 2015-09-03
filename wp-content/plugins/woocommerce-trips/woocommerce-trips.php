@@ -123,6 +123,7 @@ class WC_Trips {
         $destination_map = get_post_meta( $destination_id, '_trail_map', true);
         $trip_includes = get_post_meta( $product->id, '_wc_trip_includes', true);
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
+        $trip_rates = get_post_meta( $product->id, '_wc_trip_rates', true);
         
         if ( ! empty( $pickups ) ){
             $tabs['pickups'] = array(
@@ -144,8 +145,24 @@ class WC_Trips {
                         'callback'  => array( $this, 'includes_content')
                     );
                 }
+                if ( $trip_rates ) {
+                    $tabs['rates'] = array(
+                        'title'     => 'Rates',
+                        'priority'  => 42,
+                        'callback'  => array( $this, 'rates_content')
+                    );
+                }
             }
         return $tabs;
+    }
+    public function rates_content() {
+        global $product;
+        $rates_data = get_post_meta( $product->id, '_wc_trip_rates', true);
+        echo <<<RATES
+            <p>
+                {$rates_data}
+            </p>
+RATES;
     }
     public function trail_map_content() {
         global $product, $wpdb;
