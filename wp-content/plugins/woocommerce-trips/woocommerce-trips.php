@@ -32,6 +32,7 @@ class WC_Trips {
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_scripts_and_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
         add_filter( 'woocommerce_product_tabs', array( $this, 'pickup_tab'), 98 );
+        //add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
         
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
@@ -134,8 +135,17 @@ class WC_Trips {
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
         
         echo "<h2> Bus Times</h2>";
+        $leftRight = "left";
+        $count = 0;
         foreach ( $pickups as $pickup ) {
+            echo "<div class='pickup {$leftRight}'>";
             echo $this->pickup_html($pickup);
+            echo "</div>";
+            $leftRight = ( "left" == $leftRight ? "right" : "left");
+            if ( $count & 1 ) {
+                echo "<br /><br />";
+            }
+            $count++;
         }
     }
     
@@ -148,13 +158,11 @@ class WC_Trips {
             $address = explode(",", ucwords( strtolower( $address ) ), 2);
             $time = get_post_meta( $post_id, '_pickup_location_time', true);
             $output = <<<PICKUPHTML
-            <div class="pickup">
                 <strong>{$pickup->post_title}</strong><br />
                 {$address[0]}<br />
                 {$cross_st}<br />
                 {$address[1]}<br />
                 <strong><a href="http://maps.google.com/?q={$address[0]}{$address[1]}" target="_blank">View Map</a></strong>
-            </div>
 PICKUPHTML;
         }
 

@@ -39,3 +39,15 @@
   display: none;
   visibility: none;
 }
+.pickup {
+  display: block;
+  margin-top:10px;
+}
+.pickup.left {
+  float: left;
+  margin-left:30px;
+}
+.pickup.right {
+  float: right;
+  margin-right:30px;
+}
