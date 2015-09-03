@@ -4,15 +4,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Product_Trip extends WC_Product {
-    public $selected_primary_package;
-    public $selected_secondary_package;
-    public $selected_tertiary_package;
+    
     public function __construct( $product ) {
         $this->product_type = 'trip';
         $this->manage_stock = 'yes';
         parent::__construct( $product );
     }
-
+    public function reduce_package_stock( $type, $description ) {
+        $packages = $this->{"wc_trip_" . $type . "_packages"};
+        if ( "yes" == $this->{"wc_trip_" . $type . "_package_stock"} ) {
+            $foundKey = "";
+            foreach( $packages as $key => $values ) {
+                if ( $description == $values['description'] ) {
+                    $foundKey = $key;
+                    break;
+                }
+            }
+            if ( "" !== strval($foundKey) ) {
+                if ( "" !== strval($packages[$foundKey]['stock']) ) {
+                    $packages[$foundKey]['stock']--;
+                    update_post_meta( $this->id, '_wc_trip_'.$type."_packages", $packages);
+                }
+            }
+        }
+    }
     public function check_package_stock( $type, $description ) {
         $packages = $this->{"wc_trip_" . $type . "_packages"};
         if ( "" == $this->{"wc_trip_" . $type . "_package_stock"} ) {

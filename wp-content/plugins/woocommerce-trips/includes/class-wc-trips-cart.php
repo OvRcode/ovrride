@@ -4,8 +4,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Trips_Cart {
-    public $fields;
+    public $fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
+        "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
+        "wc_trip_dob_field" => "Date of birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
+        "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
+        "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
+        
+    public $package_types = array("primary", "secondary", "tertiary");
+    
     public function __construct() {
+        
        add_action( 'woocommerce_trip_add_to_cart', array( $this, 'add_to_cart' ), 30 );
        add_filter( 'woocommerce_report_out_of_stock_query_from', array($this, 'out_of_stock'), 10, 1 );
        add_action( 'woocommerce_add_to_cart', array( $this, 'save_trip_fields'), 1, 5 );
@@ -14,33 +22,36 @@ class WC_Trips_Cart {
        add_action( 'woocommerce_add_order_item_meta', array( $this, 'order_item_meta' ), 10, 3 );
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
        add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
-       //add_action( 'woocommerce_order_status_completed', array( $this, 'testing') );
-       add_action( 'woocommerce_product_set_stock', array( $this, 'testing'), 10, 4);
-       $this->fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
-        "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
-        "wc_trip_dob_field" => "Date of birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
-        "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
-        "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
+       add_action( 'woocommerce_product_set_stock', array( $this, 'trigger_package_stock'), 10, 4);
+       
     }
-    public function testing( $instance ) {
-        // Found stock function
-        // HOW TO ACCESS ORDER META INFO
-        // ADD SELECTED PACKAGES TO PRODUCT THEN READ HERE
-        error_log( $instance->wc_trip_primary_package_stock);
+    
+    public function trigger_package_stock( $instance) {
+        global $woocommerce;
+
+        $cart = $woocommerce->cart->get_cart();
+        foreach( $cart as $cart_id => $cart_data ) {
+            $product = wc_get_product($cart_data['product_id']);
+            foreach( $this->package_types as $package ) {
+                if ( WC()->session->__isset($cart_id . "_wc_trip_" . $package . "_package") ) {
+                    $product->reduce_package_stock( $package, WC()->session->get($cart_id . "_wc_trip_" . $package . "_package"));
+                }
+            }
+        }
+
     }
     public function validate_add_cart_item( $passed, $product_id, $qty ) {
         $product      = get_product( $product_id );
         if ( $product->product_type !== 'trip' ) {
             return $passed;
         }
-        $package_types = array("primary", "secondary", "tertiary");
+
         $stockOk = false;
-        foreach( $package_types as $package ) {
+        foreach( $this->package_types as $package ) {
             if ( isset($_POST['wc_trip_' . $package . "_package"]) ){
                 $post = $_POST['wc_trip_' . $package . "_package"];
                 $stockCheck = $product->check_package_stock( $package, $post);
                 if ( $stockCheck ) {
-                    $product->{'selected_' . $package . '_package'} = $post;
                     $stockOk = true;
                 } else {
                     wc_add_notice("Sorry, " . $post . " is out of stock", 'error');
