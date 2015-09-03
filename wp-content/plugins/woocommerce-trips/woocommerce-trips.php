@@ -31,8 +31,7 @@ class WC_Trips {
         add_action( 'woocommerce_loaded', array( $this, 'includes' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_scripts_and_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
-        add_filter( 'woocommerce_product_tabs', array( $this, 'pickup_tab'), 98 );
-        //add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
+        add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
         
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
@@ -115,9 +114,14 @@ class WC_Trips {
         register_post_type( 'destinations', $destinationArgs );
     }
     
-    public function pickup_tab( $tabs ) {
-        global $product;
-        
+    public function product_tabs( $tabs ) {
+        global $product, $wpdb;
+
+        $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
+        $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
+        $destination_id = $wpdb->get_var( $query );
+        $destination_map = get_post_meta( $destination_id, '_trail_map', true);
+
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
         if ( ! empty( $pickups ) ){
             $tabs['pickups'] = array(
@@ -125,10 +129,29 @@ class WC_Trips {
                 'priority' 	=> 50,
                 'callback' 	=> array( $this, 'bus_times_content')
                 );
+                if ( $destination_map ) {
+                    $tabs['trail_map'] = array(
+                        'title' => 'Trail Map',
+                        'priority' => 45,
+                        'callback' => array( $this, 'trail_map_content')
+                    );
+                }
             }
         return $tabs;
     }
-    
+    public function trail_map_content() {
+        global $product, $wpdb;
+        
+        $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
+        $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
+        $destination_id = $wpdb->get_var( $query );
+        $destination_map = get_post_meta( $destination_id, '_trail_map', true);
+        echo <<<MAP
+            <p>
+                <img  src="{$destination_map}" id="wc_trip_trail_map" alt="mtsnow" />
+            </p>
+MAP;
+    }
     public function bus_times_content() {
         global $product;
         

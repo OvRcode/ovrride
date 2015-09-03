@@ -51,3 +51,8 @@
   float: right;
   margin-right:30px;
 }
+#wc_trip_trail_map {
+  display:inline-block;
+  width:100%;
+  height: auto;
+}

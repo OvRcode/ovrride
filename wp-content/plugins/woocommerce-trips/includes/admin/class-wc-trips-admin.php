@@ -21,10 +21,14 @@ class WC_Trips_Admin {
         add_action( 'add_meta_boxes_pickup_locations', array( $this, 'pickup_locations_meta_boxes' ) );
         add_action( 'save_post', array($this,'save_pickup_meta') );
         add_filter( 'manage_pickup_locations_posts_columns', array($this, 'pickup_columns_head' ) );
-        add_filter( 'manage_destinations_posts_columns', array($this, 'destination_columns_head' ) );
         add_action( 'manage_pickup_locations_posts_custom_column', array($this, 'pickup_columns' ), 10, 2 );
         add_action( 'admin_action_wc_trips_duplicate_pickup', array( $this, 'wc_trips_duplicate_pickup'));
         add_filter( 'post_row_actions', array($this, 'wc_trip_pickup_location_duplicate_post_link'), 10, 2 );
+        
+        //Destination Post type specific
+        add_filter( 'manage_destinations_posts_columns', array($this, 'destination_columns_head' ) );
+        add_action( 'add_meta_boxes_destinations', array( $this, 'destinations_meta_boxes' ) );
+        add_action( 'save_post', array( $this, 'save_destination_meta' ) );
         
         // Ajax
         add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
@@ -243,6 +247,48 @@ META;
         unset( $defaults['expirationdate'] );
         
         return $defaults;
+    }
+    
+    public function destinations_meta_boxes() {
+        add_meta_box(
+                'destination_trail_map',
+                'Trail Map',
+                array( $this, 'destination_trail_map'),
+                'destinations',
+                'normal'
+            );
+    }
+    
+    public function save_destination_meta( $post_id ) {
+        $nonce_check = wp_verify_nonce( $_POST['destination_attachment_nonce'], plugin_basename(__FILE__));
+        if ( 1 == $nonce_check || 2 == $nonce_check ) {
+            // verify if this is an auto save routine. If it is our form has not been submitted, so we dont want to do anything
+            if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
+                return $post_id;
+            }
+            
+            // Check permissions
+            if ( !current_user_can( 'edit_post', $post_id ) ) {
+                return $post_id;
+            }
+            
+            update_post_meta( $post_id, '_trail_map', sanitize_text_field( $_POST['upload_trail_map'] ) );
+        } else {
+            return $post_id;
+        }
+    }
+    
+    public function destination_trail_map( $post ) {
+        wp_enqueue_script('media-upload');
+        wp_enqueue_script('thickbox');
+        wp_enqueue_script('destinations_upload', WC_TRIPS_PLUGIN_URL . '/assets/js/destinations.js', array('jquery','media-upload','thickbox'));
+        wp_nonce_field(plugin_basename(__FILE__), 'destination_attachment_nonce');
+        $map = get_post_meta( $post->ID, '_trail_map', true);
+        $html = <<<TRAILMAP
+             <input id="upload_trail_map" type="text" size="36" name="upload_trail_map" value="{$map}" />
+             <input id="upload_trail_map_button" type="button" value="Upload Trail Map" />
+TRAILMAP;
+        echo $html;
     }
     
     public function pickup_columns_head( $defaults ) {

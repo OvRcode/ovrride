@@ -176,7 +176,6 @@ jQuery(document).ready(function($){
   if ( $(".sorter:visible").size() <= 1 ) {
     $(".sorter:visible").css("visibility", "hidden");
   }
-  
 });
 
 function showHideStock( StockType ) {
