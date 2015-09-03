@@ -37,3 +37,6 @@
 .add_pickup_location {
   float: right !important;
 }
+.woocommerce_options_panel textarea {
+  height:initial !important;
+}

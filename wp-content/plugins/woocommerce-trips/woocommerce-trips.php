@@ -121,19 +121,27 @@ class WC_Trips {
         $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
         $destination_id = $wpdb->get_var( $query );
         $destination_map = get_post_meta( $destination_id, '_trail_map', true);
-
+        $trip_includes = get_post_meta( $product->id, '_wc_trip_includes', true);
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
+        
         if ( ! empty( $pickups ) ){
             $tabs['pickups'] = array(
-                'title' 	=> 'Bus Times',
-                'priority' 	=> 50,
-                'callback' 	=> array( $this, 'bus_times_content')
+                'title'     => 'Bus Times',
+                'priority'  => 50,
+                'callback'  => array( $this, 'bus_times_content')
                 );
                 if ( $destination_map ) {
                     $tabs['trail_map'] = array(
-                        'title' => 'Trail Map',
-                        'priority' => 45,
-                        'callback' => array( $this, 'trail_map_content')
+                        'title'     => 'Trail Map',
+                        'priority'  => 45,
+                        'callback'  => array( $this, 'trail_map_content')
+                    );
+                }
+                if ( $trip_includes ) {
+                    $tabs['includes'] = array(
+                        'title'     => 'Includes',
+                        'priority'  => 40,
+                        'callback'  => array( $this, 'includes_content')
                     );
                 }
             }
@@ -171,7 +179,15 @@ MAP;
             $count++;
         }
     }
-    
+    public function includes_content() {
+        global $product;
+        $includes_data = get_post_meta( $product->id, '_wc_trip_includes', true);
+        echo <<<INCLUDES
+            <p>
+                {$includes_data}
+            </p>
+INCLUDES;
+    }
     public function pickup_html( $post_id ) {
         $pickup = get_post( $post_id );
         $address = get_post_meta( $post_id, '_pickup_location_address', true );
