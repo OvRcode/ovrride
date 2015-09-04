@@ -1,4 +1,9 @@
 jQuery(document).ready(function($){
+  // Set price on page
+  var base_price = Number($("#base_price").val());
+  base_price = base_price.toFixed(2);
+  $(".amount").text("$" + base_price);
+  
   // disabled add to cart button on load
   enableDisableCart();
   
@@ -47,6 +52,16 @@ jQuery(document).ready(function($){
     var day = $("input[name=wc_trip_dob_day]").val();
     var year = $("input[name=wc_trip_dob_year]").val();
     $("input[name=wc_trip_dob]").val(month + "/" + day + "/" + year);
+  });
+  
+  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").on("change", function(){
+    var base      = Number($("#base_price").val()) || 0;
+    var primary   = Number( $("#wc_trip_primary_package :selected").data('cost') ) || 0;
+    var secondary = Number( $("#wc_trip_secondary_package :selected").data('cost') ) || 0;
+    var tertiary  = Number( $("#wc_trip_tertiary_package :selected").data('cost') ) || 0;
+    var total = base + primary + secondary + tertiary;
+    
+    $(".amount").text( "$" + total.toFixed(2) );
   });
   // Enables/disables cart button based on fields being filled out
   function enableDisableCart() {

@@ -10,7 +10,8 @@ global $woocommerce, $product;
 if ( ! $product->is_purchasable() ) {
 	return;
 }
-
+$base_price = get_post_meta( $product->id, '_wc_trip_base_price', true);
+$base_price = floatval($base_price);
 do_action( 'woocommerce_before_add_to_cart_form' ); 
 ?>
 
@@ -120,7 +121,11 @@ PICKUPS;
         <div class="wc-trip-cost" style="display:none"></div>
 
     </div>
-
+    <input type="hidden" id="base_price" value="<?php echo $base_price; ?>">
+    <strong>Total:</strong><br />
+    <p class="price">
+        <span class="amount"></span>
+    </p>
     <input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
     
     <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
