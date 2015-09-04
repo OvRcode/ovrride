@@ -10,6 +10,7 @@ class WC_Product_Trip extends WC_Product {
         $this->manage_stock = 'yes';
         parent::__construct( $product );
     }
+    
     public function get_availability() {
         if ( $this->is_purchasable() ) {
             if ( $this->get_stock_quantity() < 10 ) {
@@ -21,6 +22,7 @@ class WC_Product_Trip extends WC_Product {
             return "sold out";
         }
     }
+    
     public function reduce_package_stock( $type, $description ) {
         $packages = $this->{"wc_trip_" . $type . "_packages"};
         if ( "yes" == $this->{"wc_trip_" . $type . "_package_stock"} ) {
@@ -39,6 +41,7 @@ class WC_Product_Trip extends WC_Product {
             }
         }
     }
+    
     public function check_package_stock( $type, $description ) {
         $packages = $this->{"wc_trip_" . $type . "_packages"};
         if ( "" == $this->{"wc_trip_" . $type . "_package_stock"} ) {
@@ -56,6 +59,7 @@ class WC_Product_Trip extends WC_Product {
             return false;
         }
     }
+    
     public function check_all_package_stock() {
         $package_types = array("wc_trip_primary_package", "wc_trip_secondary_package", "wc_trip_tertiary_package");
         $all_stock = false;
@@ -79,6 +83,7 @@ class WC_Product_Trip extends WC_Product {
             return false;
         }
     }
+    
     public function is_purchasable() {
         if ( $this->is_in_stock() && $this->check_all_package_stock()) {
             return true;

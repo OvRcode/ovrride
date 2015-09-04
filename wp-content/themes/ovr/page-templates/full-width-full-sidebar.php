@@ -38,12 +38,17 @@ get_header(); ?>
                     $trip_thumbs = array();
                     $spots_left = array();
 
-                
+                    // TODO: REWORK WHEN OLD PRODUCTS ARE OUT OF THE SYSTEM
                     while( $upcoming_product_loop->have_posts() ) : $upcoming_product_loop->the_post();
                         global $post;
                 
                         $trip_date = get_field( 'date_picker' );
-                
+                        if ( ! $trip_date ) {
+                            $product = wc_get_product($post->ID);
+                            if ( "trip" == $product->product_type ) {
+                                $trip_date = $product->wc_trip_start_date;
+                            }
+                        }
                         // only add trip to array if date_picker field is set.
                         if ( $trip_date ) {
                         $alt_thumb = wp_get_attachment_image_src( get_field( 'alternative_thumbnail', $post->ID ), 'full' );
