@@ -162,14 +162,17 @@ class WC_Trips {
     }
     public function trail_map_content() {
         global $product, $wpdb;
-        
+        wp_enqueue_style("featherlight-css", WC_TRIPS_PLUGIN_URL . "/assets/css/featherlight.min.css");
+        wp_enqueue_script("featherlight-js", WC_TRIPS_PLUGIN_URL . "/assets/js/featherlight.min.js", array('jquery'));
         $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
         $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
         $destination_id = $wpdb->get_var( $query );
         $destination_map = get_post_meta( $destination_id, '_trail_map', true);
         echo <<<MAP
             <p>
-                <img  src="{$destination_map}" id="wc_trip_trail_map" alt="mtsnow" />
+                <a href="#" data-featherlight="#wc_trip_trail_map">
+                    <img  src="{$destination_map}" id="wc_trip_trail_map" alt="mtsnow" />
+                </a>
             </p>
 MAP;
     }

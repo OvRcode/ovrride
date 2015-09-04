@@ -293,7 +293,7 @@ META;
         $map = get_post_meta( $post->ID, '_trail_map', true);
         $html = <<<TRAILMAP
              <input id="upload_trail_map" type="text" size="36" name="upload_trail_map" value="{$map}" />
-             <input id="upload_trail_map_button" type="button" value="Upload Trail Map" />
+             <input id="upload_trail_map_button" type="button" value="Select Trail Map" />
 TRAILMAP;
         echo $html;
     }
