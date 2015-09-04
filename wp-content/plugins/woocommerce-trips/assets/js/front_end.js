@@ -2,7 +2,7 @@ jQuery(document).ready(function($){
   // Set price on page
   var base_price = Number($("#base_price").val());
   base_price = base_price.toFixed(2);
-  $(".amount").text("$" + base_price);
+  $("#trip_price").text("$" + base_price);
   
   // disabled add to cart button on load
   enableDisableCart();
@@ -61,7 +61,7 @@ jQuery(document).ready(function($){
     var tertiary  = Number( $("#wc_trip_tertiary_package :selected").data('cost') ) || 0;
     var total = base + primary + secondary + tertiary;
     
-    $(".amount").text( "$" + total.toFixed(2) );
+    $("#trip_price").text( "$" + total.toFixed(2) );
   });
   // Enables/disables cart button based on fields being filled out
   function enableDisableCart() {
