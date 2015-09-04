@@ -7,16 +7,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $woocommerce, $product;
-if ( ! $product->is_purchasable() ) {
+/*if ( ! $product->is_purchasable() ) {
 	return;
-}
+}*/
 $base_price = get_post_meta( $product->id, '_wc_trip_base_price', true);
 $base_price = floatval($base_price);
 do_action( 'woocommerce_before_add_to_cart_form' ); 
 ?>
 
 <noscript><?php _e( 'Your browser must support JavaScript in order to make a booking.', 'woocommerce-bookings' ); ?></noscript>
-
+<p class="stock">
+    <?php
+    echo $product->get_availability();
+    ?>
+</p>
+<br />
+<?php if ( $product->is_purchasable() ): ?>
 <form class="cart" method="post" enctype='multipart/form-data'>
 
         <div id="wc-trips-form">
@@ -133,5 +139,5 @@ PICKUPS;
     <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 
 </form>
-
+<?php endif ?>
 <?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>

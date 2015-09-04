@@ -10,6 +10,17 @@ class WC_Product_Trip extends WC_Product {
         $this->manage_stock = 'yes';
         parent::__construct( $product );
     }
+    public function get_availability() {
+        if ( $this->is_purchasable() ) {
+            if ( $this->get_stock_quantity() < 10 ) {
+                return "only " . $this->get_stock_quantity() . " left";
+            } else {
+                return "in stock";
+            }
+        } else {
+            return "sold out";
+        }
+    }
     public function reduce_package_stock( $type, $description ) {
         $packages = $this->{"wc_trip_" . $type . "_packages"};
         if ( "yes" == $this->{"wc_trip_" . $type . "_package_stock"} ) {

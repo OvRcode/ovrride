@@ -23,7 +23,6 @@ class WC_Trips_Cart {
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
        add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
        add_action( 'woocommerce_product_set_stock', array( $this, 'trigger_package_stock'), 10, 4);
-       
     }
     
     public function trigger_package_stock( $instance) {
