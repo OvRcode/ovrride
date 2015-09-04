@@ -37,6 +37,6 @@
 .add_pickup_location {
   float: right !important;
 }
-.woocommerce_options_panel textarea {
-  height:initial !important;
+#_wc_trip_rates, #_wc_trip_includes {
+  height: 200px !important;
 }
