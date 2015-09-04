@@ -15,7 +15,6 @@ class WC_Trips_Cart {
     public function __construct() {
         
        add_action( 'woocommerce_trip_add_to_cart', array( $this, 'add_to_cart' ), 30 );
-       add_filter( 'woocommerce_report_out_of_stock_query_from', array($this, 'out_of_stock'), 10, 1 );
        add_action( 'woocommerce_add_to_cart', array( $this, 'save_trip_fields'), 1, 5 );
        add_filter( 'woocommerce_cart_item_name', array( $this, 'render_meta_on_cart_item'), 1, 3 );
        add_filter( 'woocommerce_add_cart_item_data',array($this, 'force_individual_cart_items'), 10, 2 );
@@ -154,9 +153,6 @@ CARTMETA;
             }
         }
         echo "</dl>";
-    }
-    public function out_of_stock() {
-        echo "<h1>Out of Stock</h1>";
     }
     public function add_to_cart( $cart_item_key ) {
         global $product;
