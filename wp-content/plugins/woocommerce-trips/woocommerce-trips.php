@@ -157,12 +157,8 @@ class WC_Trips {
     }
     public function rates_content() {
         global $product;
-        $rates_data = get_post_meta( $product->id, '_wc_trip_rates', true);
-        echo <<<RATES
-            <p>
-                {$rates_data}
-            </p>
-RATES;
+        $rates_data = do_shortcode(shortcode_unautop(get_post_meta( $product->id, '_wc_trip_rates', true)));
+        echo $rates_data;
     }
     public function trail_map_content() {
         global $product, $wpdb;
@@ -198,12 +194,8 @@ MAP;
     }
     public function includes_content() {
         global $product;
-        $includes_data = get_post_meta( $product->id, '_wc_trip_includes', true);
-        echo <<<INCLUDES
-            <p>
-                {$includes_data}
-            </p>
-INCLUDES;
+        $includes_data = do_shortcode(shortcode_unautop(get_post_meta( $product->id, '_wc_trip_includes', true)));
+        echo $includes_data;
     }
     public function pickup_html( $post_id ) {
         $pickup = get_post( $post_id );
