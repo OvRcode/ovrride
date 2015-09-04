@@ -172,7 +172,7 @@ class WC_Trips {
             <p>
                 <a href="#" data-featherlight="#wc_trip_trail_map">
                     <img  src="{$destination_map}" id="wc_trip_trail_map" alt="mtsnow" />
-                </a>
+                    </a>
             </p>
 MAP;
     }
@@ -184,16 +184,26 @@ MAP;
         echo "<h2> Bus Times</h2>";
         $leftRight = "left";
         $count = 0;
+        $leftColumnContent = "";
+        $rightColumnContent = "";
         foreach ( $pickups as $pickup ) {
-            echo "<div class='pickup {$leftRight}'>";
-            echo $this->pickup_html($pickup);
-            echo "</div>";
-            $leftRight = ( "left" == $leftRight ? "right" : "left");
+            $pickupHtml = $this->pickup_html($pickup);
+            $tempHtml =<<<TEMPHTML
+                <div class="pickup">
+                    {$pickupHtml}
+                </div>
+TEMPHTML;
             if ( $count & 1 ) {
-                echo "<br /><br />";
+                $rightColumnContent .= $tempHtml;
+            } else {
+                $leftColumnContent .= $tempHtml;
             }
             $count++;
         }
+        echo <<<TESTING
+            <div class="busLeftColumn">{$leftColumnContent}</div>
+            <div class="busRightColumn">{$rightColumnContent}</div>
+TESTING;
     }
     public function includes_content() {
         global $product;
@@ -207,12 +217,13 @@ MAP;
         if ( $address ) {
             $cross_st = get_post_meta( $post_id, '_pickup_location_cross_st', true);
             $address = explode(",", ucwords( strtolower( $address ) ), 2);
-            $time = get_post_meta( $post_id, '_pickup_location_time', true);
+            $time = date("g:i a", strtotime(get_post_meta( $post_id, '_pickup_location_time', true)));
             $output = <<<PICKUPHTML
                 <strong>{$pickup->post_title}</strong><br />
                 {$address[0]}<br />
                 {$cross_st}<br />
                 {$address[1]}<br />
+                Bus departs at {$time}<br />
                 <strong><a href="http://maps.google.com/?q={$address[0]}{$address[1]}" target="_blank">View Map</a></strong>
 PICKUPHTML;
         }
