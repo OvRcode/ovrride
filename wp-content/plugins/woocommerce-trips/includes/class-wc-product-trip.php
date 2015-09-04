@@ -47,7 +47,11 @@ class WC_Product_Trip extends WC_Product {
     }
     
     public function is_purchasable() {
-        return true;
+        if ( $this->is_in_stock() ) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public function is_sold_individually() {
