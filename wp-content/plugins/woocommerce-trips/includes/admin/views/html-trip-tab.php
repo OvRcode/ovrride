@@ -10,9 +10,9 @@
 <li class="trips_tab trips_tertiary_packages_tab shipping_options show_if_trip">
     <a href="#trips_tertiary_packages">Tertiary Packages</a>
 </li>
-<li class="trips_tab trips_includes_tab advanced_options show_if_trip">
+<li class="trips_tab trips_includes_tab attribute_options show_if_trip">
     <a href="#trips_includes">Includes</a>
 </li>
-<li class="trips_tab trips_rates_tab advanced_options show_if_trip">
+<li class="trips_tab trips_rates_tab attribute_options show_if_trip">
     <a href="#trips_rates">Rates</a>
 </li>
