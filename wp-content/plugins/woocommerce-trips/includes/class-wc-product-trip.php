@@ -56,9 +56,31 @@ class WC_Product_Trip extends WC_Product {
             return false;
         }
     }
-    
+    public function check_all_package_stock() {
+        $package_types = array("wc_trip_primary_package", "wc_trip_secondary_package", "wc_trip_tertiary_package");
+        $all_stock = false;
+        foreach( $package_types as $package ) {
+            if ( "" == strval($this->{$package . "_stock"}) ) {
+                $all_stock = true;
+            } else if ( "yes" == strval($this->{$package . "_stock"}) ) {
+                foreach( $this->{$package . "s"} as $key => $values ) {
+                    if ( "" === strval($values['stock']) || intval($values['stock']) > 0 ) {
+                        $all_stock = true;
+                    } else {
+                        $all_stock = false;
+                        continue(2);
+                    }
+                }
+            }
+        }
+        if ( $all_stock ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function is_purchasable() {
-        if ( $this->is_in_stock() ) {
+        if ( $this->is_in_stock() && $this->check_all_package_stock()) {
             return true;
         } else {
             return false;

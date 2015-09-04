@@ -130,7 +130,7 @@ PICKUPS;
     <input type="hidden" id="base_price" value="<?php echo $base_price; ?>">
     <strong>Total:</strong><br />
     <p class="price">
-        <span class="amount"></span>
+        <span id="trip_price" class="amount"></span>
     </p>
     <input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
     
