@@ -41,7 +41,6 @@ function ovr_login_stylesheet() {
     //wp_enqueue_script( 'custom-login', get_template_directory_uri() . '/style-login.js' );
 }
 
-// Empty Cart Button
 // check for empty-cart get param to clear the cart
 add_action( 'init', 'woocommerce_clear_cart_url' );
 function woocommerce_clear_cart_url() {
@@ -51,3 +50,6 @@ function woocommerce_clear_cart_url() {
         $woocommerce->cart->empty_cart(); 
     }
 }
+
+// Remove order again button
+remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
