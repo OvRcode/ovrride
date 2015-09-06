@@ -1,6 +1,5 @@
 wp-content/themes/quark/error_log
-wp-content/uploads/20*
-wp-content/uploads/wc-logs/*
+wp-content/uploads/*
 wp-content/cache/*
 wp-content/plugins/special-recent-posts/cache/*
 !wp-content/plugins/special-recent-posts/cache/.placeholder
