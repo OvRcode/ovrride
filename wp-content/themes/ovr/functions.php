@@ -40,3 +40,14 @@ function ovr_login_stylesheet() {
     wp_enqueue_style( 'custom-login', get_stylesheet_directory_uri() . '/login.css' );
     //wp_enqueue_script( 'custom-login', get_template_directory_uri() . '/style-login.js' );
 }
+
+// Empty Cart Button
+// check for empty-cart get param to clear the cart
+add_action( 'init', 'woocommerce_clear_cart_url' );
+function woocommerce_clear_cart_url() {
+    global $woocommerce;
+    
+    if ( isset( $_GET['empty-cart'] ) ) {
+        $woocommerce->cart->empty_cart(); 
+    }
+}
