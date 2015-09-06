@@ -4900,3 +4900,6 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
   width: auto !important;
   margin: 0 !important;
 }
+input#apply_coupon, input#update_cart {
+  padding: 8px 12px 23px 12px !important;
+}
