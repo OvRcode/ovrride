@@ -45,8 +45,17 @@
     <meta property="fb:admins" content="123456789" />
     <meta property="og:image" content="<?php bloginfo('url'); ?>/wp-content/uploads/2013/05/ovr-logo.jpg" />
   <?php } ?>
-
 	<?php wp_head(); ?>
+    <?php 
+    switch(get_option( "ovr_style_sheet", "default" )){
+        case "summer":?>
+            <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri() ?>/summer.css" type="text/css" media="screen" />
+        <?php break;
+        case "winter":
+        default: ?>
+            <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri() ?>/winter.css" type="text/css" media="screen" />
+        <?php break;
+    }?>
   <!-- Pingdom Real User Monitoring Script -->
   <script>
   var _prum = [['id', '54885757abe53d7d3d2bdebd'],

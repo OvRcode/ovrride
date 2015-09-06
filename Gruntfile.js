@@ -258,6 +258,14 @@ module.exports = function(grunt){
         tasks: ['manifest'],
       },
     },
+    less: {
+      development:{
+        options: {
+          paths: ["wp-content/themes/ovr/less"],
+        },
+        files: {"wp-content/themes/ovr/summer.css": "wp-content/themes/ovr/less/summer.less","wp-content/themes/ovr/winter.css":"wp-content/themes/ovr/less/winter.less"}
+        }
+      }
   });
 
 
@@ -271,6 +279,7 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
   grunt.loadNpmTasks('grunt-manifest');
+  grunt.loadNpmTasks('grunt-contrib-less');
   // Tasks
   grunt.registerTask('default', ['csslint','jshint','concat','uglify','cssmin','phplint', 'manifest']);
 

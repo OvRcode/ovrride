@@ -1,13 +1,3 @@
-/*
- Theme Name:   OvRride
- Theme URI:    http://yourwebsite.com/twentyfourteen-child/
- Description:  Theme for OvRride, based on quark theme, winter version blue
- Author:       Robert Chapman, Mike Barnard
- Author URI:   http://chapcode.com
- Template:     quark
- Version:      0.0.1
- Text Domain:  ovr
-*/
 /* ==========================================================================
    Default stylings from HTML5 Boilerplate
    ========================================================================== */
@@ -18,9 +8,9 @@
 /* Using rem font sizing (Root em’s) with fallback to px for ie8 and below - http://snook.ca/archives/html_and_css/font-size-with-rem */
 body { margin: 0; font-size: 16px; font-size: 1rem; line-height: 1.5; }
 
-::-webkit-selection { background: #09bdeb; color: #fff; text-shadow: none; }
-::-moz-selection { background: #09bdeb; color: #fff; text-shadow: none; }
-::selection { background: #09bdeb; color: #fff; text-shadow: none; }
+::-webkit-selection { background: @primary; color: #fff; text-shadow: none; }
+::-moz-selection { background: @primary; color: #fff; text-shadow: none; }
+::selection { background: @primary; color: #fff; text-shadow: none; }
 
 a { color: #333; text-decoration: underline; }
 a:visited { color: #333; }
@@ -341,15 +331,18 @@ a:visited {
 
 a:focus { 
 	outline: thin dotted;
-	color: #09bdeb;
+	color: @primary;
 }
 
 a:hover, a:active { 
-	outline: 0;
-	color: #09bdeb;
+  color: @primary;
 	text-decoration:underline;
 }
-
+.upcoming-title a:hover, .srp-post-title a:hover {
+  background: @primary; 
+  color: #fff; 
+  text-shadow: none;
+}
 .alignleft {
 	display: inline;
 	float: left;
@@ -435,7 +428,7 @@ blockquote.pull-right p, blockquote.pull-right small {
 	height:10px;
 }
 .gfield_select:focus{
-	border:1px solid #09bdeb;
+	border:1px solid @primary;
 }
 .ui-tabs-panel {
         padding: .8em .4em !important;
@@ -511,15 +504,15 @@ blockquote.pull-right p, blockquote.pull-right small {
 
 .seats-left p {
   margin: 0px;
-  color: #09bdeb;
+  color: @primary;
   font-size: 17px;
 }
 .calnk a {
-	background-color:#09bdeb !important;
+	background-color:@primary !important;
 }
 
 .seats-left a {
-  color: #09bdeb;
+  color: @primary;
   font-weight: bold;
   text-shadow:1px 1px 1px #333;
 }
@@ -961,7 +954,7 @@ div.kjo-link p{
 	display:none;
 }
 .calnk a:hover span {
-	background:#09bdeb !important; 
+	background:@primary !important; 
 }
 
 
@@ -990,12 +983,12 @@ payment_methods methods {
 	width: 48%;
 }
 .myaccount_user a{
-	color: #09bdeb;
+	color: @primary;
 	font-weight: bold;
 	text-decoration: underline;
 }
 .myaccount_user a:hover{
-	color: #09bdeb;
+	color: @primary;
 	font-weight: bold;
 	text-decoration: none;
 }
@@ -1200,17 +1193,17 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2bc9f1), to(#09bdeb));
-	background-image: -webkit-linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: -o-linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: -moz-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -ms-linear-gradient(top, @primary_darker, @primary);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@primary_darker), to(@primary));
+	background-image: -webkit-linear-gradient(top, @primary_darker, @primary);
+	background-image: -o-linear-gradient(top, @primary_darker, @primary);
+	background-image: linear-gradient(top, @primary_darker, @primary);
+	background-image: -moz-linear-gradient(top, @primary_darker, @primary);
 	background-repeat: repeat-x;
-	border: 1px solid #CCC;
-	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-	border-color: #46a4e3 #46a4e3 #BFBFBF;
-	border-bottom-color: #B3B3B3;
+  border: 1px solid #CCC;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border-color: @book_btn_border @book_btn_border #BFBFBF;
+  border-bottom-color: #B3B3B3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -1223,8 +1216,8 @@ payment_methods methods {
 .book-btn:hover {
 	color: #333333;
 	text-decoration: none;
-	background-color: #3cd4fb;
-	*background-color: #3cd4fb; /* Buttons in IE7 don't get borders, so darken on hover */
+  background-color: @book_btn_hover;
+  *background-color: @book_btn_hover; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1233,8 +1226,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn:active {
-	background-color: #09bdeb;
-	background-color: #09bdeb \9;
+	background-color: @primary;
+	background-color: @primary;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1257,17 +1250,17 @@ payment_methods methods {
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
-	background-image: -ms-linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2bc9f1), to(#09bdeb));
-	background-image: -webkit-linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: -o-linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: linear-gradient(top, #2bc9f1, #09bdeb);
-	background-image: -moz-linear-gradient(top, #2bc9f1, #09bdeb);
+	background-image: -ms-linear-gradient(top, @primary_darker, @primary);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@primary_darker), to(@primary));
+	background-image: -webkit-linear-gradient(top, @primary_darker, @primary);
+	background-image: -o-linear-gradient(top, @primary_darker, @primary);
+	background-image: linear-gradient(top, @primary_darker, @primary);
+	background-image: -moz-linear-gradient(top, @primary_darker, @primary);
 	background-repeat: repeat-x;
 	border: 1px solid #CCC;
-	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-	border-color: #46a4e3 #46a4e3 #BFBFBF;
-	border-bottom-color: #B3B3B3;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  	border-color: #d7bb39 #d7bb39 #BFBFBF;
+  	border-bottom-color: #B3B3B3;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -1280,8 +1273,8 @@ payment_methods methods {
 .book-btn-smll:hover {
 	color: #333333;
 	text-decoration: none;
-	background-color: #3cd4fb;
-	*background-color: #3cd4fb; /* Buttons in IE7 don't get borders, so darken on hover */
+  background-color: @book_btn_smll_hover;
+  *background-color: @book_btn_smll_hover; /* Buttons in IE7 don't get borders, so darken on hover */
 	background-position: 0 -15px;
 	-webkit-transition: background-position 0.1s linear;
 	-moz-transition: background-position 0.1s linear;
@@ -1290,8 +1283,8 @@ payment_methods methods {
 	transition: background-position 0.1s linear;
 }
 .book-btn-smll:active {
-	background-color: #09bdeb;
-	background-color: #09bdeb \9;
+	background-color: @primary;
+	background-color: @primary;
 	background-image: none;
 	outline: 0;
 	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1343,7 +1336,7 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	color:#FFF;
 }
 .eventful {
-	background:#09bdeb;
+	background:@primary;
 	border:1px solid #CCC !important;
 }
    
@@ -2596,6 +2589,8 @@ p.srp-widget-date {
 	font-weight: bold;
 	font-size:1.3em !important;
 	margin:0px;
+  color: #333333;
+  text-decoration:underline;
 }
 
 .out-of-stock {
@@ -2670,26 +2665,125 @@ p.srp-widget-date {
 	width: 100%;
 	margin: 0px 0px 3px 0px;
 }
+.destinations h3 {
+  background: #cecece;
+  background-image:url(images/destination-imgs/destinations_map.png);
+  background-repeat: no-repeat;
+  }
 .destinations #squelch-taas-header-0 {
-  background:url(images/destination-imgs/newyork.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -75px;
 }
 .destinations #squelch-taas-header-1 {
-  background:url(images/destination-imgs/penn.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -115px;
 }
 .destinations #squelch-taas-header-2 {
-  background:url(images/destination-imgs/vermont.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -190px;
 }
 .destinations #squelch-taas-header-3 {
-  background:url(images/destination-imgs/westcoast.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -227px;
 }
 .destinations #squelch-taas-header-4 {
-  background:url(images/destination-imgs/samerica.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -152px;
 }
 .destinations #squelch-taas-header-5 {
-  background:url(images/destination-imgs/canada.png) 4px 4px no-repeat #cecece;
+  background-position: 0 0;
 }
 .destinations #squelch-taas-header-6 {
-  background:url(images/destination-imgs/japan.png) 4px 4px no-repeat #cecece;
+  background-position: 0 -37px;
+}
+.location{
+  background-image:url(images/destination-imgs/destinations.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  width:40px;
+  height:30px;
+}
+.location.hunter {
+  background-position: 0px  -150px;
+} 
+.location.windham {
+  background-position: 0px -530px;
+  vertical-align: -40%;
+  height: 40px;
+}
+.location.camelback {
+  background-position: 0px -80px;
+  vertical-align: -20%;
+}
+.location.stratton {
+  background-position: 0px -377px;
+}
+.location.mount-snow {
+  background-position: 0px 5px;
+}
+.location.killington {
+  background-position: 0px -232px;
+  vertical-align: -22%;
+}
+.location.stowe {
+  background-position: 0px -340px;
+  vertical-align: -2%;
+}
+.location.sugarbush {
+  background-position: 0px -420px;
+  vertical-align: -15%;
+}
+.location.tahoe {
+  background-position: 0px -460px;
+  vertical-align: -30%;
+}
+.location.breckenridge {
+  background-position: 0px -270px;
+  vertical-align: -25%;
+}
+.location.snowbird {
+  background-position: 0px -306px;
+  vertical-align: -15%;
+}
+.location.chile {
+  background-position: 0px -117px;
+  vertical-align: -20%;
+}
+.location.argentina {
+  background-position: 0px -42px;
+  vertical-align: -25%;
+}
+.location.whistler {
+  background-position: 0px  -490px;
+}
+.location.japan {
+  background-position: 0px -195px;
+  width: 117px;
+  vertical-align: -30%;
+}
+.shop {
+  background-image:url(images/shops.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  width:44px;
+  height:40px;
+}
+.shop.blades {
+  background-position: 0px -100px;
+  
+}
+.shop.skate-brooklyn {
+  background-position: -2px -4px;
+}
+.shop.aegir {
+  background-position: -2px -52px;
+}
+.shop.burton {
+  background-position: -2px -148px;
+}
+.shop.homage {
+  background-position: 0 -195px;
+}
+.shop.rei {
+  background-position: 0 -244px;
+}
+.shop.shut {
+  background-position: 0 -294px;
 }
 .fb_iframe_widget {
 	background: #C3C3C3;
@@ -2760,7 +2854,7 @@ p.srp-widget-date {
 	width: 100%;
 }
 a.read-more {
-	color:#09bdeb;
+	color:@primary;
 	text-decoration:none;
 }
 a.read-more:hover {
@@ -2936,7 +3030,7 @@ a.read-more:hover {
 }
 
 .social-media-icons a:hover, .social-media-icons a:active { 
-	color: #09bdeb;
+	color: @primary;
 	text-decoration:underline;
 }
 
@@ -2979,7 +3073,7 @@ iframe ul {
 }
 
 .entry-header h1 a:hover {
-	color: #09bdeb;
+	color: @primary;
 }
 
 article.sticky .featured-post {
@@ -3024,7 +3118,7 @@ article.sticky {
 }
 
 .header-meta a:hover {
-	color: #09bdeb;
+	color: @primary;
 }
 
 .entry-content {
@@ -3053,7 +3147,7 @@ article.sticky {
 
 .post-categories a:hover,
 .post-tags a:hover {
-	background-color: #09bdeb;
+	background-color: @primary;
 	color: #fff;
 }
 
@@ -3086,7 +3180,6 @@ article.sticky {
 	color: #333;
 }
 
-.
 
 -links .page-numbers {
 	background-color: #333;
@@ -3106,7 +3199,7 @@ article.sticky {
 }
 
 .page-links a:hover .page-numbers {
-	background-color: #09bdeb;
+	background-color: @primary;
 	color: #fff;
 }
 
@@ -3299,7 +3392,7 @@ article.sticky {
 .author-link a:hover,
 .author-link a:active { 
 	outline: 0;
-	color: #09bdeb;
+	color: @primary;
 }
 
 .author.archive .author-info {
@@ -3658,7 +3751,7 @@ form label.error {
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 }
 #footercontainer a {
-	color:#09bdeb;
+	color:@primary;
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 	text-decoration:none;
 	text-transform:uppercase;
@@ -3699,7 +3792,7 @@ form label.error {
 }
 
 .site-footer a:hover { 
-	color: #09bdeb;
+	color: @primary;
 }
 
 .site-footer a:focus { 
@@ -3732,7 +3825,7 @@ form label.error {
 }
 
 .smallprint a:hover { 
-	color: #09bdeb;
+	color: @primary;
 }
 
 
@@ -3912,14 +4005,14 @@ li a:visited.page-numbers {
 }
 
 li a:hover.page-numbers {
-	background-color: #09bdeb;
+	background-color: @primary;
 	color: #fff;
 }
 
 li a:hover.prev,
 li a:hover.next {
 	background-color: transparent;
-	color: #09bdeb;
+	color: @primary;
 }
 
 .page-numbers li {
@@ -4074,7 +4167,7 @@ li span.dots {
 .main-navigation .current_page_item > a,
 .main-navigation .current_page_ancestor > a,
 .main-navigation .current_page_parent > a {
-	color: #09bdeb; /* Nav bar link color for current menu item or ancestor */
+	color: @primary; /* Nav bar link color for current menu item or ancestor */
 }
 
 .main-navigation ul .divider {
@@ -4767,4 +4860,38 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
 
 .shipping-calculator-button {
 	text-decoration: none;
+}
+.quickshare-container a:hover {
+  color:@primary;
+}
+
+.includes{
+  font-size: 0.9rem; 
+  line-height: 1.4;
+  border: 0;
+  padding: 0;
+}
+.includes li {
+  list-style: disc;
+  border: 0;
+  padding: 0;
+  margin: 0 0 0 15px;
+}
+.dob .ginput_container {
+  width: 40%;
+}
+.ui-tabs-panel {
+  overflow: scroll;
+}
+.linkFix {
+  line-height: 30px;
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+input#apply_coupon, input#update_cart {
+  padding: 8px 12px 23px 12px !important;
+}
+#coupon_code {
+  width: 150px;
 }
