@@ -4382,10 +4382,8 @@ h1.page-title {
 .woocommerce-page input.button.alt {
   font-weight: normal;
   padding: 8px 12px 8px 12px;
-  background-color: transparent;
   background-image: none;
   border: 0;
-  color: transparent;
   text-shadow: none;
 }
 .woocommerce a.button:hover,
@@ -4401,11 +4399,9 @@ h1.page-title {
 .woocommerce-page a.button.alt:hover,
 .woocommerce-page button.button.alt:hover,
 .woocommerce-page input.button.alt:hover {
-  background-color: transparent;
   padding: 8px 12px 8px 12px;
   background-image: none;
   border: 0;
-  color: none;
   text-shadow: none;
 }
 input.button.alt[name="woocommerce_checkout_place_order"],
