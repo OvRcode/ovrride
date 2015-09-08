@@ -10,31 +10,25 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-error_log("COMPLETED ORDER!");
+//error_log("COMPLETED ORDER!");
 $pickups = array();
 $has_trip = false;
 foreach($order->get_items() as $order_item_id ) {
-    error_log("PRODUCT ID:".$order_item_id['product_id']);
+    //error_log("PRODUCT ID:".$order_item_id['product_id']);
     $product = get_product( $order_item_id['product_id']);
     if ( $product->is_type('trip') ) {
         $has_trip = true;
     }
+    error_log(print_r($order_item_id,true));
     if ( isset($order_item_id['Pickup Location']) ) {
-        $pickups[$order_item_id['Pickup Location']]['title']    = get_the_title( $order_item_id['Pickup Location'] );
-        $pickups[$order_item_id['Pickup Location']]['address']  = get_post_meta( $order_item_id['Pickup Location'], '_pickup_location_address', true);
-        $pickups[$order_item_id['Pickup Location']]['cross_st'] = get_post_meta( $order_item_id['Pickup Location'], '_pickup_location_cross_st', true);
-        $pickups[$order_item_id['Pickup Location']]['time']     = get_post_meta( $order_item_id['Pickup Location'], '_pickup_location_time', true); 
+        $pickups[$order_item_id['Pickup Location']]['title']    = get_the_title( $order_item_id['pickup_id'] );
+        $pickups[$order_item_id['Pickup Location']]['address']  = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_address', true);
+        $pickups[$order_item_id['Pickup Location']]['cross_st'] = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_cross_st', true);
+        $pickups[$order_item_id['Pickup Location']]['time']     = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_time', true); 
         $pickups[$order_item_id['Pickup Location']]['time'] = (strval($pickups[$order_item_id['Pickup Location']]['time']) == "" ? "" : date("g:i a", strtotime($pickups[$order_item_id['Pickup Location']]['time'])));
     }
 }
-error_log("HAS TRIPS?:". ($has_trip ? "yes" : "no"));
-$order_items_table = $order->email_order_items_table( true, false, true );
-foreach($pickups as $id => $values) {
-    $time = (strval($values['time']) == "" ? "" : " - " . $values['time'] );
-    $pickup_string = "Pickup Location: " . $values['title'] . $time;
-    $regex = "/Pickup Location: $id/";
-    $order_items_table = preg_replace( $regex, $pickup_string, $order_items_table);
-}
+
 ?>
 
 <?php do_action( 'woocommerce_email_header', $email_heading ); ?>
@@ -74,7 +68,7 @@ foreach($pickups as $id => $values) {
 		</tr>
 	</thead>
 	<tbody>
-		<?php echo $order_items_table; ?>
+		<?php echo $order->email_order_items_table( true, false, true ); ?>
 	</tbody>
 	<tfoot>
 		<?php

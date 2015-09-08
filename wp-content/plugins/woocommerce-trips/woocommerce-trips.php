@@ -39,7 +39,7 @@ class WC_Trips {
         
         include( 'includes/class-wc-trips-cart.php' );
     }
-
+    
     public function install() {
         add_action( 'shutdown', array( $this, 'delayed_install' ) );
     }
