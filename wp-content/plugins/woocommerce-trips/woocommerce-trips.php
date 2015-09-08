@@ -118,12 +118,12 @@ class WC_Trips {
 
         $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
         $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
-        $destination_id = $wpdb->get_var( $query );
-        $destination_map = get_post_meta( $destination_id, '_trail_map', true);
-        $trip_includes = get_post_meta( $product->id, '_wc_trip_includes', true);
-        $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
-        $trip_rates = get_post_meta( $product->id, '_wc_trip_rates', true);
-        
+        $destination_id     = $wpdb->get_var( $query );
+        $destination_map    = get_post_meta( $destination_id, '_trail_map', true);
+        $trip_includes      = get_post_meta( $product->id, '_wc_trip_includes', true);
+        $pickups            = get_post_meta( $product->id, '_wc_trip_pickups', true);
+        $trip_rates         = get_post_meta( $product->id, '_wc_trip_rates', true);
+        $flight_times       = get_post_meta( $product->id, '_wc_trip_flight_times', true);
         if ( $pickups ) {
             $tabs['pickups'] = array(
                 'title'     => 'Bus Times',
@@ -152,7 +152,19 @@ class WC_Trips {
                     'callback'  => array( $this, 'rates_content')
                 );
             }
+            if ( $flight_times ) {
+                $tabs['rates'] = array(
+                    'title'     => 'Flight Times',
+                    'priority'  => 43,
+                    'callback'  => array( $this, 'flight_times_content')
+                );
+            }
         return $tabs;
+    }
+    public function flight_times_content(){
+        global $product;
+        $flight_times_data = do_shortcode(shortcode_unautop(get_post_meta( $product->id, '_wc_trip_flight_times', true)));
+        echo $flight_times_data;
     }
     public function rates_content() {
         global $product;

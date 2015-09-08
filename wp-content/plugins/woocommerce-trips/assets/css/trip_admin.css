@@ -37,6 +37,6 @@
 .add_pickup_location {
   float: right !important;
 }
-#_wc_trip_rates, #_wc_trip_includes {
+#_wc_trip_rates, #_wc_trip_includes, #_wc_trip_flight_times {
   height: 200px !important;
 }

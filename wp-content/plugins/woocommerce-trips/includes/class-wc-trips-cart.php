@@ -117,9 +117,8 @@ class WC_Trips_Cart {
             $base_price = get_post_meta($product_id, '_wc_trip_base_price', true);
             WC()->session->set( $cart_item_key . "_cost", $base_price);
         }
-        error_log("SAVE_TRIP_FIELDS");
+
         foreach( $this->fields as $key => $value ) {
-            error_log();
             if( isset( $_REQUEST[$key]) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
                     $packages = get_post_meta($product_id, '_' . $key ."s", true);
@@ -134,10 +133,9 @@ class WC_Trips_Cart {
                     $pickup_time = get_post_meta($_REQUEST[$key], '_pickup_location_time', true);
                     $pickup_time = (strval($pickup_time) == "" ? "" : " - " .date("g:i a", strtotime($pickup_time)));
                     $pickup_string = $pickup_title . $pickup_time;
-                    error_log("PICKUP ID:".$_REQUEST[$key]);
+                    
                     WC()->session->set( $cart_item_key . "_" . $key, $pickup_string );
                     WC()->session->set( $cart_item_key . "_pickup_id", $_REQUEST[$key] );
-                    error_log("SET PICKUP DATA");
                 } else {
                     WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
                 }
@@ -156,13 +154,6 @@ class WC_Trips_Cart {
                 } else {
                     $label = $value;
                 }
-                /*if ( "wc_trip_pickup_location" == $key ) {
-                    $time = get_post_meta( $inputValue, '_pickup_location_time', true);
-                    if ( "" !== $time ) {
-                        $time = ", " . date("g:i a", strtotime($time));
-                    }
-                    $inputValue = get_the_title( $inputValue );
-                }*/
                 echo<<<CARTMETA
                 <dt class="variation-{$label}">{$label}: </dt>
                 <dd class="variation-{$label}">{$inputValue}</dd>

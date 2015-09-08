@@ -1,4 +1,8 @@
 jQuery(document).ready(function($){
+  // show/hide flight times tab based on trip type selection
+  showHideFlight();
+  $("select[name=_wc_trip_type]").on("change", showHideFlight);
+  
   // General Tab date validator
   $( "#_wc_trip_start_date, #_wc_trip_end_date" ).datepicker({
       changeMonth: true,
@@ -175,6 +179,14 @@ jQuery(document).ready(function($){
   // Hide sort button if there is only one row
   if ( $(".sorter:visible").size() <= 1 ) {
     $(".sorter:visible").css("visibility", "hidden");
+  }
+  function showHideFlight() {
+    var trip_type = $( "select[name=_wc_trip_type] :selected").val();
+    if( "domestic_flight" == trip_type || "international_flight" == trip_type ) {
+      $(".trips_flight_times_tab").show();
+    } else {
+      $(".trips_flight_times_tab").hide();
+    }
   }
 });
 
