@@ -32,7 +32,6 @@ class WC_Trips {
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_scripts_and_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
         add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
-        
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
         }
@@ -40,7 +39,7 @@ class WC_Trips {
         
         include( 'includes/class-wc-trips-cart.php' );
     }
-    
+
     public function install() {
         add_action( 'shutdown', array( $this, 'delayed_install' ) );
     }
@@ -125,33 +124,33 @@ class WC_Trips {
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
         $trip_rates = get_post_meta( $product->id, '_wc_trip_rates', true);
         
-        if ( ! empty( $pickups ) ){
+        if ( $pickups ) {
             $tabs['pickups'] = array(
                 'title'     => 'Bus Times',
                 'priority'  => 50,
                 'callback'  => array( $this, 'bus_times_content')
                 );
-                if ( $destination_map ) {
-                    $tabs['trail_map'] = array(
-                        'title'     => 'Trail Map',
-                        'priority'  => 45,
-                        'callback'  => array( $this, 'trail_map_content')
-                    );
-                }
-                if ( $trip_includes ) {
-                    $tabs['includes'] = array(
-                        'title'     => 'Includes',
-                        'priority'  => 40,
-                        'callback'  => array( $this, 'includes_content')
-                    );
-                }
-                if ( $trip_rates ) {
-                    $tabs['rates'] = array(
-                        'title'     => 'Rates',
-                        'priority'  => 42,
-                        'callback'  => array( $this, 'rates_content')
-                    );
-                }
+            }
+            if ( $destination_map ) {
+                $tabs['trail_map'] = array(
+                    'title'     => 'Trail Map',
+                    'priority'  => 45,
+                    'callback'  => array( $this, 'trail_map_content')
+                );
+            }
+            if ( $trip_includes ) {
+                $tabs['includes'] = array(
+                    'title'     => 'Includes',
+                    'priority'  => 40,
+                    'callback'  => array( $this, 'includes_content')
+                );
+            }
+            if ( $trip_rates ) {
+                $tabs['rates'] = array(
+                    'title'     => 'Rates',
+                    'priority'  => 42,
+                    'callback'  => array( $this, 'rates_content')
+                );
             }
         return $tabs;
     }
