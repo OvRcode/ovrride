@@ -28,7 +28,7 @@ jQuery(document).ready(function($){
       $(this).css({background: '#FFFFFF', color: '#000000'});
     }
   });
-  console.log($("wc_trip_type").val());
+  
   if ( "domestic_flight" !== $("#wc_trip_type").val() && "international_flight" !== $("#wc_trip_type").val()){
     $("input[name=wc_trip_age_check]").on("change", function(){
       enableDisableCart();
@@ -64,12 +64,13 @@ jQuery(document).ready(function($){
     $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
   });
   
-  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").on("change", function(){
+  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package, #wc_trip_pickup_location").on("change", function(){
     var base      = Number($("#base_price").val()) || 0;
     var primary   = Number( $("#wc_trip_primary_package :selected").data('cost') ) || 0;
     var secondary = Number( $("#wc_trip_secondary_package :selected").data('cost') ) || 0;
     var tertiary  = Number( $("#wc_trip_tertiary_package :selected").data('cost') ) || 0;
-    var total = base + primary + secondary + tertiary;
+    var pickup    = Number( $("#wc_trip_pickup_location :selected").data('cost') ) || 0;
+    var total = base + primary + secondary + tertiary + pickup;
     
     $("#trip_price").text( "$" + total.toFixed(2) );
   });

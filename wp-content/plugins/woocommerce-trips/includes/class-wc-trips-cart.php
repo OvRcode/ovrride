@@ -86,6 +86,9 @@ class WC_Trips_Cart {
             }
         }
     }
+    private function get_pickup_cost( $id ) {
+        return get_post_meta( $id, '_pickup_location_cost', true);
+    }
     public function order_item_meta( $item_id, $values, $cart_item_key) {
         global $woocommerce;
         foreach ( $this->fields as $key => $value ) {
@@ -128,6 +131,13 @@ class WC_Trips_Cart {
                     WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
                     WC()->session->set( $cart_item_key . "_cost", $stored_cost );
                 } else if ( "wc_trip_pickup_location" == $key ) {
+                    if ( WC()->session->__isset($cart_item_key . "_cost") ) {
+                        $pickup_cost = $this->get_pickup_cost($_REQUEST[$key]);
+                        $pickup_cost += WC()->session->get($cart_item_key . "_cost");
+                        WC()->session->set($cart_item_key . "_cost", $pickup_cost);
+                    } else {
+                        WC()->session->set($cart_item_key . "_cost", $this->get_pickup_cost($_REQUEST[$key]));
+                    }
                     $pickup_title = get_the_title($_REQUEST[$key]);
                     $pickup_time = get_post_meta($_REQUEST[$key], '_pickup_location_time', true);
                     $pickup_time = (strval($pickup_time) == "" ? "" : " - " .date("g:i a", strtotime($pickup_time)));
@@ -191,10 +201,21 @@ CARTMETA;
             foreach( $pickup_ids as $key => $value ) {
                 $pickup = get_post( absint($value) );
                 $time = get_post_meta( $pickup->ID, '_pickup_location_time', true );
+                $cost = get_post_meta( $pickup->ID, '_pickup_location_cost', true);
                 if ( $time && "" != $time ) {
                     $time = " - " . date("g:i a", strtotime( $time ) );
                 }
-                $pickup_output .= "<option value='" . $pickup->ID . "'>" . $pickup->post_title . $time . "</option>";
+                if ( "" !== $cost && floatval($cost) > 0 ) {
+                    $data = "data-cost='" . $cost . "'";
+                    $cost_string = " + $" . $cost;
+                } else if ("" !== $cost && floatval($cost) < 0 ) {
+                    $data = $data = "data-cost='" . $cost . "'";
+                    $cost_string = " " . substr_replace($cost, "$", 1, 0);
+                } else {
+                    $data = "";
+                    $cost_string = "";
+                }
+                $pickup_output .= "<option value='" . $pickup->ID . "' {$data}>" . $pickup->post_title . $time . $cost_string . "</option>";
             }
             return $pickup_output;
         } else { 
