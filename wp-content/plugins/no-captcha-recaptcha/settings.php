@@ -35,9 +35,10 @@ class Ncr_Settings_Page {
 		$site_key    = isset( $ncr_options['site_key'] ) ? $ncr_options['site_key'] : '';
 		$secrete_key = isset( $ncr_options['secrete_key'] ) ? $ncr_options['secrete_key'] : '';
 
-		$captcha_login        = isset( $ncr_options['captcha_login'] ) ? $ncr_options['captcha_login'] : '';
-		$captcha_registration = isset( $ncr_options['captcha_registration'] ) ? $ncr_options['captcha_registration'] : '';
-		$captcha_comment      = isset( $ncr_options['captcha_comment'] ) ? $ncr_options['captcha_comment'] : '';
+		$captcha_login           = isset( $ncr_options['captcha_login'] ) ? $ncr_options['captcha_login'] : '';
+		$captcha_registration    = isset( $ncr_options['captcha_registration'] ) ? $ncr_options['captcha_registration'] : '';
+		$captcha_registration_bp = isset( $ncr_options['captcha_registration_bp'] ) ? $ncr_options['captcha_registration_bp'] : '';
+		$captcha_comment         = isset( $ncr_options['captcha_comment'] ) ? $ncr_options['captcha_comment'] : '';
 
 		$theme         = isset( $ncr_options['theme'] ) ? $ncr_options['theme'] : '';
 		$language      = isset( $ncr_options['language'] ) ? $ncr_options['language'] : '';
@@ -173,6 +174,21 @@ class Ncr_Settings_Page {
 							</p>
 						</td>
 					</tr>
+					<?php if ( function_exists( 'buddypress' ) ) : ?>
+						<tr>
+							<th scope="row"><label
+									for="registration-bp"><?php _e( 'BuddyPress Registration Form', 'ncr-captcha' ); ?></label>
+							</th>
+							<td>
+								<input id="registration-bp" type="checkbox" name="ncr_options[captcha_registration_bp]"
+								       value="yes" <?php checked( $captcha_registration_bp, 'yes' ) ?>>
+
+								<p class="description">
+									<?php _e( 'Check to enable CAPTCHA on the BuddyPress registration form', 'ncr-captcha' ); ?>
+								</p>
+							</td>
+						</tr>
+					<?php endif; ?>
 				</table>
 				<p>
 					<?php wp_nonce_field( 'ncr_settings_nonce' ); ?>
@@ -288,6 +304,30 @@ class Ncr_Settings_Page {
 						<div style="text-align: center; margin: auto"><?php _e( 'Made with lots of love by', 'ncr-captcha' );?> <br>
 						<?php /* translators: plugin author name */ ?>
 						 <a href="http://w3guy.com"><strong><?php _e( 'Agbonghama Collins', 'ncr-captcha' );?></strong></a></div>
+					</div>
+				</div>
+
+				<div class="postbox" style="text-align: center">
+					<div class="handlediv"><br></div>
+					<h3 class="hndle ui-sortable-handle"><span>Check out ProfilePress Plugin</span></h3>
+
+					<div class="inside">
+						<p>A shortcode based WordPress form builder that makes building custom login, registration and password reset forms stupidly simple.</p>
+						<strong>Features</strong>
+						<ul>
+							<li>Unlimited front-end login forms</li>
+							<li>Unlimited front-end registration forms</li>
+							<li>Unlimited password reset forms.</li>
+							<li>Automatic login after registration.</li>
+							<li>Social Logins.</li>
+							<li>Custom user redirect users after login & logout</li>
+							<li>One-click widget creator.</li>
+							<li>And lots more.</li>
+							<li></li>
+						</ul>
+						<div><a href="https://wordpress.org/plugins/ppress/" target="_blank">
+								<button class="button-primary" type="button">Download for Free</button>
+							</a></div>
 					</div>
 				</div>
 

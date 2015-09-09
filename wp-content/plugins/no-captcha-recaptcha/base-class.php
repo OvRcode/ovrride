@@ -17,6 +17,10 @@ class Ncr_No_Captcha_Recaptcha {
 
 	static protected $plugin_options;
 
+	static protected $script_handle;
+
+	static protected $textdomain;
+
 	public static function initialize() {
 
 		self::$plugin_options = get_option( 'ncr_options' );
@@ -32,6 +36,9 @@ class Ncr_No_Captcha_Recaptcha {
 		self::$error_message = isset( self::$plugin_options['error_message'] ) ? self::$plugin_options['error_message'] : wp_kses( __( '<strong>ERROR</strong>: Please retry CAPTCHA', 'ncr-catpcha' ), array(  'strong' => array() ) );
 
 
+		self::$script_handle = 'g-recaptcha';
+
+		self::$textdomain = 'ncr-captcha';
 
 		add_action( 'plugins_loaded', array( __CLASS__, 'load_plugin_textdomain' ) );
 
@@ -42,6 +49,10 @@ class Ncr_No_Captcha_Recaptcha {
 
 			add_action( 'login_enqueue_scripts', array( __CLASS__, 'default_wp_login_reg_css' ) );
 		}
+
+		// Add the "async" attribute to our registered script.
+		add_filter( 'script_loader_tag',  array( __CLASS__, 'add_async_attribute' ), 10, 2 );
+
 	}
 
 	public static function load_plugin_textdomain() {
@@ -64,6 +75,37 @@ class Ncr_No_Captcha_Recaptcha {
 		echo '<script src="https://www.google.com/recaptcha/api.js' . $lang . '" async defer></script>' . "\r\n";
 	}
 
+	/**
+	* Enqueue the Google ReCAPTCHA script using the WP system.
+	*
+	* @since 1.0.3
+	*/
+	public static function enqueue_header_script() {
+
+		// if language is empty (auto detected chosen) do nothing otherwise add the lang query to the
+		// reCAPTCHA script url
+		if ( ! empty( self::$language ) ) {
+			$lang = "?hl={self::$language}";
+		} else {
+			$lang = '';
+		}
+
+		$src = 'https://www.google.com/recaptcha/api.js' . $lang;
+
+		wp_enqueue_script( self::$script_handle, $src, false, false, true );
+	}
+
+	/**
+	* Add the "async" attribute to our registered script.
+	*
+	* @since 1.0.3
+	*/
+	public static function add_async_attribute( $tag, $handle ) {
+	    if ( $handle == self::$script_handle ) {
+	       $tag = str_replace( ' src', ' async="async" src', $tag );
+	    }
+	    return $tag;
+	}
 
 	/** Increase the width of login/registration form */
 	public static function default_wp_login_reg_css() {
@@ -119,6 +161,7 @@ class Ncr_No_Captcha_Recaptcha {
 
 		$default_options = array(
 			'captcha_registration' => 'yes',
+			'captcha_registration_bp' => 'no',
 			'captcha_comment'      => 'yes',
 			'theme'                => 'light',
 			'error_message'        => wp_kses( __( '<strong>ERROR</strong>: Please retry CAPTCHA', 'ncr-catpcha' ), array(  'strong' => array() ) ),
