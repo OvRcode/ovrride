@@ -101,8 +101,6 @@ class WC_Trips_Cart {
                     wc_add_order_item_meta( $item_id, $value, $location_string);
                     wc_add_order_item_meta( $item_id, "_pickup_id", $location_id);
                 } else {
-                    error_log($key);
-                    error_log($value);
                     wc_add_order_item_meta( $item_id, $value, WC()->session->get( $cart_item_key . "_" . $key ));
                 }
             }
@@ -139,7 +137,9 @@ class WC_Trips_Cart {
                     WC()->session->set( $cart_item_key . "_" . $key, $pickup_string );
                     WC()->session->set( $cart_item_key . "_pickup_id", $_REQUEST[$key] );
                 } else {
-                    WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
+                    if ( "" !== $_REQUEST[$key] ) {
+                        WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
+                    }
                 }
             }
         }
