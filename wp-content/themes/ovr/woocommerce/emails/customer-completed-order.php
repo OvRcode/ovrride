@@ -14,12 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 $pickups = array();
 $has_trip = false;
 foreach($order->get_items() as $order_item_id ) {
-    //error_log("PRODUCT ID:".$order_item_id['product_id']);
     $product = get_product( $order_item_id['product_id']);
     if ( $product->is_type('trip') ) {
         $has_trip = true;
     }
-    error_log(print_r($order_item_id,true));
     if ( isset($order_item_id['Pickup Location']) ) {
         $pickups[$order_item_id['Pickup Location']]['title']    = get_the_title( $order_item_id['pickup_id'] );
         $pickups[$order_item_id['Pickup Location']]['address']  = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_address', true);

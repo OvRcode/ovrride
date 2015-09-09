@@ -46,6 +46,7 @@ do_action( 'woocommerce_before_add_to_cart_form' );
         </p>
         <?php 
         echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . $trip_type . "' data-required='true' />";
+        error_log("TRIP TYPE!:".$trip_type);
         switch ( $trip_type ) {
             case "international_flight":
                 echo <<<PASSPORT
@@ -66,8 +67,11 @@ PASSPORT;
                         <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
                         <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
                         <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
+                        <input type="hidden" id="wc_trip_dob_field" name="wc_trip_dob_field" value="" />
                     </div>
                     </p>
+                    <br />
+                    <br />
 DOB;
                 break;
             default:
@@ -84,7 +88,7 @@ DOB;
                         <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
                         <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
                         <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
-                        <input type="hidden" id="wc_trip_dob_field" value="" />
+                        <input type="hidden" id="wc_trip_dob_field" name="wc_trip_dob_field" value="" />
                     </div>
                     <p>Guests under 18 years of age are welcome to join us as long as they abide by the terms of the <a href="http://ovrride.com/ovrride-age-policy/" target="_blank"><strong>OvRride Age Policy</strong></a>, and we are aware of the underage guest.</p>
                 </p>

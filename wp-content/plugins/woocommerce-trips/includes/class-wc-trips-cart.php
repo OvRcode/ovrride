@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Trips_Cart {
     public $fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
-        "wc_trip_dob_field" => "Date of birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
+        "wc_trip_dob_field" => "Date of Birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
         
@@ -101,6 +101,8 @@ class WC_Trips_Cart {
                     wc_add_order_item_meta( $item_id, $value, $location_string);
                     wc_add_order_item_meta( $item_id, "_pickup_id", $location_id);
                 } else {
+                    error_log($key);
+                    error_log($value);
                     wc_add_order_item_meta( $item_id, $value, WC()->session->get( $cart_item_key . "_" . $key ));
                 }
             }
@@ -117,7 +119,7 @@ class WC_Trips_Cart {
             $base_price = get_post_meta($product_id, '_wc_trip_base_price', true);
             WC()->session->set( $cart_item_key . "_cost", $base_price);
         }
-
+        error_log("Save trip fields");
         foreach( $this->fields as $key => $value ) {
             if( isset( $_REQUEST[$key]) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {

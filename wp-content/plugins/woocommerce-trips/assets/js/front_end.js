@@ -28,30 +28,40 @@ jQuery(document).ready(function($){
       $(this).css({background: '#FFFFFF', color: '#000000'});
     }
   });
-  $("input[name=wc_trip_age_check]").on("change", function(){
-    enableDisableCart();
-    var fields = [$("label[for=wc_trip_dob]"), $("#wc_trip_dob_month"), $("#wc_trip_dob_day"), $("#wc_trip_dob_year")];
-    if ( "no" == $(this).val() ) {
-      $.each(fields, function(k,v){
-        v.attr('data-required', 'true').show();
-        v.siblings('label').show();
-      });
-      $(".DOB").after('<br class="postDOB" /><br class="postDOB" /><br class="postDOB" />');
-    } else {
-      $.each(fields, function(k,v){
-        v.removeData('required').removeAttr('data-required').hide();
-        v.siblings('label').hide();
-      });
-      $(".postDOB").remove();
-    }
-    enableDisableCart();
-  });
+  console.log($("wc_trip_type").val());
+  if ( "domestic_flight" !== $("#wc_trip_type").val() && "international_flight" !== $("#wc_trip_type").val()){
+    $("input[name=wc_trip_age_check]").on("change", function(){
+      enableDisableCart();
+      var fields = [$("label[for=wc_trip_dob]"), $("#wc_trip_dob_month"), $("#wc_trip_dob_day"), $("#wc_trip_dob_year")];
+      if ( "no" == $(this).val() ) {
+        $.each(fields, function(k,v){
+          v.attr('data-required', 'true').show();
+          v.siblings('label').show();
+        });
+        $(".DOB").after('<br class="postDOB" /><br class="postDOB" /><br class="postDOB" />');
+      } else {
+        $.each(fields, function(k,v){
+          v.removeData('required').removeAttr('data-required').hide();
+          v.siblings('label').hide();
+        });
+        $(".postDOB").remove();
+      }
+      enableDisableCart();
+    });
+  } else {
+    $(".DOB").show();
+    $(".DOB").find("label").show();
+    $("label[for=wc_trip_dob]").show();
+    $("#wc_trip_dob_month").show();
+    $("#wc_trip_dob_day").show();
+    $("#wc_trip_dob_year").show();
+  }
   
   $("input[name^=wc_trip_dob_]").on("keyup", function(){
     var month = $("input[name=wc_trip_dob_month]").val();
     var day = $("input[name=wc_trip_dob_day]").val();
     var year = $("input[name=wc_trip_dob_year]").val();
-    $("input[name=wc_trip_dob]").val(month + "/" + day + "/" + year);
+    $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
   });
   
   $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").on("change", function(){
