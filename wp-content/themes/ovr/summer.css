@@ -1372,13 +1372,25 @@ p.srp-widget-date {
   font-size: 15px;
   line-height: 20px;
 }
-.instagram-image {
-  padding: 1px;
-  background-color: #CCC;
+/*.instagram-image {
+	padding: 1px;
+	background-color:#CCC;
+	float: left;
+	margin-right: 13px;
+	margin-bottom: 10px;
+	height:127px;
+}*/
+.front-photo,
+.masonryItem {
+  background: none;
+  border: none;
+  border-radius: 5px;
+  margin: 0 4px 0 0;
+  padding: 0 !important;
+  height: 132px;
+  width: 132px;
+  box-shadow: none;
   float: left;
-  margin-right: 13px;
-  margin-bottom: 10px;
-  height: 127px;
 }
 .minitweets-end {
   display: none;
