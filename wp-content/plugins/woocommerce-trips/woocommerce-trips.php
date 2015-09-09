@@ -124,6 +124,7 @@ class WC_Trips {
         $pickups            = get_post_meta( $product->id, '_wc_trip_pickups', true);
         $trip_rates         = get_post_meta( $product->id, '_wc_trip_rates', true);
         $flight_times       = get_post_meta( $product->id, '_wc_trip_flight_times', true);
+        $pics               = get_post_meta( $product->id, '_wc_trip_pics', true);
         if ( $pickups ) {
             $tabs['pickups'] = array(
                 'title'     => 'Bus Times',
@@ -159,16 +160,28 @@ class WC_Trips {
                     'callback'  => array( $this, 'flight_times_content')
                 );
             }
+            if ( $pics ) {
+                $tabs['rates'] = array(
+                    'title'     => 'Pics',
+                    'priority'  => 46,
+                    'callback'  => array( $this, 'pics_content')
+                );
+            }
         return $tabs;
+    }
+    public function pics_content(){
+        global $product;
+        $pics_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_pics', true) ) );
+        echo $pics_data;
     }
     public function flight_times_content(){
         global $product;
-        $flight_times_data = do_shortcode(shortcode_unautop(get_post_meta( $product->id, '_wc_trip_flight_times', true)));
+        $flight_times_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_flight_times', true) ) );
         echo $flight_times_data;
     }
     public function rates_content() {
         global $product;
-        $rates_data = do_shortcode(shortcode_unautop(get_post_meta( $product->id, '_wc_trip_rates', true)));
+        $rates_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_rates', true) ) );
         echo $rates_data;
     }
     public function trail_map_content() {
@@ -218,7 +231,7 @@ TESTING;
     }
     public function includes_content() {
         global $product;
-        $includes_data = do_shortcode(shortcode_unautop(get_post_meta( $product->id, '_wc_trip_includes', true)));
+        $includes_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_includes', true) ) );
         echo $includes_data;
     }
     public function pickup_html( $post_id ) {

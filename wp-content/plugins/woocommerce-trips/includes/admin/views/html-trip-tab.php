@@ -19,3 +19,6 @@
 <li class="trips_tab trips_flight_times_tab shipping_options show_if_trip">
     <a href="#trips_flight_times">Flight Times</a>
 </li>
+<li class="trips_tab trips_pics_tab attribute_options show_if_trip">
+    <a href="#trips_pics">Pics</a>
+</li>
