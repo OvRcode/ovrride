@@ -1,4 +1,18 @@
 *** Gravity Forms Product Add-Ons Changelog ***
+2015.08.24 - version 2.9.9
+	* Fix:  Fixes issue with new ajax params from 2.9.8 not being enqueued when using the product_page shortcode. 
+	
+2015.07.28 - version 2.9.8
+	* Update:  Major Update.  Remove ajax total calculation and formatting when Gravity Form options change.  
+		Migrate all the calculations to JavaScript. 
+
+2015.07.09 - version 2.9.7
+	* Fix:  Check if the global post object is available before checking if a product shortcode exists in $post->post_content. 
+
+2015.06.16 - version 2.9.6
+	* Update:  Check if the price before and price after setting is empty before adding it to the HTML. 
+	* Update:  Append the free html from the filter to the end of the price before for free products. 
+
 2015.06.09 - version 2.9.5
 	* Update: Change the way the gravity forms scripts are enqueued when using the product_page shortcode. Ensures compatibility with later versions of gravity forms
 	* Update: Add support for the Time field. 

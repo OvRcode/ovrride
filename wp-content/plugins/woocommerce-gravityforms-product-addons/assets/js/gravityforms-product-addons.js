@@ -5,36 +5,47 @@ function gform_product_total(formId, total) {
 }
 
 function update_dynamic_price(gform_total) {
-	jQuery('div.product_totals').block({
-		message: null,
-		overlayCSS: {
-			background: '#fff',
-			opacity: 0.6
+	var product_id = jQuery("#product_id").val();
+	var variation_id = jQuery("input[name=variation_id]").val();
+	
+	
+	if (product_id || variation_id) {
+		var the_id = 0;
+		if (variation_id) {
+			the_id = variation_id;
+		} else {
+			the_id = product_id;
 		}
-	});
+		
+		var base_price = wc_gravityforms_params.prices[the_id];
+		jQuery('.formattedBasePrice').html(accounting.formatMoney(base_price, {
+			symbol: wc_gravityforms_params.currency_format_symbol,
+			decimal: wc_gravityforms_params.currency_format_decimal_sep,
+			thousand: wc_gravityforms_params.currency_format_thousand_sep,
+			precision: wc_gravityforms_params.currency_format_num_decimals,
+			format: wc_gravityforms_params.currency_format
+		}
+		));
+		
+		jQuery('.formattedVariationTotal').html(accounting.formatMoney(gform_total, {
+			symbol: wc_gravityforms_params.currency_format_symbol,
+			decimal: wc_gravityforms_params.currency_format_decimal_sep,
+			thousand: wc_gravityforms_params.currency_format_thousand_sep,
+			precision: wc_gravityforms_params.currency_format_num_decimals,
+			format: wc_gravityforms_params.currency_format
+		}
+		));
 
-	var base = jQuery('#woocommerce_product_base_price').val();
-
-	if (ajax_price_req) {
-		ajax_price_req.abort();
+		jQuery('.formattedTotalPrice').html(accounting.formatMoney(parseFloat(base_price) + parseFloat(gform_total), {
+			symbol: wc_gravityforms_params.currency_format_symbol,
+			decimal: wc_gravityforms_params.currency_format_decimal_sep,
+			thousand: wc_gravityforms_params.currency_format_thousand_sep,
+			precision: wc_gravityforms_params.currency_format_num_decimals,
+			format: wc_gravityforms_params.currency_format
+		}
+		));
 	}
 
-	var opts = "product_id=" + jQuery("#product_id").val() + "&variation_id=" + jQuery("input[name=variation_id]").val();
-	opts += '&action=get_updated_price&gform_total=' + gform_total;
-
-	ajax_price_req = jQuery.ajax({
-		type: "POST",
-		url: woocommerce_params.ajax_url,
-		data: opts,
-		dataType: 'json',
-		success: function (response) {
-			jQuery('.formattedBasePrice').html((response.formattedBasePrice));
-			jQuery('.formattedVariationTotal').html(response.formattedVariationTotal);
-			jQuery('.formattedTotalPrice').html(response.formattedTotalPrice);
-
-			jQuery('div.product_totals').unblock();
-		}
-	});
 	return gform_total;
 }
 

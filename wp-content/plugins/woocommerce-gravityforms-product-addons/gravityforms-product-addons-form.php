@@ -135,11 +135,13 @@ class woocommerce_gravityforms_product_form {
 						</li>
 					</ul>
 				</div>
+				<?php if ($product->product_type != 'bundle') : ?>
 				<style>
 					.single_variation .price {
 						display:none !important;
 					}
 				</style>
+				<?php endif; ?>
 			<?php endif; ?>
 			<style>
 				.hidden-total {
