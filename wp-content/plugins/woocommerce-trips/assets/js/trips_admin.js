@@ -207,19 +207,9 @@ function showHideStock( StockType ) {
             cssElement = jQuery(".tertiary_package_stock");
     }
     if ( selector.prop("checked") ) {
-        cssElement.css("visibility", "visible");
-        jQuery(".sorting").css("width", "2%");
-        jQuery(".description").css("width", "54%");
-        jQuery(".cost").css("width", "22%");
-        jQuery(".primary_package_stock, .secondary_package_stock, .tertiary_package_stock").css("width", "20%");
-        jQuery(".delete_column").css("width", "2%");
+      cssElement.show();
     } else {
-        cssElement.css("visibility", "collapse");
-        jQuery(".sorting").css("width", "2%");
-        jQuery(".description").css("width", "59%");
-        jQuery(".cost").css("width", "27%");
-        jQuery(".primary_package_stock, .secondary_package_stock, .tertiary_package_stock").css("width", "0");
-        jQuery(".delete_column").css("width", "2%");
+      cssElement.hide();
     }
 }
 function pickup_row_indexes() {

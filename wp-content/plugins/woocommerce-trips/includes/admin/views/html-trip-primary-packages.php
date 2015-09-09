@@ -13,13 +13,11 @@
         <div class="woocommerce_trip_primary_packages wc-metaboxes">
             <table class="woocommerce_trip_primary_packages">
                 <thead>
-                    <tr>
                         <th class="sorting">&nbsp;</th>
                         <th class="description">Description</th>
                         <th class="cost">Cost</th>
                         <th class="primary_package_stock">Stock</th>
                         <th class="delete_column">&nbsp;</th>
-                    </tr>
                 </thead>
                 <tbody id="primary_package_rows">
             <?php
@@ -29,16 +27,15 @@
                     foreach ( $primary_package as $key => $values ) {
                         echo <<< PRIMARYROW
                         <tr>
-                            <td class='sorter'>&nbsp;</td>
-                            <td>
-                                <input type='text' name='wc_trips_primary_package_description[]' value='{$values['description']}'>
-                                </input>
+                            <td class='sorter sorting'>&nbsp;</td>
+                            <td class="package_description">
+                                <input type='text' name='wc_trips_primary_package_description[]' value='{$values['description']}' />
                             </td>
-                            <td>
+                            <td class="cost">
                                 <input type='text' name='wc_trips_primary_package_cost[]' value='{$values['cost']}'>
                                 </input>
                             </td>
-                            <td class='primary_package_stock'>
+                            <td class='primary_package_stock stock'>
                                 <input type='number' name='wc_trips_primary_package_stock[]' value='{$values['stock']}'>
                                 </input>
                             </td>
@@ -62,10 +59,10 @@ PPMessage;
 
         <p class="toolbar">
             <button type="button" class="button button-primary add_package" id="primary_package_add" data-row="<tr>
-                <td class='sorter'>&nbsp;</td>
-                <td><input type='text' name='wc_trips_primary_package_description[]'></input></td>
-                <td><input type='text' name='wc_trips_primary_package_cost[]'></input></td>
-                <td class='primary_package_stock'><input type='number' name='wc_trips_primary_package_stock[]'></input></td>
+                <td class='sorter sorting'>&nbsp;</td>
+                <td class='package_description'><input type='text' name='wc_trips_primary_package_description[]'></input></td>
+                <td class='cost'><input type='text' name='wc_trips_primary_package_cost[]'></input></td>
+                <td class='primary_package_stock stock'><input type='number' name='wc_trips_primary_package_stock[]'></input></td>
                 <td class='delete'>&nbsp;</td>
             </tr>">Add primary package</button>
         </p>

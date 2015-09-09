@@ -13,31 +13,29 @@
         <div class="woocommerce_trip_tertiary_packages wc-metaboxes">
             <table class="woocommerce_trip_tertiary_packages">
                 <thead>
-                    <tr>
                         <th class="sorting">&nbsp;</th>
                         <th class="description">Description</th>
                         <th class="cost">Cost</th>
                         <th class="tertiary_package_stock">Stock</th>
                         <th class="delete_column">&nbsp;</th>
-                    </tr>
                 </thead>
                 <tbody id="tertiary_package_rows">
             <?php
                 $tertiary_package = get_post_meta($post_id, "_wc_trip_tertiary_packages", true);
+                
                 if (is_array($tertiary_package) || is_object($tertiary_package)) {
                     foreach ( $tertiary_package as $key => $values ) {
                         echo <<< PRIMARYROW
                         <tr>
-                            <td class='sorter'>&nbsp;</td>
-                            <td>
-                                <input type='text' name='wc_trips_tertiary_package_description[]' value='{$values['description']}'>
-                                </input>
+                            <td class='sorter sorting'>&nbsp;</td>
+                            <td class="package_description">
+                                <input type='text' name='wc_trips_tertiary_package_description[]' value='{$values['description']}' />
                             </td>
-                            <td>
+                            <td class="cost">
                                 <input type='text' name='wc_trips_tertiary_package_cost[]' value='{$values['cost']}'>
                                 </input>
                             </td>
-                            <td class='tertiary_package_stock'>
+                            <td class='tertiary_package_stock stock'>
                                 <input type='number' name='wc_trips_tertiary_package_stock[]' value='{$values['stock']}'>
                                 </input>
                             </td>
@@ -45,12 +43,11 @@
                         </tr>
 PRIMARYROW;
                     }
-                }
-                if ( sizeof( $tertiary_package ) == 0 ) {
+                } else {
                     echo <<< PPMessage
                         <div id="message" class="inline woocommerce-message" style="margin: 1em 0;">
                             <div class="squeezer">
-                                &nbsp;<h4>Tertiary package options for trip</h4>
+                                &nbsp;<h4>Package options for trip</h4>
                             </div>
                         </div>
 PPMessage;
@@ -61,11 +58,11 @@ PPMessage;
         </div>
 
         <p class="toolbar">
-            <button type="button" class="button button-primary add_package" id="tertiary_package_add" data-row="<tr>
-                <td class='sorter'>&nbsp;</td>
-                <td><input type='text' name='wc_trips_tertiary_package_description[]'></input></td>
-                <td><input type='text' name='wc_trips_tertiary_package_cost[]'></input></td>
-                <td class='tertiary_package_stock'><input type='number' name='wc_trips_tertiary_package_stock[]'></input></td>
+            <button type="button" class="button button-tertiary add_package" id="tertiary_package_add" data-row="<tr>
+                <td class='sorter sorting'>&nbsp;</td>
+                <td class='package_description'><input type='text' name='wc_trips_tertiary_package_description[]'></input></td>
+                <td class='cost'><input type='text' name='wc_trips_tertiary_package_cost[]'></input></td>
+                <td class='tertiary_package_stock stock'><input type='number' name='wc_trips_tertiary_package_stock[]'></input></td>
                 <td class='delete'>&nbsp;</td>
             </tr>">Add tertiary package</button>
         </p>
