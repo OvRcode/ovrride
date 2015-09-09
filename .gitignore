@@ -3,6 +3,10 @@ wp-content/uploads/*
 wp-content/cache/*
 wp-content/plugins/special-recent-posts/cache/*
 !wp-content/plugins/special-recent-posts/cache/.placeholder
+wp-content/plugins/simply-instagram/cache/*
+!wp-content/plugins/simply-instagram/cache/.placeholder
+wp-content/plugins/simply-instagram/cache-api/*
+!wp-content/plugins/simply-instagram/cache-api/.placeholder
 wp-content/uploads/gravity_forms/*
 !OvR 2014-15WAIVER.pdf.zip
 error_log
