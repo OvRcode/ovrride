@@ -1,5 +1,24 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.08.14 - version 3.0.4
+ * Fix: Issuing more store credit when purchasing store credit in multiple quantities
+
+2015.08.13 - version 3.0.3
+ * Fix: Incorrect placeholder for coupon in product edit screen
+ * Fix: Showing empty round bracket '()' if currency symbol is hidden, on 'Purchase Credit' page 
+ * Fix: 'woocommerce_admin is not defined' while bulk generating coupons
+ * Fix: Missing text domain in few places
+ * Update: Updated POT file
+
+2015.07.16 - version 3.0.2
+ * Update: Show a notice about important setting related to store credit
+
+2015.07.15 - version 3.0.1
+ * Update: Change of Text Domain & Language loader (Thanks to: Nicola Mustone)
+ * Update: More details in displayed coupons (Thanks to: Doug Smith)
+ * Update: Refunding or cancelling an order were not restoring credit amounts back to coupons, which was used in the order
+ * Fix: Only recently received coupons are visible under 'Coupons Received' on My Account page
+
 2015.06.18 - version 3.0
  * Fix: When applying discounts for store credit, usage restrictions related to product & product categories was not considered (Thanks to: Steven Taumoepeau)
  * Update: Use of WooCommerce Coupon's meta box for displaying coupon data fields under 'Bulk Generate Coupons'

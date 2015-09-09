@@ -1,6 +1,6 @@
 <?php if (!defined('ABSPATH')) exit; ?>
 
-<?php 
+<?php
 	if ( function_exists( 'wc_get_template' ) ) {
 		wc_get_template('emails/email-header.php', array( 'email_heading' => $email_heading ));
 	} else {
@@ -17,7 +17,7 @@
 			cursor: pointer;
 		}
 		.coupon-container.blue { background-color: #e0f7ff }
-		
+
 		.coupon-container.medium {
 			padding: .4em;
 			line-height: 1.4em;
@@ -37,15 +37,23 @@
 			font-family: Helvetica, Arial, sans-serif;
 			font-size: 1em;
 		}
+		.coupon-content .discount-description {
+		    font: .7em/1 Helvetica, Arial, sans-serif;
+		    width: 250px;
+		    margin: 10px inherit;
+		    display: inline-block;
+		}
 </style>
 
 <?php echo $message_from_sender; ?>
 
-<p><?php echo sprintf(__("To redeem your discount use the following coupon during checkout:", 'wc_smart_coupons'), $blogname); ?></p>
+<p><?php echo sprintf(__("To redeem your discount use the following coupon during checkout:", WC_Smart_Coupons::$text_domain), $blogname); ?></p>
 
 <?php
 
 $coupon = new WC_Coupon( $coupon_code );
+
+$coupon_post = get_post( $coupon->id );
 
 $coupon_data = $this->get_coupon_meta_data( $coupon );
 
@@ -62,19 +70,38 @@ $coupon_data = $this->get_coupon_meta_data( $coupon );
 	}
 ?>
 
-<div style="margin: 10px 0; text-align: center;" title="<?php echo __( 'Click to visit store. This coupon will be applied automatically.', 'wc_smart_coupons' ); ?>">
+<div style="margin: 10px 0; text-align: center;" title="<?php echo __( 'Click to visit store. This coupon will be applied automatically.', WC_Smart_Coupons::$text_domain ); ?>">
 	<a href="<?php echo $coupon_target; ?>" style="color: #444;">
 
 		<div class="coupon-container blue medium" style="cursor:pointer; text-align:center">
 			<?php
 				echo '<div class="coupon-content blue dashed small">
-					<div class="discount-info">'.( ( !empty( $coupon_data['coupon_amount'] ) ) ? $coupon_data['coupon_amount'] : '' )." ". ( ( !empty( $coupon_data['coupon_type'] ) ) ? $coupon_data['coupon_type'] : '' ).'</div>
-					<div class="code">'. $coupon->code .'</div>';
+					<div class="discount-info">';
+
+					if ( ! empty( $coupon_data['coupon_amount'] ) && $coupon->amount != 0 ) {
+						echo $coupon_data['coupon_amount'] . ' ' . $coupon_data['coupon_type'];
+						if ( $coupon->free_shipping == "yes" ) {
+							echo __( ' &amp; ', self::$text_domain );
+						}
+					}
+
+					if ( $coupon->free_shipping == "yes" ) {
+						echo __( 'Free Shipping', self::$text_domain );
+					}
+					echo '</div>';
+
+					echo '<div class="code">'. $coupon->code .'</div>';
+
+					$show_coupon_description = get_option( 'smart_coupons_show_coupon_description', 'no' );
+					if ( ! empty( $coupon_post->post_excerpt ) && $show_coupon_description == 'yes' ) {
+						echo '<div class="discount-description">' . $coupon_post->post_excerpt . '</div>';
+					}
+
 					if( !empty( $coupon->expiry_date) ) {
 						$expiry_date = $this->get_expiration_format( $coupon->expiry_date );
-						echo '<div class="coupon-expire">'. $expiry_date .'</div>';    
+						echo '<div class="coupon-expire">'. $expiry_date .'</div>';
 					} else {
-						echo '<div class="coupon-expire">'. __( 'Never Expires ', 'wc_smart_coupons' ).'</div>';    
+						echo '<div class="coupon-expire">'. __( 'Never Expires ', WC_Smart_Coupons::$text_domain ).'</div>';
 					}
 				echo '</div>';
 			?>
@@ -82,15 +109,15 @@ $coupon_data = $this->get_coupon_meta_data( $coupon );
 	</a>
 </div>
 
-<center><a href="<?php echo $url; ?>"><?php echo sprintf(__("Visit Store",'wc_smart_coupons') ); ?></a></center>
+<center><a href="<?php echo $url; ?>"><?php echo sprintf(__("Visit Store",WC_Smart_Coupons::$text_domain) ); ?></a></center>
 
 <?php if ( !empty( $from ) ) { ?>
-	<p><?php echo __( 'You got this gift card', 'wc_smart_coupons' ) . ' ' . $from . $sender; ?></p>
+	<p><?php echo __( 'You got this gift card', WC_Smart_Coupons::$text_domain ) . ' ' . $from . $sender; ?></p>
 <?php } ?>
 
 <div style="clear:both;"></div>
 
-<?php 
+<?php
 	if ( function_exists( 'wc_get_template' ) ) {
 		wc_get_template('emails/email-footer.php');
 	} else {

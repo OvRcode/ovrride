@@ -49,6 +49,12 @@
     font-family: Helvetica, Arial, sans-serif;
     font-size: 1em;
 }
+.coupon-content .discount-description {
+    font: .7em/1 Helvetica, Arial, sans-serif;
+    width: 250px;
+    margin: 10px inherit;
+    display: inline-block;
+}
 
 /*Shortcode fields*/
 #coupon-selector #coupon-option label span {
