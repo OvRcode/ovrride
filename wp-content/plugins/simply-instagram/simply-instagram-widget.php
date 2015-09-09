@@ -17,9 +17,9 @@ class instagram_self_feed extends WP_Widget {
 		
 		echo $before_widget;
 		echo $before_title . $widget_title . $after_title;
-		echo $short_desc . '<div class="clear"></div>';
+		echo '<p>' . $short_desc . '</p>' . '<div class="clear"></div>';
 		
-		echo sInstShowWidgetData( sInstGetSelfFeed( access_token() ), $max_display, $instance[ 'size' ], "sIntSelfFeed", $instance['display_caption'] );
+		echo sInstShowWidgetData( sInstGetSelfFeed( access_token() ), $max_display, $instance[ 'size' ], "sIntSelfFeed", $instance['display_caption'], $instance['open_instagram'] );
 ?>
 	<script type="text/javascript" charset="utf-8">
 	  jQuery(document).ready(function(){
@@ -28,6 +28,7 @@ class instagram_self_feed extends WP_Widget {
 	    	social_tools: false,
 	    	theme: '<?php echo $instance[ 'theme' ];?>',
 	    	});
+	    jQuery('.tooltip').tooltipster();
 	  });
 	</script>
 <?php		
@@ -38,6 +39,7 @@ class instagram_self_feed extends WP_Widget {
 		$instance = $old_instance;
 		$instance['widget_title'] = strip_tags($new_instance['widget_title']);
 		$instance['short_desc'] = strip_tags($new_instance['short_desc']);
+		$instance['open_instagram'] = strip_tags($new_instance['open_instagram']);
 		$instance['max_display'] = strip_tags($new_instance['max_display']);
 		$instance['theme'] = strip_tags($new_instance['theme']);
 		$instance['auto_play'] = strip_tags($new_instance['auto_play']);
@@ -52,6 +54,7 @@ class instagram_self_feed extends WP_Widget {
 		if ( $instance ) {
 			$widget_title = esc_attr( $instance[ 'widget_title' ] );
 			$short_desc = esc_attr( $instance[ 'short_desc' ] );
+			$open_instagram = esc_attr( $instance[ 'open_instagram' ] );
 			$max_display = esc_attr( $instance[ 'max_display' ] );
 			$theme = esc_attr( $instance[ 'theme' ] );
 			$auto_play = esc_attr( $instance[ 'auto_play' ] );
@@ -61,6 +64,7 @@ class instagram_self_feed extends WP_Widget {
 		else {
 			$widget_title = __( 'My Feed', 'text_domain' );
 			$short_desc = __( 'My latest feed', 'short_desc' );
+			$open_instagram = __( 'false', 'open_instagram' );
 			$max_display = __( '9', 'max_display' );
 			$theme = __( 'default', 'theme' );
 			$auto_play = __( 'true', 'auto_play' );
@@ -78,6 +82,15 @@ class instagram_self_feed extends WP_Widget {
 		<p>
 		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('short_desc'); ?>" name="<?php echo $this->get_field_name('short_desc'); ?>"><?php echo $short_desc; ?></textarea>
+		</p>
+		
+		<p>
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		</select>
+		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
 		</p>
 		
 		<p>
@@ -137,7 +150,7 @@ class instagram_user_info extends WP_Widget {
 		
 		echo $before_widget;
 		echo $before_title . $instance['widget_title'] . $after_title;
-		echo $short_desc;
+		echo '<p>' . $short_desc . '</p>';
 		
 		$info = sInstGetInfo( user_id(), access_token() );
 				
@@ -151,6 +164,14 @@ class instagram_user_info extends WP_Widget {
 			endif;
 			
 			sInstDiplayFollowData( sInstGetFollowers( user_id(), access_token() , array( 'name' => 'true', 'bio' => 'true', 'website' => 'true', 'media' => 'true', 'followers' => 'true', 'following' => 'true', 'profile_pic' => 'true' ) ), "25", $instance['followers_profile_width'], false );
+			?>
+				<script type="text/javascript" charset="utf-8">
+				  //jQuery.noConflict();
+				  jQuery(document).ready(function(){
+				     jQuery('.tooltip').tooltipster();
+				  });
+				</script>
+			<?php
 		endif;
 		
 		if( $instance['following'] == true ):
@@ -160,6 +181,14 @@ class instagram_user_info extends WP_Widget {
 				echo '<div class="clear"></div>';
 			endif;
 			sInstDiplayFollowData( sInstGetFollowing( user_id(), access_token() , array( 'name' => 'true', 'bio' => 'true', 'website' => 'true', 'media' => 'true', 'followers' => 'true', 'following' => 'true', 'profile_pic' => 'true' ) ), "25", $instance['followers_profile_width'], false );
+			?>
+				<script type="text/javascript" charset="utf-8">
+				  //jQuery.noConflict();
+				  jQuery(document).ready(function(){
+				     jQuery('.tooltip').tooltipster();
+				  });
+				</script>
+			<?php
 		endif;
 		
 		if( $instance['latest_feed'] == true ):
@@ -169,7 +198,7 @@ class instagram_user_info extends WP_Widget {
 				echo '<div class="clear"></div>';
 			endif;
 			$customRel = "latestfeed";
-			sInstShowWidgetData( sInstGetSelfFeed( access_token() ), "25", $instance['latest_photo_profile_width'], $customRel );
+			sInstShowWidgetData( sInstGetSelfFeed( access_token() ), "25", $instance['latest_photo_profile_width'], $customRel, $instance['display_caption'], $instance['open_instagram'] );
 			?>
 				<script type="text/javascript" charset="utf-8">
 				  //jQuery.noConflict();
@@ -179,6 +208,7 @@ class instagram_user_info extends WP_Widget {
 				    	social_tools:false,
 				    	theme: 'pp_default',
 				    	});
+				     jQuery('.tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -191,7 +221,7 @@ class instagram_user_info extends WP_Widget {
 				echo '<div class="clear"></div>';
 			endif;
 			$customRel = "latestphoto";			
-			sInstShowWidgetData( sInstGetRecentMedia( user_id(), access_token() ), "25", $instance['latest_photo_profile_width'], $customRel, $instance['display_caption'] );
+			sInstShowWidgetData( sInstGetRecentMedia( user_id(), access_token() ), "25", $instance['latest_photo_profile_width'], $customRel, $instance['display_caption'], $instance['open_instagram'] );
 			?>
 				<script type="text/javascript" charset="utf-8">
 				  jQuery(document).ready(function(){
@@ -200,6 +230,7 @@ class instagram_user_info extends WP_Widget {
 				    	social_tools:false,
 				    	theme: 'pp_default',
 				    	});
+				     jQuery('.tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -212,7 +243,7 @@ class instagram_user_info extends WP_Widget {
 				echo '<div class="clear"></div>';
 			endif;
 			$customRel = "likedphoto";			
-			sInstShowWidgetData( sInstGetLikes( access_token() ), "25", $instance['liked_photo_width'], $customRel, $instance['display_caption'] );
+			sInstShowWidgetData( sInstGetLikes( access_token() ), "25", $instance['liked_photo_width'], $customRel, $instance['display_caption'], $instance['open_instagram'] );
 			?>
 				<script type="text/javascript" charset="utf-8">
 				  jQuery(document).ready(function(){
@@ -221,6 +252,7 @@ class instagram_user_info extends WP_Widget {
 				    	social_tools:false,
 				    	theme: 'pp_default',
 				    	});
+				     jQuery('.tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -233,6 +265,7 @@ class instagram_user_info extends WP_Widget {
 		$instance = $old_instance;
 		$instance['widget_title'] = strip_tags($new_instance['widget_title']);
 		$instance['profile_width'] = strip_tags($new_instance['profile_width']);
+		$instance['open_instagram'] = strip_tags($new_instance['open_instagram']);
 		
 		$instance['followers'] = strip_tags($new_instance['followers']);
 		$instance['followers_desc'] = strip_tags($new_instance['followers_desc']);
@@ -263,6 +296,7 @@ class instagram_user_info extends WP_Widget {
 		if ( $instance ) {
 			$widget_title = esc_attr( $instance[ 'widget_title' ] );
 			$profile_width = esc_attr( $instance[ 'profile_width' ] );
+			$open_instagram = esc_attr( $instance[ 'open_instagram' ] );
 			
 			$followers = esc_attr( $instance[ 'followers' ] );
 			$followers_desc = esc_attr( $instance[ 'followers_desc' ] );
@@ -289,6 +323,7 @@ class instagram_user_info extends WP_Widget {
 		else {
 			$widget_title = __( 'Instagram Info', 'text_domain' );
 			$profile_width = __( '150', 'text_domain' );
+			$open_instagram = __( 'false', 'open_instagram' );
 			
 			$followers = __( 'true', 'text_domain' );
 			$followers_desc = __( 'My followers', 'text_domain' );
@@ -322,6 +357,15 @@ class instagram_user_info extends WP_Widget {
 		<p>
 		<label for="<?php echo $this->get_field_id('profile_width'); ?>"><?php _e('Profile Picture Width:'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('profile_width'); ?>" name="<?php echo $this->get_field_name('profile_width'); ?>" type="text" value="<?php echo $profile_width; ?>" />
+		</p>
+		
+		<p>
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		</select>
+		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
 		</p>
 		
 		<p>
@@ -430,9 +474,9 @@ class instagram_most_popular extends WP_Widget {
 		
 		echo $before_widget;
 		echo $before_title . $widget_title . $after_title;
-		echo $short_desc . '<div class="clear"></div>';
+		echo '<p>' . $short_desc . '</p>' . '<div class="clear"></div>';
 		
-		echo sInstShowWidgetData( sInstGetMostPopular( "popular", access_token() ), $instance[ 'max_display' ], $instance[ 'size' ], "sInstMostPopular", $instance['display_caption']  );
+		echo sInstShowWidgetData( sInstGetMostPopular( "popular", access_token() ), $instance[ 'max_display' ], $instance[ 'size' ], "sInstMostPopular", $instance['display_caption'], $instance['open_instagram'] );
 	?>
 	<script type="text/javascript" charset="utf-8">
 	  jQuery(document).ready(function(){
@@ -441,6 +485,7 @@ class instagram_most_popular extends WP_Widget {
 	    	social_tools:false,
 	    	theme: '<?php echo $instance[ 'theme' ];?>',
 	    	});
+	    jQuery('.tooltip').tooltipster();
 	  });
 	</script>
 	<?php	
@@ -451,6 +496,7 @@ class instagram_most_popular extends WP_Widget {
 		$instance = $old_instance;
 		$instance['widget_title'] = strip_tags($new_instance['widget_title']);
 		$instance['short_desc'] = strip_tags($new_instance['short_desc']);
+		$instance['open_instagram'] = strip_tags($new_instance['open_instagram']);
 		$instance['max_display'] = strip_tags($new_instance['max_display']);
 		$instance['theme'] = strip_tags($new_instance['theme']);
 		$instance['auto_play'] = strip_tags($new_instance['auto_play']);
@@ -464,6 +510,7 @@ class instagram_most_popular extends WP_Widget {
 		if ( $instance ) {
 			$widget_title = esc_attr( $instance[ 'widget_title' ] );
 			$short_desc = esc_attr( $instance[ 'short_desc' ] );
+			$open_instagram = esc_attr( $instance[ 'open_instagram' ] );
 			$max_display = esc_attr( $instance[ 'max_display' ] );
 			$theme = esc_attr( $instance[ 'theme' ] );
 			$auto_play = esc_attr( $instance[ 'auto_play' ] );
@@ -473,6 +520,7 @@ class instagram_most_popular extends WP_Widget {
 		else {
 			$widget_title = __( 'Currently Popular', 'text_domain' );
 			$short_desc = __( 'These are currently popular', 'short_desc' );
+			$open_instagram = __( 'false', 'open_instagram' );
 			$max_display = __( '9', 'max_display' );
 			$theme = __( 'default', 'theme' );
 			$auto_play = __( 'true', 'auto_play' );
@@ -489,6 +537,15 @@ class instagram_most_popular extends WP_Widget {
 		<p>
 		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('short_desc'); ?>" name="<?php echo $this->get_field_name('short_desc'); ?>"><?php echo $short_desc; ?></textarea>
+		</p>
+		
+		<p>
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		</select>
+		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
 		</p>
 		
 		<p>
@@ -552,9 +609,9 @@ class instagram_recent_media extends WP_Widget {
 		
 		echo $before_widget;
 		echo $before_title . $widget_title . $after_title;
-		echo $short_desc . '<div class="clear"></div>';
+		echo '<p>' . $short_desc . '</p>' . '<div class="clear"></div>';
 		
-		echo sInstShowWidgetData( sInstGetRecentMedia( user_id(), access_token() ), $instance[ 'max_display' ], $instance[ 'size' ], "sInstRecentMediaWid", $instance['display_caption'] );
+		echo sInstShowWidgetData( sInstGetRecentMedia( user_id(), access_token() ), $instance[ 'max_display' ], $instance[ 'size' ], "sInstRecentMediaWid", $instance['display_caption'], $instance['open_instagram'] );
 	?>
 	<script type="text/javascript" charset="utf-8">	  
 	  jQuery(document).ready(function(){
@@ -563,6 +620,7 @@ class instagram_recent_media extends WP_Widget {
 	    	social_tools:false,
 	    	theme: '<?php echo $instance[ 'theme' ];?>',
 	    	});
+	    jQuery('.tooltip').tooltipster();
 	  });
 	</script>
 	<?php	
@@ -574,6 +632,7 @@ class instagram_recent_media extends WP_Widget {
 		$instance = $old_instance;
 		$instance['widget_title'] = strip_tags($new_instance['widget_title']);
 		$instance['short_desc'] = strip_tags($new_instance['short_desc']);
+		$instance['open_instagram'] = strip_tags($new_instance['open_instagram']);
 		$instance['max_display'] = strip_tags($new_instance['max_display']);
 		$instance['theme'] = strip_tags($new_instance['theme']);
 		$instance['auto_play'] = strip_tags($new_instance['auto_play']);
@@ -588,6 +647,7 @@ class instagram_recent_media extends WP_Widget {
 		if ( $instance ) {
 			$widget_title = esc_attr( $instance[ 'widget_title' ] );
 			$short_desc = esc_attr( $instance[ 'short_desc' ] );
+			$open_instagram = esc_attr( $instance[ 'open_instagram' ] );
 			$max_display = esc_attr( $instance[ 'max_display' ] );
 			$theme = esc_attr( $instance[ 'theme' ] );
 			$auto_play = esc_attr( $instance[ 'auto_play' ] );
@@ -597,6 +657,7 @@ class instagram_recent_media extends WP_Widget {
 		else {
 			$widget_title = __( 'Recent Media', 'text_domain' );
 			$short_desc = __( 'My Latest photos', 'short_desc' );
+			$open_instagram = __( 'false', 'open_instagram' );
 			$max_display = __( '9', 'max_display' );
 			$theme = __( 'default', 'theme' );
 			$auto_play = __( 'true', 'auto_play' );
@@ -613,6 +674,15 @@ class instagram_recent_media extends WP_Widget {
 		<p>
 		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('short_desc'); ?>" name="<?php echo $this->get_field_name('short_desc'); ?>"><?php echo $short_desc; ?></textarea>
+		</p>
+		
+		<p>
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		</select>
+		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
 		</p>
 		
 		<p>

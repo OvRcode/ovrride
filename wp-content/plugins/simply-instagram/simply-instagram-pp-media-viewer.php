@@ -48,21 +48,34 @@
 ?>
 <html>
 <head>
-
+<link href='http://fonts.googleapis.com/css?family=Tillana:500,600,700' rel='stylesheet' type='text/css'>
 <style>
 
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
 body{
-	font-family: verdana;
-	font-size: 12px !important;
+	font-family: 'Tillana', cursive;
+	font-size: 20px !important;
 }
 .custom-table{
 
 }
 
-#photo-information{
-	overflow: scroll; 
-	height: 75px;
-	font-size: 11px !important;
+#photo-information{	
+	min-height: 75px;
+	font-size: 15px !important;
 	width: 315px;
 }
 
@@ -77,15 +90,14 @@ body{
 }
 
 #photo-comment{
-	font-size: 11px !important;
+	font-size: 14px !important;
 	width: 315px;
-	overflow-y: scroll;
 	height: 450px;
 }
 
 .comments{
-	font-family: verdana;
-	font-size: 11px !important;
+	font-family: 'Tillana', cursive;
+	font-size: 14px !important;
 }
 
 .about{
@@ -93,55 +105,60 @@ body{
 	font-size: 9px;
 	opacity: 0.8;
 }
-
+.si-photographer {
+  width: 15%;
+  vertical-align: middle;
+  box-shadow: none !important;
+  border-radius: 50%;
+  border: 1px solid #fff !important;
+  /* box-sizing: border-box; */
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+.si-comment-profile{
+  width: 65%;
+  box-shadow: none !important;
+  border-radius: 50%;
+  border: 1px solid #fff !important;
+  /* box-sizing: border-box; */
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
 </style>
-
 </head>
 <body>
 
-<table width="100%" border="0" class="custom-table" >
+<table width="90%" border="0" class="custom-table" >
 
  <tr>
-  <td width="612px">
-   <img src="<?php echo $data['data']['images']['standard_resolution']['url']; ?>" width="612px">
-  </td>
+  <td width="612px" valign="top">
+   <img src="<?php echo $data['data']['images']['standard_resolution']['url']; ?>" width="612px" style="position:fixed;">
+  </td>  
   
-  <td>
-  	<table class="custom-table">
-  	
-  	 <tr>
-  	  <td>
-  	  	<div id="photo-information">
-  	  	 <img src="<?php echo $data['data']['caption']['from']['profile_picture']; ?>" width="35px" valign="middle"/> 
-  	  	  <span class="sinst-comment-author"><?php echo $data['data']['caption']['from']['username']; ?></span> 
-  	  	  on <?php echo date( "M d, Y", $data['data']['caption']['created_time'] ); ?> <br/>
-  	  	  <?php echo $data['data']['caption']['text']; ?>
-  	  	</div>
-  	  </td>
-  	 </tr>
-  	 
+  <td style="overflow: none; position: absolute;">
+  	<div id="photo-information">
+  	 <img src="<?php echo $data['data']['caption']['from']['profile_picture']; ?>"  class="si-photographer" valign="middle"/> 
+  	 <span class="sinst-comment-author"><strong><?php echo $data['data']['caption']['from']['username']; ?></strong></span> 
+  	 <p style="padding: 5px;"><?php echo $data['data']['caption']['text']; ?></p>
+  	</div>
   	 <?php
   	 	if( $data['data']['likes']['count'] > 0 ):
   	 ?>
-  	 <tr>
-  	  <td>
+  	 
   	  	<div id="photo-statistics">
-  	  	 <strong>Likers</strong>: 
+  	  	 <br/>
+  	  	 <p><strong>
   	  	 <?php
-			for( $i=0; $i < count( $data['data']['likes']['data'] ); $i++ ):
-				echo $data['data']['likes']['data'][$i]['username'] . " ";
-			endfor;
-		?>
+			echo $data['data']['likes']['count'];
+		?> likes</strong> </p>
   	  	</div>
-  	  </td>
-  	 </tr>
   	 <?php
   	 	endif;
   	 ?>
   	 
-  	 <tr>
-  	  <td>
-  	    	<div id="photo-comment">
+  	    	<!-- <div id="photo-comment"> -->
   	  	<?php
 			$apicommenturl = "https://api.instagram.com/v1/media/" . $data['data']['id'] . "/comments?access_token=" . $_GET['access_token'];
 			
@@ -149,29 +166,24 @@ body{
 			$cresponse = file_get_contents( $apicommenturl, false, $context );
 			$cdata = json_decode( $cresponse, true );
 			
-			if( $_GET['mdc'] > count( $cdata['data'] ) ):
-				$ctd = count( $cdata['data'] );
-			elseif( count( $cdata['data'] ) < 1 ):
-				$ctd = count( $cdata['data'] );
-			else:
-				$ctd = $_GET['mdc'];
-			endif;
-			//echo $ctd;
-			for( $i=0; $i < $ctd; $i++ ):
-				echo '<table class="comments">';
-				echo '<tr>';
-				echo '<td valign="top"><img src="' . $cdata['data'][$i]['from']['profile_picture'] . '" width="35px"/></td>';				
-				echo '<td valign="top"><span class="sinst-comment-author">' . $cdata['data'][$i]['from']['username'] . '</span><span class="about"> About ' . nicetime( date( "Y-m-j g:i", $cdata['data'][$i]['created_time'] ) ) . '</span><br/>' . $cdata['data'][$i]['text'] . '<br/></td>';
-				echo '</tr>';
-				echo '</table>';
-			endfor;
+			if( count( $cdata['data'] ) > 0 ){
+				echo '<p><strong>' . count( $cdata['data'] ) . ' comments</strong></p>';
+				for( $i=0; $i < count( $cdata['data'] ); $i++ ):
+					echo '<table class="comments" border="0">';
+					echo '<tr>';
+					echo '<td valign="top" width="20%"><img src="' . $cdata['data'][$i]['from']['profile_picture'] . '" class="si-comment-profile"/></td>';				
+					echo '<td valign="top"><span class="sinst-comment-author">' . $cdata['data'][$i]['from']['username'] . '</span><br/>' . $cdata['data'][$i]['text'] . '<br/></td>';
+					echo '</tr>';
+					echo '</table>';
+				endfor;
+			}else{
+				echo '<p><strong>There&#39;s no comment on this photo</strong></p>';
+			}
 			
 		?>
-		</div>
-  	  </td>
-  	 </tr>
-  	 
-  	</table>
+		<!-- </div> -->
+  	  
+  	
   </td>
   
  </tr>

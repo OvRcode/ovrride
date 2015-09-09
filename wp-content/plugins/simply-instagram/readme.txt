@@ -3,8 +3,8 @@ Contributors: rollybueno
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BUDCX2S6SJ3ZG
 Tags: instagram, instagram images, instagram gallery, photos, widgets, gallery
 Requires at least: 3.0
-Tested up to: 3.8
-Stable tag: 1.2.6
+Tested up to: 4.3
+Stable tag: 1.2.7
 
 Simply Instagram displays your photos from Instagram either using Widget or Short Code.
 
@@ -51,16 +51,7 @@ Attributes:
 		b.) Low Resolution - Exactly 306 x 306. This value is the default for Simply Instagram Wordpress Plugin.
 		c.) Standard Resolution - The largest image with highest quality. Dimension is 612 x 612.
 
-Shortcode Samples:
-
-<strong>Display recent feeds on your account. This includes photos form people you're following.</strong>
-[simply_instagram endpoints="users" type="self-feed" size="standard_resolution" display="20"]
-
-<strong>Retrieve photos with highest love on Instagram and display randomly.</strong>
-[simply_instagram endpoints="media" type="popular" size="standard_resolution" display="15"]
-
-<strong>Display your latest uploaded photos.</strong>
-[simply_instagram endpoints="users" type="recent-media" size="standard_resolution" display="10"]
+Shortcode and Widget samples, please visit this page: <strong><a href="http://www.rollybueno.info/wp-simply-instagram/">rollybueno.info</a></strong>
 
 == Screenshots ==
 
@@ -133,6 +124,19 @@ Please follow the tips in order the shortcode to work.
 If you have patch for the improvement of this plugin or you have suggestion for added features, kindly inform me using Support forum. I'm glad to include that in next release and I will credit you.
 
 == Changelog ==
+
+= 1.2.7 =
+
+* IMPORTANT: Security update on vulnerable prettyPhoto version
+* Updated widget description in html paragraph
+* Added jquery tool tipster plugin for better hovering description
+* Redesign front-photo class
+* Redesign profile photo and follow button
+* New widget setting for opening photo directly on Instagram
+* Supported video player on prettyPhoto in widget
+* New polaroid photo presentation
+* New design and fix for single image viewer
+* New API caching module
 
 = 1.2.6 =
 

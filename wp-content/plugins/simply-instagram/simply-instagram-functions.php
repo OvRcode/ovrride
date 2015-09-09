@@ -10,24 +10,21 @@
  * profile_pic
  * instagram page
 */
+
 function sInstShowInfo( $data, $args=array(), $width="150" )
 {
+	
 	$infos = '<div class="simplyInstagram-profile">';
 	
-	if( $args['profile_pic'] == "true" ):
-		$infos .= '<div class="profile-data"><img src="' . $data['data']['profile_picture'] . '" style="width: ' . $width . 'pixels;"/></div>';	
-	endif;
+		$infos .= '<div class="profile-data"><img src="' . $data['data']['profile_picture'] . '" id="sIntProfilePhoto"/><p id="sInstProfileName">' . $data['data']['full_name'] . '</p></div>';	
 	
-	if( $args['name'] == "true" ):
-		$infos .= '<div class="profile-data"><h1>' . $data['data']['full_name'] . '</h1></div>';
-	endif;
 		$infos .= '<div class="profile-data">' . sIntFollowButton( user_id(), $data['data']['username'] ) . '</div>';
 	if( $args['bio'] == "true" ):
-		$infos .= '<div id="profile-bio">' . $data['data']['bio'] . '</div>';
+		$infos .= '<div id="profile-bio"><p>' . $data['data']['bio'] . '</p></div>';
 	endif;
 	
 	if( $args['website'] == "true" ):
-		$infos .= '<div class="profile-data"><a href="' . $data['data']['website'] . '" target="_blank" />' . $data['data']['website'] . '</a></div>';
+		$infos .= '<div class="profile-data"><p style="text-align: center;"><a href="' . $data['data']['website'] . '" target="_blank" />' . $data['data']['website'] . '</a></p></div>';
 	endif;
 		$infos .= '<div class="data-holder">';
 	if( $args['media'] == "true" ):
@@ -52,6 +49,10 @@ function sInstShowInfo( $data, $args=array(), $width="150" )
 */
 function sInstGetSelfFeed( $access_token )
 {
+	if (sIntCheckCache("selffeed.json")) {
+		 return sIntReadCache("selffeed.json");	 
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/users/self/feed?access_token=" . $access_token ;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -63,12 +64,14 @@ function sInstGetSelfFeed( $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/selffeed.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/selffeed.json', $response['body'] );
         endif;
-       	
-       	file_put_contents( simply_instagram_plugin_path . '/cache-api/selffeed.txt', $data );
 	
 	return $data;
 }
@@ -76,7 +79,7 @@ function sInstGetSelfFeed( $access_token )
 /**
 * Show data in widget form
 */
-function sInstShowWidgetData( $data, $count='9', $width='75', $customRel="sIntWidget", $displayCaption="true" )
+function sInstShowWidgetData( $data, $count='9', $width='75', $customRel="sIntWidget", $displayCaption="true", $open_instagram="false" )
 {
 	/**
 	 * Determine query return
@@ -84,35 +87,48 @@ function sInstShowWidgetData( $data, $count='9', $width='75', $customRel="sIntWi
 	 * blank return when display value is 
 	 * greater than API return
 	*/
-	
 	if( count( $data['data'] ) > $count ):
 		$query = $count;
 	else:
 		$query = count( $data['data'] );
 	endif;
 	
+	$output = '<ul class="si-widget">';
+	
  	for( $i = 0; $i < $query; $i++ ):
-		$output = '<a href="' . $data['data'][$i]['images']['standard_resolution']['url'] . '" rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';
+ 	
+ 	if( $open_instagram == "true" ){
+ 		$output .= '<li><a href="' . $data['data'][$i]['link'] . '" target="_blank" >';
+ 		$output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '" class="front-photo" width="' . $width .'" height="' . $width . '">';
+ 		$output .= '</a></li>';
+ 	}else{
+ 		//if video
+ 		if( isset( $data['data'][$i]['videos'] ) && !empty( $data['data'][$i]['videos'] ) ){
+ 			$output .= '<li><a href="' . $data['data'][$i]['videos']['standard_resolution']['url'] . '?iframe=true&width=500&height=250" "rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';		
+ 		}else{
+			$output .= '<li><a href="' . $data['data'][$i]['images']['standard_resolution']['url'] . '" rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';		
+		}
 			$output .= '<div class="si-content" style=" display: none; margin: 10px; "><div class="clear"></div>';
 			
 			/**
 			 * Option to display caption.
-			 * Page often breaks when caption is to long
+			 * Page often breaks when caption is too long
 			 * because prettyPhot can't handle it.
 			*/			
 			if(  $displayCaption == "true" ):
 			 $output .= htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '<div class="clear"></div>';
-			endif;
+			endif;	
 			
-			$output .= '<div class="content-info"><img class="front-photo" src="' . $data['data'][$i]['caption']['from']['profile_picture'] . '" width="15" height="15"/>' . $data['data'][$i]['caption']['from']['username'] . '</div>'; 
-			$output .= '<div class="content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-like.png') . '" width="19" height="19" style="vertical-align: middle;" /> ' . $data['data'][$i]['likes']['count'] . '</div>';
-			$output .= '<div class="content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-comment.png') . '" width="19" height="19" style="vertical-align: middle;" /> ' . $data['data'][$i]['comments']['count'] . '</div>';
-			$output .= '<div class="clear"></div></div>';			
-			$output .= '<img class="front-photo" src="' . sInstCache( $data['data'][$i]['images']['thumbnail']['url'], $width ) . '" width="' . $width .'" height="' . $width . '" title="' . $data['data'][$i]['caption']['text'] . '">';
-			$output .= "</a>";
-						
-			echo $output;		
+			$output .= '<div class="clear"></div></div>';						
+			$output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="' . $width .'" height="' . $width . '" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';
+			$output .= "</a></li>";
+	}				
+				
 	endfor;
+	
+	$output .= '</ul>';
+	
+	echo $output;	
 }
 
 /**
@@ -152,6 +168,10 @@ function user_id()
 */
 function sInstGetFollowing( $user_id, $access_token )
 {
+	if (sIntCheckCache("following.json")) {
+		 return sIntReadCache("following.json");	 
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/users/" . $user_id . "/follows?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -163,12 +183,15 @@ function sInstGetFollowing( $user_id, $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/following.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/following.json', $response['body'] );
         endif;
-       	
-	
+        
 	return $data;	
 }
 
@@ -178,6 +201,10 @@ function sInstGetFollowing( $user_id, $access_token )
 */
 function sInstGetFollowers( $user_id, $access_token )
 {
+	if (sIntCheckCache("followers.json")) {
+		 return sIntReadCache("followers.json");	 
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/users/" . $user_id . "/followed-by?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -189,12 +216,15 @@ function sInstGetFollowers( $user_id, $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/followers.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/followers.json', $response['body'] );
         endif;
        	
-	
 	return $data;
 }
 
@@ -206,6 +236,10 @@ function sInstGetFollowers( $user_id, $access_token )
 */
 function sInstGetLikes( $access_token )
 {
+	if (sIntCheckCache("likes.json")) {
+		 return sIntReadCache("likes.json");	 
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/users/self/media/liked?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -217,12 +251,15 @@ function sInstGetLikes( $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/likes.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/likes.json', $response['body'] );
         endif;
        	
-	
 	return $data;	
 }
 
@@ -231,6 +268,10 @@ function sInstGetLikes( $access_token )
 */
 function sInstGetRecentMedia( $user_id, $access_token )
 {
+	if (sIntCheckCache("recentmedia.json")) {
+		 return sIntReadCache("recentmedia.json");	 
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/users/" . $user_id . "/media/recent/?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -242,12 +283,15 @@ function sInstGetRecentMedia( $user_id, $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/recentmedia.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/recentmedia.json', $response['body'] );
         endif;
        	
-	
 	return $data;
 }
 
@@ -272,7 +316,6 @@ function simply_instagram_get_feed( $access_token )
 		$data = json_decode( $response['body'], true );
         endif;
        	
-	
 	return $data;
 }
 
@@ -281,6 +324,11 @@ function simply_instagram_get_feed( $access_token )
 */
 function sInstGetInfo( $user_id, $access_token )
 {
+
+	//if (sIntCheckCache("userinfo.json")) {
+	//	 return sIntReadCache("userinfo.json");	 
+	//}
+	
 	$apiurl = "https://api.instagram.com/v1/users/" . $user_id . "/?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -292,12 +340,15 @@ function sInstGetInfo( $user_id, $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+               // file_put_contents( simply_instagram_plugin_path . '/cache-api/userinfo.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		///file_put_contents( simply_instagram_plugin_path . '/cache-api/userinfo.json', $response['body'] );
         endif;
        	
-	
 	return $data;	
 }
 
@@ -306,6 +357,10 @@ function sInstGetInfo( $user_id, $access_token )
 */
 function sInstGetMostPopular( $media, $access_token )
 {
+	if (sIntCheckCache("popular.json")) {		
+		 return sIntReadCache("popular.json");
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/media/" . $media . "?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -317,20 +372,26 @@ function sInstGetMostPopular( $media, $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/popular.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/popular.json', $response['body'] );
         endif;
-       	
-	file_put_contents( simply_instagram_plugin_path . '/cache-api/selffeed.txt', serialize( $response )  );
+        
 	return $data;	
 }
-
 /**
 * Check if already following
 */
 function sInstGetFollowingInfo( $user_id, $access_token )
 {
+	if (sIntCheckCache("followinginfo.json")) {
+		 return sIntReadCache("followinginfo.json");	
+	}
+
 	$apiurl = "https://api.instagram.com/v1/users/" . $user_id . "/relationship?access_token=" . $access_token;
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -342,30 +403,51 @@ function sInstGetFollowingInfo( $user_id, $access_token )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/followinginfo.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/followinginfo.json', $response['body'] );
         endif;
        	
-	
 	return $data;	
 }
 
 /**
-* Show most popular randomly. Im using lightbox for viewing each photo.
-* htmlspecialchars() is used to filter caption text with illegal
-* char that may cause display bug.
+ *
+ * Display data from shorcode [simply_instagram]
+ * htmlspecialchars() is used to filter caption text with illegal
+ * char that may cause display bug.
+ *
+ * Settings:
+ * * data - api data feed
+ * * presentation - option to use masonry or polaroid in image presentation. Default: polaroid.
+ * * displayoption - choose either by using prettyphoto slideshow, single image or open directly in Instagram. Default: Instagram.
+ * * size - photo size on slideshow: Choices: thumbnail, low_resolution, standard_resolution. Default: low_resolution
+ * * display - number of initial photo to be display. Default: 20
+ * * width - image width. Default: 150
+ * * customRel - custom rel for prettyphoto 
+ * * showphotographer - display username of photo owner. Default: true
+ * * photocomment - comments to be display. 0 to hide, maximum of 5. Default 0
+ * * stat - display comment and like stat total. Default: true
+ * * photocaption - display photo caption. Might affect image height. Default: true
+ * * displaycomment - option to display photo comment. Default: true.
+ *
 */
-function sInstDisplayData( $data, $size='low_resolution', $display="20", $width="150", $customRel="sIntWid" )
-{	
+function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "instagram", $size='low_resolution', $display="20", $width="150", $customRel="sIntWid", $showphotographer="true", $photocomment=0, $stat = "true", $photocaption="true", $displaycomment = true )
+{		
+	//$si_gen_settings = get_option( 'si_general_settings' );
 	
+	//var_dump( $si_gen_settings['si_cache_option'] );
 	/**
 	 * Determine query return
 	 * next query used to avoid
 	 * blank return when display value is 
 	 * greater than API return
 	*/
-	
+	//var_dump( $stat );
 	if( count( $data['data'] ) > $display ):
 		$query = $display;
 		$pagination = 0;
@@ -378,394 +460,400 @@ function sInstDisplayData( $data, $size='low_resolution', $display="20", $width=
 		$query = count( $data['data'] );
 		$pagination = 1;
 	endif;
-		for( $i=0; $i < $query; $i++ ):
-			
-			$output = '<div class="masonryItem" data-id="' . $data['data'][$i]['id'] . '">';
-			
-			/**
-			 * If user choose to use builtInMediaViewer,
-			 * Display this area
-			*/
-			if( get_option( 'mediaViewer' ) == "builtInMediaViewer" ):			
-			
-				$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
-				
-				 /**
-				  * Display image, description and statistic
-				 **/
-				 $output .= '<a href="#" rel="' . plugins_url( 'simply-instagram/simply-instagram-media.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '" id="' . $data['data'][$i]['id'] . '" class="overlay" style="text-decoration:none">';
-				  $output .= '<img class="front-photo" src="' . sInstCache( $data['data'][$i]['images']['thumbnail']['url'], "150" )  . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
-				 $output .= '</a>';
-				 
-				 $output .=  '</div>';
-				 
-				 /**
-				  * Determine if displayDescription is allowed
-				 */
-				 get_option( 'displayDescription' ) == "true" ? $output .= '<p>' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
-				 
-				  /**
-				  * Determine if displayStatistic is allowed
-				 */
-				 if( get_option( 'displayStatistic' ) == "true" ):
-				 
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-like.png') . '" width="12" height="12" style="vertical-align: middle;" /> ' . $data['data'][$i]['likes']['count'] . '</div>';
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-comment.png') . '" width="12" height="12" style="vertical-align: middle;"  /> ' . $data['data'][$i]['comments']['count'] . '</div>';
-				 
-				 endif;
-				 
-				 /**
-				  * highlights photographer
-				  * using author section class
-				 */
-				 if( get_option( 'displayPhotographer' ) == "true" ):
-				 $output .= '<div class="sinst-author-section">';
-				  $output .= '<div class="sinst-author">';
-				   $output .= '<img src="' . sInstCache( $data['data'][$i]['user']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;" /> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
-				  $output .= '</div>';
-				 $output .= '</div>';
-				 endif;	 
-				 /**
-				  * Comment section
-				  * Check if comment exist
-				  * Display latest # comments on media
-				  * based on option
-				 */
-				 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
-				 
-				 if( get_option( 'displayComment' ) != 0 ): //user choose to display comment
-				 	 
-					 $output .= '<div class="sinst-comment-section">';
-					 
-					 /**
-					  * Determine comment to be displayed
-					 */		 
-					 if( $data['data'][$i]['comments']['count'] > 5 || get_option( 'displayComment' ) > 5 ):
-					 	$cc = 5;
-					 else:
-					 	$cc = $data['data'][$i]['comments']['count'];
-					 endif;
+		
+		$prettyPhoto = get_option( 'si_prettyphoto_settings' );
+		
+		if( $presentation === "polaroid" ){
+			//$output = '<div class="polaroid-holder">';
+			$output .= '<ul id="polaroid-ul">';
+				for( $i=0; $i < $query; $i++ ):
+					$output .= '<li>';
+										
+					//presentation
+					if( $displayoption === "instagram" ){
+						$output .= '<a href="' . $data['data'][$i]['link'] . '" target="_blank" >';
+						$output .= '<img class="tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" title="' . $data['data'][$i]['caption']['text'] . '">';
+						$output .= '</a>';
+					}					
+					
+					if( $displayoption === "prettyPhoto" ){
+						/**
+						  * Display image, description and statistic
+						 **/
+						$output .= '<a href="' . $data['data'][$i]['images'][$size]['url'] . '" rel="sIntSC[instagram]" >';						
+						$output .= '<div class="si-content" style=" display: none; margin: 10px; "><div class="break-line" style="height: 10px;"></div>';
+						/**
+						 * If user choose to display photographer
+						 * profile picture in settings, display this area
+						*/					 
+						if( $prettyPhoto['ppDisplayPhotographer']  === "true" ):						
+						$output .= '<div class="ppDisplayPhotographer">';
+						  $output .= '<div class="ppDisplayPhotographer-author">';
+						   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="ppDisplayPhotographer-photo"/> <span class="ppDisplayPhotographer-username">' . $data['data'][$i]['user']['username'] . '</span> ';
+						  $output .= '</div>';
+						 $output .= '</div>';
+						endif; // end of ppPhotoDescription
+						
+						/**
+						 * If user choose to display statistics
+						 * in settings, display this area
+						*/
+						if( $prettyPhoto['ppDisplayStatistic']  == "true" ):	
+							$output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+							$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						endif; // end of ppPhotoDescription
+						
+						/**
+						 * If user choose to display photo description 
+						 * in settings, display this area
+						*/
+						if( $prettyPhoto['ppPhotoDescription']  === "true" ):
+						
+						 /**
+						  * check if description exist to avoid big spacing
+						 */
+						 if( $data['data'][$i]['caption']['text'] != "" ):				 
+							$output .= htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES );
+						 endif; //end of description checking
+						
+						endif; // end of ppPhotoDescription
+						$output .= '<div class="clear"></div></div>';
+						
+						$output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" title="' . $data['data'][$i]['caption']['text'] . '">';
+						
+						$output .= "</a>";
+					}
+					
+					if( $displayoption === "single" ){
+					/**
+					 * else user choose to use prettyPhoto iframe
+					 * display this area.
+					*/
+						$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
+						
+						 /**
+						  * Display image, description and statistic
+						 **/
+						 $output .= '<a href="' . plugins_url( 'simply-instagram/simply-instagram-pp-media-viewer.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '&iframe=true&width=960&height=650&scrolling=no" rel="prettyphoto" style="text-decoration:none">';
+						  $output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
+						 $output .= '</a>';
 						 
-					 for( $c=0; $c < $cc ; $c++ ):
-						 
-					 	$output .= '<div class="sinst-comments">';
-					 	$output .= '<img src="' . sInstCache( $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	"/>';
-					 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> ' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '<br /> About ' . nicetime( date( "Y-m-j g:i", $data['data'][$i]['comments']['data'][$c]['created_time'] ) );
-					 	$output .= '</div>';
-						 	
-					 endfor;			 		
-					 $output .= '</div>';
-				 endif;
-				  
-				 endif;
-			 
-			elseif( get_option( 'mediaViewer' ) == "prettyPhoto" ):
-			/**
-			 * else user choose to use prettyPhoto slideshow
-			 * display this area.
-			*/
-				$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
+						 $output .=  '</div>';		
 				
-				 /**
-				  * Display image, description and statistic
-				 **/
-				$output .= '<a href="' . $data['data'][$i]['images'][$size]['url'] . '" rel="sIntSC[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';
-				$output .= '<div class="si-content" style=" display: none; margin: 10px; "><div class="break-line" style="height: 10px;"></div>';
-				/**
-				 * If user choose to display photo description 
-				 * in settings, display this area
-				*/
-				if( get_option( 'ppPhotoDescription' )  == "true" ):
-				
-				 /**
-				  * check if description exist to avoid big spacing
-				 */
-				 if( $data['data'][$i]['caption']['text'] != "" ):				 
-					$output .= htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '<div class="break-line" style="height: 10px;"></div>';
-				 endif; //end of description checking
-				endif; // end of ppPhotoDescription
-				
-				/**
-				 * If user choose to display photographer
-				 * profile picture in settings, display this area
-				*/
-				 
-				if( get_option( 'ppDisplayPhotographer' )  == "true" ):	
-					$output .= '<div class="content-info"><img class="front-photo" src="' . sInstCache( $data['data'][$i]['caption']['from']['profile_picture'], "15" ) . '" width="15" height="15"/>' . $data['data'][$i]['caption']['from']['username'] . '</div>'; 
-				endif; // end of ppPhotoDescription
-				
-				/**
-				 * If user choose to display statistics
-				 * in settings, display this area
-				*/
-				if( get_option( 'ppDisplayStatistic' )  == "true" ):	
-					$output .= '<div class="content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-like.png') . '" width="19" height="19" style="vertical-align: middle;" /> ' .  $data['data'][$i]['likes']['count'] . '</div>';
-					$output .= '<div class="content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-comment.png') . '" width="19" height="19" style="vertical-align: middle;" /> ' .  $data['data'][$i]['comments']['count'] . '</div>';
-				endif; // end of ppPhotoDescription
-					$output .= '<div class="clear"></div></div>';
-								
-				
-				
-				$output .= '<img class="front-photo" src="' . sInstCache( $data['data'][$i]['images']['thumbnail']['url'], $width ) . '" width="' . $width .'" height="' . $width .'" title="' . $data['data'][$i]['caption']['text'] . '">';
-				
-				$output .= "</a>";
-				 
-				 $output .=  '</div>';
-				 
-				 /**
-				  * Determine if displayDescription is allowed
-				 */
-				 get_option( 'displayDescription' ) == "true" ? $output .= '<p>' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
-				 
-				  /**
-				  * Determine if displayStatistic is allowed
-				 */
-				 if( get_option( 'displayStatistic' ) == "true" ):
-				 
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-like.png') . '" width="12" height="12" style="vertical-align: middle;" /> ' . $data['data'][$i]['likes']['count'] . '</div>';
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-comment.png') . '" width="12" height="12" style="vertical-align: middle;" /> ' . $data['data'][$i]['comments']['count'] . '</div>';
-				 
-				 endif;
-				 
-				 /**
-				  * highlights photographer
-				  * using author section class
-				 */
-				 if( get_option( 'displayPhotographer' ) == "true" ):
-				 $output .= '<div class="sinst-author-section">';
-				  $output .= '<div class="sinst-author">';
-				   $output .= '<img src="' . sInstCache( $data['data'][$i]['user']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	" /> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
-				  $output .= '</div>';
-				 $output .= '</div>';
-				 endif;	 
-				 /**
-				  * Comment section
-				  * Check if comment exist
-				  * Display latest # comments on media
-				  * based on option
-				 */
-				 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
-				 
-				 if( get_option( 'displayComment' ) != 0 ): //user choose to display comment
-				 	 
-					 $output .= '<div class="sinst-comment-section">';
-					 
-					 /**
-					  * Determine comment to be displayed
-					 */		 
-					 if( $data['data'][$i]['comments']['count'] > 5 || get_option( 'displayComment' ) > 5 ):
-					 	$cc = 5;
-					 else:
-					 	$cc = $data['data'][$i]['comments']['count'];
-					 endif;
-						 
-					 for( $c=0; $c < $cc ; $c++ ):
-						 
-					 	$output .= '<div class="sinst-comments">';
-					 	$output .= '<img src="' . sInstCache( $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	"/>'; 
-					 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> ' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '<br /> About ' . nicetime( date( "Y-m-j g:i", $data['data'][$i]['comments']['data'][$c]['created_time'] ) );
-					 	$output .= '</div>';
-						 	
-					 endfor;			 		
-					 $output .= '</div>';
-				 endif;
-				  
-				 endif;
-			elseif( get_option( 'mediaViewer' ) == "instagramLink" ):
-			/**
-			 * else user choose to use Instagram site
-			 * make new link to open in new tab / window
-			*/
-			
-			$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';
-			$output .= '<a href="' . $data['data'][$i]['link'] . '" target="_blank">';
-			$output .= '<img class="front-photo" src="' . sInstCache( $data['data'][$i]['images']['thumbnail']['url'], "150" ) . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
-			$output .= '</a>';
-			$output .=  '</div>';
-			
-			 /**
-				  * Determine if displayDescription is allowed
-				 */
-				 get_option( 'displayDescription' ) == "true" ? $output .= '<p>' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
-				 
-				  /**
-				  * Determine if displayStatistic is allowed
-				 */
-				 if( get_option( 'displayStatistic' ) == "true" ):
-				 
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-like.png') . '" width="12" height="12" style="vertical-align: middle;"  /> ' . $data['data'][$i]['likes']['count'] . '</div>';
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-comment.png') . '" width="12" height="12" style="vertical-align: middle;" /> ' . $data['data'][$i]['comments']['count'] . '</div>';
-				 
-				 endif;
-
-/**
-				  * highlights photographer
-				  * using author section class
-				 */
-				 if( get_option( 'displayPhotographer' ) == "true" ):
-				 $output .= '<div class="sinst-author-section">';
-				  $output .= '<div class="sinst-author">';
-				   $output .= '<img src="' . sInstCache( $data['data'][$i]['user']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	" /> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
-				  $output .= '</div>';
-				 $output .= '</div>';
-				 endif;	 
-/**
-				  * Comment section
-				  * Check if comment exist
-				  * Display latest # comments on media
-				  * based on option
-				 */
-				 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
-				 
-				 if( get_option( 'displayComment' ) != 0 ): //user choose to display comment
-				 	 
-					 $output .= '<div class="sinst-comment-section">';
-					 
-					 /**
-					  * Determine comment to be displayed
-					 */		 
-					 if( $data['data'][$i]['comments']['count'] > 5 || get_option( 'displayComment' ) > 5 ):
-					 	$cc = 5;
-					 else:
-					 	$cc = $data['data'][$i]['comments']['count'];
-					 endif;
-						 
-					 for( $c=0; $c < $cc ; $c++ ):
-						 
-					 	$output .= '<div class="sinst-comments">';
-					 	$output .= '<img src="' . sInstCache( $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	"/>';
-					 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> ' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '<br /> About ' . nicetime( date( "Y-m-j g:i", $data['data'][$i]['comments']['data'][$c]['created_time'] ) );
-					 	$output .= '</div>';
-						 	
-					 endfor;			 		
-					 $output .= '</div>';
-				 endif;
-				  
-				 endif;
-			
-			else:
-			/**
-			 * else user choose to use prettyPhoto iframe
-			 * display this area.
-			*/
-				$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
-				
-				 /**
-				  * Display image, description and statistic
-				 **/
-				 $output .= '<a href="' . plugins_url( 'simply-instagram/simply-instagram-pp-media-viewer.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '&iframe=true&width=960&height=650&scrolling=no" rel="prettyphoto" style="text-decoration:none">';
-				  $output .= '<img class="front-photo" src="' . sInstCache( $data['data'][$i]['images']['thumbnail']['url'], "150" ) . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
-				 $output .= '</a>';
-				 
-				 $output .=  '</div>';				 
-				 
-				 /**
-				  * Determine if displayDescription is allowed
-				 */
-				 get_option( 'displayDescription' ) == "true" ? $output .= '<p>' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
-				 
-				  /**
-				  * Determine if displayStatistic is allowed
-				 */
-				 if( get_option( 'displayStatistic' ) == "true" ):
-				 
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-like.png') . '" width="12" height="12" style="vertical-align: middle;"  /> ' . $data['data'][$i]['likes']['count'] . '</div>';
-				 $output .= '<div class="scode-content-info"><img src="' . plugins_url('/simply-instagram/images/instagram-comment.png') . '" width="12" height="12" style="vertical-align: middle;" /> ' . $data['data'][$i]['comments']['count'] . '</div>';
-				 
-				 endif;
-				 
-				 /**
-				  * highlights photographer
-				  * using author section class
-				 */
-				 if( get_option( 'displayPhotographer' ) == "true" ):
-				 $output .= '<div class="sinst-author-section">';
-				  $output .= '<div class="sinst-author">';
-				   $output .= '<img src="' . sInstCache( $data['data'][$i]['user']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	" /> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
-				  $output .= '</div>';
-				 $output .= '</div>';
-				 endif;	 
-				 /**
-				  * Comment section
-				  * Check if comment exist
-				  * Display latest # comments on media
-				  * based on option
-				 */
-				 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
-				 
-				 if( get_option( 'displayComment' ) != 0 ): //user choose to display comment
-				 	 
-					 $output .= '<div class="sinst-comment-section">';
-					 
-					 /**
-					  * Determine comment to be displayed
-					 */		 
-					 if( $data['data'][$i]['comments']['count'] > 5 || get_option( 'displayComment' ) > 5 ):
-					 	$cc = 5;
-					 else:
-					 	$cc = $data['data'][$i]['comments']['count'];
-					 endif;
-						 
-					 for( $c=0; $c < $cc ; $c++ ):
-						 
-					 	$output .= '<div class="sinst-comments">';
-					 	$output .= '<img src="' . sInstCache( $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'], "20" ) . '" width="20" height="20" style="vertical-align: middle;	"/>';
-					 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> ' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '<br /> About ' . nicetime( date( "Y-m-j g:i", $data['data'][$i]['comments']['data'][$c]['created_time'] ) );
-					 	$output .= '</div>';
-						 	
-					 endfor;			 		
-					 $output .= '</div>';
-				 endif;
-				  
-				 endif;
-			
-			endif;	 // end of mediaViewer
-			
-			$output .= '</div>';
-			
-			echo $output;
-				
-		endfor;
-		//return $arr;
-			//do{
-			//	return $output;
-			//	
-			//	$i++;
-			//}while( $i < $query );
-		//if( $pagination > 0 ):
-		//	echo '<input type="hidden" name="sPaginate" value="' . $data['pagination']['next_url'] . '" />';
-		//endif;
-		/* else:
-			/**
-			 * create pagination
-			 * store everything in array
-			*
-			$content = array();
-			$comment = array();
-			
-			for( $i=0; $i < count( $data['data'] ); $i++ ):
-			
-			 if( $data['data'][$i]['comments']['count'] != 0 ):
-				( $data['data'][$i]['comments']['count'] > 5 ? $cc = 5 : $cc = $data['data'][$i]['comments']['count'] );
-				for( $c=0; $c < $cc ; $c++ ):
-					$comment[$c] = array( 'profile_picture' => $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'],
-								'user_name' => $data['data'][$i]['comments']['data'][$c]['from']['username'],
-								'text' => $data['data'][$i]['comments']['data'][$c]['text'],
-								'commented_on' => $data['data'][$i]['comments']['data'][$c]['created_time'] );
+				}	 // end of mediaViewer
+					
+					$output .= '</li>';
 				endfor;
-			 endif;
-				$content[$i] = array( 'image' => $data['data'][$i]['images']['low_resolution']['url'], 
-							'image_caption' => $data['data'][$i]['caption']['text'],
-							'like_count' => $data['data'][$i]['likes']['count'],
-							'comment_count' => $data['data'][$i]['comments']['count'],
-							'author_profile' => $data['data'][$i]['user']['profile_picture'],
-							'author_username' => $data['data'][$i]['user']['username'],
-							'comments' => $comment );
+			$output .= '</ul>';
+			//$output .= '</div>';
+			echo $output;
+		}else{		
+			
+			for( $i=0; $i < $query; $i++ ):
+			
+				$output = '<div class="masonryItem" data-id="' . $data['data'][$i]['id'] . '">';
+				
+				if( $displayoption === "instagram" ){
+				/**
+				 * else user choose to use Instagram site
+				 * make new link to open in new tab / window
+				*/
+				
+				$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';
+				$output .= '<a href="' . $data['data'][$i]['link'] . '" target="_blank">';
+				$output .= '<img class="front-photo" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
+				$output .= '</a>';
+				$output .=  '</div>';
+				
+				 /**
+					  * highlights photographer
+					  * using author section class
+					 */
+					 if( $showphotographer === "true" ):
+					 $output .= '<div class="sinst-author-section">';
+					  $output .= '<div class="sinst-author">';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
+					  $output .= '</div>';
+					 $output .= '</div>';
+					 endif;	 
+					 
+					 /**
+					  * Determine if displayStatistic is allowed
+					 */
+					 if( $stat === "true" ):
+					 
+					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+					 
+					 endif;
+					 
+					 /**
+					  * Determine if displayDescription is allowed
+					 */
+					 $photocaption === "true" ? $output .= '<p class="si-photo-caption">' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
+					 
+					  
+					 /**
+					  * Comment section
+					  * Check if comment exist
+					  * Display latest # comments on media
+					  * based on option
+					 */
+					 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
+					 
+					 if( $displaycomment === "true" ): //user choose to display comment
+					 	 
+						 $output .= '<div class="sinst-comment-section">';
+						 
+						 /**
+						  * Determine if displayStatistic is allowed
+						 */
+						 if( $stat === "true" ):
+						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						 endif;
+						 
+						 /**
+						  * Determine comment to be displayed
+						 */		 
+						 if( $data['data'][$i]['comments']['count'] > 5 || $photocomment > 5 ):
+						 	$cc = 5;
+						 else:
+						 	$cc = $data['data'][$i]['comments']['count'];
+						 endif;
+							 
+						 for( $c=0; $c < $cc ; $c++ ):
+							 
+						 	$output .= '<div class="sinst-comments">';						 	
+						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
+						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
+						 	$output .= '</div>';
+							 	
+						 endfor;			 		
+						 $output .= '</div>';
+					 endif;
+					  
+					 endif;
+				
+				}				
+				
+				if( $displayoption === "prettyPhoto" ){
+				/**
+				 * else user choose to use prettyPhoto slideshow
+				 * display this area.
+				*/
+					$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
+					
+					/**
+					  * Display image, description and statistic
+					 **/		
+					
+					$output .= '<a href="' . $data['data'][$i]['images'][$size]['url'] . '" rel="sIntSC[instagram]">';
+					$output .= '<div class="si-content" style=" display: none; margin: 10px; "><div class="break-line" style="height: 10px;"></div>';
+					
+					/**
+					 * If user choose to display photographer
+					 * profile picture in settings, display this area
+					*/					 
+					if( $prettyPhoto['ppDisplayPhotographer']  === "true" ):						
+					$output .= '<div class="ppDisplayPhotographer">';
+					  $output .= '<div class="ppDisplayPhotographer-author">';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="ppDisplayPhotographer-photo"/> <span class="ppDisplayPhotographer-username">' . $data['data'][$i]['user']['username'] . '</span> ';
+					  $output .= '</div>';
+					 $output .= '</div>';
+					endif; // end of ppPhotoDescription
+					
+					/**
+					 * If user choose to display statistics
+					 * in settings, display this area
+					*/
+					if( $prettyPhoto['ppDisplayStatistic']  == "true" ):	
+						$output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+						$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+					endif; // end of ppPhotoDescription
+					
+					/**
+					 * If user choose to display photo description 
+					 * in settings, display this area
+					*/
+					if( $prettyPhoto['ppPhotoDescription']  === "true" ):
+					
+					 /**
+					  * check if description exist to avoid big spacing
+					 */
+					 if( $data['data'][$i]['caption']['text'] != "" ):				 
+						$output .= htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES );
+					 endif; //end of description checking
+					endif; // end of ppPhotoDescription
+					
+					$output .= '<div class="clear"></div></div>';
+					
+					$output .= '<img class="front-photo si-prettyphoto tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '">';
+					
+					$output .= "</a>";
+					 
+					 $output .=  '</div>';
+					 
+					 /**
+					  * highlights photographer
+					  * using author section class
+					 */
+					 if( $showphotographer === "true" ):
+					 $output .= '<div class="sinst-author-section">';
+					  $output .= '<div class="sinst-author">';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
+					  $output .= '</div>';
+					 $output .= '</div>';
+					 endif;	 
+					 
+					 /**
+					  * Determine if displayStatistic is allowed
+					 */
+					 if( $stat === "true" ):
+					 
+					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+					 
+					 endif;
+					 
+					 /**
+					  * Determine if displayDescription is allowed
+					 */
+					 $photocaption === "true" ? $output .= '<p class="si-photo-caption">' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
+					 
+					 
+					 /**
+					  * Comment section
+					  * Check if comment exist
+					  * Display latest # comments on media
+					  * based on option
+					 */
+					 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
+					 
+					 if( $displaycomment === "true" ): //user choose to display comment
+					 	 
+						 $output .= '<div class="sinst-comment-section">';
+						 
+						 /**
+						  * Determine if displayStatistic is allowed
+						 */
+						 if( $stat === "true" ):
+						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						 endif;
+						 
+						 /**
+						  * Determine comment to be displayed
+						 */		 
+						 if( $data['data'][$i]['comments']['count'] > 5 || $photocomment > 5 ):
+						 	$cc = 5;
+						 else:
+						 	$cc = $data['data'][$i]['comments']['count'];
+						 endif;
+							 
+						 for( $c=0; $c < $cc ; $c++ ):
+							 
+						 	$output .= '<div class="sinst-comments">';						 	
+						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
+						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
+						 	$output .= '</div>';
+							 	
+						 endfor;			 		
+						 $output .= '</div>';
+					 endif;
+					  
+					 endif;
+					
+				}
+				
+				if( $displayoption === "single" ){
+				/**
+				 * else user choose to use prettyPhoto iframe
+				 * display this area.
+				*/
+					$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
+					
+					 /**
+					  * Display image, description and statistic
+					 **/
+					 $output .= '<a href="' . plugins_url( 'simply-instagram/simply-instagram-pp-media-viewer.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '&iframe=true&width=960&height=650&scrolling=no" rel="prettyphoto" style="text-decoration:none">';
+					  $output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
+					 $output .= '</a>';
+					 
+					 $output .=  '</div>';				 
+					 
+					 /**
+					  * highlights photographer
+					  * using author section class
+					 */
+					 if( $showphotographer === "true" ):
+					 $output .= '<div class="sinst-author-section">';
+					  $output .= '<div class="sinst-author">';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
+					  $output .= '</div>';
+					 $output .= '</div>';
+					 endif;	 
+					 
+					 /**
+					  * Determine if displayStatistic is allowed
+					 */
+					 if( $stat === "true" ):
+					 
+					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+					 
+					 endif;
+					 
+					 /**
+					  * Determine if displayDescription is allowed
+					 */
+					 $photocaption === "true" ? $output .= '<p class="si-photo-caption">' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
+					 
+					  
+					 /**
+					  * Comment section
+					  * Check if comment exist
+					  * Display latest # comments on media
+					  * based on option
+					 */
+					 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
+					 
+					 if( $displaycomment === "true" ): //user choose to display comment
+					 	 
+						 $output .= '<div class="sinst-comment-section">';
+						 
+						 /**
+						  * Determine if displayStatistic is allowed
+						 */
+						 if( $stat === "true" ):
+						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						 endif;
+						 
+						 /**
+						  * Determine comment to be displayed
+						 */		 
+						 if( $data['data'][$i]['comments']['count'] > 5 || $photocomment > 5 ):
+						 	$cc = 5;
+						 else:
+						 	$cc = $data['data'][$i]['comments']['count'];
+						 endif;
+							 
+						 for( $c=0; $c < $cc ; $c++ ):
+							 
+						 	$output .= '<div class="sinst-comments">';						 	
+						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
+						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
+						 	$output .= '</div>';
+							 	
+						 endfor;			 		
+						 $output .= '</div>';
+					 endif;
+					  
+					 endif;
+				
+				}	 // end of mediaViewer
+				
+				$output .= '</div>';
+				
+				echo $output;
 				
 			endfor;
-			
-			//print_r( $content );
-		endif; */
+		}
 		
 }
 
@@ -783,6 +871,8 @@ function sInstDiplayFollowData( $data, $display="20", $width="150", $showFollowe
 	else:
 		$query = count( $data['data'] );
 	endif;
+		$output = '<ul class="si-widget">';
+		
 		for( $i=0; $i < $query; $i++ ):
 			/**
 			 * Check if user wanted to
@@ -791,18 +881,18 @@ function sInstDiplayFollowData( $data, $display="20", $width="150", $showFollowe
 			*/
 			if( $showFollowerData == true ):
 			
-				//$output = sInstShowInfo( sInstGetInfo( $data['data'][$i]['id'], access_token() ), array( 'name' => 'true', 'bio' => 'true', 'website' => 'true', 'media' => 'true', 'followers' => 'true', 'following' => 'true', 'profile_pic' => 'true' ), $width );
+				//nothing here
 			
 			else:
-						
-				//$output = '<div id="tooltip-division" style=" width: ' . $width . 'px; float: left; margin: 5px; overflow: auto;">';
-				$output = '<img class="front-photo" src="' . $data['data'][$i]['profile_picture'] . '" width="' . $width . '" height="' . $width . '" title="' . $data['data'][$i]['full_name'] . '">';				
-				//$output .= '</div>';
-			
-			endif;
-						
-			echo $output;	
+				$output .= '<li><img class="front-photo tooltip" src="' . $data['data'][$i]['profile_picture'] . '" width="' . $width . '" height="' . $width . '" title="' . $data['data'][$i]['full_name'] . '" ></li>';
+			endif;	
+				
 		endfor;		
+		
+		$output .= '</ul>';
+		
+		echo $output;
+		
 }
 
 /**
@@ -858,7 +948,7 @@ function sIntFollowButton( $user_id, $username )
 		endif;
 		
 		$followinginfo = sInstGetFollowingInfo( user_id(), $_COOKIE['visitor_access_token'] );		
-		//print_r( $followinginfo );
+		
 		if( $followinginfo['data']['outgoing_status'] == "none" ):
 			/**
 			 * Request follow, show follow me button
@@ -911,48 +1001,13 @@ function sIntFollowButton( $user_id, $username )
 	
 }
 
-function nicetime($date)
-{
-    if(empty($date)) {
-        return "No date provided";
-    }
-    
-    $periods         = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-    $lengths         = array("60","60","24","7","4.35","12","10");
-    
-    $now             = time();
-    $unix_date         = strtotime($date);
-    
-       // check validity of date
-    if(empty($unix_date)) {    
-        return "Bad date";
-    }
-
-    // is it future date or past date
-    if($now > $unix_date) {    
-        $difference     = $now - $unix_date;
-        $tense         = "ago";
-        
-    } else {
-        $difference     = $unix_date - $now;
-        $tense         = "from now";
-    }
-    
-    for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
-        $difference /= $lengths[$j];
-    }
-    
-    $difference = round($difference);
-    
-    if($difference != 1) {
-        $periods[$j].= "s";
-    }
-    
-    return "$difference $periods[$j] {$tense}";
-}
 
 function sInstDisplayMediaInfo( $media_id )
 {
+	if (sIntCheckCache("mediainfo.json")) {
+		 return sIntReadCache("mediainfo.json");	 
+	}
+	
 	$apiurl = "https://api.instagram.com/v1/media/" . $media_id . "?access_token=" . access_token();
 	
 	if(function_exists('curl_exec') && function_exists('curl_init')):
@@ -964,9 +1019,13 @@ function sInstDisplayMediaInfo( $media_id )
                 curl_close($curl);
                
                 $data = json_decode( $response, true );
+                
+                file_put_contents( simply_instagram_plugin_path . '/cache-api/mediainfo.json', $response );
         else:
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
+		
+		file_put_contents( simply_instagram_plugin_path . '/cache-api/mediainfo.json', $response['body'] );
         endif;
        	
 	
@@ -975,69 +1034,40 @@ function sInstDisplayMediaInfo( $media_id )
 	echo $data['data']['1']['filter'];
 }
 
-/** Caching module */
-function sInstCache( $image, $width ){	
-	return $image;
-	/*
-	if( get_option( 'enableCandCom' ) == "no" ):
-		return $image;
-	else:
-		include_once( simply_instagram_plugin_path . '/resize_class.php' );
-		/**
-		 Proper naming and file caching
-		*/
-		/*
-		$basename = basename( $image, ".jpg" );
-		$final_name = $basename . "_" . $width . ".jpg";
+
+/** Cahcing module */
+function sIntCheckCache( $file ){	
+	
+	$si_gen_settings = get_option( 'si_general_settings' );
+	
+	if( !$si_gen_settings['si_cache_option'] )
+		return;
+	
+	if( !$si_gen_settings['gen_cache_expire_option'] )
+		return;
 		
-		//var_dump ($image );
-		if( !file_exists( simply_instagram_plugin_path . "/cache/" . $final_name ) ):
-			/**
-			 Copy and resize
-			*/
-			/*
-			$copy = @copy( $image, simply_instagram_plugin_path . "cache/" . $final_name );
-			
-			if( $copy ):
-				$resize = new resize( simply_instagram_plugin_path . "cache/" . $final_name );						 						 
-	 			$resize -> resizeImage( $width, $width, 'crop' );						 						 
-	 			$resize -> saveImage( simply_instagram_plugin_path . "cache/" . $final_name , get_option('JPEGCompression') );
-			
-				return simply_instagram_plugin_url . "cache/" . $final_name;
-			endif;			
-		else:
-			/**
-			 If exist, check if has latest dimension
-			 If not, resize
-			*/
-			/*
-			list($d_width, $d_height, $d_type, $d_attr) = getimagesize( simply_instagram_plugin_path . "/cache/" . $final_name );
-			
-			if( $d_width != $width ):
-			
-				$copy = @copy( $image, simply_instagram_plugin_path . "cache/" . $final_name );
-				
-				if( $copy ):
-					$resize = new resize( simply_instagram_plugin_path . "cache/" . $final_name );						 						 
-	 				$resize -> resizeImage( $width, $width, 'crop' );				 						 
-	 				$resize -> saveImage( simply_instagram_plugin_path . "cache/" . $final_name , get_option('JPEGCompression') );
-	 			endif;
-			else:
-				return simply_instagram_plugin_url . "cache/" . $final_name;
-			endif;
-		endif;	
-	endif;
-	*/
+	$cache_expires = get_option( 'siCacheExpires' );
+	
+	$cachefile = simply_instagram_plugin_path . "cache-api/" . $file;
+		
+	$cachefile_created = (file_exists($cachefile)) ? @filemtime($cachefile) : 0;
+	 
+	//var_dump ( (time() - $cache_expires) < $cachefile_created );
+	 
+	return ((time() - $cache_expires) < $cachefile_created);
+	
 	
 }
 
-/** Clearing cache folder */
-function sIntClearCache(){	
-	$path = simply_instagram_plugin_path . "cache/";
+/** Cahcing module */
+function sIntReadCache( $file ){	
+		
+	$cache_file = simply_instagram_plugin_path . "cache-api/" . $file;
 	
-	foreach(glob($path ."*.*") as $file) {
-	   unlink($file); // Delete each file through the loop
-	}
+	$data = json_decode( file_get_contents( $cache_file ) , true );
+	
+	return $data ;
+	
 }
 
 ?>
