@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Official StatCounter Plugin
- * Version: 1.7.1
+ * Version: 2.0.1
  * Plugin URI: http://statcounter.com/
  * Description: Adds the StatCounter tracking code to your blog. <br>To get setup: 1) Activate this plugin  2) Enter your StatCounter Project ID and Security Code in the <a href="options-general.php?page=StatCounter-Wordpress-Plugin.php"><strong>options page</strong></a>.
  * Author: Aodhan Cullen
@@ -26,6 +26,7 @@ add_option("sc_invisible", "0");
 // Create a option page for settings
 add_action('admin_menu' , 'add_sc_option_page' );
 add_action( 'admin_menu', 'statcounter_admin_menu' );
+add_action('wp_head', 'addToTags');
 
 function statcounter_admin_menu() {
 	$hook = add_submenu_page('index.php', __('StatCounter Stats'), __('StatCounter Stats'), 'publish_posts', 'statcounter', 'statcounter_reports_page');
@@ -196,6 +197,8 @@ function sc_options_page() {
 			</p>
 		</div>
 		</form>
+		
+		
 
 <?php
 }
@@ -228,16 +231,36 @@ function add_statcounter() {
 <?php 
 if($sc_invisible==1) {
     echo "      var sc_invisible=1;\n"; 
-}?>
+}
+
+define('HTTPS', isset($_SERVER['HTTPS']) && filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN));
+$protocol = defined('HTTPS') ? "https:" : "http:";
+
+?>
         var scJsHost = (("https:" == document.location.protocol) ?
         "https://secure." : "http://www.");
     //-->
 document.write("<sc"+"ript src='" +scJsHost +"statcounter.com/counter/counter.js'></"+"script>");
 </script>
-<noscript><div class="statcounter"><a title="web analytics" href="http://statcounter.com/"><img class="statcounter" src="http://c.statcounter.com/<?php echo $sc_project; ?>/0/<?php echo $sc_security; ?>/<?php echo $sc_invisible; ?>/" alt="web analytics" /></a></div></noscript>   
+<noscript><div class="statcounter"><a title="web analytics" href="<?php echo $protocol; ?>//statcounter.com/"><img class="statcounter" src="<?php echo $protocol; ?>//c.statcounter.com/<?php echo $sc_project; ?>/0/<?php echo $sc_security; ?>/<?php echo $sc_invisible; ?>/" alt="web analytics" /></a></div></noscript>   
     <!-- End of StatCounter Code -->
 <?php
     }
+}
+
+function addToTags($pid){
+   if (is_single()) {
+       global $post;
+	   $queried_post = get_post($pid);
+       $authorId = $queried_post->post_author;
+	   ?>
+		<script type="text/javascript">
+            var _statcounter = _statcounter || [];
+            _statcounter.push({"tags": {"author": "<?php the_author_meta( 'nickname', $authorId); ?>"}});
+        </script>
+	   <?php
+       
+   }
 }
 
 ?>
