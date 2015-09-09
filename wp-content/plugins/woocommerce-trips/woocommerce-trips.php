@@ -24,7 +24,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
     
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '0.0.1' );
+        define( 'WC_TRIPS_VERSION', '0.9.0' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -169,21 +169,25 @@ class WC_Trips {
             }
         return $tabs;
     }
+    
     public function pics_content(){
         global $product;
         $pics_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_pics', true) ) );
         echo $pics_data;
     }
+    
     public function flight_times_content(){
         global $product;
         $flight_times_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_flight_times', true) ) );
         echo $flight_times_data;
     }
+    
     public function rates_content() {
         global $product;
         $rates_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_rates', true) ) );
         echo $rates_data;
     }
+    
     public function trail_map_content() {
         global $product, $wpdb;
         wp_enqueue_style("featherlight-css", WC_TRIPS_PLUGIN_URL . "/assets/css/featherlight.min.css");
@@ -200,6 +204,7 @@ class WC_Trips {
             </p>
 MAP;
     }
+    
     public function bus_times_content() {
         global $product;
         
@@ -229,11 +234,13 @@ TEMPHTML;
             <div class="busRightColumn">{$rightColumnContent}</div>
 TESTING;
     }
+    
     public function includes_content() {
         global $product;
         $includes_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_includes', true) ) );
         echo $includes_data;
     }
+    
     public function pickup_html( $post_id ) {
         $pickup = get_post( $post_id );
         $address = get_post_meta( $post_id, '_pickup_location_address', true );
