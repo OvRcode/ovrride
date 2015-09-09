@@ -268,7 +268,7 @@ class ewwwflag {
 	function ewww_flag_bulk_init() {
 		$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 		if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) {
-			wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
+			wp_die( __( 'Access denied.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 		}
 		// set the resume flag to indicate the bulk operation is in progress
 		update_option('ewww_image_optimizer_bulk_flag_resume', 'true');
@@ -282,7 +282,7 @@ class ewwwflag {
 	function ewww_flag_bulk_filename() {
 		$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 		if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) {
-			wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
+			wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 		}
 		// need this file to work with flag meta
 		require_once(WP_CONTENT_DIR . '/plugins/flash-album-gallery/lib/meta.php');
@@ -303,7 +303,7 @@ class ewwwflag {
 		$ewww_defer = false;
 		$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 		if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) {
-			wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
+			wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 		}
 		if (!empty($_REQUEST['ewww_sleep'])) {
 			sleep($_REQUEST['ewww_sleep']);
@@ -359,7 +359,7 @@ class ewwwflag {
 	function ewww_flag_bulk_cleanup() {
 		$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 		if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) {
-			wp_die(__('Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN));
+			wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 		}
 		// reset the bulk flags in the db
 		update_option('ewww_image_optimizer_bulk_flag_resume', '');

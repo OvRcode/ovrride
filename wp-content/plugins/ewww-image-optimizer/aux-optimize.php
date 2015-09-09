@@ -94,7 +94,7 @@ function ewww_image_optimizer_import_init() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 	// verify that an authorized user has started the optimizer
 	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	}
 	global $wpdb;
 	$import_todo = 0;
@@ -131,7 +131,7 @@ function ewww_image_optimizer_import_loop() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 	// verify that an authorized user has started the optimizer
 	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	} 
 	global $wpdb;
 	// retrieve the time when the optimizer starts
@@ -380,7 +380,7 @@ function ewww_image_optimizer_import_file( $attachment, $prev_result, $already_o
 function ewww_image_optimizer_aux_images_table() {
 	// verify that an authorized user has called function
 	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	} 
 	global $wpdb;
 	$offset = 50 * $_POST['ewww_offset'];
@@ -419,7 +419,7 @@ function ewww_image_optimizer_aux_images_table() {
 function ewww_image_optimizer_aux_images_remove() {
 	// verify that an authorized user has called function
 	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	} 
 	global $wpdb;
 	if ( $wpdb->delete( $wpdb->ewwwio_images, array( 'id' => $_POST['ewww_image_id'] ) ) ) {
@@ -655,8 +655,12 @@ function ewww_image_optimizer_aux_images_script( $hook ) {
 		update_option( 'ewww_image_optimizer_aux_attachments', $attachments );
 	}
 	ewww_image_optimizer_debug_log();
-	// submit a couple variables to the javascript to work with
-	$attachments = json_encode( $attachments );
+	if ( empty( $attachments ) ) {
+		$attachments = '';
+	} else {
+		// submit a couple variables to the javascript to work with
+		$attachments = json_encode( $attachments );
+	}
 	if ( ! empty( $_REQUEST['ewww_scan'] ) ) {
 		if ( empty( $attachments ) ) {
 			_e( 'Nothing to optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN );
@@ -677,7 +681,7 @@ function ewww_image_optimizer_aux_images_initialize( $auto = false ) {
 	// verify that an authorized user has started the optimizer
 	$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 	if ( ! $auto && ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access denied.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	} 
 	// update the 'aux resume' option to show that an operation is in progress
 	update_option( 'ewww_image_optimizer_aux_resume', 'true' );
@@ -700,7 +704,7 @@ function ewww_image_optimizer_aux_images_filename() {
 	// verify that an authorized user has started the optimizer
 	$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access denied.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	}
 	// generate the WP spinner image for display
 	$loading_image = plugins_url( '/wpspin.gif', __FILE__ );
@@ -716,7 +720,7 @@ function ewww_image_optimizer_aux_images_cleanup( $auto = false ) {
 	// verify that an authorized user has started the optimizer
 	$permissions = apply_filters( 'ewww_image_optimizer_bulk_permissions', '' );
 	if ( ! $auto && ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' ) || ! current_user_can( $permissions ) ) ) {
-		wp_die( __( 'Cheatin&#8217; eh?', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
+		wp_die( __( 'Access denied.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 	}
 	$stored_last = get_option( 'ewww_image_optimizer_aux_last' );
 	update_option( 'ewww_image_optimizer_aux_last', array( time(), $stored_last[1] ) );

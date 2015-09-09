@@ -1,7 +1,7 @@
 <?php
 /**
  * Integrate image optimizers into WordPress.
- * @version 2.5.0
+ * @version 2.5.1
  * @package EWWW_Image_Optimizer
  */
 /*
@@ -10,7 +10,7 @@ Plugin URI: http://wordpress.org/extend/plugins/ewww-image-optimizer/
 Description: Reduce file sizes for images within WordPress including NextGEN Gallery and GRAND FlAGallery. Uses jpegtran, optipng/pngout, and gifsicle.
 Author: Shane Bishop
 Text Domain: ewww-image-optimizer
-Version: 2.5.0
+Version: 2.5.1
 Author URI: https://ewww.io/
 License: GPLv3
 */
@@ -81,6 +81,10 @@ function ewww_image_optimizer_exec_init() {
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_disable_optipng');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_disable_gifsicle');
 	register_setting('ewww_image_optimizer_options', 'ewww_image_optimizer_disable_pngout');
+	if ( defined( 'WPE_PLUGIN_VERSION' ) ) {
+		add_action('network_admin_notices', 'ewww_image_optimizer_notice_wpengine');
+		add_action('admin_notices', 'ewww_image_optimizer_notice_wpengine');
+	}
 	// If cloud is fully enabled, we're going to skip all the checks related to the bundled tools
 	if(EWWW_IMAGE_OPTIMIZER_CLOUD) {
 		ewwwio_debug_message( 'cloud options enabled, shutting off binaries' );
@@ -140,7 +144,13 @@ function ewww_image_optimizer_set_defaults() {
 function ewww_image_optimizer_notice_os() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 	echo "<div id='ewww-image-optimizer-warning-os' class='error'><p><strong>" . __('EWWW Image Optimizer is supported on Linux, FreeBSD, Mac OSX, and Windows', EWWW_IMAGE_OPTIMIZER_DOMAIN) . ".</strong> " . sprintf(__('Unfortunately, the EWWW Image Optimizer plugin does not work with %s', EWWW_IMAGE_OPTIMIZER_DOMAIN), htmlentities(PHP_OS)) . ".</p></div>";
-}   
+}
+
+// inform the user that only ewww-image-optimizer-cloud is permitted on WP Engine
+function ewww_image_optimizer_notice_wpengine() {
+	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
+	echo "<div id='ewww-image-optimizer-warning-wpengine' class='error'><p>" . __('The regular version of the EWWW Image Optimizer plugin is not permitted on WP Engine sites. However, the cloud version has been approved by WP Engine. Please deactivate EWWW Image Optimizer and install EWWW Image Optimizer Cloud to optimize your images.', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "</p></div>";
+}
 
 // generates the source and destination paths for the executables that we bundle with the plugin based on the operating system
 function ewww_image_optimizer_install_paths () {
@@ -1453,7 +1463,9 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 					} catch ( Exception $gmagick_error ) {
 						ewwwio_debug_message( $gmagick_error->getMessage() );
 					}
-				} elseif ( ewww_image_optimizer_imagick_support() ) {
+					$png_size = ewww_image_optimizer_filesize( $pngfile );
+				}
+				if ( ! $png_size && ewww_image_optimizer_imagick_support() ) {
 					try {
 						$imagick = new Imagick( $file );
 						$imagick->stripImage();
@@ -1462,12 +1474,17 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 					} catch ( Exception $imagick_error ) {
 						ewwwio_debug_message( $imagick_error->getMessage() );
 					}
-				} elseif ( ! empty( $convert_path ) ) {
+					$png_size = ewww_image_optimizer_filesize( $pngfile );
+				}
+				if ( ! $png_size && ! empty( $convert_path ) ) {
 					ewwwio_debug_message( 'converting with ImageMagick' );
 					exec( $convert_path . " " . ewww_image_optimizer_escapeshellarg( $file ) . " -strip " . ewww_image_optimizer_escapeshellarg( $pngfile ) );
-				} elseif ( ewww_image_optimizer_gd_support() ) {
+					$png_size = ewww_image_optimizer_filesize( $pngfile );
+				}
+				if ( ! $png_size && ewww_image_optimizer_gd_support() ) {
 					ewwwio_debug_message( 'converting with GD' );
 					imagepng( imagecreatefromjpeg( $file ), $pngfile );
+					$png_size = ewww_image_optimizer_filesize( $pngfile );
 				}
 				// if lossy optimization is ON and full-size exclusion is not active
 				if (ewww_image_optimizer_get_option('ewww_image_optimizer_png_lossy') && $tools['PNGQUANT'] && !$skip_lossy ) {
@@ -1501,9 +1518,9 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 					}
 				}
 				// if pngout isn't disabled
-				if (!ewww_image_optimizer_get_option('ewww_image_optimizer_disable_pngout')) {
+				if ( ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_disable_pngout' ) ) {
 					// retrieve the pngout optimization level
-					$pngout_level = ewww_image_optimizer_get_option('ewww_image_optimizer_pngout_level');
+					$pngout_level = ewww_image_optimizer_get_option( 'ewww_image_optimizer_pngout_level' );
 					// if the PNG file was created
 					if (file_exists($pngfile)) {
 						ewwwio_debug_message( 'optimizing converted PNG with pngout' );
@@ -1511,12 +1528,7 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 						exec( "$nice " . $tools['PNGOUT'] . " -s$pngout_level -q " . ewww_image_optimizer_escapeshellarg( $pngfile ) );
 					}
 				}
-				if (is_file($pngfile)) {
-					// find out the size of the new PNG file
-					$png_size = filesize($pngfile);
-				} else {
-					$png_size = 0;
-				}
+				$png_size = ewww_image_optimizer_filesize( $pngfile );
 				ewwwio_debug_message( "converted PNG size: $png_size" );
 				// if the PNG is smaller than the original JPG, and we didn't end up with an empty file
 				if ( $new_size > $png_size && $png_size != 0 && ewww_image_optimizer_mimetype($pngfile, 'i') == 'image/png' ) {
@@ -1546,6 +1558,7 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 			ewww_image_optimizer_webp_create( $file, $new_size, $type, $tools['WEBP'] );
 			break;
 		case 'image/png':
+			$jpg_size = 0;
 			// png2jpg conversion is turned on, and the image is in the wordpress media library
 			if ( ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_png_to_jpg' ) || ! empty( $_GET['ewww_convert'] ) ) && $gallery_type == 1 && ! $skip_lossy ) {
 				ewwwio_debug_message( 'PNG to JPG conversion turned on' );
@@ -1724,7 +1737,9 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 					} catch ( Exception $gmagick_error ) {
 						ewwwio_debug_message( $gmagick_error->getMessage() );
 					}
-				} elseif ( ewww_image_optimizer_imagick_support() ) {
+					$jpg_size = ewww_image_optimizer_filesize( $jpgfile );
+				}
+				if ( ! $jpg_size && ewww_image_optimizer_imagick_support() ) {
 					try {
 						$imagick = new Imagick( $file );
 						if ( ewww_image_optimizer_png_alpha( $file ) ) {
@@ -1737,11 +1752,15 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 					} catch ( Exception $imagick_error ) {
 						ewwwio_debug_message( $imagick_error->getMessage() );
 					}
-				} elseif ( ! empty( $convert_path ) ) { 
+					$jpg_size = ewww_image_optimizer_filesize( $jpgfile );
+				} 
+				if ( ! $jpg_size && ! empty( $convert_path ) ) { 
 					ewwwio_debug_message( 'converting with ImageMagick' );
 					ewwwio_debug_message( "using command: $convert_path $background -alpha remove $cquality $file $jpgfile" );
 					exec ( "$convert_path $background -alpha remove $cquality " . ewww_image_optimizer_escapeshellarg( $file ) . " " . ewww_image_optimizer_escapeshellarg( $jpgfile ) );
-				} elseif ( ewww_image_optimizer_gd_support() ) {
+					$jpg_size = ewww_image_optimizer_filesize( $jpgfile );
+				}
+				if ( ! $jpg_size && ewww_image_optimizer_gd_support() ) {
 					ewwwio_debug_message( 'converting with GD' );
 					// retrieve the data from the PNG
 					$input = imagecreatefrompng($file);
@@ -1763,12 +1782,10 @@ function ewww_image_optimizer($file, $gallery_type = 4, $converted = false, $new
 					// output the JPG with the quality setting
 					imagejpeg($output, $jpgfile, $gquality);
 				}
-				if (is_file($jpgfile)) {
-					// retrieve the filesize of the new JPG
-					$jpg_size = filesize($jpgfile);
+				$jpg_size = ewww_image_optimizer_filesize( $jpgfile );
+				if ($jpg_size) {
 					ewwwio_debug_message( "converted JPG filesize: $jpg_size" );
 				} else {
-					$jpg_size = 0;
 					ewwwio_debug_message( 'unable to convert to JPG' );
 				}
 				// next we need to optimize that JPG if jpegtran is enabled

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: image, attachment, optimize, optimization, lossless, lossy, photo, picture, seo, compression, gmagick, jpegtran, gifsicle, optipng, pngout, pngquant, jpegmini, tinyjpg, tinypng, webp, wp-cli 
 Requires at least: 3.5
 Tested up to: 4.3
-Stable tag: 2.5.0
+Stable tag: 2.5.1
 License: GPLv3
 
 Reduce file sizes for images in WordPress including NextGEN, GRAND FlAGallery and more using lossless/lossy methods and image format conversion.
@@ -78,17 +78,19 @@ German translation by Christian Herrmann and Ralf Platschi
 Italian translation by  Umberto Moroni, Alexander Gevak and Fabrizio Balestrieri  
 Polish translation by Grzegorz Janoszka  
 Portuguese (Brazil) translation by Pedro Marcelo de Sá Alves and Celso Azevedo  
+Portuguese (Portugal) translation by Celso Azevedo
 Romanian translation by Iosif Kadar of MediasInfo.ro  
-Russian translation by Elvis of turkenichev.ru  
+Russian translation by Elvis of turkenichev.ru, Roman Sobol, and Vitaliy Ralle
 Spanish translation by Manuel Ballesta Ruiz and Adrián López Galera  
 Swedish translation by Alexander Widén  
 Turkish translation by sfatih  
+Ukrainian translation by Roman Sobol
 
 In progress translations:  
-Portuguese (Portugal)  
 Vietnamese  
 Indonesian  
 Hebrew  
+Lithuanian
 
 If you would like to help translate this plugin (new or existing translations), register for an account at our online translation hub: http://translate.ewww.io/
 
@@ -204,6 +206,21 @@ Pngout, TinyJPG/TinyPNG, JPEGmini, and Pngquant were recommended by EWWW IO user
 
 * feature requests are sticky at the top of the support forums, vote for the ones you like: https://wordpress.org/support/plugin/ewww-image-optimizer
 * If you would like to help translate this plugin in your language, get started here: http://translate.ewww.io/projects/ewww-image-optimizer/
+
+= 2.5.1 =
+* added: Portuguese (Portugal) translation for pt_PT thanks to Celso Azevedo
+* added: optimization for custom sizes for "Fraction" theme
+* added: filter to override restrictions for Folders to Optimize
+* added: automatic fallback for conversion options if a toolkit does not produce any output
+* added: notice for WP Engine users to use Cloud version of EWWW Image Optimizer
+* fixed: bulk delay was ignored when processing deferred images
+* fixed: notices when scanning media library to load Bulk Optimize page
+* fixed: tooltip text was not escaped properly for one-click conversion links
+* fixed: warning when deferred optimization runs and there is nothing available to optimize
+* fixed: error when bulk optimizing and w3_upload_info() function is missing
+* fixed: error when passing empty value to json_encode()
+* fixed: error on Unoptimized Images when bulk optimization resume flag is set, but no attachments are left
+* fixed: Unoptimized Images will scan entire library when bulk optimization resume flag is set, instead of just remaining attachments
 
 = 2.5.0 =
 * deprecated: Disable Automatic Optimization and Include Media Folders options: will be removed from the UI in 2.6 but remain functional if enabled
