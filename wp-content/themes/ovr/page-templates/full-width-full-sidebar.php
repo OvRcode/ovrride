@@ -38,12 +38,17 @@ get_header(); ?>
                     $trip_thumbs = array();
                     $spots_left = array();
 
-                
+                    // TODO: REWORK WHEN OLD PRODUCTS ARE OUT OF THE SYSTEM
                     while( $upcoming_product_loop->have_posts() ) : $upcoming_product_loop->the_post();
                         global $post;
                 
                         $trip_date = get_field( 'date_picker' );
-                
+                        if ( ! $trip_date ) {
+                            $product = wc_get_product($post->ID);
+                            if ( "trip" == $product->product_type ) {
+                                $trip_date = $product->wc_trip_start_date;
+                            }
+                        }
                         // only add trip to array if date_picker field is set.
                         if ( $trip_date ) {
                         $alt_thumb = wp_get_attachment_image_src( get_field( 'alternative_thumbnail', $post->ID ), 'full' );
@@ -53,7 +58,11 @@ get_header(); ?>
                         $trip_links[] = get_permalink();
                         $trip_thumbs[] = $alt_thumb[0];
                         $product = wc_get_product( $post->ID );
-                        $spots_left[] = $product->get_stock_quantity();
+                        if ( $product->is_purchasable()){
+                            $spots_left[] = $product->get_stock_quantity();
+                        } else {
+                            $spots_left[] = 0;
+                        }
                         
                         }
                         
@@ -85,7 +94,7 @@ get_header(); ?>
                                         
                                         <div class="seats-left">
                                            <p><a href="<?php echo $trip_links[$i]; ?>">Space Available 
-                                             <?php if($spots_left[$i] !== '') echo intval($spots_left[$i]); ?></a></p>
+                                    <?php if($spots_left[$i] !== '') echo intval($spots_left[$i]); ?></a></p>
                                         </div>
                                     <?php else: ?>
                                         <p class="stock out-of-stock">SOLD OUT</p>

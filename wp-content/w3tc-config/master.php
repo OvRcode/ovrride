@@ -434,8 +434,6 @@ return array(
 	'browsercache.other.w3tc' => true,
 	'browsercache.other.replace' => true,
 	'browsercache.timestamp' => '1440855825',
-	'browsercache.replace.exceptions' => array(
-		0 => '',
 	),
 	'mobile.enabled' => false,
 	'mobile.rgroups' => array(

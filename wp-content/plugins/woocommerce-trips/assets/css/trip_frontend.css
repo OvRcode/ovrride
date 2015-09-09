@@ -1,0 +1,59 @@
+#wc_trip_first {
+  width: 50%;
+  float: left;
+}
+#wc_trip_last {
+  width: 50%;
+  float:right;
+}
+#wc_trip_email {
+  width: 100%;
+  clear: both;
+}
+#emailValidation {
+  display: none;
+}
+#firstValidation {
+  display: none;
+}
+.woocommerce select {
+  line-height: 1.5;
+  font-size: 14pt;
+}
+#wc_trips_form input, label {
+    display:block;
+}
+
+#wc_trip_dob_day, #wc_trip_dob_month {
+  width: 2.5em;
+  display: none;
+}
+.dob_label {
+  display:none;
+}
+#wc_trip_dob_year {
+  width:4em;
+  display: none;
+}
+.dob {
+  display: none;
+  visibility: none;
+}
+#wc_trip_trail_map {
+  display:inline-block;
+  width:100%;
+  height: auto;
+}
+.busLeftColumn {
+  width: 50%;
+  float: left;
+}
+.busRightColumn {
+  width: 50%;
+  float:right;
+}
+.pickup {
+  width: 100%;
+  padding-left: 10px;
+  padding-top: 20px;
+}
