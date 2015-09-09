@@ -19,3 +19,4 @@ local.ovrride.com.key
 local.ovrride.com.crt
 local.ovrride.com.csr
 data_bags/secret_keys/
+wp-content/plugins/simply-instagram/cache-api/*.json
