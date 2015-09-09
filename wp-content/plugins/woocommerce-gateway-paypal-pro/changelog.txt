@@ -1,5 +1,15 @@
 *** PayPal Pro Changelog ***
 
+2015.08.03 - version 4.3.7
+* Added - "woocommerce-gateway-paypal-pro_payflow_refund_request" filter
+* Added - "woocommerce-gateway-paypal-pro_payflow_transaction_details_request" filter
+
+2015.06.30 - version 4.3.6
+* Fix notice when date is not set.
+
+2015.06.30 - version 4.3.5
+* Remove SSLVerify from requests.
+
 2015.06.18 - version 4.3.4
 * Tweak 3DS auth code.
 * Fix PayPal Pro taxes not sent as separate line item when "send line items" is enabled

@@ -3,11 +3,11 @@
 Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
 Plugin URI: http://www.woothemes.com/products/paypal-pro/
 Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
-Version: 4.3.4
+Version: 4.3.7
 Author: WooThemes
 Author URI: http://woothemes.com/
 
-	Copyright: © 2009-2014 WooThemes.
+	Copyright: © 2009-2015 WooThemes.
 	License: GNU General Public License v3.0
 	License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,14 +31,11 @@ woothemes_queue_update( plugin_basename( __FILE__ ), '6d23ba7f0e0198937c0029f9e8
 if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 
 class WC_PayPal_Pro {
+
 	/**
-	 * init
-	 *
-	 * @access public
-	 * @since 4.3.0
-	 * @return bool
+	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
@@ -189,7 +186,6 @@ class WC_PayPal_Pro {
 				),
 				'body'          => $post_data,
 				'timeout'       => 70,
-				'sslverify'     => false,
 				'user-agent'    => 'WooCommerce',
 				'httpversion'   => '1.1'
 			));
@@ -231,7 +227,6 @@ class WC_PayPal_Pro {
 				'method'      => 'POST',
 				'body'        => urldecode( http_build_query( $post_data, null, '&' ) ),
 				'timeout'     => 70,
-				'sslverify'   => false,
 				'user-agent'  => 'WooCommerce',
 				'httpversion' => '1.1'
 			));
@@ -294,7 +289,6 @@ class WC_PayPal_Pro {
 				),
 				'body'          => $post_data,
 				'timeout'       => 70,
-				'sslverify'     => false,
 				'user-agent'    => 'WooCommerce',
 				'httpversion'   => '1.1'
 			));
@@ -330,7 +324,6 @@ class WC_PayPal_Pro {
 				'method'      => 'POST',
 				'body'        => urldecode( http_build_query( $post_data, null, '&' ) ),
 				'timeout'     => 70,
-				'sslverify'   => false,
 				'user-agent'  => 'WooCommerce',
 				'httpversion' => '1.1'
 			));

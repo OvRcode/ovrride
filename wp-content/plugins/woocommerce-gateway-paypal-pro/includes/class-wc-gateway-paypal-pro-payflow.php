@@ -249,7 +249,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 					<label style="padding:10px 0 0 10px;display:block;"><?php echo $this->title . ' ' . '<div style="vertical-align:middle;display:inline-block;margin:2px 0 0 .5em;">' . $this->get_icon() . '</div>'; ?></label>
 					<div class="payment_box">
 						<p><?php echo $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4111111111111111 with any CVC and a valid expiration date.', 'woocommerce-gateway-paypal-pro' ) : '' ); ?></p>
-						
+
 						<fieldset id="paypal_pro_payflow-cc-form">
 							<p class="form-row form-row-wide">
 								<label for="paypal_pro_payflow-card-number"><?php _e( 'Card Number ', 'woocommerce-gateway-paypal-pro' ); ?><span class="required">*</span></label>
@@ -268,7 +268,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 							<input type="hidden" name="SECURETOKEN" value="<?php echo esc_attr( $token['SECURETOKEN'] ); ?>" />
 							<input type="hidden" name="SECURETOKENID" value="<?php echo esc_attr( $token['SECURETOKENID'] ); ?>" />
-							<input type="hidden" name="SILENTTRAN" value="TRUE" />					
+							<input type="hidden" name="SILENTTRAN" value="TRUE" />
 						</fieldset>
 					</div>
 					<input type="submit" value="<?php _e( 'Confirm and pay', 'woocommerce-gateway-paypal-pro' ); ?>" class="submit buy button" style="float:right;"/>
@@ -388,7 +388,6 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			'method'      => 'POST',
 			'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_request', $post_data, $order ), null, '&' ) ),
 			'timeout'     => 70,
-			'sslverify'   => false,
 			'user-agent'  => 'WooCommerce',
 			'httpversion' => '1.1'
 		));
@@ -559,7 +558,6 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				'method'      => 'POST',
 				'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_request', $post_data, $order ), null, '&' ) ),
 				'timeout'     => 70,
-				'sslverify'   => false,
 				'user-agent'  => 'WooCommerce',
 				'httpversion' => '1.1'
 			));
@@ -650,7 +648,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	 */
 	public function get_transaction_details( $transaction_id = 0 ) {
 		$url = $this->testmode ? $this->testurl : $this->liveurl;
-		
+
 		$post_data                 = array();
 		$post_data['USER']         = $this->paypal_user;
 		$post_data['VENDOR']       = $this->paypal_vendor;
@@ -661,9 +659,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 		$response = wp_remote_post( $url, array(
 			'method'      => 'POST',
-			'body'        => urldecode( http_build_query( $post_data, null, '&' ) ),
+			'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_transaction_details_request', $post_data, null, '&' ) ) ),
 			'timeout'     => 70,
-			'sslverify'   => false,
 			'user-agent'  => 'WooCommerce',
 			'httpversion' => '1.1'
 		));
@@ -702,7 +699,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		// get transaction details
 		$details = $this->get_transaction_details( $order->get_transaction_id() );
 
-		// check if it is authorized only we need to void instead 
+		// check if it is authorized only we need to void instead
 		if ( $details && strtolower( $details['TRANSSTATE'] ) === '3' ) {
 			$order->add_order_note( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
 
@@ -710,7 +707,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 			throw new Exception( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
 		}
-		
+
 		$post_data            = array();
 		$post_data['USER']    = $this->paypal_user;
 		$post_data['VENDOR']  = $this->paypal_vendor;
@@ -734,9 +731,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 		$response = wp_remote_post( $url, array(
 			'method'      => 'POST',
-			'body'        => urldecode( http_build_query( $post_data, null, '&' ) ),
+			'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_refund_request', $post_data, null, '&' ) ) ),
 			'timeout'     => 70,
-			'sslverify'   => false,
 			'user-agent'  => 'WooCommerce',
 			'httpversion' => '1.1'
 		));
@@ -749,11 +745,11 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
 		} elseif ( $parsed_response['RESULT'] !== '0' ) {
 				// log it
-				$this->log( 'Parsed Response (refund) ' . print_r( $parsed_response, true ) );			
+				$this->log( 'Parsed Response (refund) ' . print_r( $parsed_response, true ) );
 		} else {
 
 			$order->add_order_note( sprintf( __( 'Refunded %s - PNREF: %s', 'woocommerce-gateway-paypal-pro' ), wc_price( number_format( $amount, 2, '.', '' ) ), $parsed_response['PNREF'] ) );
-			
+
 			return true;
 		}
 

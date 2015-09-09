@@ -334,6 +334,11 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			// Format values
 			$card_number    = str_replace( array( ' ', '-' ), '', $card_number );
 			$card_expiry    = array_map( 'trim', explode( '/', $card_expiry ) );
+
+			if ( 2 !== sizeof( $card_expiry ) ) {
+				throw new Exception( __( 'Card expiration date is invalid', 'woocommerce-gateway-paypal-pro' ) );
+			}
+
 			$card_exp_month = str_pad( $card_expiry[0], 2, "0", STR_PAD_LEFT );
 			$card_exp_year  = $card_expiry[1];
 
@@ -593,7 +598,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			'headers'     => array( 'PAYPAL-NVP' => 'Y' ),
 			'body'        => $post_data,
 			'timeout'     => 70,
-			'sslverify'   => false,
 			'user-agent'  => 'WooCommerce',
 			'httpversion' => '1.1'
 		));
@@ -883,7 +887,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				),
     			'body' 			=> apply_filters( 'woocommerce-gateway-paypal-pro_request', $post_data, $order ),
     			'timeout' 		=> 70,
-    			'sslverify' 	=> false,
     			'user-agent' 	=> 'WooCommerce',
     			'httpversion'   => '1.1'
 			));
@@ -999,7 +1002,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			),
 			'body'        => $post_data,
 			'timeout'     => 70,
-			'sslverify'   => false,
 			'user-agent'  => 'WooCommerce',
 			'httpversion' => '1.1'
 		));
