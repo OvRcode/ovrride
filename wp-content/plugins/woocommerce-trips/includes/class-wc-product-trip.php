@@ -113,9 +113,12 @@ class WC_Product_Trip extends WC_Product {
                 $outOfStock = "(Out of Stock) ";
             }
             
-            if ( "" !== $values['cost'] && $values['cost'] != "0") {
-                $dataCost = "data-cost='" . $values['cost'] . "'" ;
-                $costLabel = " +" . $values['cost'];
+            if ( "" !== strval($values['cost']) && floatval($values['cost']) > 0 ) {
+                $dataCost = "data-cost='" . floatval($values['cost']) . "'" ;
+                $costLabel = " +$" . floatval($values['cost']);
+            } else if ( "" !== floatval($values['cost']) && floatval($values['cost']) < 0 ) {
+                $dataCost = "data-cost='" . floatval($values['cost']) . "'";
+                $costLabel = " " . substr_replace(floatval($values['cost']), "$", 1, 0);
             }
             
             $htmlOutput .= '<option value="' . $values['description'] . '" ' . $dataCost . ' ' . $disabled . '>' .$outOfStock . $values['description'] . $costLabel . '</option>';

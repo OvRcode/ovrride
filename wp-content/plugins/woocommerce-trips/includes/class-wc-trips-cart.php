@@ -117,7 +117,6 @@ class WC_Trips_Cart {
             $base_price = get_post_meta($product_id, '_wc_trip_base_price', true);
             WC()->session->set( $cart_item_key . "_cost", $base_price);
         }
-        error_log("Save trip fields");
         foreach( $this->fields as $key => $value ) {
             if( isset( $_REQUEST[$key]) ) {
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
