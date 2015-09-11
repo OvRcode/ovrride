@@ -41,10 +41,10 @@
 .delete_column {
   width: 5px;
 }
-.delete {
+.deleteButton {
   cursor: pointer;
   background: url(../images/close_o.png) no-repeat center;
 }
-.delete:hover {
+.deleteButton:hover {
   background: url(../images/close.png) no-repeat center;
 }

@@ -130,7 +130,7 @@ jQuery(document).ready(function($){
     return false;
   });
   // Remove package rows
-	$('body').on('click', 'td.delete', function(){
+	$('body').on('click', 'td.deleteButton', function(){
 		$(this).closest('tr').remove();
     if ( $(".sorter:visible").size() <= 1 ) {
       $(".sorter:visible").css("visibility","hidden");

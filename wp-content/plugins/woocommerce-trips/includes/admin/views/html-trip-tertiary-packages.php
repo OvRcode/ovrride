@@ -39,7 +39,7 @@
                                 <input type='number' name='wc_trips_tertiary_package_stock[]' value='{$values['stock']}'>
                                 </input>
                             </td>
-                            <td class='delete'>&nbsp;</td>
+                            <td class='deleteButton'>&nbsp;</td>
                         </tr>
 PRIMARYROW;
                     }
@@ -63,7 +63,7 @@ PPMessage;
                 <td class='package_description'><input type='text' name='wc_trips_tertiary_package_description[]'></input></td>
                 <td class='cost'><input type='text' name='wc_trips_tertiary_package_cost[]'></input></td>
                 <td class='tertiary_package_stock stock'><input type='number' name='wc_trips_tertiary_package_stock[]'></input></td>
-                <td class='delete'>&nbsp;</td>
+                <td class='deleteButton'>&nbsp;</td>
             </tr>">Add tertiary package</button>
         </p>
     </div>
