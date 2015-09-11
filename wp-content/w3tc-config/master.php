@@ -138,6 +138,7 @@ return array(
 	'pgcache.reject.uri' => array(
 		0 => 'wp-.*\\.php',
 		1 => 'index\\.php',
+		2 => 'events/',
 	),
 	'pgcache.reject.ua' => array(
 		0 => '',
@@ -636,10 +637,10 @@ return array(
 	'notes.wp_content_perms' => true,
 	'notes.theme_changed' => false,
 	'notes.wp_upgraded' => false,
-	'notes.plugins_updated' => true,
+	'notes.plugins_updated' => false,
 	'notes.cdn_upload' => false,
 	'notes.cdn_reupload' => false,
-	'notes.need_empty_pgcache' => true,
+	'notes.need_empty_pgcache' => false,
 	'notes.need_empty_minify' => false,
 	'notes.need_empty_objectcache' => false,
 	'notes.root_rules' => true,
