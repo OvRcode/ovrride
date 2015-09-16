@@ -32,7 +32,7 @@ class WC_Trips {
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_scripts_and_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
         add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
-        add_filter('woocommerce_product_description_heading','remove_description_header');
+        add_filter('woocommerce_product_description_heading',array( $this, 'remove_description_header'));
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
         }
@@ -147,22 +147,22 @@ class WC_Trips {
                 'callback'  => array( $this, 'includes_content')
             );
         }
-        if ( "" !== $trip_rates && FALSE !== $trip_rates ) {
+        if ( "" !== $trip_rates && FALSE !== $trip_rates) {
             $tabs['rates'] = array(
                 'title'     => 'Rates',
                 'priority'  => 42,
                 'callback'  => array( $this, 'rates_content')
             );
-        }
+       }
         if ( "" !== $flight_times && FALSE !== $flight_times ) {
-            $tabs['rates'] = array(
+            $tabs['flight_times'] = array(
                 'title'     => 'Flight Times',
                 'priority'  => 43,
                 'callback'  => array( $this, 'flight_times_content')
             );
         }
         if ( "" !== $pics && FALSE !== $pics ) {
-            $tabs['rates'] = array(
+            $tabs['pics'] = array(
                 'title'     => 'Pics',
                 'priority'  => 46,
                 'callback'  => array( $this, 'pics_content')
