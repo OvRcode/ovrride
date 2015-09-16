@@ -211,7 +211,7 @@ MAP;
         
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
         
-        echo "<h2> Bus Times</h2>";
+        echo "<h4>&nbsp;&nbsp;Bus Times:</h4>";
         $leftRight = "left";
         $count = 0;
         $leftColumnContent = "";
