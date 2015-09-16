@@ -32,6 +32,7 @@ class WC_Trips {
         add_action( 'wp_enqueue_scripts', array( $this, 'trip_scripts_and_styles' ) );
         add_action( 'init', array( $this, 'init_post_types' ) );
         add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
+        add_filter('woocommerce_product_description_heading','remove_description_header');
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
         }
@@ -54,7 +55,7 @@ class WC_Trips {
         include( 'includes/class-wc-product-trip.php' );
         // More includes here eventually
     }
-    
+
     public function trip_scripts_and_styles() {
         wp_enqueue_style( 'wc-trips-styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_frontend.css', null, WC_TRIPS_VERSION );
         wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'); 
@@ -262,6 +263,9 @@ PICKUPHTML;
         return $output;
     }
     
+    public function remove_description_header() {
+        return '';
+    }
 }
 $GLOBALS['wc_trips'] = new WC_Trips();
 }
