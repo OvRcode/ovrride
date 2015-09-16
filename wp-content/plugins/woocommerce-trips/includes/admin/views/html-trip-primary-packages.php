@@ -15,7 +15,7 @@
                 <thead>
                         <th class="sorting">&nbsp;</th>
                         <th class="description">Description</th>
-                        <th class="cost">Cost</th>
+                        <th class="cost">Cost ($)</th>
                         <th class="primary_package_stock">Stock</th>
                         <th class="delete_column">&nbsp;</th>
                 </thead>

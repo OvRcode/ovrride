@@ -115,7 +115,7 @@ class WC_Product_Trip extends WC_Product {
             
             if ( "" !== strval($values['cost']) && floatval($values['cost']) > 0 ) {
                 $dataCost = "data-cost='" . floatval($values['cost']) . "'" ;
-                $costLabel = " +$" . floatval($values['cost']);
+                $costLabel = " $" . floatval($values['cost']);
             } else if ( "" !== floatval($values['cost']) && floatval($values['cost']) < 0 ) {
                 $dataCost = "data-cost='" . floatval($values['cost']) . "'";
                 $costLabel = " " . substr_replace(floatval($values['cost']), "$", 1, 0);
