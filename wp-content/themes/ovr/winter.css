@@ -1380,6 +1380,9 @@ p.srp-widget-date {
 	margin-bottom: 10px;
 	height:127px;
 }*/
+.masonryItem {
+  width: 46%;
+}
 .front-photo,
 .masonryItem {
   background: none;
@@ -1387,8 +1390,6 @@ p.srp-widget-date {
   border-radius: 5px;
   margin: 0 4px 0 0;
   padding: 0 !important;
-  height: 132px;
-  width: 132px;
   box-shadow: none;
   float: left;
 }
