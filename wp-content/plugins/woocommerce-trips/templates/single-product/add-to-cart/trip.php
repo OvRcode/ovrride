@@ -46,7 +46,6 @@ do_action( 'woocommerce_before_add_to_cart_form' );
         </p>
         <?php 
         echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . $trip_type . "' data-required='true' />";
-        error_log("TRIP TYPE!:".$trip_type);
         switch ( $trip_type ) {
             case "international_flight":
                 echo <<<PASSPORT
@@ -73,26 +72,6 @@ PASSPORT;
                     <br />
                     <br />
 DOB;
-                break;
-            default:
-            echo <<<AGECHECK
-                <p class="form-field form-field-wide" id="wc_trip_age_check">
-                    <label for="wc_trip_age_check">Is this guest at least 18 years of age?<span class="required">*</span>
-                    <br />
-                    <input type="radio" name="wc_trip_age_check" value="yes" data-required="true"> Yes
-                    <br />
-                    <input type="radio" name="wc_trip_age_check" value="no" data-required="true"> No
-                    <br />
-                    <div class="DOB">
-                    	<label for="wc_trip_dob" class="dob_label">Date of Birth<span class="required">*</span></label>
-                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
-                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
-                        <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
-                        <input type="hidden" id="wc_trip_dob_field" name="wc_trip_dob_field" value="" />
-                    </div>
-                    <p>Guests under 18 years of age are welcome to join us as long as they abide by the terms of the <a href="http://ovrride.com/ovrride-age-policy/" target="_blank"><strong>OvRride Age Policy</strong></a>, and we are aware of the underage guest.</p>
-                </p>
-AGECHECK;
                 break;
         }
         $packages = [
@@ -123,6 +102,26 @@ PACKAGE;
                     </select>
                 </p>
 PICKUPS;
+        }
+        if ( "bus" == $trip_type ) {
+            echo <<<AGECHECK
+                <p class="form-field form-field-wide" id="wc_trip_age_check">
+                    <label for="wc_trip_age_check">Is this guest at least 18 years of age?<span class="required">*</span>
+                    <br />
+                    <input type="radio" name="wc_trip_age_check" value="yes" data-required="true"> Yes
+                    <br />
+                    <input type="radio" name="wc_trip_age_check" value="no" data-required="true"> No
+                    <br />
+                    <div class="DOB">
+                    	<label for="wc_trip_dob" class="dob_label">Date of Birth<span class="required">*</span></label>
+                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month"/><label class="dob_label">MM</label></span>
+                        <span style="float: left;"><input type="text" maxlength="2" name="wc_trip_dob_day" id="wc_trip_dob_day"/><label class="dob_label">DD</label></span>
+                        <span style="float: left;"><input type="text" maxlength="4" name="wc_trip_dob_year" id="wc_trip_dob_year"/><label class="dob_label">YYYY</label></span>
+                        <input type="hidden" id="wc_trip_dob_field" name="wc_trip_dob_field" value="" />
+                    </div>
+                    <p>Guests under 18 years of age are welcome to join us as long as they abide by the terms of the <a href="http://ovrride.com/ovrride-age-policy/" target="_blank"><strong>OvRride Age Policy</strong></a>, and we are aware of the underage guest.</p>
+                </p>
+AGECHECK;
         }
         ?>
         
