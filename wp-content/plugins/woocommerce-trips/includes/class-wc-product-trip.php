@@ -16,7 +16,7 @@ class WC_Product_Trip extends WC_Product {
             if ( $this->get_stock_quantity() < 10 ) {
                 return "only " . $this->get_stock_quantity() . " left";
             } else {
-                return "space available";
+                return "";
             }
         } else {
             return "sold out";
