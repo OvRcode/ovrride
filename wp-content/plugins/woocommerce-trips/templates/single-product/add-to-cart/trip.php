@@ -26,9 +26,11 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 <form class="cart" method="post" enctype='multipart/form-data'>
 
         <div id="wc-trips-form">
+        <div id="errors">
+        </div>
         <p class="form-field form-field-wide" id="wc_trip_first">
             <label for="wc_trip_first">First <span class="required">*</span></label>
-            <input type="text" name="wc_trip_first" data-required="true" />
+            <input type="text" name="wc_trip_first" data-required="true" /><br /><br />
         </p>
         <p class="form-field form-field-wide" id="wc_trip_last">
             <label for="wc_trip_last">Last <span class="required">*</span></label>
@@ -106,7 +108,7 @@ PICKUPS;
         if ( "bus" == $trip_type ) {
             echo <<<AGECHECK
                 <p class="form-field form-field-wide" id="wc_trip_age_check">
-                    <label for="wc_trip_age_check">Is this guest at least 18 years of age?<span class="required">*</span>
+                    <label for="wc_trip_age_check">Is this guest at least 18 years of age?<span class="required"> *</span></label>
                     <br />
                     <input type="radio" name="wc_trip_age_check" value="yes" data-required="true"> Yes
                     <br />

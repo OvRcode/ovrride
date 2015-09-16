@@ -57,3 +57,25 @@
   padding-left: 10px;
   padding-top: 20px;
 }
+.errorBorder {
+  border:1px solid red;
+}
+#errors {
+  display: none;
+  border: 1px solid #FFFFFF;
+  border-radius: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+  background: #CC0000;
+  color: #FFFFFF;
+}
+.errorField {
+  background-color:#CC0000;
+  color: #FFFFFF;
+}
+p.errorField {
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 10px;
+}

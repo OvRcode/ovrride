@@ -3,17 +3,51 @@ jQuery(document).ready(function($){
   var base_price = Number($("#base_price").val());
   base_price = base_price.toFixed(2);
   $("#trip_price").text("$" + base_price);
-  
-  // disabled add to cart button on load
-  enableDisableCart();
-  
-  // validate fields when values change
-  $("#wc-trips-form select").on("change", function(){
-    enableDisableCart();
-  });
-  
-  $("#wc-trips-form input").on("keyup", function(){
-    enableDisableCart();
+  // Prevent html form submission before validation
+  $(".single_add_to_cart_button").on("click", function(event){
+    event.preventDefault();
+    var errors = {};
+    $.each($("input[name^=wc_trip_], select[name^=wc_trip_]"), function(key,field){
+      if ( $(field).data("required")){
+        var label = $(field).siblings('label').text().replace(" *","");
+        if ( "text" == $(field).attr("type") && "" === $(field).val()){
+          $(field).addClass("errorField");
+          errors[label] = label + " is blank";
+        } else if ( $(field).is("select") && "" === $(field).val()) {
+          $(field).addClass("errorField");
+          errors[label] = "Select an option for " + label;
+        } else if ( "radio" == $(field).attr("type") ) {
+          //  label = $(field).parents('label').text().replace(" *","");
+          var fieldName = $(field).attr("name");
+          var radio = $("input[name=" + fieldName + "]");
+          if ( true === radio.data("required") && !radio.is(":checked") ) {
+            errors[label] = "Select an option for " + label;
+            radio.addClass('errorField');
+            radio.parents('p').addClass('errorField');
+          }
+        }
+      }
+    });
+    if ( !jQuery.isEmptyObject(errors) ) {
+      $("#errors").html('');
+      $("#errors").append("<strong>Please correct the following errors to complete your reservation</strong><br />");
+      $.each(errors, function(k,v){
+        $("#errors").append(v + "<br />");
+      });
+      $("#errors").append("</p>");
+      $("#errors").show();
+      $('html, body').animate({ scrollTop: $("p.stock").offset().top }, 'slow');
+      $(".errorField, p.errorField").on("change", function(){
+        if ( "" !== $(this).val() ) {
+          $(this).removeClass('errorField');
+        }
+        if ( "radio" == $(this).attr("type") ) {
+          $(this).parents('p').removeClass('errorField');
+        }
+      });
+    } else {
+      $("#wc-trips-form").parents('form').submit();
+    }
   });
   $("input[name=wc_trip_email]").verimail({
     messageElement: "p#emailValidation"
@@ -31,7 +65,6 @@ jQuery(document).ready(function($){
   
   if ( "domestic_flight" !== $("#wc_trip_type").val() && "international_flight" !== $("#wc_trip_type").val()){
     $("input[name=wc_trip_age_check]").on("change", function(){
-      enableDisableCart();
       var fields = [$("label[for=wc_trip_dob]"), $("#wc_trip_dob_month"), $("#wc_trip_dob_day"), $("#wc_trip_dob_year")];
       if ( "no" == $(this).val() ) {
         $.each(fields, function(k,v){
@@ -46,7 +79,6 @@ jQuery(document).ready(function($){
         });
         $(".postDOB").remove();
       }
-      enableDisableCart();
     });
   } else {
     $(".DOB").show();
@@ -74,7 +106,6 @@ jQuery(document).ready(function($){
     
     $("#trip_price").text( "$" + total.toFixed(2) );
   });
-  // Enables/disables cart button based on fields being filled out
   function enableDisableCart() {
     var fieldsOK = true;
     var fields = $("input[name^=wc_trip_], select[name^=wc_trip_]");
