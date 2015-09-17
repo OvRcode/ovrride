@@ -139,7 +139,7 @@ AGECHECK;
     </p>
     <input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
     
-    <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
+    <button type="submit" class="single_add_to_cart_button button alt wc_trip_add"><?php echo $product->single_add_to_cart_text(); ?></button>
     
     <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 

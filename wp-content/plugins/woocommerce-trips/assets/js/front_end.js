@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
   base_price = base_price.toFixed(2);
   $("#trip_price").text("$" + base_price);
   // Prevent html form submission before validation
-  $(".single_add_to_cart_button").on("click", function(event){
+  $(".single_add_to_cart_button.wc_trip_add").on("click", function(event){
     event.preventDefault();
     var errors = {};
     $.each($("input[name^=wc_trip_], select[name^=wc_trip_]"), function(key,field){
