@@ -36,9 +36,7 @@ function ovr_login_url_title() {
     return 'Get Away The Right Way!';
 }
 function ovr_login_stylesheet() {
-    error_log(get_template_directory_uri());
     wp_enqueue_style( 'custom-login', get_stylesheet_directory_uri() . '/login.css' );
-    //wp_enqueue_script( 'custom-login', get_template_directory_uri() . '/style-login.js' );
 }
 
 // check for empty-cart get param to clear the cart
