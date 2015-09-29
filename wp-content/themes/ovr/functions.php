@@ -54,38 +54,6 @@ function woocommerce_clear_cart_url() {
 // Remove order again button
 remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
 
-//* Adding DNS Prefetching
-function ism_dns_prefetch() {
-    echo <<<PREFETCH
-        <meta http-equiv="x-dns-prefetch-control" content="on">
-        <link rel="dns-prefetch" href="//ovrride.com.com" />
-        <link rel="dns-prefetch" href="//static.xx.fbcdn.net" />
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="dns-prefetch" href="//platform.twitter.com" />
-        <link rel="dns-prefetch" href="//gstatic.com" />
-        <link rel="dns-prefetch" href="//connect.facebook.net" />
-        <link rel="dns-prefetch" href="//scontent.cdninstagram.com" />
-        <link rel="dns-prefetch" href="//scontent-iad3-1.xx.fbcdn.net" />
-        <link rel="dns-prefetch" href="//google-analytics.com" />
-        <link rel="dns-prefetch" href="//s-static.ak.facebook.com" />
-        <link rel="dns-prefetch" href="//static.ak.facebook.com" />
-        <link rel="dns-prefetch" href="//facebook.com" />
-        <link rel="dns-prefetch" href="//cdn.syndication.twimg.com" />
-        <link rel="dns-prefetch" href="//statcounter.com" />
-        <link rel="dns-prefetch" href="//pbs.twimg.com" />
-        <link rel="dns-prefetch" href="//fbcdn-profile-a.akamaihd.net" />
-        <link rel="dns-prefetch" href="//fbcdn-profile-a.akamaihd.net" />
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="//syndication.twitter.com" />
-        <link rel="dns-prefetch" href="//google.com" />
-        <link rel="dns-prefetch" href="//c.statcounter.com" />
-        <link rel="dns-prefetch" href="//stats.g.doubleclick.net" />
-PREFETCH;
-}
-
-add_action('wp_head', 'ism_dns_prefetch', 0);
-
-
 // Theme mode selection
 $themename = "OvRride";
 $shortname = "ovr";
