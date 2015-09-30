@@ -326,7 +326,12 @@ function dfcg_jquery_smooth_scripts($dfcg_options) {
 	
 	if( $dfcg_options['scripts'] == 'jquery' ) {
 		echo "\n" . '<!-- Dynamic Content Gallery plugin version ' . DFCG_VER . ' www.studiograsshopper.ch  Add jQuery smoothSlideshow scripts -->' . "\n";
-		echo '<script type="text/javascript" src="' . DFCG_URL . '/js-jquery-smooth/scripts/dfcg-jq-script.min.js"></script>' . "\n";
+        if ( is_ssl() ) {
+            $url = preg_replace("/^http/","https", DFCG_URL);
+        } else {
+            $url = DFCG_URL;
+        }
+		echo '<script type="text/javascript" src="' . $url . '/js-jquery-smooth/scripts/dfcg-jq-script.min.js"></script>' . "\n";
 		echo '<script type="text/javascript">
 			jQuery("#dfcg-slideshow").smoothSlideshow("#dfcg-wrapper", {
 				showArrows: '. $dfcg_options['showArrows'] .',
@@ -547,7 +552,9 @@ function dfcg_get_thumbnail($id, $image_src, $title) {
 	
 	// Get the thumbnail - uses Post Thumbnails if AUTO images are used
 	if( current_theme_supports('post-thumbnails') && $dfcg_options['thumb-type'] == "post-thumbnails" ) {
-		
+		if ( is_ssl() ) {
+		    $image_src = preg_replace("/^http/", "https", $image_src);
+		}
 		$args = array(
 			"class" => "dfcg-postthumb-auto thumbnail",
 			"alt" => esc_attr($title),
