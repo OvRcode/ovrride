@@ -25,7 +25,15 @@ template node['php-fpm']['conf_file'] do
   group "root"
   notifies :restart, "service[php-fpm]"
 end
-
+template "/etc/php5/fpm/php.ini" do
+  only_if "test -d /etc/php5/fpm || mkdir -p /etc/php5/fpm"
+  source "php.ini.erb"
+  mode 00644
+  owner "root"
+  group "root"
+  variables({:session_handler => "memcached",:session_path => "tcp://192.168.50.6:11211,tcp://192.168.50.6:11211"})
+  notifies :restart, "service[php-fpm]"
+end
 unless node['php-fpm']['pools'].key?('www')
   php_fpm_pool 'www' do
     enable false
