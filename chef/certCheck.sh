@@ -19,6 +19,10 @@ function generate_certificate {
   openssl x509 -req -days 3650 -in local.ovrride.com.csr -signkey local.ovrride.com.key -out local.ovrride.com.crt -extensions v3_req -extfile chef/openssl.cnf
 }
 
+function generate_pem {
+  echo "Generating PEM"
+  cat local.ovrride.com.crt local.ovrride.com.key > local.ovrride.com.pem
+}
 # GET DIR OF THIS SCRIPT
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # Move up one level
@@ -29,11 +33,16 @@ if [ ! -f local.ovrride.com.key ]; then
   generate_key
   generate_signing_request
   generate_certificate
+  generate_pem
 elif [ ! -f local.ovrride.com.csr ]; then
   generate_signing_request
   generate_certificate
+  generate_pem
 elif [ ! -f local.ovrride.com.crt ]; then
   generate_certificate
+  generate_pem
+elif [ ! -f local.ovrride.com.pem]; then
+  generate_pem
 else
   echo "All Files present"
 fi

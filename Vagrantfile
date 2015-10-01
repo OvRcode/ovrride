@@ -26,7 +26,7 @@ boxes = [
     },
     {
         :name => "lists",
-        :hostname => "lists1.local.ovrride.com",
+        :hostname => "lists.local.ovrride.com",
         :eth1 => "192.168.50.8",
         :mem => "512",
         :cpu => "1"
@@ -65,7 +65,6 @@ Vagrant.configure(2) do |config|
 
       if opts[:name] == "haproxy"
         config.vm.hostname = "local.ovrride.com"
-        config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
       else
         config.vm.hostname = opts[:hostname]
       end

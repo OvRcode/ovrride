@@ -15,6 +15,12 @@ template "/etc/hhvm/server.ini" do
   group "root"
   variables({:unix_socket => '/var/run/hhvm/hhvm.sock' })
 end
+
+
+execute "add hhvm to defaults" do
+  command "update-rc.d hhvm defaults"
+end
+
 # Couldn't get it working through notifies on template for some reason
 execute "restart HHVM" do
   command "service hhvm restart"
