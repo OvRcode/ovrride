@@ -31,6 +31,8 @@ run_list(
 "recipe[s3cmd::add_keys]",
 "recipe[memcached::default]",
 "recipe[hhvm::memcache]",
-"recipe[apache2::webconfig]",
+"recipe[php::modules]",
+"recipe[php-fpm]",
+"recipe[nginx::webconfig]",
 "recipe[ovr::get_images]"
 )
