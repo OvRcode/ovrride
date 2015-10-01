@@ -1,12 +1,12 @@
 {
   // Wordpress keys and salts, these values are only for development and not used in production
   "id": "local_keys", 
-  "WP_AUTH_KEY" : ")Kz1nWb(B!2&X0c8/$2KIEC},V(kFVC@L29X7^M4Jj)I{/=.|Sr}:ZCBrq}L,|[",
-  "WP_SECURE_AUTH_KEY": "dUk!dzCwpcqAiZ>5gYgr~8@R.>k,D5;t|kUNruE+9yc{v?{l:z2=Nka=BFzS3f:",
-  "WP_LOGGED_IN_KEY": "&.3gEv?<@KTo7O+BT~>Xt[WC/!RIGY_*N3vF&4zJGA4}7=}mR?d<&uTvhYU-jPM",
-  "WP_NONCE_KEY": "}rh~OW^)|StleVhoFb^oiNT@,V>?j45uE|qz>ttS2i$oGicY.)>2bO])8Zi~>!G",
-  "WP_AUTH_SALT": "Uhe}//gRwe.dE}wwg79M^--mVzHB~_+cRAH}jO2GA/pcX$>e]L%/;6rq&Dv$?Zp",
-  "WP_SECURE_AUTH_SALT": "ssuwHeUfU8H,:N=(KLSgk0,G?4YD1)&xX.>&rsF{o}D_iTl_8[>fzEP,+5q@u3[",
-  "WP_LOGGED_IN_SALT": "E{F/4L.4UW6>_.R/0J0-xoi;b5H!}eVEK]JJB,<~%dD$wcy)sV9$!$+y1./Gfb%",
-  "WP_NONCE_SALT": "vh)kRaqA6;K3e9sB*FMtX]pf/5J}KK-Kp!i2B*1SXKIWMH56Sp,(7lFiqrdcx$7"
+  "WP_AUTH_KEY" : "wYUgl1E7POirdLRqZCZUJg6z74KPa3IC9QFnUdGkIxenH5BUOBF8dya0wvPSKxy",
+  "WP_SECURE_AUTH_KEY": "PVXB4cTeExrLXJERwcrqLXe2uWdInaXsSQuP8TKwwZNRgFvcpzKMQdZz7fFGhZj",
+  "WP_LOGGED_IN_KEY": "olgKtakTZ9423RjXY3ZIzUPi3IAHEggLzNuDXZPrrHsI3TJIfZAZDpAKsRJckvX",
+  "WP_NONCE_KEY": "1VYtWvoFefcXn5KFfBoYzpxEauJfWpjXfyOaHXEw2Re6NZ1AheqDvH2tLjSQlKQ",
+  "WP_AUTH_SALT": "vrocp91Smijhb8QxzPk1aheAHQXDQOjMu6r9Yy3FI11j8w8R8FkfpwdsR5Md2eT",
+  "WP_SECURE_AUTH_SALT": "ZxOEED6OZVHYW4msA5E1lNRbrvDqucNW6oendwmbUX7G0IbDXumjXbgWwMnSdVf",
+  "WP_LOGGED_IN_SALT": "v9m8a8OK2p4vk7uBioLtl8TdR0fAJmNEcysxfanNj1zyxOa71XP5ZQSdxiHFcIU",
+  "WP_NONCE_SALT": "cQwSqsl8ZlQGWhGjewLWKPFbUpmFGhqYnNrTO8qOpfo0F69oYcdEiXCFtoTCOiA"
 }
