@@ -1,4 +1,3 @@
-name            "s3cmd"
 maintainer       "Enis Soztutar"
 maintainer_email "enis@speeddate.com"
 license          "Apache 2.0"
