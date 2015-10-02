@@ -2990,7 +2990,7 @@ function minical_draw_events($events,$day_of_week = '')
     // Setup the wrapper
     // TODO: This needs a better fix. Tempt fix takes minical to ovrride.com/events - AJ
     $output = '<span class="calnk"><a href="http://ovrride.com/events/" style="background-color:#00BCE7;">'.$day_of_week.'<span>';
-    error_log(print_r($events, true));
+
     // Now process the events
     foreach($events as $event)
       {
