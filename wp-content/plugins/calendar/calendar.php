@@ -2988,7 +2988,9 @@ function minical_draw_events($events,$day_of_week = '')
   $output = '';
   if (count($events)) {
     // Setup the wrapper
-    $output = '<span class="calnk"><a href="#" style="background-color:#F6F79B;">'.$day_of_week.'<span>';
+    // TODO: This needs a better fix. Tempt fix takes minical to ovrride.com/events - AJ
+    $output = '<span class="calnk"><a href="http://ovrride.com/events/" style="background-color:#00BCE7;">'.$day_of_week.'<span>';
+    error_log(print_r($events, true));
     // Now process the events
     foreach($events as $event)
       {
@@ -3093,9 +3095,13 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
 
   // Start the table and add the header and naviagtion                                                                                                                            
   $calendar_body = '';
-  $calendar_body .= '<div style="width:200px;"><table cellspacing="1" cellpadding="0" class="calendar-table">
+  $calendar_body .= '<div style="width:100%;"><table cellspacing="1" cellpadding="0" class="calendar-table">
 ';
-
+// Add Saranac header
+$img_path = get_stylesheet_directory_uri() . "/images/Saranac-Cal-summer.png";
+$calendar_body .= '<tr>
+                    <td colspan="7"><img src="' . $img_path . '"></td>
+                    </tr>';
 
   // The header of the calendar table and the links. Note calls to link functions
   $calendar_body .= '<tr>
