@@ -209,9 +209,9 @@ class WC_Post_types {
 					register_taxonomy( $name, apply_filters( "woocommerce_taxonomy_objects_{$name}", array( 'product' ) ), apply_filters( "woocommerce_taxonomy_args_{$name}", $taxonomy_data ) );
 				}
 			}
-
-			do_action( 'woocommerce_after_register_taxonomy' );
 		}
+
+		do_action( 'woocommerce_after_register_taxonomy' );
 	}
 
 	/**
@@ -285,7 +285,7 @@ class WC_Post_types {
 				array(
 					'labels'              => array(
 							'name'               => __( 'Orders', 'woocommerce' ),
-							'singular_name'      => __( 'Order', 'woocommerce' ),
+							'singular_name'      => _x( 'Order', 'shop_order post type singular name', 'woocommerce' ),
 							'add_new'            => __( 'Add Order', 'woocommerce' ),
 							'add_new_item'       => __( 'Add New Order', 'woocommerce' ),
 							'edit'               => __( 'Edit', 'woocommerce' ),

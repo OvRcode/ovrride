@@ -4,7 +4,7 @@
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     2.3.0
+ * @version     2.4.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -59,7 +59,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	</div>
 
-	<div class="clear"></div>
 </div>
 
 <?php if ( ! is_ajax() ) : ?>

@@ -888,7 +888,7 @@ if ( ! function_exists( 'woocommerce_variable_add_to_cart' ) ) {
 		wp_enqueue_script( 'wc-add-to-cart-variation' );
 
 		// Get Available variations?
-		$get_variations = sizeof( $product->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 20, $product );
+		$get_variations = sizeof( $product->get_children() ) <= apply_filters( 'woocommerce_ajax_variation_threshold', 30, $product );
 
 		// Load the template
 		wc_get_template( 'single-product/add-to-cart/variable.php', array(
@@ -1793,7 +1793,7 @@ if ( ! function_exists( 'woocommerce_form_field' ) ) {
 			$field_html .= $field;
 
 			if ( $args['description'] ) {
-				$field_html .= '<span class="description">' . esc_attr( $args['description'] ) . '</span>';
+				$field_html .= '<span class="description">' . esc_html( $args['description'] ) . '</span>';
 			}
 
 			$container_class = 'form-row ' . esc_attr( implode( ' ', $args['class'] ) );
@@ -1904,7 +1904,7 @@ if ( ! function_exists( 'wc_dropdown_variation_attribute_options' ) ) {
 	 * @since 2.4.0
 	 */
 	function wc_dropdown_variation_attribute_options( $args = array() ) {
-		$args = wp_parse_args( $args, array(
+		$args = wp_parse_args( apply_filters( 'woocommerce_dropdown_variation_attribute_options_args', $args ), array(
 			'options'          => false,
 			'attribute'        => false,
 			'product'          => false,
