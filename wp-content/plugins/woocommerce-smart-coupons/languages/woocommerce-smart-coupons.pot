@@ -1195,7 +1195,7 @@ msgstr ""
 #: ../classes/class-sc-admin-welcome.php:137
 msgid ""
 "This is a new discount type added by this plugin in WooCommerce Coupons. A "
-"coupon having having this discount type can be called as either Smart Coupon "
+"coupon having this discount type can be called as either Smart Coupon "
 "or Store Credit or Gift Certificate. This coupon's amount can be called as "
 "balance."
 msgstr ""

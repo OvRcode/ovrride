@@ -124,13 +124,14 @@ if ( !class_exists( 'Smart_Coupons_WC_Compatibility' ) ) {
 		 * WooCommerce Price with Currency Symbol
 		 * 
 		 * @param float $price
+		 * @param array $args
 		 * @return string $price with currency symbol
 		 */
-		public static function wc_price( $price ) {
-			if ( self::is_wc_22() || self::is_wc_21() ) {
-				return wc_price( $price );
+		public static function wc_price( $price, $args = array() ) {
+			if ( self::is_wc_greater_than( '2.0.20' ) ) {
+				return wc_price( $price, $args );
 			} else {
-				return woocommerce_price( $price );
+				return woocommerce_price( $price, $args );
 			}
 		}
 

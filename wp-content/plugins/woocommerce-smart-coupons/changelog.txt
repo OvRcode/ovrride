@@ -1,5 +1,15 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.09.22 - version 3.0.5
+ * Fix: Show 'Discount' & 'Store Credit Used' separately
+ * Fix: Store Credit amount in description for attached coupons are not changing per variations
+ * Fix: Store Credit not applying when subscription sign-up fee is zero, due to this Store Credit can't be used for auto-renewal payment
+ * Fix: Coupon's description is not copied to auto generated coupons
+ * Fix: 'Free Gift' coupons are not displayed on checkout page (Thanks to: Kathy)
+ * Update: Allow attaching of coupons to all WooCommerce product types
+ * Tweak: Replaced 'woocommerce_price' with compatibility function for price
+ * Tweak: Minor change in compatibility file
+
 2015.08.14 - version 3.0.4
  * Fix: Issuing more store credit when purchasing store credit in multiple quantities
 

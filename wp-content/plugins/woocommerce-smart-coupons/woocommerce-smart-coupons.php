@@ -3,13 +3,13 @@
  * Plugin Name: WooCommerce Smart Coupons
  * Plugin URI: http://www.woothemes.com/products/smart-coupons/
  * Description: <strong>WooCommerce Smart Coupons</strong> lets customers buy gift certificates, store credits or coupons easily. They can use purchased credits themselves or gift to someone else.
- * Version: 3.0.4
+ * Version: 3.0.5
  * Author: WooThemes
  * Author URI: http://woothemes.com/
  * Developer: Store Apps
  * Developer URI: http://www.storeapps.org/
  * Requires at least: 3.5
- * Tested up to: 4.2.4
+ * Tested up to: 4.3.1
  * Text Domain: woocommerce-smart-coupons
  * Domain Path: /languages/
  * Copyright (c) 2012, 2013, 2014, 2015 Store Apps All rights reserved.
@@ -332,6 +332,7 @@ if ( is_woocommerce_active() ) {
 					add_filter( 'woocommerce_subscriptions_renewal_order_items', array( $this, 'sc_modify_renewal_order' ), 10, 5 );
 					add_action( 'woocommerce_subscriptions_renewal_order_created', array( $this, 'sc_renewal_complete_payment' ), 10, 4 );
 					add_filter( 'woocommerce_subscriptions_renewal_order_items', array( $this, 'sc_subscriptions_renewal_order_items' ), 10, 5 );
+					add_filter( 'valid_subscription_coupon_type', array( $this, 'smart_coupon_as_valid_subscription_coupon_type' ) );
 				}
 
 				add_action( 'restrict_manage_posts', array( $this, 'woocommerce_restrict_manage_smart_coupons'), 20 );
@@ -794,6 +795,18 @@ if ( is_woocommerce_active() ) {
 			}
 
 			/**
+			 * Get valid_subscription_coupon array and add smart_coupon type
+			 *
+			 * @return array $valid_subscription_coupon
+			 */
+			public function smart_coupon_as_valid_subscription_coupon_type( $valid_subscription_coupon_type ){
+				
+				array_push( $valid_subscription_coupon_type , 'smart_coupon' );
+				
+				return $valid_subscription_coupon_type;
+			}
+
+			/**
 			 * Set 'coupon_sent' as 'no' for renewal order to allow auto generation of coupons (if applicable)
 			 *
 			 * @param array $order_items associative array of order items
@@ -911,7 +924,7 @@ if ( is_woocommerce_active() ) {
 				$gift_certificate = $this->global_wc()->session->credit_called;
 
 				if( ! empty( $gift_certificate ) && isset( $gift_certificate[$cart_item_key] ) && ! empty( $gift_certificate[$cart_item_key] ) )
-					return woocommerce_price( $gift_certificate[$cart_item_key] );
+					return $this->wc_price( $gift_certificate[$cart_item_key] );
 
 				return $product_price;
 
@@ -1368,17 +1381,17 @@ if ( is_woocommerce_active() ) {
 				switch( $coupon->discount_type ) {
 					case 'smart_coupon':
 						$coupon_type = __( 'Store Credit', self::$text_domain );
-						$coupon_amount = woocommerce_price( $coupon->amount );
+						$coupon_amount = $this->wc_price( $coupon->amount );
 						break;
 
 					case 'fixed_cart':
 						$coupon_type = __( 'Cart Discount', self::$text_domain );
-						$coupon_amount = woocommerce_price( $coupon->amount );
+						$coupon_amount = $this->wc_price( $coupon->amount );
 						break;
 
 					case 'fixed_product':
 						$coupon_type = __( 'Product Discount', self::$text_domain );
-						$coupon_amount = woocommerce_price( $coupon->amount );
+						$coupon_amount = $this->wc_price( $coupon->amount );
 						break;
 
 					case 'percent_product':
@@ -1446,17 +1459,17 @@ if ( is_woocommerce_active() ) {
 				switch( $coupon->discount_type ) {
 					case 'smart_coupon':
 						$coupon_data['coupon_type'] = __( 'Store Credit', self::$text_domain );
-						$coupon_data['coupon_amount'] = woocommerce_price( $coupon->amount );
+						$coupon_data['coupon_amount'] = $this->wc_price( $coupon->amount );
 						break;
 
 					case 'fixed_cart':
 						$coupon_data['coupon_type'] = __( 'Cart Discount', self::$text_domain );
-						$coupon_data['coupon_amount'] = woocommerce_price( $coupon->amount );
+						$coupon_data['coupon_amount'] = $this->wc_price( $coupon->amount );
 						break;
 
 					case 'fixed_product':
 						$coupon_data['coupon_type'] = __( 'Product Discount', self::$text_domain );
-						$coupon_data['coupon_amount'] = woocommerce_price( $coupon->amount );
+						$coupon_data['coupon_amount'] = $this->wc_price( $coupon->amount );
 						break;
 
 					case 'percent_product':
@@ -1552,17 +1565,17 @@ if ( is_woocommerce_active() ) {
 
 							case 'smart_coupon':
 								$coupon_type = 'Store Credit';
-								$coupon_amount = woocommerce_price( $coupon->amount );
+								$coupon_amount = $this->wc_price( $coupon->amount );
 								break;
 
 							case 'fixed_cart':
 								$coupon_type = 'Cart Discount';
-								$coupon_amount = woocommerce_price( $coupon->amount );
+								$coupon_amount = $this->wc_price( $coupon->amount );
 								break;
 
 							case 'fixed_product':
 								$coupon_type = 'Product Discount';
-								$coupon_amount = woocommerce_price( $coupon->amount );
+								$coupon_amount = $this->wc_price( $coupon->amount );
 								break;
 
 							case 'percent_product':
@@ -2026,7 +2039,7 @@ if ( is_woocommerce_active() ) {
 						$coupon = new WC_Coupon( $code );
 
 						if ( $coupon->discount_type == 'smart_coupon' && $coupon->amount > 0 ) {
-							$store_credit_balance .= '<li><strong>'. $coupon->code .'</strong> &mdash; '. woocommerce_price( $coupon->amount ) .'</li>';
+							$store_credit_balance .= '<li><strong>'. $coupon->code .'</strong> &mdash; '. $this->wc_price( $coupon->amount ) .'</li>';
 						}
 					}
 
@@ -2099,7 +2112,7 @@ if ( is_woocommerce_active() ) {
 							continue;
 						}
 
-						if( ( empty( $coupon->amount ) || $coupon->amount == 0 ) && $coupon->free_shipping == "no" )
+						if( ( empty( $coupon->amount ) || $coupon->amount == 0 ) && $coupon->free_shipping == "no" && ! empty( $coupon->discount_type ) && $coupon->discount_type != 'free_gift' )
 							continue;
 
 						if ( empty( $coupon->discount_type ) || ( ! empty( $coupon->expiry_date  ) && current_time( 'timestamp' ) > $coupon->expiry_date ) )
@@ -2318,7 +2331,7 @@ if ( is_woocommerce_active() ) {
 						?>
 						<div class="form_table">
 							<div class="email_amount">
-								<div class="amount"><p class="coupon_amount_label"><?php echo woocommerce_price( $coupon_amount ); ?></p></div>
+								<div class="amount"><p class="coupon_amount_label"><?php echo $this->wc_price( $coupon_amount ); ?></p></div>
 								<div class="email"><input class="gift_receiver_email" type="text" placeholder="<?php _e( 'Email address', self::$text_domain ); ?>..." name="gift_receiver_email[<?php echo $coupon->id; ?>][]" value="" /></div>
 							</div>
 							<div class="message_row">
@@ -2487,13 +2500,7 @@ if ( is_woocommerce_active() ) {
 
 						$coupon = new WC_Coupon( $coupon_title );
 						$is_pick_price_of_product = get_post_meta( $coupon->id, 'is_pick_price_of_product', true );
-
-						if ( $_product->product_type == 'variable' && $is_pick_price_of_product == 'yes' ) {
-							$js = "
-								jQuery('div.gift-certificates').hide();
-							";
-						}
-
+										
 						if ( $list_started && !empty( $coupon->discount_type ) ) {
 							echo '<div class="clear"></div>';
 							echo '<div class="gift-certificates">';
@@ -2506,21 +2513,52 @@ if ( is_woocommerce_active() ) {
 
 							case 'smart_coupon':
 
-								//NEWLY ADDED TO EVENSHOW COUPON THAT HAS "is_pick_price_of_product" : TRUE
-								if( get_post_meta( $coupon->id, 'is_pick_price_of_product', true ) == 'yes' ){
-									$amount = ($_product->price > 0) ? __( 'Store Credit of ', self::$text_domain ) . $_product->price : "" ;
+								if ( $is_pick_price_of_product == 'yes') {
+
+									if ( $_product->product_type == 'variable' ) {
+
+										$js = " jQuery('div.gift-certificates').hide();
+												jQuery('input[name=variation_id]').on('change', function(){
+	                            					
+	                            					var variation_id = jQuery('input[name=variation_id]').val();
+	                            					if ( variation_id != '' && variation_id != undefined ) {
+	                            						jQuery('form.variations_form.cart').one( 'found_variation', function( event, variation ) {
+																		if ( variation_id = variation.variation_id ) {
+																			jQuery('div.gift-certificates').show().fadeTo( 100, 0.4 );
+																			var amount = jQuery(variation.price_html).text();
+																			jQuery('div.gift-certificates').find('li.pick_price_from_product').remove();
+																			jQuery('div.gift-certificates').find('ul').append( '<li class=\"pick_price_from_product\" >' + '" . __( 'Store Credit of ', self::$text_domain ) . "' + amount + '</li>');
+																			jQuery('div.gift-certificates').fadeTo( 100, 1 );
+																		}
+														});
+													}
+												});
+										
+										        jQuery('a.reset_variations').on('click', function(){
+													jQuery('div.gift-certificates').find('li.pick_price_from_product').remove();
+													jQuery('div.gift-certificates').hide();
+												});";
+
+										$amount = "";
+
+									} else {
+
+										$amount = ( $price > 0) ? __( 'Store Credit of ', self::$text_domain ) . $this->wc_price( $price ) : "" ;
+
+									}
+
 								} else {
-									$amount = __( 'Store Credit of ', self::$text_domain ) . woocommerce_price( $coupon->amount );
+									$amount = __( 'Store Credit of ', self::$text_domain ) . $this->wc_price( $coupon->amount );
 								}
 
 								break;
 
 							case 'fixed_cart':
-								$amount = woocommerce_price( $coupon->amount ).__( ' discount on your entire purchase.', self::$text_domain );
+								$amount = $this->wc_price( $coupon->amount ).__( ' discount on your entire purchase.', self::$text_domain );
 								break;
 
 							case 'fixed_product':
-								$amount = woocommerce_price( $coupon->amount ).__( ' discount on product.', self::$text_domain );
+								$amount = $this->wc_price( $coupon->amount ).__( ' discount on product.', self::$text_domain );
 								break;
 
 							case 'percent_product':
@@ -2670,7 +2708,7 @@ if ( is_woocommerce_active() ) {
 
 					$calculation_type = WC_Subscriptions_Cart::get_calculation_type();
 
-					if ( $calculation_type == 'recurring_total' ) {
+					if ( $calculation_type == 'recurring_total' || $calculation_type == 'none' ) {
 						return $total;
 					}
 
@@ -2761,7 +2799,7 @@ if ( is_woocommerce_active() ) {
 							if ( empty( $this->global_wc()->cart->smart_coupon_credit_used ) ) {
 								$this->global_wc()->cart->smart_coupon_credit_used = array();
 							}
-							if ( empty( $this->global_wc()->cart->smart_coupon_credit_used[$coupon->code] ) || ( $cart_contains_subscription && $calculation_type == 'combined_total' ) ) {
+							if ( empty( $this->global_wc()->cart->smart_coupon_credit_used[$coupon->code] ) || ( $cart_contains_subscription && ( $calculation_type == 'combined_total' || $calculation_type == 'sign_up_fee_total' ) ) ) {
 								$this->global_wc()->cart->smart_coupon_credit_used[$coupon->code] = $discount;
 							} else {
 								$this->global_wc()->cart->smart_coupon_credit_used[$coupon->code] += $discount;
@@ -2822,17 +2860,24 @@ if ( is_woocommerce_active() ) {
 
 				$offset = array_search( 'order_total', array_keys( $total_rows ) );
 
-				if ( $offset !== false && ! empty( $total_credit_used ) ) {
-
+				if ( $offset !== false && ! empty( $total_credit_used ) && ! empty( $total_rows ) ) {
 					$total_rows = array_merge(
 							            array_slice( $total_rows, 0, $offset ),
 							            array( 'smart_coupon' => array(
 																	'label' => __( 'Store Credit Used:', self::$text_domain ),
-																	'value'	=> '-' . wc_price( $total_credit_used )
+																	'value'	=> '-' . $this->wc_price( $total_credit_used )
 																)),
 							            array_slice( $total_rows, $offset, null)
 							        );
 
+					$total_discount = $order->get_total_discount();
+					// code to check and manipulate 'Discount' amount based on Store Credit used 
+					if( $total_discount == $total_credit_used ) {
+						unset( $total_rows['discount'] );
+					} else {
+						$total_discount = $total_discount - $total_credit_used;
+						$total_rows['discount']['value'] = '-' . $this->wc_price( $total_discount );
+					}
 				}
 
 				return $total_rows;
@@ -2859,7 +2904,7 @@ if ( is_woocommerce_active() ) {
 				<tr>
 					<td class="label"><?php _e( 'Store Credit Used', self::$text_domain ); ?> <span class="tips" data-tip="<?php _e( 'This is the total credit used.', self::$text_domain ); ?>">[?]</span>:</td>
 					<td class="total">
-						<?php echo wc_price( $total_credit_used, array( 'currency' => $order->get_order_currency() ) ); ?>
+						<?php echo $this->wc_price( $total_credit_used, array( 'currency' => $order->get_order_currency() ) ); ?>
 					</td>
 					<td width="1%"></td>
 				</tr>
@@ -2930,9 +2975,14 @@ if ( is_woocommerce_active() ) {
 			 * @return float $total_discount
 			 */
 			public function smart_coupons_order_amount_total_discount( $total_discount, $order = null ) {
-
+				
+				// To avoid adding store credit in 'Discount' field on order admin panel
+				if ( did_action( 'woocommerce_admin_order_item_headers' ) >= 1 ) return $total_discount;
+				
 				$total_credit_used = $this->get_total_credit_used_in_order( $order );
-				$total_discount += $total_credit_used;
+				if ( $total_credit_used > 0 ) {
+					$total_discount += $total_credit_used;
+				}
 				return $total_discount;
 
 			}
@@ -3016,11 +3066,14 @@ if ( is_woocommerce_active() ) {
 			 */
 			public function is_smart_coupon_valid( $valid, $coupon ) {
 				global $woocommerce;
+				
+				if ( $coupon->discount_type != 'smart_coupon' ) return $valid;
 
 				$applied_coupons = $this->global_wc()->cart->get_applied_coupons();
-				if ( ! in_array( $coupon->code, $applied_coupons ) ) return $valid;
 
-				if ( $valid && $coupon->discount_type == 'smart_coupon' && $coupon->amount <= 0 ) {
+				if ( ! empty( $applied_coupons ) && ! in_array( $coupon->code, $applied_coupons ) ) return $valid;
+
+				if ( $valid && $coupon->amount <= 0 ) {
 					$this->global_wc()->cart->remove_coupon( $coupon->code );
 					if ( $this->is_wc_gte_21() ) {
 						wc_add_notice( sprintf(__( 'Coupon removed. There is no credit remaining in %s.', self::$text_domain ), '<strong>' . $coupon->code . '</strong>' ), 'error' );
@@ -3365,7 +3418,9 @@ if ( is_woocommerce_active() ) {
 				if ( !current_user_can( 'edit_post', $post_id )) return;
 				if ( $post->post_type != 'product' ) return;
 
-				if ( $_POST['product-type'] == "simple" || $_POST['product-type'] == "variable" || $_POST['product-type'] == "subscription" || $_POST['product-type'] == "variable-subscription" ) {
+				$valid_product_types = ( function_exists( 'wc_get_product_types' ) ) ? array_keys( wc_get_product_types() ) : array( 'simple', 'variable', 'subscription', 'variable-subscription' );
+
+				if ( ! empty( $_POST['product-type'] ) && in_array( $_POST['product-type'], $valid_product_types ) ) {
 					if ( ! empty( $_POST['_coupon_title'] ) ) {
 						if ( $this->is_wc_gte_23() ) {
 							$coupon_titles = array_filter( array_map( 'trim', explode( ',', $_POST['_coupon_title'] ) ) );
@@ -3378,7 +3433,7 @@ if ( is_woocommerce_active() ) {
 					}
 				}
 
-				if ( $_POST['product-type'] == "subscription" || $_POST['product-type'] == "variable-subscription" ) {
+				if ( $_POST['product-type'] == 'subscription' || $_POST['product-type'] == 'variable-subscription' ) {
 					if (isset($_POST['send_coupons_on_renewals'])) {
 						update_post_meta( $post_id, 'send_coupons_on_renewals', $_POST['send_coupons_on_renewals'] );
 					} else {
@@ -3870,15 +3925,15 @@ if ( is_woocommerce_active() ) {
 					switch ( $discount_type ) {
 
 							case 'smart_coupon':
-									$email_heading  =  sprintf(__('You have received %s worth %s ', self::$text_domain), $smart_coupon_type, woocommerce_price($amount) );
+									$email_heading  =  sprintf(__('You have received %s worth %s ', self::$text_domain), $smart_coupon_type, $this->wc_price($amount) );
 									break;
 
 							case 'fixed_cart':
-									$email_heading  =  sprintf(__('You have received a coupon worth %s (on entire purchase) ', self::$text_domain), woocommerce_price($amount) );
+									$email_heading  =  sprintf(__('You have received a coupon worth %s (on entire purchase) ', self::$text_domain), $this->wc_price($amount) );
 									break;
 
 							case 'fixed_product':
-									$email_heading  =  sprintf(__('You have received a coupon worth %s (for a product) ', self::$text_domain), woocommerce_price($amount) );
+									$email_heading  =  sprintf(__('You have received a coupon worth %s (for a product) ', self::$text_domain), $this->wc_price($amount) );
 									break;
 
 							case 'percent_product':
@@ -4081,8 +4136,11 @@ if ( is_woocommerce_active() ) {
 
 					$smart_coupon_code = $this->generate_unique_code( $email_id, $coupon );
 
+					$coupon_post = get_post( $coupon->id );
+								
 					$smart_coupon_args = array(
 										'post_title'    => strtolower( $smart_coupon_code ),
+										'post_excerpt'	=> $coupon_post->post_excerpt,
 										'post_content'  => '',
 										'post_status'   => 'publish',
 										'post_author'   => 1,
@@ -5724,7 +5782,7 @@ if ( is_woocommerce_active() ) {
 
 	            $current_user_id = get_current_user_id();
 
-	            if ( ! empty( $current_user_id ) && $current_user_id == $user->ID ) {
+	            if ( ! empty( $current_user_id ) && ! empty( $user->ID ) && $current_user_id == $user->ID ) {
 	            	add_action( 'admin_notices', array( $this, 'delete_credit_after_usage_notice' ) );
 					add_action( 'admin_footer', array( $this, 'ignore_delete_credit_after_usage_notice' ) );
 	            }

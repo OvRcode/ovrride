@@ -124,20 +124,20 @@ class SC_Admin_Welcome {
 
 			<div>
 				<div class="feature-section col three-col">
-					<div>
+					<div class="col">
 						<h4><?php echo __( 'What is Smart Coupons?', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo __( 'Smart Coupons is a WooCommerce extension, which adds one more discount type for WooCommerce Coupons. It\'s called as "Store Credit / Gift Certificate".', WC_Smart_Coupons::$text_domain ); ?>
 							<?php echo __( 'In addition to this, it adds many functionality in other discount types also, which enable coupons to become an automatic/interactive system.', WC_Smart_Coupons::$text_domain ); ?>
 						</p>
 					</div>
-					<div>
+					<div class="col">
 						<h4><?php echo __( 'What is "Store Credit / Gift Certificate"?', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
-							<?php echo __( 'This is a new discount type added by this plugin in WooCommerce Coupons. A coupon having having this discount type can be called as either Smart Coupon or Store Credit or Gift Certificate. This coupon\'s amount can be called as balance.', WC_Smart_Coupons::$text_domain ); ?>
+							<?php echo __( 'This is a new discount type added by this plugin in WooCommerce Coupons. A coupon having this discount type can be called as either Smart Coupon or Store Credit or Gift Certificate. This coupon\'s amount can be called as balance.', WC_Smart_Coupons::$text_domain ); ?>
 						</p>
 					</div>
-					<div class="last-feature">
+					<div class="col last-feature">
 						<h4><?php echo __( 'What\'s new?', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo __( 'Store Credit is a unique discount type, in which coupon\'s amount keeps reducing per usage. It behaves in same way as a credit, which can be used untill its amount becomes zero. Therefore this coupon\'s amount is also refered as balance.', WC_Smart_Coupons::$text_domain ); ?>
@@ -149,19 +149,19 @@ class SC_Admin_Welcome {
 				</div>
 				<center><h3><?php echo __( 'What is possible', WC_Smart_Coupons::$text_domain ); ?></h3></center>
 				<div class="feature-section col three-col" >
-					<div>
+					<div class="col">
 						<h4><?php echo __( 'Sell store credit / gift certificate', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo sprintf(__( 'Smart Coupons helps you configure product which can be used to sell store credit / gift certificate. You can sell store credit in 3 ways: %s, %s & %s.', WC_Smart_Coupons::$text_domain ), __( 'fixed amount', WC_Smart_Coupons::$text_domain ), '<a href="http://docs.woothemes.com/document/smart-coupons/#section-13" target="_blank">' . __( 'variable but fixed amount', WC_Smart_Coupons::$text_domain ) . '</a>', '<a href="http://docs.woothemes.com/document/smart-coupons/#section-13" target="_blank">' . __( 'any amount', WC_Smart_Coupons::$text_domain ) . '</a>' ); ?>
 						</p>
 					</div>
-					<div>
+					<div class="col">
 						<h4><?php echo __( 'Automatically give discounts to your customer for next purchase', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo __( 'You can give a coupon to your customer after every purchase, which can encourage them to purchase again from you.', WC_Smart_Coupons::$text_domain ); ?>
 						</p>
 					</div>
-					<div class="last-feature">
+					<div class="col last-feature">
 						<h4><?php echo __( 'Bulk create unique coupons & email them', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo sprintf(__( 'If you\'ve a list of email addresses of your customer who haven\'t purchase any product from long time, you can send unique coupon to each of them in bulk. %s.', WC_Smart_Coupons::$text_domain ), '<a href="http://docs.woothemes.com/document/smart-coupons/#section-11" target="_blank">' . __( 'See how', WC_Smart_Coupons::$text_domain ) . '</a>' ); ?>
@@ -169,19 +169,19 @@ class SC_Admin_Welcome {
 					</div>
 				</div>
 				<div class="feature-section col three-col" >
-					<div>
+					<div class="col">
 						<h4><?php echo __( 'Import / export coupons', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo __( 'You can import / export coupons. This can be helpful when you are moving your store or when you want to move copuns from other store to new one.', WC_Smart_Coupons::$text_domain ); ?>
 						</p>
 					</div>
-					<div>
+					<div class="col">
 						<h4><?php echo __( 'Automatic payment for subscription renewals', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo __( 'If your store is using WooCommerce subscription and your customer has purchased a subscription using a Store Credit. If that store credit has balance left in it, store will automatically use it for subscription renewals.', WC_Smart_Coupons::$text_domain ); ?>
 						</p>
 					</div>
-					<div class="last-feature">
+					<div class="col last-feature">
 						<h4><?php echo __( 'Make your customer\'s coupon usage, easy & simple', WC_Smart_Coupons::$text_domain ); ?></h4>
 						<p>
 							<?php echo sprintf(__( 'Smart Coupons makes life of your customer really easy by showing valid coupon for your customer (if logged in) on %s, checkout & My Account page. In addition to that those coupons can be applied with single click on it. So, no need to remeber coupon code, no copy-pasting.', WC_Smart_Coupons::$text_domain ), '<a href="http://docs.woothemes.com/document/smart-coupons/#section-16" target="_blank">' . __( 'cart', WC_Smart_Coupons::$text_domain ) . '</a>' ); ?>
@@ -275,7 +275,7 @@ class SC_Admin_Welcome {
             	foreach ( $faqs as $fqs ) {
             		echo '<div class="two-col">';
             		foreach ( $fqs as $index => $faq ) {
-            			echo '<div' . ( ( $index == 1 ) ? ' class="last-feature"' : '' ) . '>';
+            			echo '<div' . ( ( $index == 1 ) ? ' class="col last-feature"' : ' class="col"' ) . '>';
             			echo '<h4>' . $faq['que'] . '</h4>';
             			echo '<p>' . $faq['ans'] . '</p>';
             			echo '</div>';

@@ -81,12 +81,12 @@ $coupon_data = $this->get_coupon_meta_data( $coupon );
 					if ( ! empty( $coupon_data['coupon_amount'] ) && $coupon->amount != 0 ) {
 						echo $coupon_data['coupon_amount'] . ' ' . $coupon_data['coupon_type'];
 						if ( $coupon->free_shipping == "yes" ) {
-							echo __( ' &amp; ', self::$text_domain );
+							echo __( ' &amp; ', WC_Smart_Coupons::$text_domain );
 						}
 					}
 
 					if ( $coupon->free_shipping == "yes" ) {
-						echo __( 'Free Shipping', self::$text_domain );
+						echo __( 'Free Shipping', WC_Smart_Coupons::$text_domain );
 					}
 					echo '</div>';
 
