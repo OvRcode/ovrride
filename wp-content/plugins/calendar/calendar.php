@@ -5,7 +5,7 @@ Plugin URI: http://www.kieranoshea.com
 Description: This plugin allows you to display a calendar of all your events and appointments as a page on your site.
 Author: Kieran O'Shea
 Author URI: http://www.kieranoshea.com
-Version: 1.3.3
+Version: 1.3.5
 */
 
 /*  Copyright 2008  Kieran O'Shea  (email : kieran@kieranoshea.com)
@@ -61,13 +61,9 @@ add_action('widgets_init', 'widget_init_calendar_today');
 add_action('widgets_init', 'widget_init_calendar_upcoming');
 add_action('widgets_init', 'widget_init_events_calendar');
 
-// Before we get on with the functions, we need to define the initial style used for Calendar
-
-// Function to 
-function call_caldav()
-{
-  
-}
+// Add the short code
+add_shortcode( 'calendar', 'calendar_shortcode_insert' );
+add_filter('widget_text', 'do_shortcode');
 
 // Function to deal with events posted by a user when that user is deleted
 function deal_with_deleted_user($id)
@@ -75,7 +71,21 @@ function deal_with_deleted_user($id)
   global $wpdb;
 
   // Do the query
-  $wpdb->get_results("UPDATE ".WP_CALENDAR_TABLE." SET event_author=".$wpdb->get_var("SELECT MIN(ID) FROM ".$wpdb->prefix."users",0,0)." WHERE event_author=".mysql_escape_string($id));
+  $wpdb->get_results($wpdb->prepare("UPDATE ".WP_CALENDAR_TABLE." SET event_author=".$wpdb->get_var("SELECT MIN(ID) FROM ".$wpdb->prefix."users",0,0)." WHERE event_author=%d",$id));
+}
+
+// Function to display a warning on the admin panel if the calendar plugin is mising setup
+add_action( 'admin_notices', 'calendar_setup_incomplete_warning' );
+function calendar_setup_incomplete_warning() {
+    global $wpdb;
+    $incomplete_check = $wpdb->get_results("SELECT config_value FROM " . WP_CALENDAR_CONFIG_TABLE . " WHERE config_item='show_attribution_link'");
+    if (empty($incomplete_check) && !(isset($_GET['page']) && $_GET['page'] == 'calendar-config')) {
+        $args = array( 'page' => 'calendar-config');
+        $url = add_query_arg( $args, admin_url( 'admin.php' ) );
+        ?>
+        <div class="update-nag"><p><strong><?php _e('Warning','calendar'); ?>:</strong> <?php _e("Calendar setup incomplete. Go to the <a href=\"$url\">calendar plugin settings</a> to complete setup.",'calendar'); ?></p></div>
+        <?php
+    }
 }
 
 // Function to provide time with WordPress offset, localy replaces time()
@@ -301,6 +311,25 @@ function calendar_add_javascript()
 }
 
 // Function to deal with loading the calendar into pages
+function calendar_shortcode_insert($atts) {
+    $a = shortcode_atts( array(
+        'categories' => '',
+        'type' => ''
+    ), $atts );
+    if ($a['categories'] == '') {
+        if ($a['type'] == 'mini') {
+            return minical();
+        } else {
+            return calendar();
+        }
+    } else {
+        if ($a['type'] == 'mini') {
+            return minical();
+        } else {
+            return calendar( $a['categories'] );
+        }
+    }
+}
 function calendar_insert($content)
 {
   if (preg_match('/\{CALENDAR*.+\}/',$content))
@@ -404,7 +433,7 @@ function check_calendar()
     }
     .calnk a:hover span {
         color:#333333; 
-        background:#00BCE7; 
+        background:#F6F79B; 
         display:block;
         position:absolute; 
         margin-top:1px; 
@@ -422,21 +451,23 @@ function check_calendar()
     .calendar-heading {
         height:25px;
         text-align:center;
-        border:1px solid #D6DED5;
         background-color:#E4EBE3;
     }
     .calendar-next {
-        width:25%;
+        width:20%;
         text-align:center;
+        border:none;
     }
     .calendar-prev {
-        width:25%;
+        width:20%;
         text-align:center;
+        border:none;
     }
     .calendar-month {
-        width:50%;
+        width:60%;
         text-align:center;
         font-weight:bold;
+        border:none;
     }
     .normal-day-heading {
         text-align:center;
@@ -500,6 +531,9 @@ function check_calendar()
     .calendar-date-switcher input {
         border:1px #D6DED5 solid;
         margin:0;
+    }
+    .calendar-date-switcher input[type=submit] {
+        padding:3px 10px;
     }
     .calendar-date-switcher select {
         border:1px #D6DED5 solid;
@@ -667,7 +701,7 @@ function check_calendar()
                                 PRIMARY KEY (category_id) 
                              )";
       $wpdb->get_results($sql);
-      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_colour='#00BCE7'";
+      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_colour='#F6F79B'";
       $wpdb->get_results($sql);
     }
   else if ($vone_point_one_upgrade == true)
@@ -713,7 +747,7 @@ function check_calendar()
                                 PRIMARY KEY (category_id) 
                               )";
       $wpdb->get_results($sql);
-      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_colour='#00BCE7'";
+      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_colour='#F6F79B'";
       $wpdb->get_results($sql);
     }
   else if ($vone_point_two_beta_upgrade == true)
@@ -733,10 +767,17 @@ function check_calendar()
                                 PRIMARY KEY (category_id) 
                              )";
       $wpdb->get_results($sql);
-      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_colour='#00BCE7'";
+      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_id=1, category_name='General', category_colour='#F6F79B'";
       $wpdb->get_results($sql);
       $sql = "UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value='".$initial_style."' WHERE config_item='calendar_style'";
       $wpdb->get_results($sql);
+    }
+    // We've installed/upgraded now, just need to check the charsets
+    $charset = $wpdb->get_results("select table_collation from information_schema.tables where table_name like '" . WP_CALENDAR_TABLE . "%' and table_collation not like 'utf8mb4%'");
+    if (!empty($charset)) {
+        $wpdb->get_results("ALTER TABLE " . WP_CALENDAR_TABLE . " CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        $wpdb->get_results("ALTER TABLE " . WP_CALENDAR_CONFIG_TABLE . " CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        $wpdb->get_results("ALTER TABLE " . WP_CALENDAR_CATEGORIES_TABLE . " CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     }
 }
 
@@ -798,7 +839,7 @@ function wp_events_display_list(){
 				</td>
 				<td><?php $e = get_userdata($event->event_author); echo $e->display_name; ?></td>
                                 <?php
-				$sql = "SELECT * FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_escape_string($event->event_category);
+				$sql = $wpdb->prepare("SELECT * FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=%d",$event->event_category);
                                 $this_cat = $wpdb->get_row($sql);
                                 ?>
 				<td style="background-color:<?php echo stripslashes($this_cat->category_colour);?>;"><?php echo stripslashes($this_cat->category_name); ?></td>
@@ -837,7 +878,7 @@ function wp_events_edit_form($mode='add', $event_id=false)
 		}
 		else
 		{
-			$data = $wpdb->get_results("SELECT * FROM " . WP_CALENDAR_TABLE . " WHERE event_id='" . mysql_escape_string($event_id) . "' LIMIT 1");
+			$data = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . WP_CALENDAR_TABLE . " WHERE event_id='%d' LIMIT 1",$event_id));
 			if ( empty($data) )
 			{
 				echo "<div class=\"error\"><p>".__("An event with that ID couldn't be found",'calendar')."</p></div>";
@@ -1214,14 +1255,11 @@ if ( $action == 'add' )
 	  }
 	if (isset($start_date_ok) && isset($end_date_ok) && isset($time_ok) && isset($url_ok) && isset($title_ok) && isset($recurring_ok))
 	  {
-	    $sql = "INSERT INTO " . WP_CALENDAR_TABLE . " SET event_title='" . mysql_escape_string($title)
-	     . "', event_desc='" . mysql_escape_string($desc) . "', event_begin='" . mysql_escape_string($begin) 
-             . "', event_end='" . mysql_escape_string($end) . "', event_time='" . mysql_escape_string($time_to_use) . "', event_recur='" . mysql_escape_string($recur) . "', event_repeats='" . mysql_escape_string($repeats) . "', event_author=".$current_user->ID.", event_category=".mysql_escape_string($category).", event_link='".mysql_escape_string($linky)."'";
+	    $sql = $wpdb->prepare("INSERT INTO " . WP_CALENDAR_TABLE . " SET event_title='%s', event_desc='%s', event_begin='%s', event_end='%s', event_time='%s', event_recur='%s', event_repeats='%s', event_author=%d, event_category=%d, event_link='%s'",$title,$desc,$begin,$end,$time_to_use,$recur,$repeats,$current_user->ID,$category,$linky);
 	     
 	    $wpdb->get_results($sql);
 	
-	    $sql = "SELECT event_id FROM " . WP_CALENDAR_TABLE . " WHERE event_title='" . mysql_escape_string($title) . "'"
-		. " AND event_desc='" . mysql_escape_string($desc) . "' AND event_begin='" . mysql_escape_string($begin) . "' AND event_end='" . mysql_escape_string($end) . "' AND event_recur='" . mysql_escape_string($recur) . "' AND event_repeats='" . mysql_escape_string($repeats) . "' LIMIT 1";
+	    $sql = $wpdb->prepare("SELECT event_id FROM " . WP_CALENDAR_TABLE . " WHERE event_title='%s' AND event_desc='%s' AND event_begin='%s' AND event_end='%s' AND event_recur='%s' AND event_repeats='%s' LIMIT 1",$title,$desc,$begin,$end,$recur,$repeats);
 	    $result = $wpdb->get_results($sql);
 	
 	    if ( empty($result) || empty($result[0]->event_id) )
@@ -1232,6 +1270,7 @@ if ( $action == 'add' )
 	      }
 	    else
 	      {
+		      do_action('add_calendar_entry', 'add');
 		?>
 		<div class="updated"><p><?php _e('Event added. It will now show in your calendar.','calendar'); ?></p></div>
 		<?php
@@ -1381,14 +1420,9 @@ elseif ( $action == 'edit_save' )
 	    }
 	  if (isset($start_date_ok) && isset($end_date_ok) && isset($time_ok) && isset($url_ok) && isset($title_ok) && isset($recurring_ok))
 	    {
-		$sql = "UPDATE " . WP_CALENDAR_TABLE . " SET event_title='" . mysql_escape_string($title)
-		     . "', event_desc='" . mysql_escape_string($desc) . "', event_begin='" . mysql_escape_string($begin) 
-                     . "', event_end='" . mysql_escape_string($end) . "', event_time='" . mysql_escape_string($time_to_use) . "', event_recur='" . mysql_escape_string($recur) . "', event_repeats='" . mysql_escape_string($repeats) . "', event_author=".$current_user->ID . ", event_category=".mysql_escape_string($category).", event_link='".mysql_escape_string($linky)."' WHERE event_id='" . mysql_escape_string($event_id) . "'";
-		     
+		$sql = $wpdb->prepare("UPDATE " . WP_CALENDAR_TABLE . " SET event_title='%s', event_desc='%s', event_begin='%s', event_end='%s', event_time='%s', event_recur='%s', event_repeats='%s', event_author=%d, event_category=%d, event_link='%s' WHERE event_id='%s'",$title,$desc,$begin,$end,$time_to_use,$recur,$repeats,$current_user->ID,$category,$linky,$event_id);		     
 		$wpdb->get_results($sql);
-		
-		$sql = "SELECT event_id FROM " . WP_CALENDAR_TABLE . " WHERE event_title='" . mysql_escape_string($title) . "'"
-		     . " AND event_desc='" . mysql_escape_string($desc) . "' AND event_begin='" . mysql_escape_string($begin) . "' AND event_end='" . mysql_escape_string($end) . "' AND event_recur='" . mysql_escape_string($recur) . "' AND event_repeats='" . mysql_escape_string($repeats) . "' LIMIT 1";
+		$sql = $wpdb->prepare("SELECT event_id FROM " . WP_CALENDAR_TABLE . " WHERE event_title='%s' AND event_desc='%s' AND event_begin='%s' AND event_end='%s' AND event_recur='%s' AND event_repeats='%s' LIMIT 1",$title,$desc,$begin,$end,$recur,$repeats);
 		$result = $wpdb->get_results($sql);
 		
 		if ( empty($result) || empty($result[0]->event_id) )
@@ -1399,6 +1433,7 @@ elseif ( $action == 'edit_save' )
 		}
 		else
 		{
+			do_action('add_calendar_entry', 'edit');
 			?>
 			<div class="updated"><p><?php _e('Event updated successfully','calendar'); ?></p></div>
 			<?php
@@ -1407,7 +1442,7 @@ elseif ( $action == 'edit_save' )
           else
 	    {
 	      // The form is going to be rejected due to field validation issues, so we preserve the users entries here
-              $users_entries->event_title = $title;
+        $users_entries->event_title = $title;
 	      $users_entries->event_desc = $desc;
 	      $users_entries->event_begin = $begin;
 	      $users_entries->event_end = $end;
@@ -1436,14 +1471,15 @@ elseif ( $action == 'delete' )
 	}
 	else
 	{
-		$sql = "DELETE FROM " . WP_CALENDAR_TABLE . " WHERE event_id='" . mysql_escape_string($event_id) . "'";
+		$sql = $wpdb->prepare("DELETE FROM " . WP_CALENDAR_TABLE . " WHERE event_id='%s'",$event_id);
 		$wpdb->get_results($sql);
 		
-		$sql = "SELECT event_id FROM " . WP_CALENDAR_TABLE . " WHERE event_id='" . mysql_escape_string($event_id) . "'";
+		$sql = $wpdb->prepare("SELECT event_id FROM " . WP_CALENDAR_TABLE . " WHERE event_id='%s'",$event_id);
 		$result = $wpdb->get_results($sql);
 		
 		if ( empty($result) || empty($result[0]->event_id) )
 		{
+			do_action('add_calendar_entry', 'delete');
 			?>
 			<div class="updated"><p><?php _e('Event deleted successfully','calendar'); ?></p></div>
 			<?php
@@ -1514,19 +1550,19 @@ function edit_calendar_config()
       else if ($_POST['permissions'] == 'admin') { $new_perms = 'manage_options'; }
       else { $new_perms = 'manage_options'; }
 
-      $calendar_style = mysql_escape_string($_POST['style']);
-      $display_upcoming_days = mysql_escape_string($_POST['display_upcoming_days']);
+      $calendar_style = $_POST['style']; // Escape done in query below
+      $display_upcoming_days = $_POST['display_upcoming_days']; // Escape done in query below
 
-      if (mysql_escape_string($_POST['display_author']) == 'on')
-	{
-	  $disp_author = 'true';
-	}
+      if ($_POST['display_author'] == 'on')
+	      {
+	        $disp_author = 'true';
+	      }
       else
-	{
-	  $disp_author = 'false';
-	}
+	      {
+	        $disp_author = 'false';
+	      }
 
-      if (mysql_escape_string($_POST['display_jump']) == 'on')
+      if ($_POST['display_jump'] == 'on')
         {
           $disp_jump = 'true';
         }
@@ -1535,7 +1571,7 @@ function edit_calendar_config()
           $disp_jump = 'false';
         }
 
-      if (mysql_escape_string($_POST['display_todays']) == 'on')
+      if ($_POST['display_todays'] == 'on')
         {
           $disp_todays = 'true';
         }
@@ -1544,7 +1580,7 @@ function edit_calendar_config()
           $disp_todays = 'false';
         }
 
-      if (mysql_escape_string($_POST['display_upcoming']) == 'on')
+      if ($_POST['display_upcoming'] == 'on')
         {
           $disp_upcoming = 'true';
         }
@@ -1553,27 +1589,38 @@ function edit_calendar_config()
           $disp_upcoming = 'false';
         }
 
-      if (mysql_escape_string($_POST['enable_categories']) == 'on')
+      if ($_POST['enable_categories'] == 'on')
         {
           $enable_categories = 'true';
         }
       else
         {
-	  $enable_categories = 'false';
+	        $enable_categories = 'false';
         }
 
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$new_perms."' WHERE config_item='can_manage_events'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$calendar_style."' WHERE config_item='calendar_style'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$disp_author."' WHERE config_item='display_author'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$disp_jump."' WHERE config_item='display_jump'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$disp_todays."' WHERE config_item='display_todays'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$disp_upcoming."' WHERE config_item='display_upcoming'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$display_upcoming_days."' WHERE config_item='display_upcoming_days'");
-      $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$enable_categories."' WHERE config_item='enable_categories'");
+      if ($_POST['show_attribution_link'] == 'on') {
+          $show_attribution_link = 'true';
+      } else {
+          $show_attribution_link = 'false';
+      }
+
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='can_manage_events'",$new_perms));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='calendar_style'",$calendar_style));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='display_author'",$disp_author));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='display_jump'",$disp_jump));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='display_todays'",$disp_todays));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='display_upcoming'",$disp_upcoming));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%d' WHERE config_item='display_upcoming_days'",$display_upcoming_days));
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='enable_categories'",$enable_categories));
+      $attribution_present = $wpdb->get_results("SELECT config_value FROM " . WP_CALENDAR_CONFIG_TABLE . " WHERE config_item='show_attribution_link'");
+      if (empty($attribution_present)) {
+          $wpdb->get_results("INSERT INTO " . WP_CALENDAR_CONFIG_TABLE . " SET config_item='show_attribution_link', config_value='false'");
+      }
+      $wpdb->get_results($wpdb->prepare("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '%s' WHERE config_item='show_attribution_link'",$show_attribution_link));
 
       // Check to see if we are replacing the original style
       if (isset($_POST['reset_styles'])) {
-        if (mysql_escape_string($_POST['reset_styles']) == 'on')
+        if ($_POST['reset_styles'] == 'on')
           {
             $wpdb->get_results("UPDATE " . WP_CALENDAR_CONFIG_TABLE . " SET config_value = '".$initial_style."' WHERE config_item='calendar_style'");
           }
@@ -1693,6 +1740,23 @@ function edit_calendar_config()
             }
         }
     }
+  $configs = $wpdb->get_results("SELECT config_value FROM " . WP_CALENDAR_CONFIG_TABLE . " WHERE config_item='show_attribution_link'");
+  $yes_show_attribution_link = '';
+  $no_show_attribution_link = '';
+  if (!empty($configs))
+  {
+      foreach ($configs as $config)
+      {
+          if ($config->config_value == 'true')
+          {
+              $yes_show_attribution_link = 'selected="selected"';
+          }
+          else
+          {
+              $no_show_attribution_link = 'selected="selected"';
+          }
+      }
+  }
   $subscriber_selected = '';
   $contributor_selected = '';
   $author_selected = '';
@@ -1796,6 +1860,17 @@ function edit_calendar_config()
                                 </td>
                                 </tr>
                                 <tr>
+                <td><legend><?php _e('Enable attribution link?','calendar'); ?></legend></td>
+                                <td>    <select name="show_attribution_link">
+                                        <?php if ($yes_show_attribution_link == '' && $yes_show_attribution_link == '') { ?>
+                                            <option value="on" selected="selected"></option>
+                                        <?php } ?>
+                                <option value="on" <?php echo $yes_show_attribution_link ?>><?php _e('Yes','calendar') ?></option>
+                        <option value="off" <?php echo $no_show_attribution_link ?>><?php _e('No','calendar') ?></option>
+                                     </select>
+                                </td>
+                                </tr>
+                                <tr>
 				<td style="vertical-align:top;"><legend><?php _e('Configure the stylesheet for Calendar','calendar'); ?></legend></td>
 				<td><textarea name="style" rows="10" cols="60" tabindex="2"><?php echo $calendar_style; ?></textarea><br />
                                 <input type="checkbox" name="reset_styles" /> <?php _e('Tick this box if you wish to reset the Calendar style to default','calendar'); ?></td>
@@ -1858,28 +1933,28 @@ function manage_categories()
 	<?php
       } else {
       // Proceed with the save  
-      $sql = "INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_escape_string($_POST['category_name'])."', category_colour='".mysql_escape_string($_POST['category_colour'])."'";
+      $sql = $wpdb->prepare("INSERT INTO " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_name='%s', category_colour='%s'",$_POST['category_name'],$_POST['category_colour']);
       $wpdb->get_results($sql);
       echo "<div class=\"updated\"><p><strong>".__('Category added successfully','calendar')."</strong></p></div>";
       }
     }
   else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'delete')
     {
-      if (wp_verify_nonce($_GET['_wpnonce'],'calendar-category_delete_'.mysql_escape_string($_GET['category_id'])) == false) {
+      if (wp_verify_nonce($_GET['_wpnonce'],'calendar-category_delete_'.$_GET['category_id']) == false) {
         ?>
 	  <div class="error"><p><strong><?php _e('Error','calendar'); ?>:</strong> <?php _e("Security check failure, try deleting the category again",'calendar'); ?></p></div>
 	<?php
       } else {
-        $sql = "DELETE FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_escape_string($_GET['category_id']);
+        $sql = $wpdb->prepare("DELETE FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=%d",$_GET['category_id']);
         $wpdb->get_results($sql);
-        $sql = "UPDATE " . WP_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=".mysql_escape_string($_GET['category_id']);
+        $sql = $wpdb->prepare("UPDATE " . WP_CALENDAR_TABLE . " SET event_category=1 WHERE event_category=%d",$_GET['category_id']);
         $wpdb->get_results($sql);
         echo "<div class=\"updated\"><p><strong>".__('Category deleted successfully','calendar')."</strong></p></div>";
       }
     }
   else if (isset($_GET['mode']) && isset($_GET['category_id']) && $_GET['mode'] == 'edit' && !isset($_POST['mode']))
     {
-      $sql = "SELECT * FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".intval(mysql_escape_string($_GET['category_id']));
+      $sql = $wpdb->prepare("SELECT * FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=%d",$_GET['category_id']);
       $cur_cat = $wpdb->get_row($sql);
       ?>
 <div class="wrap">
@@ -1910,13 +1985,13 @@ function manage_categories()
     }
   else if (isset($_POST['mode']) && isset($_POST['category_id']) && isset($_POST['category_name']) && isset($_POST['category_colour']) && $_POST['mode'] == 'edit')
     {
-      if (wp_verify_nonce($_POST['_wpnonce'],'calendar-category_edit_'.mysql_escape_string($_POST['category_id'])) == false) {
+      if (wp_verify_nonce($_POST['_wpnonce'],'calendar-category_edit_'.$_POST['category_id']) == false) {
         ?>
 	  <div class="error"><p><strong><?php _e('Error','calendar'); ?>:</strong> <?php _e("Security check failure, try editing the category again",'calendar'); ?></p></div>
 	<?php
       } else {
       // Proceed with the save
-        $sql = "UPDATE " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_name='".mysql_escape_string($_POST['category_name'])."', category_colour='".mysql_escape_string($_POST['category_colour'])."' WHERE category_id=".mysql_escape_string($_POST['category_id']);
+        $sql = $wpdb->prepare("UPDATE " . WP_CALENDAR_CATEGORIES_TABLE . " SET category_name='%s', category_colour='%s' WHERE category_id=%d",$_POST['category_name'],$_POST['category_colour'],$_POST['category_id']);
         $wpdb->get_results($sql);
         echo "<div class=\"updated\"><p><strong>".__('Category edited successfully','calendar')."</strong></p></div>";
       }
@@ -2081,7 +2156,7 @@ function permalink_prefix()
 // Configure the "Next" link in the calendar
 function next_link($cur_year,$cur_month,$minical = false)
 {
-  $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
+  $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec');
   $next_year = $cur_year + 1;
 
   if ($cur_month == 12)
@@ -2101,7 +2176,7 @@ function next_link($cur_year,$cur_month,$minical = false)
 // Configure the "Previous" link in the calendar
 function prev_link($cur_year,$cur_month,$minical = false)
 {
-  $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sept','oct','nov','dec');
+  $mod_rewrite_months = array(1=>'jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec');
   $last_year = $cur_year - 1;
 
   if ($cur_month == 1)
@@ -2216,7 +2291,7 @@ function draw_events($events)
   // Now process the events
   foreach($events as $event)
     {
-      $output .= ''.draw_event($event).'<br />';
+      $output .= '* '.draw_event($event).'<br />';
     }
   return $output;
 }
@@ -2357,7 +2432,7 @@ function draw_event($event)
   $style = '';
   if ($show_cat == 'true')
     {
-      $sql = "SELECT * FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=".mysql_escape_string($event->event_category);
+      $sql = $wpdb->prepare("SELECT * FROM " . WP_CALENDAR_CATEGORIES_TABLE . " WHERE category_id=%d",$event->event_category);
       $cat_details = $wpdb->get_row($sql);
       $style = 'style="background-color:'.stripslashes($cat_details->category_colour).';"';
     }
@@ -2379,6 +2454,8 @@ function draw_event($event)
     }
   if ($event->event_link != '') { $linky = stripslashes($event->event_link); }
   else { $linky = '#'; }
+  
+  $linky = apply_filters('modify_calendar_link', $linky, $event);
 
   $details = '<span class="calnk"><a href="'.$linky.'" '.$style.'>' . stripslashes($event->event_title) . '<span '.$style.'>' . $header_details . '' . stripslashes($event->event_desc) . '</span></a></span>';
 
@@ -2639,12 +2716,12 @@ function calendar($cat_list = '')
     {
         // This is just plain nasty and all because of permalinks
         // which are no longer used, this will be cleaned up soon
-        if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec')
+        if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sep' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec')
 	  {
 
 	       // Again nasty code to map permalinks into something
 	       // databases can understand. This will be cleaned up
-               $c_year = mysql_escape_string($_GET['yr']);
+               $c_year = $wpdb->prepare("%d",$_GET['yr']);
                if ($_GET['month'] == 'jan') { $t_month = 1; }
                else if ($_GET['month'] == 'feb') { $t_month = 2; }
                else if ($_GET['month'] == 'mar') { $t_month = 3; }
@@ -2653,7 +2730,7 @@ function calendar($cat_list = '')
                else if ($_GET['month'] == 'jun') { $t_month = 6; }
                else if ($_GET['month'] == 'jul') { $t_month = 7; }
                else if ($_GET['month'] == 'aug') { $t_month = 8; }
-               else if ($_GET['month'] == 'sept') { $t_month = 9; }
+               else if ($_GET['month'] == 'sep') { $t_month = 9; }
                else if ($_GET['month'] == 'oct') { $t_month = 10; }
                else if ($_GET['month'] == 'nov') { $t_month = 11; }
                else if ($_GET['month'] == 'dec') { $t_month = 12; }
@@ -2730,7 +2807,7 @@ function calendar($cat_list = '')
             <option value="jun"'.calendar_month_comparison('jun').'>'.__('June','calendar').'</option>
             <option value="jul"'.calendar_month_comparison('jul').'>'.__('July','calendar').'</option> 
             <option value="aug"'.calendar_month_comparison('aug').'>'.__('August','calendar').'</option> 
-            <option value="sept"'.calendar_month_comparison('sept').'>'.__('September','calendar').'</option> 
+            <option value="sep"'.calendar_month_comparison('sep').'>'.__('September','calendar').'</option>
             <option value="oct"'.calendar_month_comparison('oct').'>'.__('October','calendar').'</option> 
             <option value="nov"'.calendar_month_comparison('nov').'>'.__('November','calendar').'</option> 
             <option value="dec"'.calendar_month_comparison('dec').'>'.__('December','calendar').'</option> 
@@ -2879,9 +2956,23 @@ function calendar($cat_list = '')
 ';
       }
 
-    // A little link to yours truly. See the README if you wish to remove this
-    $calendar_body .= '<div class="kjo-link" style="visibility:visible !important;display:block !important;"><p>'.__('Calendar developed and supported by ', 'calendar').'<a href="http://www.kieranoshea.com">Kieran O\'Shea</a></p></div>
+    // A little link to yours truly
+    $link_approved = 'false';
+    $link_approved_results = $wpdb->get_results("SELECT config_value FROM " . WP_CALENDAR_CONFIG_TABLE . " WHERE config_item='show_attribution_link'");
+    foreach ($link_approved_results as $link_approved_item)
+    {
+        if ($link_approved_item->config_value == 'true')
+        {
+            $link_approved = 'true';
+        }
+    }
+    if ($link_approved == 'true') {
+        $linkback_url = '<div class="kjo-link" style="visibility:visible !important;display:block !important;"><p>'.__('Calendar developed and supported by ', 'calendar').'<a href="http://www.kieranoshea.com">Kieran O\'Shea</a></p></div>
 ';
+    } else {
+        $linkback_url = '';
+    }
+    $calendar_body .= $linkback_url;
 
     // Phew! After that bit of string building, spit it all out.
     // The actual printing is done by the calling function.
@@ -2897,13 +2988,12 @@ function minical_draw_events($events,$day_of_week = '')
   $output = '';
   if (count($events)) {
     // Setup the wrapper
-    // TODO: This needs a better fix. Tempt fix takes minical to ovrride.com/events - AJ
-    $output = '<span class="calnk"><a href="http://ovrride.com/events/" style="background-color:#00BCE7;">'.$day_of_week.'<span>';
+    $output = '<span class="calnk"><a href="#" style="background-color:#F6F79B;">'.$day_of_week.'<span>';
     // Now process the events
     foreach($events as $event)
       {
 	if ($event->event_time == '00:00:00') { $the_time = 'all day'; } else { $the_time = 'at '.date(get_option('time_format'), strtotime(stripslashes($event->event_time))); } 
-	$output .= '<strong>'.$event->event_title.'</strong> '.$the_time.'<br />';
+	$output .= '* <strong>'.$event->event_title.'</strong> '.$the_time.'<br />';
       }
     // The tail
     $output .= '</span></a></span>';
@@ -2947,12 +3037,12 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
 	{
 	  // This is just plain nasty and all because of permalinks
 	  // which are no longer used, this will be cleaned up soon
-	  if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sept' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec')
+	  if ($_GET['month'] == 'jan' || $_GET['month'] == 'feb' || $_GET['month'] == 'mar' || $_GET['month'] == 'apr' || $_GET['month'] == 'may' || $_GET['month'] == 'jun' || $_GET['month'] == 'jul' || $_GET['month'] == 'aug' || $_GET['month'] == 'sep' || $_GET['month'] == 'oct' || $_GET['month'] == 'nov' || $_GET['month'] == 'dec')
 	    {
 
 	      // Again nasty code to map permalinks into something                                                                                                                 
 	      // databases can understand. This will be cleaned up
-	      $c_year = mysql_escape_string($_GET['yr']);
+	      $c_year = $wpdb->prepare("%d",$_GET['yr']);
 	      if ($_GET['month'] == 'jan') { $t_month = 1; }
 	      else if ($_GET['month'] == 'feb') { $t_month = 2; }
 	      else if ($_GET['month'] == 'mar') { $t_month = 3; }
@@ -2961,7 +3051,7 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
 	      else if ($_GET['month'] == 'jun') { $t_month = 6; }
 	      else if ($_GET['month'] == 'jul') { $t_month = 7; }
 	      else if ($_GET['month'] == 'aug') { $t_month = 8; }
-	      else if ($_GET['month'] == 'sept') { $t_month = 9; }
+	      else if ($_GET['month'] == 'sep') { $t_month = 9; }
 	      else if ($_GET['month'] == 'oct') { $t_month = 10; }
 	      else if ($_GET['month'] == 'nov') { $t_month = 11; }
 	      else if ($_GET['month'] == 'dec') { $t_month = 12; }
@@ -3003,15 +3093,10 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
 
   // Start the table and add the header and naviagtion                                                                                                                            
   $calendar_body = '';
-  $calendar_body .= '<div style="width:100%;"><table cellspacing="0" cellpadding="0" class="calendar-table">
+  $calendar_body .= '<div style="width:200px;"><table cellspacing="1" cellpadding="0" class="calendar-table">
 ';
 
-  // Add Saranac header
-  // #TODO Fix path, hardcoded path
-  $img_path = get_stylesheet_directory_uri() . "/images/Saranac-Cal-summer.png";
-  $calendar_body .= '<tr>
-                      <td colspan="7"><img src="' . $img_path . '"></td>
-                      </tr>';
+
   // The header of the calendar table and the links. Note calls to link functions
   $calendar_body .= '<tr>
                <td colspan="7" class="calendar-heading" style="height:0;">
@@ -3099,9 +3184,23 @@ calendar'),__('August','calendar'),__('September','calendar'),__('October','cale
     $calendar_body .= '</table>
 ';
 
-    // A little link to yours truly. See the README if you wish to remove this
-    $calendar_body .= '<div class="kjo-link" style="visibility:visible !important;display:block !important;"><p>'.__('Calendar by ', 'calendar').'<a href="http://www.kieranoshea.com">Kieran O\'Shea</a></p></div>
+    // A little link to yours truly
+    $link_approved = 'false';
+    $link_approved_results = $wpdb->get_results("SELECT config_value FROM " . WP_CALENDAR_CONFIG_TABLE . " WHERE config_item='show_attribution_link'");
+    foreach ($link_approved_results as $link_approved_item)
+    {
+        if ($link_approved_item->config_value == 'true')
+        {
+            $link_approved = 'true';
+        }
+    }
+    if ($link_approved == 'true') {
+        $linkback_url = '<div class="kjo-link" style="visibility:visible !important;display:block !important;"><p>'.__('Calendar by ', 'calendar').'<a href="http://www.kieranoshea.com">Kieran O\'Shea</a></p></div>
 ';
+    } else {
+        $linkback_url = '';
+    }
+    $calendar_body .= $linkback_url;
 
     // Closing div
     $calendar_body .= '</div>

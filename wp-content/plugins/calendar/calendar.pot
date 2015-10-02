@@ -1,591 +1,612 @@
 # Calendar translation file
-# Copyright (C) 2013 Kieran O'Shea
+# Copyright (C) 2015 Kieran O'Shea
 # This file is distributed under the same license as the Calendar package.
-# Kieran O'Shea <kieran@kieranoshea.com>, 2013
+# Kieran O'Shea <kieran@kieranoshea.com>, 2015
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: calendar-1.3.5\n"
+"Report-Msgid-Bugs-To: Kieran O'Shea <kieran@kieranoshea.com>\n"
+"POT-Creation-Date: 2015-09-22 20:42-0000\n"
+"PO-Revision-Date: 2015-09-22 20:42-0000\n"
+"Last-Translator: Kieran O'Shea <kieran@kieranoshea.com>\n"
+"Language-Team: Kieran O'Shea <kieran@kieranoshea.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. #-#-#-#-#  plugin.pot (Calendar 1.3.3)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: calendar.php:125 calendar.php:2234 calendar.php:2261
+#: calendar.php:135 calendar.php:2299 calendar.php:2326
 msgid "Calendar"
 msgstr ""
 
-#: calendar.php:129
+#: calendar.php:86
+msgid "Warning"
+msgstr ""
+
+#: calendar.php:139
 msgid "Manage Calendar"
 msgstr ""
 
-#: calendar.php:132 calendar.php:1964
+#: calendar.php:142 calendar.php:2029
 msgid "Manage Categories"
 msgstr ""
 
-#: calendar.php:133
+#: calendar.php:143
 msgid "Calendar Config"
 msgstr ""
 
-#: calendar.php:133 calendar.php:1740
+#: calendar.php:143 calendar.php:1794
 msgid "Calendar Options"
 msgstr ""
 
-#: calendar.php:756 calendar.php:1976
+#: calendar.php:790 calendar.php:2041
 msgid "ID"
 msgstr ""
 
-#: calendar.php:757 calendar.php:2253 calendar.php:2294 calendar.php:2335
+#: calendar.php:791 calendar.php:2318 calendar.php:2359 calendar.php:2400
 msgid "Title"
 msgstr ""
 
-#: calendar.php:758 calendar.php:915
+#: calendar.php:792 calendar.php:949
 msgid "Start Date"
 msgstr ""
 
-#: calendar.php:759 calendar.php:940
+#: calendar.php:793 calendar.php:974
 msgid "End Date"
 msgstr ""
 
-#: calendar.php:760 calendar.php:2369
+#: calendar.php:794 calendar.php:2434
 msgid "Time"
 msgstr ""
 
-#: calendar.php:761
+#: calendar.php:795
 msgid "Recurs"
 msgstr ""
 
-#: calendar.php:762
+#: calendar.php:796
 msgid "Repeats"
 msgstr ""
 
-#: calendar.php:763 calendar.php:1751
+#: calendar.php:797 calendar.php:1805
 msgid "Author"
 msgstr ""
 
-#: calendar.php:764
+#: calendar.php:798
 msgid "Category"
 msgstr ""
 
-#: calendar.php:765 calendar.php:806 calendar.php:1979 calendar.php:1993
+#: calendar.php:799 calendar.php:840 calendar.php:2044 calendar.php:2058
 msgid "Edit"
 msgstr ""
 
-#: calendar.php:766 calendar.php:808 calendar.php:1980 calendar.php:2002
+#: calendar.php:800 calendar.php:842 calendar.php:2045 calendar.php:2067
 msgid "Delete"
 msgstr ""
 
-#: calendar.php:780 calendar.php:794 calendar.php:1997
+#: calendar.php:814 calendar.php:828 calendar.php:2062
 msgid "N/A"
 msgstr ""
 
-#: calendar.php:784
+#: calendar.php:818
 msgid "Never"
 msgstr ""
 
-#: calendar.php:785
+#: calendar.php:819
 msgid "Weekly"
 msgstr ""
 
-#: calendar.php:786
+#: calendar.php:820
 msgid "Monthly (date)"
 msgstr ""
 
-#: calendar.php:787
+#: calendar.php:821
 msgid "Monthly (day)"
 msgstr ""
 
-#: calendar.php:788
+#: calendar.php:822
 msgid "Yearly"
 msgstr ""
 
-#: calendar.php:795
+#: calendar.php:829
 msgid "Forever"
 msgstr ""
 
-#: calendar.php:796
+#: calendar.php:830
 msgid "Times"
 msgstr ""
 
-#: calendar.php:808
+#: calendar.php:842
 msgid "Are you sure you want to delete this event?"
 msgstr ""
 
-#: calendar.php:819
+#: calendar.php:853
 msgid "There are no events in the database!"
 msgstr ""
 
-#: calendar.php:835
+#: calendar.php:869
 msgid "Bad Monkey! No banana!"
 msgstr ""
 
-#: calendar.php:843
+#: calendar.php:877
 msgid "An event with that ID couldn't be found"
 msgstr ""
 
-#: calendar.php:878
+#: calendar.php:912
 msgid "Event Title"
 msgstr ""
 
-#: calendar.php:883
+#: calendar.php:917
 msgid "Event Description"
 msgstr ""
 
-#: calendar.php:887
+#: calendar.php:921
 msgid "Event Category"
 msgstr ""
 
-#: calendar.php:911
+#: calendar.php:945
 msgid "Event Link (Optional)"
 msgstr ""
 
-#: calendar.php:963
+#: calendar.php:997
 msgid "Time (hh:mm)"
 msgstr ""
 
-#: calendar.php:981
+#: calendar.php:1015
 msgid "Optional, set blank if not required."
 msgstr ""
 
-#: calendar.php:981
+#: calendar.php:1015
 msgid "Current time difference from GMT is "
 msgstr ""
 
-#: calendar.php:981
+#: calendar.php:1015
 msgid " hour(s)"
 msgstr ""
 
-#: calendar.php:985
+#: calendar.php:1019
 msgid "Recurring Events"
 msgstr ""
 
-#: calendar.php:1030
+#: calendar.php:1064
 msgid "Repeats for"
 msgstr ""
 
-#: calendar.php:1033
+#: calendar.php:1067
 msgid "None"
 msgstr ""
 
-#: calendar.php:1034
+#: calendar.php:1068
 msgid "Weeks"
 msgstr ""
 
-#: calendar.php:1035
+#: calendar.php:1069
 msgid "Months (date)"
 msgstr ""
 
-#: calendar.php:1036
+#: calendar.php:1070
 msgid "Months (day)"
 msgstr ""
 
-#: calendar.php:1037
+#: calendar.php:1071
 msgid "Years"
 msgstr ""
 
-#: calendar.php:1039
+#: calendar.php:1073
 msgid ""
 "Entering 0 means forever. Where the recurrance interval is left at none, the "
 "event will not reoccur."
 msgstr ""
 
-#: calendar.php:1046 calendar.php:1807 calendar.php:1906 calendar.php:1962
+#: calendar.php:1080 calendar.php:1872 calendar.php:1971 calendar.php:2027
 msgid "Save"
 msgstr ""
 
-#: calendar.php:1110 calendar.php:1139 calendar.php:1146 calendar.php:1153
-#: calendar.php:1178 calendar.php:1189 calendar.php:1200 calendar.php:1212
-#: calendar.php:1230 calendar.php:1276 calendar.php:1306 calendar.php:1313
-#: calendar.php:1320 calendar.php:1345 calendar.php:1356 calendar.php:1367
-#: calendar.php:1379 calendar.php:1429 calendar.php:1434 calendar.php:1454
-#: calendar.php:1505 calendar.php:1857 calendar.php:1870 calendar.php:1915
+#: calendar.php:1144 calendar.php:1173 calendar.php:1180 calendar.php:1187
+#: calendar.php:1212 calendar.php:1223 calendar.php:1234 calendar.php:1246
+#: calendar.php:1261 calendar.php:1307 calendar.php:1337 calendar.php:1344
+#: calendar.php:1351 calendar.php:1376 calendar.php:1387 calendar.php:1398
+#: calendar.php:1410 calendar.php:1455 calendar.php:1460 calendar.php:1480
+#: calendar.php:1531 calendar.php:1922 calendar.php:1935 calendar.php:1980
 msgid "Error"
 msgstr ""
 
-#: calendar.php:1110
+#: calendar.php:1144
 msgid "Security check failure, try adding the event again"
 msgstr ""
 
-#: calendar.php:1139 calendar.php:1306
+#: calendar.php:1173 calendar.php:1337
 msgid ""
 "Your event end date must be either after or the same as your event begin date"
 msgstr ""
 
-#: calendar.php:1146 calendar.php:1313
+#: calendar.php:1180 calendar.php:1344
 msgid ""
 "Your date formatting is correct but one or more of your dates is invalid. "
 "Check for number of days in month and leap year related errors."
 msgstr ""
 
-#: calendar.php:1153 calendar.php:1320
+#: calendar.php:1187 calendar.php:1351
 msgid ""
 "Both start and end dates must be entered and be in the format YYYY-MM-DD"
 msgstr ""
 
-#: calendar.php:1178 calendar.php:1345
+#: calendar.php:1212 calendar.php:1376
 msgid "The time field must either be blank or be entered in the format hh:mm"
 msgstr ""
 
-#: calendar.php:1189 calendar.php:1356
+#: calendar.php:1223 calendar.php:1387
 msgid ""
 "The URL entered must either be prefixed with http:// or be completely blank"
 msgstr ""
 
-#: calendar.php:1200 calendar.php:1367
+#: calendar.php:1234 calendar.php:1398
 msgid "The event title must be between 1 and 30 characters in length"
 msgstr ""
 
-#: calendar.php:1212 calendar.php:1379
+#: calendar.php:1246 calendar.php:1410
 msgid ""
 "The repetition value must be 0 unless a type of recurrance is selected in "
 "which case the repetition value must be 0 or higher"
 msgstr ""
 
-#: calendar.php:1230
+#: calendar.php:1261
 msgid ""
 "An event with the details you submitted could not be found in the database. "
 "This may indicate a problem with your database or the way in which it is "
 "configured."
 msgstr ""
 
-#: calendar.php:1236
+#: calendar.php:1267
 msgid "Event added. It will now show in your calendar."
 msgstr ""
 
-#: calendar.php:1271 calendar.php:1397
+#: calendar.php:1302 calendar.php:1423
 msgid "Failure"
 msgstr ""
 
-#: calendar.php:1271
+#: calendar.php:1302
 msgid "You can't update an event if you haven't submitted an event id"
 msgstr ""
 
-#: calendar.php:1276
+#: calendar.php:1307
 msgid "Security check failure, try editing the event again"
 msgstr ""
 
-#: calendar.php:1397
+#: calendar.php:1423
 msgid ""
 "The database failed to return data to indicate the event has been updated "
 "sucessfully. This may indicate a problem with your database or the way in "
 "which it is configured."
 msgstr ""
 
-#: calendar.php:1403
+#: calendar.php:1429
 msgid "Event updated successfully"
 msgstr ""
 
-#: calendar.php:1429
+#: calendar.php:1455
 msgid "You can't delete an event if you haven't submitted an event id"
 msgstr ""
 
-#: calendar.php:1434
+#: calendar.php:1460
 msgid "Security check failure, try deleting the event again"
 msgstr ""
 
-#: calendar.php:1448
+#: calendar.php:1474
 msgid "Event deleted successfully"
 msgstr ""
 
-#: calendar.php:1454
+#: calendar.php:1480
 msgid ""
 "Despite issuing a request to delete, the event still remains in the "
 "database. Please investigate."
 msgstr ""
 
-#: calendar.php:1470
+#: calendar.php:1496
 msgid "Edit Event"
 msgstr ""
 
-#: calendar.php:1474
+#: calendar.php:1500
 msgid "You must provide an event id in order to edit it"
 msgstr ""
 
-#: calendar.php:1484
+#: calendar.php:1510
 msgid "Add Event"
 msgstr ""
 
-#: calendar.php:1487
+#: calendar.php:1513
 msgid "Manage Events"
 msgstr ""
 
-#: calendar.php:1505
+#: calendar.php:1531
 msgid "Security check failure, try editing the config again"
 msgstr ""
 
-#: calendar.php:1582
+#: calendar.php:1619
 msgid "Settings saved"
 msgstr ""
 
-#: calendar.php:1747
+#: calendar.php:1801
 msgid "Choose the lowest user group that may manage events"
 msgstr ""
 
-#: calendar.php:1749
+#: calendar.php:1803
 msgid "Subscriber"
 msgstr ""
 
-#: calendar.php:1750
+#: calendar.php:1804
 msgid "Contributor"
 msgstr ""
 
-#: calendar.php:1752
+#: calendar.php:1806
 msgid "Editor"
 msgstr ""
 
-#: calendar.php:1753
+#: calendar.php:1807
 msgid "Administrator"
 msgstr ""
 
-#: calendar.php:1758
+#: calendar.php:1812
 msgid "Do you want to display the author name on events?"
 msgstr ""
 
-#: calendar.php:1760 calendar.php:1768 calendar.php:1776 calendar.php:1784
-#: calendar.php:1793
+#: calendar.php:1814 calendar.php:1822 calendar.php:1830 calendar.php:1838
+#: calendar.php:1847 calendar.php:1858
 msgid "Yes"
 msgstr ""
 
-#: calendar.php:1761 calendar.php:1769 calendar.php:1777 calendar.php:1785
-#: calendar.php:1794
+#: calendar.php:1815 calendar.php:1823 calendar.php:1831 calendar.php:1839
+#: calendar.php:1848 calendar.php:1859
 msgid "No"
 msgstr ""
 
-#: calendar.php:1766
+#: calendar.php:1820
 msgid "Display a jumpbox for changing month and year quickly?"
 msgstr ""
 
-#: calendar.php:1774
+#: calendar.php:1828
 msgid "Display todays events?"
 msgstr ""
 
-#: calendar.php:1782
+#: calendar.php:1836
 msgid "Display upcoming events?"
 msgstr ""
 
-#: calendar.php:1787
+#: calendar.php:1841
 msgid "for"
 msgstr ""
 
-#: calendar.php:1787
+#: calendar.php:1841
 msgid "days into the future"
 msgstr ""
 
-#: calendar.php:1791
+#: calendar.php:1845
 msgid "Enable event categories?"
 msgstr ""
 
-#: calendar.php:1799
+#: calendar.php:1853
+msgid "Enable attribution link?"
+msgstr ""
+
+#: calendar.php:1864
 msgid "Configure the stylesheet for Calendar"
 msgstr ""
 
-#: calendar.php:1801
+#: calendar.php:1866
 msgid "Tick this box if you wish to reset the Calendar style to default"
 msgstr ""
 
-#: calendar.php:1857
+#: calendar.php:1922
 msgid "Security check failure, try adding the category again"
 msgstr ""
 
-#: calendar.php:1863
+#: calendar.php:1928
 msgid "Category added successfully"
 msgstr ""
 
-#: calendar.php:1870
+#: calendar.php:1935
 msgid "Security check failure, try deleting the category again"
 msgstr ""
 
-#: calendar.php:1877
+#: calendar.php:1942
 msgid "Category deleted successfully"
 msgstr ""
 
-#: calendar.php:1886
+#: calendar.php:1951
 msgid "Edit Category"
 msgstr ""
 
-#: calendar.php:1895 calendar.php:1951 calendar.php:1977
+#: calendar.php:1960 calendar.php:2016 calendar.php:2042
 msgid "Category Name"
 msgstr ""
 
-#: calendar.php:1899 calendar.php:1955
+#: calendar.php:1964 calendar.php:2020
 msgid "Category Colour (Hex format)"
 msgstr ""
 
-#: calendar.php:1915
+#: calendar.php:1980
 msgid "Security check failure, try editing the category again"
 msgstr ""
 
-#: calendar.php:1921
+#: calendar.php:1986
 msgid "Category edited successfully"
 msgstr ""
 
-#: calendar.php:1942
+#: calendar.php:2007
 msgid "Add Category"
 msgstr ""
 
-#: calendar.php:1978
+#: calendar.php:2043
 msgid "Category Colour"
 msgstr ""
 
-#: calendar.php:2002
+#: calendar.php:2067
 msgid "Are you sure you want to delete this category?"
 msgstr ""
 
-#: calendar.php:2015
+#: calendar.php:2080
 msgid "There are no categories in the database - something has gone wrong!"
 msgstr ""
 
-#: calendar.php:2089 calendar.php:2096
+#: calendar.php:2154 calendar.php:2161
 msgid "Next"
 msgstr ""
 
-#: calendar.php:2109 calendar.php:2116
+#: calendar.php:2174 calendar.php:2181
 msgid "Prev"
 msgstr ""
 
-#: calendar.php:2147 calendar.php:2186
+#: calendar.php:2212 calendar.php:2251
 msgid "all day"
 msgstr ""
 
-#: calendar.php:2150 calendar.php:2189
+#: calendar.php:2215 calendar.php:2254
 msgid "at"
 msgstr ""
 
-#: calendar.php:2255 calendar.php:2296 calendar.php:2337
+#: calendar.php:2320 calendar.php:2361 calendar.php:2402
 msgid "Comma separated category id list"
 msgstr ""
 
-#: calendar.php:2275 calendar.php:2302
+#: calendar.php:2340 calendar.php:2367
 msgid "Today's Events"
 msgstr ""
 
-#: calendar.php:2316 calendar.php:2343
+#: calendar.php:2381 calendar.php:2408
 msgid "Upcoming Events"
 msgstr ""
 
-#: calendar.php:2374
+#: calendar.php:2439
 msgid "Posted by"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Sunday"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Monday"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Tuesday"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Wednesday"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Thursday"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Friday"
 msgstr ""
 
-#: calendar.php:2616 calendar.php:2621
+#: calendar.php:2681 calendar.php:2686
 msgid "Saturday"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2725 calendar.php:2931
+#: calendar.php:2690 calendar.php:2790 calendar.php:3010
 msgid "January"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2726 calendar.php:2931
+#: calendar.php:2690 calendar.php:2791 calendar.php:3010
 msgid "February"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2727 calendar.php:2931
+#: calendar.php:2690 calendar.php:2792 calendar.php:3010
 msgid "March"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2728 calendar.php:2931
+#: calendar.php:2690 calendar.php:2793 calendar.php:3010
 msgid "April"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2729 calendar.php:2931
+#: calendar.php:2690 calendar.php:2794 calendar.php:3010
 msgid "May"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2730 calendar.php:2931
+#: calendar.php:2690 calendar.php:2795 calendar.php:3010
 msgid "June"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2731 calendar.php:2931
+#: calendar.php:2690 calendar.php:2796 calendar.php:3010
 msgid "July"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2732 calendar.php:2932
+#: calendar.php:2690 calendar.php:2797 calendar.php:3011
 msgid "August"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2733 calendar.php:2932
+#: calendar.php:2690 calendar.php:2798 calendar.php:3011
 msgid "September"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2734 calendar.php:2932
+#: calendar.php:2690 calendar.php:2799 calendar.php:3011
 msgid "October"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2735 calendar.php:2932
+#: calendar.php:2690 calendar.php:2800 calendar.php:3011
 msgid "November"
 msgstr ""
 
-#: calendar.php:2625 calendar.php:2736 calendar.php:2932
+#: calendar.php:2690 calendar.php:2801 calendar.php:3011
 msgid "December"
 msgstr ""
 
-#: calendar.php:2724
+#: calendar.php:2789
 msgid "Month"
 msgstr ""
 
-#: calendar.php:2738
+#: calendar.php:2803
 msgid "Year"
 msgstr ""
 
-#: calendar.php:2771
+#: calendar.php:2836
 msgid "Go"
 msgstr ""
 
-#: calendar.php:2871
+#: calendar.php:2936
 msgid "Category Key"
 msgstr ""
 
-#: calendar.php:2883
+#: calendar.php:2958
 msgid "Calendar developed and supported by "
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "Su"
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "Mo"
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "Tu"
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "We"
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "Th"
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "Fr"
 msgstr ""
 
-#: calendar.php:2922 calendar.php:2927
+#: calendar.php:3001 calendar.php:3006
 msgid "Sa"
 msgstr ""
 
-#: calendar.php:3097
+#: calendar.php:3186
 msgid "Calendar by "
 msgstr ""
 
