@@ -6,7 +6,7 @@
 class instagram_self_feed extends WP_Widget {
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_self_feed', /* Name */'Simply Instagram: Latest Feed', array( 'description' => 'Display your latest feeds. This will display your photo and includes media of people you\'re following.' ) );
+		parent::WP_Widget( /* Base ID */'instagram_self_feed', /* Name */__('Simply Instagram: Latest Feed', 'simply-instagram'), array( 'description' => __('Display your latest feeds. This will display your photo and includes media of people you\'re following.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
@@ -20,6 +20,7 @@ class instagram_self_feed extends WP_Widget {
 		echo '<p>' . $short_desc . '</p>' . '<div class="clear"></div>';
 		
 		echo sInstShowWidgetData( sInstGetSelfFeed( access_token() ), $max_display, $instance[ 'size' ], "sIntSelfFeed", $instance['display_caption'], $instance['open_instagram'] );
+		
 ?>
 	<script type="text/javascript" charset="utf-8">
 	  jQuery(document).ready(function(){
@@ -28,7 +29,7 @@ class instagram_self_feed extends WP_Widget {
 	    	social_tools: false,
 	    	theme: '<?php echo $instance[ 'theme' ];?>',
 	    	});
-	    jQuery('.tooltip').tooltipster();
+	    jQuery('.si-tooltip').tooltipster();
 	  });
 	</script>
 <?php		
@@ -75,40 +76,40 @@ class instagram_self_feed extends WP_Widget {
 		?>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('widget_title'); ?>" name="<?php echo $this->get_field_name('widget_title'); ?>" type="text" value="<?php echo $widget_title; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('short_desc'); ?>" name="<?php echo $this->get_field_name('short_desc'); ?>"><?php echo $short_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
-		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('Photo will be open in Instagram on new tab.', 'simply-instagram'); ?></span>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('max_display'); ?>"><?php _e('No. of Photos:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('max_display'); ?>"><?php _e('No. of Photos:', 'simply-instagram'); ?></label> 
 		<input class="widefat" class="widefat" id="<?php echo $this->get_field_id('max_display'); ?>" name="<?php echo $this->get_field_name('max_display'); ?>" type="text" value="<?php echo $max_display; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('display_caption'); ?>" name="<?php echo $this->get_field_name('display_caption'); ?>">
-		 <option value="true" <?php selected( $display_caption, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $display_caption, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $display_caption, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $display_caption, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.', 'simply-instagram'); ?></span>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('theme'); ?>"><?php _e('Theme:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('theme'); ?>"><?php _e('Theme:', 'simply-instagram'); ?></label> 
 		<select class="widefat" id="<?php echo $this->get_field_id('theme'); ?>" name="<?php echo $this->get_field_name('theme'); ?>">	
 		 <option value="pp_default" <?php selected( $theme, "pp_default" ); ?>>Default</option>
 		 <option value="facebook" <?php selected( $theme, "facebook" ); ?>>Facebook</option>
@@ -120,15 +121,15 @@ class instagram_self_feed extends WP_Widget {
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('auto_play'); ?>"><?php _e('Auto Play Slideshow:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('auto_play'); ?>"><?php _e('Auto Play Slideshow:', 'simply-instagram'); ?></label> 
 		<select class="widefat" id="<?php echo $this->get_field_id('auto_play'); ?>" name="<?php echo $this->get_field_name('auto_play'); ?>">
-		 <option value="true" <?php selected( $auto_play, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $auto_play, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $auto_play, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $auto_play, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Picture Size:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Picture Size:', 'simply-instagram'); ?></label> 
 		<input class="widefat" class="widefat" id="<?php echo $this->get_field_id('size'); ?>" name="<?php echo $this->get_field_name('size'); ?>" type="text" value="<?php echo $size; ?>" />
 		</p>
 		
@@ -142,7 +143,7 @@ class instagram_self_feed extends WP_Widget {
 class instagram_user_info extends WP_Widget {
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_user_info', /* Name */'Simply Instagram: User Info', array( 'description' => 'Display user info.' ) );
+		parent::WP_Widget( /* Base ID */'instagram_user_info', /* Name */__('Simply Instagram: User Info', 'simply-instagram'), array( 'description' => __('Display user info.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
@@ -163,12 +164,13 @@ class instagram_user_info extends WP_Widget {
 				echo '<div class="clear"></div>';
 			endif;
 			
-			sInstDiplayFollowData( sInstGetFollowers( user_id(), access_token() , array( 'name' => 'true', 'bio' => 'true', 'website' => 'true', 'media' => 'true', 'followers' => 'true', 'following' => 'true', 'profile_pic' => 'true' ) ), "25", $instance['followers_profile_width'], false );
+			$fllwrsdata = sInstDiplayFollowData( sInstGetFollowers( user_id(), access_token() , array( 'name' => 'true', 'bio' => 'true', 'website' => 'true', 'media' => 'true', 'followers' => 'true', 'following' => 'true', 'profile_pic' => 'true' ) ), "25", $instance['followers_profile_width'], false );
+						
 			?>
 				<script type="text/javascript" charset="utf-8">
 				  //jQuery.noConflict();
 				  jQuery(document).ready(function(){
-				     jQuery('.tooltip').tooltipster();
+				     jQuery('.si-tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -185,7 +187,7 @@ class instagram_user_info extends WP_Widget {
 				<script type="text/javascript" charset="utf-8">
 				  //jQuery.noConflict();
 				  jQuery(document).ready(function(){
-				     jQuery('.tooltip').tooltipster();
+				     jQuery('.si-tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -208,7 +210,7 @@ class instagram_user_info extends WP_Widget {
 				    	social_tools:false,
 				    	theme: 'pp_default',
 				    	});
-				     jQuery('.tooltip').tooltipster();
+				     jQuery('.si-tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -230,7 +232,7 @@ class instagram_user_info extends WP_Widget {
 				    	social_tools:false,
 				    	theme: 'pp_default',
 				    	});
-				     jQuery('.tooltip').tooltipster();
+				     jQuery('.si-tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -252,7 +254,7 @@ class instagram_user_info extends WP_Widget {
 				    	social_tools:false,
 				    	theme: 'pp_default',
 				    	});
-				     jQuery('.tooltip').tooltipster();
+				     jQuery('.si-tooltip').tooltipster();
 				  });
 				</script>
 			<?php
@@ -350,106 +352,106 @@ class instagram_user_info extends WP_Widget {
 		?>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('widget_title'); ?>" name="<?php echo $this->get_field_name('widget_title'); ?>" type="text" value="<?php echo $widget_title; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('profile_width'); ?>"><?php _e('Profile Picture Width:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('profile_width'); ?>"><?php _e('Profile Picture Width:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('profile_width'); ?>" name="<?php echo $this->get_field_name('profile_width'); ?>" type="text" value="<?php echo $profile_width; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
-		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
 		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
 		</p>
 		
 		<p>
 		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['followers'], true ); ?> id="<?php echo $this->get_field_id( 'followers' ); ?>" name="<?php echo $this->get_field_name( 'followers' ); ?>" />
-		<label for="<?php echo $this->get_field_id('followers'); ?>"><?php _e('Include my followers thumbnail'); ?></label> 
+		<label for="<?php echo $this->get_field_id('followers'); ?>"><?php _e('Include my followers thumbnail', 'simply-instagram'); ?></label> 
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('followers_desc'); ?>"><?php _e('Followers Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('followers_desc'); ?>"><?php _e('Followers Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('followers_desc'); ?>" name="<?php echo $this->get_field_name('followers_desc'); ?>"><?php echo $followers_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('followers_profile_width'); ?>"><?php _e('Picture Width:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('followers_profile_width'); ?>"><?php _e('Picture Width:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('followers_profile_width'); ?>" name="<?php echo $this->get_field_name('followers_profile_width'); ?>" type="text" value="<?php echo $followers_profile_width; ?>" />
 		</p>
 		
 		<p>
 		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['following'], true ); ?> id="<?php echo $this->get_field_id( 'following' ); ?>" name="<?php echo $this->get_field_name( 'following' ); ?>" />
-		<label for="<?php echo $this->get_field_id('following'); ?>"><?php _e('Include thumbnail user I\'m following'); ?></label> 
+		<label for="<?php echo $this->get_field_id('following'); ?>"><?php _e('Include thumbnail user I\'m following', 'simply-instagram'); ?></label> 
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('following_desc'); ?>"><?php _e('Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('following_desc'); ?>"><?php _e('Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('following_desc'); ?>" name="<?php echo $this->get_field_name('following_desc'); ?>"><?php echo $following_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('following_profile_width'); ?>"><?php _e('Following Profile Width:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('following_profile_width'); ?>"><?php _e('Following Profile Width:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('following_profile_width'); ?>" name="<?php echo $this->get_field_name('following_profile_width'); ?>" type="text" value="<?php echo $following_profile_width; ?>" />
 		</p>
 		
 		<p>
 		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['latest_feed'], true ); ?> id="<?php echo $this->get_field_id( 'latest_feed' ); ?>" name="<?php echo $this->get_field_name( 'latest_feed' ); ?>" />
-		<label for="<?php echo $this->get_field_id('latest_feed'); ?>"><?php _e('Include my latest feed'); ?></label> 
+		<label for="<?php echo $this->get_field_id('latest_feed'); ?>"><?php _e('Include my latest feed', 'simply-instagram'); ?></label> 
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('latest_feed_desc'); ?>"><?php _e('Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('latest_feed_desc'); ?>"><?php _e('Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('latest_feed_desc'); ?>" name="<?php echo $this->get_field_name('latest_feed_desc'); ?>"><?php echo $latest_feed_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('latest_feed_desc_profile_width'); ?>"><?php _e('Recent Feed Width:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('latest_feed_desc_profile_width'); ?>"><?php _e('Recent Feed Width:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('latest_feed_desc_profile_width'); ?>" name="<?php echo $this->get_field_name('latest_feed_desc_profile_width'); ?>" type="text" value="<?php echo $latest_feed_desc_profile_width; ?>" />
 		</p>
 		
 		<p>
 		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['latest_photo'], true ); ?> id="<?php echo $this->get_field_id( 'latest_photo' ); ?>" name="<?php echo $this->get_field_name( 'latest_photo' ); ?>" />
-		<label for="<?php echo $this->get_field_id('latest_photo'); ?>"><?php _e('Include my recent media'); ?></label> 
+		<label for="<?php echo $this->get_field_id('latest_photo'); ?>"><?php _e('Include my recent media', 'simply-instagram'); ?></label> 
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('latest_photo_desc'); ?>"><?php _e('Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('latest_photo_desc'); ?>"><?php _e('Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('latest_photo_desc'); ?>" name="<?php echo $this->get_field_name('latest_photo_desc'); ?>"><?php echo $latest_photo_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('latest_photo_profile_width'); ?>"><?php _e('Recent Media Width:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('latest_photo_profile_width'); ?>"><?php _e('Recent Media Width:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('latest_photo_profile_width'); ?>" name="<?php echo $this->get_field_name('latest_photo_profile_width'); ?>" type="text" value="<?php echo $latest_photo_profile_width; ?>" />
 		</p>
 		
 		<p>
 		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['liked_photo'], true ); ?> id="<?php echo $this->get_field_id( 'liked_photo' ); ?>" name="<?php echo $this->get_field_name( 'liked_photo' ); ?>" />
-		<label for="<?php echo $this->get_field_id('liked_photo'); ?>"><?php _e('Include photos I liked'); ?></label> 
+		<label for="<?php echo $this->get_field_id('liked_photo'); ?>"><?php _e('Include photos I liked', 'simply-instagram'); ?></label> 
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('liked_photo_desc'); ?>"><?php _e('Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('liked_photo_desc'); ?>"><?php _e('Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('liked_photo_desc'); ?>" name="<?php echo $this->get_field_name('liked_photo_desc'); ?>"><?php echo $liked_photo_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('liked_photo_width'); ?>"><?php _e('Liked Photo Width:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('liked_photo_width'); ?>"><?php _e('Liked Photo Width:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('liked_photo_width'); ?>" name="<?php echo $this->get_field_name('liked_photo_width'); ?>" type="text" value="<?php echo $liked_photo_width; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('display_caption'); ?>" name="<?php echo $this->get_field_name('display_caption'); ?>">
-		 <option value="true" <?php selected( $display_caption, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $display_caption, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $display_caption, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $display_caption, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.', 'simply-instagram'); ?></span>
 		</p>
 	
 	<?php
@@ -464,7 +466,7 @@ class instagram_user_info extends WP_Widget {
 class instagram_most_popular extends WP_Widget {	
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_most_popular', /* Name */'Simply Instagram: Currently Popular', array( 'description' => 'Display currently popular photos in Instagram server.' ) );
+		parent::WP_Widget( /* Base ID */'instagram_most_popular', /* Name */__('Simply Instagram: Currently Popular', 'simply-instagram'), array( 'description' => __('Display currently popular photos in Instagram server.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
@@ -485,7 +487,7 @@ class instagram_most_popular extends WP_Widget {
 	    	social_tools:false,
 	    	theme: '<?php echo $instance[ 'theme' ];?>',
 	    	});
-	    jQuery('.tooltip').tooltipster();
+	    jQuery('.si-tooltip').tooltipster();
 	  });
 	</script>
 	<?php	
@@ -530,41 +532,41 @@ class instagram_most_popular extends WP_Widget {
 		?>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('widget_title'); ?>" name="<?php echo $this->get_field_name('widget_title'); ?>" type="text" value="<?php echo $widget_title; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('short_desc'); ?>" name="<?php echo $this->get_field_name('short_desc'); ?>"><?php echo $short_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
-		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('Photo will be open in Instagram on new tab.', 'simply-instagram'); ?></span>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('max_display'); ?>"><?php _e('No. of Photos:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('max_display'); ?>"><?php _e('No. of Photos:', 'simply-instagram'); ?></label> 
 		<input class="widefat" class="widefat" id="<?php echo $this->get_field_id('max_display'); ?>" name="<?php echo $this->get_field_name('max_display'); ?>" type="text" value="<?php echo $max_display; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('display_caption'); ?>" name="<?php echo $this->get_field_name('display_caption'); ?>">
-		 <option value="true" <?php selected( $display_caption, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $display_caption, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $display_caption, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $display_caption, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.', 'simply-instagram'); ?></span>
 		</p>
 
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('theme'); ?>"><?php _e('Theme:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('theme'); ?>"><?php _e('Theme:', 'simply-instagram'); ?></label> 
 		<select class="widefat" id="<?php echo $this->get_field_id('theme'); ?>" name="<?php echo $this->get_field_name('theme'); ?>">	
 		 <option value="pp_default" <?php selected( $theme, "pp_default" ); ?>>Default</option>
 		 <option value="facebook" <?php selected( $theme, "facebook" ); ?>>Facebook</option>
@@ -576,15 +578,15 @@ class instagram_most_popular extends WP_Widget {
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('auto_play'); ?>"><?php _e('Auto Play Slideshow:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('auto_play'); ?>"><?php _e('Auto Play Slideshow:', 'simply-instagram'); ?></label> 
 		<select class="widefat" id="<?php echo $this->get_field_id('auto_play'); ?>" name="<?php echo $this->get_field_name('auto_play'); ?>">
-		 <option value="true" <?php selected( $auto_play, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $auto_play, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $auto_play, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $auto_play, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Picture Size:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Picture Size:', 'simply-instagram'); ?></label> 
 		<input class="widefat" class="widefat" id="<?php echo $this->get_field_id('size'); ?>" name="<?php echo $this->get_field_name('size'); ?>" type="text" value="<?php echo $size; ?>" />
 		</p>
 		
@@ -599,7 +601,7 @@ class instagram_recent_media extends WP_Widget {
 	
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_recent_media', /* Name */'Simply Instagram: My Latest Photo', array( 'description' => 'Display exclusively your latest uploaded photos.' ) );
+		parent::WP_Widget( /* Base ID */'instagram_recent_media', /* Name */__('Simply Instagram: My Latest Photo', 'simply-instagram'), array( 'description' => __('Display exclusively your latest uploaded photos.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
@@ -620,7 +622,7 @@ class instagram_recent_media extends WP_Widget {
 	    	social_tools:false,
 	    	theme: '<?php echo $instance[ 'theme' ];?>',
 	    	});
-	    jQuery('.tooltip').tooltipster();
+	    jQuery('.si-tooltip').tooltipster();
 	  });
 	</script>
 	<?php	
@@ -667,36 +669,36 @@ class instagram_recent_media extends WP_Widget {
 		?>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('widget_title'); ?>"><?php _e('Widget Title:', 'simply-instagram'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id('widget_title'); ?>" name="<?php echo $this->get_field_name('widget_title'); ?>" type="text" value="<?php echo $widget_title; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('short_desc'); ?>"><?php _e('Short Description:', 'simply-instagram'); ?></label> 
 		<textarea rows="10" class="widefat" id="<?php echo $this->get_field_id('short_desc'); ?>" name="<?php echo $this->get_field_name('short_desc'); ?>"><?php echo $short_desc; ?></textarea>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('open_instagram'); ?>"><?php _e('View at Instagram:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('open_instagram'); ?>" name="<?php echo $this->get_field_name('open_instagram'); ?>">
-		 <option value="true" <?php selected( $open_instagram, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $open_instagram, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $open_instagram, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $open_instagram, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">Photo will be open in Instagram on new tab.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('Photo will be open in Instagram on new tab.', 'simply-instagram'); ?></span>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('max_display'); ?>"><?php _e('No. of Photos:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('max_display'); ?>"><?php _e('No. of Photos:', 'simply-instagram'); ?></label> 
 		<input class="widefat" class="widefat" id="<?php echo $this->get_field_id('max_display'); ?>" name="<?php echo $this->get_field_name('max_display'); ?>" type="text" value="<?php echo $max_display; ?>" />
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:'); ?></label>		
+		<label for="<?php echo $this->get_field_id('display_caption'); ?>"><?php _e('Display Photo Caption:', 'simply-instagram'); ?></label>		
 		<select class="widefat" id="<?php echo $this->get_field_id('display_caption'); ?>" name="<?php echo $this->get_field_name('display_caption'); ?>">
-		 <option value="true" <?php selected( $display_caption, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $display_caption, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $display_caption, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $display_caption, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
-		<span style="font-style: italic; font-size: 11px;">prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.</span>
+		<span style="font-style: italic; font-size: 11px;"><?php echo __('prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.', 'simply-instagram'); ?></span>
 		</p>
 		
 		<p>
@@ -712,15 +714,15 @@ class instagram_recent_media extends WP_Widget {
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('auto_play'); ?>"><?php _e('Auto Play Slideshow:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('auto_play'); ?>"><?php _e('Auto Play Slideshow:', 'simply-instagram'); ?></label> 
 		<select class="widefat" id="<?php echo $this->get_field_id('auto_play'); ?>" name="<?php echo $this->get_field_name('auto_play'); ?>">
-		 <option value="true" <?php selected( $auto_play, "true" ); ?>>Yes</option>
-		 <option value="false" <?php selected( $auto_play, "false" ); ?>>No</option>
+		 <option value="true" <?php selected( $auto_play, "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+		 <option value="false" <?php selected( $auto_play, "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		</select>
 		</p>
 		
 		<p>
-		<label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Picture Size:'); ?></label> 
+		<label for="<?php echo $this->get_field_id('size'); ?>"><?php _e('Picture Size:', 'simply-instagram'); ?></label> 
 		<input class="widefat" class="widefat" id="<?php echo $this->get_field_id('size'); ?>" name="<?php echo $this->get_field_name('size'); ?>" type="text" value="<?php echo $size; ?>" />
 		</p>
 		

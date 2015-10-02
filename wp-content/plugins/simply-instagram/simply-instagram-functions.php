@@ -98,15 +98,15 @@ function sInstShowWidgetData( $data, $count='9', $width='75', $customRel="sIntWi
  	for( $i = 0; $i < $query; $i++ ):
  	
  	if( $open_instagram == "true" ){
- 		$output .= '<li><a href="' . $data['data'][$i]['link'] . '" target="_blank" >';
- 		$output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '" class="front-photo" width="' . $width .'" height="' . $width . '">';
+ 		$output .= '<li><a class="si-tooltip" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '" href="' . $data['data'][$i]['link'] . '" target="_blank" >';
+ 		$output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" alt="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '" width="' . $width .'" height="' . $width . '">';
  		$output .= '</a></li>';
  	}else{
  		//if video
  		if( isset( $data['data'][$i]['videos'] ) && !empty( $data['data'][$i]['videos'] ) ){
- 			$output .= '<li><a href="' . $data['data'][$i]['videos']['standard_resolution']['url'] . '?iframe=true&width=500&height=250" "rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';		
+ 			$output .= '<li><a class="si-tooltip" href="' . $data['data'][$i]['videos']['standard_resolution']['url'] . '?iframe=true&width=500&height=250" "rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';		
  		}else{
-			$output .= '<li><a href="' . $data['data'][$i]['images']['standard_resolution']['url'] . '" rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';		
+			$output .= '<li><a class="si-tooltip" href="' . $data['data'][$i]['images']['standard_resolution']['url'] . '" rel="' . $customRel . '[instagram]" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';		
 		}
 			$output .= '<div class="si-content" style=" display: none; margin: 10px; "><div class="clear"></div>';
 			
@@ -120,7 +120,7 @@ function sInstShowWidgetData( $data, $count='9', $width='75', $customRel="sIntWi
 			endif;	
 			
 			$output .= '<div class="clear"></div></div>';						
-			$output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="' . $width .'" height="' . $width . '" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';
+			$output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="' . $width .'" height="' . $width . '" alt="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ). '">';
 			$output .= "</a></li>";
 	}				
 				
@@ -218,11 +218,12 @@ function sInstGetFollowers( $user_id, $access_token )
                 $data = json_decode( $response, true );
                 
                 file_put_contents( simply_instagram_plugin_path . '/cache-api/followers.json', $response );
-        else:
+        else:        	
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
 		$data = json_decode( $response['body'], true );
 		
 		file_put_contents( simply_instagram_plugin_path . '/cache-api/followers.json', $response['body'] );
+		
         endif;
        	
 	return $data;
@@ -405,11 +406,12 @@ function sInstGetFollowingInfo( $user_id, $access_token )
                 $data = json_decode( $response, true );
                 
                 file_put_contents( simply_instagram_plugin_path . '/cache-api/followinginfo.json', $response );
-        else:
+        else:        
                 $response = wp_remote_get( $apiurl, array('timeout' => 20 ) );
-		$data = json_decode( $response['body'], true );
-		
+                
+                $data = json_decode( $response['body'], true );			
 		file_put_contents( simply_instagram_plugin_path . '/cache-api/followinginfo.json', $response['body'] );
+               
         endif;
        	
 	return $data;	
@@ -467,12 +469,12 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 			//$output = '<div class="polaroid-holder">';
 			$output .= '<ul id="polaroid-ul">';
 				for( $i=0; $i < $query; $i++ ):
-					$output .= '<li>';
+					$output .= '<li>';															
 										
 					//presentation
 					if( $displayoption === "instagram" ){
-						$output .= '<a href="' . $data['data'][$i]['link'] . '" target="_blank" >';
-						$output .= '<img class="tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" title="' . $data['data'][$i]['caption']['text'] . '">';
+						$output .= '<a class="si-tooltip" title="' . $data['data'][$i]['caption']['text'] . '" href="' . $data['data'][$i]['link'] . '" target="_blank" >';
+						$output .= '<img class="si-tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" alt="' . $data['data'][$i]['caption']['text'] . '">';
 						$output .= '</a>';
 					}					
 					
@@ -519,7 +521,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						endif; // end of ppPhotoDescription
 						$output .= '<div class="clear"></div></div>';
 						
-						$output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" title="' . $data['data'][$i]['caption']['text'] . '">';
+						$output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" alt="' . $data['data'][$i]['caption']['text'] . '">';
 						
 						$output .= "</a>";
 					}
@@ -535,7 +537,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						  * Display image, description and statistic
 						 **/
 						 $output .= '<a href="' . plugins_url( 'simply-instagram/simply-instagram-pp-media-viewer.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '&iframe=true&width=960&height=650&scrolling=no" rel="prettyphoto" style="text-decoration:none">';
-						  $output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
+						  $output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" alt="' . $data['data'][$i]['caption']['text'] . '">';
 						 $output .= '</a>';
 						 
 						 $output .=  '</div>';		
@@ -560,8 +562,8 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 				*/
 				
 				$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';
-				$output .= '<a href="' . $data['data'][$i]['link'] . '" target="_blank">';
-				$output .= '<img class="front-photo" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
+				$output .= '<a class="si-tooltip" title="' . $data['data'][$i]['caption']['text'] . '" href="' . $data['data'][$i]['link'] . '" target="_blank">';
+				$output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" alt="' . $data['data'][$i]['caption']['text'] . '">';
 				$output .= '</a>';
 				$output .=  '</div>';
 				
@@ -572,7 +574,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 if( $showphotographer === "true" ):
 					 $output .= '<div class="sinst-author-section">';
 					  $output .= '<div class="sinst-author">';
-					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" alt="' . $data['data'][$i]['user']['username'] . '" class="si-photographer si-tooltip"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
 					  $output .= '</div>';
 					 $output .= '</div>';
 					 endif;	 
@@ -623,7 +625,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						 for( $c=0; $c < $cc ; $c++ ):
 							 
 						 	$output .= '<div class="sinst-comments">';						 	
-						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
+						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" alt="' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '" class="si-comment-profile"/>'; 
 						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
 						 	$output .= '</div>';
 							 	
@@ -636,6 +638,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 				}				
 				
 				if( $displayoption === "prettyPhoto" ){
+				
 				/**
 				 * else user choose to use prettyPhoto slideshow
 				 * display this area.
@@ -646,7 +649,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					  * Display image, description and statistic
 					 **/		
 					
-					$output .= '<a href="' . $data['data'][$i]['images'][$size]['url'] . '" rel="sIntSC[instagram]">';
+					$output .= '<a href="' . $data['data'][$i]['images'][$size]['url'] . '" class="si-tooltip" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '" rel="sIntSC[instagram]">';
 					$output .= '<div class="si-content" style=" display: none; margin: 10px; "><div class="break-line" style="height: 10px;"></div>';
 					
 					/**
@@ -656,7 +659,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					if( $prettyPhoto['ppDisplayPhotographer']  === "true" ):						
 					$output .= '<div class="ppDisplayPhotographer">';
 					  $output .= '<div class="ppDisplayPhotographer-author">';
-					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="ppDisplayPhotographer-photo"/> <span class="ppDisplayPhotographer-username">' . $data['data'][$i]['user']['username'] . '</span> ';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="ppDisplayPhotographer-photo" alt="' . $data['data'][$i]['user']['username'] . '"/> <span class="ppDisplayPhotographer-username">' . $data['data'][$i]['user']['username'] . '</span> ';
 					  $output .= '</div>';
 					 $output .= '</div>';
 					endif; // end of ppPhotoDescription
@@ -686,7 +689,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					
 					$output .= '<div class="clear"></div></div>';
 					
-					$output .= '<img class="front-photo si-prettyphoto tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" title="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '">';
+					$output .= '<img class="front-photo si-prettyphoto si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" alt="' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '">';
 					
 					$output .= "</a>";
 					 
@@ -699,7 +702,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 if( $showphotographer === "true" ):
 					 $output .= '<div class="sinst-author-section">';
 					  $output .= '<div class="sinst-author">';
-					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" alt="' . $data['data'][$i]['user']['username'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
 					  $output .= '</div>';
 					 $output .= '</div>';
 					 endif;	 
@@ -750,7 +753,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						 for( $c=0; $c < $cc ; $c++ ):
 							 
 						 	$output .= '<div class="sinst-comments">';						 	
-						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
+						 	$output .= '<img alt="' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '" src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
 						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
 						 	$output .= '</div>';
 							 	
@@ -773,7 +776,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					  * Display image, description and statistic
 					 **/
 					 $output .= '<a href="' . plugins_url( 'simply-instagram/simply-instagram-pp-media-viewer.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '&iframe=true&width=960&height=650&scrolling=no" rel="prettyphoto" style="text-decoration:none">';
-					  $output .= '<img class="front-photo tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" title="' . $data['data'][$i]['caption']['text'] . '">';
+					  $output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" alt="' . $data['data'][$i]['caption']['text'] . '">';
 					 $output .= '</a>';
 					 
 					 $output .=  '</div>';				 
@@ -785,7 +788,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 if( $showphotographer === "true" ):
 					 $output .= '<div class="sinst-author-section">';
 					  $output .= '<div class="sinst-author">';
-					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
+					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" alt="' . $data['data'][$i]['user']['username'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
 					  $output .= '</div>';
 					 $output .= '</div>';
 					 endif;	 
@@ -836,7 +839,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						 for( $c=0; $c < $cc ; $c++ ):
 							 
 						 	$output .= '<div class="sinst-comments">';						 	
-						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" class="si-comment-profile"/>'; 
+						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" alt="' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '" class="si-comment-profile"/>'; 
 						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
 						 	$output .= '</div>';
 							 	
@@ -884,7 +887,7 @@ function sInstDiplayFollowData( $data, $display="20", $width="150", $showFollowe
 				//nothing here
 			
 			else:
-				$output .= '<li><img class="front-photo tooltip" src="' . $data['data'][$i]['profile_picture'] . '" width="' . $width . '" height="' . $width . '" title="' . $data['data'][$i]['full_name'] . '" ></li>';
+				$output .= '<li><img class="front-photo si-tooltip" src="' . $data['data'][$i]['profile_picture'] . '" width="' . $width . '" height="' . $width . '" title="' . $data['data'][$i]['full_name'] . '" ></li>';
 			endif;	
 				
 		endfor;		
@@ -1067,6 +1070,48 @@ function sIntReadCache( $file ){
 	$data = json_decode( file_get_contents( $cache_file ) , true );
 	
 	return $data ;
+	
+}
+
+/** API Responses */
+function sIntCheckResponse( $type ){
+
+	$si_gen_settings = get_option( 'si_general_settings' );
+	
+	if( !isset( $si_gen_settings['si_cache_option'] ) && $si_gen_settings['si_cache_option'] === false ){
+		return sprintf( '<i>%s</i>',
+				__('Caching module disabled.', 'simply-instagram')
+				);
+	}
+	
+	$file = simply_instagram_plugin_path . "cache-api/" . $type;
+	
+	$cachefile = file_exists( $file );
+	
+	if( !$cachefile ){
+		return sprintf( '<i>%s</i>',
+				__('Cache file not found! You are not using this endpoint.', 'simply-instagram')
+				);
+	}else{
+		$data = json_decode( file_get_contents( $file ), true );
+				
+		if( $data['meta']['error_message'] ){
+			return sprintf( '<i>%s<strong>%i</strong>%s</i>',
+					__('Code : ', 'simply-instagram'),
+					$data['meta']['code'],
+					__('Message : ', 'simply-instagram') . $data['meta']['error_message']
+					);
+			
+		}else{
+			return sprintf( '<i>%s<strong>%i</strong>%s</i><a href="%s">%s</a>',
+					__('Code : ', 'simply-instagram'),
+					$data['meta']['code'],
+					__('View file ', 'simply-instagram'),
+					plugins_url() . '/simply-instagram/cache-api/' . $type,
+					__('HERE', 'simply-instagram')
+					);					
+		}
+	}
 	
 }
 

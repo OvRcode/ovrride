@@ -3,9 +3,11 @@
  * Plugin Name: Simply Instagram
  * Plugin URI: http://www.rollybueno.info/wp-simply-instagram/
  * Description: Promote your Instagram photo through your Wordpress website using Simply Instagram.
- * Version: 1.2.7
+ * Version: 1.3.1
  * Author: Rolly G. Bueno Jr.
  * Author URI: http://www.rollybueno.info
+ * Text Domain: simply-instagram
+ * Domain Path: /languages
  * License: GPL v2.0.
  * Copyright 2012 Rolly G. Bueno Jr.
 */
@@ -42,6 +44,7 @@ class Simply_Instagram_Plugin {
 		add_action( 'admin_init', array( &$this, 'register_csscontrol_settings' ) );
 		add_action( 'admin_init', array( &$this, 'register_about_settings' ) );
 		add_action( 'admin_menu', array( &$this, 'add_admin_menus' ) );
+		add_action( 'plugins_loaded', array( &$this, 'si_textdomain' ) );
 				
 		/**
 		 * Here comes the Simpy Instagram hook for easier edit
@@ -135,10 +138,21 @@ class Simply_Instagram_Plugin {
 		delete_option( 'si_css' );
 	}
 	
+	/**
+	 * Attempt for using cookie
+	 * DEPRECIATED!
+	*/
 	function si_follower_cookie(){
 		if( isset( $_GET['access_token'] ) ):
 			setcookie( 'visitor_access_token', $_GET['access_token'], strtotime( " + 14 days" ) );
 		endif; 
+	}
+	
+	/**
+	 * Simply Instagram localization init
+	*/
+	function si_textdomain(){
+		load_plugin_textdomain( 'simply-instagram', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 	
 	/**
@@ -169,7 +183,7 @@ class Simply_Instagram_Plugin {
 		if( !$info['si_access_token'] && !$info['si_user_id'] ):
 		
 		echo '<div class="error">';
-	        echo '<p>Simply Instagram has not been setup correctly. Kindly <a href="options-general.php?page=simply-instagram">authorize</a> Simply Instagram. </p>';
+	        echo __('<p>Simply Instagram has not been setup correctly. Kindly <a href="options-general.php?page=simply-instagram">authorize</a> Simply Instagram. </p>', 'simply-instagram');
 	    	echo '</div>';
 	    	
 	    	endif;
@@ -250,19 +264,23 @@ class Simply_Instagram_Plugin {
 		 	 *type
 		 		popular
 		*/
-		ob_start();
+		ob_start();		
+		//print_r( $atts );
 		extract( shortcode_atts( array(
-				'presentation' => 'polaroid', 	//* * presentation - option to use masonry or polaroid in image presentation. Default: polaroid.
-				'displayoption' => 'instagram', // * * displayoption - choose either by using prettyphoto slideshow, single image or open directly in Instagram. Default: Instagram.
+				'endpoints' => 'users',
+				'type' => 'self-feed',
 				'size' => 'low_resolution', 	// * * size - photo size on slideshow: Choices: thumbnail, low_resolution, standard_resolution. Default: low_resolution
+				'presentation' => 'polaroid', 	//* * presentation - option to use masonry or polaroid in image presentation. Default: polaroid.
 				'display' => 20, 		// * * display - number of initial photo to be display. Default: 20
-				'width' => 150, 		// * * width - image width. Default: 150
-				'customRel' => 'sIntWid', 	// * * customRel - custom rel for prettyphoto 
+				'displayoption' => 'instagram', // * * displayoption - choose either by using prettyphoto slideshow, single image or open directly in Instagram. Default: Instagram.
 				'showphotographer' => 'true', 	// * * showphotographer - display username of photo owner. Default: true
 				'photocomment' => 0, 		// * * photocomment - comments to be display. 0 to hide, maximum of 5. Default 0
 				'stat' => true, 		// * * stat - display comment and like stat total. Default: true
 				'photocaption' => true ,		// * * photocaption - display photo caption. Might affect image height. Default: true
-				'displaycomment' => true	// * * displaycomment - option to display comment in masonry. Might affect image height. Default: true
+				'displaycomment' => true, 	// * * displaycomment - option to display comment in masonry. Might affect image height. Default: true
+				
+				'width' => 150, 		// * * width - image width. Default: 150
+				'customRel' => 'sIntWid', 	// * * customRel - custom rel for prettyphoto 	
 				 ), $atts ) );
 		//print_r( $atts );
 		switch( $atts['endpoints'] ):
@@ -287,7 +305,7 @@ class Simply_Instagram_Plugin {
 						if( $atts['presentation'] === "polaroid" ){
 							echo sInstDisplayData( sInstGetSelfFeed( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 						}else{
-							echo '<div id="masonryContainer" title="self-feed" class="clearfix masonry">';
+							echo '<div id="masonryContainer" class="clearfix masonry">';
 							echo sInstDisplayData( sInstGetSelfFeed( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 							echo '</div>';	
 						}												
@@ -300,7 +318,7 @@ class Simply_Instagram_Plugin {
 						if( $atts['presentation'] === "polaroid" ){
 							echo sInstDisplayData( sInstGetRecentMedia( user_id(), access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 						}else{
-							echo '<div id="masonryContainer" title="recent-media" class="clearfix masonry">';
+							echo '<div id="masonryContainer" class="clearfix masonry">';
 							echo sInstDisplayData( sInstGetRecentMedia( user_id(), access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 							echo '</div>';	
 						}
@@ -313,7 +331,7 @@ class Simply_Instagram_Plugin {
 						if( $atts['presentation'] === "polaroid" ){
 							echo sInstDisplayData( sInstGetLikes( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );	
 						}else{
-							echo '<div id="masonryContainer" title="likes" class="clearfix masonry">';
+							echo '<div id="masonryContainer" class="clearfix masonry">';
 							echo sInstDisplayData( sInstGetLikes( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );	
 							echo '</div>';		
 						}
@@ -333,7 +351,7 @@ class Simply_Instagram_Plugin {
 				if( $atts['presentation'] === "polaroid" ){
 					echo sInstDisplayData( sInstGetMostPopular( $atts['type'], access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], $atts['width'], $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 				}else{			
-					echo '<div id="masonryContainer" title="media" class="clearfix masonry">';
+					echo '<div id="masonryContainer" class="clearfix masonry">';
 					echo sInstDisplayData( sInstGetMostPopular( $atts['type'], access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], $atts['width'], $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 					echo '</div>';		
 				}
@@ -354,7 +372,9 @@ class Simply_Instagram_Plugin {
 			<script src="<?php echo plugins_url(); ?>/simply-instagram/js/jquery.masonry.min.js"></script>
 			
 			<script>
-			jQuery('.tooltip').tooltipster();
+			<?php // if( $this->general_settings['gen_enable_tooltip'] ){  ?>			
+				//jQuery('.si-tooltip').tooltipster();
+			<?php // } ?>
 		jQuery('#masonryContainer').imagesLoaded(function(){jQuery('#masonryContainer').masonry({itemSelector : '.masonryItem',isAnimated: true});});jQuery("a#content_close").live( "click", function() {jQuery("#overlay").fadeOut("slow", function() { jQuery("#overlay").remove(); });jQuery("#contentWrap").fadeOut("slow", function() { jQuery("#contentWrap").remove(); });jQuery("#content_close").fadeOut("slow", function() { jQuery("#content_close").remove(); });});jQuery("#overlay").live( "click", function() {Query(this).fadeOut("slow", function() { jQuery(this).remove(); });jQuery("#contentWrap").fadeOut("slow", function() { jQuery("#contentWrap").remove(); });jQuery("#content_close").fadeOut("slow", function() { jQuery("#content_close").remove(); });});jQuery(function() {jQuery("a.overlay").click(function() {var docHeight = jQuery(document).height();jQuery("body").append("<div id='overlay'></div><a id='content_close' href='#'></a><div id='contentWrap'></div>");	jQuery("#overlay").height(docHeight).css({'opacity' : 0.4,'position': 'fixed','top': 0,'left': 0,'background-color': 'black','width': '100%','z-index': 99999});jQuery("#contentWrap").load( jQuery(this).attr('rel') );jQuery("#image-holder").css({'width': '612px','height': '612px'});});jQuery("div.item-holder").hover(function() { var id = jQuery(this).data("id");jQuery("div.hover-action[data-id=" + id + "]").show("slow");},function() {jQuery("div.hover-action").hide("slow");});});
 	jQuery(document).ready(function(){
 	jQuery("a[rel^='sIntSC']").prettyPhoto({
@@ -378,7 +398,9 @@ class Simply_Instagram_Plugin {
 		?>
 			 <script>
 	        jQuery(document).ready(function() {
-	            jQuery('.tooltip').tooltipster();
+	            <?php //if( $this->general_settings['gen_enable_tooltip'] === "true" ){ echo( $this->general_settings['gen_enable_tooltip'] ); ?>
+				jQuery('.si-tooltip').tooltipster();
+			<?php //} ?>
 	            jQuery(document).ready(function(){jQuery("a[rel^='sIntSC']").prettyPhoto({autoplay_slideshow: <?php echo $prettyPhoto['autoPlay'] ;?>,social_tools: false,theme: '<?php echo $prettyPhoto["galleryTheme"] ;?>',animation_speed: '<?php echo $prettyPhoto["animationSpeed"] ;?>',});});jQuery(document).ready(function(){jQuery("a[rel^='prettyphoto']").prettyPhoto({autoplay_slideshow: false,social_tools: false,theme: '<?php echo $prettyPhoto["galleryTheme"] ;?>'});});
 	        });
 	    </script>
@@ -421,21 +443,22 @@ class Simply_Instagram_Plugin {
 	 * Start of General Settings tab.
 	*/
 		function register_general_settings() {	
-			$this->plugin_settings_tabs[$this->general_settings_key] = 'General';
+			$this->plugin_settings_tabs[$this->general_settings_key] = __('General', 'simply-instagram');
 			
-			register_setting( $this->general_settings_key, $this->general_settings_key );
-			add_settings_section( 'section_general', 'Cache Settings', array( &$this, 'general_section_desc' ) , $this->general_settings_key );
-			add_settings_field( 'si_enable_cache', 'Enable Cache', array( &$this, 'gen_enable_cache_option' ), $this->general_settings_key, 'section_general', array( 'label_for' => 'si_enable_cache' ) );
-			add_settings_field( 'si_cache_expire', 'Cache Expire', array( &$this, 'gen_cache_expire_option' ), $this->general_settings_key, 'section_general', array( 'label_for' => 'si_cache_expire' ) );
+			register_setting( $this->general_settings_key, $this->general_settings_key );			
+			add_settings_section( 'section_general', __('Cache Settings', 'simply-instagram'), array( &$this, 'general_section_desc' ) , $this->general_settings_key );
+			add_settings_field( 'si_enable_cache', __('Enable Cache', 'simply-instagram'), array( &$this, 'gen_enable_cache_option' ), $this->general_settings_key, 'section_general', array( 'label_for' => 'si_enable_cache' ) );
+			add_settings_field( 'si_cache_expire', __('Cache Expire', 'simply-instagram'), array( &$this, 'gen_cache_expire_option' ), $this->general_settings_key, 'section_general', array( 'label_for' => 'si_cache_expire' ) );
+			//add_settings_field( 'si_tooltip', __('Enable Tooltip', 'simply-instagram'), array( &$this, 'gen_enable_tooltip' ), $this->general_settings_key, 'section_general', array( 'label_for' => 'si_tolltip' ) );
 		}
 		
-		function general_section_desc() { echo 'Option to use caching or not. Simply Instagram only cache API data in order to save limit call on Instagram to avoid call excessive penalty( Instagram might return ERROR 400 ). Useful if you have large site traffic.'; }
+		function general_section_desc() { echo __('Option to use caching or not. Simply Instagram only cache API data in order to save limit call on Instagram to avoid call excessive penalty( Instagram might return ERROR 400 ). Useful if you have large site traffic.', 'simply-instagram'); }
 		
 		function gen_enable_cache_option() {
 			?>
 			<select name="<?php echo $this->general_settings_key; ?>[si_cache_option]"> 		
-				<option value="true" <?php echo selected( esc_attr( $this->general_settings['si_cache_option'] ), 'true' ); ?>/>Yes</option>
-				<option value="false" <?php echo selected( esc_attr( $this->general_settings['si_cache_option'] ), 'false' ); ?>/>No</option>
+				<option value="true" <?php echo selected( esc_attr( $this->general_settings['si_cache_option'] ), 'true' ); ?>/><?php echo __('Yes', 'simply-instagram'); ?></option>
+				<option value="false" <?php echo selected( esc_attr( $this->general_settings['si_cache_option'] ), 'false' ); ?>/><?php echo __('No', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}	
@@ -444,7 +467,18 @@ class Simply_Instagram_Plugin {
 			?>
 			<input type="text" name="<?php echo $this->general_settings_key; ?>[gen_cache_expire_option]" value="<?php echo esc_attr( $this->general_settings['gen_cache_expire_option'] ); ?>" />
 			<br/>
-			<span class="tips">Choose when API will recreate new cache in seconds.</span>
+			<span class="tips"><?php echo __('Choose when API will recreate new cache in seconds.', 'simply-instagram'); ?></span>
+			<?php
+		}	
+		
+		function gen_enable_tooltip() {
+			?>
+			<select name="<?php echo $this->general_settings_key; ?>[gen_enable_tooltip]"> 		
+				<option value="true" <?php echo selected( esc_attr( $this->general_settings['gen_enable_tooltip'] ), 'true' ); ?>/><?php echo __('Yes', 'simply-instagram'); ?></option>
+				<option value="false" <?php echo selected( esc_attr( $this->general_settings['gen_enable_tooltip'] ), 'false' ); ?>/><?php echo __('No', 'simply-instagram'); ?></option>
+			</select>
+			<br/>
+			<span class="tips"><?php echo __('Choose to display description when hovering.', 'simply-instagram'); ?></span>
 			<?php
 		}	
 	
@@ -456,25 +490,25 @@ class Simply_Instagram_Plugin {
 	 * Start of Shortcode Settings tab.
 	*/	
 		function register_shortcode_settings() {	
-			$this->plugin_settings_tabs[$this->shortcode_settings_key] = 'Shortcode';
+			$this->plugin_settings_tabs[$this->shortcode_settings_key] = __('Shortcode', 'simply-instagram');
 					
 			register_setting( $this->shortcode_settings_key, $this->shortcode_settings_key );
-			add_settings_section( 'section_shortcode', 'Short Code Settings', array( &$this, 'sc_section_desc' ), $this->shortcode_settings_key );
-			add_settings_field( 'endpoints', 'Endpoints', array( &$this, 'sc_endpoints_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'type', 'Type', array( &$this, 'sc_type_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'size', 'Size', array( &$this, 'sc_size_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'display', 'Display', array( &$this, 'sc_display_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'presentation', 'Presentation', array( &$this, 'sc_presentation_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'displayoption', 'Display Option', array( &$this, 'sc_displayoption_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'showphotographer', 'Show Photographer', array( &$this, 'sc_show_photographer_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'photocomment', 'Photo Comment', array( &$this, 'sc_photo_comment_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'stat', 'Stat', array( &$this, 'sc_stat_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'photocaption', 'Photo Caption', array( &$this, 'sc_photo_caption_option' ), $this->shortcode_settings_key, 'section_shortcode' );
-			add_settings_field( 'displaycomment', 'Display Comment', array( &$this, 'sc_displaycomment_option' ), $this->shortcode_settings_key, 'section_shortcode' );	
+			add_settings_section( 'section_shortcode', __('Short Code Settings', 'simply-instagram'), array( &$this, 'sc_section_desc' ), $this->shortcode_settings_key );
+			add_settings_field( 'endpoints', __('Endpoints', 'simply-instagram'), array( &$this, 'sc_endpoints_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'type', __('Type', 'simply-instagram'), array( &$this, 'sc_type_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'size', __('Size', 'simply-instagram'), array( &$this, 'sc_size_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'display', __('Display', 'simply-instagram'), array( &$this, 'sc_display_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'presentation', __('Presentation', 'simply-instagram'), array( &$this, 'sc_presentation_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'displayoption', __('Display Option', 'simply-instagram'), array( &$this, 'sc_displayoption_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'showphotographer', __('Show Photographer', 'simply-instagram'), array( &$this, 'sc_show_photographer_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'photocomment', __('Photo Comment', 'simply-instagram'), array( &$this, 'sc_photo_comment_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'stat', __('Stat', 'simply-instagram'), array( &$this, 'sc_stat_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'photocaption', __('Photo Caption', 'simply-instagram'), array( &$this, 'sc_photo_caption_option' ), $this->shortcode_settings_key, 'section_shortcode' );
+			add_settings_field( 'displaycomment', __('Display Comment', 'simply-instagram'), array( &$this, 'sc_displaycomment_option' ), $this->shortcode_settings_key, 'section_shortcode' );	
 			add_settings_section( 'shortcode_result', '', array( &$this, 'sc_result' ), $this->shortcode_settings_key );
 		}
 		
-		function sc_section_desc() { echo 'Use this tool to generate shortcode. Copy and paste the highlighted paragraph below to your post or page.'; }
+		function sc_section_desc() { echo __('Use this tool to generate shortcode. Copy and paste the highlighted paragraph below to your post or page.', 'simply-instagram'); }
 		
 		/**
  		 * Endpoints
@@ -482,8 +516,8 @@ class Simply_Instagram_Plugin {
 		function sc_endpoints_option() {
 			?>
 			<select name="endpoints"> 		
-				<option value="users" />Users</option>
-				<option value="media" />Media</option>
+				<option value="users" /><?php echo __('Users', 'simply-instagram'); ?></option>
+				<option value="media" /><?php echo __('Media', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}	
@@ -494,9 +528,9 @@ class Simply_Instagram_Plugin {
 		function sc_type_option() {
 			?>
 			<select name="type" class="sc-generator">	
-				 <option value ="self-feed" >Self Feed</option>
-				 <option value ="recent-media" >Recent Media</option>
-				 <option value ="likes" >Likes</option>
+				 <option value ="self-feed" ><?php echo __('Self Feed', 'simply-instagram'); ?></option>
+				 <option value ="recent-media" ><?php echo __('Recent Media', 'simply-instagram'); ?></option>
+				 <option value ="likes" ><?php echo __('Likes', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}	
@@ -509,9 +543,9 @@ class Simply_Instagram_Plugin {
 		function sc_size_option() {
 			?>
 			<select name="size" class="sc-generator">	
-				 <option value ="thumbnail" >Thumbnail</option>
-				 <option value ="low_resolution" >Low Resolution</option>
-				 <option value ="standard_resolution" >Standard Resolution</option>
+				 <option value ="thumbnail" ><?php echo __('Thumbnail', 'simply-instagram'); ?></option>
+				 <option value ="low_resolution" ><?php echo __('Low Resolution', 'simply-instagram'); ?></option>
+				 <option value ="standard_resolution" ><?php echo __('Standard Resolution', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}	
@@ -537,8 +571,8 @@ class Simply_Instagram_Plugin {
 		function sc_presentation_option() {
 			?>
 			<select name="presentation" class="sc-generator">	
-				<option value ="polaroid" >Polaroid</option>
-				<option value ="masonry" >Masonry</option>
+				<option value ="polaroid" ><?php echo __('Polaroid', 'simply-instagram'); ?></option>
+				<option value ="masonry" ><?php echo __('Masonry', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}
@@ -551,9 +585,9 @@ class Simply_Instagram_Plugin {
 		function sc_displayoption_option() {
 			?>
 			<select name="displayoption" class="sc-generator">	
-				<option value ="instagram" >Instagram</option>
-				<option value ="prettyPhoto" >prettyPhoto</option>
-				<option value ="single" >Single Viewer</option>
+				<option value ="instagram" ><?php echo __('Instagram', 'simply-instagram'); ?></option>
+				<option value ="prettyPhoto" ><?php echo __('prettyPhoto', 'simply-instagram'); ?></option>
+				<option value ="single" ><?php echo __('Single Viewer', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}
@@ -565,8 +599,8 @@ class Simply_Instagram_Plugin {
 		function sc_show_photographer_option() {
 			?>
 			<select name="showphotographer" class="sc-generator">	
-				<option value ="true" >Yes</option>
-				<option value ="false" >No</option>
+				<option value ="true" ><?php echo __('Yes', 'simply-instagram'); ?></option>
+				<option value ="false" ><?php echo __('No', 'simply-instagram'); ?></option>
 			</select>
 			<?php
 		}
@@ -592,8 +626,8 @@ class Simply_Instagram_Plugin {
 		function sc_stat_option() {
 					?>
 					<select name="stat" class="sc-generator">	
-				<option value ="true" >Yes</option>
-				<option value ="false" >No</option>
+				<option value ="true" ><?php echo __('Yes', 'simply-instagram'); ?></option>
+				<option value ="false" ><?php echo __('No', 'simply-instagram'); ?></option>
 			</select>
 					<?php
 				}			
@@ -605,8 +639,8 @@ class Simply_Instagram_Plugin {
 		function sc_photo_caption_option() {
 					?>
 					<select name="photocaption" class="sc-generator">	
-				<option value ="true" >Yes</option>
-				<option value ="false" >No</option>
+				<option value ="true" ><?php echo __('Yes', 'simply-instagram'); ?></option>
+				<option value ="false" ><?php echo __('No', 'simply-instagram'); ?></option>
 			</select>
 					<?php
 				}	
@@ -618,8 +652,8 @@ class Simply_Instagram_Plugin {
  		function sc_displaycomment_option() {
 			?>
 					<select name="displaycomment" class="sc-generator">	
-				<option value ="true" >Yes</option>
-				<option value ="false" >No</option>
+				<option value ="true" ><?php echo __('Yes', 'simply-instagram'); ?></option>
+				<option value ="false" ><?php echo __('No', 'simply-instagram'); ?></option>
 				</select>
 			<?php
 		}		
@@ -642,20 +676,20 @@ class Simply_Instagram_Plugin {
 	 * Start of prettyPhoto Settings tab.
 	*/	
 		function register_prettyphoto_settings() {
-			$this->plugin_settings_tabs[$this->prettyphoto_settings_key] = 'prettyPhoto';
+			$this->plugin_settings_tabs[$this->prettyphoto_settings_key] = __('prettyPhoto', 'simply-instagram');
 			
 			register_setting( $this->prettyphoto_settings_key, $this->prettyphoto_settings_key );
-			add_settings_section( 'section_prettyphoto', 'prettyPhoto Settings', array( &$this, 'prettyPhot_desc' ), $this->prettyphoto_settings_key );
-			add_settings_field( 'galleryTheme', 'Gallery Theme', array( &$this, 'gallery_theme_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );			
-			add_settings_field( 'autoPlay', 'Slideshow Auto Play', array( &$this, 'slideshow_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
-			add_settings_field( 'ppPhotoDescription', 'Display Description', array( &$this, 'pp_photodescription_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
-			add_settings_field( 'animationSpeed', 'Animation Speed', array( &$this, 'pp_animationspeed_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
+			add_settings_section( 'section_prettyphoto', __('prettyPhoto Settings', 'simply-instagram'), array( &$this, 'prettyPhot_desc' ), $this->prettyphoto_settings_key );
+			add_settings_field( 'galleryTheme', __('Gallery Theme', 'simply-instagram'), array( &$this, 'gallery_theme_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );			
+			add_settings_field( 'autoPlay', __('Slideshow Auto Play', 'simply-instagram'), array( &$this, 'slideshow_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
+			add_settings_field( 'ppPhotoDescription', __('Display Description', 'simply-instagram'), array( &$this, 'pp_photodescription_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
+			add_settings_field( 'animationSpeed', __('Animation Speed', 'simply-instagram'), array( &$this, 'pp_animationspeed_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
 			//add_settings_field( 'overlayGallery', 'Overlay Gallery', array( &$this, 'pp_overlaygallery_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
-			add_settings_field( 'ppDisplayStatistic', 'Display Statistic', array( &$this, 'pp_displastatistic_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
-			add_settings_field( 'ppDisplayPhotographer', 'Display photographer profile picture', array( &$this, 'pp_profilepicture_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
+			add_settings_field( 'ppDisplayStatistic', __('Display Statistic', 'simply-instagram'), array( &$this, 'pp_displastatistic_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
+			add_settings_field( 'ppDisplayPhotographer', __('Display photographer profile picture', 'simply-instagram'), array( &$this, 'pp_profilepicture_option' ), $this->prettyphoto_settings_key, 'section_prettyphoto' );
 		}	
 		
-		function prettyPhot_desc() { echo 'This prettyPhoto settings is for shortcode implementation only. Widget has different settings under each boxes.'; }
+		function prettyPhot_desc() { echo __('This prettyPhoto settings is for shortcode implementation only. Widget has different settings under each boxes.', 'simply-instagram'); }
 		
 		/**
 		 * Gallery theme - option to choose prettyPhoto theme
@@ -664,15 +698,15 @@ class Simply_Instagram_Plugin {
 		function gallery_theme_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[galleryTheme]"> 		
-				<option value="pp_default" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "pp_default" ); ?>>Default</option>
-			 	<option value="facebook" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "facebook" ); ?>>Facebook</option>
-			 	<option value="dark_rounded" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "dark_rounded" ); ?>>Dark Round</option>
-				<option value="dark_square" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "dark_square" ); ?>>Dark Square</option>
-				<option value="light_rounded" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "light_rounded" ); ?>>Light Round</option>
-				<option value="light_square" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "light_square" ); ?>>Light Square</option>
+				<option value="pp_default" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "pp_default" ); ?>><?php echo __('Default', 'simply-instagram'); ?></option>
+			 	<option value="facebook" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "facebook" ); ?>><?php echo __('Facebook', 'simply-instagram'); ?></option>
+			 	<option value="dark_rounded" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "dark_rounded" ); ?>><?php echo __('Dark Round', 'simply-instagram'); ?></option>
+				<option value="dark_square" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "dark_square" ); ?>><?php echo __('Dark Square', 'simply-instagram'); ?></option>
+				<option value="light_rounded" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "light_rounded" ); ?>><?php echo __('Light Round', 'simply-instagram'); ?></option>
+				<option value="light_square" <?php echo selected( esc_attr( $this->prettyphoto_settings['galleryTheme'] ), "light_square" ); ?>><?php echo __('Light Square', 'simply-instagram'); ?></option>
 			</select>
 			<br />
-			<span class="tips">Choose prettyPhoto gallery theme. You can compare each themes <a href="http://www.no-margin-for-errors.com/projects/prettyphoto-jquery-lightbox-clone/" target="_blank">here</a> under Theme Support at the bottom of the page.</span>
+			<span class="tips"><?php echo __('Choose prettyPhoto gallery theme. You can compare each themes <a href="http://www.no-margin-for-errors.com/projects/prettyphoto-jquery-lightbox-clone/" target="_blank">here</a> under Theme Support at the bottom of the page.', 'simply-instagram'); ?></span>
 			<?php
 		}	
 		
@@ -683,11 +717,11 @@ class Simply_Instagram_Plugin {
 		function slideshow_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[autoPlay]"> 		
-				<option value="true" <?php echo selected( esc_attr( $this->prettyphoto_settings['autoPlay'] ), "true" ); ?>>Yes</option>
-			 	<option value="false" <?php echo selected( esc_attr( $this->prettyphoto_settings['autoPlay'] ), "false" ); ?>>No</option>
+				<option value="true" <?php echo selected( esc_attr( $this->prettyphoto_settings['autoPlay'] ), "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+			 	<option value="false" <?php echo selected( esc_attr( $this->prettyphoto_settings['autoPlay'] ), "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 			</select>
 			<br />
-			<span class="tips">Set slideshow autoplay on/off.</span>
+			<span class="tips"><?php echo __('Set slideshow autoplay on/off.', 'simply-instagram'); ?></span>
 			<?php
 		}	
 		
@@ -700,11 +734,11 @@ class Simply_Instagram_Plugin {
 		function pp_photodescription_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[ppPhotoDescription]">	
-			 	<option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['ppPhotoDescription'] ), "true" ); ?>>Yes</option>
-			 	<option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['ppPhotoDescription'] ), "false" ); ?>>No</option>
+			 	<option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['ppPhotoDescription'] ), "true" ); ?>><?php echo __('Yes', 'simply-instagram'); ?></option>
+			 	<option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['ppPhotoDescription'] ), "false" ); ?>><?php echo __('No', 'simply-instagram'); ?></option>
 		     	</select>
 			 <br />
-		     	<span class="tips">prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.</span>
+		     	<span class="tips"><?php echo __('prettyPhoto sometimes unresponsive on long photo description and this is the major drawback in previous version of Simply Instagram. Turn this feature off when it does.', 'simply-instagram'); ?></span>
 		    
 			<?php
 		}	
@@ -716,12 +750,12 @@ class Simply_Instagram_Plugin {
 		function pp_animationspeed_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[animationSpeed]">	
-				 <option value ="slow" <?php selected( esc_attr( $this->prettyphoto_settings['animationSpeed'] ), "slow" ); ?>>Slow</option>
-				 <option value ="normal" <?php selected( esc_attr( $this->prettyphoto_settings['animationSpeed'] ), "normal" ); ?>>Normal</option>
-				 <option value ="fast" <?php selected( esc_attr( $this->prettyphoto_settings['animationSpeed'] ), "fast" ); ?>>Fast</option>
+				 <option value ="slow" <?php selected( esc_attr( $this->prettyphoto_settings['animationSpeed'] ), "slow" ); ?>><?php echo __('Slow', 'simply-instagram'); ?></option>
+				 <option value ="normal" <?php selected( esc_attr( $this->prettyphoto_settings['animationSpeed'] ), "normal" ); ?>><?php echo __('Normal', 'simply-instagram'); ?></option>
+				 <option value ="fast" <?php selected( esc_attr( $this->prettyphoto_settings['animationSpeed'] ), "fast" ); ?>><?php echo __('Fast', 'simply-instagram'); ?></option>
 		     	</select>
 			 <br />
-		     	<span class="tips">Choose animation speed. Default normal.</span>
+		     	<span class="tips"><?php echo __('Choose animation speed. Default normal.', 'simply-instagram'); ?></span>
 			<?php
 		}	
 		
@@ -731,11 +765,11 @@ class Simply_Instagram_Plugin {
 		function pp_overlaygallery_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[overlayGallery]">	
-				 <option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['overlayGallery'] ), "true" ); ?>>True</option>
-				 <option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['overlayGallery'] ), "false" ); ?>>False</option>
+				 <option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['overlayGallery'] ), "true" ); ?>><?php echo __('True', 'simply-instagram'); ?></option>
+				 <option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['overlayGallery'] ), "false" ); ?>><?php echo __('False', 'simply-instagram'); ?></option>
 		     	</select>
 		     	<br />
-		    	<span class="tips">If set to true, a gaullscreen image on mouse over.</span>
+		    	<span class="tips"><?php echo __('If set to true, a gaullscreen image on mouse over.', 'simply-instagram'); ?></span>
 			<?php
 		}
 		
@@ -746,11 +780,11 @@ class Simply_Instagram_Plugin {
 		function pp_displastatistic_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[ppDisplayStatistic]">	
-			 	<option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayStatistic'] ), "true" ); ?>>True</option>
-			 	<option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayStatistic'] ), "false" ); ?>>False</option>
+			 	<option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayStatistic'] ), "true" ); ?>><?php echo __('True', 'simply-instagram'); ?></option>
+			 	<option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayStatistic'] ), "false" ); ?>><?php echo __('False', 'simply-instagram'); ?></option>
 		     	</select>
 		     	<br />
-		     	<span class="tips">Display likes and comments count when slideshow starts.</span>
+		     	<span class="tips"><?php echo __('Display likes and comments count when slideshow starts.', 'simply-instagram'); ?></span>
 			<?php
 		}
 		
@@ -761,11 +795,11 @@ class Simply_Instagram_Plugin {
 		function pp_profilepicture_option() {
 			?>
 			<select name="<?php echo $this->prettyphoto_settings_key; ?>[ppDisplayPhotographer]">	
-			 <option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayPhotographer'] ), "true" ); ?>>True</option>
-			 <option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayPhotographer'] ), "false" ); ?>>False</option>
+			 <option value ="true" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayPhotographer'] ), "true" ); ?>><?php echo __('True', 'simply-instagram'); ?></option>
+			 <option value ="false" <?php selected( esc_attr( $this->prettyphoto_settings['ppDisplayPhotographer'] ), "false" ); ?>><?php echo __('False', 'simply-instagram'); ?></option>
 		     </select>
 		     <br />
-		     <span class="tips">Show photographer profile image when slideshow starts.</span>
+		     <span class="tips"><?php echo __('Show photographer profile image when slideshow starts.', 'simply-instagram'); ?></span>
 			<?php
 		}
 	/**
@@ -776,21 +810,21 @@ class Simply_Instagram_Plugin {
 	 * CSS Control Settings tab.
 	*/	
 		function register_csscontrol_settings() {
-			$this->plugin_settings_tabs[$this->csscontrol_settings_key] = 'CSS';
+			$this->plugin_settings_tabs[$this->csscontrol_settings_key] = __('CSS', 'simply-instagram');
 			
 			register_setting( $this->csscontrol_settings_key, $this->csscontrol_settings_key );
-			add_settings_section( 'section_ccc', 'CSS Control Settings', array( &$this, 'ccc_desc' ), $this->csscontrol_settings_key );
-			add_settings_field( 'ccc_option', 'CSS', array( &$this, 'ccc_option' ), $this->csscontrol_settings_key, 'section_ccc' );
-			add_settings_field( 'ccc_dummy_option', 'CSS', array( &$this, 'ccc_dummy_option' ), $this->csscontrol_settings_key, 'section_ccc' );
+			add_settings_section( 'section_ccc', __('CSS Control Settings', 'simply-instagram'), array( &$this, 'ccc_desc' ), $this->csscontrol_settings_key );
+			add_settings_field( 'ccc_option', __('CSS', 'simply-instagram'), array( &$this, 'ccc_option' ), $this->csscontrol_settings_key, 'section_ccc' );
+			add_settings_field( 'ccc_dummy_option', __('CSS', 'simply-instagram'), array( &$this, 'ccc_dummy_option' ), $this->csscontrol_settings_key, 'section_ccc' );
 		}
 		
-		function ccc_desc() { echo 'If you want to personalize the CSS of this plugin, please use the box below.'; }
+		function ccc_desc() { echo __('If you want to personalize the CSS of this plugin, please use the box below.', 'simply-instagram'); }
 				
 		function ccc_option() {
 			?>
 			<textarea name="<?php echo $this->csscontrol_settings_key; ?>[ccc_option]" style="width:100%;height:250px;"></textarea>
 			<br />
-		     	<span class="tips">Refer the default CSS below for standard Simply Instagram classes and ids. </span>
+		     	<span class="tips"><?php echo __('Refer the default CSS below for standard Simply Instagram classes and ids.', 'simply-instagram'); ?> </span>
 			<?php
 		}	
 		
@@ -807,14 +841,19 @@ class Simply_Instagram_Plugin {
 	 * About Settings tab.
 	*/	
 		function register_about_settings() {
-			$this->plugin_settings_tabs[$this->about_settings_key] = 'About';			
+			$this->plugin_settings_tabs[$this->about_settings_key] = __('About/Debug', 'simply-instagram');			
 			register_setting( $this->about_settings_key, $this->about_settings_key );
-			add_settings_section( 'section_si_about', 'About Simply Instagram Wordpress Plugin', array( &$this, 'about_desc' ), $this->about_settings_key );
-		}
-		
-		function about_desc() { echo '<p>Developed by Rolly G. Bueno Jr. If you found a bug or some of Simply Instagram functions are not working, please contact me <a href="http://www.rollybueno.info/contact/" target="_blank" >here</a> and include the information below together your website address:</strong></p><p style="text-align: left !important;">Access Token: <i><b>' . get_option( 'si_access_token' ) . '</b></i></p>
-		 <p style="text-align: left !important;">User ID: <i><b>' . get_option( 'si_user_id' ) . '</b></i></p>
-		 <p><br/><h3>RATE THIS PLUGIN</h3><a href="http://wordpress.org/support/view/plugin-reviews/simply-instagram" target="_blank" class="tooltip" title="Rate this plugin in Wordpress.org"> <img src="' . plugins_url() . '/simply-instagram/images/rate.png" ></a></p>'; }
+			add_settings_section( 'section_si_about', __('About Simply Instagram Wordpress Plugin', 'simply-instagram'), array( &$this, 'about_desc' ), $this->about_settings_key );
+		}		
+				
+		function about_desc() { printf( 
+						__('<p>Developed by Rolly G. Bueno Jr. If you found a bug or some of Simply Instagram functions are not working, please contact me <a href="http://www.rollybueno.info/contact/" target="_blank" >here</a> and include the information below together your website address:</strong></p><p style="text-align: left !important;">Access Token: <i><b>%1$s</b></i></p>
+		 <p style="text-align: left !important;">User ID: <i><b>%2$s</b></i></p>', 'simply-instagram'), 
+		 					get_option( 'si_access_token') , 
+		 					get_option( 'si_user_id' ) 
+		 				); }
+		 
+		 
 			
 	/**
 	 * End of About Settings tab.
@@ -862,18 +901,18 @@ class Simply_Instagram_Plugin {
 			
 			?> <meta http-equiv="refresh" content="0;url=<?php echo get_admin_url() . 'options-general.php?page=simply-instagram'; ?>"> <?Php
 		endif;
-		
+			
 		?>
 		<div class="wrap">
-		 	<h2>Simply Instagram Settings</h2>			 	
+		 	<h2><?php echo __('Simply Instagram Settings', 'simply-instagram'); ?></h2>			 	
 		 	
 		 	<?php if( !$info['si_access_token'] && !$info['si_user_id'] ){ ?> 
 				<?php if( $_GET['access_token'] == "" && $_GET['id'] == "" ): ?>
 					<div class="error">
-					 <p>You did not authorize Simply Instagram. This plugin will not work without your authorization. </p>
+					 <p><?php echo __('You did not authorize Simply Instagram. This plugin will not work without your authorization.', 'simply-instagram'); ?> </p>
 					</div>
 				<?php endif; ?>
-				<a href=" <?php echo sInstLogin( '?return_uri=' . base64_encode( get_admin_url() . 'options-general.php?page=simply-instagram'  )  ) ?> "><img src="<?php echo plugins_url() . '/simply-instagram/images/instagram-login.jpg'; ?>" title="Login to Instagram and authorize Simply Instagram plugin" alt="Login to Instagram and authorize Simply Instagram plugin" /></a>
+				<a href=" <?php echo sInstLogin( '?return_uri=' . base64_encode( get_admin_url() . 'options-general.php?page=simply-instagram'  )  ) ?> "><img src="<?php echo plugins_url() . '/simply-instagram/images/instagram-login.jpg'; ?>" alt="<?php echo __('Login to Instagram and authorize Simply Instagram plugin', 'simply-instagram'); ?>" /></a>
 			<?php }else{ ?>
 				<?php 
 					if( isset( $_GET['access_token'] ) && $_GET['id'] ):
@@ -888,7 +927,7 @@ class Simply_Instagram_Plugin {
 				?>
 				<div id="sInts-welcome">
 				<img src="<?php echo $user_info['data']['profile_picture']; ?>" id="si_profile_photo"/>
-				<p id="si_username">Welcome <?php echo $user_info['data']['full_name']; ?>!</p>
+				<p id="si_username"><?php echo __('Welcome', 'simply-instagram'); ?> <?php echo $user_info['data']['full_name']; ?>!</p>
 				
 				
 				<form name="itw_logout" method="post" action="<?php echo str_replace( '%7E', '~', htmlentities( get_admin_url() . 'options-general.php?page=simply-instagram'  )  ); ?>">
@@ -922,7 +961,22 @@ class Simply_Instagram_Plugin {
 			
 			<?php if ( $tab === $this->about_settings_key ) { ?>
 			
-			<h3><strong id="help">HELP THIS PLUGIN</strong></h3><p style="text-align: justify !important;"><strong>You can help improve this plugin by donating any amount you want or rate this plugin in Wordpress.org.</strong></p>
+			<h3><?php echo __('API RESPONSE', 'simply-instagram'); ?></h3>
+			<p><?php echo __('The following will display API response from Instagram API Server. Please use cache module in order to work.', 'simply-instagram'); ?></p>
+			
+			<p><strong><?php echo __('Self Feed', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("selffeed.json"); ?></p>
+			<p><strong><?php echo __('Recent Media', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("recentmedia.json"); ?></p>
+			<p><strong><?php echo __('Likes', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("likes.json"); ?></p>
+			<p><strong><?php echo __('Followers', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("followers.json"); ?></p>
+			<p><strong><?php echo __('Following', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("following.json"); ?></p>
+			<p><strong><?php echo __('Following Info', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("followinginfo.json"); ?></p>
+			<p><strong><?php echo __('Currently Popular', 'simply-instagram'); ?></strong>: <?php echo sIntCheckResponse("popular.json"); ?></p>
+			<br/>
+			
+			<h3><?php echo __('RATE THIS PLUGIN', 'simply-instagram'); ?></h3>
+			<p><a href="http://wordpress.org/support/view/plugin-reviews/simply-instagram" target="_blank" class="tooltip" title="Rate this plugin in Wordpress.org"> <img src="<?php echo plugins_url(); ?>/simply-instagram/images/rate.png" ></a></p><br/>
+			
+			<h3><strong id="help"><?php echo __('HELP THIS PLUGIN', 'simply-instagram'); ?></strong></h3><p style="text-align: justify !important;"><strong><?php echo __('You can help improve this plugin by donating any amount you want or rate this plugin in Wordpress.org.', 'simply-instagram'); ?></strong></p>
 			
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_s-xclick">

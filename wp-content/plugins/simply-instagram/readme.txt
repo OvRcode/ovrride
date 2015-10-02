@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: instagram, instagram images, instagram gallery, photos, widgets, gallery
 Requires at least: 3.0
 Tested up to: 4.3
-Stable tag: 1.2.7
+Stable tag: 1.3.1
 
 Simply Instagram displays your photos from Instagram either using Widget or Short Code.
 
@@ -124,6 +124,12 @@ Please follow the tips in order the shortcode to work.
 If you have patch for the improvement of this plugin or you have suggestion for added features, kindly inform me using Support forum. I'm glad to include that in next release and I will credit you.
 
 == Changelog ==
+
+= 1.3.1 =
+
+* WCAG 2.0 Compatibility
+* API response code on admin
+* I18n Compatible
 
 = 1.2.7 =
 
