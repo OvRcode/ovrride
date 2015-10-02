@@ -4,14 +4,14 @@
 Plugin Name: Responsive Select Menu
 Plugin URI: http://wpmegamenu.com/responsive-select-menu
 Description: Turn your menu into a select box at small viewport sizes
-Version: 1.6
+Version: 1.7
 Author: Chris Mavricos, SevenSpark
 Author URI: http://sevenspark.com
 License: GPLv2
 Copyright 2011-2014  Chris Mavricos, SevenSpark http://sevenspark.com (email : chris@sevenspark.com) 
 */
 
-define( 'RESPONSIVE_SELECT_MENU_VERSION', '1.6' );
+define( 'RESPONSIVE_SELECT_MENU_VERSION', '1.7' );
 define( 'RESPONSIVE_SELECT_MENU_SETTINGS', 'responsive-select-menu' );
 
 require_once( 'sparkoptions/SparkOptions.class.php' );		//SevenSpark Options Panel
@@ -560,6 +560,10 @@ class ResponsiveSelectWalker extends Walker_Nav_Menu{
 			return;
 		}
 
+		//uberp( $item );
+
+		if( $item->object == 'ubermenu-custom' ) return;
+
 		//IF UBERMENU
 		if( $responsiveMenuSelect->getSettings()->op( 'uber-enabled' ) ){
 
@@ -594,25 +598,26 @@ class ResponsiveSelectWalker extends Walker_Nav_Menu{
 				}
 			}
 			else if( function_exists( 'ubermenu' ) ){
+
 				$settings = uber3_get_item_settings( $item->ID );
 
 				//Nolink
-				if( ( $settings['disable_link'] == on ) && ( $responsiveMenuSelect->getSettings()->op( 'uber-exclude-nonlinks' ) == 'on' ) ){
+				if( isset( $settings['disable_link'] ) && ( $settings['disable_link'] == on ) && ( $responsiveMenuSelect->getSettings()->op( 'uber-exclude-nonlinks' ) == 'on' ) ){
 					return;
 				}
 
 				//Notext
-				if( ( $settings['disable_text'] == on ) && ( $responsiveMenuSelect->getSettings()->op( 'uber-exclude-notext' ) == 'on' ) ){
+				if( isset( $settings['disable_text'] ) && ( $settings['disable_text'] == on ) && ( $responsiveMenuSelect->getSettings()->op( 'uber-exclude-notext' ) == 'on' ) ){
 					return;
 				}
 
 				//Sidebar
-				if( ( $settings['widget_area'] || $settings['auto_widget_area'] ) &&  $responsiveMenuSelect->getSettings()->op( 'uber-exclude-sidebar' ) ){
+				if( isset( $settings['widget_area'] ) && ( $settings['widget_area'] || $settings['auto_widget_area'] ) &&  $responsiveMenuSelect->getSettings()->op( 'uber-exclude-sidebar' ) ){
 					return;
 				}
 
 				//Custom
-				if( $settings['custom_content'] && $responsiveMenuSelect->getSettings()->op( 'uber-exclude-content-overrides' ) ){
+				if( isset( $settings['custom_content'] ) && $settings['custom_content'] && $responsiveMenuSelect->getSettings()->op( 'uber-exclude-content-overrides' ) ){
 					return;
 				}
 
