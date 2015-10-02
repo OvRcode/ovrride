@@ -160,6 +160,17 @@ get_header(); ?>
                 <div class="squelch-taas-accordion-shortcode-content-6 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-6" aria-labelledby="squelch-taas-header-6" role="tabpanel" aria-expanded="false" aria-hidden="true">
                 <a href="/destinations/japan/"><div class="location japan"></div>Japan</a>
                 </div>
+                
+                <h3 id="squelch-taas-header-7" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-7" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-7">Alaska</a></h3>
+                <div class="squelch-taas-accordion-shortcode-content-7 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-7" aria-labelledby="squelch-taas-header-7" role="tabpanel" aria-expanded="false" aria-hidden="true">
+                <a href="/destinations/alaska/"><div class="location alaska"></div>Alaska</a>
+                </div>
+                
+                <h3 id="squelch-taas-header-8" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-8" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-8">Europe</a></h3>
+                <div class="squelch-taas-accordion-shortcode-content-8 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-8" aria-labelledby="squelch-taas-header-8" role="tabpanel" aria-expanded="false" aria-hidden="true">
+                <a href="/destinations/alaska/"><div class="location alaska"></div>Alaska</a>
+                </div>
+                
                 </div>
             </div>
         </div>
