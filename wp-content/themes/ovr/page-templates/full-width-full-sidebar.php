@@ -115,62 +115,64 @@ get_header(); ?>
             	<h2 class="widgettitle">Destinations</h2>
                 <div class="destinations">
                 <div id="squelch-taas-accordion-0" class="squelch-taas-accordion squelch-taas-override ui-accordion ui-widget ui-helper-reset" data-active="none" data-disabled="false" data-autoheight="false" data-collapsible="true" role="tablist">
-
-                <h3 id="squelch-taas-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-0" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-0">New York</a></h3>
+                
+                <h3 id="squelch-taas-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-0" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-0">Alaska</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-0 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-0" aria-labelledby="squelch-taas-header-0" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/hunter-mt/"><div class="location hunter"></div>Hunter MT</a><br>
-                <a href="/destinations/windham-mt/"><div class="location windham"></div>Windham MT</a>
+                <a href="/destination/alaska/"><div class="location alaska"></div></a>
                 </div>
-
-                <h3 id="squelch-taas-header-1" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-1" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-1">Pennsylvania</a></h3>
+                
+                <h3 id="squelch-taas-header-1" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-1" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-1">Canada</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-1 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-1" aria-labelledby="squelch-taas-header-1" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/camelback/"><div class="location camelback"></div>Camelback</a>
+                <a href="/destination/whistler/"><div class="location whistler"></div></a>
                 </div>
-
-                <h3 id="squelch-taas-header-2" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-2" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-2">Vermont</a></h3>
-                <div class="squelch-taas-accordion-shortcode-content-2 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-2" aria-labelledby="squelch-taas-header-2" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/stratton/"><div class="location stratton"></div>Stratton</a><br>
-                <a href="/destinations/mount-snow/"><div class="location mount-snow"></div>Mount Snow</a><br>
-                <a href="/destinations/killington/"><div class="location killington"></div>Killington</a><br>
-                <a href="/destinations/stowe/"><div class="location stowe"></div>Stowe</a><br>
-                <a href="/destinations/sugarbush/"><div class="location sugarbush"></div>Sugarbush</a>
+                
+                <h3 id="squelch-taas-header-2" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-2" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-2">Europe</a></h3>
+                <div class="squelch-taas-accordion-shortcode-content-2 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-8" aria-labelledby="squelch-taas-header-2" role="tabpanel" aria-expanded="false" aria-hidden="true">
+                <a href="/destination/french-alps/"><div class="location french-alps"></div></a>
+                <a href="/destination/austrian-alps/"><div class="location austrian-alps"></div></a>
                 </div>
-
-                <h3 id="squelch-taas-header-3" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-3" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-3">Out West</a></h3>
-                <div class="squelch-taas-accordion-shortcode-content-3 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-3" aria-labelledby="squelch-taas-header-3" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/lake-tahoe/"><div class="location tahoe"></div>Lake Tahoe</a><br>
-                <a href="/destinations/breckenridge/"><div class="location breckenridge"></div>Breckenridge</a><br>
-                <a href="/destinations/snowbird/"><div class="location snowbird"></div>Snowbird</a>
+                
+                <h3 id="squelch-taas-header-3" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-3" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-3">Japan</a></h3>
+                <div class="squelch-taas-accordion-shortcode-content-3 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-6" aria-labelledby="squelch-taas-header-3" role="tabpanel" aria-expanded="false" aria-hidden="true">
+                <a href="/destination/japan/"><div class="location japan"></div></a>
                 </div>
-
-                <h3 id="squelch-taas-header-4" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-4" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-4">South America</a></h3>
+                
+                <h3 id="squelch-taas-header-4" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-4" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-4">New York</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-4 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-4" aria-labelledby="squelch-taas-header-4" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/north-chile/"><div class="location chile"></div>North Chile</a><br>
-                <a href="/destinations/south-chile/"><div class="location chile"></div>South Chile</a><br>
-                <a href="/destinations/north-argentina/"><div class="location argentina"></div>North Argentina</a><br>
-                <a href="/destinations/south-argentina/"><div class="location argentina"></div>South Argentina</a>
+                <a href="/destination/hunter-mt/"><div class="location hunter"></div></a><br>
+                <a href="/destination/windham-mt/"><div class="location windham"></div></a>
                 </div>
-
-                <h3 id="squelch-taas-header-5" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-5" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-5">Canada</a></h3>
+                
+                <h3 id="squelch-taas-header-5" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-5" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-5">Out West</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-5 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-5" aria-labelledby="squelch-taas-header-5" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/whistler/"><div class="location whistler"></div>Whistler</a>
+                <a href="/destination/breckenridge/"><div class="location breckenridge"></div></a><br>
+                <a href="/destination/lake-tahoe/"><div class="location tahoe"></div></a><br>
+                <a href="/destination/snowbird/"><div class="location snowbird"></div></a>
                 </div>
-
-                <h3 id="squelch-taas-header-6" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-6" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-6">Japan</a></h3>
+                
+                <h3 id="squelch-taas-header-6" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-6" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-6">Pennsylvania</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-6 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-6" aria-labelledby="squelch-taas-header-6" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/japan/"><div class="location japan"></div>Japan</a>
+                <a href="/destination/camelback/"><div class="location camelback"></div></a>
                 </div>
                 
-                <h3 id="squelch-taas-header-7" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-7" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-7">Alaska</a></h3>
+                <h3 id="squelch-taas-header-7" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-7" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-7">South America</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-7 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-7" aria-labelledby="squelch-taas-header-7" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/alaska/"><div class="location alaska"></div>Alaska</a>
+                <a href="/destination/north-argentina/"><div class="location northern-argentina"></div></a><br>
+                <a href="/destination/south-argentina/"><div class="location southern-argentina"></div></a>
+                <a href="/destination/north-chile/"><div class="location northern-chile"></div></a><br>
+                <a href="/destination/south-chile/"><div class="location southern-chile"></div></a><br>
                 </div>
                 
-                <h3 id="squelch-taas-header-8" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-8" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-8">Europe</a></h3>
+                <h3 id="squelch-taas-header-8" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons" role="tab" aria-controls="ui-accordion-squelch-taas-accordion-0-panel-8" aria-selected="false" tabindex="-1"><span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span><a href="#squelch-taas-accordion-shortcode-content-8">Vermont</a></h3>
                 <div class="squelch-taas-accordion-shortcode-content-8 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" style="display: none; " id="ui-accordion-squelch-taas-accordion-0-panel-8" aria-labelledby="squelch-taas-header-8" role="tabpanel" aria-expanded="false" aria-hidden="true">
-                <a href="/destinations/alaska/"><div class="location alaska"></div>Alaska</a>
+                <a href="/destination/jay-peak/"><div class="location jay-peak"></div></a><br>
+                <a href="/destination/killington/"><div class="location killington"></div></a><br>
+                <a href="/destination/mount-snow/"><div class="location mount-snow"></div></a><br>
+                <a href="/destination/okemo/"><div class="location okemo"></div></a><br>
+                <a href="/destination/stowe/"><div class="location stowe"></div></a><br>
+                <a href="/destination/stratton/"><div class="location stratton"></div></a><br>
+                <a href="/destination/sugarbush/"><div class="location sugarbush"></div></a>
                 </div>
-                
                 </div>
             </div>
         </div>
