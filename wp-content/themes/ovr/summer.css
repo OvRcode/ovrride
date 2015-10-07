@@ -4450,7 +4450,6 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
   line-height: inherit;
   min-height: 0;
   min-width: 0;
-  background-color: transparent;
   background-image: none;
 }
 .woocommerce #content nav.woocommerce-pagination ul li span.current,
