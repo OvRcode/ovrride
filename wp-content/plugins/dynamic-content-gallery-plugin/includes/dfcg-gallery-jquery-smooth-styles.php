@@ -108,12 +108,12 @@ if (!defined('ABSPATH')) {
 
 #dfcg-imgprev {
 	left:0;
-	background:url(<?php echo DFCG_URL . '/js-jquery-smooth/css/images/fleche1.png'; ?>) left center no-repeat;
+	background:url(<?php echo plugins_url( "../js-jquery-smooth/css/images/fleche1.png",__FILE__ ); ?>) left center no-repeat;
 	}
 	
 #dfcg-imgnext {
 	right:0;
-	background:url(<?php echo DFCG_URL . '/js-jquery-smooth/css/images/fleche2.png'; ?>) right center no-repeat;
+	background:url(<?php echo plugins_url( "../js-jquery-smooth/css/images/fleche2.png", __FILE__ ); ?>) right center no-repeat;
 	}
 	
 #dfcg-imglink {
