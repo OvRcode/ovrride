@@ -53,17 +53,30 @@ OvRride.com is built using WordPress 4.3.1, and the WooCommerce plugin. The OvRr
 
 
 **Architecture**
+
 - All hosts are running ubuntu server 14.04 64bit
-- There are 4 hosts that make up the web site
-    1) haproxy.local.ovrride.com
-      - load balancer
-    2) web1.local.ovrride.com
-      - web server
-      - apache 2.4, with fastcgi/php5-fpm
-    3) web2.local.ovrride.com
-      - same as web1
-    4) mysql.local.ovrride.com
-      - mysql 5.5
+
+- There are 5 hosts that make up the web site
+    
+   1) haproxy.local.ovrride.com
+      
+   - HAPROXY load balancer
+   
+   - SSL Connections are terminated at proxy
+	  
+2) web1.local.ovrride.com
+  
+  - web server
+  
+  - NGINX 1.4.6, with HHVM and fastcgi/php5-fpm fallback
+	  
+3) web2.local.ovrride.com
+      
+  - same as web1
+	  
+4) mysql.local.ovrride.com
+      
+  - mysql 5.5
     
 
 **Vagrant Management**
