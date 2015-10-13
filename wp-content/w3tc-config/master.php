@@ -308,10 +308,10 @@ return array(
 	'cdn.s3.cname' => array(
 	),
 	'cdn.s3.ssl' => 'auto',
-	'cdn.cf.key' => '***REMOVED***',
-	'cdn.cf.secret' => '***REMOVED***',
-	'cdn.cf.bucket' => 'ovrride',
-	'cdn.cf.id' => '***REMOVED***',
+	'cdn.cf.key' => '',
+	'cdn.cf.secret' => '',
+	'cdn.cf.bucket' => '',
+	'cdn.cf.id' => '',
 	'cdn.cf.cname' => array(
 	),
 	'cdn.cf.ssl' => 'enabled',
