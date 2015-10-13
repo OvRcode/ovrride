@@ -15,10 +15,6 @@ override_attributes(
   "apache" => {
     "allow_override" => 'All'
   },
-  "s3cmd" => {
-    "access_key" => "***REMOVED***",
-    "secret_key" => "***REMOVED***"
-  }
 )
 run_list(
   "recipe[apt]",
