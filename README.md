@@ -1,6 +1,6 @@
 ## OvRride.com
 
-OvRride.com is built using WordPress 4.2.2, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
+OvRride.com is built using WordPress 4.3.1, and the WooCommerce plugin. The OvRride theme is based off of the [Quark Starter Theme](http://quarktheme.com/).
 
 
 ### Dependancies:
