@@ -64,20 +64,31 @@ OvRride.com is built using WordPress 4.3.1, and the WooCommerce plugin. The OvRr
    
    - SSL Connections are terminated at proxy
 	  
-2) web1.local.ovrride.com
+  2) web1.local.ovrride.com
   
   - web server
   
   - NGINX 1.4.6, with HHVM and fastcgi/php5-fpm fallback
 	  
-3) web2.local.ovrride.com
+  3) web2.local.ovrride.com
       
   - same as web1
 	  
-4) mysql.local.ovrride.com
+  4) mysql.local.ovrride.com
       
   - mysql 5.5
-    
+
+  5) lists.local.ovrride.com
+  
+  - web server
+  
+  - APACHE MPM-Worker + PHP5-FPM
+  
+  - Needs to be switched over to nginx setup that normal web servers run
+  
+  - Hosts files for lists web app
+  
+  
 
 **Vagrant Management**
 - running ```vagrant up```, ```vagrant provision```, ```vagrant halt``` will effect ALL hosts
