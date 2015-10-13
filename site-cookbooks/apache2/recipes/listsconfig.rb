@@ -35,7 +35,7 @@ execute "link vagrant to www" do
 end
 
 execute "remove linked cert files" do
-  command "rm /var/www/local.ovrride.com.*"
+  command "if [ -h /var/www/local.ovrride.com.* ]; then rm /var/www/local.ovrride.com.*; fi"
 end
 
 execute "link cert" do
