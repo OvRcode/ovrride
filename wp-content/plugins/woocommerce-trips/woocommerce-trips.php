@@ -22,9 +22,9 @@ if ( ! function_exists( 'is_woocommerce_active' ) ) {
 
 if ( is_woocommerce_active() ) {
 class WC_Trips {
-    
+
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '0.9.1' );
+        define( 'WC_TRIPS_VERSION', '1.0.0' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -37,20 +37,20 @@ class WC_Trips {
             include( 'includes/admin/class-wc-trips-admin.php' );
         }
         register_activation_hook( __FILE__, array( $this, 'install' ) );
-        
+
         include( 'includes/class-wc-trips-cart.php' );
     }
-    
+
     public function install() {
         add_action( 'shutdown', array( $this, 'delayed_install' ) );
     }
-    
+
     public function delayed_install() {
         if ( ! get_term_by( 'slug', sanitize_title( 'trip' ), 'product_type' ) ) {
             wp_insert_term( 'trip', 'product_type' );
         }
     }
-    
+
     public function includes() {
         include( 'includes/class-wc-product-trip.php' );
         // More includes here eventually
@@ -61,7 +61,7 @@ class WC_Trips {
         wp_enqueue_script( 'wc-trips-frontend-js', WC_TRIPS_PLUGIN_URL . '/assets/js/front_end.js', array('jquery'), WC_TRIPS_VERSION, TRUE );
         wp_enqueue_script( 'verimail-jquery', WC_TRIPS_PLUGIN_URL . '/assets/js/verimail.jquery.min.js', array('jquery'), WC_TRIPS_VERSION, TRUE);
     }
-    
+
     public function init_post_types() {
         $pickupLabels = array(
           'name'               => _x( 'Pickup Locations', 'woocommerce-trips' ),
@@ -74,7 +74,7 @@ class WC_Trips {
           'view_item'          => __( 'View Pickup Locations' ),
           'search_items'       => __( 'Search Pickup Locations' ),
           'not_found'          => __( 'No pickup locations found' ),
-          'not_found_in_trash' => __( 'No pickup locations found in the Trash' ), 
+          'not_found_in_trash' => __( 'No pickup locations found in the Trash' ),
           'parent_item_colon'  => '',
           'menu_name'          => 'Pickup Locations'
         );
@@ -98,7 +98,7 @@ class WC_Trips {
           'view_item'          => __( 'View Destinations' ),
           'search_items'       => __( 'Search Destinations' ),
           'not_found'          => __( 'No Destinations found' ),
-          'not_found_in_trash' => __( 'No Destinations found in the Trash' ), 
+          'not_found_in_trash' => __( 'No Destinations found in the Trash' ),
           'parent_item_colon'  => '',
           'menu_name'          => 'Destinations'
         );
@@ -112,7 +112,7 @@ class WC_Trips {
         );
         register_post_type( 'destinations', $destinationArgs );
     }
-    
+
     public function product_tabs( $tabs ) {
         global $product, $wpdb;
 
@@ -169,25 +169,25 @@ class WC_Trips {
         }
         return $tabs;
     }
-    
+
     public function pics_content(){
         global $product;
         $pics_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_pics', true) ) );
         echo $pics_data;
     }
-    
+
     public function flight_times_content(){
         global $product;
         $flight_times_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_flight_times', true) ) );
         echo $flight_times_data;
     }
-    
+
     public function rates_content() {
         global $product;
         $rates_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_rates', true) ) );
         echo $rates_data;
     }
-    
+
     public function trail_map_content() {
         global $product, $wpdb;
         wp_enqueue_style("featherlight-css", WC_TRIPS_PLUGIN_URL . "/assets/css/featherlight.min.css");
@@ -204,12 +204,12 @@ class WC_Trips {
             </p>
 MAP;
     }
-    
+
     public function bus_times_content() {
         global $product;
-        
+
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
-        
+
         echo "<h4>&nbsp;&nbsp;Bus Times:</h4>";
         $leftRight = "left";
         $count = 0;
@@ -234,13 +234,13 @@ TEMPHTML;
             <div class="busRightColumn">{$rightColumnContent}</div>
 TESTING;
     }
-    
+
     public function includes_content() {
         global $product;
         $includes_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_includes', true) ) );
         echo $includes_data;
     }
-    
+
     public function pickup_html( $post_id ) {
         $pickup = get_post( $post_id );
         $address = get_post_meta( $post_id, '_pickup_location_address', true );
@@ -261,7 +261,7 @@ PICKUPHTML;
 
         return $output;
     }
-    
+
     public function remove_description_header() {
         return '';
     }
