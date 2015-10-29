@@ -29,7 +29,9 @@ run_list(
 "recipe[build-essential]",
 "recipe[apt]",
 "recipe[s3cmd::add_keys]",
+"recipe[memcached]",
 "recipe[php::modules]",
-"recipe[php-fpm]",
+"recipe[php-fpm::install]",
+"recipe[php-fpm::lists]",
 "recipe[apache2::listsconfig]"
 )

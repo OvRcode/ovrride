@@ -32,7 +32,8 @@ run_list(
 "recipe[memcached::default]",
 "recipe[hhvm::memcache]",
 "recipe[php::modules]",
-"recipe[php-fpm]",
+"recipe[php-fpm::install]",
+"recipe[php-fpm::web]",
 "recipe[nginx::webconfig]",
 "recipe[ovr::get_images]"
 )
