@@ -41,7 +41,7 @@ boxes = [
 ]
 
 Vagrant.configure(2) do |config|
-  
+
   # One box to rule them all (works on Fusion and VirtualBox)
   config.vm.box = "phusion/ubuntu-14.04-amd64"
 
@@ -50,13 +50,11 @@ Vagrant.configure(2) do |config|
   config.omnibus.chef_version = "12.3.0"
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|
-      if opts[:name] == "haproxy"
-        config.hostmanager.aliases = %w(lists.local.ovrride.com)
-      end
+      
       config.hostmanager.aliases
       # Take care of that pesky stdin error message on provisioning
       config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-      
+
       # Automatically Add hostnames to HOST hosts file
       config.hostmanager.enabled = true
       config.hostmanager.manage_host = true
@@ -79,11 +77,11 @@ Vagrant.configure(2) do |config|
         v.customize ["modifyvm", :id, "--memory", opts[:mem]]
         v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
       end
-      
+
       config.vm.provision "chef_solo" do |chef|
         # Resolves Chef SSL Error on provisioning
         chef.custom_config_path = "Vagrantfile.chef"
-        
+
         chef.cookbooks_path = ["cookbooks", "site-cookbooks"]
         chef.roles_path = "roles"
         chef.data_bags_path = "data_bags"
