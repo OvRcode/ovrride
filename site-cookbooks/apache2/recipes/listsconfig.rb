@@ -39,11 +39,11 @@ execute "remove linked cert files" do
 end
 
 execute "link cert" do
-  command "ln -s /vagrant/local.ovrride.com.crt /var/www/"
+  command "if [ ! -f /vagrant/local.ovrride.com.crt ]; then ln -s /vagrant/local.ovrride.com.crt /var/www/; fi"
 end
 
 execute "link key" do
-  command "ln -s /vagrant/local.ovrride.com.key /var/www/"
+  command "if [ ! -f /vagrant/local.ovrride.com.key ]; then ln -s /vagrant/local.ovrride.com.key /var/www/; fi"
 end
 
 # Get enviromental vars from data bags
