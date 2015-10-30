@@ -459,6 +459,7 @@ class Lists {
             $pickup = FALSE;
         }
         // TODO: Setup conditions for rockaway trips
+        // TODO: implement mustache.php to use same template on client/server
         // Clear buffer before include to make sure output is clean
         ob_get_clean();
         ob_start();

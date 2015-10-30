@@ -7,10 +7,10 @@ $(function() {
     if ( jQuery.browser.mobile ) {
       $("#top").addClass("iosFix");
     }
-    
+
     // Initialize Bootstrap popover function
     $("[data-toggle=popover]").popover();
-    
+
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         $("#walkonPackage").append(dd.get('packages'));
@@ -31,7 +31,7 @@ $(function() {
             scrollTop: $("#walkon").offset().top
         },1000);
     });
-    
+
     // Unbind change listeners when popover is hidden
     $('[data-toggle="popover"]').on('hide.bs.modal', function(){
         $("#first").unbind("change");
@@ -41,7 +41,7 @@ $(function() {
         $("#otherPackage").unbind("change");
         $("#saveWalkon").unbind("click");
     });
-    
+
     if ( settings.get('bus') !== "All" ){
         // Show/Hide Records with AM/PM Toggle button
         $("#AMPM").on("singletap", function(){
@@ -69,12 +69,12 @@ $(function() {
     } else {
       $("#AMPM").hide();
     }
-    
+
     // List sorting dropdown
     $("#sortBy").on("change", function(){
         sortList($(this).val());
     });
-    
+
     // Search Type listener
     $("#searchType li a").on("singletap", function(){
         var value = $(this).text();
@@ -89,7 +89,7 @@ $(function() {
         }
         target.val(value).text(value);
         $("#searchField").prop('placeholder', placeholder);
-        
+
         // show any hidden entries
         $(".listButton").show();
     });
@@ -101,7 +101,7 @@ $(function() {
             alert("Choose search type first");
         }
     });
-    
+
     // Show extra buttons for mobile
     if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
       $("div.mobileButtons").removeClass('hidden');
@@ -110,7 +110,7 @@ $(function() {
           $("#wrapper").addClass("toggled");
         }
         // Slight delay for opening drawer
-        setTimeout(function(){ $("#addWalkOn").trigger("click"); }, 300); 
+        setTimeout(function(){ $("#addWalkOn").trigger("click"); }, 300);
       });
     }
     setupPage();
@@ -140,14 +140,14 @@ function addWalkonButton(){
         pickup = "none";
     }
 
-    if ( first !== "" && last !== "" && phone !== "" && pickup !== "" && 
-    ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) || 
+    if ( first !== "" && last !== "" && phone !== "" && pickup !== "" &&
+    ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) ||
     ( walkonPackage !== "Other" && walkonPackage !== "none"))) {
         $("#saveWalkOn").removeClass('disabled');
     } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
         $("#saveWalkOn").addClass('disabled');
     }
-    
+
 }
 function changeStatus(element){
   if ( ! element.hasClass('bg-noshow') ){
@@ -168,7 +168,7 @@ function changeStatus(element){
         }
         if ( foundClass ){
           element.addClass('bg-pm');
-          element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
+          element.find("span.icon").html('<i class="fa fa-moon-o fa-3x"></i>');
           // Double check that correct fields are visible on mobile
           element.find('.flexPackage').addClass('visible-md visible-lg');
           element.find('.flexPickup').removeClass('visible-md visible-lg');
@@ -176,7 +176,7 @@ function changeStatus(element){
           tripData.set(PM, 1);
         }
     }
-    
+
     if ( element.hasClass('bg-none') ) {
         // Customer Checked in
         var AM = element.attr('id') + ":AM";
@@ -187,7 +187,7 @@ function changeStatus(element){
         tripData.set(Bus, settings.get('bus'));
         element.removeClass('bg-none');
         element.addClass('bg-am');
-        element.find("span.icon").html('<i class="fa fa-sun-o fa-lg"></i>');
+        element.find("span.icon").html('<i class="fa fa-sun-o fa-3x"></i>');
         element.find('.flexPackage').removeClass('visible-md visible-lg');
         element.find('.flexPickup').addClass('visible-md visible-lg');
     } else if ( element.hasClass('bg-am') ) {
@@ -196,14 +196,14 @@ function changeStatus(element){
         tripData.set(Waiver, 1);
         element.removeClass('bg-am');
         element.addClass('bg-waiver');
-        element.find("span.icon").html('<i class="fa fa-file-word-o fa-lg"></i>');
+        element.find("span.icon").html('<i class="fa fa-file-word-o fa-3x"></i>');
     } else if ( element.hasClass('bg-waiver') ) {
         // Customer received product
         var Product = element.attr('id')+":Product";
         tripData.set(Product, 1);
         element.removeClass('bg-waiver');
         element.addClass('bg-productrec');
-        element.find('span.icon').html('<i class="fa fa-ticket fa-lg"></i>');
+        element.find('span.icon').html('<i class="fa fa-ticket fa-3x"></i>');
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
     }
@@ -245,31 +245,31 @@ function getPackages(){
 }
 function getPickups(){
   var pickups = {};
-  
+
   jQuery.each(orders.keys(), function(key,value){
     var order = orders.get(value);
     pickups[order.Pickup] = order.Pickup;
   });
-  
+
   var output = "<option value='none'>Pickup</option>";
   jQuery.each(pickups, function(key,value){
     var row = "<option value='" + value + "'>" + value + "</option>";
     output = output.concat(row);
   });
-  
+
   $("select.pickupList").append(output);
 }
 function listHTML(ID, order){
     var split = ID.split(":");
     var underAge = "";
     if ( order['Is this guest at least 21 years of age?'] == "No" ) {
-      underAge = "<i class='fa fa-child fa-lg'></i>";
+      underAge = "<i class='fa fa-child fa-3x'></i>";
     }
     var output = "<div class='row listButton bg-none' id='" + ID + "'>\
                       <div class='row primary'>\
                           <div class='buttonCell name col-xs-7 col-md-4'>\
                               <span class='underAge'>" + underAge + "</span> \
-                              <span class='icon'></span>\
+                              <span class='icon'><i class='fa fa-square-o fa-3x'></i></span>\
                               <span class='first'>&nbsp;" + order.First + "</span>\
                               <span class='last'>" + order.Last + "</span>\
                           </div>\
@@ -327,7 +327,7 @@ function noShow(element) {
     var NoShow = element.attr('id')+":NoShow";
     tripData.set(NoShow, 1);
     element.addClass('bg-noshow');
-    element.find("span.icon").html('<i class="fa fa-exclamation-triangle fa-lg"></i>');
+    element.find("span.icon").html('<i class="fa fa-exclamation-triangle fa-3x"></i>');
 }
 function packageList(){
     window.packageList = [];
@@ -381,7 +381,7 @@ function saveData(){
             orderLocalData[ID].Data = valueName;
         }
     });
-    
+
     // get walkon data if not previously saved
     if ( newWalkon.keys().length > 0 ){
         var walkonData = {};
@@ -427,7 +427,7 @@ function saveWalkOn(){
     $("#addWalkOn").popover('toggle');
 }
 function searchList(searchType, text){
-    //TODO: Look at options for case insensitivity 
+    //TODO: Look at options for case insensitivity
     var match;
     var search;
     // Skip blank searches
@@ -453,22 +453,22 @@ function setState(element, state){
     if ( state == 'AM' ){
         element.removeClass();
         element.addClass('row listButton bg-am');
-        element.find("span.icon").html('<i class="fa fa-sun-o fa-lg"></i>');
+        element.find("span.icon").html('<i class="fa fa-sun-o fa-3x"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'Waiver' ) {
         element.removeClass();
         element.addClass('row listButton bg-waiver');
-        element.find("span.icon").html('<i class="fa fa-file-word-o fa-lg"></i>');
+        element.find("span.icon").html('<i class="fa fa-file-word-o fa-3x"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'Product' ) {
         element.removeClass();
         element.addClass('row listButton bg-productrec');
-        element.find('span.icon').html('<i class="fa fa-ticket fa-lg"></i>');
+        element.find('span.icon').html('<i class="fa fa-ticket fa-3x"></i>');
         element.removeClass('bg-none');
     } else if ( state == 'PM' ) {
         element.removeClass();
         element.addClass('row listButton bg-pm');
-        element.find("span.icon").html('<i class="fa fa-moon-o fa-lg"></i>');
+        element.find("span.icon").html('<i class="fa fa-moon-o fa-3x"></i>');
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
         element.removeClass('bg-none');
@@ -497,7 +497,7 @@ function setupListener(ID){
     $(selectorID + "\\:NoShow").click(function(){
         noShow($(this).parents().eq(3));
     });
-    
+
    // Expand list entry by pressing and holding on entry (works on mobile and desktop)
     $( selectorID ).on("doubletap", function(){
         toggleExpanded( $(this) );

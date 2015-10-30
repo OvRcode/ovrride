@@ -6,7 +6,7 @@
         <i class='fa fa-child fa-lg'></i>
       <?php endif; ?>
       </span>
-      <span class="icon"><i class="fa <?php echo $statusIcon; ?> fa-lg"></i></span>
+      <span class="icon"><i class="fa <?php echo $statusIcon; ?> fa-3x"></i></span>
       <span class="first"><?php echo $first; ?>&nbsp;</span>
       <span class="last"><?php echo $last; ?></span>
     </div>
