@@ -19,6 +19,7 @@ class Lists {
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
+        // Pre-populate data for trip and destination dropdowns
 
         // Pull full list of active destinations
         $this->destinations = array();
@@ -27,7 +28,7 @@ class Lists {
         while ( $row = $result->fetch_assoc() ) {
           $this->destinations[] = $row['post_title'];
         }
-        error_log(print_r($this->destinations, true));
+
         // Find Trip type products and their destination
         $sql = "SELECT `wp_posts`.`ID`,`wp_posts`.`post_title` as 'Trip', `wp_postmeta`.`meta_value` as 'Destination'
         FROM `wp_posts`
@@ -50,7 +51,6 @@ class Lists {
     }
     function destinationDropdown(){
         $output = "";
-        error_log("WTF!");
         foreach ( $this->destinations as $index => $destination) {
           $output .= "<option value='{$destination}'>{$destination}</option>\n";
         }
@@ -372,143 +372,98 @@ class Lists {
         $result = $this->dbQuery($sql);
         $row = $result->fetch_assoc();
         $data = $row['Data'];
+        $id = $orderData['num'] . ":" . $orderData['item_num'];
         if ( $data !== "" ) {
             $this->orders[$orderData['num'].":".$orderData['item_num']]['State'] = $data;
         }
         if ( $data == "" ){
-            $htmlClass = "bg-none";
-            $icon = "";
+            $statusClass = " bg-none";
+            $statusIcon = "fa-square-o";
             $pickupVisible = "";
-            $packageVisible = "visible-md visible-lg";
+            $packageVisible = " visible-md visible-lg";
         } else if ( $data == "AM" ) {
-            $htmlClass = "bg-am";
-            $icon = "<i class='fa fa-sun-o fa-lg'></i>";
-            $pickupVisible = "visible-md visible-lg";
+            $statusClass = " bg-am";
+            $statusIcon = "fa-sun-o";
+            $pickupVisible = " visible-md visible-lg";
             $packageVisible = "";
         } else if ( $data == "Waiver" ) {
-            $htmlClass = "bg-waiver";
-            $icon = "<i class='fa fa-file-word-o fa-lg'></i>";
-            $pickupVisible = "visible-md visible-lg";
+            $statusClass = " bg-waiver";
+            $statusIcon = "fa-file-word-o";
+            $pickupVisible = " visible-md visible-lg";
             $packageVisible = "";
         } else if ( $data == "Product" ) {
-            $htmlClass = "bg-productrec";
-            $icon = "<i class='fa fa-ticket fa-lg'></i>";
+            $statusClass = " bg-productrec";
+            $statusIcon = "fa-ticket";
             $pickupVisible = "";
-            $packageVisible = "visible-md visible-lg";
+            $packageVisible = " visible-md visible-lg";
         } else if ( $data == "PM" ) {
-            $htmlClass = "bg-pm";
-            $icon = "<i class='fa fa-moon-o fa-lg'></i>";
+            $statusClass = " bg-pm";
+            $statusIcon = "fa-moon-o";
             $pickupVisible = "";
-            $packageVisible = "visible-md visible-lg";
+            $packageVisible = " visible-md visible-lg";
         } else if ( $data == "NoShow" ) {
-            $htmlClass = "bg-noshow";
-            $icon = "<i class='fa fa-exclamation-triangle fa-lg'></i>";
+            $statusClass = " bg-noshow";
+            $statusIcon = "fa-exclamation-triangle";
             $pickupVisible = "";
-            $packageVisible = "visible-md visible-lg";
+            $packageVisible = " visible-md visible-lg";
         }
         if ( ! isset($orderData['First']) ) {
-            $orderData['First'] = "";
+            $first = "";
+        } else {
+            $first = $orderData['First'];
         }
+
         if ( ! isset($orderData['Last']) ) {
-            $orderData['Last'] = "";
+            $last = "";
+        } else {
+          $last = $orderData['Last'];
         }
+
         if ( ! isset($orderData['Package']) ) {
-            $orderData['Package'] = "";
+            $package = "";
+        } else {
+            $package = $orderData['Package'];
         }
+        if ( ! isset($orderData['Phone']) ) {
+            $phone = "";
+        } else {
+            $phone = $orderData['Phone'];
+        }
+
+        if ( ! isset( $orderData['Email']) ) {
+            $email = "";
+        } else {
+            $email = $orderData['Email'];
+        }
+
         if ( isset($orderData['Is this guest at least 21 years of age?']) && $orderData['Is this guest at least 21 years of age?'] == "No" ) {
-            $underAge = "<i class='fa fa-child fa-lg'></i>";
+            $underAge = TRUE;
         } else {
-            $underAge = "";
+            $underAge = FALSE;
         }
-        $output = <<<AAA
-            <div class="row listButton {$htmlClass}" id="{$orderData['num']}:{$orderData['item_num']}">
-              <div class="row primary">
-                  <div class="buttonCell name col-xs-7 col-md-4">
-                  <span class="underage">{$underAge}</span>
-                  <span class="icon">{$icon}</span>
-                      <span class="first">&nbsp;{$orderData['First']}</span>
-                      <span class="last">{$orderData['Last']}</span>
-                  </div>
-                <div class="noClick buttonCell col-md-2 visible-md visible-lg">
-AAA;
-        if ( substr($orderData['num'],0,2) == "WO" ) {
-            $output .= 'Order:&nbsp;<span class="orderNum">' . $orderData['num'] . '</span></a>';
+
+        $orderNum = $orderData['num'];
+
+        if ( substr($orderNum,0,2) == "WO" ) {
+            $walkOn = TRUE;
+            $orderLink = "#";
         } else {
-            $output .= 'Order:&nbsp;<a href="https://ovrride.com/wp-admin/post.php?post=' . $orderData['num'] . '&action=edit" target="_blank">';
-            $output .= '<span class="orderNum">' . $orderData['num'] . '</span></a>';
+            $walkOn = FALSE;
+            $orderLink = "https://ovrride.com/wp-admin/post.php?post={$orderNum}&action=edit";
         }
-        $output .= "</div>";
 
         if ( isset($orderData['Pickup']) ) {
-            $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup ' . $pickupVisible . '">'.$orderData['Pickup'].'</div>';
-        } else if ( isset($orderData['Transit To Rockaway']) ) {
-            $output .= '<div class="buttonCell col-xs-5 col-md-3 flexPickup ' . $pickupVisible . '">To Rockaway: "';
-            $output .= $orderData['Transit To Rockaway'] . '<br /> From Rockaway: ' . $orderData['Transit From Rockaway'];
-            $output .= '</div>';
+            $pickup = TRUE;
+            $pickupName = $orderData['Pickup'];
+        } else {
+            $pickup = FALSE;
         }
-        $output .=<<<BBB
-                <div class="buttonCell col-xs-5 col-md-3 flexPackage {$packageVisible}"> {$orderData['Package']}</div>
-              </div>
-              <div class="expanded">
-              <div class="row">
-                  <div class="buttonCell col-xs-5 col-md-6">
-                      <strong>Package:</strong> {$orderData['Package']}
-                  </div>
-BBB;
-        if ( isset($orderData['Pickup']) ) {
-            $output .= '<div class="buttonCell col-xs-12 col-md-6">';
-            $output .= '<strong>Pickup:</strong> ' . $orderData['Pickup'] . '</div>';
-        }
-        $output .=<<<CCC
-              </div>
-              <div class="row">
-                <div class="buttonCell col-xs-12 col-md-6">
-                     <strong>Order:</strong>
-                     <a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">
-                         {$orderData['num']}
-                     </a>
-                </div>
-                <div class="buttonCell col-xs-12 col-md-6">
-                    <strong>Phone:</strong> <a href="tel:{$orderData['Phone']}"><span class="phone">{$orderData['Phone']}</span></a>
-                </div>
-              </div>
-CCC;
-        if ( isSet($orderData['Email']) ){
-            $output.=<<<DDD
-                <div class="row">
-                  <div class="buttonCell col-xs-12 col-md-6">
-                    <strong>Email:</strong> <a href="mailto:{$orderData['Email']}"><span class="email">{$orderData['Email']}</span></a>
-                  </div>
-                </div>
-DDD;
-        }
-        $output .=<<<EEE
-              <div class="row">
-                <br />
-                <div class="buttonCell col-xs-4">
-                    <button class="btn btn-info" id="{$orderData['num']}:{$orderData['item_num']}:Reset">
-                        Reset
-                    </button>
-                </div>
-                <div class="buttonCell col-xs-4">
-                    <button class="btn btn-warning" id="{$orderData['num']}:{$orderData['item_num']}:NoShow">
-                        No Show
-                    </button>
-                </div>
-EEE;
-        if ( substr($orderData['num'],0,2) == "WO" ) {
-            $output .=<<<FFF
-                <div class="buttonCell col-xs-4">
-                    <button class="btn btn-danger" id="{$orderData['num']}:{$orderData['item_num']}:Delete">
-                        Remove Order
-                    </button>
-                </div>
-FFF;
-        }
-        $output .= "</div></div></div>";
-
-        $ID = $orderData['num'].":".$orderData['item_num'];
-        $this->orders[$ID]['HTML'] = $output;
+        // TODO: Setup conditions for rockaway trips
+        // Clear buffer before include to make sure output is clean
+        ob_get_clean();
+        ob_start();
+        include("templates/listButton.php");
+        $this->orders[$id]['HTML'] = ob_get_clean();
     }
     private function dbQuery($sql){
         if ( !$result = $this->dbConnect->query($sql)) {
