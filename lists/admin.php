@@ -39,7 +39,7 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
@@ -105,21 +105,6 @@ $version = file_get_contents('lists.version');
                         <i class="fa fa-tachometer"></i>&nbsp;Admin
                     </button>
                 </li>
-                <li class="half">
-                    <button type="button" class="btn btn-primary" id="addDestination"
-                        data-toggle="popover"
-                        data-html="true"
-                        data-content="<div id='addDestWindow'>
-                                        <input type='text' class='form-control' id='destName' placeholder='Enter New Destination'><br />
-                                        <button type='button' class='btn btn-success' id='addDestBtn'>
-                                            <i class='fa fa-floppy-o'></i>&nbsp;Save Destination
-                                        </button>
-                                    </div>"
-                        title="Add Destination"
-                        data-placement="bottom">
-                        <i class="fa fa-bus"></i>&nbsp;Add Destination
-                    </button>
-                </li>
                 <li>
                     <button type="button" class="btn btn-danger" id="btn-logout">
                         <i class="fa fa-power-off"></i>&nbsp;Log Out
@@ -149,8 +134,6 @@ $version = file_get_contents('lists.version');
                         <i class="fa fa-download"></i>&nbsp;<i class="fa fa-envelope"></i>&nbsp;Export Email
                     </button>
                 </div>
-                <div class="row" id="destinations">
-                    <h4>Destinations</h4>
                 </div>
             </div>
         </div>
