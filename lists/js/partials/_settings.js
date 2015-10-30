@@ -9,7 +9,7 @@ $(function(){
           window.location.href = "list.php";
     } else {
       $.get("api/dropdown/destination", function(data, dd){
-        $('#destination').append(data); 
+        $('#destination').append(data);
       })
       .done(function(data){
         window.dd.set('destination', data);
@@ -18,7 +18,7 @@ $(function(){
       })
       .fail(function(){
         alert('Destination data failed to load, please refresh page');
-      }); 
+      });
     }
     // All Checkboxes on settings page w/selectors
     window.checkBoxes = {
@@ -45,11 +45,13 @@ $(function(){
         if ( settings.get("status") === "" ) {
           alert("Please select at least one order status");
         } else {
+          if ( checkLocalData() ) {
             getTripData();
+          }
         }
       }
     });
-}); 
+});
 function checkSettings(){
     if ( settings.isSet('destination') ) {
         $('#destination').val(settings.get('destination')).trigger('change');
@@ -69,18 +71,20 @@ function checkSettings(){
     }
 }
 function clearData(){
-  dd.removeAll();
-  settings.removeAll();
-  orders.removeAll();
-  initialHTML.removeAll();
-  tripData.removeAll();
-  reports.removeAll();
-  newWalkon.removeAll();
-  unsavedReports.removeAll();
-  messages.removeAll();
-  $("#destination").val("none").trigger("change");
-  resetStatuses('Default');
-  $("#bus").val("1");
+  if (checkLocalData() ) {
+    dd.removeAll();
+    settings.removeAll();
+    orders.removeAll();
+    initialHTML.removeAll();
+    tripData.removeAll();
+    reports.removeAll();
+    newWalkon.removeAll();
+    unsavedReports.removeAll();
+    messages.removeAll();
+    $("#destination").val("none").trigger("change");
+    resetStatuses('Default');
+    $("#bus").val("1");
+  }
 }
 function resetStatuses(type){
     jQuery.each(window.checkBoxes, function(index,value){
@@ -98,7 +102,7 @@ function saveOptions(){
     window.settings.set('tripNum', $('#trip').val());
     window.settings.set('tripName', $('#trip option:selected').text());
     window.settings.set('bus', $('#bus').val());
-    
+
     // Array to be filled with active checkbox values then concatenated with , seperator
     window.activeBoxes = [];
     jQuery.each(window.checkBoxes, function(index, value){
@@ -110,7 +114,7 @@ function saveOptions(){
 }
 function tripDropdown(){
     $.get("api/dropdown/trip", function(data){
-            $('#trip').append(data); 
+            $('#trip').append(data);
     })
     .done(function(data){
         $('#trip').chained("#destination");
@@ -120,4 +124,21 @@ function tripDropdown(){
     .fail(function(){
         alert('Trip dropdown failed to load, please refresh page');
     });
+}
+function checkLocalData() {
+  // If trip data (check in info) or unsaved reports exist double check before downloading new info or wiping data
+  if ( ! tripData.isEmpty() && ! unsavedReports.isEmpty()) {
+    if ( ! confirm("Reports have not been saved, check-in data may also not have been saved. Do you want to erase them from your device? (Press cancel to avoid erasing data)") ) {
+      return false;
+    }
+  } else if ( ! unsavedReports.isEmpty() ) {
+    if ( ! confirm("Reports have not been saved. Please cancel and go back to save them.") ) {
+      return false;
+    }
+  } else if ( ! tripData.isEmpty() ) {
+    if ( ! confirm("There might be unsaved trip info, are you sure you want to erase it? (Press cancel to avoid erasing data)") ) {
+      return false;
+    }
+  }
+  return true;
 }

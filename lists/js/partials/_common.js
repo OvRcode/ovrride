@@ -1,14 +1,14 @@
 $(function() {
     window.dropDown = $.initNamespaceStorage('dropdown');
-    window.dd = dropDown.localStorage; 
+    window.dd = dropDown.localStorage;
     window.options = $.initNamespaceStorage('settings');
-    window.settings = options.localStorage; 
+    window.settings = options.localStorage;
     window.orderData = $.initNamespaceStorage('orders');
     window.orders = orderData.localStorage;
     window.outputHTML = $.initNamespaceStorage('initialHTML');
-    window.initialHTML = outputHTML.localStorage;  
+    window.initialHTML = outputHTML.localStorage;
     window.data =$.initNamespaceStorage('data');
-    window.tripData = data.localStorage; 
+    window.tripData = data.localStorage;
     window.reportspace = $.initNamespaceStorage('reports');
     window.reports = reportspace.localStorage;
     window.walkonspace = $.initNamespaceStorage('newWalkon');
@@ -46,7 +46,7 @@ $(function() {
             toggleMenuButtons("online");
             if ( ! jQuery.isEmptyObject(unsavedReports.keys()) && ! savingReports) {
               savingReports = true;
-              saveOfflineReports();  
+              saveOfflineReports();
             }
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
@@ -55,7 +55,7 @@ $(function() {
             }
         } else if (!window.navigator.onLine) {
             toggleMenuButtons("offline");
-            
+
             if ( statusIcon.hasClass('btn-black') ) {
                 statusIcon.removeClass('btn-black')
                     .addClass('btn-danger')
@@ -63,11 +63,7 @@ $(function() {
             }
         }
     }, 250);
-    
-    // Alert user about pending cache update
-    $(window.applicationCache).on("downloading", function(){
-      alert("Hang tight for a minute, downloading an update");
-    });
+
     
     // Notify user before reloading for update
     $(window.applicationCache).on("updateready", function(){
@@ -87,7 +83,7 @@ function getContactData(){
   }).done(function(){
     window.location.href= "list.php";
   });
-  
+
 }
 function getReports(){
     reports.removeAll();
@@ -153,7 +149,7 @@ function saveOfflineReports(){
     onlineReportSave(report,bus,settings.get('tripNum'));
   });
   window.unsavedReports.removeAll();
-  window.savingReports = false; 
+  window.savingReports = false;
   alert("saved offline report(s)");
 }
 function toggleMenuButtons(onlineOffline){
