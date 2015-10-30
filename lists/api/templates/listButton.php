@@ -17,15 +17,18 @@
       </a>
     </div>
     <?php if ( $pickup ): ?>
-    <div class="buttonCell col-xs-5 col-md-3 flexPickup<?php echo $pickupVisible; ?>">
+    <div class="buttonCell col-xs-5 col-md-2 flexPickup<?php echo $pickupVisible; ?>">
       <?php echo $pickupName; ?>
     </div>
   <?php endif; ?>
     <div class="buttonCell col-xs-5 col-md-3 flexPackage<?php echo $packageVisible; ?>">
       <?php echo $package; ?>
     </div>
+    <div class="buttonCell col-xs-offset-10 col-xs-2 col-md-1 expand">
+      <i class="fa fa-bars fa-3x"></i>
+    </div>
   </div>
-  <div class="expanded" style="display: none;">
+  <div class="expanded">
     <div class="row">
       <div class="buttonCell col-xs-5 col-md-6">
         <strong>Package:</strong><?php echo $package; ?>

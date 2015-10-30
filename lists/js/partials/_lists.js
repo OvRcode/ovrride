@@ -123,6 +123,9 @@ $(function() {
       $("span.icon").on("click", function(){
         changeStatus( $(this).parents("div.row.listButton"));
       });
+      $("div.expand").on("click", function(){
+        toggleExpanded( $(this) );
+      });
     }
 
     function changeStatus( element) {
@@ -150,6 +153,20 @@ $(function() {
         button.removeClass("bg-waiver").addClass("bg-productrec");
         icon.removeClass("fa-file-word-o").addClass("fa-ticket");
         tripData.set(id + ':Product', 1);
+      }
+    }
+    function toggleExpanded( element ) {
+      var button = $(element).parents("div.row.listButton");
+      var drawer = button.find("div.expanded");
+
+      if ( $(".expanded").not(drawer).is(':visible') ) {
+        $(".expanded").hide().not(drawer);
+      }
+
+      if ( drawer.is(':visible') ) {
+        drawer.hide();
+      } else {
+        drawer.show();
       }
     }
 });
@@ -482,6 +499,8 @@ function setupListener(ID){
     }
 }
 function setupPage(){
+    $(".expanded").hide();
+
     if ( settings.isSet('tripName') ) {
         $('#tripName').text(settings.get('tripName'));
     }
@@ -573,18 +592,5 @@ function sortList(value){
             // Sort by Pickup, then last name
             $(".listButton").tsort('div.flexPickup','span.last');
             break;
-    }
-}
-function toggleExpanded(element){
-    if ( element.children('div.expanded').is(':visible') ){
-        element.children('div.expanded').hide(600);
-        if ( settings.get('bus') !== "All" ){
-          element.children("div.row.primary").children().not(".noClick").on("singletap", function(){
-            changeStatus($(this).parents().eq(1));
-          });
-        }
-    } else {
-        element.children('div.expanded').show(600);
-        element.children("div.row.primary").children().not(".noClick").unbind("singletap");
     }
 }
