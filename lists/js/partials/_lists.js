@@ -118,6 +118,40 @@ $(function() {
     setupAllListeners();
     packageList();
     pageTotal();
+
+    function setupAllListeners() {
+      $("span.icon").on("click", function(){
+        changeStatus( $(this).parents("div.row.listButton"));
+      });
+    }
+
+    function changeStatus( element) {
+      // updates status of selected guest. changes css and sets local data
+      var icon = $(element).find("span.icon i");
+      var button = $(element);
+      var id = $(element).attr("ID");
+      if ( "PM" == $("#AMPM").val() ) {
+        if ( ! button.hasClass("bg-pm") ) {
+          button.removeClass("bg-none bg-am bg-waiver bg-productrec").addClass('bg-pm');
+          icon.removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket").addClass("fa-moon-o");
+          tripData.set(id + ":PM", 1);
+        }
+      }
+
+      if ( button.hasClass("bg-none") ) {
+        button.removeClass("bg-none").addClass("bg-am");
+        icon.removeClass("fa-square-o").addClass("fa-sun-o");
+        tripData.set(id + ':AM', 1);
+      } else if ( button.hasClass("bg-am") ) {
+        button.removeClass("bg-am").addClass("bg-waiver");
+        icon.removeClass("fa-sun-o").addClass("fa-file-word-o");
+        tripData.set(id + ':Waiver', 1);
+      } else if ( button.hasClass("bg-waiver") ) {
+        button.removeClass("bg-waiver").addClass("bg-productrec");
+        icon.removeClass("fa-file-word-o").addClass("fa-ticket");
+        tripData.set(id + ':Product', 1);
+      }
+    }
 });
 function addWalkonButton(){
     var walkonPackage = $("#walkonPackage").val();
@@ -147,67 +181,6 @@ function addWalkonButton(){
     } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
         $("#saveWalkOn").addClass('disabled');
     }
-
-}
-function changeStatus(element){
-  if ( ! element.hasClass('bg-noshow') ){
-    if ( $('#AMPM').val() == 'PM' ) {
-        // Customer checked in at end of day
-      var foundClass = false;
-        if ( element.hasClass('bg-am') ) {
-          element.removeClass('bg-am');
-          foundClass = true;
-        }
-        if ( element.hasClass('bg-waiver') ) {
-          element.removeClass('bg-waiver');
-          foundClass = true;
-        }
-        if ( element.hasClass('bg-productrec') ) {
-          element.removeClass('bg-productrec');
-          foundClass = true;
-        }
-        if ( foundClass ){
-          element.addClass('bg-pm');
-          element.find("span.icon").html('<i class="fa fa-moon-o fa-3x"></i>');
-          // Double check that correct fields are visible on mobile
-          element.find('.flexPackage').addClass('visible-md visible-lg');
-          element.find('.flexPickup').removeClass('visible-md visible-lg');
-          var PM = element.attr('id')+":PM";
-          tripData.set(PM, 1);
-        }
-    }
-
-    if ( element.hasClass('bg-none') ) {
-        // Customer Checked in
-        var AM = element.attr('id') + ":AM";
-        var Delete = element.attr('id') + ":Delete";
-        var Bus = element.attr('id')+":Bus";
-        tripData.set(AM, 1 );
-        tripData.remove(Delete);
-        tripData.set(Bus, settings.get('bus'));
-        element.removeClass('bg-none');
-        element.addClass('bg-am');
-        element.find("span.icon").html('<i class="fa fa-sun-o fa-3x"></i>');
-        element.find('.flexPackage').removeClass('visible-md visible-lg');
-        element.find('.flexPickup').addClass('visible-md visible-lg');
-    } else if ( element.hasClass('bg-am') ) {
-        // Waiver Received from Customer
-        var Waiver = element.attr('id')+":Waiver";
-        tripData.set(Waiver, 1);
-        element.removeClass('bg-am');
-        element.addClass('bg-waiver');
-        element.find("span.icon").html('<i class="fa fa-file-word-o fa-3x"></i>');
-    } else if ( element.hasClass('bg-waiver') ) {
-        // Customer received product
-        var Product = element.attr('id')+":Product";
-        tripData.set(Product, 1);
-        element.removeClass('bg-waiver');
-        element.addClass('bg-productrec');
-        element.find('span.icon').html('<i class="fa fa-ticket fa-3x"></i>');
-        element.find('.flexPackage').addClass('visible-md visible-lg');
-        element.find('.flexPickup').removeClass('visible-md visible-lg');
-    }
-  }
 
 }
 function checkData(){
@@ -344,7 +317,6 @@ function packageList(){
     });
     dd.set('packages',output);
 }
-
 function pageTotal(){
   var totalGuests = $("div.listButton:visible").length;
   $("span.listTotal").text(totalGuests + " Guests");
@@ -476,11 +448,12 @@ function setState(element, state){
         noShow(element);
     }
 }
+/*
 function setupAllListeners(){
     jQuery.each(orders.keys(), function(key, value){
         setupListener(value);
     });
-}
+}*/
 function setupListener(ID){
     var split = ID.split(":");
     var selectorID = "#" + split[0] + "\\:" + split[1];
