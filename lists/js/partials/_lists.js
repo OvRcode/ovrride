@@ -126,6 +126,10 @@ $(function() {
       $("div.expand").on("click", function(){
         toggleExpanded( $(this) );
       });
+      $("button.reset").on("click", function(){
+        var id = $(this).parents('div.row.listButton').attr('ID');
+        resetGuest(id);
+      });
     }
 
     function changeStatus( element) {
@@ -168,6 +172,47 @@ $(function() {
       } else {
         drawer.show();
       }
+    }
+    function resetGuest(id){
+      console.log("reset func");
+        var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
+        var selector = $("#"+id.replace(":","\\:"));
+        selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none").addClass("bg-none");
+        selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
+
+        jQuery.each(clearVars, function(key,value){
+            tripData.remove(value);
+        });
+        tripData.set(ID + ":Delete", 1);
+    }
+    function setState(element, state){
+      element.removeClass("bg-am bg-waiver bg-productrec bg-pm");
+      element.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o");
+      var bg = "";
+      var icon = "";
+      if ( state == 'AM' ){
+        bg = "bg-am";
+        icon = "fa-sun-o";
+      } else if ( state == 'Waiver' ) {
+        bg = "bg-waiver";
+        icon = "fa-file-word-o";
+      } else if ( state == 'Product' ) {
+        bg = "bg-productrec";
+        icon = "fa-ticket";
+      } else if ( state == 'PM' ) {
+        bg = "bg-pm";
+        icon = "fa-moon-o";
+        element.find('.flexPackage').addClass('visible-md visible-lg');
+        element.find('.flexPickup').removeClass('visible-md visible-lg');
+        } else if ( state == 'NoShow' ){
+            noShow(element);
+        } else {
+          bg = "bg-none";
+          icon = "fa-square-o";
+        }
+
+        element.addClass(bg);
+        element.find("span.icon i").addClass(icon);
     }
 });
 function addWalkonButton(){
@@ -338,17 +383,6 @@ function pageTotal(){
   var totalGuests = $("div.listButton:visible").length;
   $("span.listTotal").text(totalGuests + " Guests");
 }
-function resetGuest(element){
-    var ID = element.attr('id');
-    var clearVars = [ ID + ":AM", ID + ":PM", ID + ":Waiver", ID + ":Product", ID + ":NoShow", ID + ":Bus" ];
-    element.removeClass();
-    element.addClass("row listButton bg-none");
-    element.find("span.icon").html('');
-    jQuery.each(clearVars, function(key,value){
-        tripData.remove(value);
-    });
-    tripData.set(ID + ":Delete", 1);
-}
 function saveData(){
     // get state data from localstorage
     var packageWeight = {AM: 1, Waiver: 2, Product: 3, PM: 4, NoShow: 5,Delete: 6};
@@ -438,39 +472,6 @@ function searchList(searchType, text){
         $(".listButton").show();
     }
 }
-function setState(element, state){
-    if ( state == 'AM' ){
-        element.removeClass();
-        element.addClass('row listButton bg-am');
-        element.find("span.icon").html('<i class="fa fa-sun-o fa-3x"></i>');
-        element.removeClass('bg-none');
-    } else if ( state == 'Waiver' ) {
-        element.removeClass();
-        element.addClass('row listButton bg-waiver');
-        element.find("span.icon").html('<i class="fa fa-file-word-o fa-3x"></i>');
-        element.removeClass('bg-none');
-    } else if ( state == 'Product' ) {
-        element.removeClass();
-        element.addClass('row listButton bg-productrec');
-        element.find('span.icon').html('<i class="fa fa-ticket fa-3x"></i>');
-        element.removeClass('bg-none');
-    } else if ( state == 'PM' ) {
-        element.removeClass();
-        element.addClass('row listButton bg-pm');
-        element.find("span.icon").html('<i class="fa fa-moon-o fa-3x"></i>');
-        element.find('.flexPackage').addClass('visible-md visible-lg');
-        element.find('.flexPickup').removeClass('visible-md visible-lg');
-        element.removeClass('bg-none');
-    } else if ( state == 'NoShow' ){
-        noShow(element);
-    }
-}
-/*
-function setupAllListeners(){
-    jQuery.each(orders.keys(), function(key, value){
-        setupListener(value);
-    });
-}*/
 function setupListener(ID){
     var split = ID.split(":");
     var selectorID = "#" + split[0] + "\\:" + split[1];

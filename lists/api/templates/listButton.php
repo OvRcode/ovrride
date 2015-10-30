@@ -24,7 +24,7 @@
     <div class="buttonCell col-xs-5 col-md-3 flexPackage<?php echo $packageVisible; ?>">
       <?php echo $package; ?>
     </div>
-    <div class="buttonCell col-xs-offset-10 col-xs-2 col-md-1 expand">
+    <div class="buttonCell col-xs-offset-10 col-xs-2 col-md-offset-0 col-md-1 expand">
       <i class="fa fa-bars fa-3x"></i>
     </div>
   </div>
@@ -64,12 +64,12 @@
     <div class="row">
       <br />
       <div class="buttonCell col-xs-4">
-        <button class="btn btn-info" id="<?php echo $id; ?>:Reset">
+        <button class="btn btn-info reset" id="<?php echo $id; ?>:Reset">
           Reset
         </button>
       </div>
       <div class="buttonCell col-xs-4">
-        <button class="btn btn-warning" id="<?php echo $id; ?>:NoShow">
+        <button class="btn btn-warning noShow" id="<?php echo $id; ?>:NoShow">
           No Show
         </button>
       </div>
