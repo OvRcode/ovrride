@@ -5,6 +5,7 @@ require 'twilio-php/Services/Twilio.php';
 class Lists {
     var $dbConnect;
     var $destinations;
+    var $trips;
     var $orders;
     var $pickup;
     function __construct(){
@@ -18,53 +19,55 @@ class Lists {
           $this->dbConnect->query("SET CHARACTER SET utf8");
           $this->dbConnect->query("SET COLLATION_CONNECTION = 'utf8_unicode_ci'");
         }
-        
+
+        // Pull full list of active destinations
+        $this->destinations = array();
+        $sql = "SELECT `post_title` FROM `wp_posts` WHERE post_type='destinations' AND `post_status` = 'publish'";
+        $result = $this->dbQuery($sql);
+        while ( $row = $result->fetch_assoc() ) {
+          $this->destinations[] = $row['post_title'];
+        }
+        error_log(print_r($this->destinations, true));
+        // Find Trip type products and their destination
+        $sql = "SELECT `wp_posts`.`ID`,`wp_posts`.`post_title` as 'Trip', `wp_postmeta`.`meta_value` as 'Destination'
+        FROM `wp_posts`
+        INNER JOIN `wp_postmeta` on `wp_posts`.`ID` = `wp_postmeta`.`post_id`
+        INNER JOIN `wp_term_relationships` ON `wp_posts`.`ID` = `wp_term_relationships`.`object_id`
+        INNER JOIN `wp_term_taxonomy` ON `wp_term_relationships`.`term_taxonomy_id` = `wp_term_taxonomy`.`term_taxonomy_id`
+        INNER JOIN `wp_terms` ON `wp_term_taxonomy`.`term_id` = `wp_terms`.`term_id`
+        WHERE `wp_term_taxonomy`.`taxonomy` = 'product_type'
+        AND `wp_terms`.`name` = 'trip'
+        AND `wp_postmeta`.`meta_key` = '_wc_trip_destination'";
+
+        $result = $this->dbQuery($sql);
+        while ( $row = $result->fetch_assoc() ) {
+          // Only save info for active destinations
+          if ( in_array($row['Destination'], $this->destinations) ) {
+            $this->trips[$row['Destination']][$row['ID']]['title'] = $row['Trip'];
+          }
+        }
+
     }
     function destinationDropdown(){
-        $sql = "SELECT `destination` FROM `ovr_lists_destinations` WHERE `enabled` = 'Y'";
-        $result = $this->dbQuery($sql);
         $output = "";
-        $this->destinations = array();
-        while($row = $result->fetch_assoc()){
-            $output .= "<option value='".$row['destination']."'>".$row['destination']."</option>\n";
-            if ( $row['destination'] == "Stratton" ) {
-                $this->destinations[$row['destination']] = '/Stratturday\s(.*)/i';
-            } else if ( $row['destination'] == "Jackson Hole" ) {
-                $this->destinations[$row['destination']] = '/\bJackson\sHole\s\b(.*)/i';
-            } else {
-                $this->destinations[$row['destination']] = '/' . $row['destination'] . '(.*)/i';
-            }
+        error_log("WTF!");
+        foreach ( $this->destinations as $index => $destination) {
+          $output .= "<option value='{$destination}'>{$destination}</option>\n";
         }
+
         return $output;
     }
     function tripDropdown(){
         $options = "";
-        # Find trips for the trip drop down
-        $sql = "SELECT DISTINCT `id`, `post_title`
-                FROM `wp_posts`
-                INNER JOIN `wp_postmeta` ON `wp_posts`.`id` = `wp_postmeta`.`post_id`
-                WHERE  (`post_status` =  'publish' OR (`post_status` = 'draft' AND `wp_postmeta`.`meta_value` = 'visible'))
-                AND `post_type` =  'product'
-                AND `post_title` NOT LIKE  '%High Five%'
-                AND `post_title` NOT LIKE  '%Gift%'
-                AND `post_title` NOT LIKE '%Beanie%'
-                AND `post_title` NOT LIKE '%East Coast Fold Hat%'
-                AND `post_title` NOT LIKE '%Good Wood%'
-                AND `post_title` NOT LIKE '%East Coast Snapback%'
-                ORDER BY `post_title`";
-        $result = $this->dbQuery($sql);
-        while($row = $result->fetch_assoc()){
-            foreach($this->destinations as $destination => $regex){
-                if ( preg_match( $regex, $row['post_title'], $match) ){
-                    $HTMLClass = $destination;
-                    $label = $match[1];
-                    break;
-                }
-            }
-            if ( isset($HTMLClass) ){
-                $options .= "<option value='" . $row['id'] . "' class='" . $HTMLClass . "'>" . $label . "</option>\n";
-                unset($HTMLClass);
-            }
+        foreach( $this->destinations as $index => $destination) {
+          if ( isset( $this->trips[$destination] ) ) {
+            foreach( $this->trips[$destination] as $id => $info) {
+                $sql = "SELECT `meta_value` FROM `wp_postmeta` WHERE `post_id` = '{$id}' AND `meta_key` = '_wc_trip_start_date' LIMIT 1";
+                $result = $this->dbQuery($sql);
+                $result = $result->fetch_assoc();
+                $options .= "<option value='{$id}' class='{$destination}' data-date='{$result['meta_value']}'>{$info['title']}</option>\n";
+              }
+          }
         }
         echo $options;
     }
@@ -84,13 +87,13 @@ class Lists {
                 $phone      = ( isset( $data['Data']['Phone'] ) ? $data['Data']['Phone'] : '' );
                 $pickup     = ( isset( $data['Data']['Pickup'] ) ? $data['Data']['Pickup'] : 'X' );
                 $package    = ( isset( $data['Data']['Package'] ) ? $data['Data']['Package'] : '' );
-                
+
                 $order = preg_split("/:/",$ID);
                 $order = $order[0];
                 $row = "\"" . $first . "\",\"" . $last . "\",\"" . $phone . "\"";
                 $row .= ",\"" . $pickup . "\"";
                 $row .= ",\"" . $package . "\",\"" . $order . "\"";
-                
+
                 if ( $data['State'] == "AM" ) {
                     $state = ",\"X\",\"\",\"\",\"\"\n";
                 } else if ( $data['State'] == "Waiver" ) {
@@ -122,7 +125,7 @@ class Lists {
                 $row .= "\"" . $email . ",\"";
                 $row .= ",\"" . $first . "\",\"" . $last . "\",\"" . $package;
                 if ( $this->pickup ) {
-                  $row .= "\",\"" . $pickup;  
+                  $row .= "\",\"" . $pickup;
                 }
                 $row .= "\"\n";
                 $output .= $row;
@@ -161,7 +164,7 @@ class Lists {
                 $sql = "SELECT * FROM `ovr_lists_manual_orders` WHERE `Trip` = '" . $tripId . "'";
                 $result = $this->dbQuery($sql);
                 while($row = $result->fetch_assoc()){
-                    if ( $bus == "All" || array_search($row['ID'], $busData[$bus]) !== FALSE || 
+                    if ( $bus == "All" || array_search($row['ID'], $busData[$bus]) !== FALSE ||
                         array_search($row['ID'], $busData['Other']) === FALSE) {
                         $walkOnOrder = [];
                         $split = preg_split("/:/", $row['ID']);
@@ -190,17 +193,17 @@ class Lists {
                         AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
                         AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '$tripId'";
                 $result = $this->dbQuery($sql);
-                while($row = $result->fetch_assoc()){ 
+                while($row = $result->fetch_assoc()){
                     $searchID = $row['ID'] . ":" . $row['order_item_id'];
-                    if ( $bus == "All" || array_search($searchID, $busData[$bus]) !== FALSE || 
+                    if ( $bus == "All" || array_search($searchID, $busData[$bus]) !== FALSE ||
                         array_search($searchID, $busData['Other']) === FALSE) {
-                        
-                        $orderData = [];   
+
+                        $orderData = [];
                         $orderData['num'] = $row['ID'];
                         $orderData['item_num'] = $row['order_item_id'];
                         $order = $row['ID'];
                         $orderItem = $row['order_item_id'];
-                    
+
                         # Get phone number
                         $phoneSql = "SELECT  `meta_value` AS  `Phone`
                             FROM wp_postmeta
@@ -210,7 +213,7 @@ class Lists {
                         $phoneRow = $phoneResult->fetch_assoc();
                         $orderData['Phone'] = $this->reformatPhone($phoneRow['Phone']);
                         # Get meta details
-                        $detailSql = "SELECT `meta_key`, `meta_value` 
+                        $detailSql = "SELECT `meta_key`, `meta_value`
                             FROM `wp_woocommerce_order_itemmeta`
                             WHERE ( `meta_key` = 'Name'
                             OR `meta_key` = 'Email'
@@ -227,7 +230,7 @@ class Lists {
                                 $orderData['Package'] = ucwords(strtolower($this->removePackagePrice($detailRow['meta_value'])));
                             } else if ( $detailRow['meta_key'] == 'Pickup' || $detailRow['meta_key'] == 'Pickup Location') {
                                 $orderData['Pickup'] = ucwords(strtolower($this->stripTime($detailRow['meta_value'])));
-                            } else if ( $detailRow['meta_key'] == 'Transit To Rockaway' || 
+                            } else if ( $detailRow['meta_key'] == 'Transit To Rockaway' ||
                                         $detailRow['meta_key'] == 'Transit From Rockaway') {
                                 $orderData[$detailRow['meta_key']] = ucwords(strtolower($detailRow['meta_value']));
                             } else if ( $detailRow['meta_key'] == 'Name' ) {
@@ -241,7 +244,7 @@ class Lists {
                                 }
                             }
                         }
-                    
+
                         $this->listHTML($orderData);
                         $this->customerData($orderData);
                     }
@@ -284,11 +287,11 @@ class Lists {
         if ( $data['enabled'] == "Delete" ) {
             $sql = "DELETE FROM `ovr_lists_destinations` WHERE `destination` = '" . $destination . "'";
         } else {
-            $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled, contact, contactPhone, rep, repPhone) 
+            $sql = "INSERT INTO `ovr_lists_destinations` (destination, enabled, contact, contactPhone, rep, repPhone)
                     VALUES('" . $destination . "', '" . $data['enabled'] ."', '" . $data['contact']. "',
                             '" . $data['contactPhone']. "', '" . $data['rep'] . "', '" . $data['repPhone']. "')
                     ON DUPLICATE KEY UPDATE
-                    enabled=VALUES(enabled), contact=VALUES(contact), contactPhone=VALUES(contactPhone), 
+                    enabled=VALUES(enabled), contact=VALUES(contact), contactPhone=VALUES(contactPhone),
                     rep=VALUES(rep), repPhone=VALUES(repPhone)";
         }
         $this->dbQuery($sql);
@@ -333,7 +336,7 @@ class Lists {
     function sendMessage(){
         $accountSid = getenv('TWILIO_SID');
         $authToken = getenv('TWILIO_AUTH');
-        
+
         $client = new Services_Twilio($accountSid, $authToken);
         $postData = $_POST['message'];
         $recipients = $postData['Recipients'];
@@ -353,7 +356,7 @@ class Lists {
         $sql = "SELECT `contact`, `contactPhone`, `rep`, `repPhone` FROM `ovr_lists_destinations` WHERE `destination` ='" . $destination . "'";
         $result = $this->dbQuery($sql);
         $row = $result->fetch_assoc();
-        return array('contact'     => $row['contact'], 
+        return array('contact'     => $row['contact'],
                     'contactPhone' => $row['contactPhone'],
                     'rep'          => $row['rep'],
                     'repPhone'     => $row['repPhone']
@@ -460,7 +463,7 @@ BBB;
               </div>
               <div class="row">
                 <div class="buttonCell col-xs-12 col-md-6">
-                     <strong>Order:</strong> 
+                     <strong>Order:</strong>
                      <a href="https://ovrride.com/wp-admin/post.php?post={$orderData['num']}&action=edit">
                          {$orderData['num']}
                      </a>
@@ -513,7 +516,7 @@ FFF;
         } else {
           return $result;
         }
-    }  
+    }
     private function reformatPhone($phone){
 
         # Strip all formatting
@@ -548,7 +551,7 @@ FFF;
         $last = array_pop($parts);
         $first = implode(" ", $parts);
 
-        return array("First" => $first, "Last" => $last); 
+        return array("First" => $first, "Last" => $last);
     }
 }
 
@@ -605,7 +608,7 @@ Flight::route('POST /dropdown/destination/save', function(){
         $list->updateDestinations($_POST['destination'], $data);
     }
 );
-Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){ 
+Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
         echo json_encode($list->tripData($bus, $tripId, $status));
     }
