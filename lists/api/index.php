@@ -403,7 +403,7 @@ class Lists {
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "NoShow" ) {
             $statusClass = " bg-noshow";
-            $statusIcon = "fa-exclamation-triangle";
+            $statusIcon = "fa-times-circle-o";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         }

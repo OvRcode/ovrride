@@ -127,8 +127,10 @@ $(function() {
         toggleExpanded( $(this) );
       });
       $("button.reset").on("click", function(){
-        var id = $(this).parents('div.row.listButton').attr('ID');
-        resetGuest(id);
+        resetGuest( $(this).parents('div.listButton').attr('id') );
+      });
+      $("button.noShow").on("click", function(){
+        noShow( $(this).parents('div.row.listButton').attr('id') );
       });
     }
 
@@ -174,45 +176,23 @@ $(function() {
       }
     }
     function resetGuest(id){
-      console.log("reset func");
-        var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
-        var selector = $("#"+id.replace(":","\\:"));
-        selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none").addClass("bg-none");
-        selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
+      var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
+      var selector = $("#"+id.replace(":","\\\:"));
+      selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none").addClass("bg-none");
+      selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
 
-        jQuery.each(clearVars, function(key,value){
-            tripData.remove(value);
-        });
-        tripData.set(ID + ":Delete", 1);
+      jQuery.each(clearVars, function(key,value){
+        tripData.remove(value);
+      });
     }
-    function setState(element, state){
-      element.removeClass("bg-am bg-waiver bg-productrec bg-pm");
-      element.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o");
-      var bg = "";
-      var icon = "";
-      if ( state == 'AM' ){
-        bg = "bg-am";
-        icon = "fa-sun-o";
-      } else if ( state == 'Waiver' ) {
-        bg = "bg-waiver";
-        icon = "fa-file-word-o";
-      } else if ( state == 'Product' ) {
-        bg = "bg-productrec";
-        icon = "fa-ticket";
-      } else if ( state == 'PM' ) {
-        bg = "bg-pm";
-        icon = "fa-moon-o";
-        element.find('.flexPackage').addClass('visible-md visible-lg');
-        element.find('.flexPickup').removeClass('visible-md visible-lg');
-        } else if ( state == 'NoShow' ){
-            noShow(element);
-        } else {
-          bg = "bg-none";
-          icon = "fa-square-o";
-        }
 
-        element.addClass(bg);
-        element.find("span.icon i").addClass(icon);
+    function noShow(id) {
+      tripData.set(id+":NoShow", 1);
+      var element = $("#" + id.replace(":","\\\:"));
+      console.log(element);
+      element.removeClass('bg-none bg-am bg-waiver bg-productrec bg-pm').addClass('bg-noshow');
+      element.find("span.icon i").removeClass('fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o').addClass('fa-times-circle-o');
+      console.log(element.find("span.icon i"));
     }
 });
 function addWalkonButton(){
@@ -358,12 +338,7 @@ function listHTML(ID, order){
     // Hide expanded area of reservation
     $("div.expanded").hide();
 }
-function noShow(element) {
-    var NoShow = element.attr('id')+":NoShow";
-    tripData.set(NoShow, 1);
-    element.addClass('bg-noshow');
-    element.find("span.icon").html('<i class="fa fa-exclamation-triangle fa-3x"></i>');
-}
+
 function packageList(){
     window.packageList = [];
     var output = "<option value='none' selected>Select Package</option>";
@@ -594,4 +569,34 @@ function sortList(value){
             $(".listButton").tsort('div.flexPickup','span.last');
             break;
     }
+}
+function setState(element, state){
+  element.removeClass("bg-am bg-waiver bg-productrec bg-pm");
+  element.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o");
+  var bg = "";
+  var icon = "";
+  if ( state == 'AM' ){
+    bg = "bg-am";
+    icon = "fa-sun-o";
+  } else if ( state == 'Waiver' ) {
+    bg = "bg-waiver";
+    icon = "fa-file-word-o";
+  } else if ( state == 'Product' ) {
+    bg = "bg-productrec";
+    icon = "fa-ticket";
+  } else if ( state == 'PM' ) {
+    bg = "bg-pm";
+    icon = "fa-moon-o";
+    element.find('.flexPackage').addClass('visible-md visible-lg');
+    element.find('.flexPickup').removeClass('visible-md visible-lg');
+    } else if ( state == 'NoShow' ){
+      bg = "bg-noshow";
+      icon = "fa-times-circle-o";
+    } else {
+      bg = "bg-none";
+      icon = "fa-square-o";
+    }
+
+    element.addClass(bg);
+    element.find("span.icon i").addClass(icon);
 }
