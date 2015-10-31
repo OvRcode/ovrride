@@ -6,8 +6,8 @@ $(function(){
   }
     //add check for online/offline when offline is implemented
     getReports();
-    $("#saveReport").click(function(){ saveReport(); });
-    $("#refreshReports").click(function(){ getReports(); });
+//    $("#saveReport").click(function(){ saveReport(); });
+//    $("#refreshReports").click(function(){ getReports(); });
     $("#bus").on("change", function(){ toggleBus($(this).val()); });
 });
 function outputReports(){
@@ -21,23 +21,7 @@ function outputReports(){
         });
         $("#reportsContent").append(output);
         $("#bus").trigger("change");
-    }   
-}
-function saveReport(){
-    var report = $("#newReport").val().replace(/\n/g,"<br>");
-    var bus = settings.get('bus');
-    var trip = settings.get('tripNum');
-    var timestamp = timeStamp();
-    
-    if ( window.navigator.onLine ){
-      onlineReportSave(report,bus,trip);
-    } else {
-      reports.set(timestamp, "Bus " + bus + ": " + report);
-      unsavedReports.set(timestamp, settings.get('bus') + "#!" + report);
     }
-    /*jshint -W030 */ 
-    $("#reportsContent").append("<p>" + timestamp + ": Bus " + settings.get('bus') + ": " + report).after() + "</p>";
-    $("#newReport").val('');
 }
 function setupBusDropdown(){
   var bus = settings.get("bus");
@@ -48,9 +32,9 @@ function setupBusDropdown(){
   $("#bus").append(html);
   $("#bus").val(bus);
   setTimeout(function(){
-    $("#bus").trigger("change");  
+    $("#bus").trigger("change");
   },200);
-  
+
 }
 function timeStamp(){
     var date    = new Date();

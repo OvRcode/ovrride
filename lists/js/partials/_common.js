@@ -38,16 +38,11 @@ $(function() {
       $(".navbar-static-top").addClass("iosFix");
       $(".sidebar-nav").addClass("iosFix");
     }
-    window.savingReports = false;
     // Monitor onLine status and flip navbar indicator
     setInterval(function () {
         var statusIcon = $("#status");
         if (window.navigator.onLine) {
             toggleMenuButtons("online");
-            if ( ! jQuery.isEmptyObject(unsavedReports.keys()) && ! savingReports) {
-              savingReports = true;
-              saveOfflineReports();
-            }
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
                     .addClass('btn-black')
@@ -64,7 +59,7 @@ $(function() {
         }
     }, 250);
 
-    
+
     // Notify user before reloading for update
     $(window.applicationCache).on("updateready", function(){
       var r = confirm("Update downloaded need to reload page. Press cancel if you need to save changes, OK to reload");
@@ -84,18 +79,6 @@ function getContactData(){
     window.location.href= "list.php";
   });
 
-}
-function getReports(){
-    reports.removeAll();
-    var trip = settings.get('tripNum');
-    $.get("api/reports/"+trip, function(data){
-        var parsed = jQuery.parseJSON(data);
-        jQuery.each(parsed, function(key,value){
-            reports.set(key, value);
-        });
-    }).done(function(){
-      outputReports();
-    });
 }
 function getTripData(){
     var trip = settings.get('tripNum');
@@ -132,25 +115,6 @@ function getTripData(){
     .done(function(){
       getContactData();
     });
-}
-function onlineReportSave(report,bus,trip){
-  $.post("api/report/add", {bus: bus, tripId: trip, report: report}, function(data){
-    if ( data != 'success' ) {
-      alert("Report Save failed");
-    }
-  });
-}
-function saveOfflineReports(){
-  jQuery.each(unsavedReports.keys(), function(key,value){
-    var report = unsavedReports.get(value);
-    report = report.split("#!");
-    var bus = report[0];
-    report = report[1];
-    onlineReportSave(report,bus,settings.get('tripNum'));
-  });
-  window.unsavedReports.removeAll();
-  window.savingReports = false;
-  alert("saved offline report(s)");
 }
 function toggleMenuButtons(onlineOffline){
     var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];

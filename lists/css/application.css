@@ -6499,7 +6499,7 @@ button.close {
 }
 
 .center {
-    margin-left: auto;
+    margin-left: auto; 
     margin-right: auto;
 }
 
@@ -6554,12 +6554,10 @@ button.close {
     -ms-user-select: none;
     user-select: none;
 }
-.listButton:not( .fa) {
-  font-size: 1.3em;
-}
+
 .listButton a {
     color: #777777;
-    text-decoration: underline;
+    text-decoration: underline;   
 }
 
 .listButton a:hover {
@@ -6613,7 +6611,7 @@ button.close {
     background-color:#000000;
     color:#FFFFFF;
     border: 1px solid #D1D1D1;
-
+    
 }
 
 .btn-black:hover, .btn-black:active {
@@ -6642,7 +6640,7 @@ button.close {
 .reports button {
     margin-top:20px;
     margin-bottom:10px;
-}
+}    
 
 #reportsContent p {
     width:100%;
@@ -6658,7 +6656,7 @@ button.close {
 #content {
     margin-left:5px;
 }
-#walkonPackage {
+#walkonPackage { 
   width: 190px;
 }
 #walkon {
@@ -6697,7 +6695,7 @@ button.close {
   width: 70%;
   margin: 10px 25px 5px;
 }
-#backMobile {
+#backMobile { 
   position: relative;
   top: -3px;
 }
