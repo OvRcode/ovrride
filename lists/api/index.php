@@ -8,6 +8,7 @@ class Lists {
     var $trips;
     var $orders;
     var $pickup;
+    var $tripInfo;
     function __construct(){
         // Setup DB Connection and check that it works
         $this->dbConnect = new mysqli(getenv('MYSQL_HOST'), getenv('MYSQL_USER'), getenv('MYSQL_PASS'), getenv('MYSQL_DB'));
@@ -141,8 +142,62 @@ class Lists {
         $name = $result->fetch_assoc();
         return $name['post_title'];
     }
+    function getTripInfo($trip){
+      // Pull Metadata for Product
+      $sql = "SELECT `meta_key`,`meta_value`
+              FROM `wp_postmeta`
+              WHERE (`meta_key` = '_wc_trip_type'
+                OR `meta_key` = '_wc_trip_primary_package_label'
+                OR `meta_key` = '_wc_trip_primary_packages'
+                OR `meta_key` = '_wc_trip_secondary_packages'
+                OR `meta_key` = '_wc_trip_secondary_package_label'
+                OR `meta_key` = '_wc_trip_tertiary_package_label'
+                OR `meta_key` = '_wc_trip_tertiary_packages'
+                OR `meta_key` = '_wc_trip_pickups')
+              AND `post_id` = '{$trip}'";
+      $result = $this->dbQuery($sql);
+      $this->tripInfo = array();
+      while ( $row = $result->fetch_assoc() ) {
+        switch ( $row['meta_key'] ) {
+          case '_wc_trip_primary_packages':
+          case '_wc_trip_secondary_packages':
+          case '_wc_trip_tertiary_packages':
+            $this->tripInfo[$row['meta_key']]['packages'] = unserialize($row['meta_value']);
+            break;
+          case '_wc_trip_primary_package_label':
+            $this->tripInfo['_wc_trip_primary_packages']['label'] = $row['meta_value'];
+            break;
+          case '_wc_trip_secondary_package_label':
+            $this->tripInfo['_wc_trip_secondary_packages']['label'] = $row['meta_value'];
+            break;
+          case '_wc_trip_tertiary_package_label':
+            $this->tripInfo['_wc_trip_tertiary_packages']['label'] = $row['meta_value'];
+            break;
+          case '_wc_trip_type':
+            $this->tripInfo['type'] = $row['meta_value'];
+            break;
+          case '_wc_trip_pickups':
+            $this->tripInfo['pickups'] = unserialize($row['meta_value']);
+        }
+      }
+      // Pull titles for pickups
+      $pickupNames = array();
+      foreach( $this->tripInfo['pickups'] as $index => $id) {
+        $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
+        $result = $this->dbQuery($sql);
+        $name = $result->fetch_assoc();
+        $pickupNames[] = $name['name'];
+      }
+      unset($this->tripInfo['pickups']);
+      $this->tripInfo['pickups'] = $pickupNames;
+
+      if ( 'bus' == $this->tripInfo['type'] ) {
+        $this->pickup = TRUE;
+      }
+      return $this->tripInfo;
+    }
     function tripData($bus, $tripId, $status){
-        $this->pickup = FALSE;
+        //$this->pickup = FALSE;
         /* Get saved trip data and sort into array based on bus # */
         $busSql = "select ID,Bus from ovr_lists_data where Trip='" . $tripId . "'";
         $busResult = $this->dbQuery($busSql);
@@ -203,28 +258,53 @@ class Lists {
                         $orderData['item_num'] = $row['order_item_id'];
                         $order = $row['ID'];
                         $orderItem = $row['order_item_id'];
+                        // Assemble meta keys for query
+                        $fields = "`meta_key` = 'First'
+                        OR `meta_key` = 'Last'
+                        OR `meta_key` = 'Email'
+                        OR `meta_key` = 'Phone'";
+                        switch ( $this->tripInfo['type'] ) {
+                          case 'bus':
+                              $fields .= "OR `meta_key` = 'Pickup Location'
+                              OR `meta_key` = 'Is this guest at least 18 years of age?'";
+                              break;
+                          case 'domestic_flight':
+                            $fields .= "OR `meta_key` = 'Date of Birth'";
+                          case 'international_flight':
+                            $fields .= "OR `meta_key` = 'Passport Number'
+                                        OR `meta_key` = 'Passport Country'";
+                            break;
+                        }
 
-                        # Get phone number
-                        $phoneSql = "SELECT  `meta_value` AS  `Phone`
-                            FROM wp_postmeta
-                            WHERE meta_key =  '_billing_phone'
-                            AND post_id =  '$order'";
-                        $phoneResult = $this->dbQuery($phoneSql);
-                        $phoneRow = $phoneResult->fetch_assoc();
-                        $orderData['Phone'] = $this->reformatPhone($phoneRow['Phone']);
-                        # Get meta details
+
+                        if ( count($this->tripInfo['_wc_trip_primary_packages']['packages']) > 0) {
+                          $fields .= "OR `meta_key` = '{$this->tripInfo['_wc_trip_primary_packages']['label']}'";
+                        }
+                        if ( count($this->tripInfo['_wc_trip_secondary_packages']['packages']) > 0) {
+                          $fields .= "OR `meta_key` = '{$this->tripInfo['_wc_trip_secondary_packages']['label']}'";
+                        }
+                        if ( count($this->tripInfo['_wc_trip_tertiary_packages']['packages']) > 0) {
+                          $fields .= "OR `meta_key` = '{$this->tripInfo['_wc_trip_tertiary_packages']['label']}'";
+                        }
+
                         $detailSql = "SELECT `meta_key`, `meta_value`
                             FROM `wp_woocommerce_order_itemmeta`
-                            WHERE ( `meta_key` = 'Name'
-                            OR `meta_key` = 'Email'
-                            OR `meta_key` = 'Package'
-                            OR `meta_key` = 'Pickup'
-                            OR `meta_key` = 'Pickup Location'
-                            OR `meta_key` = 'Is This Guest At Least 21 Years Of Age?'
-                            OR `meta_key` = 'Transit To Rockaway'
-                            OR `meta_key` = 'Transit From Rockaway')
+                            WHERE ( " . $fields . ")
                             AND `order_item_id` = '$orderItem'";
                         $detailResult = $this->dbQuery($detailSql);
+                        while( $detailRow = $detailResult->fetch_assoc() ) {
+                          switch ( $detailRow['meta_key'] ) {
+                            case 'Pickup Location':
+                              $orderData['Pickup'] = $this->stripTime($detailRow['meta_value']);
+                              break;
+                            case 'Phone':
+                              $orderData['Phone'] = $this->reformatPhone($detailRow['meta_value']);
+                            default:
+                              $orderData[$detailRow['meta_key']] = ucwords(strtolower($detailRow['meta_value'] ) );
+                          }
+                        }
+
+                        /*
                         while($detailRow = $detailResult->fetch_assoc()){
                             if ( $detailRow['meta_key'] == 'Package' ) {
                                 $orderData['Package'] = ucwords(strtolower($this->removePackagePrice($detailRow['meta_value'])));
@@ -243,7 +323,7 @@ class Lists {
                                     $this->pickup = TRUE;
                                 }
                             }
-                        }
+                        }*/
 
                         $this->listHTML($orderData);
                         $this->customerData($orderData);
@@ -524,7 +604,6 @@ Flight::route('/dropdown/destination', function(){
 );
 Flight::route('/dropdown/trip', function(){
         $list = Flight::Lists();
-        $list->destinationDropdown();
         $list->tripDropdown();
     }
 );
@@ -534,9 +613,14 @@ Flight::route('/contact/destination/@destination', function($destination){
 });
 Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
+        $list->getTripInfo($tripId);
         echo json_encode($list->tripData($bus, $tripId, $status));
     }
 );
+Flight::route('/trip/@tripId', function( $tripId ){
+  $list = Flight::Lists();
+  echo json_encode($list->getTripInfo($tripId));
+});
 Flight::route('/reports/@tripId', function($tripId){
         $list = Flight::Lists();
         echo json_encode($list->getReports($tripId));
