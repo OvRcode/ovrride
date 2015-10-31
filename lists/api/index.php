@@ -326,14 +326,31 @@ class Lists {
         }
     }
     function getContactInfo($destination){
-        $sql = "SELECT `contact`, `contactPhone`, `rep`, `repPhone` FROM `ovr_lists_destinations` WHERE `destination` ='" . $destination . "'";
+        $sql = "SELECT `meta_key`, `meta_value`
+                FROM `wp_postmeta`
+                JOIN `wp_posts` ON `wp_postmeta`.`post_id` = `wp_posts`.`ID`
+                WHERE `post_type` = 'destinations'
+                AND `post_status` = 'publish'
+                AND `post_title` = '{$destination}'
+                AND (`meta_key` = '_contact'
+                OR `meta_key` = '_contact_phone'
+                OR `meta_key` = '_rep'
+                OR `meta_key` = '_rep_phone')";
         $result = $this->dbQuery($sql);
-        $row = $result->fetch_assoc();
-        return array('contact'     => $row['contact'],
-                    'contactPhone' => $row['contactPhone'],
-                    'rep'          => $row['rep'],
-                    'repPhone'     => $row['repPhone']
-                    );
+        $contactInfo = array('contact' => '', 'contactPhone' => '',
+                            'rep' => '', 'repPhone' => '');
+        while ( $row = $result->fetch_assoc() ) {
+          if ( '_contact' == $row['meta_key'] ) {
+            $contactInfo['contact'] = $row['meta_value'];
+          } else if ( '_contact_phone' == $row['meta_key'] ) {
+            $contactInfo['contactPhone'] = $row['meta_value'];
+          } else if ( '_rep' == $row['meta_key'] ) {
+            $contactInfo['rep'] = $row['meta_value'];
+          } else if ( '_rep_phone' == $row['meta_key'] ) {
+            $contactInfo['repPhone'] = $row['meta_value'];
+          }
+        }
+        return $contactInfo;
     }
     private function customerData($orderData){
         $orderNum = array_shift($orderData);
