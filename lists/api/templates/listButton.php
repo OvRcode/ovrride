@@ -33,17 +33,17 @@
   <div class="expanded">
     <div class="row">
       <div class="buttonCell col-xs-5 col-md-6">
-        <strong>Package:</strong><?php echo $package; ?>
+        <strong>Package: </strong><?php echo $package; ?>
       </div>
       <?php if ( $pickup ): ?>
       <div class="buttonCell col-xs-12 col-md-6">
-        <strong>Pickup:</strong><?php echo $pickupName; ?>
+        <strong>Pickup: </strong><?php echo $pickupName; ?>
       </div>
     <?php endif; ?>
     </div>
     <div class="row">
       <div class="buttonCell col-xs-12 col-md-6">
-        <strong>Order:</strong>
+        <strong>Order: </strong>
         <a href="<?php echo $orderLink; ?>">
           <?php echo $orderNum; ?>
         </a>
