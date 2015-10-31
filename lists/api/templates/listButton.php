@@ -12,7 +12,7 @@
       <span class="first"><?php echo $first; ?>&nbsp;</span>
       <span class="last"><?php echo $last; ?></span>
     </div>
-    <div class="noClick buttonCell col-md-2 visible-md visible-lg">
+    <div class="buttonCell col-md-2 visible-md visible-lg">
       Order:&nbsp;
       <a href="<?php echo $orderLink; ?>" target="_blank">
         <span class="orderNum"><?php echo $orderNum; ?></span>
@@ -77,7 +77,7 @@
       </div>
       <?php if ( $walkOn ): ?>
         <div class="buttonCell col-xs-4">
-            <button class="btn btn-danger" id="<?php echo $id; ?>:Delete">
+            <button class="btn btn-danger removeOrder" id="<?php echo $id; ?>:Delete">
                 Remove Order
             </button>
         </div>
