@@ -1,7 +1,7 @@
 /*jshint multistr: true */
 $(function() {
     bounceToIndex();
-    $("button.saveList").on("singletap", function(){
+    $("button.saveList").on("click", function(){
         saveData();
     });
     if ( jQuery.browser.mobile ) {
@@ -24,7 +24,7 @@ $(function() {
         $("#last").change(function(){ addWalkonButton(); });
         $("#phone").change(function(){ addWalkonButton(); });
         $("#walkonPackage").change(function(){ addWalkonButton(); });
-        $("#saveWalkOn").on("singletap", function(){
+        $("#saveWalkOn").on("click", function(){
             saveWalkOn();
         });
         $("#sidebar-wrapper").animate({
@@ -44,7 +44,7 @@ $(function() {
 
     if ( settings.get('bus') !== "All" ){
         // Show/Hide Records with AM/PM Toggle button
-        $("#AMPM").on("singletap", function(){
+        $("#AMPM").on("click", function(){
             if ( $(this).val() == "AM") {
                 $('.listButton.bg-none').addClass('hidden');
                 $('.listButton.bg-noshow').addClass('hidden');
@@ -76,7 +76,7 @@ $(function() {
     });
 
     // Search Type listener
-    $("#searchType li a").on("singletap", function(){
+    $("#searchType li a").on("click", function(){
         var value = $(this).text();
         var placeholder = "";
         var target = $("#searchButton");
@@ -105,7 +105,7 @@ $(function() {
     // Show extra buttons for mobile
     if ( jQuery.browser.mobile && navigator.userAgent.match(/iPad/i) === null ){
       $("div.mobileButtons").removeClass('hidden');
-      $("button.secondaryWalkOn").on("singletap", function(){
+      $("button.secondaryWalkOn").on("click", function(){
         if ( ! $("#wrapper").hasClass("toggled") ){
           $("#wrapper").addClass("toggled");
         }
@@ -465,11 +465,12 @@ function setupListener(ID){
     });
 
    // Expand list entry by pressing and holding on entry (works on mobile and desktop)
-    $( selectorID ).on("doubletap", function(){
-        toggleExpanded( $(this) );
-    });
+   // TODO: update for new expand button
+    //$( selectorID ).on("doubletap", function(){
+    //    toggleExpanded( $(this) );
+    //});
     if ( settings.get('bus') != "All" ){
-      $("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("singletap", function(){
+      $("#" + split[0] + "\\:" + split[1] + " div.row.primary").on("click", function(){
             changeStatus($(this).parent());
         });
     }

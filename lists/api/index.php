@@ -304,27 +304,6 @@ class Lists {
                           }
                         }
 
-                        /*
-                        while($detailRow = $detailResult->fetch_assoc()){
-                            if ( $detailRow['meta_key'] == 'Package' ) {
-                                $orderData['Package'] = ucwords(strtolower($this->removePackagePrice($detailRow['meta_value'])));
-                            } else if ( $detailRow['meta_key'] == 'Pickup' || $detailRow['meta_key'] == 'Pickup Location') {
-                                $orderData['Pickup'] = ucwords(strtolower($this->stripTime($detailRow['meta_value'])));
-                            } else if ( $detailRow['meta_key'] == 'Transit To Rockaway' ||
-                                        $detailRow['meta_key'] == 'Transit From Rockaway') {
-                                $orderData[$detailRow['meta_key']] = ucwords(strtolower($detailRow['meta_value']));
-                            } else if ( $detailRow['meta_key'] == 'Name' ) {
-                                $names = $this->splitName($detailRow['meta_value']);
-                                $orderData['First'] = stripcslashes(ucwords(strtolower($names['First'])));
-                                $orderData['Last']  = stripcslashes(ucwords(strtolower($names['Last'])));
-                            } else {
-                                $orderData[$detailRow['meta_key']] = trim($detailRow['meta_value']);
-                                if ( $detailRow['meta_key'] == 'Pickup' && $this->pickup === FALSE ) {
-                                    $this->pickup = TRUE;
-                                }
-                            }
-                        }*/
-
                         $this->listHTML($orderData);
                         $this->customerData($orderData);
                     }
