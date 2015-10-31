@@ -138,7 +138,11 @@ $(function() {
       // updates status of selected guest. changes css and sets local data
       var icon = $(element).find("span.icon i");
       var button = $(element);
+      var flexPickup = $(element).find(".flexPickup");
+      console.log(flexPickup);
+      var flexPackage = $(element).find(".flexPackage");
       var id = $(element).attr("ID");
+
       if ( "PM" == $("#AMPM").val() ) {
         if ( ! button.hasClass("bg-pm") ) {
           button.removeClass("bg-none bg-am bg-waiver bg-productrec").addClass('bg-pm');
@@ -150,6 +154,8 @@ $(function() {
       if ( button.hasClass("bg-none") ) {
         button.removeClass("bg-none").addClass("bg-am");
         icon.removeClass("fa-square-o").addClass("fa-sun-o");
+        flexPickup.addClass('visible-md visible-lg');
+        flexPackage.removeClass('visible-md visible-lg');
         tripData.set(id + ':AM', 1);
       } else if ( button.hasClass("bg-am") ) {
         button.removeClass("bg-am").addClass("bg-waiver");
@@ -158,6 +164,8 @@ $(function() {
       } else if ( button.hasClass("bg-waiver") ) {
         button.removeClass("bg-waiver").addClass("bg-productrec");
         icon.removeClass("fa-file-word-o").addClass("fa-ticket");
+        flexPackage.addClass('visible-md visible-lg');
+        flexPickup.removeClass('visible-md visible-lg');
         tripData.set(id + ':Product', 1);
       }
     }
