@@ -69,6 +69,7 @@ $(function() {
     });
 });
 function getContactData(){
+  var deferred = $.Deferred;
   var destination = settings.get('destination');
   $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
     settings.set('contact', data.contact);
@@ -76,9 +77,10 @@ function getContactData(){
     settings.set('rep', data.rep);
     settings.set('repPhone', data.repPhone);
   }).done(function(){
-    window.location.href= "list.php";
+    deferred.resolve();
   });
 
+  return deferred.promise();
 }
 function downloadReports(){
   var deferred = new $.Deferred();
@@ -99,12 +101,15 @@ function getTripData(){
     var statuses = settings.get('status');
     var bus = settings.get('bus');
     var destination = settings.get('destination');
+    var deferred = $.Deferred;
     //Start with a clean slate
     orders.removeAll();
     initialHTML.removeAll();
     tripData.removeAll();
     newWalkon.removeAll();
     messages.removeAll();
+    unsavedReports.removeAll();
+
     $.get("api/trip/" + trip + "/" + bus + "/" + statuses, function(data){
         var apiData = jQuery.parseJSON(data);
         if ( apiData ){
@@ -127,8 +132,10 @@ function getTripData(){
         }
     })
     .done(function(){
-      getContactData();
+      deferred.resolve();
     });
+
+    return deferred.promise();
 }
 function toggleMenuButtons(onlineOffline){
     var buttons = ["#btn-settings","#saveList","#btn-message","#btn-admin","#btn-logout","#refreshReports"];

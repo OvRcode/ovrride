@@ -46,7 +46,11 @@ $(function(){
           alert("Please select at least one order status");
         } else {
           if ( checkLocalData() ) {
-            getTripData();
+            getTripData().done(function(){
+              getContactData().done(function(){
+                window.location.href= "list.php";
+              });
+            })
           }
         }
       }
