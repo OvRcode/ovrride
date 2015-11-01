@@ -160,6 +160,9 @@ $version = file_get_contents('lists.version');
                         <button class="btn btn-info" id="syncReports">
                             <i class="fa fa-refresh"></i>&nbsp;Sync Reports
                         </button>
+                        <button class="btn btn-warning" id="tallyOrders">
+                          <i class="fa fa-money"></i>&nbsp;Total Walk On Orders
+                        </button>
                     </div>
                     <div class="col-xs-12">
                         Show reports from:<select id="bus" class="input-sm">

@@ -35,7 +35,31 @@ $(function(){
       alert("Failed to sync reports with the server");
     });
   });
+  $("#tallyOrders").on("click", function(){
+    var orderCount = 0;
+    var total = 0;
+    var time = moment().format("YYYY-MM-DD HH:mm:ss");
 
+    $.each(orders.keys(), function(index, id){
+      if ( "WO" == id.substring(0,2) ) {
+          var orderTemp = orders.get(id);
+          orderCount++;
+          $.each(packages.keys(), function(packageIdex, packageKey){
+            var tempPackages = packages.get(packageKey);
+            $.each(tempPackages, function( packagesIndex, packageLabel){
+              if ( packageLabel.description == orderTemp.Package ) {
+                total += parseFloat(packageLabel.cost);
+              }
+            });
+          });
+      }
+    });
+    var report = htmlEncode("Walk on orders: " + orderCount + " $" + total + " due");
+    unsavedReports.set(time, { bus: settings.get('bus'), report: htmlEncode(report)});
+    syncReports().done(function(){
+        downloadReports().done(function(){ loadReports(); });
+    });
+  });
 
   function saveReport(report) {
     // saves report data to local storage
