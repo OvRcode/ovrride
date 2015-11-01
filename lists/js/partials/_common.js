@@ -69,7 +69,7 @@ $(function() {
     });
 });
 function getContactData(){
-  var deferred = $.Deferred;
+  var deferred = $.Deferred();
   var destination = settings.get('destination');
   $.getJSON("api/contact/destination/" + encodeURIComponent(destination), function(data){
     settings.set('contact', data.contact);
