@@ -48,17 +48,21 @@ $(function(){
   }
   function syncReports() {
     var deferred = $.Deferred();
-    $.each( unsavedReports.keys() , function(key, value){
-      var report = unsavedReports.get(value);
-      $.post("api/report/add", {bus: report.bus, tripId: settings.get('tripNum'), report: report.report, time: value})
-      .done(function(){
-        unsavedReports.remove(value);
-        deferred.resolve();
-      })
-      .fail(function(){
-        deferred.reject();
+    if ( window.navigator.onLine ) {
+      $.each( unsavedReports.keys() , function(key, value){
+        var report = unsavedReports.get(value);
+        $.post("api/report/add", {bus: report.bus, tripId: settings.get('tripNum'), report: report.report, time: value})
+        .done(function(){
+          unsavedReports.remove(value);
+          deferred.resolve();
+        })
+        .fail(function(){
+          deferred.reject();
+        });
       });
-    });
+    } else {
+      deferred.reject();
+    }
 
     return deferred.promise();
   }
