@@ -50,7 +50,7 @@ $(function(){
               getContactData().done(function(){
                 window.location.href= "list.php";
               });
-            })
+            });
           }
         }
       }
@@ -131,24 +131,24 @@ function tripDropdown(){
 }
 function checkLocalData() {
   // If trip data (check in info) or unsaved reports exist double check before downloading new info or wiping data
-  if ( ! tripData.isEmpty() && ! unsavedReports.isEmpty()) {
+  /*if ( ! tripData.isEmpty() && ! unsavedReports.isEmpty()) {
     if ( ! confirm("Reports have not been saved, check-in data may also not have been saved. Do you want to erase them from your device? (Press cancel to avoid erasing data)") ) {
       return false;
     } else {
       return true;
     }
-  } else if ( ! unsavedReports.isEmpty() ) {
+  } else*/ if ( ! unsavedReports.isEmpty() ) {
     if ( confirm("Reports have not been saved. Please cancel and go back to save them.") ) {
       return false;
     } else {
       return true;
     }
-  } else if ( ! tripData.isEmpty() ) {
+  }/* else if ( ! tripData.isEmpty() ) {
     if ( confirm("There might be unsaved trip info, are you sure you want to erase it? (Press cancel to avoid erasing data)") ) {
       return true;
     } else {
       return false;
     }
-  }
+  }*/
   return true;
 }
