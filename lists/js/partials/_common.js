@@ -17,6 +17,9 @@ $(function() {
     window.unsavedReports = reportSaveSpace.localStorage;
     window.messageSpace = $.initNamespaceStorage('messages');
     window.messages = messageSpace.localStorage;
+    window.packageSpace = $.initNamespaceStorage('packages');
+    window.packages = packageSpace.localStorage;
+
     // Menu JS
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
@@ -94,6 +97,21 @@ function downloadReports(){
     deferred.resolve();
   });
 
+  return deferred.promise();
+}
+function getTripInfo() {
+  var trip = settings.get('tripNum');
+  var deferred = $.Deferred();
+  $.get("api/trip/" + trip, function(data){
+    settings.set('pickups', data.pickups);
+    if ( ! $.isEmptyObject(data._wc_trip_primary_packages)) {
+      packages.set(data._wc_trip_primary_packages.label, data._wc_trip_primary_packages.packages);
+    }
+    /*$.each(tempPackages, function( index, value){
+      packages.set(value.label,value.packages);
+    });*/
+    deferred.resolve();
+  }, "json");
   return deferred.promise();
 }
 function getTripData(){

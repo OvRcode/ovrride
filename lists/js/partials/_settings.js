@@ -46,9 +46,11 @@ $(function(){
           alert("Please select at least one order status");
         } else {
           if ( checkLocalData() ) {
-            getTripData().done(function(){
-              getContactData().done(function(){
-                window.location.href= "list.php";
+            getTripInfo().done(function(){
+              getTripData().done(function(){
+                getContactData().done(function(){
+                  window.location.href= "list.php";
+                });
               });
             });
           }

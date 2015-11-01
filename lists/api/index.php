@@ -597,7 +597,7 @@ Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         echo json_encode($list->tripData($bus, $tripId, $status));
     }
 );
-Flight::route('/trip/@tripId', function( $tripId ){
+Flight::route('GET /trip/@tripId', function( $tripId ){
   $list = Flight::Lists();
   echo json_encode($list->getTripInfo($tripId));
 });
