@@ -101,7 +101,7 @@ function getTripData(){
     var statuses = settings.get('status');
     var bus = settings.get('bus');
     var destination = settings.get('destination');
-    var deferred = $.Deferred;
+    var deferred = $.Deferred();
     //Start with a clean slate
     orders.removeAll();
     initialHTML.removeAll();
