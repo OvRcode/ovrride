@@ -14,16 +14,13 @@ $(function() {
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         $("#walkonPackage").append(dd.get('packages'));
-        if ( !settings.isSet('Pickup') && !settings.isSet('Rockaway')){
-            $("#pickupDiv").remove();
-        } else {
-            $("#pickup").change(function(){ addWalkonButton(); });
-        }
+        $("#walkonPickup").append(dd.get('pickups'));
+
         // WalkOn Order listeners
-        $("#first").change(function(){ addWalkonButton(); });
-        $("#last").change(function(){ addWalkonButton(); });
-        $("#phone").change(function(){ addWalkonButton(); });
-        $("#walkonPackage").change(function(){ addWalkonButton(); });
+        $("#first, #last, #phone, #walkonPackage, #walkonPickup").on("change", function(){
+          addWalkonButton();
+        });
+
         $("#saveWalkOn").on("click", function(){
             saveWalkOn();
         });
@@ -38,7 +35,6 @@ $(function() {
         $("#last").unbind("change");
         $("#phone").unbind("change");
         $("#walkonPackage").unbind("change");
-        $("#otherPackage").unbind("change");
         $("#saveWalkon").unbind("click");
     });
 
@@ -209,34 +205,18 @@ $(function() {
       console.log(element.find("span.icon i"));
     }
     function addWalkonButton(){
-        var walkonPackage = $("#walkonPackage").val();
-        if ( walkonPackage == "Other" && $("#otherPackage").val() === undefined ) {
-            var html = "<div id='otherDiv'><input id='otherPackage' type='text' class='input-sm' placeholder='Input Package'></input><br /><br /></div>";
-            $(html).insertBefore("#saveWalkOn");
-            $("#otherPackage").on("keyup", function(){ addWalkonButton(); });
-        } else if ( walkonPackage !== "Other" && $("#otherPackage").val() !== undefined ) {
-            $("#otherPackage").unbind("keyup");
-            $("#otherDiv").remove();
-        }
-        var first         = $("#first").val();
-        var last          = $("#last").val();
-        var phone         = $("#phone").val();
-        var otherPackage  = $("#otherPackage").val();
-        var pickup;
-        if ( settings.isSet('Pickup') ) {
-            pickup = $("#pickup").val();
-        } else {
-            pickup = "none";
-        }
-
-        if ( first !== "" && last !== "" && phone !== "" && pickup !== "" &&
-        ((walkonPackage == "Other" && otherPackage !== "" && otherPackage !== undefined ) ||
-        ( walkonPackage !== "Other" && walkonPackage !== "none"))) {
-            $("#saveWalkOn").removeClass('disabled');
-        } else if ( ! $("#saveWalkon").hasClass('disabled') ) {
+        var fields = [$("#walkonPackage").val(), $("#first").val(),
+                      $("#last").val(), $("#phone").val(),
+                      $("#walkonPickup").val()];
+        $.each(fields, function( key,value){
+          if ( "" === value ) {
             $("#saveWalkOn").addClass('disabled');
-        }
-
+            return false;
+          } else {
+            $("#saveWalkOn").removeClass('disabled');
+            return true;
+          }
+        });
     }
     function checkData(){
         var localData = {};
@@ -259,25 +239,25 @@ $(function() {
         }
     }
     function getPackages(){
-      var packages = {};
-      jQuery.each(orders.keys(), function(key,value){
-        var order = orders.get(value);
-        packages[order.Package] = order.Package;
-      });
       var output = "<option value='none'>Package</option>";
-      jQuery.each(packages, function(key, value){
-        var row = "<option value='" + value + "'>" + value + "</option>";
-        output = output.concat(row);
+      jQuery.each( packages.keys() , function(key, value){
+        var tempPackage = packages.get(value);
+        jQuery.each(tempPackage, function(index, packageInfo){
+          output = output.concat("<option value='" + packageInfo.description + "'>" + packageInfo.description + "</option>");
+        });
+        //var row = "<option value='" + value + "'>" + value + "</option>";
+        //output = output.concat(row);
       });
       $("select.packageList").append(output);
     }
     function getPickups(){
-      var output = "<option value='none'>Pickup</option>";
+      var output = "";
       jQuery.each(settings.get('pickups'), function(key,value){
         var row = "<option value='" + value + "'>" + value + "</option>";
         output = output.concat(row);
       });
-
+      dd.set("pickups", output);
+      output = "<option value='none'>Pickup</option>" + output;
       $("select.pickupList").append(output);
     }
     function listHTML(ID, order){
@@ -369,18 +349,15 @@ $(function() {
     }
 
     function packageList(){
-        window.packageList = [];
-        var output = "<option value='none' selected>Select Package</option>";
-        // Identify unique package values
-        jQuery.each(orders.keys(), function(key,value){
-            var currentOrder = orders.get(value);
-            if ( packageList.indexOf(currentOrder.Package) == -1 ) packageList.push(currentOrder.Package);
+        var output = "<option value='' selected>Select Package</option>";
+        jQuery.each(packages.keys(), function(index,label){
+          jQuery.each(packages.get(label), function(key, value){
+            output = output.concat("<option value='" + value.description + "'>" + value.description + " $" + value.cost + "</option>");
+          });
         });
-        packageList.push("Other");
-        // Output entries for select
-        jQuery.each(packageList, function(key,value){
+      /*  jQuery.each(packageList, function(key,value){
             output = output.concat("<option value='" + value + "'>" + value + "</option>");
-        });
+        });*/
         dd.set('packages',output);
     }
     function pageTotal(){
@@ -430,12 +407,7 @@ $(function() {
     }
     function saveWalkOn(){
         // Saves to local storage
-        var walkonPackage = $("#walkonPackage");
-        if ( walkonPackage.val() == "Other" ) {
-            walkonPackage = $("#otherPackage").val();
-        } else {
-            walkonPackage = walkonPackage.val();
-        }
+        var walkonPackage = $("#walkonPackage").val();
         var orderNum = Math.floor((Math.random() * 99999) + 1);
         orderNum = "WO" + String(orderNum.pad(4));
         var orderItem = Math.floor((Math.random() * 99999) + 1);
@@ -446,7 +418,7 @@ $(function() {
                       Phone: $("#phone").val(),
                       Package: walkonPackage};
         if( settings.isSet('Pickup') ) {
-            walkOn.Pickup = $("#pickup").val();
+            walkOn.Pickup = $("#walkonPickup").val();
         }
         listHTML(ID, walkOn);
         orders.set(ID,walkOn);

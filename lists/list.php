@@ -39,7 +39,7 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
@@ -48,7 +48,7 @@ $version = file_get_contents('lists.version');
     <link rel="apple-touch-icon" sizes="58x58" href="images/ios/iconset/Icon-Small@2x.png" />
 
     <title>OvR Trip Lists</title>
-    
+
     <link href="css/application.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -93,9 +93,9 @@ $version = file_get_contents('lists.version');
                                         <input type='text' class='form-control' id='first' placeholder='Enter Fist Name'><br />
                                         <input type='text' class='form-control' id='last' placeholder='Enter Last Name'><br />
                                         <input type='text' class='form-control' id='phone' placeholder='Enter Phone Number'><br />
-                                        <div id='pickupDiv'>
-                                            <input type='text' class='form-control' id='pickup' placeholder='Enter Pickup'><br />
-                                        </div>
+                                        <select class='input-sm' id='walkonPickup'>
+                                          <option value=''>Select Pickup</option>
+                                        </select><br /><br />
                                         <select class='input-sm' id='walkonPackage'></select><br /><br />
                                         <button type='button' class='btn btn-success disabled' id='saveWalkOn'>
                                           <i class='fa fa-plus'></i>&nbsp<i class='fa fa-list'></i>&nbsp;Add to list
@@ -223,7 +223,7 @@ $version = file_get_contents('lists.version');
               </div>
               <div class="row-fluid">
                 <div class="col-xs-12 col-lg-12" id="content">
-                  <!-- List goes here -->    
+                  <!-- List goes here -->
                 </div>
               </div>
               <div class="row">
