@@ -272,15 +272,8 @@ $(function() {
       $("select.packageList").append(output);
     }
     function getPickups(){
-      var pickups = {};
-
-      jQuery.each(orders.keys(), function(key,value){
-        var order = orders.get(value);
-        pickups[order.Pickup] = order.Pickup;
-      });
-
       var output = "<option value='none'>Pickup</option>";
-      jQuery.each(pickups, function(key,value){
+      jQuery.each(settings.get('pickups'), function(key,value){
         var row = "<option value='" + value + "'>" + value + "</option>";
         output = output.concat(row);
       });
