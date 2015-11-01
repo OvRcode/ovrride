@@ -317,16 +317,17 @@ class Lists {
         $sql = "SELECT * FROM `ovr_lists_reports` WHERE `Trip` ='" . $tripId . "'";
         $result = $this->dbQuery($sql);
         while( $row = $result->fetch_assoc() ){
-            $reports[$row['Time']]="Bus " . $row['Bus'] . ": " .$row['Report'];
+            $reports[$row['Time']]['Bus'] = $row['Bus'];
+            $reports[$row['Time']]['Report'] = $row['Report'];
         }
         return $reports;
     }
-    function addReport($bus, $tripId, $report){
-        $sql = "INSERT INTO `ovr_lists_reports` (Bus, Trip, Report) VALUES('" . $bus . "','" . $tripId . "', '" . urldecode($report) . "')";
+    function addReport($bus, $tripId, $report, $time){
+        $sql = "INSERT INTO `ovr_lists_reports` (Bus, Trip, Report, Time) VALUES('{$bus}','{$tripId}', '{$report}','{$time}')";
         if ( $this->dbQuery($sql) )
-            return "success";
+            return http_response_code(200);
         else
-            return "fail";
+            return http_response_code(404);
     }
     function saveData(){
         foreach( $_POST['data'] as $ID => $field ) {
@@ -600,14 +601,27 @@ Flight::route('/trip/@tripId', function( $tripId ){
   $list = Flight::Lists();
   echo json_encode($list->getTripInfo($tripId));
 });
-Flight::route('/reports/@tripId', function($tripId){
-        $list = Flight::Lists();
-        echo json_encode($list->getReports($tripId));
-    }
-);
+Flight::route('GET /reports/@tripId', function($tripId){
+  // Returns JSON Array of reports
+  $list = Flight::Lists();
+  $reports = $list->getReports($tripId);
+  if ( $reports ) {
+    header('Content-Type: application/json');
+    echo json_encode($reports);
+  } else {
+    http_response_code(404);
+  }
+});
+
 Flight::route('POST /report/add', function(){
         $list = Flight::Lists();
-        echo $list->addReport($_POST['bus'], $_POST['tripId'], $_POST['report']);
+        
+        $reportAdd = $list->addReport($_POST['bus'], $_POST['tripId'], $_POST['report'], $_POST['time']);
+        if ( $reportAdd ) {
+          http_response_code(200);
+        } else {
+          http_response_code(404);
+        }
     }
 );
 Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){

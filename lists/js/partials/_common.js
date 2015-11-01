@@ -80,6 +80,20 @@ function getContactData(){
   });
 
 }
+function downloadReports(){
+  var deferred = new $.Deferred();
+  reports.removeAll();
+  $.get("api/reports/" + settings.get('tripNum'), function(data){
+    $.each( data, function(key,value){
+        reports.set(key, {bus: value.Bus, report: value.Report});
+    });
+  }, "json")
+  .success(function(){
+    deferred.resolve();
+  });
+
+  return deferred.promise();
+}
 function getTripData(){
     var trip = settings.get('tripNum');
     var statuses = settings.get('status');
@@ -183,3 +197,7 @@ Number.prototype.pad = function(size) {
   while (s.length < (size || 2)) {s = "0" + s;}
   return s;
 };
+
+function htmlEncode(value){
+  return $('<div/>').text(value).html();
+}

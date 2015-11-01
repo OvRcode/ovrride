@@ -39,7 +39,7 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
@@ -157,8 +157,8 @@ $version = file_get_contents('lists.version');
                         <button class="btn btn-success" id="saveReport">
                             <i class="fa fa-floppy-o"></i>&nbsp;Save Report
                         </button>
-                        <button class="btn btn-info" id="refreshReports">
-                            <i class="fa fa-refresh"></i>&nbsp;Refresh Reports
+                        <button class="btn btn-info" id="syncReports">
+                            <i class="fa fa-refresh"></i>&nbsp;Sync Reports
                         </button>
                     </div>
                     <div class="col-xs-12">

@@ -1,5 +1,5 @@
 module.exports = function(grunt){
-  
+
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -96,7 +96,7 @@ module.exports = function(grunt){
         options: {
           separator: ';',
         },
-        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 'lists/js/vendor/jquery.mobile-events.js',
+        src: ['lists/js/vendor/jquery.js','lists/js/vendor/bootstrap.js','lists/js/vendor/jquery.storageapi.min.js', 'lists/js/vendor/moment.min.js',
               'lists/js/vendor/jquery.chained.js','lists/js/vendor/jquery.tinysort.min.js', 'lists/js/vendor/detectmobilebrowser.js'],
         dest: 'lists/js/partials/_vendor.js',
       },
