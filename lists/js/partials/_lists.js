@@ -147,7 +147,7 @@ $(function() {
       console.log(flexPickup);
       var flexPackage = $(element).find(".flexPackage");
       var id = $(element).attr("ID");
-
+      tripData.remove( id + ":Delete");
       if ( "PM" == $("#AMPM").val() ) {
         if ( ! button.hasClass("bg-pm") ) {
           button.removeClass("bg-none bg-am bg-waiver bg-productrec").addClass('bg-pm');
