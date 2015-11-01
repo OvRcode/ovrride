@@ -615,7 +615,7 @@ Flight::route('GET /reports/@tripId', function($tripId){
 
 Flight::route('POST /report/add', function(){
         $list = Flight::Lists();
-        
+
         $reportAdd = $list->addReport($_POST['bus'], $_POST['tripId'], $_POST['report'], $_POST['time']);
         if ( $reportAdd ) {
           http_response_code(200);
@@ -640,7 +640,7 @@ Flight::route('/message', function(){
         $lists = Flight::Lists();
         $lists->sendMessage();
         $report = "Message send to: " . $_POST['message']['Group'] .  " Text:" . $_POST['message']['Message'];
-        $lists->addReport($_POST['message']['Bus'], $_POST['message']['Trip'], $report );
+        $lists->addReport($_POST['message']['Bus'], $_POST['message']['Trip'], $report, $_POST['message']['Time'] );
     }
 );
 Flight::start();

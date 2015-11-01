@@ -3,8 +3,8 @@ $(function(){
   $("#messageText").on("keyup", function(){
     var text = $(this).val().length + " /119 Characters";
     $("span.charCount").text(text);
-  }); 
-  
+  });
+
   sortPhoneNumbers();
   populateGuests();
   toggleSend();
@@ -22,7 +22,7 @@ $(function(){
     $("#Pickups").val("none");
     $("#Guests").val("none");
   });
-  
+
   if ( settings.get('Pickup') == "1" ) {
     populatePickups();
   } else {
@@ -57,6 +57,7 @@ function sendMessage(){
   messageData.Recipients = recipients;
   messageData.Bus = settings.get('bus');
   messageData.Trip = settings.get('tripNum');
+  messageData.Time = moment().format("YYYY-MM-DD HH:mm:ss");
   alert("Sending messages");
   $.post("api/message", {message: messageData}).done(function(data){
     alert("Message Sent");

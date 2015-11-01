@@ -39,7 +39,7 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
@@ -130,15 +130,19 @@ $version = file_get_contents('lists.version');
                     <h4>Message Guests</h4>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-md-1 col-lg-1">
+                    <div class="col-xs-12">
                         <input type="radio" name="messageType" value="All" checked>&nbsp;All</input>
                     </div>
-                    <div class="col-xs-12 col-md-4 col-lg-2">
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
                         <input type="radio" name="messageType" value="Pickup">
                             <select id="Pickups" class="input-sm"></select>
                         </input>
                     </div>
-                    <div class="col-xs-12 col-md-5 col-lg-3">
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
                         <input type="radio" name="messageType" value="Single">
                             <select id="Guests" class="input-sm"></select>
                         </input>
