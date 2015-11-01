@@ -191,12 +191,13 @@ $(function() {
     function resetGuest(id){
       var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
       var selector = $("#"+id.replace(":","\\\:"));
-      selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none").addClass("bg-none");
+      selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none bg-noshow").addClass("bg-none");
       selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
 
       jQuery.each(clearVars, function(key,value){
         tripData.remove(value);
       });
+      tripData.set(id + ":Delete", "delete");
     }
 
     function noShow(id) {
