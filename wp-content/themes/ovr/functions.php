@@ -35,6 +35,15 @@ function ovr_shortcode_products_orderby( $args ) {
 	return $args;
 }
 
+// Remove company field from checkout
+add_filter( 'woocommerce_checkout_fields' , 'ovr_checkout_fields' );
+function ovr_checkout_fields( $fields ) {
+	unset($fields['billing']['billing_company']);
+	unset($fields['shipping']['shipping_company']);
+
+	return $fields;
+}
+
 // Custom login
 add_filter( 'login_headerurl', 'ovr_login_url' );
 add_filter( 'login_headertitle', 'ovr_login_url_title' );
