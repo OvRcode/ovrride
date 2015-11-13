@@ -6,7 +6,7 @@
     <div class="buttonCell name col-xs-9 col-md-3">
       <span class="underage">
       <?php if ( $underAge ): ?>
-        <i class='fa fa-child fa-lg'></i>
+        <i class='fa fa-child fa-3x'></i>
       <?php endif; ?>
       </span>
       <span class="first"><?php echo $first; ?>&nbsp;</span>

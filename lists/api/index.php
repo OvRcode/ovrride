@@ -486,7 +486,7 @@ class Lists {
             $email = $orderData['Email'];
         }
 
-        if ( isset($orderData['Is this guest at least 21 years of age?']) && $orderData['Is this guest at least 21 years of age?'] == "No" ) {
+        if ( isset($orderData['Is this guest at least 18 years of age?']) && $orderData['Is this guest at least 18 years of age?'] == "No" ) {
             $underAge = TRUE;
         } else {
             $underAge = FALSE;
