@@ -17,7 +17,13 @@ if ( ! function_exists( 'quark_woocommerce_before_main_content' ) ) {
 	}
 	add_action( 'woocommerce_before_main_content', 'quark_woocommerce_before_main_content', 10 );
 }
-
+// clear cart on user logout, temp fix for issue with trip item meta data clearing on logout
+function clear_cart_on_logout() {
+    if( function_exists('WC') ){
+        WC()->cart->empty_cart();
+    }
+}
+add_action('wp_logout', 'clear_cart_on_logout');
 //fix for pingback security issue
 add_filter( 'xmlrpc_methods', 'remove_xmlrpc_pingback_ping' );
 function remove_xmlrpc_pingback_ping( $methods ) {
