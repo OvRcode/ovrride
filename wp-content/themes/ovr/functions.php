@@ -82,10 +82,10 @@ $themename = "OvRride";
 $shortname = "ovr";
 $options = array (
 array( "name" => "Style Sheet",
-    "desc" => "Summer or winter theme?",
+    "desc" => "Choose theme style",
     "id" => $shortname."_style_sheet",
     "type" => "select",
-    "options" => array("default", "winter", "summer"),
+    "options" => array("default", "winter", "summer", "philly"),
     "std" => "default"),
 );
 

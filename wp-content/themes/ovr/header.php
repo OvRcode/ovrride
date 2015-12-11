@@ -46,11 +46,14 @@
     <meta property="og:image" content="<?php bloginfo('url'); ?>/wp-content/uploads/2013/05/ovr-logo.jpg" />
   <?php } ?>
 	<?php wp_head(); ?>
-    <?php 
+    <?php
     switch(get_option( "ovr_style_sheet", "default" )){
         case "summer":?>
             <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri() ?>/summer.css" type="text/css" media="screen" />
         <?php break;
+				case "philly":?>
+						<link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri() ?>/philly.css" type="text/css" media="screen" />
+				<?php break;
         case "winter":
         default: ?>
             <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri() ?>/winter.css" type="text/css" media="screen" />
@@ -82,11 +85,11 @@
       <div class="col grid_2_of_12 site-title">
 				<h1>
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" rel="home">
-						<?php 
+						<?php
 						$headerImg = get_header_image();
 						if( !empty( $headerImg ) ) { ?>
 							<img src="<?php header_image(); ?>" height="<?php echo get_custom_header()->height; ?>" width="<?php echo get_custom_header()->width; ?>" alt="" />
-						<?php } 
+						<?php }
 						else {
 							echo get_bloginfo( 'name' );
 						} ?>
