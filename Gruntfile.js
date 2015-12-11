@@ -263,7 +263,9 @@ module.exports = function(grunt){
         options: {
           paths: ["wp-content/themes/ovr/less"],
         },
-        files: {"wp-content/themes/ovr/summer.css": "wp-content/themes/ovr/less/summer.less","wp-content/themes/ovr/winter.css":"wp-content/themes/ovr/less/winter.less"}
+        files: {"wp-content/themes/ovr/summer.css": "wp-content/themes/ovr/less/summer.less",
+        "wp-content/themes/ovr/winter.css":"wp-content/themes/ovr/less/winter.less",
+        "wp-content/themes/ovr/philly.css":"wp-content/themes/ovr/less/philly.less"}
         }
       }
   });
