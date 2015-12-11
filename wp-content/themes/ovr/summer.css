@@ -376,7 +376,7 @@ blockquote.pull-right small {
                    WWW WWW WWW
                      WWWWWWW
                   WWWW  |  WWWW
-                        |          
+                        |
                         |
 ========= CHAPMAN CODE CHANGES START HERE ====== */
 .chap_break {
@@ -453,11 +453,12 @@ blockquote.pull-right small {
 }
 .calnk a {
   background-color: #fed208 !important;
+  color: default;
 }
 .seats-left a {
   color: #fed208;
   font-weight: bold;
-  text-shadow: 1px 1px 1px #333;
+  text-shadow: 1px 1px 1px #333333;
 }
 .minitweets {
   width: 100%;
@@ -855,17 +856,19 @@ td.calendar-heading {
   font-size: 13px;
   border-bottom: none !important;
 }
+.calnk a:hover {
+  color: default;
+}
 div.kjo-link p {
   display: none !important;
 }
 .calnk a:hover span {
   width: auto !important;
+  background: #fed208 !important;
+  color: default;
 }
 #events_calendar .widget-title {
   display: none;
-}
-.calnk a:hover span {
-  background: #fed208 !important;
 }
 /* ==========================================================================
    Site specific styles
@@ -1070,11 +1073,13 @@ input[type="submit"] {
   position: relative;
   top: 1px;
 }
+.book-btn a {
+  color: #333333;
+}
 .book-btn a:hover {
-  color: #333;
   text-decoration: none;
   text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 1px default;
   cursor: pointer;
 }
 .book-btn {
@@ -1084,7 +1089,6 @@ input[type="submit"] {
   margin-bottom: 0;
   font-size: 20px;
   line-height: 1.25;
-  color: #333;
   text-align: center;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
   vertical-align: middle;
@@ -1140,9 +1144,9 @@ input[type="submit"] {
   margin-bottom: 0;
   font-size: 14px;
   line-height: 18px;
-  color: #333;
+  color: #333333;
   text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 1px default;
   vertical-align: middle;
   cursor: pointer;
   background-color: whiteSmoke;
@@ -2661,7 +2665,7 @@ a.read-more:hover {
 }
 #headercontainer {
   width: 100%;
-  background: #000;
+  background: #000000;
 }
 #container {
   clear: both;
@@ -2776,7 +2780,6 @@ a.read-more:hover {
 .social-media-icons {
   float: right;
   text-align: right;
-  color: #FFF;
   font-size: 25px;
 }
 .social-media-icons ul {
@@ -2788,9 +2791,10 @@ a.read-more:hover {
   display: inline-block;
   margin: 0px;
   font-size: 25px;
+  color: #ffffff;
 }
 .social-media-icons a {
-  color: #FFF;
+  color: #ffffff;
   font-size: 20px;
   text-decoration: none;
   font-family: 'nba_knicksregular', Helvetica, Arial, sans-serif;
@@ -3721,7 +3725,7 @@ li span.dots {
 .main-navigation a {
   display: block;
   text-decoration: none;
-  color: #FFF;
+  color: #ffffff;
   /* Nav bar link color */
 }
 .main-navigation ul ul {
@@ -3730,7 +3734,7 @@ li span.dots {
   left: 0;
   z-index: 99999;
   line-height: 1.7;
-  background-color: #000;
+  background-color: #000000;
   /* Nav bar dropdown background color */
   -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.6);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.6);
@@ -3740,24 +3744,24 @@ li span.dots {
   top: 0;
 }
 .main-navigation ul ul a {
-  color: #fff;
+  color: #ffffff;
   /* Nav bar dropdown link color */
   width: 13em;
   /* Nav bar dropdown width */
   font-size: 20px;
 }
 .main-navigation li:hover > a {
-  color: #999;
+  color: #999999;
   /* Nav bar link color on hover */
 }
 .main-navigation ul ul :hover > a {
-  color: #999;
+  color: #999999;
   /* Nav bar dropdown level 2 link color on level 3 hover */
-  background-color: #000;
+  background-color: #000000;
   /* Nav bar dropdown link background color on hover */
 }
 .main-navigation ul ul a:hover {
-  color: #999;
+  color: #999999;
   /* Nav bar dropdown link color on hover */
 }
 .main-navigation ul li:hover > ul {

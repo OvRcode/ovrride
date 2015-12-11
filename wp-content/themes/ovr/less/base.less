@@ -24,9 +24,9 @@ td { vertical-align: top; }
 /* ==========================================================================
    Basic page styles
    ========================================================================== */
-   
-   
-   
+
+
+
 @font-face {
     font-family: 'nba_knicksregular';
     src: url('fonts/nbaknick-webfont.eot');
@@ -147,7 +147,7 @@ td { vertical-align: top; }
 
 }
 
-body { 
+body {
 	margin: 0 auto;
 	padding: 0;
 	font: 16px/1.5 'PT Sans', Helvetica, Arial, sans-serif;
@@ -218,7 +218,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin-top: 0;
 }
 
-h1 { 
+h1 {
 	margin-bottom: 10px;
 	margin-bottom: 0.625rem;
 	font-size: 48px;
@@ -226,7 +226,7 @@ h1 {
 	line-height: 1.25;
 }
 
-h2 { 
+h2 {
 	margin-bottom: 8px;
 	margin-bottom: .5rem;
 	font-size: 36px;
@@ -234,7 +234,7 @@ h2 {
 	line-height: 1.1666;
 }
 
-h3 { 
+h3 {
 	margin-bottom: 6px;
 	margin-bottom: 0.375rem;
 	font-size: 28px;
@@ -243,7 +243,7 @@ h3 {
 }
 
 
-h4 { 
+h4 {
 	margin-bottom: 5px;
 	margin-bottom: 0.3125rem;
 	font-size: 24px;
@@ -251,7 +251,7 @@ h4 {
 	line-height: 1.25;
 }
 
-h5 { 
+h5 {
 	margin-bottom: 5px;
 	margin-bottom: 0.3125rem;
 	font-size: 16px;
@@ -259,7 +259,7 @@ h5 {
 	line-height: 1.25;
 }
 
-h6 { 
+h6 {
 	margin-bottom: 5px;
 	margin-bottom: 0.3125rem;
 	font-size: 14px;
@@ -296,7 +296,7 @@ dt {
 	font-weight: 700;
 }
 
-b, strong { 
+b, strong {
 	font-family: 'PT Sans', Helvetica, Arial, sans-serif;
 	font-style: normal;
 	font-weight: 700;
@@ -319,28 +319,28 @@ ins {
 	text-decoration: none;
 }
 
-a { 
+a {
 	color: #333;
 	outline: none;
 	text-decoration:none;
 }
 
-a:visited { 
+a:visited {
 	color: #333;
 }
 
-a:focus { 
+a:focus {
 	outline: thin dotted;
 	color: @primary;
 }
 
-a:hover, a:active { 
+a:hover, a:active {
   color: @primary;
 	text-decoration:underline;
 }
 .upcoming-title a:hover, .srp-post-title a:hover {
-  background: @primary; 
-  color: #fff; 
+  background: @primary;
+  color: #fff;
   text-shadow: none;
 }
 .alignleft {
@@ -418,7 +418,7 @@ blockquote.pull-right p, blockquote.pull-right small {
                    WWW WWW WWW
                      WWWWWWW
                   WWWW  |  WWWW
-                        |          
+                        |
                         |
 ========= CHAPMAN CODE CHANGES START HERE ====== */
 
@@ -509,12 +509,13 @@ blockquote.pull-right p, blockquote.pull-right small {
 }
 .calnk a {
 	background-color:@primary !important;
+  color: @cal_link_color;
 }
 
 .seats-left a {
   color: @primary;
   font-weight: bold;
-  text-shadow:1px 1px 1px #333;
+  text-shadow:1px 1px 1px @seats_left_shadow;
 }
 
 .minitweets {
@@ -690,7 +691,7 @@ img.wp-smiley, .rsswidget img {
 	font-style: normal;
 	font-weight: 400;
 	font-size: 16px;
-	font-size: 1rem; 
+	font-size: 1rem;
 	line-height: 1.25;
 	margin: 0;
 	font-size: 100%;
@@ -944,24 +945,26 @@ td.calendar-heading {
 	font-size:13px;
 	border-bottom:none !important;
 }
+.calnk a:hover {
+  color: @cal_link_hover_color;
+}
 div.kjo-link p{
 	display:none !important
 }
 .calnk a:hover span {
 	width:auto !important;
+  background:@primary !important;
+  color: @cal_link_color;
 }
 #events_calendar .widget-title {
 	display:none;
-}
-.calnk a:hover span {
-	background:@primary !important; 
 }
 
 
 /* ==========================================================================
    Site specific styles
    ========================================================================== */
-   
+
 .top-search {
 }
 payment_methods methods {
@@ -1096,8 +1099,8 @@ payment_methods methods {
 	height: 25px;
 }
 
-   
-   
+
+
 .trip-btn  a:hover {
 	font-size: 27px;
 	font-size: 1.7rem;
@@ -1173,12 +1176,13 @@ payment_methods methods {
 
 
 
-
+.book-btn a {
+  color: @book_btn_color;
+}
 .book-btn  a:hover {
-	color: #333;
 	text-decoration:none;
 	text-align: center;
-	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	text-shadow: 0 1px 1px @book_btn_hover_shadow;
 	cursor: pointer;
 }
 .book-btn {
@@ -1188,7 +1192,6 @@ payment_methods methods {
 	margin-bottom: 0;
 	font-size: 20px;
 	line-height: 1.25;
-	color: #333;
 	text-align: center;
 	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 	vertical-align: middle;
@@ -1245,9 +1248,9 @@ payment_methods methods {
 	margin-bottom: 0;
 	font-size: 14px;
 	line-height: 18px;
-	color: #333;
+	color: @book_btn_color;
 	text-align: center;
-	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	text-shadow: 0 1px 1px @book_btn_hover_shadow;
 	vertical-align: middle;
 	cursor: pointer;
 	background-color: whiteSmoke;
@@ -1340,7 +1343,7 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	background:@primary;
 	border:1px solid #CCC !important;
 }
-   
+
 .screen-reader-text {
 	display:none !important;
 }
@@ -1356,7 +1359,7 @@ table.em-calendar td.eventful a, table.em-calendar td.eventful-today a {
 	margin-left:0px !important;
 	margin-right:8px !important;
 }
-   
+
 .woocommerce div.product div.images img, .woocommerce #content div.product div.images img, .woocommerce-page div.product div.images img, .woocommerce-page #content div.product div.images img {
 	border:3px solid #EEE;
 	width:197px !important;
@@ -1507,11 +1510,11 @@ p.srp-widget-date {
 	margin: 0 0 16px 0;
 	margin: 0 0 1rem 0;
 }
-   
+
 .product_title {
 	font-size:30px;
 }
-   
+
 #field_1_1 {
 	padding:10px 0px;
 }
@@ -1609,19 +1612,19 @@ p.srp-widget-date {
 #field_1_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_1_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_1_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_1_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_1_30 {
 	padding:10px;
 	background:#EEE;
@@ -1729,23 +1732,23 @@ p.srp-widget-date {
 #field_5_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_5_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_5_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_5_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_5_30 {
 	padding:10px;
 	background:#EEE;
-}  
+}
 
 
 
@@ -1849,23 +1852,23 @@ p.srp-widget-date {
 #field_6_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_6_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_6_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_6_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_6_30 {
 	padding:10px;
 	background:#EEE;
-}  
+}
 
 
 
@@ -1969,23 +1972,23 @@ p.srp-widget-date {
 #field_7_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_7_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_7_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_7_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_7_30 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 
 
 
@@ -2089,19 +2092,19 @@ p.srp-widget-date {
 #field_8_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_8_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_8_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_8_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_8_30 {
 	padding:10px;
 	background:#EEE;
@@ -2209,19 +2212,19 @@ p.srp-widget-date {
 #field_9_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_9_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_9_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_9_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_9_30 {
 	padding:10px;
 	background:#EEE;
@@ -2329,19 +2332,19 @@ p.srp-widget-date {
 #field_11_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_11_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_11_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_11_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_11_30 {
 	padding:10px;
 	background:#EEE;
@@ -2449,19 +2452,19 @@ p.srp-widget-date {
 #field_12_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_12_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_12_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_12_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_12_30 {
 	padding:10px;
 	background:#EEE;
@@ -2569,19 +2572,19 @@ p.srp-widget-date {
 #field_13_26 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_13_27 {
 	padding:10px;
 	background:#EEE;
-} 
+}
 #field_13_28 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_13_29 {
 	padding:10px;
 	background:#CCC;
-} 
+}
 #field_13_30 {
 	padding:10px;
 	background:#EEE;
@@ -2622,8 +2625,8 @@ p.srp-widget-date {
 .woocommerce .products ul, .woocommerce ul.products, .woocommerce-page .products ul, .woocommerce-page ul.products {
 	margin:0px !important;
 }
-   
-   
+
+
 .woocommerce table.shop_table, .woocommerce-page table.shop_table {
 	background:#FFF;
 }
@@ -2729,7 +2732,7 @@ p.srp-widget-date {
 }
 .location.hunter {
   background-position: 0px  -294px;
-} 
+}
 .location.windham {
   background-position: 0px -1279px;
 }
@@ -2804,7 +2807,7 @@ p.srp-widget-date {
 }
 .shop.blades {
   background-position: 0px -100px;
-  
+
 }
 .shop.skate-brooklyn {
   background-position: -2px -4px;
@@ -2908,7 +2911,7 @@ a.read-more:hover {
 
 #headercontainer {
 	width: 100%;
-	background:#000;
+	background: @header_background;
 }
 
 #container {
@@ -3041,7 +3044,6 @@ a.read-more:hover {
 .social-media-icons {
 	float: right;
 	text-align: right;
-	color:#FFF;
 	font-size:25px;
 }
 
@@ -3055,10 +3057,11 @@ a.read-more:hover {
 	display: inline-block;
 	margin: 0px;
 	font-size:25px;
+  color: @social_media_icons_color;
 }
 
 .social-media-icons a {
-	color: #FFF;
+	color: @social_media_icons_color;
 	font-size:20px;
 	text-decoration: none;
 	font-family:'nba_knicksregular', Helvetica, Arial, sans-serif;
@@ -3068,8 +3071,8 @@ a.read-more:hover {
 	color: #FFF;
 }
 
-.social-media-icons a:hover, .social-media-icons a:active { 
-	color: @primary;
+.social-media-icons a:hover, .social-media-icons a:active {
+	color: @social_media_icons_hover_color;
 	text-decoration:underline;
 }
 
@@ -3423,13 +3426,13 @@ article.sticky {
 	text-decoration: none;
 }
 
-.author-link a:visited { 
+.author-link a:visited {
 	color: #333;
 }
 
 .author-link a:focus,
 .author-link a:hover,
-.author-link a:active { 
+.author-link a:active {
 	outline: 0;
 	color: @primary;
 }
@@ -3786,7 +3789,7 @@ form label.error {
    Footer
    ========================================================================== */
 #footercontainer {
-	width: 100%;	
+	width: 100%;
 	font-family:'OswaldBook', Arial, Helvetica, sans-serif;
 }
 #footercontainer a {
@@ -3803,7 +3806,7 @@ form label.error {
 
 #footercontainer-top {
 	background:#444;
-	width: 100%;	
+	width: 100%;
 }
 
 .site-footer {
@@ -3818,23 +3821,23 @@ form label.error {
 	color: #999;
 }
 
-.site-footer h3 { 
+.site-footer h3 {
 	color: #ccc;
 }
 
-.site-footer a { 
+.site-footer a {
 	color: #999;
 }
 
-.site-footer a:visited { 
+.site-footer a:visited {
 	color: #999;
 }
 
-.site-footer a:hover { 
+.site-footer a:hover {
 	color: @primary;
 }
 
-.site-footer a:focus { 
+.site-footer a:focus {
 	outline: thin dotted;
 	color: rgb(0,0,0);
 }
@@ -3855,15 +3858,15 @@ form label.error {
 	font-size: 0.875rem;
 }
 
-.smallprint a { 
+.smallprint a {
 	color: #555;
 }
 
-.smallprint a:visited { 
+.smallprint a:visited {
 	color: #333;
 }
 
-.smallprint a:hover { 
+.smallprint a:hover {
 	color: @primary;
 }
 
@@ -4152,7 +4155,7 @@ li span.dots {
 .main-small-navigation a, .main-navigation a {
 	display: block;
 	text-decoration: none;
-	color: #FFF; /* Nav bar link color */
+	color: @main_nav_color; /* Nav bar link color */
 }
 
 .main-navigation ul ul {
@@ -4161,7 +4164,7 @@ li span.dots {
 	left: 0;
 	z-index: 99999;
 	line-height: 1.7;
-	background-color: #000; /* Nav bar dropdown background color */
+	background-color: @nav_dropdown_background; /* Nav bar dropdown background color */
 	-webkit-box-shadow:2px 2px 5px 0px rgba(0, 0, 0, 0.6);
 	box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.6);
 }
@@ -4172,7 +4175,7 @@ li span.dots {
 }
 
 .main-navigation ul ul a {
-	color: #fff; /* Nav bar dropdown link color */
+	color: @nav_dropdown_link_color; /* Nav bar dropdown link color */
 	width: 13em; /* Nav bar dropdown width */
 	font-size:20px;
 }
@@ -4181,16 +4184,16 @@ li span.dots {
 }
 
 .main-navigation li:hover > a {
-	color: #999; /* Nav bar link color on hover */
+	color: @main_nav_hover_color; /* Nav bar link color on hover */
 }
 
 .main-navigation ul ul :hover > a {
-	color: #999; /* Nav bar dropdown level 2 link color on level 3 hover */
-	background-color: #000; /* Nav bar dropdown link background color on hover */
+	color: @nav_dropdown_hover_color; /* Nav bar dropdown level 2 link color on level 3 hover */
+	background-color: @nav_dropdown_background_hover; /* Nav bar dropdown link background color on hover */
 }
 
 .main-navigation ul ul a:hover {
-	color: #999; /* Nav bar dropdown link color on hover */
+	color: @dropdown_link_hover_color; /* Nav bar dropdown link color on hover */
 }
 
 .main-navigation ul li:hover > ul {
@@ -4338,7 +4341,7 @@ li span.dots {
 		margin-top:20px;
 	}
 	header .grid_5_of_12 {
-		width: 100%; 
+		width: 100%;
 	}
 	header .grid_7_of_12 {
 		width: 100%;
@@ -4357,7 +4360,7 @@ li span.dots {
 	}
 	.social-media-icons li {
 		font-size:25px;
-		
+
 	}
 	.responsiveMenuSelect {
 		top:-18px;
@@ -4379,7 +4382,7 @@ li span.dots {
 	.grid_10_of_12,
 	.grid_11_of_12,
 	.grid_12_of_12 {
-		width: 100%; 
+		width: 100%;
 	}
 	.feedbar {
 		float:right;
@@ -4753,7 +4756,7 @@ h1.page-title {
 	margin-top: 0;
 }
 
-h1.page-title { 
+h1.page-title {
 	font-size: inherit;
 	font-size: inherit;
 	line-height: inherit;
@@ -4900,7 +4903,7 @@ input.button.alt[name="woocommerce_checkout_place_order"]:hover {
 }
 
 .includes{
-  font-size: 0.9rem; 
+  font-size: 0.9rem;
   line-height: 1.4;
   border: 0;
   padding: 0;
