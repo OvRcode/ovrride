@@ -1117,8 +1117,8 @@ input[type="submit"] {
 .book-btn:hover {
   color: #333333;
   text-decoration: none;
-  background-color: #681f36;
-  *background-color: #681f36;
+  background-color: #74233d;
+  *background-color: #74233d;
   /* Buttons in IE7 don't get borders, so darken on hover */
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
@@ -1173,8 +1173,8 @@ input[type="submit"] {
 .book-btn-smll:hover {
   color: #333333;
   text-decoration: none;
-  background-color: #681f36;
-  *background-color: #681f36;
+  background-color: #74233d;
+  *background-color: #74233d;
   /* Buttons in IE7 don't get borders, so darken on hover */
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
@@ -2800,7 +2800,7 @@ a.read-more:hover {
   font-family: 'nba_knicksregular', Helvetica, Arial, sans-serif;
 }
 .social-media-icons a:visited {
-  color: #FFF;
+  color: #601d33;
 }
 .social-media-icons a:hover,
 .social-media-icons a:active {
