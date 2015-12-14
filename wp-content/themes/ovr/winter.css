@@ -1103,7 +1103,7 @@ input[type="submit"] {
   background-repeat: repeat-x;
   border: 1px solid #CCC;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border-color: #46a4e3 #46a4e3 #bfbfbf;
+  border-color: #3cd4fb #3cd4fb #bfbfbf;
   border-bottom-color: #B3B3B3;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -2800,7 +2800,7 @@ a.read-more:hover {
   font-family: 'nba_knicksregular', Helvetica, Arial, sans-serif;
 }
 .social-media-icons a:visited {
-  color: #FFF;
+  color: #ffffff;
 }
 .social-media-icons a:hover,
 .social-media-icons a:active {
