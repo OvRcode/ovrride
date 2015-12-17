@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 0.9.1
+Version: 1.0.1
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -172,20 +172,21 @@ class WC_Trips {
 
     public function pics_content(){
         global $product;
-        $pics_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_pics', true) ) );
-        echo $pics_data;
+        $pics_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_pics', true) );
+        //echo do_shortcode($pics_data, FALSE);
+        echo apply_filters('the_content', $pics_data);
     }
 
     public function flight_times_content(){
         global $product;
         $flight_times_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_flight_times', true) ) );
-        echo $flight_times_data;
+        echo apply_filters('the_content', $flight_times_data);
     }
 
     public function rates_content() {
         global $product;
         $rates_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_rates', true) ) );
-        echo $rates_data;
+        echo apply_filters('the_content', $rates_data );
     }
 
     public function trail_map_content() {
@@ -238,7 +239,7 @@ TESTING;
     public function includes_content() {
         global $product;
         $includes_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_includes', true) ) );
-        echo $includes_data;
+        echo apply_filters('the_content', $includes_data );
     }
 
     public function pickup_html( $post_id ) {
