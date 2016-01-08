@@ -69,6 +69,15 @@ class GFSettings {
 				die( esc_html__( "You don't have adequate permission to uninstall Gravity Forms.", 'gravityforms' ) );
 			}
 
+			//De-registering site
+			GFForms::include_gravity_api();
+
+			//Remove association between site and license
+			gapi()->update_site( '' );
+
+			//Delete site key and site secret
+			gapi()->purge_site_credentials();
+
 			//dropping all tables
 			RGFormsModel::drop_tables();
 
@@ -160,7 +169,7 @@ class GFSettings {
 			update_option( 'rg_gforms_enable_html5', (bool) rgpost( 'gforms_enable_html5' ) );
 			update_option( 'gform_enable_noconflict', (bool) rgpost( 'gform_enable_noconflict' ) );
 			update_option( 'gform_enable_background_updates', (bool) rgpost( 'gform_enable_background_updates' ) );
-			update_option( 'rg_gforms_enable_akismet', (bool) rgpost( 'gforms_enable_akismet' ) );
+			update_option( 'rg_gforms_enable_akismet', self::get_posted_akismet_setting() ); // do not cast to bool, option is enabled by default; need a "1" or a "0"
 			update_option( 'rg_gforms_captcha_public_key', sanitize_text_field( rgpost( 'gforms_captcha_public_key' ) ) );
 			update_option( 'rg_gforms_captcha_private_key', sanitize_text_field( rgpost( 'gforms_captcha_private_key' ) ) );
 
@@ -340,9 +349,9 @@ class GFSettings {
 					$save_button = '<input type="submit" name="submit" value="' . esc_html__( 'Save Settings', 'gravityforms' ) . '" class="button-primary gfbutton"/>';
 
 					/**
-					 * Filters through and allows modification of the Settings save button HTML in a Form
+					 * Filters through and allows modification of the Settings save button HTML for the overall Gravity Forms Settings
 					 *
-					 * @param string $save_button
+					 * @param string $save_button The HTML rendered for the save button
 					 */
 					echo apply_filters( 'gform_settings_save_button', $save_button );
 					?>
@@ -451,6 +460,33 @@ class GFSettings {
 			</table>
 		<?php
 		}
+
+		if ( isset( $_GET['gform_debug'] ) ) {
+
+			GFForms::include_gravity_api();
+			?>
+			<div class="hr-divider"></div>
+
+			<h3><span><i class="fa fa-bug"></i> <?php esc_html_e( 'Debug Information', 'gravityforms' ); ?><span></h3>
+			<table class="form-table">
+
+				<tr valign="top">
+					<th scope="row"><label><?php esc_html_e( 'Site Key', 'gravityforms' ); ?></label></th>
+					<td class="installation_item_cell" colspan="2">
+						<?php echo esc_html( gapi()->get_site_key() ) ?>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label><?php esc_html_e( 'Site Secret', 'gravityforms' ); ?></label></th>
+					<td class="installation_item_cell" colspan="2">
+						<?php echo esc_html( gapi()->get_site_secret() ); ?>
+					</td>
+				</tr>
+
+			</table>
+		<?php
+		}
+
 		self::page_footer();
 	}
 
@@ -540,9 +576,10 @@ class GFSettings {
 					<?php
 					foreach ( $setting_tabs as $tab ) {
 						$name = $tab['label'];
+						$url  = add_query_arg( array( 'subview' => $tab['name'] ), admin_url( 'admin.php?page=gf_settings' ) );
 						?>
 						<li <?php echo urlencode( $current_tab ) == $tab['name'] ? "class='active'" : '' ?>>
-							<a href="<?php echo esc_url( add_query_arg( array( 'subview' => $tab['name'] ) ) ); ?>"><?php echo esc_html( $tab['label'] ) ?></a>
+							<a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $tab['label'] ) ?></a>
 						</li>
 					<?php
 					}
@@ -588,5 +625,40 @@ class GFSettings {
 		}
 
 		return $subview;
+	}
+
+	public static function get_posted_akismet_setting() {
+
+		$akismet_setting = rgpost( 'gforms_enable_akismet' );
+
+		if( $akismet_setting ) {
+			$akismet_setting = '1';
+		} elseif( $akismet_setting === false ) {
+			$akismet_setting = false;
+		} else {
+			$akismet_setting = '0';
+		}
+
+		return $akismet_setting;
+	}
+
+	public static function action_delete_option_rg_gforms_key() {
+		GFForms::include_gravity_api();
+
+		if ( gapi()->is_site_registered() ) {
+			gapi()->update_site( '' );
+		}
+	}
+
+	public static function filter_pre_update_option_rg_gforms_key( $value, $old_value ){
+
+		if ( $value !== $old_value ) {
+			GFForms::include_gravity_api();
+
+			if ( gapi()->is_site_registered() ) {
+				gapi()->update_site( $value );
+			}
+		}
+		return $value;
 	}
 }

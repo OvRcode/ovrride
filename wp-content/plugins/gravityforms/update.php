@@ -26,10 +26,14 @@ class GFUpdate {
 		<link rel="stylesheet" href="<?php echo GFCommon::get_base_url() . "/css/admin{$min}.css" ?>" />
 
 		<div class="wrap <?php echo GFCommon::get_browser_class() ?>">
-			<h2><?php esc_html( 'Gravity Forms Updates', 'gravityforms' ) ?></h2>
+			<h2><?php esc_html_e( 'Gravity Forms Updates', 'gravityforms' ) ?></h2>
 			<?php
 
 			$version_info = GFCommon::get_version_info( false );
+
+			/**
+			 * Fires after Gravity Forms checks for a new version
+			 */
 			do_action( 'gform_after_check_update' );
 
 			if ( version_compare( GFCommon::$version, $version_info['version'], '<' ) ) {
@@ -64,6 +68,9 @@ class GFUpdate {
 			<?php
 			}
 
+			/**
+			 * Fires after the notifications that signal that Gravity Forms has an update/license key has expired or is needed
+			 */
 			do_action( 'gform_updates' );
 			?>
 
