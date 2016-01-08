@@ -1,5 +1,36 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2015.12.15 - version 3.0.9
+ * Fix: "Send Store Credit" not generating coupon
+ * Fix: Coupons sent via email, sometimes showing only "Never Expires"
+
+2015.12.08 - version 3.0.8
+ * Fix: Store Credit applying in cart but not reducing order total
+
+2015.12.07 - version 3.0.7
+ * New: Compatibility with WooCommerce Subscription 2.0+
+ * Fix: Fatal error due to undefined function 'wc_get_price_decimal_separator'
+ * Fix: Email sent after coupon generated via shortcode is always showing 'store credit' even if it is other discount type
+ * Fix: Coupon applied through URL, redirecting to cart by default, resulting in removal of coupon from cart
+ * Fix: Coupon applied thorugh URL, not carry forwarding other query params
+ * Fix: Increasing store credit's amount when order is cancelled before payment
+ * Update: Additional setting for `smart_coupon` shortcode to control number of coupons to be generated on page reload
+ * Tweak: Made some variables accessible to remove PHP notices
+
+2015.10.17 - version 3.0.6
+ * Fix: PHP warning "html_entity_decode() expects parameter 1 to be string" in "Store Credit Receiver Detail" form on checkout page
+ * Fix: Store Credit having 'Usage Restriction' on products & categories, was giving more than allowed discount
+ * Fix: Remove PHP notices from "Bulk Generate / Import Coupons" admin page
+ * Fix: Unnecessary notice "Coupon Removed" from cart & checkout page
+ * Fix: Duplicate amount deduction from store credit when WooCommerce Multilingual is active (Thanks to: Permanyer)
+ * Fix: A coupon offering only "Free Shipping" are not being auto-generated & send via email from "Bulk Generate Coupons" method.
+ * Fix: WooCommerce core coupons are not auto-generating when associated with a product along with store credit
+ * Update: Setting to switch on / switch off, sending of emails from Smart Coupons
+ * Update: POT file
+ * Tweak: Remove a line of code which was unnecessarily creating instance of WP_Query, affecting performance of the plugin (Thanks to: Lindsay Hemric)
+ * Tweak: Showing "Free Shipping" information, if applicable, in coupons displayed on cart, checkout & my account page
+ * Tweak: Show information about "Free Shipping", if applicable, in email content header
+
 2015.09.22 - version 3.0.5
  * Fix: Show 'Discount' & 'Store Credit Used' separately
  * Fix: Store Credit amount in description for attached coupons are not changing per variations
