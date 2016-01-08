@@ -3,7 +3,7 @@
 Plugin Name: Squelch Tabs and Accordions Shortcodes
 Plugin URI: http://squelchdesign.com/wordpress-plugin-squelch-tabs-accordions-shortcodes/
 Description: Provides shortcodes for adding tabs and accordions to your website
-Version: 0.3.4
+Version: 0.3.5
 Author: Matt Lowe
 Author URI: http://squelchdesign.com/matt-lowe
 License: GPL2
@@ -27,7 +27,7 @@ License: GPL2
 */
 
 
-$taas_plugin_ver    = '0.3.4'; 
+$taas_plugin_ver    = '0.3.5'; 
 
 
 
@@ -69,7 +69,7 @@ add_action( 'plugins_loaded', 'squelch_taas_activate' );
  */
 function squelch_taas_set_defaults() {
     // Show welcme message
-    update_option( 'squelch_taas_showmessage', 2 );
+    update_option( 'squelch_taas_showmessage', 1 );
 
     // Default options
     set_default_option( 'squelch_taas_jquery_ui_theme', 'smoothness' );
@@ -81,41 +81,48 @@ function squelch_taas_set_defaults() {
  */
 function squelch_taas_welcome_message() {
     // Message hiding/showing etc
-    if (!empty($_GET['taas-rmvmsg'])) $rmvmsg = $_GET['taas-rmvmsg'];
-    if (!empty($rmvmsg)) {
-    }
-
     if ( get_option( 'squelch_taas_showmessage' ) > 0 ) {
-        update_option( 'squelch_taas_showmessage', get_option( 'squelch_taas_showmessage' ) - 1 );
+        update_option( 'squelch_taas_showmessage', 0 );
         $url = squelch_taas_get_plugin_admin_url();
 
         // Output a welcome message
-        $msg = '<div class="updated">'
-            .'<p style="font-size: 1.3em;">'
-            ."Thank you for installing "
-            .'<strong style="color: #2279a0;">'
-            ."Squelch WordPress Tabs and Accordions Shortcodes</strong>. "
-            ."Your WordPress website is now ready to start showing web 2.0 style tabs and accordions!"
-            .'<p>To get started please go to the '
-            .'<a href="'.$url.'">'
-            .'settings'
-            .'</a> page. '
-            .'This message will disappear automatically.</p></div>';
-        echo $msg;
+        ?>
+            <div class="notice notice-success is-dismissible message">
+                <p>
+                    <strong>
+                        Thank you for installing
+                        <em>
+                            Squelch Tabs and Accordions Shortcodes
+                        </em>
+                        for WordPress.
+                        Your WordPress website is now ready to start showing awesome tabs and accordions!
+                    </strong>
+                </p>
+                <p>
+                    To get started please go to the
+                    <a href="<?php echo $url; ?>">settings</a> page.
+                </p>
+            </div>
+        <?php
     }
 
     if (function_exists( 'thethe_fix' )) {
-        $msg = '<div class="error">'
-            .'<p>'
-            ."Squelch Tabs and Accordions Shortcodes has detected that you are using a fix for "
-            ."TheThe Fly's Accordions and Tabs plugin that was made available by Squelch some time ago. "
-            ."The fix in question is NOT intended as a long-term solution and should be removed as soon "
-            ."as possible. By using Squelch Tabs and Accordions you do NOT need the fix. Please see "
-            .'<a href="http://squelchdesign.com/web_design_newbury/you-are-using-a-fix-for-thethe-fly-accordions-tabs-plugin/">this article</a> '
-            .'for instructions on how to remove the fix from your '
-            .'website.</p>'
-            .'<p>This message will disappear automatically once you have removed the old fix.</p></div>';
-        echo $msg;
+        ?>
+            <div class="error">
+                <p>
+                    Squelch Tabs and Accordions Shortcodes has detected that you are using a fix for
+                    TheThe Fly's Accordions and Tabs plugin that was made available by Squelch some time ago.
+                    The fix in question is NOT intended as a long-term solution and should be removed as soon
+                    as possible. By using Squelch Tabs and Accordions you do NOT need the fix. Please see
+                    <a href="http://squelchdesign.com/web_design_newbury/you-are-using-a-fix-for-thethe-fly-accordions-tabs-plugin/">this article</a>
+                    for instructions on how to remove the fix from your
+                    website.
+                </p>
+                <p>
+                    This message will disappear automatically once you have removed the old fix.
+                </p>
+            </div>
+        <?php
     }
 }
 add_action( 'admin_notices', 'squelch_taas_welcome_message' );
