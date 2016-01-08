@@ -1,5 +1,11 @@
 *** PayPal Pro Changelog ***
 
+2015.11.12 - version 4.4.1
+* Resolve "extra space" issue in billing address.
+
+2015.09.08 - version 4.4.0
+* Refactor of 3dsecure code. Requires some account side changes (explained in admin notice on activation)
+
 2015.08.03 - version 4.3.7
 * Added - "woocommerce-gateway-paypal-pro_payflow_refund_request" filter
 * Added - "woocommerce-gateway-paypal-pro_payflow_transaction_details_request" filter
