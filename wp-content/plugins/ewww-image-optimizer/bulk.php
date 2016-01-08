@@ -8,13 +8,13 @@ function ewww_image_optimizer_bulk_preview() {
 	$upload_import = true;
 ?>
 	<div class="wrap"> 
-	<div id="icon-upload" class="icon32"><br /></div><h2><?php _e( 'Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN ); ?></h2>
+	<div id="icon-upload" class="icon32"><br /></div><h1><?php _e( 'Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN ); ?></h1>
 <?php	// Retrieve the value of the 'bulk resume' option and set the button text for the form to use
 	$resume = get_option( 'ewww_image_optimizer_bulk_resume' );
 	if ( empty( $resume ) ) {
 		$button_text = __( 'Start optimizing', EWWW_IMAGE_OPTIMIZER_DOMAIN );
 	} else {
-		$button_text = __( 'Resume previous bulk operation', EWWW_IMAGE_OPTIMIZER_DOMAIN );
+		$button_text = __( 'Resume previous optimization', EWWW_IMAGE_OPTIMIZER_DOMAIN );
 	}
 	$loading_image = plugins_url( '/wpspin.gif', __FILE__ );
 	// create the html for the bulk optimize form and status divs
@@ -41,7 +41,7 @@ function ewww_image_optimizer_bulk_preview() {
 			<p><label for="ewww-delay" style="font-weight: bold"><?php _e( 'Choose how long to pause between images (in seconds, 0 = disabled)', EWWW_IMAGE_OPTIMIZER_DOMAIN ); ?></label>&emsp;<input type="text" id="ewww-delay" name="ewww-delay" value="<?php if ( $delay = ewww_image_optimizer_get_option ( 'ewww_image_optimizer_delay' ) ) { echo $delay; } else { echo 0; } ?>"></p>
 			<div id="ewww-delay-slider" style="width:50%"></div>
 		</form>
-		<h3><?php _e( 'Optimize Media Library', EWWW_IMAGE_OPTIMIZER_DOMAIN ); ?></h3>
+		<h2><?php _e( 'Optimize Media Library', EWWW_IMAGE_OPTIMIZER_DOMAIN ); ?></h3>
 <?php		if ( $fullsize_count < 1 ) {
 			echo '<p>' . __( 'You do not appear to have uploaded any images yet.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) . '</p>';
 		} else { ?>
@@ -277,7 +277,7 @@ function ewww_image_optimizer_bulk_script( $hook ) {
 		return;
 	}
         // initialize the $attachments variable
-        $attachments = null;
+        $attachments = array();
         // check to see if we are supposed to reset the bulk operation and verify we are authorized to do so
 	if (!empty($_REQUEST['ewww_reset']) && wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-bulk' )) {
 		// set the 'bulk resume' option to an empty string to reset the bulk operation
@@ -326,17 +326,17 @@ function ewww_image_optimizer_bulk_script( $hook ) {
 	                ));
 		}
 		// unset the 'bulk resume' option since we were given specific IDs to optimize
-		update_option('ewww_image_optimizer_bulk_resume', '');
+		update_option( 'ewww_image_optimizer_bulk_resume', '' );
         // check if there is a previous bulk operation to resume
-        } else if (!empty($resume)) {
+        } elseif ( ! empty( $resume ) ) {
 		// retrieve the attachment IDs that have not been finished from the 'bulk attachments' option
-		$attachments = get_option('ewww_image_optimizer_bulk_attachments');
+		$attachments = get_option( 'ewww_image_optimizer_bulk_attachments' );
 	// since we aren't resuming, and weren't given a list of IDs, we will optimize everything
         } else {
                 // load up all the image attachments we can find
                 $attachments = get_posts( array(
                         'numberposts' => -1,
-                        'post_type' => array('attachment', 'ims_image'),
+                        'post_type' => array( 'attachment', 'ims_image' ),
 			'post_status' => 'any',
                         'post_mime_type' => 'image',
 			'fields' => 'ids'
@@ -359,6 +359,8 @@ function ewww_image_optimizer_bulk_script( $hook ) {
 			'operation_interrupted' => __( 'Operation Interrupted', EWWW_IMAGE_OPTIMIZER_DOMAIN ),
 			'temporary_failure' => __( 'Temporary failure, seconds left to retry:', EWWW_IMAGE_OPTIMIZER_DOMAIN ),
 			'remove_failed' => __( 'Could not remove image from table.', EWWW_IMAGE_OPTIMIZER_DOMAIN ),
+			/* translators: used for Bulk Optimize progress bar, like so: Optimized 32/346 */
+			'optimized' => __( 'Optimized', EWWW_IMAGE_OPTIMIZER_DOMAIN ),
 		)
 	);
 	// load the stylesheet for the jquery progressbar
@@ -450,15 +452,15 @@ function ewww_image_optimizer_bulk_loop() {
 	} else {
 		printf("<p>" . __('Skipped image, ID:', EWWW_IMAGE_OPTIMIZER_DOMAIN) . " <strong>%s</strong><br>", $attachment );
 	}
-	if(!empty($meta['ewww_image_optimizer'])) {
+	if ( ! empty( $meta['ewww_image_optimizer'] ) ) {
 		// tell the user what the results were for the original image
-		printf(__('Full size – %s', EWWW_IMAGE_OPTIMIZER_DOMAIN) . "<br>", $meta['ewww_image_optimizer']);
+		printf( __( 'Full size – %s', EWWW_IMAGE_OPTIMIZER_DOMAIN ) . "<br>", $meta['ewww_image_optimizer'] );
 	}
 	// check to see if there are resized version of the image
-	if (isset($meta['sizes']) && is_array($meta['sizes'])) {
+	if ( isset( $meta['sizes'] ) && is_array( $meta['sizes'] ) ) {
 		// cycle through each resize
-		foreach ($meta['sizes'] as $size) {
-			if ( ! empty( $size['ewww_image_optimizer']) ) {
+		foreach ( $meta['sizes'] as $size ) {
+			if ( ! empty( $size['ewww_image_optimizer'] ) ) {
 				// output the results for the current resized version
 				printf("%s – %s<br>", $size['file'], $size['ewww_image_optimizer']);
 			}

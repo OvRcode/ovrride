@@ -40,8 +40,16 @@ function ewww_load_images(ewww_webp_supported) {
 		var ewww_img = document.createElement('img');
 		if (ewww_webp_supported) {
 			$(ewww_img).attr('src', $(this).attr('data-webp'));
+			var ewww_attr = $(this).attr('data-srcset-webp');
+			if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('srcset', ewww_attr);
+			}
 		} else {
 			$(ewww_img).attr('src', $(this).attr('data-img'));
+			var ewww_attr = $(this).attr('data-srcset-img');
+			if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('srcset', ewww_attr);
+			}
 		}
 		var ewww_attr = $(this).attr('data-align');
 		if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
@@ -146,6 +154,10 @@ function ewww_load_images(ewww_webp_supported) {
 		var ewww_attr = $(this).attr('data-translate');
 		if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
 			$(ewww_img).attr('translate', ewww_attr);
+		}
+		var ewww_attr = $(this).attr('data-sizes');
+		if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+			$(ewww_img).attr('sizes', ewww_attr);
 		}
 		$(this).after(ewww_img);
 	});

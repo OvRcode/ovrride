@@ -71,7 +71,7 @@ class ewwwngg {
 			wp_die( __( 'Access denied.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
 		}?> 
 		<div class="wrap">
-                <div id="icon-upload" class="icon32"></div><h2><?php _e('Bulk Thumbnail Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h2>
+                <div id="icon-upload" class="icon32"></div><h1><?php _e('Bulk Thumbnail Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h1>
 <?php		$images = unserialize ($_POST['ewww_attachments']);
 		// initialize $current, and $started time
 		$started = time();
@@ -157,7 +157,7 @@ class ewwwngg {
 			// get the mimetype of the image
 			$type = ewww_image_optimizer_mimetype($file_path, 'i');
 			// retrieve the human-readable filesize of the image
-			$file_size = size_format(filesize($file_path), 2);
+			$file_size = size_format( ewww_image_optimizer_filesize( $file_path ), 2 );
 			$file_size = str_replace('B ', 'B', $file_size);
 			//$file_size = ewww_image_optimizer_format_bytes(filesize($file_path));
 			$valid = true;
@@ -231,7 +231,7 @@ class ewwwngg {
                 }
                 ?>
 		<div class="wrap">
-                <div id="icon-upload" class="icon32"></div><h2><?php _e('Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h2>
+                <div id="icon-upload" class="icon32"></div><h1><?php _e('Bulk Optimize', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h1>
                 <?php
                 // Retrieve the value of the 'bulk resume' option and set the button text for the form to use
                 $resume = get_option('ewww_image_optimizer_bulk_ngg_resume');
@@ -365,14 +365,14 @@ class ewwwngg {
 			wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
                 }
 		// need this file to work with metadata
-		require_once(WP_CONTENT_DIR . '/plugins/nextgen-gallery/lib/meta.php');
+		ewww_image_optimizer_require( WP_CONTENT_DIR . '/plugins/nextgen-gallery/lib/meta.php' );
 		$id = $_POST['ewww_attachment'];
 		// get the meta for the image
-		$meta = new nggMeta($id);
-		$loading_image = plugins_url('/wpspin.gif', __FILE__);
+		$meta = new nggMeta( $id );
+		$loading_image = plugins_url( '/wpspin.gif', __FILE__ );
 		// get the filename for the image, and output our current status
-		$file_name = esc_html($meta->image->filename);
-		echo "<p>" . __('Optimizing', EWWW_IMAGE_OPTIMIZER_DOMAIN) . " <b>" . $file_name . "</b>&nbsp;<img src='$loading_image' alt='loading'/></p>";
+		$file_name = esc_html( $meta->image->filename );
+		echo "<p>" . __( 'Optimizing', EWWW_IMAGE_OPTIMIZER_DOMAIN ) . " <b>" . $file_name . "</b>&nbsp;<img src='$loading_image' alt='loading'/></p>";
 		die();
 	}
 
@@ -382,16 +382,16 @@ class ewwwngg {
 			wp_die( __( 'Access token has expired, please reload the page.', EWWW_IMAGE_OPTIMIZER_DOMAIN ) );
                 }
 		// need this file to work with metadata
-		require_once(WP_CONTENT_DIR . '/plugins/nextgen-gallery/lib/meta.php');
+		ewww_image_optimizer_require( WP_CONTENT_DIR . '/plugins/nextgen-gallery/lib/meta.php' );
 		// find out what time we started, in microseconds
-		$started = microtime(true);
+		$started = microtime( true );
 		$id = $_POST['ewww_attachment'];
 		// get the metadata
-		$meta = new nggMeta($id);
+		$meta = new nggMeta( $id );
 		// retrieve the filepath
 		$file_path = $meta->image->imagePath;
 		// run the optimizer on the current image
-		$fres = ewww_image_optimizer($file_path, 2, false, false, true);
+		$fres = ewww_image_optimizer( $file_path, 2, false, false, true );
 		global $ewww_exceed;
 		if ( ! empty ( $ewww_exceed ) ) {
 			echo '-9exceeded';
