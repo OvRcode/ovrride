@@ -1,15 +1,16 @@
 <?php
 /*
 Plugin Name: Facebook Page Plugin (Likebox)
-Plugin URI: https://smashr.org/facebook-page-plugin-likebox-for-wordpress/
+Plugin URI: http://slakify/facebook-page-plugin-likebox-for-wordpress/
 Description: THE Simplest way to bring Facebook Page Plugin to WordPress with lot more Options
-Version: 1.5
-Author: Smashr
-Author URI: https://smashr.org
+Version: 1.7
+Author: Slakify
+Author URI: http://slakify.com
+Text Domain: facebook-page-likebox
 */
 
 /*
-    Copyright (C) 2015 Smashr.org
+    Copyright (C) 2015 Slakify.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -155,7 +156,7 @@ function show_smashify_facebook_page_plugin_likebox_widget($args)
     if ($sponser == 1) {
         $sponserlink_profile = "";
     } else {
-        $sponserlink_profile = '<div align="left">- <a href="https://smashr.org/facebook-page-plugin-likebox-for-wordpress/" title="Facebook Page Plugin by Smashr.org" target="_blank"> <font size="1">' . 'Facebook Page Plugin by Crunchlr' . '</font></a></div>';
+        $sponserlink_profile = '<div align="left">- <a href="http://slakify/facebook-page-plugin-likebox-for-wordpress/" title="Facebook Page Plugin by Strikable.com" target="_blank"> <font size="1">' . 'Facebook Page Plugin by Crunchlr' . '</font></a></div>';
     }
 
 
