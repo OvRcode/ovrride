@@ -2,6 +2,22 @@
 
 ## Changelog
 
+### 2.1.5, 2015-12-12
+
+* changed: remove some more clutter from server environment report in tests
+* removed: translations no longer in zip file; now delivered automatically as language packs when required
+
+### 2.1.4, 2015-10-24
+
+* added: French translation (thanks, Houzepha Taheraly!)
+* added: can define `SSLFIX_PLUGIN_NO_HTTPS_DETECT` in wp-config.php to prevent the proxy fix, e.g. to overcome plugin conflicts
+* added: fix inline CSS background image rules, e.g. in Capture level
+* added: indicate whether WordPress HTTPS detection is successful with tick/cross
+
+### 2.1.3, 2015-10-05
+
+* added: Chinese (simplified) translation (thanks, [漠伦](https://molun.net/)!)
+
 ### 2.1.2, 2015-09-05
 
 * fixed: HTTPS detection for host 123-reg
@@ -13,7 +29,7 @@
 
 ### 2.1.0, 2015-07-30
 
-* security fix: restrict access to AJAX test script; don't disclose server environment with system information
+* **SECURITY FIX**: restrict access to AJAX test script; don't disclose server environment with system information
 * changed: always show server environment on test results
 * added: Bulgarian translation (thanks, [Ivan Arnaudov](http://templateinspector.com/)!)
 * added: .htaccess file for AJAX SSL Tests, fixes conflict with some security plugins
@@ -25,7 +41,7 @@
 * added: settings page for controlling behaviour
 * added: Simple, Content, Widgets, Capture, and Off modes for fixes
 * added: fix for [WooCommerce + Google Chrome HTTP_HTTPS bug](https://github.com/woothemes/woocommerce/issues/8479) (fixed in WooCommerce v2.3.13)
-* added: load translation (if anyone fancies [supplying some](https://translate.webaware.com.au/projects/ssl-insecure-content-fixer)!)
+* added: load translation (if anyone fancies [supplying some](https://translate.wordpress.org/projects/wp-plugins/ssl-insecure-content-fixer)!)
 
 ### 1.8.0, 2014-02-02
 
