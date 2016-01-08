@@ -3,7 +3,7 @@
  * Plugin Name: Simply Instagram
  * Plugin URI: http://www.rollybueno.info/wp-simply-instagram/
  * Description: Promote your Instagram photo through your Wordpress website using Simply Instagram.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Rolly G. Bueno Jr.
  * Author URI: http://www.rollybueno.info
  * Text Domain: simply-instagram
@@ -279,7 +279,7 @@ class Simply_Instagram_Plugin {
 				'photocaption' => true ,		// * * photocaption - display photo caption. Might affect image height. Default: true
 				'displaycomment' => true, 	// * * displaycomment - option to display comment in masonry. Might affect image height. Default: true
 				
-				'width' => 150, 		// * * width - image width. Default: 150
+				'width' => '150', 		// * * width - image width. Default: 150
 				'customRel' => 'sIntWid', 	// * * customRel - custom rel for prettyphoto 	
 				 ), $atts ) );
 		//print_r( $atts );
@@ -303,7 +303,7 @@ class Simply_Instagram_Plugin {
 					*/
 					case'self-feed':				
 						if( $atts['presentation'] === "polaroid" ){
-							echo sInstDisplayData( sInstGetSelfFeed( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
+							echo sInstDisplayData( sInstGetSelfFeed( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], $atts['width'], $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 						}else{
 							echo '<div id="masonryContainer" class="clearfix masonry">';
 							echo sInstDisplayData( sInstGetSelfFeed( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
@@ -316,7 +316,7 @@ class Simply_Instagram_Plugin {
 					*/
 					case'recent-media':
 						if( $atts['presentation'] === "polaroid" ){
-							echo sInstDisplayData( sInstGetRecentMedia( user_id(), access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
+							echo sInstDisplayData( sInstGetRecentMedia( user_id(), access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], $atts['width'], $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
 						}else{
 							echo '<div id="masonryContainer" class="clearfix masonry">';
 							echo sInstDisplayData( sInstGetRecentMedia( user_id(), access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );
@@ -329,7 +329,7 @@ class Simply_Instagram_Plugin {
 					*/
 					case'likes':
 						if( $atts['presentation'] === "polaroid" ){
-							echo sInstDisplayData( sInstGetLikes( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );	
+							echo sInstDisplayData( sInstGetLikes( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], $atts['width'], $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );	
 						}else{
 							echo '<div id="masonryContainer" class="clearfix masonry">';
 							echo sInstDisplayData( sInstGetLikes( access_token() ), $atts['presentation'], $atts['displayoption'], $atts['size'], $atts['display'], "150", $customRel, $atts['showphotographer'], $atts['photocomment'], $atts['stat'], $atts['photocaption'], $atts['displaycomment'] );	
@@ -587,7 +587,7 @@ class Simply_Instagram_Plugin {
 			<select name="displayoption" class="sc-generator">	
 				<option value ="instagram" ><?php echo __('Instagram', 'simply-instagram'); ?></option>
 				<option value ="prettyPhoto" ><?php echo __('prettyPhoto', 'simply-instagram'); ?></option>
-				<option value ="single" ><?php echo __('Single Viewer', 'simply-instagram'); ?></option>
+				<?php /* Dropped on 1.3.2 <option value ="single" ><?php echo __('Single Viewer', 'simply-instagram'); ?></option> */ ?>
 			</select>
 			<?php
 		}
@@ -821,8 +821,10 @@ class Simply_Instagram_Plugin {
 		function ccc_desc() { echo __('If you want to personalize the CSS of this plugin, please use the box below.', 'simply-instagram'); }
 				
 		function ccc_option() {
+			/** Bug fix on 1.3.1 of non appearance of CSS values in textbox */
+			$css  = get_option( $this->csscontrol_settings_key );			
 			?>
-			<textarea name="<?php echo $this->csscontrol_settings_key; ?>[ccc_option]" style="width:100%;height:250px;"></textarea>
+			<textarea name="<?php echo $this->csscontrol_settings_key; ?>[ccc_option]" style="width:100%;height:250px;"><?php echo $css['ccc_option']; ?></textarea>
 			<br />
 		     	<span class="tips"><?php echo __('Refer the default CSS below for standard Simply Instagram classes and ids.', 'simply-instagram'); ?> </span>
 			<?php
