@@ -645,11 +645,22 @@ input[type="submit"] {
 input[type="button"] {
   width: auto;
 }
+.search-form {
+  margin-top: 10px;
+}
+.search-field {
+  float: left;
+  height: 25px;
+  padding: 0 !important;
+}
+.search-submit {
+  float: right;
+}
 .menu-toggle,
 .btn,
 input[type="submit"] {
   display: inline-block;
-  *display: inline;
+  /*display: inline;*/
   padding: 8px 14px;
   padding: 0.5rem 0.875rem;
   margin-bottom: 0;
@@ -949,7 +960,7 @@ div.kjo-link p {
 .ui-state-active a:visited {
   color: #6f1a32 !important;
 }
-.top-search input[type="text"],
+.top-search input[type="search"],
 input[type="password"],
 input[type="email"],
 input[type="url"],
