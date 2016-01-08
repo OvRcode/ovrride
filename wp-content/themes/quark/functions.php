@@ -58,6 +58,9 @@ if ( ! function_exists( 'quark_setup' ) ) {
 		// This theme supports a variety of post formats
 		add_theme_support( 'post-formats', array( 'aside', 'audio', 'chat', 'gallery', 'image', 'link', 'quote', 'status', 'video' ) );
 
+		// Add theme support for HTML5 markup for the search forms, comment forms, comment lists, gallery, and caption
+		add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption' ) );
+
 		// Enable support for Custom Backgrounds
 		add_theme_support( 'custom-background', array(
 				// Background color default
@@ -677,7 +680,7 @@ if ( ! function_exists( 'quark_posted_on' ) ) {
 		// Translators: 1: Permalink 2: Title 3: No. of Comments
 		$comments = sprintf( '<span class="comments-link"><i class="fa fa-comment"></i> <a href="%1$s" title="%2$s">%3$s</a></span>',
 			esc_url( get_comments_link() ),
-			esc_attr( esc_html__( 'Comment on ' . the_title_attribute( 'echo=0' ) ) ),
+			esc_attr( esc_html__( 'Comment on ' , 'quark' ) . the_title_attribute( 'echo=0' ) ),
 			( get_comments_number() > 0 ? sprintf( _n( '%1$s Comment', '%1$s Comments', get_comments_number(), 'quark' ), get_comments_number() ) : esc_html__( 'No Comments', 'quark' ) )
 		);
 
@@ -972,8 +975,8 @@ add_filter( 'meta_content', 'wptexturize' );
 add_filter( 'meta_content', 'convert_smilies' );
 add_filter( 'meta_content', 'convert_chars'  );
 add_filter( 'meta_content', 'wpautop' );
-add_filter( 'meta_content', 'shortcode_unautop'  );
-
+add_filter( 'meta_content', 'shortcode_unautop' );
+add_filter( 'meta_content', 'do_shortcode' );
 
 /**
  * Unhook the WooCommerce Wrappers

@@ -1,12 +1,11 @@
 <?php
 /**
- * Template Name: Full-width Page Template
+ * Template Name: Page Builder Boxed Template
  *
- * Description: Displays a full-width page, with no sidebar. This template is great for pages
- * containing large amounts of content.
+ * Description: Displays a boxed full-width page for use with page builders like Visual Composer, Beaver Builder and the Divi Builder.
  *
  * @package Quark
- * @since Quark 1.0
+ * @since Quark 1.3.2
  */
 
 get_header(); ?>
@@ -17,7 +16,7 @@ get_header(); ?>
 			<?php if ( have_posts() ) : ?>
 
 				<?php while ( have_posts() ) : the_post(); ?>
-					<?php get_template_part( 'content', 'page' ); ?>
+					<?php get_template_part( 'content', 'builderboxed' ); ?>
 					<?php comments_template( '', true ); ?>
 				<?php endwhile; // end of the loop. ?>
 
