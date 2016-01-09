@@ -550,7 +550,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 			//$output .= '</div>';
 			echo $output;
 		}else{		
-			
+			/** Start of Masonry codes */
 			for( $i=0; $i < $query; $i++ ):
 			
 				$output = '<div class="masonryItem" data-id="' . $data['data'][$i]['id'] . '">';
@@ -563,7 +563,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 				
 				$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';
 				$output .= '<a class="si-tooltip" title="' . $data['data'][$i]['caption']['text'] . '" href="' . $data['data'][$i]['link'] . '" target="_blank">';
-				$output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" alt="' . $data['data'][$i]['caption']['text'] . '">';
+				$output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images'][$size]['url'] . '" width="150" height="150" alt="' . $data['data'][$i]['caption']['text'] . '">';
 				$output .= '</a>';
 				$output .=  '</div>';
 				

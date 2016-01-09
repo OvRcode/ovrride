@@ -3,8 +3,8 @@ Contributors: squelch
 Donate link: http://squelchdesign.com/wordpress-plugin-squelch-tabs-accordions-shortcodes/
 Tags: squelch,tabs, accordions,shortcodes,FAQs,tabbed,user interface,vaccordion,haccordion,thethe,thethe fly
 Requires at least: 3.5
-Tested up to: 3.9
-Stable tag: 0.3.4
+Tested up to: 4.4
+Stable tag: 0.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,9 +27,9 @@ Tabs and accordions can help to improve your website in a number of ways:
 If you want to add more interactivity with *Tabs*, *Vertical* and *Horizontal Accordions* on your WordPress website,
 **Squelch Tabs and Accordions Shortcodes** is a good option.
 
-**NOTE:**
+**A not on responsivensss:**
 
-As of v0.3 this plugin no longer support versions of WordPress prior to 3.5. If you're on an older version of WordPress I do NOT recommend updating. I was forced by wordpress.org to strip the functionality that allowed me to support down to WP 3.3 because an individual on the plugins team took exception it, therefore as of v0.3 if you want to use this plugin you must be on WP3.5+ or you'll need to hack your theme to load a newer version of jQuery and jQuery UI as I can no longer do this for you. Good luck with that.
+We receive a lot of questions as to whether this plugin is responsive. All widgets is in this plugin are responsive excluding the horizontal accordion widget: It uses a different library to the other widgets, and that library is unfortunately not responsive. We may add a responsive horizontal slider in the future, but it is not available yet.
 
 == Installation ==
 
@@ -94,12 +94,20 @@ The plugin needs a recent version of jQuery UI, which in turn requires a reasona
 
 If you're on an older version of WordPress and still want to use the plugin then you will need to load a newer version of jQuery and jQuery UI. jQuery is pretty straightforward to upgrade (see the [jQuery updater plugin](http://wordpress.org/plugins/jquery-updater/)) but I've not been able to find a plugin that does the same thing for jQuery UI. Maybe if I can find time I'll write a plugin that offers this functionality, if I can get it past certain members of the WordPress.org plugin review team. It's also possible to add some code to your theme to achieve this goal, I'll try and put some documentation together for this shortly.
 
+= Are these widgets responsive? =
+
+All widgets is in this plugin are responsive excluding the horizontal accordion widget: It uses a different library to the other widgets, and that library is unfortunately not responsive. We may add a responsive horizontal slider in the future, but it is not available yet.
+
 == Screenshots ==
 
 1. Choose from 24 jQuery UI themes. Or, roll your own.
 2. Horizontal Accordions come with 4 built-in themes, or you can design your own. Alternatively they can use the active jQuery UI theme.
 
 == Changelog ==
+
+= 0.3.5 =
+* Minor bug-fix: After changing themes the admin interface would still show the OLD theme, this has now been resolved.
+* Version bump for WP4.4
 
 = 0.3.4 =
 * Emergency bug-fix: Paragraphs and breaks being interfered with
@@ -151,6 +159,9 @@ If you're on an older version of WordPress and still want to use the plugin then
 * Initial version
 
 == Upgrade Notice ==
+
+= 0.3.5 =
+Minor bug-fix and version bump for WordPress 4.4
 
 = 0.3.4 =
 Emergency bug-fix to prevent stripping of paragraphs / breaks

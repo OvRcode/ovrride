@@ -38,7 +38,6 @@ class GF_Field_Post_Image extends GF_Field_Fileupload {
 		$id       = (int) $this->id;
 		$field_id = $is_entry_detail || $is_form_editor || $form_id == 0 ? "input_$id" : 'input_' . $form_id . "_$id";
 
-		$value        = esc_attr( $value );
 		$size         = $this->size;
 		$class_suffix = $is_entry_detail ? '_admin' : '';
 		$class        = $size . $class_suffix;
@@ -49,7 +48,7 @@ class GF_Field_Post_Image extends GF_Field_Fileupload {
 		$caption     = esc_attr( rgget( $this->id . '.4', $value ) );
 		$description = esc_attr( rgget( $this->id . '.7', $value ) );
 
-		//hidding meta fields for admin
+		//hiding meta fields for admin
 		$hidden_style      = "style='display:none;'";
 		$title_style       = ! $this->displayTitle && $is_admin ? $hidden_style : '';
 		$caption_style     = ! $this->displayCaption && $is_admin ? $hidden_style : '';
@@ -65,25 +64,25 @@ class GF_Field_Post_Image extends GF_Field_Fileupload {
 		}
 
 		//in admin, render all meta fields to allow for immediate feedback, but hide the ones not selected
-		$file_label = ( $is_admin || $this->displayTitle || $this->displayCaption || $this->displayDescription ) ? "<label for='$field_id' class='ginput_post_image_file' $file_label_style>" . gf_apply_filters( 'gform_postimage_file', $form_id, __( 'File', 'gravityforms' ), $form_id ) . '</label>' : '';
+		$file_label = ( $is_admin || $this->displayTitle || $this->displayCaption || $this->displayDescription ) ? "<label for='$field_id' class='ginput_post_image_file' $file_label_style>" . gf_apply_filters( array( 'gform_postimage_file', $form_id ), __( 'File', 'gravityforms' ), $form_id ) . '</label>' : '';
 
 		$tabindex = $this->get_tabindex();
 
-		$upload = sprintf( "<span class='ginput_full$class_suffix'>{$preview}<input name='input_%d' id='%s' type='file' value='%s' class='%s' $tabindex %s/>$file_label</span>", $id, $field_id, esc_attr( $value ), esc_attr( $class . $hidden_class ), $disabled_text );
+		$upload = sprintf( "<span class='ginput_full$class_suffix'>{$preview}<input name='input_%d' id='%s' type='file' class='%s' $tabindex %s/>$file_label</span>", $id, $field_id, esc_attr( $class . $hidden_class ), $disabled_text );
 
 		$tabindex = $this->get_tabindex();
 
-		$title_field = $this->displayTitle || $is_admin ? sprintf( "<span class='ginput_full$class_suffix ginput_post_image_title' $title_style><input type='text' name='input_%d.1' id='%s_1' value='%s' $tabindex %s/><label for='%s_1'>" . gf_apply_filters( 'gform_postimage_title', $form_id, __( 'Title', 'gravityforms' ), $form_id ) . '</label></span>', $id, $field_id, $title, $disabled_text, $field_id ) : '';
+		$title_field = $this->displayTitle || $is_admin ? sprintf( "<span class='ginput_full$class_suffix ginput_post_image_title' $title_style><input type='text' name='input_%d.1' id='%s_1' value='%s' $tabindex %s/><label for='%s_1'>" . gf_apply_filters( array( 'gform_postimage_title', $form_id ), __( 'Title', 'gravityforms' ), $form_id ) . '</label></span>', $id, $field_id, $title, $disabled_text, $field_id ) : '';
 
 		$tabindex = $this->get_tabindex();
 
-		$caption_field = $this->displayCaption || $is_admin ? sprintf( "<span class='ginput_full$class_suffix ginput_post_image_caption' $caption_style><input type='text' name='input_%d.4' id='%s_4' value='%s' $tabindex %s/><label for='%s_4'>" . gf_apply_filters( 'gform_postimage_caption', $form_id, __( 'Caption', 'gravityforms' ), $form_id ) . '</label></span>', $id, $field_id, $caption, $disabled_text, $field_id ) : '';
+		$caption_field = $this->displayCaption || $is_admin ? sprintf( "<span class='ginput_full$class_suffix ginput_post_image_caption' $caption_style><input type='text' name='input_%d.4' id='%s_4' value='%s' $tabindex %s/><label for='%s_4'>" . gf_apply_filters( array( 'gform_postimage_caption', $form_id ), __( 'Caption', 'gravityforms' ), $form_id ) . '</label></span>', $id, $field_id, $caption, $disabled_text, $field_id ) : '';
 
 		$tabindex = $this->get_tabindex();
 
-		$description_field = $this->displayDescription || $is_admin ? sprintf( "<span class='ginput_full$class_suffix ginput_post_image_description' $description_style><input type='text' name='input_%d.7' id='%s_7' value='%s' $tabindex %s/><label for='%s_7'>" . gf_apply_filters( 'gform_postimage_description', $form_id, __( 'Description', 'gravityforms' ), $form_id ) . '</label></span>', $id, $field_id, $description, $disabled_text, $field_id ) : '';
+		$description_field = $this->displayDescription || $is_admin ? sprintf( "<span class='ginput_full$class_suffix ginput_post_image_description' $description_style><input type='text' name='input_%d.7' id='%s_7' value='%s' $tabindex %s/><label for='%s_7'>" . gf_apply_filters( array( 'gform_postimage_description', $form_id ), __( 'Description', 'gravityforms' ), $form_id ) . '</label></span>', $id, $field_id, $description, $disabled_text, $field_id ) : '';
 
-		return "<div class='ginput_complex$class_suffix ginput_container'>" . $upload . $title_field . $caption_field . $description_field . '</div>';
+		return "<div class='ginput_complex$class_suffix ginput_container ginput_container_post_image'>" . $upload . $title_field . $caption_field . $description_field . '</div>';
 	}
 
 	public function get_value_save_entry( $value, $form, $input_name, $lead_id, $lead ) {

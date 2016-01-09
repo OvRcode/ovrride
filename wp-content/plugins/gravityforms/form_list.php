@@ -183,6 +183,8 @@ class GFFormList {
 
 		</style>
 
+		<?php if ( GFCommon::current_user_can_any( 'gravityforms_create_form' ) ) { ?>
+
 		<div id="gf_new_form_modal" style="display:none;">
 			<div class="gf_new_form_modal_container">
 
@@ -198,14 +200,22 @@ class GFFormList {
 				</div>
 
 				<div class="submit-row">
-					<?php echo apply_filters( 'gform_new_form_button', '<input id="save_new_form" type="button" class="button button-large button-primary" value="' . esc_html__( 'Create Form', 'gravityforms' ) . '" onclick="saveNewForm();" tabindex="9002" />' ); ?>
+
+					<?php
+
+					/**
+					 * Allows for modification of the "New Form" button HTML
+					 *
+					 * @param string The HTML rendered for the "New Form" button.
+					 */
+					echo apply_filters( 'gform_new_form_button', '<input id="save_new_form" type="button" class="button button-large button-primary" value="' . esc_html__( 'Create Form', 'gravityforms' ) . '" onclick="saveNewForm();" tabindex="9002" />' ); ?>
 					<div id="gf_new_form_error_message" style="display:inline-block;"></div>
 				</div>
 
 			</div>
 		</div>
 
-		<?php // - end of new form modal - // ?>
+		<?php } // - end of new form modal - // ?>
 
 		<script text="text/javascript">
 			function TrashForm(form_id) {
@@ -294,8 +304,10 @@ class GFFormList {
 		<div class="wrap <?php echo sanitize_html_class( GFCommon::get_browser_class() ); ?>">
 
 		<h2>
-			<?php esc_html_e( 'Forms', 'gravityforms' ); ?>
-			<a class="add-new-h2" href="" onclick="return loadNewFormModal();"><?php esc_html_e( 'Add New', 'gravityforms' ) ?></a>
+			<?php esc_html_e( 'Forms', 'gravityforms' );
+			if ( GFCommon::current_user_can_any( 'gravityforms_create_form' ) ) {
+				echo '<a class="add-new-h2" href="" onclick="return loadNewFormModal();">' . esc_html__( 'Add New', 'gravityforms' ) . '</a>';
+			} ?>
 		</h2>
 
 		<?php if ( isset( $message ) ) { ?>
@@ -348,6 +360,12 @@ class GFFormList {
 					</select>
 					<?php
 					$apply_button = '<input type="submit" class="button" value="' . __( 'Apply', 'gravityforms' ) . '" onclick="return gfConfirmBulkAction(\'bulk_action\');"/>';
+
+					/**
+					 * A filter that allows for modification of the form "Apply" button
+					 *
+					 * @param string $apply_button The HTML for the "Apply" Button
+					 */
 					echo apply_filters( 'gform_form_apply_button', $apply_button );
 					?>
 
@@ -560,6 +578,12 @@ class GFFormList {
 					</select>
 					<?php
 					$apply_button = '<input type="submit" class="button" value="' . esc_attr__( 'Apply', 'gravityforms' ) . '" onclick="return gfConfirmBulkAction(\'bulk_action2\');"/>';
+
+					/**
+					 * A filter that allows for modification of the form "Apply" button
+					 *
+					 * @param string $apply_button The HTML for the "Apply" Button
+					 */
 					echo apply_filters( 'gform_form_apply_button', $apply_button );
 				}
 				?>

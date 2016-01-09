@@ -3,11 +3,11 @@
  * Plugin Name: WooCommerce
  * Plugin URI: http://www.woothemes.com/woocommerce/
  * Description: An e-commerce toolkit that helps you sell anything. Beautifully.
- * Version: 2.4.7
+ * Version: 2.4.12
  * Author: WooThemes
  * Author URI: http://woothemes.com
  * Requires at least: 4.1
- * Tested up to: 4.3
+ * Tested up to: 4.4
  *
  * Text Domain: woocommerce
  * Domain Path: /i18n/languages/
@@ -33,7 +33,7 @@ final class WooCommerce {
 	/**
 	 * @var string
 	 */
-	public $version = '2.4.7';
+	public $version = '2.4.12';
 
 	/**
 	 * @var WooCommerce The single instance of the class
@@ -260,6 +260,7 @@ final class WooCommerce {
 		include_once( 'includes/class-wc-customer.php' );                       // Customer class
 		include_once( 'includes/class-wc-shortcodes.php' );                     // Shortcodes class
 		include_once( 'includes/class-wc-https.php' );                          // https Helper
+		include_once( 'includes/class-wc-embed.php' );                          // Embeds
 	}
 
 	/**

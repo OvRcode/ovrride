@@ -251,6 +251,10 @@
 										case 'discount_type':
 											$discount_type = maybe_unserialize( $meta_value );
 											break;
+
+										case 'free_shipping':
+											$allowed_free_shipping = maybe_unserialize( $meta_value );
+											break;
 									}
 
 									if ( $meta_key ) {
@@ -266,7 +270,7 @@
 
 						$is_email_imported_coupons = get_option( 'woo_sc_is_email_imported_coupons' );
 
-						if ( $is_email_imported_coupons == 'yes' && !empty( $customer_emails ) && !empty( $coupon_amount ) && !empty( $coupon_code ) && !empty( $discount_type ) ) {
+						if ( $is_email_imported_coupons == 'yes' && !empty( $customer_emails ) && ( !empty( $coupon_amount ) || $allowed_free_shipping == 'yes' ) && !empty( $coupon_code ) && !empty( $discount_type ) ) {
 							$coupon = array(
 								'amount'    => $coupon_amount,
 								'code'      => $coupon_code
@@ -484,10 +488,13 @@
 									<?php } ?>
 								</tbody>
 							</table>
+							<?php $is_send_email = get_option( 'smart_coupons_is_send_email', 'yes' ); ?>
+							<?php if ( $is_send_email == 'yes' ) { ?>
 							<p>
 								<label for="woo_sc_is_email_imported_coupons"><input type="checkbox" name="woo_sc_is_email_imported_coupons" id="woo_sc_is_email_imported_coupons"  />
 																<?php _e( 'E-mail imported coupon codes to respective customers/users.', WC_Smart_Coupons::$text_domain ); ?></label>
 							</p>
+							<?php } ?>
 							<p class="submit">
 								<input type="submit" class="button" value="<?php esc_attr_e( 'Submit', WC_Smart_Coupons::$text_domain ); ?>" />
 							</p>

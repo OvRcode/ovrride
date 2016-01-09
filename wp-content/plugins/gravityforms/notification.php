@@ -39,7 +39,7 @@ Class GFNotification {
 
 		$form = RGFormsModel::get_form_meta( $form_id );
 
-		$form = gf_apply_filters( 'gform_form_notification_page', $form_id, $form, $notification_id );
+		$form = gf_apply_filters( array( 'gform_form_notification_page', $form_id ), $form, $notification_id );
 
 		$notification = ! $notification_id ? array() : self::get_notification( $form, $notification_id );
 
@@ -66,6 +66,7 @@ Class GFNotification {
 			}
 
 			$notification['name']              = sanitize_text_field( rgpost( 'gform_notification_name' ) );
+			$notification['service']           = sanitize_text_field( rgpost( 'gform_notification_service' ) );
 			$notification['event']             = sanitize_text_field( rgpost( 'gform_notification_event' ) );
 			$notification['to']                = rgpost( 'gform_notification_to_type' ) == 'field' ? rgpost( 'gform_notification_to_field' ) : rgpost( 'gform_notification_to_email' );
 			$to_type = rgpost( 'gform_notification_to_type' );
@@ -101,10 +102,11 @@ Class GFNotification {
 			if ( rgpost( 'gform_is_default' ) ) {
 				$notification['isDefault'] = true;
 			}
-			$notification = gf_apply_filters( 'gform_pre_notification_save', $form_id, $notification, $form, $is_new_notification );
+			$notification = gf_apply_filters( array( 'gform_pre_notification_save', $form_id ), $notification, $form, $is_new_notification );
 
 			//validating input...
 			$is_valid = self::validate_notification();
+			$is_valid = gf_apply_filters( array( 'gform_notification_validation', $form_id ), $is_valid, $notification, $form );
 			if ( $is_valid ) {
 				//input valid, updating...
 				//emptying notification email if it is supposed to be disabled
@@ -126,6 +128,7 @@ Class GFNotification {
 		if ( $is_update && $is_valid ) {
 			$url = remove_query_arg( 'nid' );
 			GFCommon::add_message( sprintf( esc_html__( 'Notification saved successfully. %sBack to notifications.%s', 'gravityforms' ), '<a href="' . esc_url( $url ) . '">', '</a>' ) );
+			gf_do_action( array( 'gform_post_notification_save', $form_id ), $notification, $form, $is_new_notification );
 		} else if ( $is_update && ! $is_valid ) {
 			GFCommon::add_error_message( esc_html__( 'Notification could not be updated. Please enter all required information below.', 'gravityforms' ) );
 		}
@@ -133,7 +136,7 @@ Class GFNotification {
 		// moved page header loading here so the admin messages can be set upon saving and available for the header to print out
 		GFFormSettings::page_header( esc_html__( 'Notifications', 'gravityforms' ) );
 
-		$notification_ui_settings = self::get_notification_ui_settings( $notification );
+		$notification_ui_settings = self::get_notification_ui_settings( $notification, $is_valid );
 
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
 
@@ -533,7 +536,7 @@ Class GFNotification {
 
 	}
 
-	private static function get_notification_ui_settings( $notification ) {
+	private static function get_notification_ui_settings( $notification, $is_valid = true ) {
 
 		/**
 		 * These variables are used to convenient "wrap" child form settings in the appropriate HTML.
@@ -552,7 +555,7 @@ Class GFNotification {
 		$ui_settings = array();
 		$form_id     = rgget( 'id' );
 		$form        = RGFormsModel::get_form_meta( $form_id );
-		$form        = gf_apply_filters( 'gform_admin_pre_render', $form_id, $form );
+		$form        = gf_apply_filters( array( 'gform_admin_pre_render', $form_id ), $form );
 		$is_valid    = empty( GFCommon::$errors );
 
 		ob_start(); ?>
@@ -570,11 +573,43 @@ Class GFNotification {
 		</tr> <!-- / name -->
 		<?php $ui_settings['notification_name'] = ob_get_contents();
 		ob_clean(); ?>
+		<?php
+		
+		$services = self::get_notification_services();
+		$service_style = count( $services ) == 1 ? "style='display:none'" : '';
+		
+		$notification_service = ! rgempty( 'gform_notification_service' ) ? rgpost( 'gform_notification_service' ) : rgar( $notification, 'service' );
+		if ( empty( $notification_service ) ) {
+			$notification_service = key( $services );
+		}
+		
+		ob_start(); ?>
+		
+		<tr valign="top" <?php echo $service_style; ?>>
+			<th scope="row">
+				<label for="gform_notification_send_via">
+					<?php esc_html_e( 'Email Service', 'gravityforms' ); ?>
+					<?php gform_tooltip( 'notification_service' ) ?>
+				</label>
+			</th>
+			<td>
+				<?php foreach ( $services as $service_name => $service ) { ?>
+				<div id="gform-notification-service-<?php echo $service_name; ?>" class="gform-notification-service">
+					<input type="radio" id="gform_notification_service_<?php echo $service_name; ?>" name="gform_notification_service" <?php checked( $service_name, $notification_service ); ?> value="<?php echo $service_name; ?>" onclick="jQuery(this).parents('form').submit();" />
+					<label for="gform_notification_service_<?php echo $service_name; ?>" class="inline">
+						<span><img src="<?php echo esc_attr( rgar( $service, 'image' ) ); ?>" /><br /><?php echo rgar( $service, 'label' ); ?></span>
+					</label>
+				</div>
+				<?php } ?>
+			</td>
+		</tr> <!-- / send via -->
+		<?php $ui_settings['notification_service'] = ob_get_contents();
+		ob_clean(); ?>
 
 		<?php
 		$notification_events = array( 'form_submission' => esc_html__( 'Form is submitted', 'gravityforms' ) );
 		if ( rgars( $form, 'save/enabled' ) ) {
-			$notification_events['form_saved'] = esc_html__( 'Form is saved', 'gravityforms' );
+			$notification_events['form_saved']                = esc_html__( 'Form is saved', 'gravityforms' );
 			$notification_events['form_save_email_requested'] = esc_html__( 'Save and continue email is requested', 'gravityforms' );
 		}
 		$notification_events = apply_filters( 'gform_notification_events', $notification_events, $form );
@@ -664,7 +699,7 @@ Class GFNotification {
 		<?php $ui_settings['notification_to_email'] = ob_get_contents();
 		ob_clean(); ?>
 
-		<?php $email_fields = gf_apply_filters( 'gform_email_fields_notification_admin', $form['id'], GFCommon::get_email_fields( $form ), $form ); ?>
+		<?php $email_fields = gf_apply_filters( array( 'gform_email_fields_notification_admin', $form['id'] ), GFCommon::get_email_fields( $form ), $form ); ?>
 		<tr id="gform_notification_to_field_container" class="notification_to_container <?php echo esc_attr( $send_to_class ) ?>" <?php echo $notification_to_type != 'field' ? "style='display:none';" : '' ?>>
 			<?php echo $subsetting_open; ?>
 			<th scope="row"><?php esc_html_e( 'Send to Field', 'gravityforms' ) ?></th>
@@ -928,9 +963,38 @@ Class GFNotification {
 
 		<?php
 		ob_end_clean();
-		$ui_settings = gf_apply_filters( 'gform_notification_ui_settings', $form_id, $ui_settings, $notification, $form );
+		
+		/**
+		 * Add new or modify existing notification settings that display on the Notification Edit screen.
+		 * 
+		 * @param array $ui_settings - An array of settings for the notification UI.
+		 * @param array $notification - The current notification object being edited.
+		 * @param array $form - The current form object to which the notification being edited belongs.
+		 * @param bool $is_valid - Whether or not the current notification has passed validation
+		 */
+		$ui_settings = gf_apply_filters( array( 'gform_notification_ui_settings', $form_id ), $ui_settings, $notification, $form, $is_valid );
 
 		return $ui_settings;
+	}
+
+	/**
+	 * Get list of notification services.
+	 * 
+	 * @access public
+	 * @static
+	 * @return array $types
+	 */
+	public static function get_notification_services() {
+		
+		$services = array(
+			'wordpress' => array(
+				'label' => esc_html__( 'WordPress', 'gravityforms' ),
+				'image' => admin_url( 'images/wordpress-logo.svg' )
+			)
+		);
+		
+		return gf_apply_filters( array( 'gform_notification_services' ), $services );
+		
 	}
 
 	private static function validate_notification() {
@@ -975,7 +1039,8 @@ Class GFNotification {
 		foreach ( $emails as $email ) {
 			$email            = trim( $email );
 			$invalid_email    = GFCommon::is_invalid_or_empty_email( $email );
-			$invalid_variable = ! preg_match( '/^({[^{]*?:(\d+(\.\d+)?)(:(.*?))?},? *)+$/', $email ) && $email != '{admin_email}';
+			// this used to be more strict; updated to match any merge-tag-like string
+			$invalid_variable = ! preg_match( '/^{.+}$/', $email );
 
 			if ( $invalid_email && $invalid_variable ) {
 				return false;
@@ -1000,8 +1065,7 @@ Class GFNotification {
 
 	private static function get_first_routing_field( $form ) {
 		foreach ( $form['fields'] as $field ) {
-			$input_type = RGFormsModel::get_input_type( $field );
-			if ( in_array( $input_type, self::$supported_fields ) ) {
+			if ( in_array( $field->get_input_type(), self::get_routing_field_types() ) ) {
 				return $field->id;
 			}
 		}
@@ -1012,9 +1076,8 @@ Class GFNotification {
 	private static function get_routing_fields( $form, $selected_field_id ) {
 		$str = '';
 		foreach ( $form['fields'] as $field ) {
-			$input_type  = RGFormsModel::get_input_type( $field );
 			$field_label = RGFormsModel::get_label( $field );
-			if ( in_array( $input_type, self::get_routing_field_types() ) ) {
+			if ( in_array( $field->get_input_type(), self::get_routing_field_types() ) ) {
 				$selected = $field->id == $selected_field_id ? "selected='selected'" : '';
 				$str .= "<option value='" . $field->id . "' " . $selected . '>' . $field_label . '</option>';
 			}
@@ -1166,7 +1229,8 @@ class GFNotificationTable extends WP_List_Table {
 			array(
 				'cb'      => '',
 				'name'    => esc_html__( 'Name', 'gravityforms' ),
-				'subject' => esc_html__( 'Subject', 'gravityforms' )
+				'subject' => esc_html__( 'Subject', 'gravityforms' ),
+				'service' => esc_html__( 'Service', 'gravityforms' )
 			),
 			array(),
 			array(),
@@ -1273,6 +1337,21 @@ class GFNotificationTable extends WP_List_Table {
 		</div>
 
 	<?php
+	}
+	
+	function column_service( $notification ) {
+		
+		$services = GFNotification::get_notification_services();
+		
+		if ( ! rgar( $notification, 'service' ) ) {
+			esc_html_e( 'WordPress', 'gravityforms' );
+		} else if ( rgar( $services, $notification['service'] ) ) {
+			$service = rgar( $services, $notification['service'] );
+			echo rgar( $service, 'label' );
+		} else {
+			esc_html_e( 'Undefined Service', 'gravityforms' );
+		}
+		
 	}
 
 	function no_items() {

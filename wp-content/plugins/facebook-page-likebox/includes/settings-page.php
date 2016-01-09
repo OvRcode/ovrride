@@ -1,6 +1,6 @@
 <?php
 /**
- * @author https://smashr.org
+ * @author http://slakify.com
  * Plugin: Facebook Page Plugin
  */
 ?>
@@ -12,7 +12,7 @@
 
             <?php wp_nonce_field('fmz-update-setting','fmz-update-setting'); ?>
 
-            <u><h2>Facebook Page Plugin by Smashr.org</h2></u>
+            <u><h2>Facebook Page Plugin by Slakify.com</h2></u>
 
             <div id="poststuff" class="metabox-holder has-right-sidebar">
 

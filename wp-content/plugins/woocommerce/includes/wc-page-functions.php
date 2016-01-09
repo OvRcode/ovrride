@@ -10,6 +10,10 @@
  * @version     2.1.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 /**
  * Replace a page title with the endpoint title
  * @param  string $title
@@ -163,9 +167,11 @@ function wc_nav_menu_items( $items ) {
 	if ( ! is_user_logged_in() ) {
 		$customer_logout = get_option( 'woocommerce_logout_endpoint', 'customer-logout' );
 
-		foreach ( $items as $key => $item ) {
-			if ( strstr( $item->url, $customer_logout ) ) {
-				unset( $items[ $key ] );
+		if ( ! empty( $customer_logout ) ) {
+			foreach ( $items as $key => $item ) {
+				if ( strstr( $item->url, $customer_logout ) ) {
+					unset( $items[ $key ] );
+				}
 			}
 		}
 	}

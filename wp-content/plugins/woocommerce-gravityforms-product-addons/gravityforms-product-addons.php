@@ -3,7 +3,7 @@
   Plugin Name: WooCommerce - Gravity Forms Product Add-Ons
   Plugin URI: http://woothemes.com/products/gravity-forms-add-ons/
   Description: Allows you to use Gravity Forms on individual WooCommerce products. Requires the Gravity Forms plugin to work.
-  Version: 2.9.9
+  Version: 2.10.2
   Author: WooThemes
   Author URI: http://woothemes.com/
   Developer: Lucas Stark
@@ -161,7 +161,7 @@ if ( is_woocommerce_active() ) {
 
 		//Fix up any add to cart button that has a gravity form assoicated with the product.
 		function on_wp_footer() {
-			global $wpdb;
+			global $wpdb;		
 			$metakey = '_gravity_form_data';
 			$product_ids = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key=%s", $metakey ) );
 			if ( is_array( $product_ids ) ) {
@@ -459,7 +459,8 @@ if ( is_woocommerce_active() ) {
 					    'currency_format_decimal_sep' => esc_attr( wc_get_price_decimal_separator() ),
 					    'currency_format_thousand_sep' => esc_attr( wc_get_price_thousand_separator() ),
 					    'currency_format' => esc_attr( str_replace( array('%1$s', '%2$s'), array('%s', '%v'), get_woocommerce_price_format() ) ), // For accounting JS
-					    'prices' => $prices
+					    'prices' => $prices, 
+					    'price_suffix' => $product->get_price_suffix()
 					);
 
 					wp_localize_script( 'wc-gravityforms-product-addons', 'wc_gravityforms_params', $wc_gravityforms_params );
@@ -965,10 +966,24 @@ if ( is_woocommerce_active() ) {
 
 							if ( !empty( $value ) && !empty( $arr_var ) ) {
 								try {
-
+									$strip_html = true;
 									if ( $field['type'] == 'fileupload' && isset( $lead[$field['id']] ) ) {
-
-										$display_value = $lead[$field['id']];
+										$strip_html = false;
+										$dv = $lead[ $field['id'] ];
+										$files = json_decode($dv);
+											
+										if (empty($files)){
+											$files = array( $dv );
+										}
+										
+										$display_value = '';
+										
+										$sep = '';
+										foreach($files as $file){
+											$display_value .= $sep . '<a href="' . $file . '">' . $file . '</a>';
+											$sep = ', ';
+										}
+										
 									} else {
 
 										$display_value = GFCommon::get_lead_field_display( $field, $value, isset( $lead["currency"] ) ? $lead["currency"] : false, apply_filters( 'woocommerce_gforms_use_label_as_value', true, $value, $field, $lead, $form_meta ) );
@@ -981,7 +996,7 @@ if ( is_woocommerce_active() ) {
 									$display_title = apply_filters( "woocommerce_gforms_order_meta_title", $display_title, $field, $lead, $form_meta, $item_id, $cart_item );
 									$display_value = apply_filters( "woocommerce_gforms_order_meta_value", $display_value, $field, $lead, $form_meta, $item_id, $cart_item );
 
-									if ( apply_filters( 'woocommerce_gforms_strip_meta_html', true, $display_value, $field, $lead, $form_meta, $item_id, $cart_item ) ) {
+									if ( apply_filters( 'woocommerce_gforms_strip_meta_html', $strip_html, $display_value, $field, $lead, $form_meta, $item_id, $cart_item ) ) {
 										if ( strstr( $display_value, '<li>' ) ) {
 											$display_value = str_replace( '<li>', '', $display_value );
 											$display_value = explode( '</li>', $display_value );

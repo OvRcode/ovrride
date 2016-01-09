@@ -26,6 +26,8 @@ if (!empty($_POST['submit']) && $_POST['submit'] == "Save Changes") {
         $msg  = isset($GLOBALS['squelch_taas_admin_msg']) ? $GLOBALS['squelch_taas_admin_msg'] : '';
         $msg .= '<div class="updated"><p>Changes saved.</p></div>';
         $GLOBALS['squelch_taas_admin_msg'] = $msg;
+
+        $theme = $new_theme;
     }
 }
 

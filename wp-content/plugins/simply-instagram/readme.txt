@@ -3,8 +3,8 @@ Contributors: rollybueno
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BUDCX2S6SJ3ZG
 Tags: instagram, instagram images, instagram gallery, photos, widgets, gallery
 Requires at least: 3.0
-Tested up to: 4.3
-Stable tag: 1.3.1
+Tested up to: 4.3.1
+Stable tag: 1.3.2
 
 Simply Instagram displays your photos from Instagram either using Widget or Short Code.
 
@@ -51,8 +51,13 @@ Attributes:
 		b.) Low Resolution - Exactly 306 x 306. This value is the default for Simply Instagram Wordpress Plugin.
 		c.) Standard Resolution - The largest image with highest quality. Dimension is 612 x 612.
 
-Shortcode and Widget samples, please visit this page: <strong><a href="http://www.rollybueno.info/wp-simply-instagram/">rollybueno.info</a></strong>
-
+Shortcode and Widget samples, please visit these:
+<ul>
+<li><strong><a href="http://rollybueno.info/simply-instagram-wordpress-plugin-demo/">Demo on displaying your liked photos</a></strong>&nbsp;– This demo will display your latest 20 liked photo across Instagram platform.</li>
+<li><strong><a href="http://rollybueno.info/simply-instagram-recent-media-shortcode/">Demo on displaying your photos</a>&nbsp;</strong>– This demo will display your latest uploads.</li>
+<li><strong><a href="http://rollybueno.info/simply-instagram-self-feed-shortcode-demo/">Demo on displaying your photo feed</a>&nbsp;</strong>– This demo will display your latest feed of people you are following.</li>
+<li><strong><a href="http://rollybueno.info/simply-instagram-currently-popular/">Demo on displaying currently popular photos</a>&nbsp;</strong>– This demo will display all currently popular photos</li>
+</ul>
 == Screenshots ==
 
 1. Widget with complete bio. Follow and Unfollow button added in v1.2.0.
@@ -124,6 +129,12 @@ Please follow the tips in order the shortcode to work.
 If you have patch for the improvement of this plugin or you have suggestion for added features, kindly inform me using Support forum. I'm glad to include that in next release and I will credit you.
 
 == Changelog ==
+
+= 1.3.2 =
+
+* Bug fix on CSS option in admin tab
+* Bug fix on image resolution and size
+* Drop Single Viewer display option
 
 = 1.3.1 =
 

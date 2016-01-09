@@ -39,6 +39,12 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 	protected $_single_feed_submission = true;
 
+	/**
+	 * Indicates if the payment gateway requires monetary amounts to be formatted as the smallest unit for the currency being used e.g. cents.
+	 *
+	 * @var bool
+	 */
+	protected $_requires_smallest_unit = false;
 
 	//--------- Initialization ----------
 	public function pre_init() {
@@ -59,7 +65,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 		add_filter( 'gform_confirmation', array( $this, 'confirmation' ), 20, 4 );
 
-		add_filter( 'gform_validation', array( $this, 'validation' ), 20 );
+		add_filter( 'gform_validation', array( $this, 'maybe_validate' ), 20 );
 		add_filter( 'gform_entry_post_save', array( $this, 'entry_post_save' ), 10, 2 );
 
 	}
@@ -193,9 +199,34 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 	}
 
+	/**
+	 * Check if the rest of the form has passed validation, is the last page, and that the honeypot field has not been completed.
+	 *
+	 * @param array $validation_result Contains the validation result, the form object, and the failed validation page number.
+	 *
+	 * @return array $validation_result
+	 */
+	public function maybe_validate( $validation_result ) {
+
+		$form            = $validation_result['form'];
+		$is_last_page    = GFFormDisplay::is_last_page( $form );
+		$failed_honeypot = false;
+
+		if ( $is_last_page && rgar( $form, 'enableHoneypot' ) ) {
+			$honeypot_id     = GFFormDisplay::get_max_field_id( $form ) + 1;
+			$failed_honeypot = ! rgempty( "input_{$honeypot_id}" );
+		}
+
+		if ( ! $validation_result['is_valid'] || ! $is_last_page || $failed_honeypot ) {
+			return $validation_result;
+		}
+
+		return $this->validation( $validation_result );
+	}
+
 	public function validation( $validation_result ) {
 
-		if ( ! $validation_result['is_valid'] || ! GFFormDisplay::is_last_page( $validation_result['form'] ) ) {
+		if ( ! $validation_result['is_valid'] ) {
 			return $validation_result;
 		}
 
@@ -498,7 +529,14 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		$txn_id = $wpdb->insert_id;
 
 		/**
+		 * Fires after a payment transaction is created in Gravity Forms
 		 *
+		 * @param int $txn_id The overall Transaction ID
+		 * @param int $entry_id The new Entry ID
+		 * @param string $transaction_type The Type of transaction that was made
+		 * @param int $transaction_id The transaction ID
+		 * @param string $amount The amount payed in the transaction
+		 * @param bool $is_recurring True or false if this is an ongoing payment
 		 */
 		do_action( 'gform_post_payment_transaction', $txn_id, $entry_id, $transaction_type, $transaction_id, $amount, $is_recurring );
 		if ( has_filter( 'gform_post_payment_transaction' ) ) {
@@ -541,7 +579,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		return $gateway == $this->_slug;
 	}
 
-	protected function get_submission_data( $feed, $form, $entry ) {
+	public function get_submission_data( $feed, $form, $entry ) {
 
 		$submission_data = array();
 
@@ -583,7 +621,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		 * @return array $submission_data
 		 */
 
-		return gf_apply_filters( 'gform_submission_data_pre_process_payment', $form['id'], $submission_data, $feed, $form, $entry );
+		return gf_apply_filters( array( 'gform_submission_data_pre_process_payment', $form['id'] ), $submission_data, $feed, $form, $entry );
 	}
 
 	protected function get_credit_card_field( $form ) {
@@ -612,7 +650,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		foreach ( $products['products'] as $field_id => $product ) {
 
 			$quantity      = $product['quantity'] ? $product['quantity'] : 1;
-			$product_price = GFCommon::to_number( $product['price'] );
+			$product_price = GFCommon::to_number( $product['price'], $entry['currency'] );
 
 			$options = array();
 			if ( is_array( rgar( $product, 'options' ) ) ) {
@@ -658,7 +696,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 					'name'        => $product['name'],
 					'description' => $description,
 					'quantity'    => $quantity,
-					'unit_price'  => GFCommon::to_number( $product_price ),
+					'unit_price'  => GFCommon::to_number( $product_price, $entry['currency'] ),
 					'options'     => rgar( $product, 'options' )
 				);
 			} else {
@@ -667,14 +705,14 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 					'name'        => $product['name'],
 					'description' => $description,
 					'quantity'    => $quantity,
-					'unit_price'  => GFCommon::to_number( $product_price ),
+					'unit_price'  => GFCommon::to_number( $product_price, $entry['currency'] ),
 					'options'     => rgar( $product, 'options' )
 				);
 			}
 		}
 
 		if ( $trial_field == 'enter_amount' ) {
-			$trial_amount = rgar( $feed['meta'], 'trial_amount' ) ? GFCommon::to_number( rgar( $feed['meta'], 'trial_amount' ) ) : 0;
+			$trial_amount = rgar( $feed['meta'], 'trial_amount' ) ? GFCommon::to_number( rgar( $feed['meta'], 'trial_amount' ), $entry['currency'] ) : 0;
 		}
 
 		if ( ! empty( $products['shipping']['name'] ) && ! is_numeric( $payment_field ) ) {
@@ -683,7 +721,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 				'name'        => $products['shipping']['name'],
 				'description' => '',
 				'quantity'    => 1,
-				'unit_price'  => GFCommon::to_number( $products['shipping']['price'] ),
+				'unit_price'  => GFCommon::to_number( $products['shipping']['price'], $entry['currency'] ),
 				'is_shipping' => 1
 			);
 			$amount += $products['shipping']['price'];
@@ -965,7 +1003,6 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		$entry['payment_amount']   = rgar( $action, 'amount' );
 		$entry['payment_date']     = $action['payment_date'];
 		$entry['payment_method']   = rgar( $action, 'payment_method' );
-		$entry['currency']         = GFCommon::get_currency();
 
 		if ( ! rgar( $action, 'note' ) ) {
 			$amount_formatted = GFCommon::to_money( $action['amount'], $entry['currency'] );
@@ -2517,11 +2554,69 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		return $currencies;
 	}
 
+	/**
+	 * Retrieve the currency object for the specified currency code.
+	 *
+	 * @param string $currency_code
+	 *
+	 * @return RGCurrency
+	 */
+	public function get_currency( $currency_code = '' ) {
+		if ( ! class_exists( 'RGCurrency' ) ) {
+			require_once( GFCommon::get_base_path() . 'currency.php' );
+		}
+
+		if ( empty( $currency_code ) ) {
+			$currency_code = GFCommon::get_currency();
+		}
+
+		return new RGCurrency( $currency_code );
+	}
+
+	/**
+	 * Format the amount for export to the payment gateway.
+	 *
+	 * Removes currency symbol and if required converts the amount to the smallest unit required by the gateway (e.g. dollars to cents).
+	 *
+	 * @param int|float $amount The value to be formatted.
+	 * @param string $currency_code The currency code.
+	 *
+	 * @return int|float
+	 */
+	public function get_amount_export( $amount, $currency_code = '' ) {
+		$currency = $this->get_currency( $currency_code );
+		$amount   = $currency->to_number( $amount );
+
+		if ( $this->_requires_smallest_unit && ! $currency->is_zero_decimal() ) {
+			return $amount * 100;
+		}
+
+		return $amount;
+	}
+
+	/**
+	 * If necessary convert the amount back from the smallest unit required by the gateway (e.g cents to dollars).
+	 *
+	 * @param int|float $amount The value to be formatted.
+	 * @param string $currency_code The currency code.
+	 *
+	 * @return int|float
+	 */
+	public function get_amount_import( $amount, $currency_code = '' ) {
+		$currency = $this->get_currency( $currency_code );
+
+		if ( $this->_requires_smallest_unit && ! $currency->is_zero_decimal() ) {
+			return $amount / 100;
+		}
+
+		return $amount;
+	}
+
 
 	//-------- Cancel Subscription -----------
 	public function entry_info( $form_id, $entry ) {
 
-		//abort if subscription cancelation isn't supported by the addon or if it has already been canceled
+		//abort if subscription cancellation isn't supported by the addon or if it has already been canceled
 		if ( ! $this->payment_method_is_overridden( 'cancel' ) ) {
 			return;
 		}

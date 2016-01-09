@@ -36,14 +36,15 @@ function update_dynamic_price(gform_total) {
 		}
 		));
 
-		jQuery('.formattedTotalPrice').html(accounting.formatMoney(parseFloat(base_price) + parseFloat(gform_total), {
+		jQuery('.formattedTotalPrice').html( accounting.formatMoney(parseFloat(base_price) + parseFloat(gform_total), {
 			symbol: wc_gravityforms_params.currency_format_symbol,
 			decimal: wc_gravityforms_params.currency_format_decimal_sep,
 			thousand: wc_gravityforms_params.currency_format_thousand_sep,
 			precision: wc_gravityforms_params.currency_format_num_decimals,
 			format: wc_gravityforms_params.currency_format
 		}
-		));
+		) + wc_gravityforms_params.price_suffix
+		);
 	}
 
 	return gform_total;

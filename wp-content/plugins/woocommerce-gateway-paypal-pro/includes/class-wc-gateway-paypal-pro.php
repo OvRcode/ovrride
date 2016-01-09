@@ -7,6 +7,11 @@
 class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 	/**
+	 * Store client
+	 */
+	private $centinel_client = false;
+
+	/**
 	 * Constuctor
 	 */
 	public function __construct() {
@@ -20,11 +25,11 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			'products',
 			'refunds'
 		);
-		$this->liveurl               = 'https://api-3t.paypal.com/nvp';
-		$this->testurl               = 'https://api-3t.sandbox.paypal.com/nvp';
-		$this->liveurl_3ds           = 'https://paypal.cardinalcommerce.com/maps/txns.asp';
-		$this->testurl_3ds           = 'https://centineltest.cardinalcommerce.com/maps/txns.asp';
-		$this->available_card_types  = apply_filters( 'woocommerce_paypal_pro_available_card_types', array(
+		$this->liveurl              = 'https://api-3t.paypal.com/nvp';
+		$this->testurl              = 'https://api-3t.sandbox.paypal.com/nvp';
+		$this->liveurl_3ds          = 'https://paypal.cardinalcommerce.com/maps/txns.asp';
+		$this->testurl_3ds          = 'https://centineltest.cardinalcommerce.com/maps/txns.asp';
+		$this->available_card_types = apply_filters( 'woocommerce_paypal_pro_available_card_types', array(
 			'GB' => array(
 				'Visa'          => 'Visa',
 				'MasterCard'    => 'MasterCard',
@@ -112,7 +117,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		}
 
 		// Hooks
-		add_action( 'woocommerce_api_wc_gateway_paypal_pro', array( $this, 'authorise_3dsecure') );
+		add_action( 'woocommerce_api_wc_gateway_paypal_pro', array( $this, 'handle_3dsecure' ) );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 	}
 
@@ -306,81 +311,40 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
      */
 	public function payment_fields() {
 		if ( $this->description ) {
-			echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.  Note that you will get a faster processing result if you use a card from your developer\'s account.', 'woocommerce-gateway-paypal-pro' ) : '' ) . '</p>';
+			echo '<p>' . wp_kses_post( $this->description ) . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.  Note that you will get a faster processing result if you use a card from your developer\'s account.', 'woocommerce-gateway-paypal-pro' ) : '' ) . '</p>';
 		}
 
 		$fields = array();
 
 		if ( isset( $this->available_card_types[ WC()->countries->get_base_country() ]['Maestro'] ) ) {
-			$fields['card-startdate-field'] = '<p class="form-row form-row-first">
-				<label for="' . esc_attr( $this->id ) . '-card-startdate">' . __( 'Start Date (MM/YY)', 'woocommerce' ) . '</label>
-				<input id="' . esc_attr( $this->id ) . '-card-startdate" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="' . __( 'MM / YY', 'woocommerce' ) . '" name="' . $this->id . '-card-startdate' . '" />
-			</p>';
+			$fields = array(
+				'card-number-field' => '<p class="form-row form-row-first">
+					<label for="' . esc_attr( $this->id ) . '-card-number">' . __( 'Card Number', 'woocommerce' ) . ' <span class="required">*</span></label>
+					<input id="' . esc_attr( $this->id ) . '-card-number" class="input-text wc-credit-card-form-card-number" type="text" maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="' . $this->id . '-card-number' . '" />
+				</p>',
+				'card-expiry-field' => '<p class="form-row form-row-last">
+					<label for="' . esc_attr( $this->id ) . '-card-expiry">' . __( 'Expiry (MM/YY)', 'woocommerce' ) . ' <span class="required">*</span></label>
+					<input id="' . esc_attr( $this->id ) . '-card-expiry" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="' . esc_attr__( 'MM / YY', 'woocommerce' ) . '" name="' . $this->id . '-card-expiry' . '" />
+				</p>',
+				'card-cvc-field' => '<p class="form-row form-row-first">
+					<label for="' . esc_attr( $this->id ) . '-card-cvc">' . __( 'Card Code', 'woocommerce' ) . ' <span class="required">*</span></label>
+					<input id="' . esc_attr( $this->id ) . '-card-cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" placeholder="' . esc_attr__( 'CVC', 'woocommerce' ) . '" name="' . $this->id . '-card-cvc' . '" />
+				</p>',
+				'card-startdate-field' => '<p class="form-row form-row-last">
+					<label for="' . esc_attr( $this->id ) . '-card-startdate">' . __( 'Start Date (MM/YY)', 'woocommerce-gateway-paypal-pro' ) . '</label>
+					<input id="' . esc_attr( $this->id ) . '-card-startdate" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="' . __( 'MM / YY', 'woocommerce-gateway-paypal-pro' ) . '" name="' . $this->id . '-card-startdate' . '" />
+				</p>'
+			);
 		}
 
 		$this->credit_card_form( array(), $fields );
 	}
 
 	/**
-     * Validate the payment form
-     */
-	public function validate_fields() {
-		try {
-
-			$card_number    = isset( $_POST['paypal_pro-card-number'] ) ? wc_clean( $_POST['paypal_pro-card-number'] ) : '';
-			$card_cvc       = isset( $_POST['paypal_pro-card-cvc'] ) ? wc_clean( $_POST['paypal_pro-card-cvc'] ) : '';
-			$card_expiry    = isset( $_POST['paypal_pro-card-expiry'] ) ? wc_clean( $_POST['paypal_pro-card-expiry'] ) : '';
-
-			// Format values
-			$card_number    = str_replace( array( ' ', '-' ), '', $card_number );
-			$card_expiry    = array_map( 'trim', explode( '/', $card_expiry ) );
-
-			if ( 2 !== sizeof( $card_expiry ) ) {
-				throw new Exception( __( 'Card expiration date is invalid', 'woocommerce-gateway-paypal-pro' ) );
-			}
-
-			$card_exp_month = str_pad( $card_expiry[0], 2, "0", STR_PAD_LEFT );
-			$card_exp_year  = $card_expiry[1];
-
-			if ( strlen( $card_exp_year ) == 2 ) {
-				$card_exp_year += 2000;
-			}
-
-			// Validate values
-			if ( ! ctype_digit( $card_cvc ) ) {
-				throw new Exception( __( 'Card security code is invalid (only digits are allowed)', 'woocommerce-gateway-paypal-pro' ) );
-			}
-
-			if (
-				! ctype_digit( $card_exp_month ) ||
-				! ctype_digit( $card_exp_year ) ||
-				$card_exp_month > 12 ||
-				$card_exp_month < 1 ||
-				$card_exp_year < date('y')
-			) {
-				throw new Exception( __( 'Card expiration date is invalid', 'woocommerce-gateway-paypal-pro' ) );
-			}
-
-			if ( empty( $card_number ) || ! ctype_digit( $card_number ) ) {
-				throw new Exception( __( 'Card number is invalid', 'woocommerce-gateway-paypal-pro' ) );
-			}
-
-			return true;
-
-		} catch( Exception $e ) {
-			wc_add_notice( $e->getMessage(), 'error' );
-			return false;
-		}
-	}
-
-	/**
-     * Process the payment
-     */
-	public function process_payment( $order_id ) {
-		$order = new WC_Order( $order_id );
-
-		$this->log( 'Processing order #' . $order_id );
-
+	 * Format and get posted details
+	 * @return object
+	 */
+	private function get_posted_card() {
 		$card_number    = isset( $_POST['paypal_pro-card-number'] ) ? wc_clean( $_POST['paypal_pro-card-number'] ) : '';
 		$card_cvc       = isset( $_POST['paypal_pro-card-cvc'] ) ? wc_clean( $_POST['paypal_pro-card-cvc'] ) : '';
 		$card_expiry    = isset( $_POST['paypal_pro-card-expiry'] ) ? wc_clean( $_POST['paypal_pro-card-expiry'] ) : '';
@@ -389,7 +353,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		$card_number    = str_replace( array( ' ', '-' ), '', $card_number );
 		$card_expiry    = array_map( 'trim', explode( '/', $card_expiry ) );
 		$card_exp_month = str_pad( $card_expiry[0], 2, "0", STR_PAD_LEFT );
-		$card_exp_year  = $card_expiry[1];
+		$card_exp_year  = isset( $card_expiry[1] ) ? $card_expiry[1] : '';
 
 		if ( isset( $_POST['paypal_pro-card-start'] ) ) {
 			$card_start       = wc_clean( $_POST['paypal_pro-card-start'] );
@@ -405,6 +369,78 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			$card_exp_year += 2000;
 		}
 
+		if ( strlen( $card_start_year ) == 2 ) {
+			$card_start_year += 2000;
+		}
+
+		return (object) array(
+			'number'      => $card_number,
+			'type'        => '',
+			'cvc'         => $card_cvc,
+			'exp_month'   => $card_exp_month,
+			'exp_year'    => $card_exp_year,
+			'start_month' => $card_start_month,
+			'start_year'  => $card_start_year
+		);
+	}
+
+	/**
+     * Validate the payment form
+     */
+	public function validate_fields() {
+		try {
+			$card = $this->get_posted_card();
+
+			if ( empty( $card->exp_month ) || empty( $card->exp_year ) ) {
+				throw new Exception( __( 'Card expiration date is invalid', 'woocommerce-gateway-paypal-pro' ) );
+			}
+
+			// Validate values
+			if ( ! ctype_digit( $card->cvc ) ) {
+				throw new Exception( __( 'Card security code is invalid (only digits are allowed)', 'woocommerce-gateway-paypal-pro' ) );
+			}
+
+			if (
+				! ctype_digit( $card->exp_month ) ||
+				! ctype_digit( $card->exp_year ) ||
+				$card->exp_month > 12 ||
+				$card->exp_month < 1 ||
+				$card->exp_year < date( 'y' )
+			) {
+				throw new Exception( __( 'Card expiration date is invalid', 'woocommerce-gateway-paypal-pro' ) );
+			}
+
+			if ( empty( $card->number ) || ! ctype_digit( $card->number ) ) {
+				throw new Exception( __( 'Card number is invalid', 'woocommerce-gateway-paypal-pro' ) );
+			}
+
+			return true;
+
+		} catch( Exception $e ) {
+			wc_add_notice( $e->getMessage(), 'error' );
+			return false;
+		}
+	}
+
+	/**
+	 * Get and clean a value from $this->centinel_client because the SDK does a poor job of cleaning.
+	 * @return string
+	 */
+	public function get_centinel_value( $key ) {
+		$value = $this->centinel_client->getValue( $key );
+		$value = wc_clean( $value );
+		return $value;
+	}
+
+	/**
+     * Process the payment
+     */
+	public function process_payment( $order_id ) {
+		$order = wc_get_order( $order_id );
+		$card  = $this->get_posted_card();
+
+		$this->log( 'Processing order #' . $order_id );
+
 		/**
 	     * 3D Secure Handling
 	     */
@@ -416,22 +452,39 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 			$this->clear_centinel_session();
 
-			$centinelClient = new CentinelClient;
-
-			$centinelClient->add( "MsgType", "cmpi_lookup" );
-			$centinelClient->add( "Version", "1.7" );
-			$centinelClient->add( "ProcessorId", $this->centinel_pid );
-			$centinelClient->add( "MerchantId", $this->centinel_mid );
-			$centinelClient->add( "TransactionPwd", $this->centinel_pwd );
-			$centinelClient->add( "UserAgent", $_SERVER["HTTP_USER_AGENT"] );
-			$centinelClient->add( "BrowserHeader", $_SERVER["HTTP_ACCEPT"] );
-			$centinelClient->add( "TransactionType", 'C' );
-
-		    // Standard cmpi_lookup fields
-		    $centinelClient->add( 'OrderNumber', $order_id );
-		    $centinelClient->add( 'Amount', $order->order_total * 100 );
-		    $centinelClient->add( 'CurrencyCode', $this->iso4217[ $order->get_order_currency() ] );
-		    $centinelClient->add( 'TransactionMode', 'S' );
+			$this->centinel_client = new CentinelClient;
+			$this->centinel_client->add( "MsgType", "cmpi_lookup" );
+			$this->centinel_client->add( "Version", "1.7" );
+			$this->centinel_client->add( "ProcessorId", $this->centinel_pid );
+			$this->centinel_client->add( "MerchantId", $this->centinel_mid );
+			$this->centinel_client->add( "TransactionPwd", $this->centinel_pwd );
+			$this->centinel_client->add( "TransactionType", 'CC' );
+		    $this->centinel_client->add( 'OrderNumber', $order_id );
+		    $this->centinel_client->add( 'Amount', $order->get_total() * 100 );
+		    $this->centinel_client->add( 'CurrencyCode', $this->iso4217[ $order->get_order_currency() ] );
+		    $this->centinel_client->add( 'TransactionMode', 'S' );
+			$this->centinel_client->add( 'ProductCode', 'PHY' );
+			$this->centinel_client->add( 'CardNumber', $card->number );
+		    $this->centinel_client->add( 'CardExpMonth', $card->exp_month );
+		    $this->centinel_client->add( 'CardExpYear', $card->exp_year );
+			$this->centinel_client->add( 'CardCode', $card->cvc );
+			$this->centinel_client->add( 'BillingFirstName', $order->billing_first_name );
+			$this->centinel_client->add( 'BillingLastName', $order->billing_last_name );
+			$this->centinel_client->add( 'BillingAddress1', $order->billing_address_1 );
+			$this->centinel_client->add( 'BillingAddress2', $order->billing_address_2 );
+			$this->centinel_client->add( 'BillingCity', $order->billing_city );
+			$this->centinel_client->add( 'BillingState', $order->billing_state );
+			$this->centinel_client->add( 'BillingPostalCode', $order->billing_postcode );
+			$this->centinel_client->add( 'BillingCountryCode', $order->billing_country );
+			$this->centinel_client->add( 'BillingPhone', $order->billing_phone );
+			$this->centinel_client->add( 'ShippingFirstName', $order->shipping_first_name );
+			$this->centinel_client->add( 'ShippingLastName', $order->shipping_last_name );
+			$this->centinel_client->add( 'ShippingAddress1', $order->shipping_address_1 );
+			$this->centinel_client->add( 'ShippingAddress2', $order->shipping_address_2 );
+			$this->centinel_client->add( 'ShippingCity', $order->shipping_city );
+			$this->centinel_client->add( 'ShippingState', $order->shipping_state );
+			$this->centinel_client->add( 'ShippingPostalCode', $order->shipping_postcode );
+			$this->centinel_client->add( 'ShippingCountryCode', $order->shipping_country );
 
 			// Items
 			$item_loop = 0;
@@ -439,107 +492,55 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			if ( sizeof( $order->get_items() ) > 0 ) {
 				foreach ( $order->get_items() as $item ) {
 					$item_loop++;
-					$centinelClient->add( 'Item_Name_' . $item_loop, $item['name'] );
-					$centinelClient->add( 'Item_Price_' . $item_loop, number_format( $order->get_item_total( $item, true, true ) * 100 ) );
-					$centinelClient->add( 'Item_Quantity_' . $item_loop, $item['qty'] );
-					$centinelClient->add( 'Item_Desc_' . $item_loop, $item['name'] );
+					$this->centinel_client->add( 'Item_Name_' . $item_loop, $item['name'] );
+					$this->centinel_client->add( 'Item_Price_' . $item_loop, number_format( $order->get_item_total( $item, true, true ) * 100 ), 2, '.', '' );
+					$this->centinel_client->add( 'Item_Quantity_' . $item_loop, $item['qty'] );
+					$this->centinel_client->add( 'Item_Desc_' . $item_loop, $item['name'] );
 				}
 			}
 
-		    // Payer Authentication specific fields
-		    $centinelClient->add( 'CardNumber', $card_number );
-		    $centinelClient->add( 'CardExpMonth', $card_exp_month );
-		    $centinelClient->add( 'CardExpYear', $card_exp_year );
-
 		    // Send request
-		    $centinelClient->sendHttp( $this->centinel_url, "5000", "15000" );
+		    $this->centinel_client->sendHttp( $this->centinel_url, "5000", "15000" );
 
-			$this->log( 'Centinal client request: ' . print_r( $centinelClient->request, true ) );
-			$this->log( 'Centinal client response: ' . print_r( $centinelClient->response, true ) );
+			$this->log( 'Centinal client request: ' . print_r( $this->centinel_client->request, true ) );
+			$this->log( 'Centinal client response: ' . print_r( $this->centinel_client->response, true ) );
 
-		    // Save response in session
-		    WC()->session->set( "paypal_pro_orderid", $order_id ); // Save lookup response in session
-		    WC()->session->set( "Centinel_cmpiMessageResp", $centinelClient->response );
-			WC()->session->set( "Centinel_Enrolled", $centinelClient->getValue("Enrolled") );
-		    WC()->session->set( "Centinel_TransactionId", $centinelClient->getValue("TransactionId") );
-		    WC()->session->set( "Centinel_ACSUrl", $centinelClient->getValue("ACSUrl") );
-		    WC()->session->set( "Centinel_Payload", $centinelClient->getValue("Payload") );
-		    WC()->session->set( "Centinel_ErrorNo", $centinelClient->getValue("ErrorNo") );
-		    WC()->session->set( "Centinel_ErrorDesc", $centinelClient->getValue("ErrorDesc") );
-			WC()->session->set( "Centinel_EciFlag", $centinelClient->getValue("EciFlag") );
-		    WC()->session->set( "Centinel_TransactionType", "C" );
-		    WC()->session->set( 'Centinel_TermUrl', WC()->api_request_url( 'WC_Gateway_PayPal_Pro', true ) );
-		    WC()->session->set( 'Centinel_OrderId', $centinelClient->getValue("OrderId") );
+			// Store response
+			WC()->session->set( 'Centinel_ErrorNo', $this->get_centinel_value( "ErrorNo" ) );
+			WC()->session->set( 'Centinel_ErrorDesc', $this->get_centinel_value( "ErrorDesc" ) );
+			WC()->session->set( 'Centinel_TransactionId', $this->get_centinel_value( "TransactionId" ) );
+			WC()->session->set( 'Centinel_OrderId', $this->get_centinel_value( "OrderId" ) );
+			WC()->session->set( 'Centinel_Enrolled', $this->get_centinel_value( "Enrolled" ) );
+			WC()->session->set( 'Centinel_ACSUrl', $this->get_centinel_value( "ACSUrl" ) );
+			WC()->session->set( 'Centinel_Payload', $this->get_centinel_value( "Payload" ) );
+			WC()->session->set( 'Centinel_EciFlag', $this->get_centinel_value( "EciFlag" ) );
+			WC()->session->set( 'Centinel_card_start_month', $card->start_month );
+			WC()->session->set( 'Centinel_card_start_year', $card->start_year );
 
-		    $this->log( '3dsecure Centinel_Enrolled: ' . WC()->session->get( 'Centinel_Enrolled' ) );
-
-		    /******************************************************************************/
-		    /*                                                                            */
-		    /*                          Result Processing Logic                           */
-		    /*                                                                            */
-		    /******************************************************************************/
-
-    		if ( WC()->session->get( 'Centinel_ErrorNo' ) == 0 ) {
-
-    			if ( WC()->session->get( 'Centinel_Enrolled' ) == 'Y' ) {
-
-    				$this->log( 'Doing 3dsecure payment authorization' );
-    				$this->log( 'ASCUrl: ' . WC()->session->get("Centinel_ACSUrl") );
-    				$this->log( 'PaReq: ' . WC()->session->get("Centinel_Payload") );
-    				$this->log( 'TermUrl: ' . WC()->session->get("Centinel_TermUrl") );
-
-			        @ob_clean();
-					?>
-					<html>
-						<head>
-							<title>3DSecure Payment Authorisation</title>
-						</head>
-						<body>
-							<form name="frmLaunchACS" id="3ds_submit_form" method="POST" action="<?php echo WC()->session->get("Centinel_ACSUrl"); ?>">
-						        <input type="hidden" name="PaReq" value="<?php echo WC()->session->get("Centinel_Payload"); ?>">
-						        <input type="hidden" name="TermUrl" value="<?php echo WC()->session->get('Centinel_TermUrl'); ?>">
-						        <input type="hidden" name="MD" value="<?php echo urlencode( json_encode( array(
-									'card'             => $card_number,
-									'csc'              => $card_cvc,
-									'card_exp_month'   => $card_exp_month,
-									'card_exp_year'    => $card_exp_year,
-									'card_start_month' => $card_start_month,
-									'card_start_year'  => $card_start_year,
-									'order_id'         => $order_id
-						        ) ) ); ?>">
-						        <noscript>
-						        	<div class="woocommerce_message"><?php _e( 'Processing your Payer Authentication Transaction', 'woocommerce-gateway-paypal-pro' ); ?> - <?php _e( 'Please click Submit to continue the processing of your transaction.', 'woocommerce-gateway-paypal-pro' ); ?>  <input type="submit" class="button" id="3ds_submit" value="Submit" /></div>
-						        </noscript>
-						    </form>
-						    <script>
-						    	document.frmLaunchACS.submit();
-						    </script>
-						</body>
-					</html>
-					<?php
-					exit;
-
-    			} elseif ( $this->liability_shift && WC()->session->get( 'Centinel_Enrolled' ) != 'N' ) {
-
-    				wc_add_notice( __( 'Authentication unavailable. Please try a different payment method or card.','woocommerce-gateway-paypal-pro' ), 'error' );
-					return;
-
-				} else {
-
-    				// Customer not-enrolled, so just carry on with PayPal process
-    				return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc, $card_start_month, $card_start_year, '', WC()->session->get('Centinel_Enrolled'), '', WC()->session->get("Centinel_EciFlag"), '' );
-
-    			}
-
-    		} else {
-    			wc_add_notice( __( 'Error in 3D secure authentication: ', 'woocommerce-gateway-paypal-pro' ) . WC()->session->get( 'Centinel_ErrorNo' ), 'error' );
+    		if ( $this->get_centinel_value( "ErrorNo" ) ) {
+				wc_add_notice( __( 'Error in 3D secure authentication: ', 'woocommerce-gateway-paypal-pro' ) . $this->get_centinel_value( "ErrorDesc" ), 'error' );
     			return;
 			}
 
+    		if ( 'Y' === $this->get_centinel_value( "Enrolled" ) ) {
+
+				$this->log( 'Doing 3dsecure payment authorization' );
+				$this->log( 'ASCUrl: ' . $this->get_centinel_value( "ACSUrl" ) );
+				$this->log( 'PaReq: ' . $this->get_centinel_value( "Payload" ) );
+
+				return array(
+					'result'   => 'success',
+					'redirect' => add_query_arg( array( 'acs' => $order_id ), WC()->api_request_url( 'WC_Gateway_PayPal_Pro', true ) )
+				);
+
+			} elseif ( $this->liability_shift && 'N' !== $this->get_centinel_value( "Enrolled" ) ) {
+				wc_add_notice( __( 'Authentication unavailable. Please try a different payment method or card.','woocommerce-gateway-paypal-pro' ), 'error' );
+				return;
+			}
 		}
 
 		// Do payment with paypal
-		return $this->do_payment( $order, $card_number, '', $card_exp_month, $card_exp_year, $card_cvc, $card_start_month, $card_start_year );
+		return $this->do_payment( $order, $card );
 	}
 
 	/**
@@ -552,8 +553,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
 
-		$url = $this->testmode ? $this->testurl : $this->liveurl;
-
 		if ( ! $order || ! $order->get_transaction_id() || ! $this->api_username || ! $this->api_password || ! $this->api_signature ) {
 			return false;
 		}
@@ -564,9 +563,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		// check if it is authorized only we need to void instead
 		if ( $details && strtolower( $details['PENDINGREASON'] ) === 'authorization' ) {
 			$order->add_order_note( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
-
-			$this->log( 'Refund order # ' . $order_id . ': authorized only transactions need to use cancel/void instead.' );
-
+			$this->log( 'Refund order # ' . absint( $order_id ) . ': authorized only transactions need to use cancel/void instead.' );
 			throw new Exception( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
 		}
 
@@ -589,11 +586,10 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			if ( 255 < strlen( $reason ) ) {
 				$reason = substr( $reason, 0, 252 ) . '...';
 			}
-
 			$post_data['NOTE'] = html_entity_decode( $reason, ENT_NOQUOTES, 'UTF-8' );
 		}
 
-		$response = wp_remote_post( $url, array(
+		$response = wp_safe_remote_post( $this->testmode ? $this->testurl : $this->liveurl, array(
 			'method'      => 'POST',
 			'headers'     => array( 'PAYPAL-NVP' => 'Y' ),
 			'body'        => $post_data,
@@ -604,7 +600,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		if ( is_wp_error( $response ) ) {
 			$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
-
 			throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
 		}
 
@@ -626,100 +621,108 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	/**
 	 * Auth 3dsecure
 	 */
-	public function authorise_3dsecure() {
+	public function handle_3dsecure() {
+		if ( ! empty( $_GET['acs'] ) ) {
+			$order_id = wc_clean( $_GET['acs'] );
+			$acsurl   = WC()->session->get( 'Centinel_ACSUrl' );
+			$payload  = WC()->session->get( 'Centinel_Payload' );
+			?>
+			<html>
+				<head>
+					<title>3DSecure Payment Authorisation</title>
+				</head>
+				<body>
+					<form name="frmLaunchACS" id="3ds_submit_form" method="POST" action="<?php echo esc_url( $acsurl ); ?>">
+						<input type="hidden" name="PaReq" value="<?php echo esc_attr( $payload ); ?>">
+						<input type="hidden" name="TermUrl" value="<?php echo esc_attr( WC()->api_request_url( 'WC_Gateway_PayPal_Pro', true ) ); ?>">
+						<input type="hidden" name="MD" value="<?php echo absint( $order_id ); ?>">
+						<noscript>
+							<input type="submit" class="button" id="3ds_submit" value="Submit" />
+						</noscript>
+					</form>
+					<script>
+						document.frmLaunchACS.submit();
+					</script>
+				</body>
+			</html>
+			<?php
+			exit;
+		} else {
+			$this->auth_3dsecure();
+		}
+	}
+
+	/**
+	 * cmpi_authenticate 3dsecure
+	 */
+	public function auth_3dsecure() {
 		if ( ! class_exists( 'CentinelClient' ) ) {
 			include_once( 'lib/CentinelClient.php' );
 		}
 
-		$pares         = ! empty( $_POST['PaRes'] ) ? $_POST['PaRes'] : '';
-		$merchant_data = ! empty( $_POST['MD'] ) ? (array) json_decode( urldecode( $_POST['MD'] ) ) : '';
-		$order_id      = absint( ! empty( $merchant_data['order_id'] ) ? $merchant_data['order_id'] : WC()->session->get( "paypal_pro_orderid" ) );
-		$order         = new WC_Order( $order_id );
+		$pares        = ! empty( $_POST['PaRes'] ) ? $_POST['PaRes']   : '';
+		$order_id     = absint( ! empty( $_POST['MD'] ) ? $_POST['MD'] : 0 );
+		$order        = wc_get_order( $order_id );
+		$redirect_url = $this->get_return_url( $order );
 
 		$this->log( 'authorise_3dsecure() for order ' . absint( $order_id ) );
 		$this->log( 'authorise_3dsecure() PARes ' . print_r( $pares, true ) );
 
-	    /******************************************************************************/
-	    /*                                                                            */
-	    /*    If the PaRes is Not Empty then process the cmpi_authenticate message    */
-	    /*                                                                            */
-	    /******************************************************************************/
-
-	    if ( strcasecmp( '', $pares ) != 0 && $pares != null ) {
-
-	        $centinelClient = new CentinelClient;
-
-	        $centinelClient->add( 'MsgType', 'cmpi_authenticate' );
-	        $centinelClient->add( "Version", "1.7" );
-			$centinelClient->add( "ProcessorId", $this->centinel_pid );
-			$centinelClient->add( "MerchantId", $this->centinel_mid );
-			$centinelClient->add( "TransactionPwd", $this->centinel_pwd );
-			$centinelClient->add( "TransactionType", 'C' );
-	        $centinelClient->add( 'OrderId', WC()->session->get( 'Centinel_OrderId' ) );
-	        $centinelClient->add( 'TransactionId', WC()->session->get( 'Centinel_TransactionId' ) );
-	        $centinelClient->add( 'PAResPayload', $pares );
-			$centinelClient->sendHttp( $this->centinel_url, "5000", "15000" );
-
-			$this->log( 'Centinal transaction ID ' . WC()->session->get('Centinel_TransactionId') );
-			$this->log( 'Centinal client request: ' . print_r( $centinelClient->request, true ) );
-			$this->log( 'Centinal client response: ' . print_r( $centinelClient->response, true ) );
-
-			WC()->session->set( "Centinel_cmpiMessageResp", $centinelClient->response ); // Save authenticate response in session
-			WC()->session->set( "Centinel_PAResStatus", $centinelClient->getValue("PAResStatus") );
-			WC()->session->set( "Centinel_SignatureVerification", $centinelClient->getValue("SignatureVerification") );
-			WC()->session->set( "Centinel_ErrorNo", $centinelClient->getValue("ErrorNo") );
-			WC()->session->set( "Centinel_ErrorDesc", $centinelClient->getValue("ErrorDesc") );
-			WC()->session->set( "Centinel_EciFlag", $centinelClient->getValue("EciFlag") );
-			WC()->session->set( "Centinel_Cavv", $centinelClient->getValue("Cavv") );
-			WC()->session->set( "Centinel_Xid", $centinelClient->getValue("Xid") );
-	    } else {
-	    	WC()->session->set( "Centinel_ErrorNo", "0" );
-			WC()->session->set( "Centinel_ErrorDesc", "NO PARES RETURNED" );
-	    }
-
-	    /******************************************************************************/
-	    /*                                                                            */
-	    /*                  Determine if the transaction resulted in                  */
-	    /*                  an error.                                                 */
-	    /*                                                                            */
-	    /******************************************************************************/
-
-		$redirect_url = $this->get_return_url( $order );
-
 		try {
+		    // If the PaRes is Not Empty then process the cmpi_authenticate message
+		    if ( ! empty( $pares ) ) {
+		        $this->centinel_client = new CentinelClient;
+		        $this->centinel_client->add( 'MsgType', 'cmpi_authenticate' );
+		        $this->centinel_client->add( "Version", "1.7" );
+				$this->centinel_client->add( "ProcessorId", $this->centinel_pid );
+				$this->centinel_client->add( "MerchantId", $this->centinel_mid );
+				$this->centinel_client->add( "TransactionPwd", $this->centinel_pwd );
+				$this->centinel_client->add( "TransactionType", 'CC' );
+				$this->centinel_client->add( 'TransactionId', WC()->session->get( 'Centinel_TransactionId' ) );
+				$this->centinel_client->add( 'PAResPayload', $pares );
+				$this->centinel_client->sendHttp( $this->centinel_url, "5000", "15000" );
 
-			$pa_res_status    = WC()->session->get( "Centinel_PAResStatus" );
-			$eci_flag         = WC()->session->get( "Centinel_EciFlag" );
-			$error_no         = WC()->session->get( 'Centinel_ErrorNo' );
-			$error_desc       = WC()->session->get( "Centinel_ErrorDesc" );
-			$cavv             = WC()->session->get( "Centinel_Cavv" );
-			$xid              = WC()->session->get( "Centinel_Xid" );
-			$sig_verification = WC()->session->get( "Centinel_SignatureVerification" );
+				$response_to_log = $this->centinel_client->response;
+				$response_to_log['CardNumber'] = 'XXX';
+				$response_to_log['CardCode']   = 'XXX';
+				$this->log( 'Centinal transaction ID ' . WC()->session->get('Centinel_TransactionId') );
+				$this->log( 'Centinal client request : ' . print_r( $this->centinel_client->request, true ) );
+				$this->log( 'Centinal client response: ' . print_r( $response_to_log, true ) );
+				$this->log( '3dsecure pa_res_status: ' . $this->get_centinel_value( "PAResStatus" ) );
 
-			$this->log( '3dsecure pa_res_status: ' . $pa_res_status );
-
-			if ( $this->liability_shift ) {
-				if ( $eci_flag == '07' || $eci_flag == '01' ) {
-					$order->update_status( 'failed', __('3D Secure error: No liability shift', 'woocommerce-gateway-paypal-pro' ) );
+				if ( $this->liability_shift && ( $this->get_centinel_value( "EciFlag" ) == '07' || $this->get_centinel_value( "EciFlag" ) == '01' ) ) {
+					$order->update_status( 'failed', __( '3D Secure error: No liability shift', 'woocommerce-gateway-paypal-pro' ) );
 					throw new Exception( __( 'Authentication unavailable.  Please try a different payment method or card.', 'woocommerce-gateway-paypal-pro' ) );
 				}
-			}
 
-			if ( $error_no == "0" ) {
+				if ( ! $this->get_centinel_value( "ErrorNo" ) && in_array( $this->get_centinel_value( "PAResStatus" ), array( 'Y', 'A', 'U' ) ) && "Y" === $this->get_centinel_value( "SignatureVerification" ) ) {
+					$card              = new stdClass();
+					$card->number      = $this->get_centinel_value( "CardNumber" );
+					$card->type        = '';
+					$card->cvc         = $this->get_centinel_value( "CardCode" );
+					$card->exp_month   = $this->get_centinel_value( "CardExpMonth" );
+					$card->exp_year    = $this->get_centinel_value( "CardExpYear" );
+					$card->start_month = WC()->session->get( 'Centinel_card_start_month' );
+					$card->start_year  = WC()->session->get( 'Centinel_card_start_year' );
 
-				if ( ( $pa_res_status == "Y" || $pa_res_status == "A" || $pa_res_status == "U") && $sig_verification == "Y" ) {
+					$centinel              = new stdClass();
+					$centinel->paresstatus = $this->get_centinel_value( "PAResStatus" );
+					$centinel->xid         = $this->get_centinel_value( "Xid" );
+					$centinel->cavv        = $this->get_centinel_value( "Cavv" );
+					$centinel->eciflag     = $this->get_centinel_value( "EciFlag" );
+					$centinel->enrolled    = WC()->session->get( 'Centinel_Enrolled' );
 
 					// If we are here we can process the card
-					$this->do_payment( $order, $merchant_data['card'], $merchant_data['type'], $merchant_data['card_exp_month'], $merchant_data['card_exp_year'], $merchant_data['csc'], $merchant_data['card_start_month'], $merchant_data['card_start_year'], $pa_res_status, "Y", $cavv, $eci_flag, $xid );
+					$this->do_payment( $order, $card, $centinel );
 
 				} else {
-					$order->update_status( 'failed', sprintf(__('3D Secure error: %s', 'woocommerce-gateway-paypal-pro' ), $error_desc ) );
-					throw new Exception( __( 'Payer Authentication failed.  Please try a different payment method.','woocommerce-gateway-paypal-pro' ) );
+					$order->update_status( 'failed', sprintf( __( '3D Secure error: %s', 'woocommerce-gateway-paypal-pro' ), $this->get_centinel_value( "ErrorDesc" ) ) );
+					throw new Exception( __( 'Payer Authentication failed. Please try a different payment method.','woocommerce-gateway-paypal-pro' ) );
 				}
 
 			} else {
-				$order->update_status( 'failed', sprintf(__('3D Secure error: %s', 'woocommerce-gateway-paypal-pro' ), $error_desc ) );
-				throw new Exception( __( 'Error in 3D secure authentication: ', 'woocommerce-gateway-paypal-pro' ) . $error_desc );
+				$order->update_status( 'failed', sprintf( __( '3D Secure error: %s', 'woocommerce-gateway-paypal-pro' ), $this->get_centinel_value( "ErrorDesc" ) ) );
+				throw new Exception( __( 'Payer Authentication failed. Please try a different payment method.','woocommerce-gateway-paypal-pro' ) );
 			}
 
 		} catch( Exception $e ) {
@@ -734,28 +737,12 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	 * do_payment function.
 	 *
 	 * @access public
-	 * @param mixed $order
-	 * @param mixed $card_number
-	 * @param mixed $card_type
-	 * @param mixed $card_exp_month
-	 * @param mixed $card_exp_year
-	 * @param mixed $card_cvc
-	 * @param string $centinelPAResStatus (default: '')
-	 * @param string $centinelEnrolled (default: '')
-	 * @param string $centinelCavv (default: '')
-	 * @param string $centinelEciFlag (default: '')
-	 * @param string $centinelXid (default: '')
-	 * @return void
+	 * @param object $order
+	 * @param object $card
+	 * @param object|bool $centinel
 	 */
-	public function do_payment( $order, $card_number, $card_type, $card_exp_month, $card_exp_year, $card_cvc, $card_start_month, $card_start_year, $centinelPAResStatus = '', $centinelEnrolled = '', $centinelCavv = '', $centinelEciFlag = '', $centinelXid = '' ) {
-
-		$card_exp   = $card_exp_month . $card_exp_year;
-		$card_start = $card_start_month . $card_start_year;
-
-		// Send request to paypal
+	public function do_payment( $order, $card, $centinel = false ) {
 		try {
-			$url = $this->testmode ? $this->testurl : $this->liveurl;
-
 			$post_data = array(
 				'VERSION'           => $this->api_version,
 				'SIGNATURE'         => $this->api_signature,
@@ -767,15 +754,15 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				'AMT'               => number_format( $order->get_total(), 2, '.', ',' ),
 				'INVNUM'            => $order->get_order_number(),
 				'CURRENCYCODE'      => $order->get_order_currency(),
-				'CREDITCARDTYPE'    => $card_type,
-				'ACCT'              => $card_number,
-				'EXPDATE'           => $card_exp,
-				'STARTDATE'         => $card_start,
-				'CVV2'              => $card_cvc,
+				'CREDITCARDTYPE'    => $card->type,
+				'ACCT'              => $card->number,
+				'EXPDATE'           => $card->exp_month . $card->exp_year,
+				'STARTDATE'         => $card->start_month . $card->start_year,
+				'CVV2'              => $card->cvc,
 				'EMAIL'             => $order->billing_email,
 				'FIRSTNAME'         => $order->billing_first_name,
 				'LASTNAME'          => $order->billing_last_name,
-				'STREET'            => $order->billing_address_1 . ' ' . $order->billing_address_2,
+				'STREET'            => trim( $order->billing_address_1 . ' ' . $order->billing_address_2 ),
 				'CITY'              => $order->billing_city,
 				'STATE'             => $order->billing_state,
 				'ZIP'               => $order->billing_postcode,
@@ -801,7 +788,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				$item_loop = 0;
 
 				if ( sizeof( $order->get_items() ) > 0 ) {
-
 					$ITEMAMT = 0;
 
 					foreach ( $order->get_items() as $item ) {
@@ -809,8 +795,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 						if ( $item['qty'] ) {
 							$item_name = $item['name'];
-
-							$item_meta = new WC_Order_Item_Meta( $item['item_meta'] );
+							$item_meta = new WC_Order_Item_Meta( $item );
 
 							if ( $meta = $item_meta->display( true, true ) ) {
 								$item_name .= ' ( ' . $meta . ' )';
@@ -822,7 +807,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 							$post_data[ 'L_QTY' . $item_loop ]    = $item['qty'];
 
 							$ITEMAMT += $order->get_item_total( $item, true ) * $item['qty'];
-
 							$item_loop++;
 						}
 					}
@@ -872,15 +856,15 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			}
 
 			/* 3D Secure */
-			if ( $this->enable_3dsecure ) {
-				$post_data['AUTHSTATUS3DS'] = $centinelPAResStatus;
-				$post_data['MPIVENDOR3DS'] 	= $centinelEnrolled;
-				$post_data['CAVV'] 			= $centinelCavv;
-				$post_data['ECI3DS'] 		= $centinelEciFlag;
-				$post_data['XID'] 			= $centinelXid;
+			if ( $centinel ) {
+				$post_data['AUTHSTATUS3DS']  = $centinel->paresstatus;
+				$post_data['MPIVENDOR3DS'] 	 = $centinel->enrolled;
+				$post_data['CAVV'] 			 = $centinel->cavv;
+				$post_data['ECI3DS'] 		 = $centinel->eciflag;
+				$post_data['XID'] 			 = $centinel->xid;
 			}
 
-			$response = wp_remote_post( $url, array(
+			$response = wp_safe_remote_post( $this->testmode ? $this->testurl : $this->liveurl, array(
    				'method'		=> 'POST',
 				'headers'       => array(
 					'PAYPAL-NVP' => 'Y'
@@ -893,7 +877,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 			if ( is_wp_error( $response ) ) {
 				$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
-
 				throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
 			}
 
@@ -901,7 +884,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 			if ( empty( $response['body'] ) ) {
 				$this->log( 'Empty response!' );
-
 				throw new Exception( __( 'Empty Paypal response.', 'woocommerce-gateway-paypal-pro' ) );
 			}
 
@@ -912,7 +894,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			switch ( strtolower( $parsed_response['ACK'] ) ) {
 				case 'success':
 				case 'successwithwarning':
-					$txn_id = ( ! empty( $parsed_response['TRANSACTIONID'] ) ) ? wc_clean( $parsed_response['TRANSACTIONID'] ) : '';
+					$txn_id         = ( ! empty( $parsed_response['TRANSACTIONID'] ) ) ? wc_clean( $parsed_response['TRANSACTIONID'] ) : '';
 					$correlation_id = ( ! empty( $parsed_response['CORRELATIONID'] ) ) ? wc_clean( $parsed_response['CORRELATIONID'] ) : '';
 
 					// get transaction details
@@ -957,14 +939,15 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				default:
 
 					// Get error message
-					if ( ! empty( $parsed_response['L_LONGMESSAGE0'] ) )
+					if ( ! empty( $parsed_response['L_LONGMESSAGE0'] ) ) {
 						$error_message = $parsed_response['L_LONGMESSAGE0'];
-					elseif ( ! empty( $parsed_response['L_SHORTMESSAGE0'] ) )
+					} elseif ( ! empty( $parsed_response['L_SHORTMESSAGE0'] ) ) {
 						$error_message = $parsed_response['L_SHORTMESSAGE0'];
-					elseif ( ! empty( $parsed_response['L_SEVERITYCODE0'] ) )
+					} elseif ( ! empty( $parsed_response['L_SEVERITYCODE0'] ) ) {
 						$error_message = $parsed_response['L_SEVERITYCODE0'];
-					elseif ( $this->testmode )
+					} elseif ( $this->testmode ) {
 						$error_message = print_r( $parsed_response, true );
+					}
 
 					// Payment failed :(
 					$order->update_status( 'failed', sprintf(__('PayPal Pro payment failed (Correlation ID: %s). Payment was rejected due to an error: ', 'woocommerce-gateway-paypal-pro'), $parsed_response['CORRELATIONID'] ) . '(' . $parsed_response['L_ERRORCODE0'] . ') ' . '"' . $error_message . '"' );
@@ -995,7 +978,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			'TRANSACTIONID' => $transaction_id
 		);
 
-		$response = wp_remote_post( $url, array(
+		$response = wp_safe_remote_post( $url, array(
 			'method'      => 'POST',
 			'headers'     => array(
 				'PAYPAL-NVP' => 'Y'
@@ -1008,7 +991,6 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		if ( is_wp_error( $response ) ) {
 			$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
-
 			throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
 		}
 
@@ -1028,25 +1010,23 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
      * Get user's IP address
      */
 	public function get_user_ip() {
-		return ! empty( $_SERVER['HTTP_X_FORWARD_FOR'] ) ? $_SERVER['HTTP_X_FORWARD_FOR'] : $_SERVER['REMOTE_ADDR'];
+		return WC_Geolocation::get_ip_address();
 	}
 
 	/**
 	 * clear_centinel_session function.
 	 */
 	public function clear_centinel_session() {
-        WC()->session->set( "paypal_pro_orderid", null );
-	    WC()->session->set( "Centinel_cmpiMessageResp", null );
-		WC()->session->set( "Centinel_Enrolled", null );
-	    WC()->session->set( "Centinel_TransactionId", null );
-	    WC()->session->set( "Centinel_ACSUrl", null );
-	    WC()->session->set( "Centinel_Payload", null );
-	    WC()->session->set( "Centinel_ErrorNo", null );
-	    WC()->session->set( "Centinel_ErrorDesc", null );
-		WC()->session->set( "Centinel_EciFlag", null );
-	    WC()->session->set( "Centinel_TransactionType", null );
-	    WC()->session->set( 'Centinel_TermUrl', null );
-	    WC()->session->set( 'Centinel_OrderId', null );
+		WC()->session->set( 'Centinel_ErrorNo', null );
+		WC()->session->set( 'Centinel_ErrorDesc', null );
+		WC()->session->set( 'Centinel_TransactionId', null );
+		WC()->session->set( 'Centinel_OrderId', null );
+		WC()->session->set( 'Centinel_Enrolled', null );
+		WC()->session->set( 'Centinel_ACSUrl', null );
+		WC()->session->set( 'Centinel_Payload', null );
+		WC()->session->set( 'Centinel_EciFlag', null );
+		WC()->session->set( 'Centinel_card_start_month', null );
+		WC()->session->set( 'Centinel_card_start_year', null );
     }
 
     /**

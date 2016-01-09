@@ -131,7 +131,7 @@ class GFFormDetail {
 			$form['fields'] = array();
 		}
 
-		$form = gf_apply_filters( 'gform_admin_pre_render', $form_id, $form );
+		$form = gf_apply_filters( array( 'gform_admin_pre_render', $form_id ), $form );
 
 		if ( isset( $form['id'] ) ) {
 			echo "<script type=\"text/javascript\">var form = " . json_encode( $form ) . ';</script>';
@@ -904,7 +904,7 @@ class GFFormDetail {
 			</label>
 			<?php
 			$args = array( 'name' => 'field_post_author' );
-			$args = gf_apply_filters( 'gform_author_dropdown_args', rgar( $form, 'id' ), $args );
+			$args = gf_apply_filters( array( 'gform_author_dropdown_args', rgar( $form, 'id' ) ), $args );
 			wp_dropdown_users( $args );
 			?>
 			<div>
@@ -1406,7 +1406,7 @@ class GFFormDetail {
 			</div>
 
 			<?php $window_title = __( 'Bulk Add / Predefined Choices', 'gravityforms' ); ?>
-			<input type='button' value='<?php echo esc_attr( $window_title ) ?>' onclick="tb_show('<?php echo esc_js( $window_title ) ?>', '#TB_inline?height=500&amp;width=600&amp;inlineId=gfield_bulk_add', '');" class="button" />
+			<input type='button' value='<?php echo esc_attr( $window_title ) ?>' onclick="tb_show('<?php echo esc_js( $window_title ) ?>', '#TB_inline?height=400&amp;width=600&amp;inlineId=gfield_bulk_add', '');" class="button" />
 
 			<div id="gfield_bulk_add" style="display:none;">
 				<div>
@@ -1437,7 +1437,7 @@ class GFFormDetail {
 						__( 'Size', 'gravityforms' )                        => array( __( 'Extra Small', 'gravityforms' ), __( 'Small', 'gravityforms' ), __( 'Medium', 'gravityforms' ), __( 'Large', 'gravityforms' ), __( 'Extra Large', 'gravityforms' ) ),
 
 					);
-					$predefined_choices = gf_apply_filters( 'gform_predefined_choices', rgar( $form, 'id' ), $predefined_choices );
+					$predefined_choices = gf_apply_filters( array( 'gform_predefined_choices', rgar( $form, 'id' ) ), $predefined_choices );
 
 					$custom_choices = RGFormsModel::get_custom_choices();
 
@@ -1834,6 +1834,13 @@ class GFFormDetail {
 		<div id="gform_tab_3">
             <ul>
 				<?php
+
+				/**
+				 * An action that appears multiple times (labeled with an ID. Eg 0, 20, 50) before each of the setting sections of the appearance settings
+				 *
+				 * @param int # And ID for a certain part of the appearance settings
+				 * @param int $form_id The current form ID
+				 */
 				do_action( 'gform_field_appearance_settings', 0, $form_id );
 				?>
                 <li class="placeholder_setting field_setting">
@@ -2366,7 +2373,11 @@ class GFFormDetail {
 					<?php
 					if ( GFCommon::current_user_can_any( 'gravityforms_delete_forms' ) ) {
 						$trash_link = '<a class="submitdelete" title="' . __( 'Move this form to the trash', 'gravityforms' ) . '" onclick="if(confirm(\'' . __( "Would you like to move this form to the trash? \'Cancel\' to stop. \'OK\' to continue", 'gravityforms' ) . '\')){ gf_vars.isFormTrash = true; jQuery(\'#form_trash\')[0].submit();} else{return false;}">' . __( 'Move to Trash', 'gravityforms' ) . '</a>';
-						$trash_link = apply_filters( 'gform_form_delete_link', $trash_link ); // deprecated
+
+						/**
+						 * @deprecated
+						 */
+						$trash_link = apply_filters( 'gform_form_delete_link', $trash_link );
 
 						/**
 						 * Allows for modification of the Form Trash Link

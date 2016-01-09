@@ -2,7 +2,7 @@
 function ewww_image_optimizer_webp_migrate_preview() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 ?>	<div class="wrap"> 
-	<div id="icon-upload" class="icon32"><br /></div><h2><?php _e('Migrate WebP Images', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h2>
+	<div id="icon-upload" class="icon32"><br /></div><h1><?php _e('Migrate WebP Images', EWWW_IMAGE_OPTIMIZER_DOMAIN); ?></h1>
 <?php		_e( 'The migration is split into two parts. First, the plugin needs to scan all folders for webp images. Once it has obtained the list of images to rename, it will proceed with the renaming' );
 	$button_text = __('Start Migration', EWWW_IMAGE_OPTIMIZER_DOMAIN);
 	$loading_image = plugins_url('/wpspin.gif', __FILE__);

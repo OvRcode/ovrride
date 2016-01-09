@@ -1,6 +1,6 @@
 <?php
 /**
- * @author https://smashr.org
+ * @author http://slakify.com
  * Plugin: Facebook Page Plugin
  */
 ?>
@@ -9,7 +9,7 @@
 	<div class="crunchlr">
 		<h3>
 			Option Panel to include Likebox into your Post/Page (<a
-				href="http://wordpress.org/plugins/facebook-members/faq/"
+				href="https://wordpress.org/plugins/facebook-page-likebox/faq/"
 				target="_blank">Code</a>)
 		</h3>
 

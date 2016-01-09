@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
 Plugin URI: http://www.woothemes.com/products/paypal-pro/
 Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
-Version: 4.3.7
+Version: 4.4.1
 Author: WooThemes
 Author URI: http://woothemes.com/
 
@@ -33,13 +33,21 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 class WC_PayPal_Pro {
 
 	/**
+	 * PayPal Pro version
+	 */
+	const VERSION = '4.4.0';
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
-
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 
 		if ( is_woocommerce_active() && class_exists( 'WC_Payment_Gateway' ) ) {
+
+			if ( version_compare( get_option( 'woocommerce_paypal_pro_version', 0 ), self::VERSION, '<' ) ) {
+				$this->update();
+			}
 
 			add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
 
@@ -54,15 +62,60 @@ class WC_PayPal_Pro {
 			add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
 			add_action( 'woocommerce_order_status_on-hold_to_cancelled', array( $this, 'cancel_payment' ) );
 			add_action( 'woocommerce_order_status_on-hold_to_refunded', array( $this, 'cancel_payment' ) );
-
 			add_action( 'admin_init', array( $this, 'update_ssl_nag' ) );
-
+			add_action( 'admin_notices', array( $this, 'cardinal_upgrade_notice' ) );
+			add_action( 'wp_ajax_dismiss-notice', array( $this, 'dissmissable_notice_handler' ) );
 		} else {
-
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 		}
+	}
 
-		return true;
+	/**
+	 * Updates version
+	 */
+	public function update() {
+		// 3dsecure update logic
+		if ( version_compare( get_option( 'woocommerce_paypal_pro_version', 0 ), '4.4.0', '<' ) ) {
+			$settings = get_option( 'woocommerce_paypal_pro_settings', array() );
+
+			if ( ! empty( $settings['enabled'] ) && ! empty( $settings['enable_3dsecure'] ) && 'yes' === $settings['enable_3dsecure'] && 'yes' === $settings['enabled'] ) {
+				$settings['enable_3dsecure'] = 'no';
+				update_option( 'woocommerce_paypal_pro_settings', $settings );
+				update_option( 'woocommerce_paypal_pro_cardinal_upgrade_notice', true );
+			}
+		}
+		update_option( 'woocommerce_paypal_pro_version', self::VERSION );
+	}
+
+	/**
+	 * cardinal_upgrade_notice
+	 */
+	public function cardinal_upgrade_notice() {
+		if ( get_option( 'woocommerce_paypal_pro_cardinal_upgrade_notice' ) && current_user_can( 'manage_options' ) ) {
+			echo '<div class="notice error is-dismissible" data-notice-id="cardinal_upgrade_notice">
+				<p>' . __( 'PayPal Pro 4.4.0+ requires the "CC" TransactionType to be enabled on your Cardinal Commerce merchant profile in order to use 3dSecure. Please contact Cardinal support to get your account updated. In the meantime, 3dsecure has been disabled so you can continue to recieve payments. Re-enable it from the settings page once your account has been updated.', 'woocommerce-gateway-paypal-pro' ) . '</p>
+			</div>
+			<script type="text/javascript">
+				jQuery(function() {
+					jQuery(".is-dismissible[data-notice-id]").on("click", function(){
+						jQuery.post( ajaxurl, {
+							action:    "dismiss-notice",
+							notice_id: jQuery( this ).data("notice-id")
+						});
+					});
+				});
+			</script>
+			';
+		}
+	}
+
+	/**
+	 * Remove the notice
+	 */
+	public function dissmissable_notice_handler() {
+		if ( ! empty( $_POST['notice_id'] ) && 'cardinal_upgrade_notice' === $_POST['notice_id'] && current_user_can( 'manage_options' ) ) {
+			delete_option( 'woocommerce_paypal_pro_cardinal_upgrade_notice' );
+		}
 	}
 
 	/**

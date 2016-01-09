@@ -547,7 +547,9 @@ class GFAPI {
 	public static function update_entries( $entries ) {
 
 		foreach ( $entries as $entry ) {
-			$result = self::update_entry( $entry, $entry['id'] );
+			$entry_id = rgar( $entry, 'id' );
+			GFCommon::log_debug( 'Updating entry ' . $entry_id );
+			$result = self::update_entry( $entry, $entry_id );
 			if ( is_wp_error( $result ) ) {
 				return $result;
 			}
@@ -572,7 +574,9 @@ class GFAPI {
 		global $wpdb;
 
 		if ( empty( $entry_id ) ) {
-			$entry_id = absint( $entry['id'] );
+			if ( rgar( $entry, 'id' ) ) {
+				$entry_id = absint( $entry['id'] );
+			}
 		} else {
 			$entry['id'] = absint( $entry_id );
 		}
@@ -630,8 +634,7 @@ class GFAPI {
 		$transaction_type = isset( $entry['transaction_type'] ) ? intval( $entry['transaction_type'] ) : 'NULL';
 
 		$lead_table = GFFormsModel::get_lead_table_name();
-		$result     = $wpdb->query(
-			$wpdb->prepare(
+		$sql = $wpdb->prepare(
 				"
                 UPDATE $lead_table
                 SET
@@ -656,8 +659,8 @@ class GFAPI {
                 WHERE
                 id = %d
                 ", $form_id, $is_starred, $is_read, $ip, $source_url, $user_agent, $currency, $status, $payment_method, $entry_id
-			)
 		);
+		$result     = $wpdb->query( $sql );
 		if ( false === $result ) {
 			return new WP_Error( 'update_entry_properties_failed', __( 'There was a problem while updating the entry properties', 'gravityforms' ), $wpdb->last_error );
 		}
@@ -669,7 +672,7 @@ class GFAPI {
 
 		$form = GFFormsModel::get_form_meta( $form_id );
 
-		$form = gf_apply_filters( 'gform_form_pre_update_entry', $form_id, $form, $entry, $entry_id );
+		$form = gf_apply_filters( array( 'gform_form_pre_update_entry', $form_id ), $form, $entry, $entry_id );
 
 		foreach ( $form['fields'] as $field ) {
 			/* @var GF_Field $field */
@@ -745,7 +748,7 @@ class GFAPI {
 		 * @param array $lead The entry object after being updated.
 		 * @param array $original_entry The entry object before being updated.
 		 */
-		gf_do_action( 'gform_post_update_entry', $form_id, $entry, $original_entry );
+		gf_do_action( array( 'gform_post_update_entry', $form_id ), $entry, $original_entry );
 
 		return true;
 	}
@@ -787,7 +790,7 @@ class GFAPI {
 		$is_starred     = isset( $entry['is_starred'] ) ? $entry['is_starred'] : 0;
 		$is_read        = isset( $entry['is_read'] ) ? $entry['is_read'] : 0;
 		$ip             = isset( $entry['ip'] ) ? $entry['ip'] : GFFormsModel::get_ip();
-		$source_url     = isset( $entry['source_url'] ) ? $entry['source_url'] : GFFormsModel::get_current_page_url();
+		$source_url     = isset( $entry['source_url'] ) ? $entry['source_url'] : esc_url_raw( GFFormsModel::get_current_page_url() );
 		$user_agent     = isset( $entry['user_agent'] ) ? $entry['user_agent'] : 'API';
 		$currency       = isset( $entry['currency'] ) ? $entry['currency'] : GFCommon::get_currency();
 		$payment_status = isset( $entry['payment_status'] ) ? sprintf( "'%s'", esc_sql( $entry['payment_status'] ) ) : 'NULL';
@@ -862,6 +865,19 @@ class GFAPI {
 				}
 			}
 		}
+
+        // Refresh the entry
+        $entry = GFAPI::get_entry( $entry['id'] );
+
+        /**
+		 * Fires after the Entry is added using the API.
+         *
+         * @since  1.9.14.26
+		 *
+		 * @param array $entry
+         * @param array $form
+		 */
+		do_action( 'gform_post_add_entry', $entry, $form );
 
 		return $entry_id;
 	}
@@ -1230,18 +1246,18 @@ class GFAPI {
 			}
 
 			if ( $event == 'form_submission' ) {
-				if ( rgar( $notification, 'type' ) == 'user' && gf_apply_filters( 'gform_disable_user_notification', $form['id'], false, $form, $entry ) ) {
+				if ( rgar( $notification, 'type' ) == 'user' && gf_apply_filters( array( 'gform_disable_user_notification', $form['id'] ), false, $form, $entry ) ) {
 					GFCommon::log_debug( "GFAPI::send_notifications(): Notification is disabled by gform_disable_user_notification hook, not including notification (#{$notification['id']} - {$notification['name']})." );
 					//skip user notification if it has been disabled by a hook
 					continue;
-				} elseif ( rgar( $notification, 'type' ) == 'admin' && gf_apply_filters( 'gform_disable_admin_notification', $form['id'], false, $form, $entry ) ) {
+				} elseif ( rgar( $notification, 'type' ) == 'admin' && gf_apply_filters( array( 'gform_disable_admin_notification', $form['id'] ), false, $form, $entry ) ) {
 					GFCommon::log_debug( "GFAPI::send_notifications(): Notification is disabled by gform_disable_admin_notification hook, not including notification (#{$notification['id']} - {$notification['name']})." );
 					//skip admin notification if it has been disabled by a hook
 					continue;
 				}
 			}
 
-			if ( gf_apply_filters( 'gform_disable_notification', $form['id'], false, $notification, $form, $entry ) ) {
+			if ( gf_apply_filters( array( 'gform_disable_notification', $form['id'] ), false, $notification, $form, $entry ) ) {
 				GFCommon::log_debug( "GFAPI::send_notifications(): Notification is disabled by gform_disable_notification hook, not including notification (#{$notification['id']} - {$notification['name']})." );
 				//skip notifications if it has been disabled by a hook
 				continue;

@@ -15,10 +15,12 @@ class SSLInsecureContentFixerAdmin {
 		add_action('load-tools_page_ssl-insecure-content-fixer-tests', array($this, 'setNonceCookie'));
 		add_action('load-settings_page_ssl-insecure-content-fixer', array($this, 'setNonceCookie'));
 		add_action('admin_print_styles-settings_page_ssl-insecure-content-fixer', array($this, 'printStylesSettings'));
+		add_action('admin_print_styles-tools_page_ssl-insecure-content-fixer-tests', array($this, 'printStylesTests'));
 		add_action('admin_menu', array($this, 'adminMenu'));
 		add_action('network_admin_menu', array($this, 'adminMenuNetwork'));
 		add_filter('plugin_row_meta', array($this, 'pluginDetailsLinks'), 10, 2);
 		add_action('plugin_action_links_' . SSLFIX_PLUGIN_NAME, array($this, 'pluginActionLinks'));
+		add_action('wp_ajax_sslfix-test-https', array($this, 'ajaxTestHTTPS'));
 	}
 
 	/**
@@ -44,6 +46,15 @@ class SSLInsecureContentFixerAdmin {
 	}
 
 	/**
+	* load CSS for tests page
+	*/
+	public function printStylesTests() {
+		echo "<style>\n";
+		require SSLFIX_PLUGIN_ROOT . 'css/tests.css';
+		echo "</style>\n";
+	}
+
+	/**
 	* add plugin details links on plugins page
 	*/
 	public function pluginDetailsLinks($links, $file) {
@@ -62,7 +73,7 @@ class SSLInsecureContentFixerAdmin {
 			$links[] = sprintf('<a href="https://ssl.webaware.net.au/" target="_blank">%s</a>', _x('Instructions', 'plugin details links', 'ssl-insecure-content-fixer'));
 			$links[] = sprintf('<a href="https://wordpress.org/support/plugin/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Get help', 'plugin details links', 'ssl-insecure-content-fixer'));
 			$links[] = sprintf('<a href="https://wordpress.org/plugins/ssl-insecure-content-fixer/" target="_blank">%s</a>', _x('Rating', 'plugin details links', 'ssl-insecure-content-fixer'));
-			$links[] = sprintf('<a href="https://translate.webaware.com.au/projects/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Translate', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://translate.wordpress.org/projects/wp-plugins/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Translate', 'plugin details links', 'ssl-insecure-content-fixer'));
 			$links[] = sprintf('<a href="http://shop.webaware.com.au/donations/?donation_for=SSL+Insecure+Content+Fixer" target="_blank">%s</a>', _x('Donate', 'plugin details links', 'ssl-insecure-content-fixer'));
 		}
 
@@ -162,7 +173,7 @@ class SSLInsecureContentFixerAdmin {
 
 		wp_enqueue_script('sslfix-admin-settings', plugins_url("js/admin-settings$min.js", SSLFIX_PLUGIN_FILE), array('jquery'), $ver, true);
 		wp_localize_script('sslfix-admin-settings', 'sslfix', array(
-			'ajax_url'		=> $ajax_url,
+			'ajax_url_wp'	=> ssl_insecure_content_fix_url(admin_url('admin-ajax.php')),
 			'ajax_url_ssl'	=> ssl_insecure_content_fix_url($ajax_url),
 			'msg'			=> array(
 									'recommended'		=> _x('* detected as recommended setting', 'proxy settings', 'ssl-insecure-content-fixer'),
@@ -226,7 +237,7 @@ class SSLInsecureContentFixerAdmin {
 
 		wp_enqueue_script('sslfix-admin-settings', plugins_url("js/admin-tests$min.js", SSLFIX_PLUGIN_FILE), array('jquery'), $ver, true);
 		wp_localize_script('sslfix-admin-settings', 'sslfix', array(
-			'ajax_url'		=> $ajax_url,
+			'ajax_url_wp'	=> ssl_insecure_content_fix_url(admin_url('admin-ajax.php')),
 			'ajax_url_ssl'	=> ssl_insecure_content_fix_url($ajax_url),
 		));
 	}
@@ -268,6 +279,14 @@ class SSLInsecureContentFixerAdmin {
 		}
 
 		return $is_network_activated;
+	}
+
+	/**
+	* AJAX handler for testing HTTPS detection within WordPress
+	*/
+	public function ajaxTestHTTPS() {
+		$response = array('https' => (is_ssl() ? 'yes' : 'no'));
+		wp_send_json($response);
 	}
 
 }

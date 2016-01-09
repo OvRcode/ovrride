@@ -1,6 +1,6 @@
 <?php
 /**
- * @author https://smashr.org
+ * @author http://slakify.com
  * Plugin: Facebook Page Plugin
  */
 ?>

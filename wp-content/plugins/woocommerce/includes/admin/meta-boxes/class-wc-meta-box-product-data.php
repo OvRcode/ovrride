@@ -851,14 +851,12 @@ class WC_Meta_Box_Product_Data {
 
 		// Unique SKU
 		$sku     = get_post_meta( $post_id, '_sku', true );
-		$new_sku = wc_clean( stripslashes( $_POST['_sku'] ) );
+		$new_sku = wc_clean( $_POST['_sku'] );
 
 		if ( '' == $new_sku ) {
 			update_post_meta( $post_id, '_sku', '' );
 		} elseif ( $new_sku !== $sku ) {
-
 			if ( ! empty( $new_sku ) ) {
-
 				$unique_sku = wc_product_has_unique_sku( $post_id, $new_sku );
 
 				if ( ! $unique_sku ) {
@@ -1177,7 +1175,7 @@ class WC_Meta_Box_Product_Data {
 
 						// Validate the file extension
 						if ( in_array( $file_is, array( 'absolute', 'relative' ) ) ) {
-							$file_type  = wp_check_filetype( strtok( $file_url, '?' ) );
+							$file_type  = wp_check_filetype( strtok( $file_url, '?' ), $allowed_file_types );
 							$parsed_url = parse_url( $file_url, PHP_URL_PATH );
 							$extension  = pathinfo( $parsed_url, PATHINFO_EXTENSION );
 
@@ -1338,12 +1336,11 @@ class WC_Meta_Box_Product_Data {
 
 				// Unique SKU
 				$sku     = get_post_meta( $variation_id, '_sku', true );
-				$new_sku = wc_clean( stripslashes( $variable_sku[ $i ] ) );
+				$new_sku = wc_clean( $variable_sku[ $i ] );
 
 				if ( '' == $new_sku ) {
 					update_post_meta( $variation_id, '_sku', '' );
 				} elseif ( $new_sku !== $sku ) {
-
 					if ( ! empty( $new_sku ) ) {
 						$unique_sku = wc_product_has_unique_sku( $variation_id, $new_sku );
 
@@ -1463,7 +1460,7 @@ class WC_Meta_Box_Product_Data {
 
 							// Validate the file extension
 							if ( in_array( $file_is, array( 'absolute', 'relative' ) ) ) {
-								$file_type  = wp_check_filetype( strtok( $file_url, '?' ) );
+								$file_type  = wp_check_filetype( strtok( $file_url, '?' ), $allowed_file_types );
 								$parsed_url = parse_url( $file_url, PHP_URL_PATH );
 								$extension  = pathinfo( $parsed_url, PATHINFO_EXTENSION );
 

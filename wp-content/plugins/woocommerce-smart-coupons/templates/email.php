@@ -60,8 +60,7 @@ $coupon_data = $this->get_coupon_meta_data( $coupon );
 	$coupon_target = '';
 	$wc_url_coupons_active_urls = get_option( 'wc_url_coupons_active_urls' );
 	if ( !empty( $wc_url_coupons_active_urls ) ) {
-		$coupon = get_page_by_title( strtolower( $coupon_code ), 'ARRAY_A', 'shop_coupon' );
-		$coupon_target = ( !empty( $wc_url_coupons_active_urls[ $coupon['ID'] ]['url'] ) ) ? $wc_url_coupons_active_urls[ $coupon['ID'] ]['url'] : '';
+		$coupon_target = ( !empty( $wc_url_coupons_active_urls[ $coupon->id ]['url'] ) ) ? $wc_url_coupons_active_urls[ $coupon->id ]['url'] : '';
 	}
 	if ( !empty( $coupon_target ) ) {
 		$coupon_target = home_url( '/' . $coupon_target );

@@ -1,9 +1,9 @@
 === Facebook Page Plugin (Likebox) ===
-Contributors: Smashr
-Tags: Facebook, Facebook Like Box, Facebook Page Plugin, Facebook Widget, Social Media, Like box, Facebook, Plugin, Facebook Plugin, Smashr, Smashr.org
-Requires at least: 4.0
-Tested up to: 4.2.4
-Stable tag: 1.5
+Contributors: Slakify
+Tags: Facebook, Facebook Like Box, Facebook Page Plugin, Strikable, Facebook Widget, Social Media, Like box, Facebook, Plugin, Facebook Plugin, Strikable
+Requires at least: 4.2
+Tested up to: 4.4
+Stable tag: 1.7
 License: GPLv2 or later
 
 THE Simplest way to bring Facebook Page Plugin to WordPress with lot more Options. 
@@ -15,9 +15,9 @@ See how many users already like your Facebook page, and which of their friends l
 
 Subscribe to Twitter and Facebook to get **latest update**:
 
-[Twitter](http://twitter.com/SmashrOrg) |
-[Facebook](https://www.facebook.com/pages/Smashrorg/399799783540503) |
-[Feedback](https://smashr.org/facebook-page-plugin-likebox-for-wordpress/)
+[Twitter](https://twitter.com/Slakify) |
+[Facebook](https://www.facebook.com/Slakify) |
+[Feedback](http://slakify/facebook-page-plugin-likebox-for-wordpress/)
 
 **Features**
 
@@ -27,7 +27,7 @@ Subscribe to Twitter and Facebook to get **latest update**:
 * Show Like Box in `Sidebar/Widget Area`.
 * Option to specify Width, Height.
 
-Tags: Facebook, Facebook Like Box, Facebook Page Plugin, Facebook Widget, Social Media, Like box, Facebook, Plugin, Facebook Plugin, Smashify, Smashify.co
+Tags: Facebook, Facebook Like Box, Facebook Page Plugin, Facebook Widget, Social Media, Like box, Facebook, Plugin, Facebook Plugin, Strikable
 
 == Installation ==
 1. Unpack the `download-package`.
@@ -46,13 +46,13 @@ Tags: Facebook, Facebook Like Box, Facebook Page Plugin, Facebook Widget, Social
 * Go to `Appearance -> Widgets -> Facebook Page Plugin` and add it into Sidebar.
 
 = Where do I get latest updates on plugin? =
-* On <a href="http://twitter.com/SmashrOrg” target="_blank">Twitter</a> and <a href="https://www.facebook.com/pages/Smashrorg/399799783540503" target="_blank">Facebook</a>.
+* On <a href="https://twitter.com/Slakify" target="_blank">Twitter</a> and <a href="https://www.facebook.com/Slakify" target="_blank">Facebook</a>.
 
 = What should I put in page name section? =
 * You need to provide your Facebook Page’s complete URL.
 
 = Got a Question? =
-* Please report your questions or bugs at Plugin <a href="https://smashr.org/facebook-page-plugin-likebox-for-wordpress/" target="_blank">Homepage</a>.
+* Please report your questions or bugs at Plugin <a href="http://slakify/facebook-page-plugin-likebox-for-wordpress/" target="_blank">Homepage</a>.
 
 == Screenshots ==
 1. Admin Panel: Widget/Sidebar Likebox Option
@@ -62,17 +62,5 @@ Tags: Facebook, Facebook Like Box, Facebook Page Plugin, Facebook Widget, Social
 
 == Changelog == 
 
-= 1.5 =
-* Admin panel update
-* You may need to enter field details again. After update please make sure that's correct.
-
-= 1.4 =
-* Minor bug fixes
-
-= 1.1 =
-* Plugin homepage change
-* Bug fixes
-
-= 1.0 =
-* Initial Release
-* Fully featured Facebook Page Plugin
+= 1.7 =
+* Compatibility with upcoming WP release 4.4

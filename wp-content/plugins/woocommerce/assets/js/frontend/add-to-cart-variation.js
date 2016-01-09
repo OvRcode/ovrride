@@ -58,12 +58,20 @@
 			var $product_img = $product.find( 'div.images img:eq(0)' ),
 				$product_link = $product.find( 'div.images a.zoom:eq(0)' ),
 				o_src = $product_img.attr( 'data-o_src' ),
+				o_srcset = $product_img.attr( 'data-o_srcset' ),
+				o_sizes = $product_img.attr( 'data-o_sizes' ),
 				o_title = $product_img.attr( 'data-o_title' ),
 				o_alt = $product_img.attr( 'data-o_title' ),
 				o_href = $product_link.attr( 'data-o_href' );
 
 			if ( o_src !== undefined ) {
 				$product_img.attr( 'src', o_src );
+			}
+			if ( o_srcset !== undefined ) {
+				$product_img.attr( 'srcset', o_srcset );
+			}
+			if ( o_sizes !== undefined ) {
+				$product_img.attr( 'sizes', o_sizes );
 			}
 			if ( o_href !== undefined ) {
 				$product_link.attr( 'href', o_href );
@@ -157,6 +165,8 @@
 			var $product_img = $product.find( 'div.images img:eq(0)' ),
 				$product_link = $product.find( 'div.images a.zoom:eq(0)' ),
 				o_src = $product_img.attr( 'data-o_src' ),
+				o_srcset = $product_img.attr( 'data-o_srcset' ),
+				o_sizes = $product_img.attr( 'data-o_sizes' ),
 				o_title = $product_img.attr( 'data-o_title' ),
 				o_alt = $product_img.attr( 'data-o_alt' ),
 				o_href = $product_link.attr( 'data-o_href' ),
@@ -170,6 +180,16 @@
 			if ( o_src === undefined ) {
 				o_src = ( ! $product_img.attr( 'src' ) ) ? '' : $product_img.attr( 'src' );
 				$product_img.attr( 'data-o_src', o_src );
+			}
+
+			if ( o_srcset === undefined ) {
+				o_srcset = ( ! $product_img.attr( 'srcset' ) ) ? '' : $product_img.attr( 'srcset' );
+				$product_img.attr( 'data-o_srcset', o_srcset );
+			}
+
+			if ( o_sizes === undefined ) {
+				o_sizes = ( ! $product_img.attr( 'sizes' ) ) ? '' : $product_img.attr( 'sizes' );
+				$product_img.attr( 'data-o_sizes', o_sizes );
 			}
 
 			if ( o_href === undefined ) {
@@ -190,6 +210,8 @@
 			if ( variation_image && variation_image.length > 1 ) {
 				$product_img
 					.attr( 'src', variation_image )
+					.attr( 'srcset', variation.image_srcset )
+					.attr( 'sizes', variation.image_sizes )
 					.attr( 'alt', variation_title )
 					.attr( 'title', variation_title );
 				$product_link
@@ -198,6 +220,8 @@
 			} else {
 				$product_img
 					.attr( 'src', o_src )
+					.attr( 'srcset', o_srcset )
+					.attr( 'sizes', o_sizes )
 					.attr( 'alt', o_alt )
 					.attr( 'title', o_title );
 				$product_link
@@ -496,12 +520,17 @@
 	$.fn.wc_variations_description_update = function( variation_description ) {
 		var $form                   = this;
 		var $variations_description = $form.find( '.woocommerce-variation-description' );
+		var $single_variation_wrap  = $form.find( '.single_variation_wrap' );
 
 		if ( $variations_description.length === 0 ) {
 			if ( variation_description ) {
 				// add transparent border to allow correct height measurement when children have top/bottom margins
-				$form.find( '.single_variation_wrap' ).prepend( $( '<div class="woocommerce-variation-description" style="border:1px solid transparent;">' + variation_description + '</div>' ).hide() );
-				$form.find( '.woocommerce-variation-description' ).slideDown( 200 );
+				$single_variation_wrap.prepend( $( '<div class="woocommerce-variation-description" style="border:1px solid transparent;">' + variation_description + '</div>' ).hide() );
+				if ( $single_variation_wrap.is( ':visible' ) ) {
+					$form.find( '.woocommerce-variation-description' ).slideDown( 200 );
+				} else {
+					$form.find( '.woocommerce-variation-description' ).show();
+				}
 			}
 		} else {
 			var load_height    = $variations_description.outerHeight( true );
