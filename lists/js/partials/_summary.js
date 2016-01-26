@@ -124,8 +124,8 @@ function parsePackages(custPackage){
     var allArea       = new RegExp(/all area/i);
     var weekendLift   = new RegExp(/^lift/i);
     var weekendLift2  = new RegExp(/Balance \(lift/i);
-    var ltr           = new RegExp(/beginner lift area.*bus.*lesson.*board/i);
-    var lts           = new RegExp(/beginner lift area.*bus.*lesson.*ski/i);
+    var ltr           = new RegExp(/beginner.*lift.*bus.*lesson.*board/i);
+    var lts           = new RegExp(/beginner.*lift.*bus.*lesson.*ski/i);
     var progLesson    = new RegExp(/prog.* lesson/i);
     var ski           = new RegExp(/ski rental/i);
     var brd           = new RegExp(/board rental/i);
@@ -137,7 +137,7 @@ function parsePackages(custPackage){
     var roundTrip          = new RegExp(/round trip bus/i);
     var beachDay           = new RegExp(/day at the beach package/i);
     var beachSurf          = new RegExp(/surf lesson/i);
-    
+
     // Check summer packages then bus/Lift options
     if ( beachSurf.test(custPackage) ) {
         addPackage("Surf Lesson");
@@ -159,7 +159,7 @@ function parsePackages(custPackage){
     }
     else if ( bus.test(custPackage) ) {
         addPackage("Bus Only");
-    } else if ( begLiftLesson.test(custPackage) ) {
+    } else if ( begLiftLesson.test(custPackage) && ! ltr.test(custPackage) && ! lts.test(custPackage) ) {
         addPackage("Beginner Lift and Lesson");
     } else if ( allArea.test(custPackage) ) {
         addPackage("All Area Lift");
@@ -174,11 +174,11 @@ function parsePackages(custPackage){
     } else if ( progLesson.test(custPackage) ) {
         addPackage("Progressive Lesson");
     }
-  
+
     if ( ski.test(custPackage) && !lts.test(custPackage) ) {
         addPackage("Ski Rental");
     } else if ( brd.test(custPackage) && !ltr.test(custPackage) ) {
-        addPackage("Board Rental");
+        addPackage("Board Rental");        
     }
   // REI Lunch Vouchers
     if ( lunch.test(custPackage) ) {

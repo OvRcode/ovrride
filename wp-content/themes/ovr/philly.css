@@ -1088,6 +1088,7 @@ input[type="submit"] {
   color: #ffffff;
 }
 .book-btn a:hover {
+  color: #ffffff;
   text-decoration: none;
   text-align: center;
   text-shadow: 0 1px 1px #000000;
@@ -1182,7 +1183,7 @@ input[type="submit"] {
   margin-top: 3px;
 }
 .book-btn-smll:hover {
-  color: #333333;
+  color: #ffffff;
   text-decoration: none;
   background-color: #74233d;
   *background-color: #74233d;
