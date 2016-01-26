@@ -1191,11 +1191,13 @@ payment_methods methods {
   color: @book_btn_color;
 }
 .book-btn  a:hover {
-  color: @book_btn_color;
 	text-decoration:none;
 	text-align: center;
 	text-shadow: 0 1px 1px @book_btn_hover_shadow;
 	cursor: pointer;
+}
+.book-btn a:visited {
+  color: @book_btn_color;
 }
 .book-btn {
 	white-space:nowrap;
@@ -1297,6 +1299,9 @@ payment_methods methods {
 	-ms-transition: background-position 0.1s linear;
 	-o-transition: background-position 0.1s linear;
 	transition: background-position 0.1s linear;
+}
+.book-btn-smll:visited {
+  color: @book_btn_color;
 }
 .book-btn-smll:active {
 	background-color: @primary;

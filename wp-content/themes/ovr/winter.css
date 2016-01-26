@@ -1088,11 +1088,13 @@ input[type="submit"] {
   color: #333333;
 }
 .book-btn a:hover {
-  color: #333333;
   text-decoration: none;
   text-align: center;
   text-shadow: 0 1px 1px default;
   cursor: pointer;
+}
+.book-btn a:visited {
+  color: #333333;
 }
 .book-btn {
   white-space: nowrap;
@@ -1194,6 +1196,9 @@ input[type="submit"] {
   -ms-transition: background-position 0.1s linear;
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
+}
+.book-btn-smll:visited {
+  color: #333333;
 }
 .book-btn-smll:active {
   background-color: #09bdeb;
