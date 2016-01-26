@@ -1088,6 +1088,7 @@ input[type="submit"] {
   color: #333333;
 }
 .book-btn a:hover {
+  color: #333333;
   text-decoration: none;
   text-align: center;
   text-shadow: 0 1px 1px default;
