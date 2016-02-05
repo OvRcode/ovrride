@@ -214,7 +214,7 @@ class WC_Trips_Admin {
 
     public function render_pickup_meta_boxes( $post ) {
         $nonce      = wp_create_nonce( 'pickup_location'.$post->ID );
-        $time       = get_post_meta( $post->ID, '_pickup_location_time', true);
+        $time       = date("H:i", strtotime(get_post_meta( $post->ID, '_pickup_location_time', true)));
         $address    = get_post_meta( $post->ID, '_pickup_location_address', true);
         $cross_st   = get_post_meta( $post->ID, '_pickup_location_cross_st', true);
         $cost       = get_post_meta( $post->ID, '_pickup_location_cost', true);
