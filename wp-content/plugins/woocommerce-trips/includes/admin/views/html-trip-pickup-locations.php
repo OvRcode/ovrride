@@ -16,7 +16,7 @@
                     'orderby'        => 'menu_order',
                     'order'          => 'asc'
                 ) );
-                
+
                 $pickup_locations = get_post_meta( $post->ID, '_wc_trip_pickups', true);
                 $count = 0;
                 if ( gettype($pickup_locations) == "array" ){
@@ -24,13 +24,13 @@
                         $location = get_post( $location_id );
                         $location_time = get_post_meta( $location_id, '_pickup_location_time', true);
                         if ( $location_time ) {
-                            $location_time = " - " . date("g:i a", strtotime($location_time));
+                            $location_time = " at " . date("g:i a", strtotime($location_time));
                         } else {
                             $location_time = "";
                         }
-                        
+
                         include('html-trip-pickup-location.php');
-                        
+
                         $count++;
                     }
                 }
@@ -50,7 +50,7 @@
                             if ( ! in_array($pickup->ID, $pickup_locations) ) {
                                 $time = get_post_meta( $pickup->ID, '_pickup_location_time', true);
                                 if ( $time) {
-                                    $time = " - " . date("g:i a", strtotime($time));
+                                    $time = " at " . date("g:i a", strtotime($time));
                                 } else {
                                     $time = "";
                                 }
