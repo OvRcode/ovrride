@@ -20,12 +20,12 @@ BBB;
 		$message->html = $bodyHTML;
 		$message->text = $bodyText;
 		$message->subject = "Failed Email to " . $value['msg']['email'];
-		$message->from_email = "info@ovrride.com.com";
-		$message->from_name  = "OvR";                                                                                                                                  
-		$message->to = array(array("email" => "devops@ovrride.com"));                                                                                                   
-		$message->track_opens = true;                                                                                                                                  
+		$message->from_email = "info@ovrride.com";
+		$message->from_name  = "OvR";
+		$message->to = array(array("email" => "devops@ovrride.com"));
+		$message->track_opens = true;
 
-		$response = $mandrillAPI->messages->send($message); 
+		$response = $mandrillAPI->messages->send($message);
 	}
 }
 /*$event = $mandrill['event'];
