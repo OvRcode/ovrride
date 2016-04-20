@@ -79,8 +79,8 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 		$columns = array(
 			'product_name' => __( 'Product', 'woothemes-updater' ),
 			'product_version' => __( 'Version', 'woothemes-updater' ),
-			'product_status' => __( 'License Key', 'woothemes-updater' ),
-			'product_expiry' => __( 'License Expiry Date', 'woothemes-updater' )
+			'product_status' => __( 'Key', 'woothemes-updater' ),
+			'product_expiry' => __( 'Renews On', 'woothemes-updater' )
 		);
 		 return $columns;
 	} // End get_columns()
@@ -102,7 +102,13 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	 * @return string       The content of this column.
 	 */
 	public function column_product_version ( $item ) {
-		return wpautop( $item['product_version'] );
+		if ( isset( $item['latest_version'], $item['product_version'] ) && version_compare( $item['product_version'], $item['latest_version'], '<' ) ) {
+			$version_text = '<strong>' . $item['product_version'] . '<span class="update-available"> - ' . sprintf( __( 'version %1$s available', 'woothemes-updater' ), esc_html( $item['latest_version'] ) ) .  '</span></strong>' . "\n";
+		} else {
+			$version_text = '<strong class="latest-version">' . $item['product_version'] . '</strong>' . "\n";
+		}
+
+		return wpautop( $version_text );
 	} // End column_product_version()
 
 	/**
@@ -117,27 +123,21 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 			$deactivate_url = wp_nonce_url( add_query_arg( 'action', 'deactivate-product', add_query_arg( 'filepath', $item['product_file_path'], add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) ) ) ), 'bulk-licenses' );
 			$response = '<a href="' . esc_url( $deactivate_url ) . '">' . __( 'Deactivate', 'woothemes-updater' ) . '</a>' . "\n";
 		} else {
-			$response .= '<input name="license_keys[' . esc_attr( $item['product_file_path'] ) . ']" id="license_keys-' . esc_attr( $item['product_file_path'] ) . '" type="text" value="" size="37" aria-required="true" placeholder="' . esc_attr( sprintf( __( 'Place %s license key here', 'woothemes-updater' ), $item['product_name'] ) ) . '" />' . "\n";
+			$response .= '<input name="license_keys[' . esc_attr( $item['product_file_path'] ) . ']" id="license_keys-' . esc_attr( $item['product_file_path'] ) . '" type="text" value="" size="37" aria-required="true" placeholder="' . esc_attr__( 'Place your subscription key here', 'woothemes-updater' ) . '" />' . "\n";
 		}
 
 		return $response;
 	} // End column_status()
 
-	public function column_product_expiry( $item ) {
-		if ( '-' <> $item['license_expiry'] && 'Please activate' <> $item['license_expiry'] ) {
-			$renew_link = add_query_arg( array( 'utm_source' => 'product', 'utm_medium' => 'upsell', 'utm_campaign' => 'licenserenewal' ), 'https://www.woothemes.com/my-account/my-licenses/' );
+	public function column_product_expiry ( $item ) {
+		if ( '-' != $item['license_expiry'] && 'Please activate' != $item['license_expiry'] ) {
+			$renew_link = add_query_arg( array( 'utm_source' => 'product', 'utm_medium' => 'upsell', 'utm_campaign' => 'licenserenewal' ), 'https://www.woothemes.com/my-account/my-subscriptions/' );
 			$date = new DateTime( $item['license_expiry'] );
 			$date_string = $date->format( get_option( 'date_format' ) );
 
-			if ( current_time( 'timestamp' ) > strtotime( '-60 day', $date->format( 'U' ) ) && current_time( 'timestamp' ) < strtotime( '+4 day', $date->format( 'U' ) ) ) {
-				$date_string .= ' ' . sprintf( __( '%s(Renew @ 50%% off)</a>', 'woothemes-updater' ), '<a href="' . $renew_link . '">', '</a>' );
-			} elseif ( current_time( 'timestamp' ) > $date->format( 'U' ) ) {
-				$date_string .= ' ' . sprintf( __( '%s(Renew)</a>', 'woothemes-updater' ), '<a href="' . $renew_link . '">', '</a>' );
-			}
-
 			return $date_string;
 		}
-		return $item['license_expiry'];
+		return esc_html( $item['license_expiry'] );
 	}
 
 	/**

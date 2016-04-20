@@ -1,5 +1,17 @@
 *** WooThemes Helper Changelog ***
 
+2016.04.18 - version 1.6.2
+ * Fix - Ensure no subscription renewal messages after a subscription was renewed.
+
+2016.03.24 - version 1.6.1
+ * Fix - Ensures the JavaScript for the admin screens is enqueued correctly, to avoid conflicts with other admin screens (for example, undraggable widgets).
+
+2016.03.09 - version 1.6.0
+ * Fix - Ensures inline plugin updates work as expected.
+ * New - Adds a version check on the hosted changelog.txt file, to notify of updates regardless of activation.
+ * New - Adjusts all wording to reflect how WooThemes.com now handles "product subscriptions".
+ * Fix - Adjusts how the "renew your subscription" admin notice presents itself, and ensure it can be correctly dismissed.
+
 2015.07.07 - version 1.5.9
  * Fix - Deactivate/Activate nonce check fail on network installs
 

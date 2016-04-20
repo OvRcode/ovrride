@@ -10,10 +10,10 @@
 admin.css
 Gravity Forms Administration Styles
 http: //www.gravityforms.com
-updated: August 21, 2015 12:05 PM
+updated: February 4, 2016 4:08 PM EST
 
 Gravity Forms is a Rocketgenius project
-copyright 2008-2015 Rocketgenius Inc.
+copyright 2008-2016 Rocketgenius Inc.
 http: //www.rocketgenius.com
 this may not be re-distrubited without the
 express written permission of the author.
@@ -26,7 +26,29 @@ AND ANY CHANGES MADE HERE WILL BE OVERWRITTEN.
 */
 
 * {
-	direction: ltr
+	direction: ltr;
+}
+
+#gform_fields * {
+	box-sizing: border-box;
+}
+
+.gf_admin_notice {
+    background-color: #fff;
+    border-left: 4px solid #ffba00;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    font-size: 14px;
+    line-height: 19px;
+    margin: 25px 20px 0 2px;
+    padding: 11px 15px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.gf_help_content,
+.gf_help_content p {
+	line-height: 1.6;
 }
 
 input,
@@ -78,6 +100,10 @@ table.xwidefat {
 	width: 99% !important;
 }
 
+div.wrap {
+	position: relative;
+}
+
 .hr-divider {
 	background-color: #FFF;
 	height: 1px;
@@ -105,15 +131,11 @@ div.gforms_help_alert {
 }
 
 div.gforms_helpbox {
-	border: 1px solid #D2E0EB;
-	background-color: #E2EDFF;
+	background-color: #fff;
 	margin: 10px 0;
-	padding: 10px;
-	width: 520px;
-	font-size: 13px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+	padding: 15px 15px 11px 15px;
+	font-size: 14px;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 div.gforms_helpbox select {
@@ -125,7 +147,17 @@ div.gforms_helpbox ul.resource_list {
 }
 
 div.gforms_helpbox ul.resource_list li {
-	margin: 0 0 6px !important;
+	margin: 0 0 12px !important;
+}
+
+div.gforms_helpbox ul.resource_list li a {
+	text-decoration: none;
+	margin-left: 2px;
+}
+
+div.gforms_helpbox ul.resource_list li a:hover,
+div.gforms_helpbox ul.resource_list li a:active {
+	text-decoration: underline;
 }
 
 div.gforms_code {
@@ -425,64 +457,25 @@ img#gfield_input_datepicker_icon {
 	font-size: .8rem;
 }
 
-.ginput_complex .name_prefix {
-	display: block;
-	width: auto;
-	clear: right;
-}
+/* fixing the name field so it aligns properly */
+div.ginput_container_name span { display: -moz-inline-stack; display: inline-block; vertical-align: top; padding-right: 16px; margin-right: -4px;}
+div.ginput_container_name span:last-child {padding-right:0;}
+div.ginput_complex.ginput_container.gf_name_has_1 span {width: 100%;}
+div.ginput_complex.ginput_container.gf_name_has_2 span {width: 50%;}
+div.ginput_complex.ginput_container.gf_name_has_3 span {width: 33.3%;}
+div.ginput_complex.ginput_container.gf_name_has_4 span {width: 25%;}
+div.ginput_complex.ginput_container.gf_name_has_5 span {width: 19.95%;}
+div.ginput_complex.ginput_container.gf_name_has_2 span:first-child,
+div.ginput_complex.ginput_container.gf_name_has_3 span:first-child,
+div.ginput_complex.ginput_container.gf_name_has_4 span:first-child,
+div.ginput_complex.ginput_container.gf_name_has_5 span:first-child {margin-left: 0!important;}
 
-.ginput_complex .name_prefix select {
-    width: 4rem;
-}
-
-.ginput_complex .name_first,
-.ginput_complex .name_middle,
-.ginput_complex .name_last {
-	width: 32%;
-	display: -moz-inline-stack; 
-	display: inline-block; 
-}
-
-.ginput_complex .name_first,
-.ginput_complex .name_middle,
-.ginput_complex .name_last {
-	width: 32%;
-	display: -moz-inline-stack; 
-	display: inline-block; 
-}
-
-.ginput_complex .name_suffix {
-	display: block;
-	width: auto;
-	clear: right;
-}
-
-.ginput_complex .name_suffix input[type=text] {
-	width: 4em !important;
-	display: block;
-	width: auto;
-	clear: left;
-}
-
-.ginput_complex.ginput_container.has_first_name span,
-.ginput_complex.ginput_container.has_middle_name span,
-.ginput_complex.ginput_container.has_last_name span { 
-	width: 99.5% 
-}
-
-.ginput_complex.ginput_container.has_first_name.has_last_name span { 
-	width: 49% 
-}
-
-.ginput_complex.ginput_container.has_first_name.has_middle_name.has_last_name span { 
-	width: 32% 
-}
-
-
+/* adjusting the address field alignment for some scenarios */
+.gform_wrapper .ginput_complex span.ginput_left + input.gform_hidden + span.ginput_left { margin-left: 1.6%; padding-right:0; }
 
 .top_label .gfield_label {
 	display: block;
-	margin: 8px 0 4px 0;
+	margin: 16px 0 8px 0;
 	font-weight: bold;
 }
 
@@ -587,14 +580,14 @@ textarea.textarea {
 }
 
 h2.gsection_title {
-	margin: 0 !important;
+	margin: 16px 0;
 	padding: 0 !important;
 	letter-spacing: normal !important;
 	font-style: normal !important;
 	font-weight: bold;
 	font-size: 16px;
 	font-family: helvetica,arial,sans-serif;
-	width: 98%;
+	width: 100%;
 }
 
 h3.gf_add_fields {
@@ -608,8 +601,8 @@ h3.gf_add_fields {
 }
 
 .gsection_description {
-	width: 98%;
-	font-size: 10px;
+	width: 100%;
+	font-size: 13px;
 	line-height: 1.5;
 	clear: both;
 	padding-top: 4px;
@@ -631,6 +624,11 @@ h3.gf_add_fields {
 
 #notification_logic_type {
 	margin-left: 5px;
+}
+
+/* Prevent field label from extending outside field box. */
+.gfield_label {
+	word-break: break-all;
 }
 
 /* list fields added in v.1.6 -----------------------------------------------------------------*/
@@ -658,7 +656,7 @@ table.gfield_list th {
 
 .gform_wrapper table.gfield_list thead,
 .gform_wrapper table.gfield_list tr {
-	padding: 0; 
+	padding: 0;
 	margin: 0
 }
 
@@ -672,7 +670,7 @@ table.gfield_list th {
 	padding: 0 0 0.5em 0.7em !important
 }
 
-.gform_wrapper .left_label .gfield_list, 
+.gform_wrapper .left_label .gfield_list,
 .gform_wrapper .right_label .gfield_list {
 	width: 64%
 }
@@ -681,7 +679,7 @@ table.gfield_list th {
 	width: 96%
 }
 
-.gform_wrapper .left_label .gf_list_one_column, 
+.gform_wrapper .left_label .gf_list_one_column,
 .gform_wrapper .right_label .gf_list_one_column {
 	width: 45%
 }
@@ -847,7 +845,7 @@ div.gform_admin_icons div.gform_admin_header_title {
 	display: block !important;
 	cursor: pointer;
 	color: #47759B;
-	
+
 	filter: alpha(opacity=50);
 	opacity: 0.5;
 }
@@ -863,7 +861,7 @@ div.gform_admin_icons div.gform_admin_header_title {
 .field_selected .form_edit_icon:hover,
 .field_selected .form_delete_icon:hover {
 	color: #47759B;
-	
+
 	filter: alpha(opacity=100);
 	opacity: 1.0;
 }
@@ -1464,9 +1462,9 @@ div.detail-note-content.gforms_note_error{
 
 
 body.forms_page_gf_entries table.entry-details td.detail-view label.detail-label,.ginput_full_admin label {
-	display: block; 
-	font-weight: bold; 
-	font-size: 13px; 
+	display: block;
+	font-weight: bold;
+	font-size: 13px;
 	margin-bottom: 4px
 }
 
@@ -1556,62 +1554,6 @@ ul#form_autoresponder_container li label {
 #confirmation_list_form .check-column,
 #notification_list_form .check-column {
     width:50px;
-}
-
-.gform-notification-service {
-	display: inline-block;
-	margin-bottom: 5px;
-	text-align: center;
-}
-
-.gform-notification-service input:checked + label > span{
-    -webkit-filter: none;
-    -moz-filter: none;
-    filter: none;
-}
-
-t.gform-notification-service input:checked + label {
-    background-color:white;
-    border: 1px solid #CCCCCC;
-}
-
-.gform-notification-service label > span {
-    background-repeat:no-repeat;
-    display:inline-block;
-    -webkit-transition: all 100ms ease-in;
-    -moz-transition: all 100ms ease-in;
-    transition: all 100ms ease-in;
-    -webkit-filter: brightness(1.8) grayscale(1) opacity(.5);
-    -moz-filter: brightness(1.8) grayscale(1) opacity(.5);
-    filter: brightness(1.8) grayscale(1) opacity(.5);
-}
-
-.gform-notification-service input{
-    display:none;
-}
-
-.gform-notification-service label > span{
-    padding-top:5px;
-    width:130px;
-    height:65px;
-}
-
-.gform-notification-service label > span > img{
-    width:32px;
-    height:32px;
-    margin:5px;
-    vertical-align:middle;
-}
-
-.gform-notification-service label{
-    border:1px solid #EEEEEE;
-    background-color:#F9F9F9;
-}
-
-.gform-notification-service input:not([disabled]):not([checked]) + label > span:hover{
-    -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
-    -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
-    filter: brightness(1.2) grayscale(.5) opacity(.9);
 }
 
 /* set some widths and heights ------------------------------------------------------*/
@@ -2195,8 +2137,8 @@ a.gf_upgrade_link {
   padding: 10px 20px 11px 20px;
   border: solid #c4461c 4px;
   text-decoration: none;
-  display: -moz-inline-stack; 
-  display: inline-block; 
+  display: -moz-inline-stack;
+  display: inline-block;
 }
 
 a.gf_upgrade_link:hover {
@@ -2378,6 +2320,7 @@ li.gform_setting_left_half {
 	margin-right: 2%;
 	display: -moz-inline-stack;
 	display: inline-block;
+	vertical-align: top;
 }
 
 li.gform_setting_right_half {
@@ -2387,6 +2330,7 @@ li.gform_setting_right_half {
 	clear: right;
 	display: -moz-inline-stack;
 	display: inline-block;
+	vertical-align: top;
 }
 
 li.gform_setting_left_half select,
@@ -3135,7 +3079,7 @@ div.gf_entry_wrap #poststuff .inside .updated {
 a.gf_entry_prev_link.gf_entry_pagination_link.gf_entry_pagination_link_inactive,
 a.gf_entry_next_link.gf_entry_pagination_link.gf_entry_pagination_link_inactive {
  	color: #424242;
- 	
+
 	filter: alpha(opacity=20);
 	opacity: 0.2;
 }
@@ -3143,7 +3087,7 @@ a.gf_entry_next_link.gf_entry_pagination_link.gf_entry_pagination_link_inactive 
 a.gf_entry_prev_link.gf_entry_pagination_link.gf_entry_pagination_link_active,
 a.gf_entry_next_link.gf_entry_pagination_link.gf_entry_pagination_link_active {
 	color: #424242;
-	
+
 	filter: alpha(opacity=50);
 	opacity: 0.5;
 }
@@ -3151,7 +3095,7 @@ a.gf_entry_next_link.gf_entry_pagination_link.gf_entry_pagination_link_active {
 a.gf_entry_prev_link.gf_entry_pagination_link.gf_entry_pagination_link_active:hover,
 a.gf_entry_next_link.gf_entry_pagination_link.gf_entry_pagination_link_active:hover {
 	color: #0074A2;
-	
+
 	filter: alpha(opacity=100);
 	opacity: 1.0;
 }

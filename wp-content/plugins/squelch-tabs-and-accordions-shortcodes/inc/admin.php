@@ -31,8 +31,20 @@ if (!empty($_POST['submit']) && $_POST['submit'] == "Save Changes") {
     }
 }
 
+
+// Detect whether a custom theme has been uploaded or not:
+
+$upload_dir = wp_upload_dir();
+$upload_dir = $upload_dir['basedir'];
+$custom_theme_dir = trailingslashit( $upload_dir ) . 'jquery-ui-1.9.2.custom';
+
+$custom_theme_detected = false;
+if (file_exists( $custom_theme_dir )) $custom_theme_detected = true;
+
+
+
 global $squelch_taas_admin_msg;
-$custom_css = get_option('squelch_taas_custom_css_url'          );
+$custom_css = get_option('squelch_taas_custom_css_url');
 
 ?>
 
@@ -45,6 +57,10 @@ $custom_css = get_option('squelch_taas_custom_css_url'          );
     <p>
         Squelch Tabs and Accordions Shortcodes provides shortcodes for adding stylish Web 2.0 style accordions and tabs to your WordPress website: Horizontal accordions, vertical accordions and tabs.
     </p>
+    <a href="http://squelchdesign.com/web-development/free-wordpress-plugins/squelch-tabs-and-accordions-shortcodes/" target="_blank" class="button">Theme Documentation</a>
+    <a href="https://wordpress.org/support/topic/please-read-this-before-you-post-5?replies=2" target="_blank" class="button">Support Forum</a>
+    <a href="https://wordpress.org/plugins/squelch-tabs-and-accordions-shortcodes/" target="_blank" class="button">Rate on WordPress.org</a>
+    <a href="http://squelchdesign.com/uncategorized/roll-theme-squelch-tabs-accordions-shortcodes-plugin/" target="_blank" class="button">How to create a custom theme</a>
     <form method="post" action="">
         <div>
             <table class="form-table">
@@ -60,6 +76,9 @@ $custom_css = get_option('squelch_taas_custom_css_url'          );
                                 <option<?php selected($theme, 'none'); ?> value="none">No jQuery UI theme</option>
                                 <!-- option <?php /*selected($theme, 'custom');*/ ?> value="custom">Use your own custom CSS</option -->
                                 <option<?php selected($theme, 'base'); ?> value="base">jQuery Base Styles Only</option>
+                                <?php if ($custom_theme_detected) : ?>
+                                    <option<?php selected($theme, 'custom'); ?> value="custom">Custom jQuery theme</option>
+                                <?php endif; ?>
                                 <option<?php selected($theme, 'ui-lightness'); ?> value="ui-lightness">Lightness</option>
                                 <option<?php selected($theme, 'ui-darkness'); ?> value="ui-darkness">Darkness</option>
                                 <option<?php selected($theme, 'smoothness'); ?> value="smoothness">Smoothness</option>

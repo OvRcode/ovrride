@@ -17,13 +17,13 @@ class WooThemes_Updater_Update_Checker {
 	 * URL of endpoint to check for product/changelog info
 	 * @var string
 	 */
-	private $api_url = 'http://www.woothemes.com/wc-api/woothemes-installer-api';
+	private $api_url = 'https://www.woothemes.com/wc-api/woothemes-installer-api';
 
 	/**
 	 * URL of endpoint to check for updates
 	 * @var string
 	 */
-	private $update_check_url = 'http://www.woothemes.com/wc-api/update-check';
+	private $update_check_url = 'https://www.woothemes.com/wc-api/update-check';
 
 	/**
 	 * Array of plugins info
@@ -167,13 +167,23 @@ class WooThemes_Updater_Update_Checker {
 						$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
 					}
 					$transient->no_update[ $plugin_key ] = $plugin;
+
+					// Make sure we have a slug, and that the value reflects the directory name for each plugin only.
+					if ( isset( $transient->no_update[$plugin_key]->slug ) ) {
+						$transient->no_update[$plugin_key]->slug = dirname( $transient->no_update[$plugin_key]->slug );
+					} else {
+						$transient->no_update[$plugin_key]->slug = dirname( $plugin_key );
+					}
+				// Deactivate a product
 				} elseif ( isset( $plugin->deactivate ) ) {
 					$this->errors[] = $plugin->deactivate;
 					global $woothemes_updater;
 					$woothemes_updater->admin->deactivate_product( $plugin_key, true );
+				// If there is an error returned, log that no update is available.
 				} elseif ( isset( $plugin->error ) ) {
 					$this->errors[] = $plugin->error;
 					$transient->no_update[ $plugin_key ] = $plugin;
+				// If there is a new version, check the license expiry date and update it locally.
 				} elseif ( isset( $plugin->new_version ) && ! empty( $plugin->new_version ) ) {
 					if ( isset( $plugin->license_expiry_date ) ) {
 						$activated_products[ $plugin_key ][3] = $plugin->license_expiry_date;
@@ -186,7 +196,17 @@ class WooThemes_Updater_Update_Checker {
 					}
 					$transient->no_update[ $plugin_key ] = $plugin;
 				}
+
+				// Make sure we have a slug, and that the value reflects the directory name for each plugin only.
+				if ( isset( $transient->response[$plugin_key]->slug ) ) {
+					$transient->response[$plugin_key]->slug = dirname( $transient->response[$plugin_key]->slug );
+				} else {
+					if ( '' != $plugin_key && isset( $transient->response[$plugin_key] ) ) {
+						$transient->response[$plugin_key]->slug = dirname( $plugin_key );
+					}
+				}
 			}
+
 			update_option( 'woothemes-updater-activated', $activated_products );
 		}
 
@@ -329,10 +349,17 @@ class WooThemes_Updater_Update_Checker {
 
 		// Make sure we have the changelog set, if not try to populate via changelog file
 		if ( ! isset( $response->sections['changelog'] ) ) {
-			$slug = explode( '/', $args['plugin_name'] );
-			if ( isset( $slug[0] ) ) {
-				$slug = sanitize_title( $slug[0] );
-				$changelog_url = 'http://dzv365zjfbd8v.cloudfront.net/changelogs/' . $slug . '/changelog.txt';
+			$changelog_url = '';
+			if ( isset( $response->changelog_url ) ) {
+				$changelog_url = esc_url( $response->changelog_url );
+			} else {
+				$slug = explode( '/', $args['plugin_name'] );
+				if ( isset( $slug[0] ) ) {
+					$slug = sanitize_title( $slug[0] );
+					$changelog_url = 'http://dzv365zjfbd8v.cloudfront.net/changelogs/' . $slug . '/changelog.txt';
+				}
+			}
+			if ( '' != $changelog_url ) {
 				$changelog_content = wp_remote_get( $changelog_url );
 				if ( ! is_wp_error( $changelog_content ) ) {
 					$changelog_content = wp_remote_retrieve_body( $changelog_content );

@@ -10,3 +10,4 @@
 #si_profile_photo p{ display: inline; }
 #si_username{ display: inline;  font-size: 24px;}
 .sc-generator{ display: inline; margin: 5px; }
+#generated-sc{ background-color: red; padding: 10px; color: #fff; }

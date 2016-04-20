@@ -3,8 +3,8 @@ Contributors: clevelandwebdeveloper
 Donate link: http://www.clevelandwebdeveloper.com/wordpress-plugins/donate.php
 Tags: tooltips, tips
 Requires at least: 2.9
-Tested up to: 4.1
-Stable tag: 2.1.2
+Tested up to: 4.4
+Stable tag: 2.1.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,8 @@ Settings > Simple Tooltips.
 
 == Changelog ==
 
+= 2.1.3 =
+* Resolved error noticed in debug mode
 
 = 2.1.2 =
 * Adds compatibility with languages that use RTL (right to left) text
@@ -108,5 +110,5 @@ Settings > Simple Tooltips.
 
 == Upgrade Notice ==
 
-= 2.1.2 =
-New: The new version adds compatibility with languages that use RTL (right to left) text.
+= 2.1.3 =
+New: Resolves error notices in debug mode.

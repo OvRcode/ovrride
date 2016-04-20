@@ -427,10 +427,15 @@ class GFSettings {
 					</td>
 					<td>
 						<?php
-						if ( version_compare( get_bloginfo( 'version' ), '3.0', '>' ) ) {
+						if ( version_compare( get_bloginfo( 'version' ), GF_MIN_WP_VERSION_SUPPORT_TERMS, '>=' ) ) {
 							?>
 							<i class="fa fa-check gf_valid"></i>
 						<?php
+						} elseif ( version_compare( get_bloginfo( 'version' ), GF_MIN_WP_VERSION, '>=' ) ) {
+							?>
+							<i class="fa fa-times gf_invalid"></i>
+							<span class="installation_item_message"><?php printf( esc_html__( 'The Gravity Forms support agreement requires WordPress v%s or greater. This site must be upgraded in order to be eligible for support.', 'gravityforms' ), GF_MIN_WP_VERSION_SUPPORT_TERMS ); ?></span>
+							<?php
 						} else {
 							?>
 							<i class="fa fa-times gf_invalid"></i>
@@ -587,12 +592,12 @@ class GFSettings {
 				</ul>
 
 				<div id="gform_tab_container" class="gform_tab_container">
-					<div class="gform_tab_content" id="tab_<?php echo $current_tab ?>">
+					<div class="gform_tab_content" id="tab_<?php echo esc_attr( $current_tab ); ?>">
 
 	<?php
 	}
 
-	public static function page_footer(){
+	public static function page_footer() {
 					?>
 				</div>
 				<!-- / gform_tab_content -->
@@ -612,8 +617,8 @@ class GFSettings {
 		});
 	</script>
 
-<?php
-}
+	<?php
+	}
 
 	public static function get_subview() {
 

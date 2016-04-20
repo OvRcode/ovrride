@@ -6,7 +6,7 @@
 class instagram_self_feed extends WP_Widget {
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_self_feed', /* Name */__('Simply Instagram: Latest Feed', 'simply-instagram'), array( 'description' => __('Display your latest feeds. This will display your photo and includes media of people you\'re following.', 'simply-instagram') ) );
+		parent::__construct( /* Base ID */'instagram_self_feed', /* Name */__('Simply Instagram: Latest Feed', 'simply-instagram'), array( 'description' => __('Display your latest feeds. This will display your photo and includes media of people you\'re following.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
@@ -143,12 +143,12 @@ class instagram_self_feed extends WP_Widget {
 class instagram_user_info extends WP_Widget {
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_user_info', /* Name */__('Simply Instagram: User Info', 'simply-instagram'), array( 'description' => __('Display user info.', 'simply-instagram') ) );
+		parent::__construct( /* Base ID */'instagram_user_info', /* Name */__('Simply Instagram: User Info', 'simply-instagram'), array( 'description' => __('Display user info.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
 		extract( $args );
-		
+		$short_desc = '';
 		echo $before_widget;
 		echo $before_title . $instance['widget_title'] . $after_title;
 		echo '<p>' . $short_desc . '</p>';
@@ -295,12 +295,13 @@ class instagram_user_info extends WP_Widget {
 	}
 	/** @see WP_Widget::form */
 	function form( $instance ) {
+		
 		if ( $instance ) {
 			$widget_title = esc_attr( $instance[ 'widget_title' ] );
 			$profile_width = esc_attr( $instance[ 'profile_width' ] );
 			$open_instagram = esc_attr( $instance[ 'open_instagram' ] );
 			
-			$followers = esc_attr( $instance[ 'followers' ] );
+			$followers = ( !empty( $instance['followers'] ) ) ? esc_attr( $instance[ 'followers' ] ) : false;
 			$followers_desc = esc_attr( $instance[ 'followers_desc' ] );
 			$followers_profile_width = esc_attr( $instance[ 'followers_profile_width' ] );
 			
@@ -327,7 +328,7 @@ class instagram_user_info extends WP_Widget {
 			$profile_width = __( '150', 'text_domain' );
 			$open_instagram = __( 'false', 'open_instagram' );
 			
-			$followers = __( 'true', 'text_domain' );
+			$followers = __( true, 'text_domain' );
 			$followers_desc = __( 'My followers', 'text_domain' );
 			$followers_profile_width = __( '50', 'text_domain' );
 			
@@ -371,7 +372,7 @@ class instagram_user_info extends WP_Widget {
 		</p>
 		
 		<p>
-		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['followers'], true ); ?> id="<?php echo $this->get_field_id( 'followers' ); ?>" name="<?php echo $this->get_field_name( 'followers' ); ?>" />
+		<input class="checkbox" type="checkbox" <?php checked( (bool) $followers, true ); ?> id="<?php echo $this->get_field_id( 'followers' ); ?>" name="<?php echo $this->get_field_name( 'followers' ); ?>" />
 		<label for="<?php echo $this->get_field_id('followers'); ?>"><?php _e('Include my followers thumbnail', 'simply-instagram'); ?></label> 
 		</p>
 		
@@ -386,7 +387,7 @@ class instagram_user_info extends WP_Widget {
 		</p>
 		
 		<p>
-		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['following'], true ); ?> id="<?php echo $this->get_field_id( 'following' ); ?>" name="<?php echo $this->get_field_name( 'following' ); ?>" />
+		<input class="checkbox" type="checkbox" <?php checked( (bool) $following, true ); ?> id="<?php echo $this->get_field_id( 'following' ); ?>" name="<?php echo $this->get_field_name( 'following' ); ?>" />
 		<label for="<?php echo $this->get_field_id('following'); ?>"><?php _e('Include thumbnail user I\'m following', 'simply-instagram'); ?></label> 
 		</p>
 		
@@ -401,7 +402,7 @@ class instagram_user_info extends WP_Widget {
 		</p>
 		
 		<p>
-		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['latest_feed'], true ); ?> id="<?php echo $this->get_field_id( 'latest_feed' ); ?>" name="<?php echo $this->get_field_name( 'latest_feed' ); ?>" />
+		<input class="checkbox" type="checkbox" <?php checked( (bool) $latest_feed, true ); ?> id="<?php echo $this->get_field_id( 'latest_feed' ); ?>" name="<?php echo $this->get_field_name( 'latest_feed' ); ?>" />
 		<label for="<?php echo $this->get_field_id('latest_feed'); ?>"><?php _e('Include my latest feed', 'simply-instagram'); ?></label> 
 		</p>
 		
@@ -416,7 +417,7 @@ class instagram_user_info extends WP_Widget {
 		</p>
 		
 		<p>
-		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['latest_photo'], true ); ?> id="<?php echo $this->get_field_id( 'latest_photo' ); ?>" name="<?php echo $this->get_field_name( 'latest_photo' ); ?>" />
+		<input class="checkbox" type="checkbox" <?php checked( (bool) $latest_photo, true ); ?> id="<?php echo $this->get_field_id( 'latest_photo' ); ?>" name="<?php echo $this->get_field_name( 'latest_photo' ); ?>" />
 		<label for="<?php echo $this->get_field_id('latest_photo'); ?>"><?php _e('Include my recent media', 'simply-instagram'); ?></label> 
 		</p>
 		
@@ -431,7 +432,7 @@ class instagram_user_info extends WP_Widget {
 		</p>
 		
 		<p>
-		<input class="checkbox" type="checkbox" <?php checked( (bool) $instance['liked_photo'], true ); ?> id="<?php echo $this->get_field_id( 'liked_photo' ); ?>" name="<?php echo $this->get_field_name( 'liked_photo' ); ?>" />
+		<input class="checkbox" type="checkbox" <?php checked( (bool) $liked_photo, true ); ?> id="<?php echo $this->get_field_id( 'liked_photo' ); ?>" name="<?php echo $this->get_field_name( 'liked_photo' ); ?>" />
 		<label for="<?php echo $this->get_field_id('liked_photo'); ?>"><?php _e('Include photos I liked', 'simply-instagram'); ?></label> 
 		</p>
 		
@@ -466,7 +467,13 @@ class instagram_user_info extends WP_Widget {
 class instagram_most_popular extends WP_Widget {	
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_most_popular', /* Name */__('Simply Instagram: Currently Popular', 'simply-instagram'), array( 'description' => __('Display currently popular photos in Instagram server.', 'simply-instagram') ) );
+		parent::__construct( 
+					'instagram_most_popular', /* Base ID */
+					__('Simply Instagram: Currently Popular', 'simply-instagram'), /* Name */
+					array( 
+						'description' => __('Display currently popular photos in Instagram server.', 'simply-instagram') 
+					)
+				);
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {
@@ -601,7 +608,7 @@ class instagram_recent_media extends WP_Widget {
 	
 	/** constructor */
 	function __construct() {
-		parent::WP_Widget( /* Base ID */'instagram_recent_media', /* Name */__('Simply Instagram: My Latest Photo', 'simply-instagram'), array( 'description' => __('Display exclusively your latest uploaded photos.', 'simply-instagram') ) );
+		parent::__construct( /* Base ID */'instagram_recent_media', /* Name */__('Simply Instagram: My Latest Photo', 'simply-instagram'), array( 'description' => __('Display exclusively your latest uploaded photos.', 'simply-instagram') ) );
 	}
 	/** @see WP_Widget::widget */
 	function widget( $args, $instance ) {

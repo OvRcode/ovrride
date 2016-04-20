@@ -3,7 +3,7 @@
 Plugin Name: Squelch Tabs and Accordions Shortcodes
 Plugin URI: http://squelchdesign.com/wordpress-plugin-squelch-tabs-accordions-shortcodes/
 Description: Provides shortcodes for adding tabs and accordions to your website
-Version: 0.3.5
+Version: 0.3.6
 Author: Matt Lowe
 Author URI: http://squelchdesign.com/matt-lowe
 License: GPL2
@@ -159,7 +159,8 @@ function squelch_taas_accordions_shortcode( $atts, $content ) {
 
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
+
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -208,7 +209,8 @@ function squelch_taas_accordion_shortcode( $atts, $content ) {
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( shortcode_unautop( $content ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( $content ) ) );
+
     $rv  = '';
 
     $id = "squelch-taas-header-$taas_accordion_content_counter";
@@ -279,7 +281,7 @@ function squelch_taas_haccordions_shortcode( $atts, $content ) {
     $atts = wp_parse_args( $atts, $defaults );
     $atts['active'] = $atts['active'] + 1;
 
-    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -342,7 +344,7 @@ function squelch_taas_haccordion_shortcode( $atts, $content ) {
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( shortcode_unautop( $content ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( $content ) ) );
     $rv  = '';
 
     $id = "squelch-taas-header-$taas_haccordion_content_counter";
@@ -399,7 +401,7 @@ function squelch_taas_tabs_shortcode( $atts, $content ) {
 
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -457,20 +459,24 @@ add_shortcode( 'subsubtabs', 'squelch_taas_tabs_shortcode' );
  *   iconalt    Alternative text for the icon
  *   iconw      Width of the icon
  *   iconh      Height of the icon
+ *   class      An arbitrary class to add to this tab and content area
  */
-function squelch_taas_tab_shortcode( $atts, $content ) {
+function squelch_taas_tab_shortcode( $atts, $content, $tag ) {
     global $taas_current_tab_group, $taas_tabs, $taas_tab_content_counter;
 
-    $defaults = array(
+    $atts = shortcode_atts( array(
         'title'     => ' &nbsp; &nbsp; &nbsp; ',
         'icon'      => '',
         'iconw'     => '',
         'iconh'     => '',
         'iconalt'   => '',
-    );
-    $atts = wp_parse_args( $atts, $defaults );
+        'class'     => '',
+    ), $atts, $tag );
 
-    $content = do_shortcode( shortcode_unautop( $content ) );
+    $tab_class = trim( 'squelch-taas-tab '.$atts['class'] );
+    $content_class = trim( $atts['class'] );
+
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( $content ) ) );
 
     $id = "squelch-taas-header-$taas_tab_content_counter";
 
@@ -478,7 +484,7 @@ function squelch_taas_tab_shortcode( $atts, $content ) {
 
     // Build the tab
     $rv  = '';
-    $rv .= '<li class="squelch-taas-tab">';
+    $rv .= '<li class="'.$tab_class.'">';
     $rv .= '<a href="#squelch-taas-tab-content-'.$taas_current_tab_group.'-'.$taas_tab_content_counter.'">';
 
     if (!empty($atts['icon'])) {
@@ -499,7 +505,7 @@ function squelch_taas_tab_shortcode( $atts, $content ) {
 
     // Build the tab content
     $rv  = '';
-    $rv .= '<div id="squelch-taas-tab-content-'.$taas_current_tab_group.'-'.$taas_tab_content_counter.'">';
+    $rv .= '<div id="squelch-taas-tab-content-'.$taas_current_tab_group.'-'.$taas_tab_content_counter.'" class="'.$content_class.'">';
     $rv .= $content;
     $rv .= '</div>';
     $tab_arr['content'] = $rv;
@@ -545,7 +551,7 @@ function squelch_taas_toggles_shortcode( $atts, $content ) {
     // If shortcode has style set instead of theme then use that value for style
     if (array_key_exists( 'style', $atts )) $atts['theme'] = $atts['style'];
 
-    $content = do_shortcode( shortcode_unautop( tidy_up_shortcodes( $content ) ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( tidy_up_shortcodes( $content ) ) ) );
     $rv  = '';
 
     if (!empty($atts['title'])) {
@@ -594,7 +600,7 @@ function squelch_taas_toggle_shortcode( $atts, $content ) {
     );
     $atts = wp_parse_args( $atts, $defaults );
 
-    $content = do_shortcode( shortcode_unautop( $content ) );
+    $content = do_shortcode( squelch_shortcode_unautop( shortcode_unautop( $content ) ) );
     $rv  = '';
 
     $id = "squelch-taas-header-$taas_toggle_content_counter";
@@ -640,11 +646,13 @@ function squelch_taas_enqueue_scripts() {
     );
 
     // Enqueue the jQuery UI theme (providing something else hasn't already done so)
-    if (!wp_style_is('jquery-ui-standard-css')) {
+    if (! (wp_style_is('jquery-ui-standard-css') || wp_style_is('jquery-ui-custom-css')) ) {
         $jquery_ui_theme = get_option( 'squelch_taas_jquery_ui_theme' );
 
         if ('custom' == $jquery_ui_theme) {
-            $custom_css_url = get_option( 'squelch_taas_custom_css_url' );
+            $upload_dir = wp_upload_dir();
+            $upload_dir = $upload_dir['baseurl'];
+            $custom_css_url = trailingslashit( $upload_dir ) . 'jquery-ui-1.9.2.custom/css/custom-theme/jquery-ui-1.9.2.custom.min.css';
 
             wp_enqueue_style(
                 'jquery-ui-standard-css',
@@ -703,6 +711,26 @@ if (!function_exists( 'tidy_up_shortcodes' )) :
         return $rv;
     }
 endif;
+
+
+
+/**
+ * Similar to shortcode_unautop: Removes </p> and <p> from the start of the
+ * content and the end of the content respectively.
+ *
+ * @param $content The content to remove the parameter from
+ * @return The cleaned up content
+ */
+function squelch_shortcode_unautop( $content ) {
+
+    $rv = trim( $content );
+
+    $rv = preg_replace( '/^<\/p>/i',    '', $rv );
+    $rv = preg_replace( '/<p>$/i',      '', $rv );
+
+    return $rv;
+
+}
 
 
 /* Set an option to a specific value, unless it has already been set.

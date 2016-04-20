@@ -64,7 +64,9 @@ class GF_Field_Number extends GF_Field {
 		$raw_value = $_POST[ 'input_' . $this->id ]; //Raw value will be tested against the is_numeric() function to make sure it is in the right format.
 
 		$requires_valid_number = ! rgblank( $raw_value ) && ! $this->has_calculation();
-		$is_valid_number       = $this->validate_range( $value ) && GFCommon::is_numeric( $raw_value, $this->numberFormat );
+
+		$raw_value       = GFCommon::maybe_add_leading_zero( $raw_value );
+		$is_valid_number = $this->validate_range( $value ) && GFCommon::is_numeric( $raw_value, $this->numberFormat );
 
 		if ( $requires_valid_number && ! $is_valid_number ) {
 			$this->failed_validation  = true;
@@ -195,8 +197,9 @@ class GF_Field_Number extends GF_Field {
 
 	public function get_value_merge_tag( $value, $input_id, $entry, $form, $modifier, $raw_value, $url_encode, $esc_html, $format, $nl2br ) {
 		$include_thousands_sep = apply_filters( 'gform_include_thousands_sep_pre_format_number', $modifier != 'value', $this );
+		$formatted_value       = GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ), $include_thousands_sep );
 
-		return GFCommon::format_number( $value, $this->numberFormat, rgar( $entry, 'currency' ), $include_thousands_sep );
+		return $url_encode ? urlencode( $formatted_value ) : $formatted_value;
 	}
 
 	public function get_value_save_entry( $value, $form, $input_name, $lead_id, $lead ) {

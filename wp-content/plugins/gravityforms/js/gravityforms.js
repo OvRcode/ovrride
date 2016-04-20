@@ -135,7 +135,7 @@ function gformCleanNumber(text, symbol_right, symbol_left, decimal_separator){
     text = text + " ";
 
     //Removing symbol in unicode format (i.e. &#4444;)
-    text = text.replace(/&.*?;/, "");
+    text = text.replace(/&.*?;/g, "");
 
     //Removing symbol from text
     text = text.replace(symbol_right, "");
@@ -349,7 +349,7 @@ function gformCalculateProductPrice(form_id, productFieldId){
     jQuery(".gfield_option" + suffix).find(".gfield_checkbox").find("input").each(function(){
         var checkbox_item = jQuery(this);
         var id = checkbox_item.attr("id");
-        var field_id = id.split("_")[3];
+        var field_id = id.split("_")[2];
         var label_id = id.replace("choice_", "#label_");
         var label_element = jQuery(label_id);
         var label = gformGetOptionLabel(label_element, checkbox_item.val(), 0, form_id, field_id);
@@ -362,7 +362,7 @@ function gformCalculateProductPrice(form_id, productFieldId){
         var selected_price = 0;
         var radio_field = jQuery(this);
         var id = radio_field.attr("id");
-        var fieldId = id.split("_")[3];
+        var fieldId = id.split("_")[2];
         var selected_value = radio_field.find("input:checked").val();
 
         if(selected_value)

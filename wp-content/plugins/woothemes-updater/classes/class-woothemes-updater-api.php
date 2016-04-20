@@ -36,11 +36,11 @@ class WooThemes_Updater_API {
 	private $version;
 
 	public function __construct () {
-		$this->version = '1.5.7';
+		$this->version = '1.6.2';
 		$this->token = 'woothemes-updater';
-		$this->api_url = 'http://www.woothemes.com/wc-api/product-key-api';
-		$this->products_api_url = 'http://www.woothemes.com/wc-api/woothemes-installer-api';
-		$this->license_check_url = 'http://www.woothemes.com/wc-api/license-status-check';
+		$this->api_url = 'https://www.woothemes.com/wc-api/product-key-api';
+		$this->products_api_url = 'https://www.woothemes.com/wc-api/woothemes-installer-api';
+		$this->license_check_url = 'https://www.woothemes.com/wc-api/license-status-check';
 		$this->errors = array();
 	} // End __construct()
 

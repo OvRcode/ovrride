@@ -156,8 +156,6 @@ class Ncr_No_Captcha_Recaptcha {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
 		}
-		$plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
-		check_admin_referer( "activate-plugin_{$plugin}" );
 
 		$default_options = array(
 			'captcha_registration' => 'yes',

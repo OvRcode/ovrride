@@ -3,17 +3,17 @@ Contributors: shazdeh
 Plugin Name: Widget Shortcode
 Tags: widget, shortcode, theme, admin
 Requires at least: 3.0
-Tested up to: 3.9.1
-Stable tag: 0.2.3
+Tested up to: 4.5
+Stable tag: 0.2.5
 
-Adds a [widget] shortcode which enables you to output widgets anywhere you like.
+Adds [widget] shortcode which enables you to output widgets anywhere you like.
 
 == Description ==
 
-The shortcode requires the widget ID, but no need to guess, the plugin generates the code for you. You can use before_widget, after_widget, before_title and after_title parameters to override the widget arguments. Also you can use set 'title' parameter to false to suppress the widget title:
-<code>[widget id="text-1" title="0"]</code>
-Or override the default widget title in the shortcode:
+The shortcode requires the widget ID, but no need to guess, the plugin generates the code for you. To override the widget title for a widget you can use the "title" parameter:
 <code>[widget id="text-1" title="New title"]</code>
+You can also hide the widget title entirely if desired:
+<code>[widget id="text-1" title="0"]</code>
 
 
 == Installation ==
@@ -28,6 +28,14 @@ Or override the default widget title in the shortcode:
 1. The plugin generates the shortcode for you
 
 == Changelog ==
+
+= 0.4.5 =
+* Fix notice message if widget is inactive
+
+= 0.2.4 =
+* Shortcode generator in TinyMCE
+* i18n
+* Minor code refactoring
 
 = 0.2.3 =
 * Fixed missing widget classes and ID from before_widget
