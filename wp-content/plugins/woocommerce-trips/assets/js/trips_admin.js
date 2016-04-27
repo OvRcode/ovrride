@@ -185,19 +185,17 @@ jQuery(document).ready(function($){
       case "domestic_flight":
       case "international_flight":
         $(".trips_flight_times_tab").show();
+        $(".trips_routes_tab").hide();
+        $(".trips_pickup_location").hide();
         break;
       case "beach_bus":
         $(".trips_routes_tab").show();
+        $(".trips_pickup_location").hide();
         break;
       default:
         $(".trips_flight_times_tab").hide();
         $(".trips_routes_tab").hide();
     }
-    /*if( "domestic_flight" == trip_type || "international_flight" == trip_type ) {
-      $(".trips_flight_times_tab").show();
-    } else {
-      $(".trips_flight_times_tab").hide();
-    }*/
   }
 });
 
