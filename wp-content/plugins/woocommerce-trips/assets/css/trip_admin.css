@@ -11,7 +11,8 @@
 .add_pickup_location {
   float: right !important;
 }
-#_wc_trip_rates, #_wc_trip_includes, #_wc_trip_flight_times, #_wc_trip_pics {
+#_wc_trip_rates, #_wc_trip_includes, #_wc_trip_flight_times, #_wc_trip_pics,
+#_wc_trip_routes {
   height: 300px !important;
 }
 /* packages css */
