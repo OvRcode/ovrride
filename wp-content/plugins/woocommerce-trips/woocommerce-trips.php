@@ -125,6 +125,23 @@ class WC_Trips {
         $trip_rates         = get_post_meta( $product->id, '_wc_trip_rates', true);
         $flight_times       = get_post_meta( $product->id, '_wc_trip_flight_times', true);
         $pics               = get_post_meta( $product->id, '_wc_trip_pics', true);
+        $routes             = get_post_meta( $product->id, '_wc_trip_routes', true);
+        $partners           = get_post_meta( $product->id, '_wc_trip_partners', true);
+
+        if ( "" !== $routes && FALSE !== $routes ) {
+          $tabs['bus_routes'] = array(
+            'title'     => 'Bus Routes',
+            'priority'  => 38,
+            'callback'  => array( $this, 'routes_content')
+          );
+        }
+        if ( "" !== $partners && FALSE !== $partners ) {
+          $tabs['partners'] = array(
+            'title'     => 'Partners',
+            'priority'  => 50,
+            'callback'  => array( $this, 'partners_content')
+          );
+        }
         if ( "" !== $pickups && FALSE !== $pickups ) {
             $tabs['pickups'] = array(
                 'title'     => 'Bus Times',
@@ -169,7 +186,19 @@ class WC_Trips {
         }
         return $tabs;
     }
+    public function routes_content(){
+      global $product;
+      $routes_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_routes', true) );
 
+      echo apply_filters('the_content', $routes_data);
+    }
+
+    public function partners_content(){
+      global $product;
+      $partners_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_partners', true) );
+
+      echo apply_filters('the_content', $partners_data);
+    }
     public function pics_content(){
         global $product;
         $pics_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_pics', true) );

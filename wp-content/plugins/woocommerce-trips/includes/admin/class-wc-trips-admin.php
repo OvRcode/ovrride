@@ -91,6 +91,7 @@ class WC_Trips_Admin {
             '_wc_trip_includes'                 => 'html',
             '_wc_trip_rates'                    => 'html',
             '_wc_trip_routes'                   => 'html',
+            '_wc_trip_partners'                 => 'html',
             '_wc_trip_flight_times'             => 'html',
             '_wc_trip_pics'                     => 'html'
             );
@@ -180,10 +181,11 @@ class WC_Trips_Admin {
         include( 'views/html-trip-tertiary-packages.php' );
         include( 'views/html-trip-pickup-locations.php' );
         include( 'views/html-trip-includes.php' );
-        include( 'views/html-trip-rates.php');
-        include( 'views/html-trip-flight-times.php');
-        include( 'views/html-trip-pics.php');
-        include( 'views/html-trip-routes.php');
+        include( 'views/html-trip-rates.php' );
+        include( 'views/html-trip-flight-times.php' );
+        include( 'views/html-trip-pics.php' );
+        include( 'views/html-trip-routes.php' );
+        include( 'views/html-trip-partners.php' );
     }
 
     public function script_style_includes() {
