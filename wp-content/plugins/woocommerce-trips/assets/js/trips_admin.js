@@ -191,10 +191,13 @@ jQuery(document).ready(function($){
       case "beach_bus":
         $(".trips_routes_tab").show();
         $(".trips_pickup_location").hide();
+        $(".trips_flight_times_tab").hide();
         break;
       default:
+        $(".trips_pickup_location").show();
         $(".trips_flight_times_tab").hide();
         $(".trips_routes_tab").hide();
+        $(".trips_flight_times_tab").hide();
     }
   }
 });
