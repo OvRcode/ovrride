@@ -90,6 +90,7 @@ class WC_Trips_Admin {
             '_wc_trip_stock_status'             => 'stockStatus',
             '_wc_trip_includes'                 => 'html',
             '_wc_trip_rates'                    => 'html',
+            '_wc_trip_routes'                   => 'html',
             '_wc_trip_flight_times'             => 'html',
             '_wc_trip_pics'                     => 'html'
             );
@@ -182,6 +183,7 @@ class WC_Trips_Admin {
         include( 'views/html-trip-rates.php');
         include( 'views/html-trip-flight-times.php');
         include( 'views/html-trip-pics.php');
+        include( 'views/html-trip-routes.php');
     }
 
     public function script_style_includes() {
