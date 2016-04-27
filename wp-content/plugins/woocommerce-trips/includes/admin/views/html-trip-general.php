@@ -14,11 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     <p class="form-field">
        <label for="_wc_trip_stock">Stock</label>
        <input type="number" name="_wc_trip_stock" id="_wc_trip_stock" min="0" class="trip_stock" value="<?php echo $stock; ?>">
-       </input> 
+       </input>
     </p>
     <p class="form-field">
         <label for="_wc_trip_base_price">Base Price ($)</label>
-        <input type="text" name="_wc_trip_base_price" id="_wc_trip_base_price" 
+        <input type="text" name="_wc_trip_base_price" id="_wc_trip_base_price"
             placeholder="0.00" value="<?php echo $base_price; ?>">
         </input>
     </p>
@@ -40,12 +40,13 @@ if ( ! defined( 'ABSPATH' ) ) {
             <option value="" default>Select trip type</option>
             <?php
             $trip_types = array("bus"                   => "Bus",
+																"beach_bus"							=> "Beach Bus",
                                 "domestic_flight"       => "Flight: Domestic",
                                 "international_flight"  => "Flight: International"
                                 );
             foreach( $trip_types as $value => $label ) {
                 $trip_selected = ($value == $trip_type ? "selected" : "");
-                
+
                 echo sprintf('<option value="%s" %s>%s</option>', $value, $trip_selected, $label);
             }
             ?>
@@ -57,6 +58,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     </p>
     <p class="form-field">
        <label for="_wc_trip_end_date">End date</label>
-       <input type="text" name="_wc_trip_end_date" id="_wc_trip_end_date" value="<?php echo $end_date; ?>"></input> 
+       <input type="text" name="_wc_trip_end_date" id="_wc_trip_end_date" value="<?php echo $end_date; ?>"></input>
     </p>
 </div>

@@ -16,6 +16,9 @@
 <li class="trips_tab trips_rates_tab attribute_options show_if_trip">
     <a href="#trips_rates">Rates</a>
 </li>
+<li class="trips_tab trips_routes_tab attribute_options show_if_trip">
+  <a href="#trips_routes">Bus Routes</a>
+</li>
 <li class="trips_tab trips_flight_times_tab shipping_options show_if_trip">
     <a href="#trips_flight_times">Flight Times</a>
 </li>
