@@ -52,6 +52,8 @@ jQuery(document).ready(function($){
       else if ( $(this).prop("id") == "tertiary_package_add" ) {
         $("table.woocommerce_trip_tertiary_packages").append( $(this).data( 'row' ) );
         showHideStock("tertiary");
+      } else if ( $(this).prop("id") == "package_add") {
+        $("table.woocommerce_trip_packages").append( $(this).data( 'row' ) );
       }
 
       if ( $(".sorter:visible").size() > 1 ) {

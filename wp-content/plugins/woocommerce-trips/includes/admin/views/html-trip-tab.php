@@ -29,7 +29,7 @@
     <a href="#trips_pics">Pics</a>
 </li>
 <li class="trips_tab trips_package_tab attribute_options show_if_trip">
-  <a href="#trips_package">Beach Bus Packages</a>
+  <a href="#trips_packages">Packages</a>
 </li>
 <li class="trips_tab trips_to_beach_tab attribute_options show_if_trip">
   <a href="#trips_to_beach">To Beach</a>

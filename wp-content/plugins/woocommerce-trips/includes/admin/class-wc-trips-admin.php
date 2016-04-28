@@ -79,6 +79,8 @@ class WC_Trips_Admin {
             return;
         }
 
+        $trip_type = $_POST['_wc_trip_type'];
+
         // Save meta from general tab
         $meta_to_save = array(
             '_wc_trip_base_price'               => 'float',
@@ -170,6 +172,17 @@ class WC_Trips_Admin {
         update_post_meta( $post_id, '_wc_trip_tertiary_package_label', $tertiary_label);
         update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', $_POST['_wc_trip_tertiary_package_stock']);
         update_post_meta( $post_id, '_wc_trip_tertiary_packages', $tertiary_packages );
+
+        if ( "beach_bus" === $trip_type ) {
+          $packages = ( isset($_POST['wc_trips_package_description']) ? sizeof($_POST['wc_trips_package_description']) : 0 );
+          for( $i = 0; $i < $packages; $i++ ){
+            $packages_packages[$i]['description'] = wc_clean( $_POST['wc_trips_package_description'][$i] );
+            $packages_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_package_cost'][$i] );
+          }
+          update_post_meta( $post_id, '_wc_trip_primary_package_label', "Package" );
+          update_post_meta( $post_id, '_wc_trip_primary_package_stock', "no" );
+          update_post_meta( $post_id, '_wc_trip_primary_packages', $packages_packages);
+        }
     }
 
     public function trip_panels() {
@@ -186,6 +199,7 @@ class WC_Trips_Admin {
         include( 'views/html-trip-pics.php' );
         include( 'views/html-trip-routes.php' );
         include( 'views/html-trip-partners.php' );
+        include( 'views/html-trip-packages.php' );
     }
 
     public function script_style_includes() {
