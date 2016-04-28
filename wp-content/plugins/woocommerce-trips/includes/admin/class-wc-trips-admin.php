@@ -79,6 +79,8 @@ class WC_Trips_Admin {
             return;
         }
 
+        $trip_type = $_POST['_wc_trip_type'];
+
         // Save meta from general tab
         $meta_to_save = array(
             '_wc_trip_base_price'               => 'float',
@@ -90,6 +92,8 @@ class WC_Trips_Admin {
             '_wc_trip_stock_status'             => 'stockStatus',
             '_wc_trip_includes'                 => 'html',
             '_wc_trip_rates'                    => 'html',
+            '_wc_trip_routes'                   => 'html',
+            '_wc_trip_partners'                 => 'html',
             '_wc_trip_flight_times'             => 'html',
             '_wc_trip_pics'                     => 'html'
             );
@@ -168,6 +172,37 @@ class WC_Trips_Admin {
         update_post_meta( $post_id, '_wc_trip_tertiary_package_label', $tertiary_label);
         update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', $_POST['_wc_trip_tertiary_package_stock']);
         update_post_meta( $post_id, '_wc_trip_tertiary_packages', $tertiary_packages );
+
+        if ( "beach_bus" === $trip_type ) {
+          $packages = ( isset($_POST['wc_trips_package_description']) ? sizeof($_POST['wc_trips_package_description']) : 0 );
+          for( $i = 0; $i < $packages; $i++ ){
+            $packages_packages[$i]['description'] = wc_clean( $_POST['wc_trips_package_description'][$i] );
+            $packages_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_package_cost'][$i] );
+          }
+          update_post_meta( $post_id, '_wc_trip_primary_package_label', "Package" );
+          update_post_meta( $post_id, '_wc_trip_primary_package_stock', "no" );
+          update_post_meta( $post_id, '_wc_trip_primary_packages', $packages_packages);
+
+          $packages = ( isset($_POST['wc_trips_to_beach_description']) ? sizeof($_POST['wc_trips_to_beach_description']) : 0 );
+          for( $i = 0; $i < $packages; $i++ ){
+            $to_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_to_beach_description'][$i] );
+            $to_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_to_beach_cost'][$i] );
+            $to_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_to_beach_stock'][$i] );
+          }
+          update_post_meta( $post_id, '_wc_trip_secondary_package_label', "To Beach" );
+          update_post_meta( $post_id, '_wc_trip_secondary_package_stock', "yes" );
+          update_post_meta( $post_id, '_wc_trip_secondary_packages', $to_beach_packages);
+
+          $packages = ( isset($_POST['wc_trips_from_beach_description']) ? sizeof($_POST['wc_trips_from_beach_description']) : 0 );
+          for( $i = 0; $i < $packages; $i++ ){
+            $from_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_from_beach_description'][$i] );
+            $from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_from_beach_cost'][$i] );
+            $from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_from_beach_stock'][$i] );
+          }
+          update_post_meta( $post_id, '_wc_trip_tertiary_package_label', "From Beach" );
+          update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', "yes" );
+          update_post_meta( $post_id, '_wc_trip_tertiary_packages', $from_beach_packages);
+        }
     }
 
     public function trip_panels() {
@@ -179,9 +214,14 @@ class WC_Trips_Admin {
         include( 'views/html-trip-tertiary-packages.php' );
         include( 'views/html-trip-pickup-locations.php' );
         include( 'views/html-trip-includes.php' );
-        include( 'views/html-trip-rates.php');
-        include( 'views/html-trip-flight-times.php');
-        include( 'views/html-trip-pics.php');
+        include( 'views/html-trip-rates.php' );
+        include( 'views/html-trip-flight-times.php' );
+        include( 'views/html-trip-pics.php' );
+        include( 'views/html-trip-routes.php' );
+        include( 'views/html-trip-partners.php' );
+        include( 'views/html-trip-packages.php' );
+        include( 'views/html-trip-to_beach.php' );
+        include( 'views/html-trip-from_beach.php' );
     }
 
     public function script_style_includes() {
