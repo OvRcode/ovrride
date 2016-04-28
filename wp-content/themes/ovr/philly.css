@@ -3088,6 +3088,9 @@ article.sticky {
   border: 1px solid #CCC;
   color: #FFF;
 }
+#gform_4 input {
+  color: black;
+}
 .gform_wrapper .simple_captcha_small input {
   width: 90px;
 }
