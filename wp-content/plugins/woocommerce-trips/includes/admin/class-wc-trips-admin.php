@@ -193,6 +193,15 @@ class WC_Trips_Admin {
           update_post_meta( $post_id, '_wc_trip_secondary_package_stock', "yes" );
           update_post_meta( $post_id, '_wc_trip_secondary_packages', $to_beach_packages);
 
+          $packages = ( isset($_POST['wc_trips_from_beach_description']) ? sizeof($_POST['wc_trips_from_beach_description']) : 0 );
+          for( $i = 0; $i < $packages; $i++ ){
+            $from_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_from_beach_description'][$i] );
+            $from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_from_beach_cost'][$i] );
+            $from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_from_beach_stock'][$i] );
+          }
+          update_post_meta( $post_id, '_wc_trip_tertiary_package_label', "from Beach" );
+          update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', "yes" );
+          update_post_meta( $post_id, '_wc_trip_tertiary_packages', $from_beach_packages);
         }
     }
 
@@ -212,6 +221,7 @@ class WC_Trips_Admin {
         include( 'views/html-trip-partners.php' );
         include( 'views/html-trip-packages.php' );
         include( 'views/html-trip-to_beach.php' );
+        include( 'views/html-trip-from_beach.php' );
     }
 
     public function script_style_includes() {
