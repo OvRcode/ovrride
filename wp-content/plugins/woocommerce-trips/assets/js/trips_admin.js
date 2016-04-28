@@ -165,7 +165,8 @@ jQuery(document).ready(function($){
 
 	$( '.woocommerce_trip_pickup_locations' ).sortable( pickup_sortable_options );
   // Sorting for packages
-  $( "#primary_package_rows, #secondary_package_rows, #tertiary_package_rows" ).sortable({
+  $( "#primary_package_rows, #secondary_package_rows, #tertiary_package_rows, " +
+      "#package_rows, #to_beach_rows, #from_beach_rows").sortable({
     items: 'tr',
 		cursor:'move',
 		axis:'y',
