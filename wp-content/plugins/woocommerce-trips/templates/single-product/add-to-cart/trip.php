@@ -12,7 +12,7 @@ global $woocommerce, $product;
 }*/
 $base_price = get_post_meta( $product->id, '_wc_trip_base_price', true);
 $base_price = floatval($base_price);
-do_action( 'woocommerce_before_add_to_cart_form' ); 
+do_action( 'woocommerce_before_add_to_cart_form' );
 ?>
 
 <noscript><?php _e( 'Your browser must support JavaScript in order to make a booking.', 'woocommerce-bookings' ); ?></noscript>
@@ -46,7 +46,7 @@ do_action( 'woocommerce_before_add_to_cart_form' );
             <label for="wc_trip_phone">Phone <span class="required">*</span></label>
             <input type="text" name="wc_trip_phone" data-required="true" />
         </p>
-        <?php 
+        <?php
         echo "<input type='hidden' name='wc_trip_type' id='wc_trip_type' value='" . $trip_type . "' data-required='true' />";
         switch ( $trip_type ) {
             case "international_flight":
@@ -81,6 +81,13 @@ DOB;
             "secondary" => $product->output_packages("secondary"),
             "tertiary"  => $product->output_packages("tertiary")
         ];
+				if ( "beach_bus" == $trip_type ) {
+					echo <<<ROUTES
+					<p class="form-field">
+						<strong>See Bus Routes Tab for details on pickup times</strong>
+					</p>
+ROUTES;
+				}
         foreach ( $packages as $type => $info ) {
             if ( $info ) {
                 echo <<<PACKAGE
@@ -94,7 +101,7 @@ PACKAGE;
                 echo "<input type='hidden' name='wc_trip_{$type}_package_label' value='{$info['label']}' />";
             }
         }
-        
+
         if ( $pickups ) {
             echo <<<PICKUPS
                 <p class='form-field'>
@@ -105,7 +112,7 @@ PACKAGE;
                 </p>
 PICKUPS;
         }
-        if ( "bus" == $trip_type ) {
+        if ( "bus" == $trip_type || "beach_bus" == $trip_type ) {
             echo <<<AGECHECK
                 <p class="form-field form-field-wide" id="wc_trip_age_check">
                     <label for="wc_trip_age_check">Is this guest at least 18 years of age?<span class="required"> *</span></label>
@@ -126,9 +133,9 @@ PICKUPS;
 AGECHECK;
         }
         ?>
-        
+
         <?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
-        
+
         <div class="wc-trip-cost" style="display:none"></div>
 
     </div>
@@ -138,9 +145,9 @@ AGECHECK;
         <span id="trip_price" class="amount"></span>
     </p>
     <input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
-    
+
     <button type="submit" class="single_add_to_cart_button button alt wc_trip_add"><?php echo $product->single_add_to_cart_text(); ?></button>
-    
+
     <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 
 </form>
