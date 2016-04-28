@@ -181,24 +181,78 @@ jQuery(document).ready(function($){
     $(".sorter:visible").css("visibility", "hidden");
   }
   function showHideTabs() {
-    switch ( $( "select[name=_wc_trip_type] :selected").val() ){
-      case "domestic_flight":
-      case "international_flight":
-        $(".trips_flight_times_tab").show();
-        $(".trips_routes_tab").hide();
-        $(".trips_pickup_location").hide();
-        break;
-      case "beach_bus":
-        $(".trips_routes_tab").show();
-        $(".trips_pickup_location").hide();
-        $(".trips_flight_times_tab").hide();
-        break;
-      default:
-        $(".trips_pickup_location").show();
-        $(".trips_flight_times_tab").hide();
-        $(".trips_routes_tab").hide();
-        $(".trips_flight_times_tab").hide();
-    }
+    var tabStatus = {
+      bus: {
+        trips_pickup_location: true,
+        trips_primary_packages_tab: true,
+        trips_secondary_packages_tab: true,
+        trips_tertiary_packages_tab: true,
+        trips_includes_tab: true,
+        trips_rates_tab: true,
+        trips_routes_tab: false,
+        trips_partners_tab: false,
+        trips_flight_times_tab: false,
+        trips_pics_tab: true,
+        trips_package_tab: false,
+        trips_to_beach_tab: false,
+        trips_from_beach_tab: false
+      },
+      beach_bus: {
+        trips_pickup_location: false,
+        trips_primary_packages_tab: false,
+        trips_secondary_packages_tab: false,
+        trips_tertiary_packages_tab: false,
+        trips_includes_tab: true,
+        trips_rates_tab: true,
+        trips_routes_tab: true,
+        trips_partners_tab: true,
+        trips_flight_times_tab: false,
+        trips_pics_tab: true,
+        trips_package_tab: true,
+        trips_to_beach_tab: true,
+        trips_from_beach_tab: true
+      },
+      international_flight: {
+        trips_pickup_location: false,
+        trips_primary_packages_tab: true,
+        trips_secondary_packages_tab: true,
+        trips_tertiary_packages_tab: true,
+        trips_includes_tab: true,
+        trips_rates_tab: true,
+        trips_routes_tab: false,
+        trips_partners_tab: false,
+        trips_flight_times_tab: true,
+        trips_pics_tab: true,
+        trips_package_tab: false,
+        trips_to_beach_tab: false,
+        trips_from_beach_tab: false
+      },
+      domestic_flight: {
+        trips_pickup_location: false,
+        trips_primary_packages_tab: true,
+        trips_secondary_packages_tab: true,
+        trips_tertiary_packages_tab: true,
+        trips_includes_tab: true,
+        trips_rates_tab: true,
+        trips_routes_tab: false,
+        trips_partners_tab: false,
+        trips_flight_times_tab: true,
+        trips_pics_tab: true,
+        trips_package_tab: false,
+        trips_to_beach_tab: false,
+        trips_from_beach_tab: false
+      }
+    };
+    // Loops through tabs for selected trip sub-type and shows or hides tabs
+    $.each(tabStatus[$("select[name=_wc_trip_type] :selected").val()],
+    function(index, value){
+        if ( value ) {
+          $("." + index).show();
+
+        } else {
+          $("." + index).hide();
+        }
+    });
   }
 });
 
