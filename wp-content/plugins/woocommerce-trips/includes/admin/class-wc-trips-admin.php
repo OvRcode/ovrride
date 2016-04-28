@@ -199,7 +199,7 @@ class WC_Trips_Admin {
             $from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_from_beach_cost'][$i] );
             $from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_from_beach_stock'][$i] );
           }
-          update_post_meta( $post_id, '_wc_trip_tertiary_package_label', "from Beach" );
+          update_post_meta( $post_id, '_wc_trip_tertiary_package_label', "From Beach" );
           update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', "yes" );
           update_post_meta( $post_id, '_wc_trip_tertiary_packages', $from_beach_packages);
         }

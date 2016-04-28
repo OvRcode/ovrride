@@ -1,7 +1,7 @@
 <div id="trips_from_beach" class="woocommerce_options_panel panel wc-metaboxes-wrapper">
     <div class="options_group" id="to-beach">
         <div class="toolbar">
-            <h3>To Beach</h3>
+            <h3>From Beach</h3>
             <br />
         </div>
 

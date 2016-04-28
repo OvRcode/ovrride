@@ -46,6 +46,7 @@ jQuery(document).ready(function($){
         }
       });
     } else {
+      $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").prop('disabled', false);
       $("#wc-trips-form").parents('form').submit();
     }
   });
@@ -97,19 +98,28 @@ jQuery(document).ready(function($){
   });
   $("#wc_trip_primary_package").on("change", function(){
     if ( "beach_bus" === $("#wc_trip_type").val() ) {
+      // Switch to bus routes tab, if it's on the page
+      if ( $(".bus_routes_tab").is(":visible") ){
+        $('.active').removeClass('active');
+        $('.bus_routes_tab').addClass('active');
+        $('.wc-tab').hide();
+        $('#tab-bus_routes').show();
+      }
+
+      // Re-enable all dropdowns
       $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").prop('disabled', false);
       $("#oneWay").remove();
 
       if (/to beach/i.test($(this).val() ) ) {
-        $("#wc_trip_tertiary_package").append("<option id='oneWay' value='to beach'>One Way To Beach</option>");
-        $("#wc_trip_tertiary_package").val('to beach');
+        $("#wc_trip_tertiary_package").append("<option id='oneWay' value='oneWay'>One Way To Beach</option>");
+        $("#wc_trip_tertiary_package").val('oneWay');
         $("#wc_trip_tertiary_package").prop('disabled', true);
       } else if(/from beach/i.test($(this).val() ) ) {
-        $("#wc_trip_secondary_package").append("<option id='oneWay' value='from beach'>One Way From Beach</option>");
-        $("#wc_trip_secondary_package").val('from beach');
+        $("#wc_trip_secondary_package").append("<option id='oneWay' value='oneWay'>One Way From Beach</option>");
+        $("#wc_trip_secondary_package").val('oneWay');
         $("#wc_trip_secondary_package").prop('disabled', true);
       }
-      
+
     }
   });
   $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package, #wc_trip_pickup_location").on("change", function(){
