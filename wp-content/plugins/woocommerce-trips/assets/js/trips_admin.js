@@ -54,6 +54,10 @@ jQuery(document).ready(function($){
         showHideStock("tertiary");
       } else if ( $(this).prop("id") == "package_add") {
         $("table.woocommerce_trip_packages").append( $(this).data( 'row' ) );
+      } else if ( "to_beach_add" == $(this).prop("id") ) {
+        $("table.woocommerce_trip_to_beach").append( $(this).data( 'row' ) );
+      } else if ( "from_beach_add" == $(this).prop("id") ) {
+        $("table.woocommerce_trip_from_beach").append( $(this).data( 'row' ) );
       }
 
       if ( $(".sorter:visible").size() > 1 ) {
