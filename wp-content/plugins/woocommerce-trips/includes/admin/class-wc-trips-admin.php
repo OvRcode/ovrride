@@ -105,7 +105,9 @@ class WC_Trips_Admin {
                     $value = absint( $value );
                     break;
                 case 'float' :
-                    $value = floatval( $value );
+                    if ( '' !== $value ) {
+                      $value = floatval( $value );
+                    }
                     break;
                 case 'stockStatus':
                     $value = ( $value == "instock" || $value == "outofstock" ? $value : '');
