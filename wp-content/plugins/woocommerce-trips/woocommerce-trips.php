@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.1.0
+Version: 1.1.1
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -127,7 +127,15 @@ class WC_Trips {
         $pics               = get_post_meta( $product->id, '_wc_trip_pics', true);
         $routes             = get_post_meta( $product->id, '_wc_trip_routes', true);
         $partners           = get_post_meta( $product->id, '_wc_trip_partners', true);
+        $videos             = get_post_meta( $product->id, '_wc_trip_videos', true);
 
+        if ( "" !== $videos && FALSE !== $videos ) {
+          $tabs['videos'] = array(
+            'title'     => 'Videos',
+            'priority'  => 47,
+            'callback'  => array( $this, 'video_content')
+          );
+        }
         if ( "" !== $routes && FALSE !== $routes ) {
           $tabs['bus_routes'] = array(
             'title'     => 'Bus Routes',
@@ -185,6 +193,13 @@ class WC_Trips {
             );
         }
         return $tabs;
+    }
+    public function video_content(){
+      global $product;
+      $video_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_videos', true ) );
+
+      //echo apply_filters('the_content', $video_data);
+      echo $video_data;
     }
     public function routes_content(){
       global $product;

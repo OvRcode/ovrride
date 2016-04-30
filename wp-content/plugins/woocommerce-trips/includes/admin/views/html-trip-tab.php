@@ -37,3 +37,6 @@
 <li class="trips_tab trips_from_beach_tab attribute_options show_if_trip">
   <a href="#trips_from_beach">From Beach</a>
 </li>
+<li class="trips_tab trips_videos_tab attribute_options show_if_trip">
+  <a href="#trips_videos">Videos</a>
+</li>

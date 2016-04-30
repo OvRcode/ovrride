@@ -202,7 +202,8 @@ jQuery(document).ready(function($){
         trips_pics_tab: true,
         trips_package_tab: false,
         trips_to_beach_tab: false,
-        trips_from_beach_tab: false
+        trips_from_beach_tab: false,
+        trips_videos_tab: true
       },
       beach_bus: {
         trips_pickup_location: false,
@@ -217,7 +218,8 @@ jQuery(document).ready(function($){
         trips_pics_tab: true,
         trips_package_tab: true,
         trips_to_beach_tab: true,
-        trips_from_beach_tab: true
+        trips_from_beach_tab: true,
+        trips_videos_tab: true
       },
       international_flight: {
         trips_pickup_location: false,
@@ -232,7 +234,8 @@ jQuery(document).ready(function($){
         trips_pics_tab: true,
         trips_package_tab: false,
         trips_to_beach_tab: false,
-        trips_from_beach_tab: false
+        trips_from_beach_tab: false,
+        trips_videos_tab: true
       },
       domestic_flight: {
         trips_pickup_location: false,
@@ -247,7 +250,8 @@ jQuery(document).ready(function($){
         trips_pics_tab: true,
         trips_package_tab: false,
         trips_to_beach_tab: false,
-        trips_from_beach_tab: false
+        trips_from_beach_tab: false,
+        trips_videos_tab: true
       }
     };
     // Loops through tabs for selected trip sub-type and shows or hides tabs
