@@ -3,8 +3,8 @@ Contributors: squelch
 Donate link: http://squelchdesign.com/wordpress-plugin-squelch-tabs-accordions-shortcodes/
 Tags: squelch,tabs, accordions,shortcodes,FAQs,tabbed,user interface,vaccordion,haccordion,thethe,thethe fly
 Requires at least: 3.5
-Tested up to: 4.4
-Stable tag: 0.3.5
+Tested up to: 4.5
+Stable tag: 0.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,9 +27,9 @@ Tabs and accordions can help to improve your website in a number of ways:
 If you want to add more interactivity with *Tabs*, *Vertical* and *Horizontal Accordions* on your WordPress website,
 **Squelch Tabs and Accordions Shortcodes** is a good option.
 
-**A not on responsivensss:**
+**A note on responsivensss:**
 
-We receive a lot of questions as to whether this plugin is responsive. All widgets is in this plugin are responsive excluding the horizontal accordion widget: It uses a different library to the other widgets, and that library is unfortunately not responsive. We may add a responsive horizontal slider in the future, but it is not available yet.
+We receive a lot of questions as to whether this plugin is responsive. All widgets in this plugin are responsive **excluding** the horizontal accordion widget: It uses a different library to the other widgets, and that library is unfortunately not responsive. We may add a responsive horizontal slider in the future, but it is not available yet.
 
 == Installation ==
 
@@ -105,6 +105,13 @@ All widgets is in this plugin are responsive excluding the horizontal accordion 
 
 == Changelog ==
 
+= 0.3.6 =
+* Bug fix: It's now possible to use paragraphs or newlines to lay out your shortcodes once again.
+* Bug fix: Test for custom jQuery UI theme from jQuery UI Widgets (my thanks to RobWunderlich for reporting this bug)
+* New feature: [tab] shortcode now accepts a parameter of 'class' to add additional classes to your tabs.
+* New feature: Roll your own theme from the theme roller and store it in your uploads directory so that plugin upgrades do not affect your theme.
+* Version bump for WP4.5
+
 = 0.3.5 =
 * Minor bug-fix: After changing themes the admin interface would still show the OLD theme, this has now been resolved.
 * Version bump for WP4.4
@@ -159,6 +166,9 @@ All widgets is in this plugin are responsive excluding the horizontal accordion 
 * Initial version
 
 == Upgrade Notice ==
+
+= 0.3.6 =
+A couple of new features (ability to use a theme rolled theme stored outside of the plugin!), some bug fixes and version bump for WP4.5
 
 = 0.3.5 =
 Minor bug-fix and version bump for WordPress 4.4

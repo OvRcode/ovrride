@@ -828,7 +828,10 @@ class GF_Field extends stdClass implements ArrayAccess {
 	}
 
 	/**
-	 * Sanitize the entry value before it is saved.
+	 * Override this method to implement the appropriate sanitization specific to the field type before the value is saved.
+	 *
+	 * This base method provides a generic sanitization similar to wp_kses but values are not encoded.
+	 * Scripts are stripped out leaving tags allowed by the gform_allowable_tags filter.
 	 *
 	 * @param string $value The field value to be processed.
 	 * @param int $form_id The ID of the form currently being processed.
@@ -841,6 +844,18 @@ class GF_Field extends stdClass implements ArrayAccess {
 			return '';
 		}
 
+		/**
+		 * Provisional filter - may be subject to change or removal.
+		 *
+		 * @param bool
+		 * @param int $form_id
+		 * @para GF_Field $this
+		 */
+		$sanitize = apply_filters( 'gform_sanitize_entry_value', true, $form_id, $this );
+		if ( ! $sanitize ) {
+			return $value;
+		}
+
 		//allow HTML for certain field types
 		$allow_html = $this->allow_html();
 
@@ -848,11 +863,14 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 		if ( $allowable_tags !== true ) {
 			$value = strip_tags( $value, $allowable_tags );
-			return $value;
-		} else {
-			$value = $this->strip_script_tag( $value );
-			return $value;
 		}
+
+		$allowed_protocols = wp_allowed_protocols();
+		$value = wp_kses_no_null( $value, array( 'slash_zero' => 'keep' ) );
+		$value = wp_kses_hook( $value, 'post', $allowed_protocols );
+		$value = wp_kses_split( $value, 'post', $allowed_protocols );
+
+		return $value;
 	}
 
 	/**
@@ -1010,5 +1028,4 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 		return $logic;
 	}
-
 }

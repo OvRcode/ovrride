@@ -278,7 +278,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 			$this->log_debug( __METHOD__ . "(): Authorization result for form #{$form['id']} submission => " . print_r( $this->authorization, 1 ) );
 		}
 
-		if ( $performed_authorization && ! $this->authorization['is_authorized'] ) {
+		if ( $performed_authorization && ! rgar( $this->authorization, 'is_authorized' ) ) {
 			$validation_result = $this->get_validation_result( $validation_result, $this->authorization );
 
 			//Setting up current page to point to the credit card page since that will be the highlighted field
@@ -1198,6 +1198,12 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 		$this->log_debug( __METHOD__ . '(): Processing request.' );
 		if ( ! $action['transaction_type'] ) {
 			$action['transaction_type'] = 'payment';
+		}
+
+		// Set payment status back to active if a previous payment attempt failed.
+		if ( strtolower( $entry['payment_status'] ) != 'active' ) {
+			$entry['payment_status'] = 'Active';
+			GFAPI::update_entry_property( $entry['id'], 'payment_status', 'Active' );
 		}
 
 		if ( ! $action['note'] ) {
@@ -2563,7 +2569,7 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 	 */
 	public function get_currency( $currency_code = '' ) {
 		if ( ! class_exists( 'RGCurrency' ) ) {
-			require_once( GFCommon::get_base_path() . 'currency.php' );
+			require_once( GFCommon::get_base_path() . '/currency.php' );
 		}
 
 		if ( empty( $currency_code ) ) {
@@ -2669,6 +2675,11 @@ abstract class GFPaymentAddOn extends GFFeedAddOn {
 
 		$form = GFAPI::get_form( $entry['form_id'] );
 		$feed = $this->get_payment_feed( $entry, $form );
+
+		//This addon does not have a payment feed. Abort.
+		if ( empty ( $feed ) ){
+			return;
+		}
 
 		if ( $this->cancel( $entry, $feed ) ) {
 			$this->cancel_subscription( $entry, $feed );

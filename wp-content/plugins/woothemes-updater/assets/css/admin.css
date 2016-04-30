@@ -17,6 +17,9 @@
   width: 100%;
   height: auto;
 }
+.about-wrap .woothemes-helper-about-text {
+  min-height: auto;
+}
 .woothemes-updater-wrap .feature-section ul {
   margin-bottom: 4em;
   padding-bottom: 1em;
@@ -126,8 +129,14 @@
     vertical-align: top;
 }
 .dashboard_page_woothemes-helper .column-product_status, .index_page_woothemes-helper-network .column-product_status {
-  width: 400px;
+  width: 350px;
 }
 .dashboard_page_woothemes-helper .column-product_version, .index_page_woothemes-helper-network .column-product_version {
-  width: 100px;
+  width: 220px;
+}
+.dashboard_page_woothemes-helper .column-product_version .update-available, .index_page_woothemes-helper-network .column-product_version .update-available {
+  color: #CC0033;
+}
+.dashboard_page_woothemes-helper .column-product_version .latest-version, .index_page_woothemes-helper-network .column-product_version .latest-version {
+  color: #228B22;
 }

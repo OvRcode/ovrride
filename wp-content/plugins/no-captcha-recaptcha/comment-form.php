@@ -37,7 +37,7 @@ class Ncr_Comment_Captcha extends Ncr_No_Captcha_Recaptcha {
 		if ( ! empty( self::$captcha_error ) ) {
 
 			// delete the failed captcha comment
-			wp_delete_comment( absint( $comment->comment_ID ) );
+			wp_delete_comment( absint( $comment->comment_ID ), true );
 
 			// add failed query string for @parent::display_captcha to display error message
 			$location = add_query_arg( 'captcha', 'failed', $location );

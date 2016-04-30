@@ -134,8 +134,8 @@ METASQL;
   function composeEmail() {
     $txtEmail = $this->title . "\n";
     $htmlEmail = "<p>" . $this->title . "</p>";
-    $txtEmail .= "Total guests: " . $this->totalGuests."\n";
-    $htmlEmail .= "<p>Total guests: " . $this->totalGuests . "</p>";
+    $txtEmail .= "Total guests: " . $this->totalGuests."\n\n";
+    $htmlEmail .= "<p>Total guests: " . $this->totalGuests . "</p><br />";
 
     foreach( $this->packages as $label => $regex) {
       $txtEmail .= $this->translateLabel($label);
@@ -147,10 +147,10 @@ METASQL;
         $txtEmail .= ": ".count($this->guests[$label]) . "\n";
         $htmlEmail .= ": ".count($this->guests[$label]) . "</p>";
         foreach( $this->guests[$label] as $order_item_id => $info ) {
-          $txtEmail .= "\t" . $info['First'] . " " . $info['Last'] . "\n";
-          $htmlEmail .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;" . $info['First'] . "&nbsp;" . $info['Last'] . "</p>";
+          $txtEmail .= "\t" . $info['First'] . " " . $info['Last'];
+          $htmlEmail .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;" . $info['First'] . "&nbsp;" . $info['Last'];
           $txtEmail .= "\tPhone: " . $info['Phone'] . "\tEmail: " . $info['Email'] . "\n\n";
-          $htmlEmail .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;Phone:&nbsp;" . $info['Phone'] . "&nbsp;&nbsp;&nbsp;&nbsp;Email:&nbsp;" . $info['Email'] . "</p><br />";
+          $htmlEmail .= "&nbsp;&nbsp;&nbsp;&nbsp;Phone:&nbsp;" . $info['Phone'] . "&nbsp;&nbsp;&nbsp;&nbsp;Email:&nbsp;" . $info['Email'] . "</p><br />";
         }
       }
     }
@@ -169,6 +169,9 @@ METASQL;
         'to' => array(
             array(
                 'email' => $this->recipient
+            ),
+            array(
+              'email' => 'info@ovrride.com'
             )
         ),
         'headers' => array('Reply-To' => 'info@ovrride.com'),

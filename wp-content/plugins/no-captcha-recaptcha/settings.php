@@ -331,6 +331,24 @@ class Ncr_Settings_Page {
 					</div>
 				</div>
 
+				<div class="postbox" style="text-align: center">
+					<div class="handlediv"><br></div>
+					<h3 class="hndle ui-sortable-handle"><span>OmniPay WordPress</span></h3>
+
+					<div class="inside">
+						<p>WordPress payment extension for <strong>Easy Digital Downloads</strong> and <strong>WooCommerce</strong> that bundles several payment gateways together with an intuitive drag-and-drop interface for the gateways set up and management.</p>
+						<div style="margin:10px"><a href="https://omnipay.io/?utm_source=ppress-dashboard" target="_blank">
+								<button class="button-primary" type="button">Get it Now</button>
+							</a></div>
+						<div style="margin:10px"><a href="https://omnipay.io/edd-payment-gateways/?ref=admin-bar-dashboard" target="_blank">
+								<button class="button-primary" type="button">EDD Payment Gateways</button>
+							</a></div>
+						<div style="margin:10px"><a href="https://omnipay.io/woocommerce-payment-gateways/?ref=admin-bar-dashboard" target="_blank">
+								<button class="button-primary" type="button">WooCommerce Payment Gateway</button>
+							</a></div>
+					</div>
+				</div>
+
 				<div class="postbox">
 					<div class="handlediv"><br></div>
 					<h3 class="hndle" style="text-align: center;">

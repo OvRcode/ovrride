@@ -71,13 +71,13 @@
         <br>
         <span>&copy; COPYRIGHT <?php echo date('Y'); ?> - <a href="/">OvR ride LLC.</a> - ALL RIGHTS RESERVED</span>
         <br>
-        <span><a href="https://www.digitalocean.com/?refcode=4ea7265a5e45" target="_blank">Hosted by Digital Ocean</a></span>
+        <span><a href="http://ajalabs.com" target="_new">Created and maintained by AJAlabs</a></span>
       </div>
 
       <div style="text-align:right;" class="col grid_3_of_12">
         <a href="http://www.homagebrooklyn.com/site/" title="Homage Brooklyn" target="_blank"><div class="shop homage"></div></a>
         <a href="http://www.rei.com/stores/soho.html" title="REI SoHo NYC" target="_blank"><div class="shop rei"></div></a>
-        <a href="http://www.shutnyc.com" title="SHUT Skateboards NYC" target="_blank"><div class="shop shut"></div></a> 
+        <a href="http://www.shutnyc.com" title="SHUT Skateboards NYC" target="_blank"><div class="shop shut"></div></a>
       </div>
     </footer>
   </div> <!-- /.footercontainer -->

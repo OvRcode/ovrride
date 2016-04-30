@@ -492,7 +492,7 @@ abstract class GFAddOn {
 				'version'  => GFCommon::$version,
 				'deps'     => array( 'jquery' ),
 				'enqueue'  => array(
-					array( 'admin_page' => array( 'form_settings' ) ),
+					array( 'admin_page' => array( 'form_settings', 'plugin_settings' ) ),
 				)
 			),
 		);
@@ -517,7 +517,7 @@ abstract class GFAddOn {
 		foreach ( $scripts as $script ) {
 			$src       = isset( $script['src'] ) ? $script['src'] : false;
 			$deps      = isset( $script['deps'] ) ? $script['deps'] : array();
-			$version   = isset( $script['version'] ) ? $script['version'] : false;
+			$version   = array_key_exists( 'version', $script ) ? $script['version'] : false;
 			$in_footer = isset( $script['in_footer'] ) ? $script['in_footer'] : false;
 			wp_register_script( $script['handle'], $src, $deps, $version, $in_footer );
 			if ( isset( $script['enqueue'] ) && $this->_can_enqueue_script( $script['enqueue'], $form, $is_ajax ) ) {
@@ -538,7 +538,7 @@ abstract class GFAddOn {
 		foreach ( $styles as $style ) {
 			$src     = isset( $style['src'] ) ? $style['src'] : false;
 			$deps    = isset( $style['deps'] ) ? $style['deps'] : array();
-			$version = isset( $style['version'] ) ? $style['version'] : false;
+			$version = array_key_exists( 'version', $style ) ? $style['version'] : false;
 			$media   = isset( $style['media'] ) ? $style['media'] : 'all';
 			wp_register_style( $style['handle'], $src, $deps, $version, $media );
 			if ( $this->_can_enqueue_script( $style['enqueue'], $form, $is_ajax ) ) {
@@ -612,14 +612,17 @@ abstract class GFAddOn {
 		$this->_no_conflict_styles = array_merge( $styles, $this->_no_conflict_styles );
 	}
 
-	private function _can_enqueue_script( $enqueue_conditions, $form, $is_ajax ) {
+	private function _can_enqueue_script( $enqueue_conditions, $form = array(), $is_ajax = false ) {
 		if ( empty( $enqueue_conditions ) ) {
 			return false;
 		}
-
+		
 		foreach ( $enqueue_conditions as $condition ) {
 			if ( is_callable( $condition ) ) {
-				return call_user_func( $condition, $form, $is_ajax );
+				$callback_matches = call_user_func( $condition, $form, $is_ajax );
+				if ( $callback_matches ) {
+					return true;
+				}
 			} else {
 				$query_matches      = isset( $condition['query'] ) ? $this->_request_condition_matches( $_GET, $condition['query'] ) : true;
 				$post_matches       = isset( $condition['post'] ) ? $this->_request_condition_matches( $_POST, $condition['query'] ) : true;
@@ -726,6 +729,13 @@ abstract class GFAddOn {
 
 				case 'results' :
 					if ( $this->is_results() ) {
+						return true;
+					}
+
+					break;
+
+				case 'customizer' :
+					if ( is_customize_preview() ) {
 						return true;
 					}
 
@@ -1280,7 +1290,8 @@ abstract class GFAddOn {
 	}
 
 	protected function get_save_button( $sections ) {
-		$fields = $sections[ count( $sections ) - 1 ]['fields'];
+		$sections = array_values( $sections );
+		$fields   = $sections[ count( $sections ) - 1 ]['fields'];
 
 		foreach ( $fields as $field ) {
 			if ( $field['type'] == 'save' )
@@ -1575,8 +1586,11 @@ abstract class GFAddOn {
 			
 			
 			foreach ( $field['choices'] as $i => $choice ) {
-				
-				$choice['id']      = $field['name'] . $i;
+
+				if ( rgempty( 'id', $choice ) ) {
+					$choice['id'] = $field['name'] . $i;
+				}
+
 				$choice_attributes = $this->get_choice_attributes( $choice, $field_attributes );
 				$tooltip           = $this->maybe_get_tooltip( $choice );
 				$radio_value       = isset( $choice['value'] ) ? $choice['value'] : $choice['label'];
@@ -1595,7 +1609,7 @@ abstract class GFAddOn {
 					}
 					
 					$html .= '<div id="gaddon-setting-radio-choice-' . $choice['id'] . '" class="gaddon-setting-radio gaddon-setting-choice-visual' . $horizontal . '">';
-	                $html .= '<input id="' . esc_attr( $choice['id'] ) . '" type="radio" name="_gaddon_setting_' . esc_attr( $field['name'] ) . '" ' .
+	                $html .= '<input type="radio" name="_gaddon_setting_' . esc_attr( $field['name'] ) . '" ' .
 					         'value="' . $radio_value . '" ' . implode( ' ', $choice_attributes ) . ' ' . $checked . ' />';
 					$html .= '<label for="' . esc_attr( $choice['id'] ) . '">';
 					$html .= '<span>' . $icon_tag . '<br />' . esc_html( $choice['label'] ) . $tooltip . '</span>';
@@ -1606,7 +1620,7 @@ abstract class GFAddOn {
 				
 					$html .= '<div id="gaddon-setting-radio-choice-' . $choice['id'] . '" class="gaddon-setting-radio' . $horizontal . '">';
 					$html .= '<label for="' . esc_attr( $choice['id'] ) . '">';
-	                $html .= '<input id="' . esc_attr( $choice['id'] ) . '" type="radio" name="_gaddon_setting_' . esc_attr( $field['name'] ) . '" ' .
+	                $html .= '<input type="radio" name="_gaddon_setting_' . esc_attr( $field['name'] ) . '" ' .
 					         'value="' . $radio_value . '" ' . implode( ' ', $choice_attributes ) . ' ' . $checked . ' />';
 					$html .= '<span>' . esc_html( $choice['label'] ) . $tooltip . '</span>';
 	                $html .= '</label>';
@@ -1708,9 +1722,20 @@ abstract class GFAddOn {
 		/* Loop through select choices and make sure option for custom exists */
 		$has_gf_custom = false;
 		foreach ( $select_field['choices'] as $choice ) {
+			
 			if ( rgar( $choice, 'name' ) == 'gf_custom' || rgar( $choice, 'value' ) == 'gf_custom' ) {
 				$has_gf_custom = true;
 			}
+			
+			/* If choice has choices, check inside those choices. */
+			if ( rgar( $choice, 'choices' ) ) {
+				foreach ( $choice['choices'] as $subchoice ) {
+					if ( rgar( $subchoice, 'name' ) == 'gf_custom' || rgar( $subchoice, 'value' ) == 'gf_custom' ) {
+						$has_gf_custom = true;
+					}
+				}
+			}
+			
 		}
 		if ( ! $has_gf_custom ) {
 			$select_field['choices'][] = array(
@@ -1826,7 +1851,7 @@ abstract class GFAddOn {
 			$html .= '
                 <tr>
                     <td>
-                        <label for="' . $child_field['name'] . '">' . $child_field['label'] . $tooltip . $required . '<label>
+                        <label for="' . $child_field['name'] . '">' . $child_field['label'] . $tooltip . $required . '</label>
                     </td>
                     <td>' .
 			         $this->settings_field_map_select( $child_field, $form_id ) .
@@ -4401,9 +4426,9 @@ abstract class GFAddOn {
 
 						$field_value = $this->get_full_name( $entry, $field_id );
 
-					} elseif ( $input_type == 'list' ) {
+					} elseif ( is_callable( array( $this, "get_{$input_type}_field_value" ) ) ) {
 
-						$field_value = $this->get_list_field_value( $entry, $field_id, $field );
+						$field_value = call_user_func( array( $this, "get_{$input_type}_field_value" ), $entry, $field_id, $field );
 
 					} else {
 

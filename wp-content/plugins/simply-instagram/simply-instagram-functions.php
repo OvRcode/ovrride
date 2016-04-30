@@ -439,10 +439,7 @@ function sInstGetFollowingInfo( $user_id, $access_token )
  *
 */
 function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "instagram", $size='low_resolution', $display="20", $width="150", $customRel="sIntWid", $showphotographer="true", $photocomment=0, $stat = "true", $photocaption="true", $displaycomment = true )
-{		
-	//$si_gen_settings = get_option( 'si_general_settings' );
-	
-	//var_dump( $si_gen_settings['si_cache_option'] );
+{			
 	/**
 	 * Determine query return
 	 * next query used to avoid
@@ -467,6 +464,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 		
 		if( $presentation === "polaroid" ){
 			//$output = '<div class="polaroid-holder">';
+			$output = '';
 			$output .= '<ul id="polaroid-ul">';
 				for( $i=0; $i < $query; $i++ ):
 					$output .= '<li>';															
@@ -501,7 +499,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						 * in settings, display this area
 						*/
 						if( $prettyPhoto['ppDisplayStatistic']  == "true" ):	
-							$output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+							$output .= '<div class="scode-content-info"><p class="si-stat-likes">' . si_format_num( $data['data'][$i]['likes']['count'] ) . ' likes</p></div>';
 							$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
 						endif; // end of ppPhotoDescription
 						
@@ -584,7 +582,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 */
 					 if( $stat === "true" ):
 					 
-					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . si_format_num( $data['data'][$i]['likes']['count'] ) . ' likes</p></div>';
 					 
 					 endif;
 					 
@@ -610,7 +608,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						  * Determine if displayStatistic is allowed
 						 */
 						 if( $stat === "true" ):
-						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . si_format_num( $data['data'][$i]['comments']['count'] ) . ' comments</p></div>';
 						 endif;
 						 
 						 /**
@@ -643,6 +641,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 				 * else user choose to use prettyPhoto slideshow
 				 * display this area.
 				*/
+					$output = '';
 					$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
 					
 					/**
@@ -669,8 +668,8 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 * in settings, display this area
 					*/
 					if( $prettyPhoto['ppDisplayStatistic']  == "true" ):	
-						$output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
-						$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						$output .= '<div class="scode-content-info"><p class="si-stat-likes">' . si_format_num(  $data['data'][$i]['likes']['count'] ) . ' likes</p></div>';
+						$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . si_format_num(  $data['data'][$i]['comments']['count'] ) . ' comments</p></div>';
 					endif; // end of ppPhotoDescription
 					
 					/**
@@ -712,7 +711,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 */
 					 if( $stat === "true" ):
 					 
-					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
+					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . si_format_num( $data['data'][$i]['likes']['count'] ) . ' likes</p></div>';
 					 
 					 endif;
 					 
@@ -738,7 +737,7 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 						  * Determine if displayStatistic is allowed
 						 */
 						 if( $stat === "true" ):
-						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
+						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . si_format_num( $data['data'][$i]['comments']['count'] ) . ' comments</p></div>';
 						 endif;
 						 
 						 /**
@@ -764,92 +763,6 @@ function sInstDisplayData( $data, $presentation = 'polaroid', $displayoption = "
 					 endif;
 					
 				}
-				
-				if( $displayoption === "single" ){
-				/**
-				 * else user choose to use prettyPhoto iframe
-				 * display this area.
-				*/
-					$output .= '<div class="item-holder" data-id="' . $data['data'][$i]['id'] . '">';			
-					
-					 /**
-					  * Display image, description and statistic
-					 **/
-					 $output .= '<a href="' . plugins_url( 'simply-instagram/simply-instagram-pp-media-viewer.php?mid=' . ( $data['data'][$i]['id'] ) . '&access_token=' . access_token() . '&mdc=' . get_option( 'displayCommentMediaViewer' ) ) . '&iframe=true&width=960&height=650&scrolling=no" rel="prettyphoto" style="text-decoration:none">';
-					  $output .= '<img class="front-photo si-tooltip" src="' . $data['data'][$i]['images']['thumbnail']['url'] . '" width="150" height="150" alt="' . $data['data'][$i]['caption']['text'] . '">';
-					 $output .= '</a>';
-					 
-					 $output .=  '</div>';				 
-					 
-					 /**
-					  * highlights photographer
-					  * using author section class
-					 */
-					 if( $showphotographer === "true" ):
-					 $output .= '<div class="sinst-author-section">';
-					  $output .= '<div class="sinst-author">';
-					   $output .= '<img src="' . $data['data'][$i]['user']['profile_picture'] . '" alt="' . $data['data'][$i]['user']['username'] . '" class="si-photographer"/> <span class="sinst-comment-author">' . $data['data'][$i]['user']['username'] . '</span> ';
-					  $output .= '</div>';
-					 $output .= '</div>';
-					 endif;	 
-					 
-					 /**
-					  * Determine if displayStatistic is allowed
-					 */
-					 if( $stat === "true" ):
-					 
-					 $output .= '<div class="scode-content-info"><p class="si-stat-likes">' . $data['data'][$i]['likes']['count'] . ' likes</p></div>';
-					 
-					 endif;
-					 
-					 /**
-					  * Determine if displayDescription is allowed
-					 */
-					 $photocaption === "true" ? $output .= '<p class="si-photo-caption">' . htmlspecialchars( $data['data'][$i]['caption']['text'], ENT_QUOTES ) . '</p>' : null ;
-					 
-					  
-					 /**
-					  * Comment section
-					  * Check if comment exist
-					  * Display latest # comments on media
-					  * based on option
-					 */
-					 if( $data['data'][$i]['comments']['count'] != 0 ): //if there's comment
-					 
-					 if( $displaycomment === "true" ): //user choose to display comment
-					 	 
-						 $output .= '<div class="sinst-comment-section">';
-						 
-						 /**
-						  * Determine if displayStatistic is allowed
-						 */
-						 if( $stat === "true" ):
-						 	$output .= '<div class="scode-content-info"><p class="si-stat-comments">' . $data['data'][$i]['comments']['count'] . ' comments</p></div>';
-						 endif;
-						 
-						 /**
-						  * Determine comment to be displayed
-						 */		 
-						 if( $data['data'][$i]['comments']['count'] > 5 || $photocomment > 5 ):
-						 	$cc = 5;
-						 else:
-						 	$cc = $data['data'][$i]['comments']['count'];
-						 endif;
-							 
-						 for( $c=0; $c < $cc ; $c++ ):
-							 
-						 	$output .= '<div class="sinst-comments">';						 	
-						 	$output .= '<img src="' . $data['data'][$i]['comments']['data'][$c]['from']['profile_picture'] . '" alt="' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '" class="si-comment-profile"/>'; 
-						 	$output .= ' <span class="sinst-comment-author">' . $data['data'][$i]['comments']['data'][$c]['from']['username'] . '</span> <p>' . htmlspecialchars( $data['data'][$i]['comments']['data'][$c]['text'], ENT_QUOTES ) . '</p>';
-						 	$output .= '</div>';
-							 	
-						 endfor;			 		
-						 $output .= '</div>';
-					 endif;
-					  
-					 endif;
-				
-				}	 // end of mediaViewer
 				
 				$output .= '</div>';
 				
@@ -992,7 +905,7 @@ function sIntFollowButton( $user_id, $username )
 		<?php 
 		endif;
 		
-		( $_SERVER["HTTPS"] == "on" ) ? $protocol = "https://" : $protocol = "http://" ; 
+		( !empty( $_SERVER["HTTPS"] ) && $_SERVER["HTTPS"] == "on" ) ? $protocol = "https://" : $protocol = "http://" ; 
 		
 		$form = '<form method="post" action="'  . sInstLoginFollower( '?return_uri=' . base64_encode( $protocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] ) ) . '">';
 		$form .= '<input type="hidden" name="action" value="follow">';
@@ -1095,7 +1008,7 @@ function sIntCheckResponse( $type ){
 	}else{
 		$data = json_decode( file_get_contents( $file ), true );
 				
-		if( $data['meta']['error_message'] ){
+		if( !empty( $data['meta']['error_message'] ) ){
 			return sprintf( '<i>%s<strong>%i</strong>%s</i>',
 					__('Code : ', 'simply-instagram'),
 					$data['meta']['code'],
@@ -1112,6 +1025,24 @@ function sIntCheckResponse( $type ){
 					);					
 		}
 	}
+	
+}
+
+/**
+ *
+ * SI format number
+ *
+ * Format number with proper comma
+ * return { formatted number }
+ *
+*/
+function si_format_num( $number, $decimal = "" ){
+	
+	if( !is_int( $number ) && !is_int( $decimal ) ){
+		return;
+	}
+	
+	return number_format( $number, (int) $decimal );		
 	
 }
 

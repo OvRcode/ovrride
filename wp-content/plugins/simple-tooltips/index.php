@@ -3,7 +3,7 @@
 /*
 Plugin Name: Simple Tooltips
 Description: Easily add tooltips to your wordpress site. You can define tooltip color settings in <strong>Settings > Simple Tooltips</strong>
-Version: 2.1.2
+Version: 2.1.3
 Author: Justin Saad
 Author URI: http://www.clevelandwebdeveloper.com
 License: GPL2
@@ -34,6 +34,8 @@ class simple_tooltips {
 		    add_action('admin_init', array($this, 'page_init'));
 			//add Settings link to plugin page
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array($this, 'add_plugin_action_links') );
+			//custom jquery for admin page
+			add_action('admin_footer', array($this,'motech_tooltips_admin_jquery'));			
 		}
 
 		add_filter( 'tiny_mce_version', array($this, 'my_refresh_mce'));
@@ -288,10 +290,10 @@ class simple_tooltips {
 	 * 
 	 */
 	function create_a_checkbox($args) {
-		$html = '<input type="checkbox" id="'  . $args[id] . '" name="'  . $args[id] . '" value="1" ' . checked(1, get_option($args[id], $args["default"]), false) . '/>'; 
+		$html = '<input type="checkbox" id="'  . $args["id"] . '" name="'  . $args["id"] . '" value="1" ' . checked(1, get_option($args["id"], $args["default"]), false) . '/>'; 
 		
 		// Here, we will take the desc argument of the array and add it to a label next to the checkbox
-		$html .= '<label for="'  . $args[id] . '">&nbsp;&nbsp;'  . $args[desc] . '</label>'; 
+		$html .= '<label for="'  . $args["id"] . '">&nbsp;&nbsp;'  . $args["desc"] . '</label>'; 
 		
 		echo $html;
 		
@@ -299,13 +301,20 @@ class simple_tooltips {
 	
 	function create_a_text_input($args) {
 		//grab placeholder if there is one
-		if($args[placeholder]) {
-			$placeholder_html = "placeholder=\"".$args[placeholder]."\"";
+		if(isset($args["placeholder"])) {
+			$placeholder_html = "placeholder=\"".$args['placeholder']."\"";
+		} else {
+			$placeholder_html = "";
+		}
+		if(!empty($args["class"])){
+			$class = $args["class"];
+		}else{
+			$class = "";
 		}
 		// Render the output
-		echo '<input type="text" '  . $placeholder_html . ' id="'  . $args[id] . '" class="'.$args["class"].'" name="'  . $args[id] . '" value="' . get_option($args[id], $args["default"]) . '" />';
-		if($args[desc]) {
-			echo "<p class='description'>".$args[desc]."</p>";
+		echo '<input type="text" '  . $placeholder_html . ' id="'  . $args["id"] . '" class="'.$class.'" name="'  . $args["id"] . '" value="' . get_option($args["id"], $args["default"]) . '" />';
+		if(isset($args["desc"])) {
+			echo "<p class='description'>".$args["desc"]."</p>";
 		}
 		
 	} // end create_a_text_input
@@ -340,14 +349,14 @@ class simple_tooltips {
 
 	function create_a_select_input($args) {
 	
-		$select_options = $args[select_options];
+		$select_options = $args["select_options"];
 		$html = "";
-		if($args[desc]) {
-			$html .= $args[desc] . "<br>";
+		if(!empty($args["desc"])) {
+			$html .= $args["desc"] . "<br>";
 		}
-		$html .= '<select id="'  . $args[id] . '" name="'  . $args[id] . '">';
+		$html .= '<select id="'  . $args["id"] . '" name="'  . $args["id"] . '">';
 			foreach($select_options as $select_option) {
-				$html .= '<option value="'.$select_option[value].'" ' . selected( $select_option[value], get_option($args[id], $args["default"]), false) . '>'.$select_option[label].'</option>';
+				$html .= '<option value="'.$select_option["value"].'" ' . selected( $select_option["value"], get_option($args["id"], $args["default"]), false) . '>'.$select_option["label"].'</option>';
 			}
 		$html .= '</select>';
 		
@@ -561,7 +570,7 @@ class simple_tooltips {
 			}
 			
 			
-			if($custom_tooltip_active == 1) {
+			if((isset($custom_tooltip_active)) && ($custom_tooltip_active == 1)) {
 				$custom_tooltips[] = $new_custom_tooltip;
 				$this->custom_tooltips = $custom_tooltips;
 				$special_class .= " custom_m_bubble";
@@ -571,7 +580,18 @@ class simple_tooltips {
 			return $html;
 	}
 
-
+	function motech_tooltips_admin_jquery() {
+		if (isset($_GET['page']) && $_GET['page'] == $this->plugin_slug.'-setting-admin') { //if we are on our admin page
+			?>
+				<script>
+					jQuery(function() {	
+						//jquery for color picker, fixes a bug in later wp versions
+						jQuery('tr.motech-color-field').removeClass('motech-color-field');
+					});
+				</script>
+            <?php
+		}
+	}
 
 		
 } //end class

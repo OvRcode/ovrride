@@ -53,6 +53,9 @@ class WooThemes_Updater_Admin {
 	private $installed_products;
 	private $pending_products;
 
+	private $my_account_url;
+	private $my_subscriptions_url;
+
 	/**
 	 * Constructor.
 	 *
@@ -82,6 +85,10 @@ class WooThemes_Updater_Admin {
 		$this->installed_products = array();
 		$this->pending_products = array();
 
+		// Setup URLs to go to the Woo.com account management screens.
+		$this->my_account_url = add_query_arg( 'utm_source', 'helper', 'https://woothemes.com/my-account/' );
+		$this->my_subscriptions_url = add_query_arg( 'utm_source', 'helper', 'https://woothemes.com/my-account/my-subscriptions/' );
+
 		// Load the updaters.
 		add_action( 'admin_init', array( $this, 'load_updater_instances' ) ); //$this->load_updater_instances();
 
@@ -93,35 +100,17 @@ class WooThemes_Updater_Admin {
 		add_action( 'admin_notices', array( $this, 'maybe_display_activation_notice' ) );
 		if( is_multisite() && ! is_network_admin() ) remove_action( 'admin_notices', array( $this, 'maybe_display_activation_notice' ) );
 
-		// Process the 'Dismiss' link, if valid.
-		add_action( 'admin_init', array( $this, 'maybe_process_dismiss_link' ) );
-
 		add_action( 'admin_footer', array( $this, 'theme_upgrade_form_adjustments' ) );
 
 		add_action( 'woothemes_updater_license_screen_before', array( $this, 'ensure_keys_are_actually_active' ) );
 
 		add_action( 'wp_ajax_woothemes_activate_license_keys', array( $this, 'ajax_process_request' ) );
+		add_action( 'wp_ajax_woothemes_helper_dismiss_renew', array( $this, 'ajax_process_dismiss_renew' ) );
+		add_action( 'wp_ajax_woothemes_helper_dismiss_activation', array( $this, 'ajax_process_dismiss_activation' ) );
+
+		// Be sure to update our local autorenew flag (key 4) when we refresh the transient.
+		add_action( 'setted_transient', array( $this, 'update_autorenew_status' ), 10, 2 );
 	} // End __construct()
-
-	/**
-	 * If the nonce is valid and the action is "woothemes-helper-dismiss", process the dismissal.
-	 * @access  public
-	 * @since   1.2.1
-	 * @return  void
-	 */
-	public function maybe_process_dismiss_link () {
-		if ( isset( $_GET['action'] ) && ( 'woothemes-helper-dismiss' == $_GET['action'] ) && isset( $_GET['nonce'] ) && check_admin_referer( 'woothemes-helper-dismiss', 'nonce' ) ) {
-			update_site_option( 'woothemes_helper_dismiss_activation_notice', true );
-
-			$redirect_url = remove_query_arg( 'action', remove_query_arg( 'nonce', $_SERVER['REQUEST_URI'] ) );
-
-			wp_safe_redirect( $redirect_url );
-			exit;
-		} else if ( isset( $_GET['woo-dismiss-renewal-notice'] ) && 'true' == $_GET['woo-dismiss-renewal-notice'] ) {
-			// Only hide it for 60 days on end, make sure future renewals will get notices as well
-			set_transient( 'woo_hide_renewal_notices', 'yes', 60 * DAY_IN_SECONDS );
-		}
-	} // End maybe_process_dismiss_link()
 
 	/**
 	 * Display an admin notice, if there are licenses that are not yet activated.
@@ -134,6 +123,7 @@ class WooThemes_Updater_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) return; // Don't show the message if the user isn't an administrator.
 		if ( is_multisite() && ! is_super_admin() ) return; // Don't show the message if on a multisite and the user isn't a super user.
 		$this->maybe_display_renewal_notice();
+
 		if ( true == get_site_option( 'woothemes_helper_dismiss_activation_notice', false ) ) return; // Don't show the message if the user dismissed it.
 
 		$products = $this->get_detected_products();
@@ -149,29 +139,97 @@ class WooThemes_Updater_Admin {
 
 			if ( $has_inactive_products ) {
 				$url = add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) );
-				$dismiss_url = add_query_arg( 'action', 'woothemes-helper-dismiss', add_query_arg( 'nonce', wp_create_nonce( 'woothemes-helper-dismiss' ) ) );
-				echo '<div class="updated fade"><p class="alignleft">' . sprintf( __( '%sYour WooThemes products are almost ready.%s To get started, %sactivate your product licenses%s.', 'woothemes-updater' ), '<strong>', '</strong>', '<a href="' . esc_url( $url ) . '">', '</a>' ) . '</p><p class="alignright"><a href="' . esc_url( $dismiss_url ) . '">' . __( 'Dismiss', 'woothemes-updater' ) . '</a></p><div class="clear"></div></div>' . "\n";
+				echo '<div id="woothemes-helper-product-activation-message" class="updated fade notice is-dismissible"><p>' . sprintf( __( '%sYour WooThemes products are almost ready.%s To get started, %sactivate your product subscriptions%s.', 'woothemes-updater' ), '<strong>', '</strong>', '<a href="' . esc_url( $url ) . '">', '</a>' ) . '</p></div>' . "\n";
 			}
 		}
 	} // End maybe_display_activation_notice()
 
-	public function maybe_display_renewal_notice() {
-		$products = $this->get_detected_products();
-		$notices = array();
-		$renew_link = add_query_arg( array( 'utm_source' => 'product', 'utm_medium' => 'upsell', 'utm_campaign' => 'licenserenewal' ), 'https://www.woothemes.com/my-account/my-licenses/' );
-		foreach ( $products as $file => $product ) {
-			if ( isset( $product['license_expiry'] ) && ! in_array( $product['license_expiry'], array( '-', 'Please activate' ) ) ) {
-				$date = new DateTime( $product['license_expiry'] );
+	/**
+	 * Update auto-renew statuses every time we reset the updates transient.
+	 * @param  string  $transient The name of the transient we're working on.
+	 * @param  object  $value The current transient value.
+	 */
+	public function update_autorenew_status( $transient, $value ) {
+		// Deal only with our own transient.
+		if ( 'woothemes_helper_updates' != $transient ) {
+			return;
+		}
 
-				if ( current_time( 'timestamp' ) > strtotime( '-60 days', $date->format( 'U' ) ) && current_time( 'timestamp' ) < strtotime( '+4 days', $date->format( 'U' ) ) ) {
-					$notices[] = sprintf( __( 'Your license for <strong>%s</strong> expires on %s, %srenew now for a 50%% discount%s.'), $product['product_name'], $date->format( get_option( 'date_format' ) ), '<a href="' . $renew_link . '">', '</a>' );
-				} elseif ( current_time( 'timestamp' ) > $date->format( 'U' ) ) {
-					$notices[] = sprintf( __( 'Your license for <strong>%s</strong> has expired. Please %srenew now%s to be eligible for future updates and support.'), $product['product_name'], '<a href="' . $renew_link . '">', '</a>' );
+		$local_data = get_option( 'woothemes-updater-activated' );
+		$transient_data = $value;
+
+		if ( is_array( $local_data ) && 0 < count( $local_data ) ) {
+			foreach ( $local_data as $k => $v ) {
+				$has_autorenew = $this->is_autorenew_enabled( $k );
+				$local_data[$k][4] = (bool)$has_autorenew;
+			}
+		}
+
+		update_option( 'woothemes-updater-activated', $local_data );
+	}
+
+	/**
+	 * Check if auto-renew is enabled for a product.
+	 * @param  string  $file The plugin filename we're looking at.
+	 * @return boolean       Whether or not auto-renew is enabled.
+	 */
+	public function is_autorenew_enabled( $file ) {
+		$response = 0;
+		$local_data = get_option( 'woothemes-updater-activated' );
+
+		if ( isset( $local_data[$file][4] ) && 1 == $local_data[$file][4] ) {
+			$response = 1;
+		} else {
+			$data = get_transient( 'woothemes_helper_updates' );
+
+			if ( is_object( $data ) ) {
+				if ( isset( $data->plugins->$file->autorenew ) ) {
+					$response = (bool)$data->plugins->$file->autorenew;
+				} else if ( isset( $data->themes->$file->autorenew ) ) {
+					$response = (bool)$data->themes->$file->autorenew;
 				}
 			}
 		}
-		if ( is_array( $notices ) && 0 < count( $notices ) && FALSE == get_transient( 'woo_hide_renewal_notices' ) ) {
-			echo '<div class="update-nag"><p class="alignleft">' . implode( '<br/>', $notices ) . '</p><br/><a class="button primary" href="' . add_query_arg( array( 'woo-dismiss-renewal-notice' => 'true' ) ) . '">' . __( 'Don\'t remind me','woothemes-updater' ) . '</a></div>';
+		return $response;
+	}
+
+	/**
+	 * Display an admin notice if a product subscription is about to expire.
+	 * @return [type] [description]
+	 */
+	public function maybe_display_renewal_notice() {
+		$products = $this->get_detected_products();
+		$notices = array();
+		$renew_link = add_query_arg( array( 'utm_source' => 'product', 'utm_medium' => 'upsell', 'utm_campaign' => 'licenserenewal' ), $this->my_subscriptions_url );
+		// Create dismissal URL for the renew notice.
+		$dismiss_url = add_query_arg( 'action', 'woothemes-helper-dismiss-renew', add_query_arg( 'nonce', wp_create_nonce( 'woothemes-helper-dismiss-renew' ) ) );
+
+		foreach ( $products as $file => $product ) {
+			$has_autorenew = $this->is_autorenew_enabled( $file );
+
+			// Skip this product if autorenew is enabled, and the Helper knows about it.
+			if ( 1 == $has_autorenew ) {
+				continue;
+			}
+
+			if ( isset( $product['license_expiry'] ) ) {
+				try {
+					$date = new DateTime( $product['license_expiry'] );
+				} catch ( Exception $e ) {
+					continue;
+				}
+
+				if ( current_time( 'timestamp' ) > strtotime( '-60 days', $date->format( 'U' ) ) && current_time( 'timestamp' ) < strtotime( '+4 days', $date->format( 'U' ) ) ) {
+					$notices[] = sprintf( __( 'Your subscription for <strong>%s</strong> expires on %s, %sEnable auto-renew%s.', 'woothemes-updater' ), $product['product_name'], $date->format( get_option( 'date_format' ) ), '<a href="' . esc_url( $renew_link ) . '">', '</a>' );
+				} elseif ( current_time( 'timestamp' ) > $date->format( 'U' ) ) {
+					$notices[] = sprintf( __( 'Your subscription for <strong>%s</strong> has expired. Please %senable auto-renew%s to be eligible for future updates and support.', 'woothemes-updater' ), $product['product_name'], '<a href="' . esc_url( $renew_link ) . '">', '</a>' );
+				}
+			}
+		}
+
+		if ( is_array( $notices ) && 0 < count( $notices ) && false == get_site_transient( 'woo_hide_renewal_notices' ) ) {
+			$subscription_text = _n( 'a subscription is about to expire', 'several subscriptions are about to expire', intval( count( $notices ) ) , 'woothemes-updater' );
+			echo '<div id="woothemes-helper-subscription-message" class="notice is-dismissible error" style="display: block;"><p><strong>' . __( 'Warning:', 'woothemes-updater' ) . ' ' . $subscription_text . '.</strong></p><ul><li>' . implode( '</li><li>', $notices ) . '</li></ul><div class="clear"></div></div>' . "\n";
 		}
 	}
 
@@ -214,7 +272,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 
 		add_action( 'load-' . $this->hook, array( $this, 'process_request' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'admin_print_scripts-' . $this->hook, array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_print_scripts', array( $this, 'enqueue_scripts' ) );
 	} // End register_settings_screen()
 
 	/**
@@ -231,9 +289,12 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 
 			<div class="about-text woothemes-helper-about-text">
 				<?php
-					_e( 'Looking for a hand with activating your licenses, or have questions about WooThemes products? We\'ve got you covered.', 'woothemes-updater' );
+					_e( 'This is your one-stop-spot for activating your subscriptions.', 'woothemes-updater' );
 				?>
 			</div>
+			<div class="short-description woothemes-helper-short-description">
+				<?php echo wpautop( sprintf( __( 'To make sure your subscriptions stay active, %1$sadd a saved card%2$s and %3$senable auto-renew%2$s on the subscriptions you’re continuing to enjoy.', 'woothemes-updater' ), '<a href="' . esc_url( $this->my_account_url ) . '">', '</a>', '<a href="' . esc_url( $this->my_subscriptions_url ) . '">' ) ); ?>
+			</div><!--/.short-description-->
 		</div><!--/#welcome-panel .welcome-panel-->
 		<?php
 
@@ -427,8 +488,8 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	 */
 	public function enqueue_scripts () {
 		$screen = get_current_screen();
-		wp_enqueue_script( 'post' );
-		wp_register_script( 'woothemes-updater-admin', $this->assets_url . 'js/admin.js', array( 'jquery' ) );
+		wp_register_script( 'woothemes-updater-admin', $this->assets_url . 'js/admin.js', array( 'jquery', 'post' ) );
+		wp_register_script( 'woothemes-updater-admin-notice-hider', $this->assets_url . 'js/admin-notice-hider.js?version=1.6.0', array( 'jquery' ) );
 
 		// Only load script and localization on helper admin page.
 		if ( in_array( $screen->id, array( 'dashboard_page_woothemes-helper' ) ) ) {
@@ -439,6 +500,14 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 			);
 			wp_localize_script( 'woothemes-updater-admin', 'WTHelper', $localization );
 		}
+
+		// Load the admin notice hider script.
+		wp_enqueue_script( 'woothemes-updater-admin-notice-hider' );
+		$localization = array(
+			'dismiss_renew_nonce' => wp_create_nonce( 'woothemes_helper_dismiss_renew_nonce' ),
+			'dismiss_activation_nonce' => wp_create_nonce( 'woothemes_helper_dismiss_activation_nonce' )
+		);
+		wp_localize_script( 'woothemes-updater-admin-notice-hider', 'woothemes_helper', $localization );
 	} // End enqueue_scripts()
 
 	/**
@@ -524,12 +593,12 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 			if ( $response == true ) {
 				$request_errors = $this->api->get_error_log();
 				if ( 0 >= count( $request_errors ) ) {
-					$return = '<div class="updated true fade">' . "\n";
-					$return .= wpautop( __( 'Products activated successfully.', 'woothemes-updater' ) );
+					$return = '<div class="updated true fade notice is-dismissible">' . "\n";
+					$return .= wpautop( __( 'Products activated successfully.', 'woothemes-updater' ) . ' ' . __( 'Refreshing the products list...', 'woothemes-updater' ) );
 					$return .= '</div>' . "\n";
 					$return_json = array( 'success' => 'true', 'message' => $return, 'url' => add_query_arg( array( 'page' => 'woothemes-helper', 'status' => 'true', 'type' => 'activate-products' ), admin_url( 'index.php' ) ) );
 				} else {
-					$return = '<div class="error fade">' . "\n";
+					$return = '<div class="error fade notice is-dismissible">' . "\n";
 					$return .= wpautop( __( 'There was an error and not all products were activated.', 'woothemes-updater' ) );
 					$return .= '</div>' . "\n";
 
@@ -538,7 +607,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 						$message .= wpautop( $v );
 					}
 
-					$return .= '<div class="error fade">' . "\n";
+					$return .= '<div class="error fade notice is-dismissible">' . "\n";
 					$return .= make_clickable( $message );
 					$return .= '</div>' . "\n";
 
@@ -548,13 +617,53 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 					$this->api->clear_error_log();
 				}
 			} else {
-				$return = '<div class="error fade">' . "\n";
+				$return = '<div class="error fade notice is-dismissible">' . "\n";
 				$return .= wpautop( __( 'No license keys were specified for activation.', 'woothemes-updater' ) );
 				$return .= '</div>' . "\n";
 				$return_json = array( 'success' => 'false', 'message' => $return );
 			}
 			echo json_encode( $return_json );
 		}
+		die();
+	}
+
+	/**
+	 * Process the dismiss link on our renewal admin notice.
+	 * @access public
+	 * @since 1.6.0
+	 */
+	public function ajax_process_dismiss_renew () {
+		if ( isset( $_POST['action'] ) && 'woothemes_helper_dismiss_renew' == $_POST['action'] ) {
+
+			// Add nonce security to the request
+			if ( ! isset( $_POST['woothemes_helper_dismiss_renew_nonce'] ) || ! wp_verify_nonce( $_POST['woothemes_helper_dismiss_renew_nonce'], 'woothemes_helper_dismiss_renew_nonce' ) ) {
+		        die();
+		    }
+		}
+
+		$set_transient = set_site_transient( 'woo_hide_renewal_notices', 'yes', 60 * DAY_IN_SECONDS );
+
+		echo json_encode( array( 'status' => (bool)$set_transient ) );
+		die();
+	}
+
+	/**
+	 * Process the dismiss link on our activation admin notice.
+	 * @access public
+	 * @since 1.6.0
+	 */
+	public function ajax_process_dismiss_activation () {
+		if ( isset( $_POST['action'] ) && 'woothemes_helper_dismiss_activation' == $_POST['action'] ) {
+
+			// Add nonce security to the request
+			if ( ! isset( $_POST['woothemes_helper_dismiss_activation_nonce'] ) || ! wp_verify_nonce( $_POST['woothemes_helper_dismiss_activation_nonce'], 'woothemes_helper_dismiss_activation_nonce' ) ) {
+		        die();
+		    }
+		}
+
+		$set_status = update_site_option( 'woothemes_helper_dismiss_activation_notice', true );
+
+		echo json_encode( array( 'status' => (bool)$set_status ) );
 		die();
 	}
 
@@ -681,13 +790,17 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 						$license_expiry = __( 'Please activate', 'woothemes-updater' );
 						if ( in_array( $k, array_keys( $activated_products ) ) ) {
 							$status = 'active';
-							if ( isset( $activated_products[ $k ][3] ) ) {
-								$license_expiry = $activated_products[ $k ][3];
+							if ( isset( $activated_products[$k][3] ) ) {
+								$license_expiry = $activated_products[$k][3];
 							} else {
 								$license_expiry = '-';
 							}
 						}
-						$response[$k] = array( 'product_name' => $v['Name'], 'product_version' => $v['Version'], 'file_id' => $reference_list[$k]['file_id'], 'product_id' => $reference_list[$k]['product_id'], 'product_status' => $status, 'product_file_path' => $k, 'license_expiry' => $license_expiry );
+
+						// Retrieve the latest actual version, from the hosted changelog file.
+						$latest_version = $this->get_version_from_changelog( dirname( $k ) );
+
+						$response[$k] = array( 'product_name' => $v['Name'], 'product_version' => $v['Version'], 'file_id' => $reference_list[$k]['file_id'], 'product_id' => $reference_list[$k]['product_id'], 'product_status' => $status, 'product_file_path' => $k, 'license_expiry' => $license_expiry, 'latest_version' => $latest_version );
 					}
 				}
 			}
@@ -695,6 +808,32 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 
 		return $response;
 	} // End get_detected_products()
+
+	/**
+	 * Return the latest version number for a given product, based on the hosted changelog.txt file.
+	 *
+	 * @access  protected
+	 * @since   1.6.0
+	 * @return  string Product version number.
+	 */
+	protected function get_version_from_changelog ( $slug ) {
+		if ( false === $version = get_transient( 'wth_' . esc_attr( $slug ) . '_latest_version' ) ) {
+			$product_changelog = wp_safe_remote_get( esc_url( 'http://dzv365zjfbd8v.cloudfront.net/changelogs/' . esc_attr( $slug ) . '/changelog.txt' ) );
+
+			$cl_lines  = explode( "\n", wp_remote_retrieve_body( $product_changelog ) );
+			if ( ! empty( $cl_lines ) ) {
+				foreach ( $cl_lines as $line_num => $cl_line ) {
+					if ( preg_match( '/^[0-9]/', $cl_line ) ) {
+						$version      = preg_replace( '~[^0-9,.]~' , '' ,stristr( $cl_line , "version" ) );
+						// Cache for 1 hour.
+						set_transient( 'wth_' . esc_attr( $slug ) . '_latest_version', $version, HOUR_IN_SECONDS );
+						break;
+					}
+				}
+			}
+		}
+		return $version;
+	} // End get_version_from_changelog()
 
 	/**
 	 * Get an array of products that haven't yet been activated.
@@ -746,8 +885,8 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 				$activate = $this->api->activate( $products[$k], $product_keys[$k]['product_id'], $k );
 
 				if ( ! ( ! $activate ) ) {
-					// key: base file, 0: product id, 1: file_id, 2: hashed license, 3: expiry date
-					$already_active[$k] = array( $product_keys[$k]['product_id'], $product_keys[$k]['file_id'], md5( $products[$k] ), $activate->expiry_date );
+					// key: base file, 0: product id, 1: file_id, 2: hashed license, 3: expiry date, 4: autorenew status
+					$already_active[$k] = array( $product_keys[$k]['product_id'], $product_keys[$k]['file_id'], md5( $products[$k] ), $activate->expiry_date, (bool)$activate->autorenew );
 					$has_update = true;
 				}
 			}
@@ -842,7 +981,9 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 
 		if ( 0 < count( $products ) ) {
 			foreach ( $products as $k => $v ) {
-				$call_data[ $k ] = array( $v[0], $v[1], $v[2], esc_url( home_url( '/' ) ) );
+				if ( 3 <= count( $v ) ) { // Prevents undefined offset notices
+					$call_data[$k] = array( $v[0], $v[1], $v[2], esc_url( home_url( '/' ) ) );
+				}
 			}
 		}
 

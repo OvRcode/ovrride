@@ -6,6 +6,7 @@ module.exports = function( grunt ){
 		pot: {
 			options:{
 				text_domain: 'woothemes-updater',
+				encoding: 'UTF-8',
 				dest: 'languages/',
 				exclude: [ 'node_modules/**', ],
 				keywords: [

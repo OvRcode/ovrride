@@ -3,13 +3,13 @@
  * Plugin Name: WooThemes Helper
  * Plugin URI: http://woothemes.com/products/
  * Description: Hi there. I'm here to help you manage licenses for your WooThemes products, as well as help out when you need a guiding hand.
- * Version: 1.5.9
+ * Version: 1.6.2
  * Author: WooThemes
  * Author URI: http://woothemes.com/
  * License: GPL version 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Network: true
  * Requires at least: 3.8.1
- * Tested up to: 4.1.0
+ * Tested up to: 4.3.0
  *
  * Text Domain: woothemes-updater
  * Domain Path: /languages/
@@ -34,9 +34,13 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if ( is_admin() ) {
-	require_once( 'classes/class-woothemes-updater.php' );
+	add_action( 'plugins_loaded', '__woothemes_updater' );
+}
 
-	global $woothemes_updater;
-	$woothemes_updater = new WooThemes_Updater( __FILE__, '1.5.9' );
+function __woothemes_updater () {
+    require_once( 'classes/class-woothemes-updater.php' );
+
+    global $woothemes_updater;
+    $woothemes_updater = new WooThemes_Updater( __FILE__, '1.6.2' );
 }
 ?>

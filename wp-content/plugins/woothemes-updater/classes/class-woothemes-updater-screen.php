@@ -68,7 +68,7 @@ class Woothemes_Updater_Screen {
 	 * @return  string The token for the current screen.
 	 */
 	public static function get_current_screen () {
-		$screen = 'licenses'; // Default.
+		$screen = 'subscriptions'; // Default.
 		if ( isset( $_GET['screen'] ) && '' != $_GET['screen'] ) $screen = esc_attr( $_GET['screen'] );
 		return $screen;
 	} // End get_current_screen()
@@ -81,7 +81,7 @@ class Woothemes_Updater_Screen {
 	 */
 	public static function get_available_screens () {
 		return array(
-			'licenses' => __( 'Licenses', 'woothemes-updater' ),
+			'subscriptions' => __( 'Subscriptions', 'woothemes-updater' ),
 			'help' => __( 'Help', 'woothemes-updater' )
 			);
 	} // End get_available_screens()
