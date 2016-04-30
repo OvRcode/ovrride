@@ -96,7 +96,7 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
-  
+
   // Tasks
-  grunt.registerTask('default', ['csslint','jshint','concat','cssmin','phplint']);
+  grunt.registerTask('default', ['csslint','jshint','uglify','cssmin','phplint']);
 };
