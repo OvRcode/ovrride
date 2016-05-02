@@ -5,7 +5,7 @@ server {
         root /var/www;
         index index.php;
 
-        server_name ovrride.com;
+        server_name local.ovrride.com;
         include hhvm.conf;
         location / {
                 try_files $uri $uri/ /index.php?$args;
