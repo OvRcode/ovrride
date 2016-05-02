@@ -28,12 +28,10 @@ override_attributes(
 run_list(
 "recipe[build-essential]",
 "recipe[apt]",
-"recipe[s3cmd::add_keys]",
 "recipe[memcached::default]",
 "recipe[hhvm::memcache]",
 "recipe[php::modules]",
 "recipe[php-fpm::install]",
 "recipe[php-fpm::web]",
-"recipe[nginx::webconfig]",
-"recipe[ovr::get_images]"
+"recipe[nginx::webconfig]"
 )

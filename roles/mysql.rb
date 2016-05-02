@@ -15,5 +15,6 @@ run_list(
 "recipe[s3cmd::add_keys]",
 "recipe[mysqld::default]",
 "recipe[mysqld::configure]",
-"recipe[mysqld::import]"
+"recipe[mysqld::import]",
+"recipe[ovr::get_images]"
 )
