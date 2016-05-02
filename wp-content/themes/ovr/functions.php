@@ -6,6 +6,11 @@
  *
  * @return void
  */
+ // Force logged in users to use SSL
+ if (is_user_logged_in() && ($_SERVER['HTTPS'] !== 'on')){
+    wp_redirect("https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+}
+
 if ( ! function_exists( 'quark_woocommerce_before_main_content' ) ) {
 	function quark_woocommerce_before_main_content() {
 		if( ( is_shop() && !of_get_option( 'woocommerce_shopsidebar', '1' ) ) || ( is_product() && !of_get_option( 'woocommerce_productsidebar', '1' ) ) ) {
