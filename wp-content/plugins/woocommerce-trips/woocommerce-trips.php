@@ -46,6 +46,7 @@ class WC_Trips {
             'callback'  =>  array($this, 'beach_bus_api'),
           ));
         });
+
     }
 
     public function install() {
@@ -119,6 +120,7 @@ class WC_Trips {
         );
         register_post_type( 'destinations', $destinationArgs );
     }
+
     public function beach_bus_api() {
       global $wpdb;
       // Find all beach bus trips
