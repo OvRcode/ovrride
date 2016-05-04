@@ -39,6 +39,13 @@ class WC_Trips {
         register_activation_hook( __FILE__, array( $this, 'install' ) );
 
         include( 'includes/class-wc-trips-cart.php' );
+
+        add_action( 'rest_api_init', function() {
+          register_rest_route('trips/v1','beach-bus/', array(
+            'methods'   =>  'GET',
+            'callback'  =>  array($this, 'beach_bus_api'),
+          ));
+        });
     }
 
     public function install() {
@@ -112,7 +119,45 @@ class WC_Trips {
         );
         register_post_type( 'destinations', $destinationArgs );
     }
+    public function beach_bus_api() {
+      global $wpdb;
+      // Find all beach bus trips
+      $results = $wpdb->get_results("SELECT `ID`, `post_title`, `guid`
+      FROM `wp_posts`
+      JOIN `wp_postmeta` on `wp_posts`.`ID` = `wp_postmeta`.`post_id`
+      WHERE `post_type` = 'product' AND `post_status` = 'publish'
+      AND `meta_key` = '_wc_trip_type'
+      AND `meta_value` = 'beach_bus'", ARRAY_A);
 
+      foreach( $results as $index => $array ) {
+        $rowResult = $wpdb->get_results("SELECT `meta_key`, `meta_value`
+        FROM `wp_postmeta`
+        WHERE `post_id` = '" . $array['ID'] . "'
+        AND (`meta_key` = '_wc_trip_start_date'
+        OR `meta_key` = '_stock_status')", ARRAY_A);
+        $tempArray['ID'] = $array['ID'];
+        $tempArray['title'] = $array['post_title'];
+        $tempArray['url'] = $array['guid'] . "?bbb=1";
+        foreach( $rowResult as $index => $metaArray ) {
+          switch( $metaArray['meta_key'] ) {
+            case '_wc_trip_start_date':
+              $tempArray['start'] = strtotime($metaArray['meta_value'])*1000;
+              $tempArray['end'] = $tempArray['start'];
+              break;
+            case '_stock_status':
+              if ( "instock" === $metaArray['meta_value'] ) {
+                $tempArray['class'] = "event-info";
+              } else {
+                $tempArray['class'] = "event-important";
+                $tempArray['title'] = "Sold Out: " . $tempArray['title'];
+                $tempArray['url'] = "#calendar";
+              }
+          }
+        }
+        $beach_bus_data[] = $tempArray;
+      }
+      return $beach_bus_data;
+    }
     public function product_tabs( $tabs ) {
         global $product, $wpdb;
 
