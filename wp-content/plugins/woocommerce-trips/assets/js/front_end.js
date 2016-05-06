@@ -1,4 +1,12 @@
 jQuery(document).ready(function($){
+  // Hide stuff for bushwick beach bus
+  /*var vars = window.location.search.replace('?','');
+  if ( vars.indexOf("bbb=1") >= 0 ) {
+    $(".site-footer, .social-media-icons").hide();
+    $(".responsiveSelectContainer").html(''); // Will replace with a link
+    $("#masthead img").attr('src', 'http://manonthelam.com/wp-content/uploads/2012/04/Colorful-beach-bus.jpg');
+    $("#masthead a").attr('href', 'http://bushwickbeachbus.com/');
+  }*/
   // Set price on page
   var base_price = Number($("#base_price").val());
   base_price = base_price.toFixed(2);
