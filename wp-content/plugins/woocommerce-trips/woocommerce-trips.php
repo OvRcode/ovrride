@@ -139,21 +139,14 @@ class WC_Trips {
         OR `meta_key` = '_stock_status')", ARRAY_A);
         $tempArray['ID'] = $array['ID'];
         $tempArray['title'] = $array['post_title'];
-        $tempArray['url'] = $array['guid'] . "?bbb=1";
+        $tempArray['url'] = $array['guid'] . "?bb=1";
         foreach( $rowResult as $index => $metaArray ) {
           switch( $metaArray['meta_key'] ) {
             case '_wc_trip_start_date':
-              $tempArray['start'] = strtotime($metaArray['meta_value'])*1000;
-              $tempArray['end'] = $tempArray['start'];
+              $tempArray['date'] = date("Y-m-d",strtotime($metaArray['meta_value']));
               break;
             case '_stock_status':
-              if ( "instock" === $metaArray['meta_value'] ) {
-                $tempArray['class'] = "event-info";
-              } else {
-                $tempArray['class'] = "event-important";
-                $tempArray['title'] = "Sold Out: " . $tempArray['title'];
-                $tempArray['url'] = "#calendar";
-              }
+              $tempArray['stock'] = $metaArray['meta_value'];
           }
         }
         $beach_bus_data[] = $tempArray;
