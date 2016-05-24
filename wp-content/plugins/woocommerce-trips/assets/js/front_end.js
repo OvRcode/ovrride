@@ -3,8 +3,8 @@ jQuery(document).ready(function($){
   if ( vars.indexOf("bb=1") >= 0 ){
   $(".social-media-icons").remove();
   $('.site-title').find('img').attr('src','http://rockawaybeachbus.com/img/rbb_logo.png');
-  $('#maincontentcontainer').css({"background": "url('https://local.ovrride.com/BBB/img/bkgsm.png') #FFFFFF"});
-  $("#masthead a").attr('href', 'http://bushwickbeachbus.com/');
+  $('#maincontentcontainer').css({"background": "url('https://rockawaybeachbus.com/img/bkgsm.png') #FFFFFF"});
+  $("#masthead a").attr('href', 'http://rockawaybeachbus.com/');
   $("#headercontainer").css({"background": "#002549"});
   $('.images').remove();
   $('.wc_trip_add').css({'background':'#a4366d'});
