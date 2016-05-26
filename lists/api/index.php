@@ -182,15 +182,16 @@ class Lists {
       }
       // Pull titles for pickups
       $pickupNames = array();
-      foreach( $this->tripInfo['pickups'] as $index => $id) {
-        $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
-        $result = $this->dbQuery($sql);
-        $name = $result->fetch_assoc();
-        $pickupNames[] = $name['name'];
+      if ( isset($this->tripInfo['pickups'] ) ) {
+        foreach( $this->tripInfo['pickups'] as $index => $id) {
+          $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
+          $result = $this->dbQuery($sql);
+          $name = $result->fetch_assoc();
+          $pickupNames[] = $name['name'];
+        }
+        unset($this->tripInfo['pickups']);
+        $this->tripInfo['pickups'] = $pickupNames;
       }
-      unset($this->tripInfo['pickups']);
-      $this->tripInfo['pickups'] = $pickupNames;
-
       if ( 'bus' == $this->tripInfo['type'] ) {
         $this->pickup = TRUE;
       }
