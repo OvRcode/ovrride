@@ -24,3 +24,4 @@ wp-content/plugins/simply-instagram/cache-api/*.json
 ovrride.sql
 ovrride_*.sql.gz
 node_modules/
+BBB/
