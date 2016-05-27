@@ -9,11 +9,12 @@ class WC_Trips_Cart {
         "wc_trip_dob_field" => "Date of Birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
-        
+
     public $package_types = array("primary", "secondary", "tertiary");
-    
+    public $orders_processed = array();
+
     public function __construct() {
-        
+
        add_action( 'woocommerce_trip_add_to_cart', array( $this, 'add_to_cart' ), 30 );
        add_action( 'woocommerce_add_to_cart', array( $this, 'save_trip_fields'), 1, 5 );
        add_filter( 'woocommerce_cart_item_name', array( $this, 'render_meta_on_cart_item'), 1, 3 );
@@ -23,18 +24,20 @@ class WC_Trips_Cart {
        add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
        add_action( 'woocommerce_product_set_stock', array( $this, 'trigger_package_stock'), 10, 4);
     }
-    
-    public function trigger_package_stock( $instance) {
-        global $woocommerce;
 
+    public function trigger_package_stock( $instance ) {
+        global $woocommerce;
         $cart = $woocommerce->cart->get_cart();
         foreach( $cart as $cart_id => $cart_data ) {
+          if ( !in_array($cart_id,$this->orders_processed) ){
+            $this->orders_processed[] = $cart_id;
             $product = wc_get_product($cart_data['product_id']);
             foreach( $this->package_types as $package ) {
                 if ( WC()->session->__isset($cart_id . "_wc_trip_" . $package . "_package") ) {
                     $product->reduce_package_stock( $package, WC()->session->get($cart_id . "_wc_trip_" . $package . "_package"));
                 }
             }
+          }
         }
 
     }
@@ -93,7 +96,7 @@ class WC_Trips_Cart {
         global $woocommerce;
         foreach ( $this->fields as $key => $value ) {
             if ( WC()->session->__isset( $cart_item_key . "_" . $key ) ) {
-                
+
                 if ( "primary" == $value || "secondary" == $value || "tertiary" == $value) {
                     $label = WC()->session->get($cart_item_key . "_" . $key . "_label");
                     $value = WC()->session->get( $cart_item_key . "_" . $key );
@@ -112,7 +115,7 @@ class WC_Trips_Cart {
     public function force_individual_cart_items( $cart_item_data, $product_id ) {
         $unique_cart_item_key = md5( microtime().rand() );
         $cart_item_data['unique_key'] = $unique_cart_item_key;
-        
+
         return $cart_item_data;
     }
     public function save_trip_fields( $cart_item_key, $product_id = null, $quantity= null, $variation_id= null, $variation= null) {
@@ -142,7 +145,7 @@ class WC_Trips_Cart {
                     $pickup_time = get_post_meta($_REQUEST[$key], '_pickup_location_time', true);
                     $pickup_time = (strval($pickup_time) == "" ? "" : " - " .date("g:i a", strtotime($pickup_time)));
                     $pickup_string = $pickup_title . $pickup_time;
-                    
+
                     WC()->session->set( $cart_item_key . "_" . $key, $pickup_string );
                     WC()->session->set( $cart_item_key . "_pickup_id", $_REQUEST[$key] );
                 } else {
@@ -177,7 +180,7 @@ CARTMETA;
     }
     public function add_to_cart( $cart_item_key ) {
         global $product;
-        
+
         $type = get_post_meta( $product->id, '_wc_trip_type', true );
         $fields = array("first","last","email","phone");
         switch( $type ) {
@@ -218,7 +221,7 @@ CARTMETA;
                 $pickup_output .= "<option value='" . $pickup->ID . "' {$data}>" . $pickup->post_title . $time . $cost_string . "</option>";
             }
             return $pickup_output;
-        } else { 
+        } else {
             return false;
         }
     }
