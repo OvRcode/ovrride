@@ -1,5 +1,6 @@
 <?php
-require('../Mandrill.php');
+// TODO: Disabled due to mandrill account closure, need to re-write for sparkpost 
+//require('../Mandrill.php');
 /*
 For command line use only
 This tool sorts through riders on a trip and sends an email with a summary of
@@ -10,7 +11,7 @@ guests with lessons and rentals
 
 This script will be scheduled with a cron job
 */
-
+/*
 class lessonEmail {
   var $dbConnect;
   var $saturday;
@@ -216,3 +217,4 @@ METASQL;
 
 new lessonEmail();
  ?>
+*/
