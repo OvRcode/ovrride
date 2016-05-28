@@ -65,26 +65,21 @@ class WC_Product_Trip extends WC_Product {
 
     public function check_all_package_stock() {
         $package_types = array("wc_trip_primary_package", "wc_trip_secondary_package", "wc_trip_tertiary_package");
-        $all_stock = false;
         foreach( $package_types as $package ) {
-            if ( "" == strval($this->{$package . "_stock"}) ) {
-                $all_stock = true;
-            } else if ( "yes" == strval($this->{$package . "_stock"}) ) {
+            if ( "yes" == strval($this->{$package . "_stock"}) ) {
+								$outOfStockCount = 0;
                 foreach( $this->{$package . "s"} as $key => $values ) {
-                    if ( "" === strval($values['stock']) || intval($values['stock']) > 0 ) {
-                        $all_stock = true;
-                    } else {
-                        $all_stock = false;
-                        continue(2);
+										if ( "" === strval($values['stock']) || intval($values['stock']) > 0 ) {
+                        $outOfStockCount++;
                     }
                 }
+								if ($outOfStockCount == 0 ) {
+									return false;
+								}
             }
         }
-        if ( $all_stock ) {
-            return true;
-        } else {
-            return false;
-        }
+
+				return true;
     }
 
     public function is_purchasable() {
