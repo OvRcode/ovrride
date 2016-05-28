@@ -37,6 +37,8 @@ $(function(){
     $('#default').click(function(){ resetStatuses("Default"); });
     $('#clear').click(function(){ resetStatuses("All"); });
     $("#clearData").click(function(){ clearData(); });
+    // Switch out buses for beachbus only
+    $("#trip").on("change", busSwitch);
     $('#generate_list').click(function(){
       if ( $("#destination").val() == "none" || $("#trip").val() == "none" ) {
         alert("please select a trip or destination");
@@ -57,7 +59,25 @@ $(function(){
         }
       }
     });
+function busSwitch() {
+  var trip = $("#trip").val();
+  if ( "none" !== trip && "Rockaway Beach" == $("#destination").val() ) {
+    settings.set("tripNum", trip);
+    getTripInfo().done(function() {
+      var toBeach = packages.get("To Beach");
+      var fromBeach = packages.get("From Beach");
+      $("#bus").html('');
+      $.each(toBeach, function(index, value){
+        $("#bus").append("<option value='To Beach: " + value.description + "'>To Beach: " + value.description + "</option>");
+      });
+      $.each(fromBeach, function(index, value){
+        $("#bus").append("<option value='From Beach: " + value.description + "'>From Beach: " + value.description + "</option>");
+      });
+    });
+  }
+}
 });
+
 function checkSettings(){
     if ( settings.isSet('destination') ) {
         $('#destination').val(settings.get('destination')).trigger('change');

@@ -107,9 +107,13 @@ function getTripInfo() {
     if ( ! $.isEmptyObject(data._wc_trip_primary_packages)) {
       packages.set(data._wc_trip_primary_packages.label, data._wc_trip_primary_packages.packages);
     }
-    /*$.each(tempPackages, function( index, value){
-      packages.set(value.label,value.packages);
-    });*/
+    if ( ! $.isEmptyObject(data._wc_trip_secondary_packages)) {
+      packages.set(data._wc_trip_secondary_packages.label, data._wc_trip_secondary_packages.packages);
+    }
+    if ( ! $.isEmptyObject(data._wc_trip_tertiary_packages.label)) {
+      packages.set(data._wc_trip_tertiary_packages.label, data._wc_trip_tertiary_packages.packages);
+    }
+
     deferred.resolve();
   }, "json");
   return deferred.promise();

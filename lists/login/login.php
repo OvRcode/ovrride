@@ -36,7 +36,7 @@ if ( isset($_POST['user_name']) && isset($_POST['user_password']) ) {
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="../images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="../images/ios/iconset/Icon-60@3x.png" />
@@ -87,6 +87,6 @@ if ( isset($_POST['user_name']) && isset($_POST['user_password']) ) {
         </div>
       </div>
     </div>
-    <script src="../js/uncompressed/vendor.js"></script>
+    <script src="../js/partials/_vendor.js"></script>
   </body>
 </html>
