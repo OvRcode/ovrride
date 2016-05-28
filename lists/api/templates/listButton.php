@@ -23,12 +23,25 @@
       <?php echo $pickupName; ?>
     </div>
   <?php endif; ?>
+
     <div class="buttonCell col-xs-9 col-md-3 flexPackage<?php echo $packageVisible; ?>">
       <?php echo $package; ?>
     </div>
     <div class="buttonCell col-xs-3 col-md-offset-0 col-md-1 expand">
       <i class="fa fa-bars fa-3x"></i>
     </div>
+  </div>
+  <div class="row">
+    <?php if ( isset($toBeach) ): ?>
+      <div class="col-md-offset-1 col-md-4">
+        To Beach: <?php echo $toBeach; ?>
+      </div>
+    <?php endif; ?>
+    <?php if ( isset($fromBeach) ): ?>
+      <div class="col-md-4">
+        From Beach: <?php echo $fromBeach; ?>
+      </div>
+    <?php endif; ?>
   </div>
   <div class="expanded">
     <div class="row">

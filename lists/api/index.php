@@ -205,6 +205,7 @@ class Lists {
         $busData = [];
         $busData[$bus] = [];
         $busData["Other"] = [];
+        if ("beach_bus" != $this->tripInfo['type']){
         while( $busRow = $busResult->fetch_assoc() ) {
             if ( $busRow['Bus'] !== 0 ){
                 if ( $busRow['Bus'] == $bus ){
@@ -213,6 +214,7 @@ class Lists {
                     $busData["Other"][] = $busRow['ID'];
                 }
             }
+        }
         }
         $statuses = explode(',',$status);
         foreach($statuses as $single){
@@ -311,6 +313,7 @@ class Lists {
                 }
             }
         }
+
         return $this->orders;
     }
     function getReports($tripId){
@@ -424,6 +427,7 @@ class Lists {
         $row = $result->fetch_assoc();
         $data = $row['Data'];
         $id = $orderData['num'] . ":" . $orderData['item_num'];
+        error_log(print_r($orderData, true));
         if ( $data !== "" ) {
             $this->orders[$orderData['num'].":".$orderData['item_num']]['State'] = $data;
         }
@@ -474,6 +478,12 @@ class Lists {
             $package = "";
         } else {
             $package = $orderData['Package'];
+        }
+        if ( isset($orderData['To Beach']) ) {
+          $toBeach = $orderData['To Beach'];
+        }
+        if ( isset($orderData['From Beach']) ) {
+          $fromBeach = $orderData['From Beach'];
         }
         if ( ! isset($orderData['Phone']) ) {
             $phone = "";
@@ -595,7 +605,21 @@ Flight::route('/contact/destination/@destination', function($destination){
 Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
         $list->getTripInfo($tripId);
-        echo json_encode($list->tripData($bus, $tripId, $status));
+        $data = $list->tripData($bus, $tripId, $status);
+        if ( "beach_bus" == $list->tripInfo['type'] ) {
+          $remove = array();
+          foreach($data as $order => $info) {
+            $toBeach = "To Beach: " . $info['Data']['To Beach'];
+            $fromBeach = "From Beach: " . $info['Data']['From Beach'];
+            if ( strtolower($bus) !== strtolower($toBeach) && strtolower($bus) !== strtolower($fromBeach)) {
+              $remove[] = $order;
+            }
+          }
+          foreach( $remove as $order) {
+            unset($data[$order]);
+          }
+        }
+        echo json_encode($data);
     }
 );
 Flight::route('GET /trip/@tripId', function( $tripId ){
