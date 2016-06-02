@@ -1394,27 +1394,6 @@ p.srp-widget-date {
   font-size: 15px;
   line-height: 20px;
 }
-/*.instagram-image {
-	padding: 1px;
-	background-color:#CCC;
-	float: left;
-	margin-right: 13px;
-	margin-bottom: 10px;
-	height:127px;
-}*/
-.masonryItem {
-  width: 46%;
-}
-.front-photo,
-.masonryItem {
-  background: none;
-  border: none;
-  border-radius: 5px;
-  margin: 0 4px 0 0;
-  padding: 0 !important;
-  box-shadow: none;
-  float: left;
-}
 .minitweets-end {
   display: none;
 }
@@ -3876,15 +3855,6 @@ li span.dots {
     font-size: 24px;
     font-size: 1.5rem;
   }
-  .instagram-image {
-    padding: 1px;
-    background-color: #CCC;
-    float: left;
-    margin-right: 5px;
-    margin-bottom: 10px;
-    height: 103px;
-    width: 103px;
-  }
   .book-btn {
     font-size: 23px;
     font-size: 1.45rem;
@@ -4070,10 +4040,6 @@ li span.dots {
   #headercontainer {
     padding-bottom: 8px;
   }
-  .instagram-image {
-    height: 88px;
-    width: 88px;
-  }
   .ui-tabs .ui-tabs-nav li a {
     font-size: 11px;
   }
@@ -4087,10 +4053,6 @@ li span.dots {
 }
 /*  Adjust the menu at less than 480px */
 @media only screen and (max-width: 480px) {
-  .instagram-image {
-    height: 65px;
-    width: 65px;
-  }
   .phn {
     display: none !important;
   }
@@ -4100,10 +4062,6 @@ li span.dots {
 }
 /*  Adjust the menu at less than 480px */
 @media only screen and (max-width: 320px) {
-  .instagram-image {
-    height: 65px;
-    width: 65px;
-  }
   div.srp-widget-singlepost {
     width: 100%;
     clear: both;
@@ -4557,4 +4515,10 @@ input#update_cart {
 }
 #coupon_code {
   width: 150px;
+}
+.sb_instagram_header {
+  display: none;
+}
+.sbi_photo img {
+  border-radius: 10px;
 }
