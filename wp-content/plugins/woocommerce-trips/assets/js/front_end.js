@@ -108,14 +108,6 @@ jQuery(document).ready(function($){
   });
   $("#wc_trip_primary_package").on("change", function(){
     if ( "beach_bus" === $("#wc_trip_type").val() ) {
-      // Switch to bus routes tab, if it's on the page
-      if ( $(".bus_routes_tab").is(":visible") ){
-        $('.active').removeClass('active');
-        $('.bus_routes_tab').addClass('active');
-        $('.wc-tab').hide();
-        $('#tab-bus_routes').show();
-      }
-
       // Re-enable all dropdowns
       $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").prop('disabled', false);
       $("#oneWay").remove();
