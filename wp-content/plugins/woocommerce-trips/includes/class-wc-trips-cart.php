@@ -202,11 +202,16 @@ CARTMETA;
         if ( "array" == gettype($pickup_ids) && count($pickup_ids) > 0) {
             $pickup_output = "<option value=''>Select Pickup Location</option>";
             foreach( $pickup_ids as $key => $value ) {
-                $pickup = get_post( absint($value) );
+                $pickup = get_post( absint($key) );
                 $time = get_post_meta( $pickup->ID, '_pickup_location_time', true );
                 $cost = get_post_meta( $pickup->ID, '_pickup_location_cost', true);
                 if ( $time && "" != $time ) {
                     $time = " - " . date("g:i a", strtotime( $time ) );
+                }
+                if ( "none" !== $value ) {
+                  $route = "data-route='" . $value . "'";
+                } else {
+                  $route = "";
                 }
                 if ( "" !== $cost && floatval($cost) > 0 ) {
                     $data = "data-cost='" . $cost . "'";
@@ -218,7 +223,7 @@ CARTMETA;
                     $data = "";
                     $cost_string = "";
                 }
-                $pickup_output .= "<option value='" . $pickup->ID . "' {$data}>" . $pickup->post_title . $time . $cost_string . "</option>";
+                $pickup_output .= "<option value='" . $pickup->ID . "' {$data} {$route}>" . $pickup->post_title . $time . $cost_string . "</option>";
             }
             return $pickup_output;
         } else {

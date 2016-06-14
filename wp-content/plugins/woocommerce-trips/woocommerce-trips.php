@@ -300,7 +300,7 @@ MAP;
         $count = 0;
         $leftColumnContent = "";
         $rightColumnContent = "";
-        foreach ( $pickups as $pickup ) {
+        foreach ( $pickups as $pickup => $route ) {
             $pickupHtml = $this->pickup_html($pickup);
             $tempHtml =<<<TEMPHTML
                 <div class="pickup">

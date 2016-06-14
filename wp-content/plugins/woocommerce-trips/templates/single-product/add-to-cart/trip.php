@@ -81,13 +81,6 @@ DOB;
             "secondary" => $product->output_packages("secondary"),
             "tertiary"  => $product->output_packages("tertiary")
         ];
-				if ( "beach_bus" == $trip_type ) {
-					echo <<<ROUTES
-					<p class="form-field">
-						<strong>See Bus Routes Tab for details on pickup times</strong>
-					</p>
-ROUTES;
-				}
         foreach ( $packages as $type => $info ) {
             if ( $info ) {
                 echo <<<PACKAGE
