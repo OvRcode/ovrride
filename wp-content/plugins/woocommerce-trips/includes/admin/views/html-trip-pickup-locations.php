@@ -20,7 +20,7 @@
                 $pickup_locations = get_post_meta( $post->ID, '_wc_trip_pickups', true);
                 $count = 0;
                 if ( gettype($pickup_locations) == "array" ){
-                    foreach( $pickup_locations as $location_id) {
+                    foreach( $pickup_locations as $location_id => $route) {
                         $location = get_post( $location_id );
                         $location_time = get_post_meta( $location_id, '_pickup_location_time', true);
                         if ( $location_time ) {
@@ -47,7 +47,7 @@
                 <?php
                     if ( $all_pickup_locations ) {
                         foreach( $all_pickup_locations as $pickup ) {
-                            if ( ! in_array($pickup->ID, $pickup_locations) ) {
+                            if ( ! array_key_exists($pickup->ID, $pickup_locations) ) {
                                 $time = get_post_meta( $pickup->ID, '_pickup_location_time', true);
                                 if ( $time) {
                                     $time = " at " . date("g:i a", strtotime($time));

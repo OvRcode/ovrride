@@ -33,6 +33,7 @@ class WC_Trips_Admin {
         // Ajax
         add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
         add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_pickup_location' ) );
+        add_action( 'wp_ajax_woocommerce_add_route_pickup_location', array( $this, 'add_route_pickup_location') );
     }
 
     public function product_type_options( $options ) {
@@ -237,6 +238,7 @@ class WC_Trips_Admin {
         $params = array(
             'nonce_add_pickup_location' => wp_create_nonce( 'add_pickup_location' ),
             'nonce_remove_pickup_location' => wp_create_nonce( 'remove_pickup_location' ),
+            'none_add_route_pickup_location' => wp_create_nonce('add_route_pickup_location'),
             'post'                   => isset( $post->ID ) ? $post->ID : '',
             'plugin_url'             => $woocommerce->plugin_url(),
             'ajax_url'               => admin_url( 'admin-ajax.php' )
@@ -462,7 +464,28 @@ TRAILMAP;
     	}
     	return $actions;
     }
-
+    public function add_route_pickup_location() {
+      check_ajax_referer("add_route_pickup_location", 'nonce');
+      header( 'Content-Type: application/json charset=utf-8');
+      $post_id = absint($_POST['post_id']);
+      $location_id = absint($_POST['location_id']);
+      $route = $_POST['route'];
+      $locations = get_post_meta($post_id, '_wc_trip_pickups', true);
+      if ( isset($locations[$location_id]) ) {
+        if ( $route === $locations[$location_id] ) {
+          die( json_encode( array( 'changed' => true ) ) );
+        } else {
+          $locations[$location_id] = $route;
+          if (update_post_meta( $post_id, '_wc_trip_pickups', $locations) ){
+            die( json_encode( array( 'changed' => true) ) );
+          } else {
+            die( json_encode( array( 'error' => 'unable to change value') ) );
+          }
+        }
+      } else {
+        die( json_encode( array( 'error' => 'Location not set for this trip') ) );
+      }
+    }
     public function add_pickup_location() {
         check_ajax_referer( "add_pickup_location", 'nonce');
 
@@ -478,7 +501,7 @@ TRAILMAP;
 
         header( 'Content-Type: application/json charset=utf-8');
 
-        if ( in_array( $new_pickup_id, $existing_pickups) ) {
+        if ( array_key_exists( $new_pickup_id, $existing_pickups) ) {
             die( json_encode( array( 'error' => 'Pickup already linked to this trip') ) );
         }
 
@@ -497,8 +520,9 @@ TRAILMAP;
 
         if ( $pickup_id ) {
             // Update pickups on trip
-            $updated_pickups = array_merge($existing_pickups, array(0 => $pickup_id));
-            update_post_meta( $post_id, '_wc_trip_pickups',$updated_pickups);
+            $pickup_array[strval($pickup_id)] = "none";
+            $update_pickups = $existing_pickups + $pickup_array;
+            update_post_meta( $post_id, '_wc_trip_pickups',$update_pickups);
 
             // Send HTML back to JS
             ob_start();

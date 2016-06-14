@@ -1,8 +1,10 @@
 jQuery(document).ready(function($){
   // show/hide flight times tab based on trip type selection
   showHideTabs();
+  showHideRoute();
   $("select[name=_wc_trip_type]").on("change", showHideTabs);
-
+  $("select[name=_wc_trip_type]").on("change", showHideRoute);
+  
   // General Tab date validator
   $( "#_wc_trip_start_date, #_wc_trip_end_date" ).datepicker({
       changeMonth: true,
@@ -135,6 +137,29 @@ jQuery(document).ready(function($){
     }
     return false;
   });
+  // Change pickup route
+  $(".route").on("change", function(){
+    var entry = $(this).parent().parent();
+    $( entry ).block( { message: null, overlayCSS: { background: '#ffffff url(' + wc_trips_admin_js_params.plugin_url + '/assets/images/select2-spinner.gif) no-repeat center', opacity: 0.6} } );
+    var routeData = {
+      action: 'woocommerce_add_route_pickup_location',
+      post_id: wc_trips_admin_js_params.post,
+      location_id: $(this).attr('id'),
+      route: $(this).val(),
+      nonce: wc_trips_admin_js_params.none_add_route_pickup_location
+    };
+    $.post( wc_trips_admin_js_params.ajax_url, routeData, function(response){
+      if ( response.changed ) {
+        $( entry ).unblock();
+      }
+      if ( response.error) {
+        alert(response.error);
+        $( entry ).unblock();
+      }
+
+    });
+
+  });
   // Remove package rows
 	$('body').on('click', 'td.deleteButton', function(){
 		$(this).closest('tr').remove();
@@ -187,6 +212,13 @@ jQuery(document).ready(function($){
   if ( $(".sorter:visible").size() <= 1 ) {
     $(".sorter:visible").css("visibility", "hidden");
   }
+  function showHideRoute() {
+    if ("beach_bus" == $("select[name=_wc_trip_type] :selected").val() ) {
+      $('.route').show();
+    } else {
+      $('.route').hide();
+    }
+  }
   function showHideTabs() {
     var tabStatus = {
       bus: {
@@ -206,7 +238,7 @@ jQuery(document).ready(function($){
         trips_videos_tab: true
       },
       beach_bus: {
-        trips_pickup_location: false,
+        trips_pickup_location: true,
         trips_primary_packages_tab: false,
         trips_secondary_packages_tab: false,
         trips_tertiary_packages_tab: false,
