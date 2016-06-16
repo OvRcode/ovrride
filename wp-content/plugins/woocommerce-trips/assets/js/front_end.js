@@ -109,17 +109,17 @@ jQuery(document).ready(function($){
   $("#wc_trip_primary_package").on("change", function(){
     if ( "beach_bus" === $("#wc_trip_type").val() ) {
       // Re-enable all dropdowns
-      $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package").prop('disabled', false);
+      $("#wc_trip_to_beach,#wc_trip_from_beach").prop('disabled', false);
       $("#oneWay").remove();
 
       if (/to beach/i.test($(this).val() ) ) {
-        $("#wc_trip_tertiary_package").append("<option id='oneWay' value='oneWay'>One Way To Beach</option>");
-        $("#wc_trip_tertiary_package").val('oneWay');
-        $("#wc_trip_tertiary_package").prop('disabled', true);
+        $("#wc_trip_from_beach").append("<option id='oneWay' value='oneWay'>One Way To Beach</option>");
+        $("#wc_trip_from_beach").val('oneWay');
+        $("#wc_trip_from_beach").prop('disabled', true);
       } else if(/from beach/i.test($(this).val() ) ) {
-        $("#wc_trip_secondary_package").append("<option id='oneWay' value='oneWay'>One Way From Beach</option>");
-        $("#wc_trip_secondary_package").val('oneWay');
-        $("#wc_trip_secondary_package").prop('disabled', true);
+        $("#wc_trip_to_beach").append("<option id='oneWay' value='oneWay'>One Way From Beach</option>");
+        $("#wc_trip_to_beach").val('oneWay');
+        $("#wc_trip_to_beach").prop('disabled', true);
       }
 
     }
