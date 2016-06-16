@@ -114,6 +114,20 @@ class WC_Trips_Cart {
                     $location_string = WC()->session->get($cart_item_key . "_" . $key);
                     wc_add_order_item_meta( $item_id, $value, $location_string);
                     wc_add_order_item_meta( $item_id, "_pickup_id", $location_id);
+                } else if( "To Beach" == $value) {
+                  $toBeachId = WC()->session->get( $cart_item_key . "_to_beach_id" );
+                  $toBeachRoute = WC()->session->get( $cart_item_key . "_to_beach_route" );
+                  $toBeachString = WC()->session->get($cart_item_key . "_" . $key);
+                  wc_add_order_item_meta( $item_id, $value, $toBeachString );
+                  wc_add_order_item_meta( $item_id, "_to_beach_id", $toBeachId );
+                  wc_add_order_item_meta( $item_id, "_to_beach_route", $toBeachRoute );
+                } else if( "From Beach" == $value) {
+                  $fromBeachId = WC()->session->get( $cart_item_key . "_from_beach_id" );
+                  $fromBeachRoute = WC()->session->get( $cart_item_key . "_from_beach_route" );
+                  $fromBeachString = WC()->session->get($cart_item_key . "_" . $key);
+                  wc_add_order_item_meta( $item_id, $value, $fromBeachString );
+                  wc_add_order_item_meta( $item_id, "_from_beach_id", $fromBeachId );
+                  wc_add_order_item_meta( $item_id, "_from_beach_route", $fromBeachRoute );
                 } else {
                     wc_add_order_item_meta( $item_id, $value, WC()->session->get( $cart_item_key . "_" . $key ));
                 }
