@@ -187,25 +187,15 @@ class WC_Trips_Admin {
           update_post_meta( $post_id, '_wc_trip_primary_package_stock', "no" );
           update_post_meta( $post_id, '_wc_trip_primary_packages', $packages_packages);
 
-          $packages = ( isset($_POST['wc_trips_to_beach_description']) ? sizeof($_POST['wc_trips_to_beach_description']) : 0 );
+          $packages = ( isset($_POST['wc_trips_to_from_beach_description']) ? sizeof($_POST['wc_trips_to_from_beach_description']) : 0 );
           for( $i = 0; $i < $packages; $i++ ){
-            $to_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_to_beach_description'][$i] );
-            $to_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_to_beach_cost'][$i] );
-            $to_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_to_beach_stock'][$i] );
+            $to_from_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_to_from_beach_description'][$i] );
+            $to_from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_to_from_beach_cost'][$i] );
+            $to_from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_to_from_beach_stock'][$i] );
           }
-          update_post_meta( $post_id, '_wc_trip_secondary_package_label', "To Beach" );
+          update_post_meta( $post_id, '_wc_trip_secondary_package_label', "To/From Beach" );
           update_post_meta( $post_id, '_wc_trip_secondary_package_stock', "yes" );
-          update_post_meta( $post_id, '_wc_trip_secondary_packages', $to_beach_packages);
-
-          $packages = ( isset($_POST['wc_trips_from_beach_description']) ? sizeof($_POST['wc_trips_from_beach_description']) : 0 );
-          for( $i = 0; $i < $packages; $i++ ){
-            $from_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_from_beach_description'][$i] );
-            $from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_from_beach_cost'][$i] );
-            $from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_from_beach_stock'][$i] );
-          }
-          update_post_meta( $post_id, '_wc_trip_tertiary_package_label', "From Beach" );
-          update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', "yes" );
-          update_post_meta( $post_id, '_wc_trip_tertiary_packages', $from_beach_packages);
+          update_post_meta( $post_id, '_wc_trip_secondary_packages', $to_from_beach_packages);
         }
     }
 
@@ -225,7 +215,6 @@ class WC_Trips_Admin {
         include( 'views/html-trip-partners.php' );
         include( 'views/html-trip-packages.php' );
         include( 'views/html-trip-to_beach.php' );
-        include( 'views/html-trip-from_beach.php' );
         include( 'views/html-trip-videos.php' );
     }
 
@@ -236,12 +225,12 @@ class WC_Trips_Admin {
         wp_enqueue_style( 'wc_trips_admin_styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_admin' . $suffix . '.css', null, WC_TRIPS_VERSION );
         wp_register_script( 'wc_trips_admin_js', WC_TRIPS_PLUGIN_URL . '/assets/js/trips_admin' . $suffix . '.js', array( 'jquery' ) );
         $params = array(
-            'nonce_add_pickup_location' => wp_create_nonce( 'add_pickup_location' ),
-            'nonce_remove_pickup_location' => wp_create_nonce( 'remove_pickup_location' ),
-            'none_add_route_pickup_location' => wp_create_nonce('add_route_pickup_location'),
-            'post'                   => isset( $post->ID ) ? $post->ID : '',
-            'plugin_url'             => $woocommerce->plugin_url(),
-            'ajax_url'               => admin_url( 'admin-ajax.php' )
+            'nonce_add_pickup_location'       => wp_create_nonce( 'add_pickup_location' ),
+            'nonce_remove_pickup_location'    => wp_create_nonce( 'remove_pickup_location' ),
+            'none_add_route_pickup_location'  => wp_create_nonce('add_route_pickup_location'),
+            'post'                            => isset( $post->ID ) ? $post->ID : '',
+            'plugin_url'                      => $woocommerce->plugin_url(),
+            'ajax_url'                        => admin_url( 'admin-ajax.php' )
         );
 
         wp_localize_script( 'wc_trips_admin_js', 'wc_trips_admin_js_params', $params );

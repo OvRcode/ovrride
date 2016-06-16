@@ -8,7 +8,8 @@ class WC_Trips_Cart {
         "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
         "wc_trip_dob_field" => "Date of Birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
-        "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location");
+        "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location",
+         "wc_trip_to_beach" => "To Beach", "wc_trip_from_beach" => "From Beach");
 
     public $package_types = array("primary", "secondary", "tertiary");
     public $orders_processed = array();
@@ -36,6 +37,13 @@ class WC_Trips_Cart {
                 if ( WC()->session->__isset($cart_id . "_wc_trip_" . $package . "_package") ) {
                     $product->reduce_package_stock( $package, WC()->session->get($cart_id . "_wc_trip_" . $package . "_package"));
                 }
+            }
+
+            if ( WC()->session->__isset($cart_id."_to_beach_route") ) {
+              $product->reduce_package_stock( "secondary", WC()->session->get($cart_id."_to_beach_route"));
+            }
+            if ( WC()->session->__isset($cart_id."_from_beach_route") ) {
+              $product->reduce_package_stock( "secondary", WC()->session->get($cart_id."_from_beach_route"));
             }
           }
         }
@@ -67,7 +75,7 @@ class WC_Trips_Cart {
             return false;
         }
     }
-    public function add_costs( $cart_object ) {
+      public function add_costs( $cart_object ) {
         global $woocommerce;
         foreach ( $cart_object->cart_contents as $key => $value ) {
             if ( "trip" == $value['data']->product_type) {
@@ -148,6 +156,22 @@ class WC_Trips_Cart {
 
                     WC()->session->set( $cart_item_key . "_" . $key, $pickup_string );
                     WC()->session->set( $cart_item_key . "_pickup_id", $_REQUEST[$key] );
+                } elseif ( "wc_trip_to_beach" == $key ) {
+                  $request = $_REQUEST[$key];
+                  $request = explode(":", $request);
+                  $title = get_the_title( $request[0] );
+                  $time = date("g:i a", strtotime(get_post_meta( $request[0], "_pickup_location_time", true)));
+                  WC()->session->set( $cart_item_key . "_" . $key, $title . " - " . $time);
+                  WC()->session->set( $cart_item_key . "_to_beach_id", $request[0] );
+                  WC()->session->set( $cart_item_key . "_to_beach_route", $request[1] );
+                } elseif ( "wc_trip_from_beach" == $key ) {
+                  $request = $_REQUEST[$key];
+                  $request = explode(":", $request);
+                  $title = get_the_title( $request[0] );
+                  $time = date("g:i a", strtotime(get_post_meta( $request[0], "_pickup_location_time", true)));
+                  WC()->session->set( $cart_item_key . "_" . $key, $title . " - " . $time);
+                  WC()->session->set( $cart_item_key . "_from_beach_id", $request[0] );
+                  WC()->session->set( $cart_item_key . "_from_beach_route", $request[1] );
                 } else {
                     if ( "" !== $_REQUEST[$key] ) {
                         WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
@@ -157,7 +181,6 @@ class WC_Trips_Cart {
         }
     }
     public function render_meta_on_cart_item( $title = null, $cart_item = null, $cart_item_key = null ) {
-        echo $title;
         echo "<dl class='variation'>";
         foreach( $this->fields as $key => $value ) {
             if ( $cart_item_key && WC()->session->__isset( $cart_item_key . "_" . $key) ){
@@ -200,7 +223,6 @@ CARTMETA;
     private function pickupField( $post_id ) {
         $pickup_ids = get_post_meta( $post_id, '_wc_trip_pickups', true);
         if ( "array" == gettype($pickup_ids) && count($pickup_ids) > 0) {
-            $pickup_output = "<option value=''>Select Pickup Location</option>";
             foreach( $pickup_ids as $key => $value ) {
                 $pickup = get_post( absint($key) );
                 $time = get_post_meta( $pickup->ID, '_pickup_location_time', true );
@@ -223,7 +245,10 @@ CARTMETA;
                     $data = "";
                     $cost_string = "";
                 }
-                $pickup_output .= "<option value='" . $pickup->ID . "' {$data} {$route}>" . $pickup->post_title . $time . $cost_string . "</option>";
+                if ( !isset($pickup_output[$value]) ) {
+                  $pickup_output[$value] = "<option value=''>Select Pickup Location</option>";
+                }
+                $pickup_output[$value] .= "<option value='" . $pickup->ID . "' {$data} {$route}>" . $pickup->post_title . $time . $cost_string . "</option>";
             }
             return $pickup_output;
         } else {

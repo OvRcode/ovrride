@@ -12,6 +12,14 @@ global $woocommerce, $product;
 }*/
 $base_price = get_post_meta( $product->id, '_wc_trip_base_price', true);
 $base_price = floatval($base_price);
+$packages = [
+		"primary"   => $product->output_packages("primary"),
+		"secondary" => $product->output_packages("secondary"),
+		"tertiary"  => $product->output_packages("tertiary")
+];
+if ( "beach_bus" == $trip_type ) {
+	unset($packages["secondary"]);
+}
 do_action( 'woocommerce_before_add_to_cart_form' );
 ?>
 
@@ -76,31 +84,29 @@ PASSPORT;
 DOB;
                 break;
         }
-        $packages = [
-            "primary"   => $product->output_packages("primary"),
-            "secondary" => $product->output_packages("secondary"),
-            "tertiary"  => $product->output_packages("tertiary")
-        ];
-        foreach ( $packages as $type => $info ) {
-            if ( $info ) {
-                echo <<<PACKAGE
-                    <p class='form-field'>
-                        <label for="wc_trip_{$type}_package" >{$info['label']} <span class="required">*</span></label>
-                        <select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package" data-required="true">
-                        <option value="">Select option</option>
-PACKAGE;
-                echo $info['html'];
-                echo "</select></p>";
-                echo "<input type='hidden' name='wc_trip_{$type}_package_label' value='{$info['label']}' />";
-            }
-        }
 
-        if ( $pickups ) {
+        	foreach ( $packages as $type => $info ) {
+            	if ( $info ) {
+                	echo <<<PACKAGE
+                    	<p class='form-field'>
+                        	<label for="wc_trip_{$type}_package" >{$info['label']} <span class="required">*</span></label>
+                        	<select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package" data-required="true">
+                        	<option value="">Select option</option>
+PACKAGE;
+                	echo $info['html'];
+                	echo "</select></p>";
+                	echo "<input type='hidden' name='wc_trip_{$type}_package_label' value='{$info['label']}' />";
+            	}
+        	}
+				if ( "beach_bus" === $trip_type ) {
+					echo $product->beach_bus_pickups();
+				}
+        if ( $pickups && "beach_bus" !== $trip_type) {
             echo <<<PICKUPS
                 <p class='form-field'>
                     <label for="wc_trip_pickup_location">Pickup Location <span class="required">*</span></label>
                     <select name="wc_trip_pickup_location" id="wc_trip_pickup_location" data-required="true">
-                        {$pickups}
+                        {$pickups['none']}
                     </select>
                 </p>
 PICKUPS;

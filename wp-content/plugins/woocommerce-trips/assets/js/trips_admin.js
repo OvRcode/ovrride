@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
   showHideRoute();
   $("select[name=_wc_trip_type]").on("change", showHideTabs);
   $("select[name=_wc_trip_type]").on("change", showHideRoute);
-  
+
   // General Tab date validator
   $( "#_wc_trip_start_date, #_wc_trip_end_date" ).datepicker({
       changeMonth: true,
@@ -56,10 +56,8 @@ jQuery(document).ready(function($){
         showHideStock("tertiary");
       } else if ( $(this).prop("id") == "package_add") {
         $("table.woocommerce_trip_packages").append( $(this).data( 'row' ) );
-      } else if ( "to_beach_add" == $(this).prop("id") ) {
-        $("table.woocommerce_trip_to_beach").append( $(this).data( 'row' ) );
-      } else if ( "from_beach_add" == $(this).prop("id") ) {
-        $("table.woocommerce_trip_from_beach").append( $(this).data( 'row' ) );
+      } else if ( "to_from_beach_add" == $(this).prop("id") ) {
+        $("table.woocommerce_trip_to_from_beach").append( $(this).data( 'row' ) );
       }
 
       if ( $(".sorter:visible").size() > 1 ) {
@@ -191,7 +189,7 @@ jQuery(document).ready(function($){
 	$( '.woocommerce_trip_pickup_locations' ).sortable( pickup_sortable_options );
   // Sorting for packages
   $( "#primary_package_rows, #secondary_package_rows, #tertiary_package_rows, " +
-      "#package_rows, #to_beach_rows, #from_beach_rows").sortable({
+      "#package_rows, #to_from_beach_rows").sortable({
     items: 'tr',
 		cursor:'move',
 		axis:'y',
@@ -233,15 +231,14 @@ jQuery(document).ready(function($){
         trips_flight_times_tab: false,
         trips_pics_tab: true,
         trips_package_tab: false,
-        trips_to_beach_tab: false,
-        trips_from_beach_tab: false,
+        trips_to_from_beach_tab: false,
         trips_videos_tab: true
       },
       beach_bus: {
         trips_pickup_location: true,
         trips_primary_packages_tab: false,
         trips_secondary_packages_tab: false,
-        trips_tertiary_packages_tab: false,
+        trips_tertiary_packages_tab: true,
         trips_includes_tab: true,
         trips_rates_tab: true,
         trips_routes_tab: true,
@@ -249,8 +246,7 @@ jQuery(document).ready(function($){
         trips_flight_times_tab: false,
         trips_pics_tab: true,
         trips_package_tab: true,
-        trips_to_beach_tab: true,
-        trips_from_beach_tab: true,
+        trips_to_from_beach_tab: true,
         trips_videos_tab: true
       },
       international_flight: {
@@ -265,8 +261,7 @@ jQuery(document).ready(function($){
         trips_flight_times_tab: true,
         trips_pics_tab: true,
         trips_package_tab: false,
-        trips_to_beach_tab: false,
-        trips_from_beach_tab: false,
+        trips_to_from_beach_tab: false,
         trips_videos_tab: true
       },
       domestic_flight: {
@@ -281,8 +276,7 @@ jQuery(document).ready(function($){
         trips_flight_times_tab: true,
         trips_pics_tab: true,
         trips_package_tab: false,
-        trips_to_beach_tab: false,
-        trips_from_beach_tab: false,
+        trips_to_from_beach_tab: false,
         trips_videos_tab: true
       }
     };
@@ -324,5 +318,6 @@ function showHideStock( StockType ) {
 function pickup_row_indexes() {
   jQuery('.woocommerce_trip_pickup_locations .woocommerce_trip_pickup_location').each(function(index, el){
     jQuery('.pickup_location_menu_order', el).val( parseInt( jQuery(el).index('.woocommerce_trip_pickup_locations .woocommerce_trip_pickup_location') ) );
+    console.log(jQuery('.pickup_location_menu_order', el).val( parseInt( jQuery(el).index('.woocommerce_trip_pickup_locations .woocommerce_trip_pickup_location') ) ));
   });
 }

@@ -1,8 +1,8 @@
-<li class="trips_tab trips_to_beach_tab attribute_options show_if_trip">
-  <a href="#trips_to_beach">To Beach</a>
+<li class="trips_tab trips_package_tab attribute_options show_if_trip">
+  <a href="#trips_packages">Packages</a>
 </li>
-<li class="trips_tab trips_from_beach_tab attribute_options show_if_trip">
-  <a href="#trips_from_beach">From Beach</a>
+<li class="trips_tab trips_to_from_beach_tab attribute_options show_if_trip">
+  <a href="#trips_to_from_beach">To/From Beach</a>
 </li>
 <li class="trips_tab trips_pickup_location advanced_options show_if_trip">
     <a href="#trips_pickup_locations">Pickup Locations</a>
@@ -31,10 +31,6 @@
 <li class="trips_tab trips_pics_tab attribute_options show_if_trip">
     <a href="#trips_pics">Pics</a>
 </li>
-<li class="trips_tab trips_package_tab attribute_options show_if_trip">
-  <a href="#trips_packages">Packages</a>
-</li>
-
 <li class="trips_tab trips_videos_tab attribute_options show_if_trip">
   <a href="#trips_videos">Videos</a>
 </li>
