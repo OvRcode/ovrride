@@ -448,7 +448,7 @@ blockquote.pull-right small {
 }
 .seats-left p {
   margin: 0px;
-  color: #09bdeb;
+  color: 1px 1px 1px #09bdeb;
   font-size: 17px;
 }
 .calnk a {
@@ -456,9 +456,9 @@ blockquote.pull-right small {
   color: default;
 }
 .seats-left a {
-  color: #09bdeb;
+  color: 1px 1px 1px #09bdeb;
   font-weight: bold;
-  text-shadow: 1px 1px 1px #333333;
+  text-shadow: #333333;
 }
 .minitweets {
   width: 100%;
