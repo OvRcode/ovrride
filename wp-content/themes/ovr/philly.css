@@ -2824,6 +2824,13 @@ a.read-more:hover {
   background-color: #FFFFFF;
   border-radius: 10% 80% 80% 40%;
 }
+.fa-youtube-square:hover,
+.fa-instagram:hover,
+.fa-twitter-square:hover,
+.fa-facebook-square:hover {
+  color: #000000;
+  background-color: #000000;
+}
 /* ==========================================================================
    Main Content
    ========================================================================== */
