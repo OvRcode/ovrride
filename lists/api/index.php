@@ -271,6 +271,12 @@ class Lists {
                               $fields .= "OR `meta_key` = 'Pickup Location'
                               OR `meta_key` = 'Is this guest at least 18 years of age?'";
                               break;
+                          case 'beach_bus':
+                              $fields .= "OR `meta_key` = 'To Beach'
+                              OR `meta_key` = '_to_beach_route' OR `meta_key` = '_to_beach_id'
+                              OR `meta_key` = 'From Beach' OR `meta_key` = '_from_beach_route'
+                              OR `meta_key` = '_from_beach_id' OR `meta_key` = 'Is this guest at least 18 years of age?'";
+                              break;
                           case 'domestic_flight':
                             $fields .= "OR `meta_key` = 'Date of Birth'";
                           case 'international_flight':
@@ -313,7 +319,15 @@ class Lists {
                 }
             }
         }
-
+        $remove=array();
+        foreach( $this->orders as $id => $info ) {
+          if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
+            $remove[] = $id;
+          }
+        }
+        foreach($remove as $id ) {
+          unset($this->orders[$id]);
+        }
         return $this->orders;
     }
     function getReports($tripId){
@@ -606,19 +620,6 @@ Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
         $list->getTripInfo($tripId);
         $data = $list->tripData($bus, $tripId, $status);
-        if ( "beach_bus" == $list->tripInfo['type'] ) {
-          $remove = array();
-          foreach($data as $order => $info) {
-            $toBeach = "To Beach: " . $info['Data']['To Beach'];
-            $fromBeach = "From Beach: " . $info['Data']['From Beach'];
-            if ( strtolower($bus) !== strtolower($toBeach) && strtolower($bus) !== strtolower($fromBeach)) {
-              $remove[] = $order;
-            }
-          }
-          foreach( $remove as $order) {
-            unset($data[$order]);
-          }
-        }
         echo json_encode($data);
     }
 );

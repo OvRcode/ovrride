@@ -60,21 +60,11 @@ $(function(){
       }
     });
 function busSwitch() {
-  var trip = $("#trip").val();
-  if ( "none" !== trip && "Rockaway Beach" == $("#destination").val() ) {
-    settings.set("tripNum", trip);
-    getTripInfo().done(function() {
-      var toBeach = packages.get("To Beach");
-      var fromBeach = packages.get("From Beach");
-      $("#bus").html('');
-      $.each(toBeach, function(index, value){
-        $("#bus").append("<option value='To Beach: " + value.description + "'>To Beach: " + value.description + "</option>");
-      });
-      $.each(fromBeach, function(index, value){
-        $("#bus").append("<option value='From Beach: " + value.description + "'>From Beach: " + value.description + "</option>");
-      });
-    });
-  }
+  $("#bus").html('');
+  $("#bus").append("<option value='ToEarly'>To Beach: Early</option>");
+  $("#bus").append("<option value='ToLate'>To Beach: Late</option>");
+  $("#bus").append("<option value='FromEarly'>From Beach: Early</option>");
+  $("#bus").append("<option value='FromLate'>From Beach: Late</option>");
 }
 });
 
