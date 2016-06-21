@@ -3050,16 +3050,6 @@ article.sticky {
 .comment-content ol {
   list-style: decimal outside;
 }
-.entry-content li,
-.comment-content li {
-  margin: 0px 0px 10px 0px;
-  font-size: 17px;
-  font-weight: ;
-  background: #CECECE;
-  padding: 6px;
-  border: 1px solid #999;
-  border-radius: 3px;
-}
 .widget_em_widget ul {
   padding: 0px;
 }
