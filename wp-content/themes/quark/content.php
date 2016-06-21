@@ -37,9 +37,17 @@
 		<?php }
 		else { ?>
 			<div class="entry-content">
-				<?php the_content( wp_kses( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'quark' ), array( 'span' => array( 
-					'class' => array() ) ) )
-					); ?>
+				<?php if ( has_excerpt() ) {
+					the_excerpt(); ?>
+					<p><a class="more-link" href="<?php the_permalink(); ?>"><?php echo wp_kses( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'quark' ), array( 'span' => array(
+						'class' => array() ) ) ) ?></a></p>
+				<?php }
+				else {
+					the_content( wp_kses( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'quark' ), array( 'span' => array(
+						'class' => array() ) ) )
+						);
+				}
+				 ?>
 				<?php wp_link_pages( array(
 					'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'quark' ),
 					'after' => '</div>',
@@ -54,7 +62,7 @@
 				// Only show the tags on the Single Post page
 				quark_entry_meta();
 			} ?>
-			<?php edit_post_link( esc_html__( 'Edit', 'quark' ) . ' <i class="fa fa-angle-right"></i>', '<div class="edit-link">', '</div>' ); ?>
+			<?php edit_post_link( esc_html__( 'Edit', 'quark' ) . ' <i class="fa fa-angle-right" aria-hidden="true"></i>', '<div class="edit-link">', '</div>' ); ?>
 			<?php if ( is_singular() && get_the_author_meta( 'description' ) && is_multi_author() ) {
 				// If a user has filled out their description and this is a multi-author blog, show their bio
 				get_template_part( 'author-bio' );
