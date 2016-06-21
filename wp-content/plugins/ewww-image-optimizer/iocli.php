@@ -319,7 +319,7 @@ function ewww_image_optimizer_scan_other () {
 							if ( ! $image_size ) {
 								continue;
 							}
-							$query = $wpdb->prepare("SELECT id,path FROM $wpdb->ewwwio_images WHERE path LIKE %s AND image_size LIKE '$image_size'", $path);
+							/*$query = $wpdb->prepare("SELECT id,path FROM $wpdb->ewwwio_images WHERE path LIKE %s AND image_size LIKE '$image_size'", $path);
 							$optimized_query = $wpdb->get_results( $query, ARRAY_A );
 							if (!empty($optimized_query)) {
 								foreach ( $optimized_query as $image ) {
@@ -328,7 +328,8 @@ function ewww_image_optimizer_scan_other () {
 										$already_optimized = $image;
 									}
 								}
-							}
+							}*/
+							$already_optimized = ewww_image_optimizer_find_already_optimized( $path );
 							$mimetype = ewww_image_optimizer_mimetype($path, 'i');
 							if ( preg_match( '/^image\/(jpeg|png|gif)/', $mimetype ) && empty( $already_optimized ) ) {
 								$slide_paths[] = $path;
