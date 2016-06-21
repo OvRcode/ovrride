@@ -3,7 +3,7 @@
 Plugin Name:    Widget Shortcode
 Description:    Output widgets using a simple shortcode.
 Author:         Hassan Derakhshandeh
-Version:        0.2.5
+Version:        0.2.6
 Text Domain:    widget-shortcode
 Domain Path:    /languages
 
@@ -144,21 +144,33 @@ class Widget_Shortcode {
 
 		extract( shortcode_atts( array(
 			'id' => '',
-			'title' => true, /* wheather to display the widget title */
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'before_title' => '<h2 class="widgettitle">',
-			'after_title' => '</h2>',
-			'after_widget' => '</div>',
+			'title' => true, /* whether to display the widget title */
+			'container_tag' => 'div',
+			'container_class' => 'widget %2$s',
+			'container_id' => '%1$s',
+			'title_tag' => 'h2',
+			'title_class' => 'widgettitle',
 			'echo' => true
 		), $args, 'widget' ) );
+
+		/*
+		 * @note: for backward compatibility: allow overriding widget args through the shortcode parameters
+		 */
+		$widget_args = shortcode_atts( array(
+			'before_widget' => '<' . $container_tag . ' id="' . $container_id . '" class="' . $container_class . '">',
+			'before_title' => '<' . $title_tag . ' class="' . $title_class . '">',
+			'after_title' => '</' . $title_tag . '>',
+			'after_widget' => '</' . $container_tag . '>',
+		), $args );
+		extract( $widget_args );
 
 		if( empty( $id ) || ! isset( $wp_registered_widgets[$id] ) )
 			return;
 
 		// get the widget instance options
 		preg_match( '/(\d+)/', $id, $number );
-		$options = get_option( $wp_registered_widgets[$id]['callback'][0]->option_name );
-		$instance = $options[$number[0]];
+		$options = ( ! empty( $wp_registered_widgets ) && ! empty( $wp_registered_widgets[$id] ) ) ? get_option( $wp_registered_widgets[$id]['callback'][0]->option_name ) : array();
+		$instance = isset( $options[$number[0]] ) ? $options[$number[0]] : array();
 		$class = get_class( $wp_registered_widgets[$id]['callback'][0] );
 		$widgets_map = $this->get_widgets_map();
 		$_original_widget_position = $widgets_map[$id];
@@ -236,15 +248,21 @@ class Widget_Shortcode {
 	}
 
 	function editor_parameters() {
+		global $wp_registered_widgets;
+
 		$widgets = array();
 		$all_widgets = $this->get_widgets_map();
 		if( ! empty( $all_widgets ) ) {
 			foreach( $all_widgets as $id => $position ) {
 				if( $position == 'arbitrary' ) {
+					$title = $wp_registered_widgets[$id]['name'];
 					$options = $this->get_widget_options( $id );
+					if( isset( $options['title'] ) && ! empty( $options['title'] ) ) {
+						$title .= ': ' . $options['title'];
+					}
 					$widgets[] = array(
 						'id' => $id,
-						'title' => isset( $options['title'] ) ? $options['title'] : __( 'Untitled', 'widget-shortcode' ),
+						'title' =>  $title,
 					);
 				}
 			}

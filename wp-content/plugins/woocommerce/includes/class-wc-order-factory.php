@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Order Factory Class
  *
- * The WooCommerce order factory creating the right order objects
+ * The WooCommerce order factory creating the right order objects.
  *
  * @class 		WC_Order_Factory
  * @version		2.2.0
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Order_Factory {
 
 	/**
-	 * get_order function.
+	 * Get order.
 	 *
 	 * @param bool $the_order (default: false)
 	 * @return WC_Order|bool

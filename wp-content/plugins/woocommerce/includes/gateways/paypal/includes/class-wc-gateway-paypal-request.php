@@ -1,34 +1,34 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
 /**
- * Generates requests to send to PayPal
+ * Generates requests to send to PayPal.
  */
 class WC_Gateway_Paypal_Request {
 
 	/**
-	 * Stores line items to send to PayPal
+	 * Stores line items to send to PayPal.
 	 * @var array
 	 */
 	protected $line_items = array();
 
 	/**
-	 * Pointer to gateway making the request
+	 * Pointer to gateway making the request.
 	 * @var WC_Gateway_Paypal
 	 */
 	protected $gateway;
 
 	/**
-	 * Endpoint for requests from PayPal
+	 * Endpoint for requests from PayPal.
 	 * @var string
 	 */
 	protected $notify_url;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * @param WC_Gateway_Paypal $gateway
 	 */
 	public function __construct( $gateway ) {
@@ -37,13 +37,15 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get the PayPal request URL for an order
-	 * @param  WC_Order  $order
-	 * @param  boolean $sandbox
+	 * Get the PayPal request URL for an order.
+	 * @param  WC_Order $order
+	 * @param  bool     $sandbox
 	 * @return string
 	 */
 	public function get_request_url( $order, $sandbox = false ) {
 		$paypal_args = http_build_query( $this->get_paypal_args( $order ), '', '&' );
+
+		WC_Gateway_Paypal::log( 'PayPal Request Args for order ' . $order->get_order_number() . ': ' . print_r( $paypal_args, true ) );
 
 		if ( $sandbox ) {
 			return 'https://www.sandbox.paypal.com/cgi-bin/webscr?test_ipn=1&' . $paypal_args;
@@ -53,9 +55,8 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get PayPal Args for passing to PP
-	 *
-	 * @param WC_Order $order
+	 * Get PayPal Args for passing to PP.
+	 * @param  WC_Order $order
 	 * @return array
 	 */
 	protected function get_paypal_args( $order ) {
@@ -70,8 +71,8 @@ class WC_Gateway_Paypal_Request {
 				'charset'       => 'utf-8',
 				'rm'            => is_ssl() ? 2 : 1,
 				'upload'        => 1,
-				'return'        => esc_url( add_query_arg( 'utm_nooverride', '1', $this->gateway->get_return_url( $order ) ) ),
-				'cancel_return' => esc_url( $order->get_cancel_order_url() ),
+				'return'        => esc_url_raw( add_query_arg( 'utm_nooverride', '1', $this->gateway->get_return_url( $order ) ) ),
+				'cancel_return' => esc_url_raw( $order->get_cancel_order_url_raw() ),
 				'page_style'    => $this->gateway->get_option( 'page_style' ),
 				'paymentaction' => $this->gateway->get_option( 'paymentaction' ),
 				'bn'            => 'WooThemes_Cart',
@@ -96,7 +97,7 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get phone number args for paypal request
+	 * Get phone number args for paypal request.
 	 * @param  WC_Order $order
 	 * @return array
 	 */
@@ -122,7 +123,7 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get shipping args for paypal request
+	 * Get shipping args for paypal request.
 	 * @param  WC_Order $order
 	 * @return array
 	 */
@@ -151,45 +152,65 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get line item args for paypal request
+	 * Get line item args for paypal request.
 	 * @param  WC_Order $order
 	 * @return array
 	 */
 	protected function get_line_item_args( $order ) {
 
 		/**
-		 * Try passing a line item per product if supported
+		 * Try passing a line item per product if supported.
 		 */
 		if ( ( ! wc_tax_enabled() || ! wc_prices_include_tax() ) && $this->prepare_line_items( $order ) ) {
 
-			$line_item_args             = $this->get_line_items();
+			$line_item_args             = array();
 			$line_item_args['tax_cart'] = $this->number_format( $order->get_total_tax(), $order );
 
 			if ( $order->get_total_discount() > 0 ) {
-				$line_item_args['discount_amount_cart'] = $this->round( $order->get_total_discount(), $order );
+				$line_item_args['discount_amount_cart'] = $this->number_format( $this->round( $order->get_total_discount(), $order ), $order );
 			}
 
+			// Add shipping costs. Paypal ignores anything over 5 digits (999.99 is the max).
+			// We also check that shipping is not the **only** cost as PayPal won't allow payment
+			// if the items have no cost.
+			if ( $order->get_total_shipping() > 0 && $order->get_total_shipping() < 999.99 && $this->number_format( $order->get_total_shipping() + $order->get_shipping_tax(), $order ) !== $this->number_format( $order->get_total(), $order ) ) {
+				$line_item_args['shipping_1'] = $this->number_format( $order->get_total_shipping(), $order );
+			} elseif ( $order->get_total_shipping() > 0 ) {
+				$this->add_line_item( sprintf( __( 'Shipping via %s', 'woocommerce' ), $order->get_shipping_method() ), 1, $this->number_format( $order->get_total_shipping(), $order ) );
+			}
+
+			$line_item_args = array_merge( $line_item_args, $this->get_line_items() );
+
 		/**
-		 * Send order as a single item
+		 * Send order as a single item.
 		 *
-		 * For shipping, we longer use shipping_1 because paypal ignores it if *any* shipping rules are within paypal, and paypal ignores anything over 5 digits (999.99 is the max)
+		 * For shipping, we longer use shipping_1 because paypal ignores it if *any* shipping rules are within paypal, and paypal ignores anything over 5 digits (999.99 is the max).
 		 */
 		} else {
 
 			$this->delete_line_items();
 
+			$line_item_args = array();
 			$all_items_name = $this->get_order_item_names( $order );
 			$this->add_line_item( $all_items_name ? $all_items_name : __( 'Order', 'woocommerce' ), 1, $this->number_format( $order->get_total() - $this->round( $order->get_total_shipping() + $order->get_shipping_tax(), $order ), $order ), $order->get_order_number() );
-			$this->add_line_item( sprintf( __( 'Shipping via %s', 'woocommerce' ), ucwords( $order->get_shipping_method() ) ), 1, $this->number_format( $order->get_total_shipping() + $order->get_shipping_tax(), $order ) );
 
-			$line_item_args = $this->get_line_items();
+			// Add shipping costs. Paypal ignores anything over 5 digits (999.99 is the max).
+			// We also check that shipping is not the **only** cost as PayPal won't allow payment
+			// if the items have no cost.
+			if ( $order->get_total_shipping() > 0 && $order->get_total_shipping() < 999.99 && $this->number_format( $order->get_total_shipping() + $order->get_shipping_tax(), $order ) !== $this->number_format( $order->get_total(), $order ) ) {
+				$line_item_args['shipping_1'] = $this->number_format( $order->get_total_shipping() + $order->get_shipping_tax(), $order );
+			} elseif ( $order->get_total_shipping() > 0 ) {
+				$this->add_line_item( sprintf( __( 'Shipping via %s', 'woocommerce' ), $order->get_shipping_method() ), 1, $this->number_format( $order->get_total_shipping() + $order->get_shipping_tax(), $order ) );
+			}
+
+			$line_item_args = array_merge( $line_item_args, $this->get_line_items() );
 		}
 
 		return $line_item_args;
 	}
 
 	/**
-	 * Get order item names as a string
+	 * Get order item names as a string.
 	 * @param  WC_Order $order
 	 * @return string
 	 */
@@ -204,7 +225,7 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get order item names as a string
+	 * Get order item names as a string.
 	 * @param  WC_Order $order
 	 * @param  array $item
 	 * @return string
@@ -221,22 +242,21 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Return all line items
+	 * Return all line items.
 	 */
 	protected function get_line_items() {
 		return $this->line_items;
 	}
 
 	/**
-	 * Remove all line items
+	 * Remove all line items.
 	 */
 	protected function delete_line_items() {
 		$this->line_items = array();
 	}
 
 	/**
-	 * Get line items to send to paypal
-	 *
+	 * Get line items to send to paypal.
 	 * @param  WC_Order $order
 	 * @return bool
 	 */
@@ -262,12 +282,7 @@ class WC_Gateway_Paypal_Request {
 			}
 		}
 
-		// Shipping Cost item - paypal only allows shipping per item, we want to send shipping for the order
-		if ( $order->get_total_shipping() > 0 && ! $this->add_line_item( sprintf( __( 'Shipping via %s', 'woocommerce' ), $order->get_shipping_method() ), 1, $this->round( $order->get_total_shipping(), $order ) ) ) {
-			return false;
-		}
-
-		// Check for mismatched totals
+		// Check for mismatched totals.
 		if ( $this->number_format( $calculated_total + $order->get_total_tax() + $this->round( $order->get_total_shipping(), $order ) - $this->round( $order->get_total_discount(), $order ), $order ) != $this->number_format( $order->get_total(), $order ) ) {
 			return false;
 		}
@@ -276,11 +291,11 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Add PayPal Line Item
-	 * @param string  $item_name
-	 * @param integer $quantity
-	 * @param integer $amount
-	 * @param string  $item_number
+	 * Add PayPal Line Item.
+	 * @param  string  $item_name
+	 * @param  int     $quantity
+	 * @param  int     $amount
+	 * @param  string  $item_number
 	 * @return bool successfully added or not
 	 */
 	protected function add_line_item( $item_name, $quantity = 1, $amount = 0, $item_number = '' ) {
@@ -299,7 +314,7 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Get the state to send to paypal
+	 * Get the state to send to paypal.
 	 * @param  string $cc
 	 * @param  string $state
 	 * @return string
@@ -319,10 +334,8 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Check if currency has decimals
-	 *
+	 * Check if currency has decimals.
 	 * @param  string $currency
-	 *
 	 * @return bool
 	 */
 	protected function currency_has_decimals( $currency ) {
@@ -334,12 +347,10 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Round prices
-	 *
-	 * @param  float|int $price
+	 * Round prices.
+	 * @param  double $price
 	 * @param  WC_Order $order
-	 *
-	 * @return float|int
+	 * @return double
 	 */
 	protected function round( $price, $order ) {
 		$precision = 2;
@@ -352,12 +363,10 @@ class WC_Gateway_Paypal_Request {
 	}
 
 	/**
-	 * Format prices
-	 *
+	 * Format prices.
 	 * @param  float|int $price
 	 * @param  WC_Order $order
-	 *
-	 * @return float|int
+	 * @return string
 	 */
 	protected function number_format( $price, $order ) {
 		$decimals = 2;

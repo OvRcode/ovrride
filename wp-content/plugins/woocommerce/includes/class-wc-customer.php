@@ -34,14 +34,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Customer {
 
 	/**
-	 * Stores customer data
+	 * Stores customer data.
 	 *
 	 * @var array
 	 */
 	protected $_data = array();
 
 	/**
-	 * Stores bool when data is changed
+	 * Stores bool when data is changed.
 	 *
 	 * @var bool
 	 */
@@ -122,7 +122,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * Get default country for a customer
+	 * Get default country for a customer.
 	 *
 	 * @return string
 	 */
@@ -132,7 +132,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * Get default state for a customer
+	 * Get default state for a customer.
 	 *
 	 * @return string
 	 */
@@ -142,7 +142,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * has_calculated_shipping function.
+	 * Has calculated shipping?
 	 *
 	 * @return bool
 	 */
@@ -200,7 +200,7 @@ class WC_Customer {
 	 *
 	 * @return bool
 	 */
-	function is_paying_customer( $user_id ) {
+	public function is_paying_customer( $user_id ) {
 		return '1' === get_user_meta( $user_id, 'paying_customer', true );
 	}
 
@@ -223,7 +223,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * Gets the country from the current session
+	 * Gets the country from the current session.
 	 *
 	 * @return string
 	 */
@@ -322,7 +322,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * get_taxable_address function.
+	 * Get taxable address.
 	 *
 	 * @return array
 	 */
@@ -330,7 +330,7 @@ class WC_Customer {
 		$tax_based_on = get_option( 'woocommerce_tax_based_on' );
 
 		// Check shipping method at this point to see if we need special handling
-		if ( true == apply_filters( 'woocommerce_apply_base_tax_for_local_pickup', true ) && WC()->cart->needs_shipping() && sizeof( array_intersect( WC()->session->get( 'chosen_shipping_methods', array() ), apply_filters( 'woocommerce_local_pickup_methods', array( 'local_pickup' ) ) ) ) > 0 ) {
+		if ( true === apply_filters( 'woocommerce_apply_base_tax_for_local_pickup', true ) && sizeof( array_intersect( WC()->session->get( 'chosen_shipping_methods', array() ), apply_filters( 'woocommerce_local_pickup_methods', array( 'legacy_local_pickup', 'local_pickup' ) ) ) ) > 0 ) {
 			$tax_based_on = 'base';
 		}
 
@@ -358,7 +358,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * Set default data for a customer
+	 * Set default data for a customer.
 	 */
 	public function set_default_data( $get_user_profile_data = true ) {
 		$this->_data = array(
@@ -550,7 +550,7 @@ class WC_Customer {
 	}
 
 	/**
-	 * calculated_shipping function.
+	 * Calculated shipping.
 	 *
 	 * @param boolean $calculated
 	 */

@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Webhook functions.
+ * WooCommerce Webhook functions
  *
  * @author   WooThemes
  * @category Core
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Get Webhook statuses
+ * Get Webhook statuses.
  *
  * @since  2.3.0
  * @return array
@@ -24,4 +24,23 @@ function wc_get_webhook_statuses() {
 		'paused'   => __( 'Paused', 'woocommerce' ),
 		'disabled' => __( 'Disabled', 'woocommerce' ),
 	) );
+}
+
+/**
+ * Generate webhook secret based in the user data.
+ *
+ * @since 2.6.0
+ * @param int $user_id User ID.
+ * @return string Secret of empty string if not found the user.
+ */
+function wc_webhook_generate_secret( $user_id = 0 ) {
+	if ( 0 === $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	if ( $user = get_userdata( $user_id ) ) {
+		return md5( $user_id . '|' . $user->data->user_login );
+	}
+
+	return '';
 }

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Bank Transfer Payment Gateway
+ * Bank Transfer Payment Gateway.
  *
  * Provides a Bank Transfer Payment Gateway. Based on code by Mike Pepper.
  *
@@ -61,11 +61,10 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 
 		// Customer Emails
 		add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
-
 	}
 
 	/**
-	 * Initialise Gateway Settings Form Fields
+	 * Initialise Gateway Settings Form Fields.
 	 */
 	public function init_form_fields() {
 
@@ -105,7 +104,9 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * generate_account_details_html function.
+	 * Generate account details html.
+	 *
+	 * @return string
 	 */
 	public function generate_account_details_html() {
 
@@ -163,7 +164,7 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 					jQuery(function() {
 						jQuery('#bacs_accounts').on( 'click', 'a.add', function(){
 
-							var size = jQuery('#bacs_accounts').find('tbody .account').size();
+							var size = jQuery('#bacs_accounts').find('tbody .account').length;
 
 							jQuery('<tr class="account">\
 									<td class="sort"></td>\
@@ -187,7 +188,7 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Save account details table
+	 * Save account details table.
 	 */
 	public function save_account_details() {
 
@@ -224,6 +225,8 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 
 	/**
 	 * Output for the order received page.
+	 *
+	 * @param int $order_id
 	 */
 	public function thankyou_page( $order_id ) {
 
@@ -253,7 +256,9 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Get bank details and place into a list format
+	 * Get bank details and place into a list format.
+	 *
+	 * @param int $order_id
 	 */
 	private function bank_details( $order_id = '' ) {
 
@@ -274,8 +279,8 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 		$bacs_accounts = apply_filters( 'woocommerce_bacs_accounts', $this->account_details );
 
 		if ( ! empty( $bacs_accounts ) ) {
-			echo '<h2>' . __( 'Our Bank Details', 'woocommerce' ) . '</h2>' . PHP_EOL;
-			
+			echo '<h2 class="wc-bacs-bank-details-heading">' . __( 'Our Bank Details', 'woocommerce' ) . '</h2>' . PHP_EOL;
+
 			foreach ( $bacs_accounts as $bacs_account ) {
 
 				$bacs_account = (object) $bacs_account;
@@ -284,7 +289,7 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 					echo '<h3>' . wp_unslash( implode( ' - ', array_filter( array( $bacs_account->account_name, $bacs_account->bank_name ) ) ) ) . '</h3>' . PHP_EOL;
 				}
 
-				echo '<ul class="order_details bacs_details">' . PHP_EOL;
+				echo '<ul class="wc-bacs-bank-details order_details bacs_details">' . PHP_EOL;
 
 				// BACS account fields shown on the thanks page and in emails
 				$account_fields = apply_filters( 'woocommerce_bacs_account_fields', array(
@@ -319,7 +324,7 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Process the payment and return the result
+	 * Process the payment and return the result.
 	 *
 	 * @param int $order_id
 	 * @return array
@@ -346,14 +351,13 @@ class WC_Gateway_BACS extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Get country locale if localized
+	 * Get country locale if localized.
 	 *
 	 * @return array
 	 */
-
 	public function get_country_locale() {
 
-		if ( ! $this->locale ) {
+		if ( empty( $this->locale ) ) {
 
 			// Locale information to be used - only those that are not 'Sort Code'
 			$this->locale = apply_filters( 'woocommerce_get_bacs_locale', array(

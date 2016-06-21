@@ -15,22 +15,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'WC_Admin_Duplicate_Product' ) ) :
 
 /**
- * WC_Admin_Duplicate_Product Class
+ * WC_Admin_Duplicate_Product Class.
  */
 class WC_Admin_Duplicate_Product {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'admin_action_duplicate_product', array( $this, 'duplicate_product_action' ) );
 		add_filter( 'post_row_actions', array( $this, 'dupe_link' ), 10, 2 );
-		add_filter( 'page_row_actions', array( $this, 'dupe_link' ), 10, 2 );
 		add_action( 'post_submitbox_start', array( $this, 'dupe_button' ) );
 	}
 
 	/**
-	 * Show the "Duplicate" link in admin products list
+	 * Show the "Duplicate" link in admin products list.
 	 * @param  array   $actions
 	 * @param  WP_Post $post Post object
 	 * @return array
@@ -51,7 +50,7 @@ class WC_Admin_Duplicate_Product {
 	}
 
 	/**
-	 * Show the dupe product link in admin
+	 * Show the dupe product link in admin.
 	 */
 	public function dupe_button() {
 		global $post;
@@ -69,9 +68,9 @@ class WC_Admin_Duplicate_Product {
 		}
 
 		if ( isset( $_GET['post'] ) ) {
-			$notifyUrl = wp_nonce_url( admin_url( "edit.php?post_type=product&action=duplicate_product&post=" . absint( $_GET['post'] ) ), 'woocommerce-duplicate-product_' . $_GET['post'] );
+			$notify_url = wp_nonce_url( admin_url( "edit.php?post_type=product&action=duplicate_product&post=" . absint( $_GET['post'] ) ), 'woocommerce-duplicate-product_' . $_GET['post'] );
 			?>
-			<div id="duplicate-action"><a class="submitduplicate duplication" href="<?php echo esc_url( $notifyUrl ); ?>"><?php _e( 'Copy to a new draft', 'woocommerce' ); ?></a></div>
+			<div id="duplicate-action"><a class="submitduplicate duplication" href="<?php echo esc_url( $notify_url ); ?>"><?php _e( 'Copy to a new draft', 'woocommerce' ); ?></a></div>
 			<?php
 		}
 	}
@@ -180,7 +179,7 @@ class WC_Admin_Duplicate_Product {
 	}
 
 	/**
-	 * Get a product from the database to duplicate
+	 * Get a product from the database to duplicate.
 	 *
 	 * @param mixed $id
 	 * @return WP_Post|bool
@@ -207,7 +206,7 @@ class WC_Admin_Duplicate_Product {
 	}
 
 	/**
-	 * Copy the taxonomies of a post to another post
+	 * Copy the taxonomies of a post to another post.
 	 *
 	 * @param mixed $id
 	 * @param mixed $new_id
@@ -228,7 +227,7 @@ class WC_Admin_Duplicate_Product {
 	}
 
 	/**
-	 * Copy the meta information of a post to another post
+	 * Copy the meta information of a post to another post.
 	 *
 	 * @param mixed $id
 	 * @param mixed $new_id
@@ -237,14 +236,14 @@ class WC_Admin_Duplicate_Product {
 		global $wpdb;
 
 		$sql     = $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d", absint( $id ) );
-		$exclude = array_map( 'esc_sql', array_filter( apply_filters( 'woocommerce_duplicate_product_exclude_meta', array( 'total_sales' ) ) ) );
+		$exclude = array_map( 'esc_sql', array_filter( apply_filters( 'woocommerce_duplicate_product_exclude_meta', array( 'total_sales', '_wc_average_rating', '_wc_rating_count', '_wc_review_count', '_sku' ) ) ) );
 
 		if ( sizeof( $exclude ) ) {
 			$sql .= " AND meta_key NOT IN ( '" . implode( "','", $exclude ) . "' )";
 		}
 
 		$post_meta = $wpdb->get_results( $sql );
-		
+
 		if ( sizeof( $post_meta ) ) {
 			$sql_query_sel = array();
 			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";

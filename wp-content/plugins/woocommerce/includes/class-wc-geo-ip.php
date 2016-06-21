@@ -1,6 +1,6 @@
 <?php
 /**
- * Geo IP class.
+ * Geo IP class
  *
  * This class is a fork of GeoIP class from MaxMind LLC.
  *
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WC_Geolocation Class
+ * WC_Geo_IP Class.
  */
 class WC_Geo_IP {
 
@@ -54,20 +54,60 @@ class WC_Geo_IP {
 	const GEOIP_ORG_EDITION_V6           = 23;
 	const GEOIP_DOMAIN_EDITION_V6        = 24;
 
+	/**
+	 * Flags.
+	 *
+	 * @var int
+	 */
 	public $flags;
 
+	/**
+	 * File handler.
+	 *
+	 * @var resource
+	 */
 	public $filehandle;
 
+	/**
+	 * Memory buffer.
+	 *
+	 * @var string
+	 */
 	public $memory_buffer;
 
+	/**
+	 * Database type.
+	 *
+	 * @var int
+	 */
 	public $databaseType;
 
+	/**
+	 * Database segments.
+	 *
+	 * @var int
+	 */
 	public $databaseSegments;
 
+	/**
+	 * Record length.
+	 *
+	 * @var int
+	 */
 	public $record_length;
 
+	/**
+	 * Shmid.
+	 *
+	 * @var string
+	 */
 	public $shmid;
 
+	/**
+	 * Two letters country codes.
+	 *
+	 * @var array
+	 */
 	public $GEOIP_COUNTRY_CODES = array(
 		'',
 		'AP',
@@ -327,6 +367,11 @@ class WC_Geo_IP {
 		'O1'
 	);
 
+	/**
+	 * 3 letters country codes.
+	 *
+	 * @var array
+	 */
 	public $GEOIP_COUNTRY_CODES3 = array(
 		'',
 		'AP',
@@ -586,6 +631,11 @@ class WC_Geo_IP {
 		'O1'
 	);
 
+	/**
+	 * Contry names.
+	 *
+	 * @var array
+	 */
 	public $GEOIP_COUNTRY_NAMES = array(
 		'',
 		'Asia/Pacific Region',
@@ -845,6 +895,11 @@ class WC_Geo_IP {
 		'Other'
 	);
 
+	/**
+	 * 2 letters continent codes.
+	 *
+	 * @var array
+	 */
 	public $GEOIP_CONTINENT_CODES = array(
 		'--',
 		'AS',
@@ -1124,15 +1179,15 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Open geoip file
+	 * Open geoip file.
 	 *
 	 * @param string $filename
-	 * @param int $flags
+	 * @param int    $flags
 	 */
 	public function geoip_open( $filename, $flags ) {
 		$this->flags = $flags;
 		if ( $this->flags & self::GEOIP_SHARED_MEMORY ) {
-			$this->shmid = @shmop_open( self::GEOIP_SHM_KEY, "a", 0, 0 );
+			$this->shmid = @shmop_open( self::GEOIP_SHM_KEY, 'a', 0, 0 );
 		} else {
 			if ( $this->filehandle = fopen( $filename, 'rb' ) ) {
 				if ( $this->flags & self::GEOIP_MEMORY_CACHE ) {
@@ -1148,7 +1203,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Setup segments
+	 * Setup segments.
 	 *
 	 * @return WC_Geo_IP instance
 	 */
@@ -1303,7 +1358,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Close geoip file
+	 * Close geoip file.
 	 *
 	 * @return bool
 	 */
@@ -1316,7 +1371,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Common get record
+	 * Common get record.
 	 *
 	 * @param  string $seek_country
 	 * @return WC_Geo_IP_Record instance
@@ -1431,7 +1486,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Get record
+	 * Get record.
 	 *
 	 * @param  int $ipnum
 	 * @return WC_Geo_IP_Record instance
@@ -1446,12 +1501,12 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Seek country IPv6
+	 * Seek country IPv6.
 	 *
-	 * @param  int $ipnum [description]
-	 * @return bool|int
+	 * @param  int $ipnum
+	 * @return string
 	 */
-	function _geoip_seek_country_v6( $ipnum ) {
+	public function _geoip_seek_country_v6( $ipnum ) {
 		// arrays from unpack start with offset 1
 		// yet another php mystery. array_merge work around
 		// this broken behaviour
@@ -1507,10 +1562,10 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Seek country
+	 * Seek country.
 	 *
 	 * @param  int $ipnum
-	 * @return bool|int
+	 * @return string
 	 */
 	private function _geoip_seek_country( $ipnum ) {
 		$offset = 0;
@@ -1562,7 +1617,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Record by addr
+	 * Record by addr.
 	 *
 	 * @param  string $addr
 	 * @return int
@@ -1577,7 +1632,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Country ID by addr IPv6
+	 * Country ID by addr IPv6.
 	 *
 	 * @param  string $addr
 	 * @return int
@@ -1588,7 +1643,7 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Country ID by addr
+	 * Country ID by addr.
 	 *
 	 * @param  string $addr
 	 * @return int
@@ -1599,14 +1654,14 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Country code by addr IPv6
+	 * Country code by addr IPv6.
 	 *
 	 * @param  string $addr
-	 * @return bool|int
+	 * @return string
 	 */
 	public function geoip_country_code_by_addr_v6( $addr ) {
 		$country_id = $this->geoip_country_id_by_addr_v6( $addr );
-		if ( $country_id !== false && isset( $this->GEOIP_COUNTRY_CODES[ $country_id ]  ) ) {
+		if ( $country_id !== false && isset( $this->GEOIP_COUNTRY_CODES[ $country_id ] ) ) {
 			return $this->GEOIP_COUNTRY_CODES[ $country_id ];
 		}
 
@@ -1614,14 +1669,14 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Country code by addr
+	 * Country code by addr.
 	 *
 	 * @param  string $addr
-	 * @return bool|int
+	 * @return string
 	 */
 	public function geoip_country_code_by_addr( $addr ) {
 		if ( $this->databaseType == self::GEOIP_CITY_EDITION_REV1 ) {
-			$record = $this->geoip_record_by_addr( $addr);
+			$record = $this->geoip_record_by_addr( $addr );
 			if ( $record !== false ) {
 				return $record->country_code;
 			}
@@ -1636,12 +1691,11 @@ class WC_Geo_IP {
 	}
 
 	/**
-	 * Encode string
+	 * Encode string.
 	 *
 	 * @param  string $string
-	 * @param  int $start
-	 * @param  int $length
-	 *
+	 * @param  int    $start
+	 * @param  int    $length
 	 * @return string
 	 */
 	private function _safe_substr( $string, $start, $length ) {
@@ -1665,19 +1719,94 @@ class WC_Geo_IP {
 }
 
 /**
- * Geo IP Record class
+ * Geo IP Record class.
  */
 class WC_Geo_IP_Record {
+
+	/**
+	 * Country code.
+	 *
+	 * @var string
+	 */
 	public $country_code;
+
+	/**
+	 * 3 letters country code.
+	 *
+	 * @var string
+	 */
 	public $country_code3;
+
+	/**
+	 * Country name.
+	 *
+	 * @var string
+	 */
 	public $country_name;
+
+	/**
+	 * Region.
+	 *
+	 * @var string
+	 */
 	public $region;
+
+	/**
+	 * City.
+	 *
+	 * @var string
+	 */
 	public $city;
+
+	/**
+	 * Postal code.
+	 *
+	 * @var string
+	 */
 	public $postal_code;
+
+	/**
+	 * Latitude
+	 *
+	 * @var int
+	 */
 	public $latitude;
+
+	/**
+	 * Longitude.
+	 *
+	 * @var int
+	 */
 	public $longitude;
+
+	/**
+	 * Area code.
+	 *
+	 * @var int
+	 */
 	public $area_code;
-	public $dma_code; // metro and dma code are the same. use metro_code
+
+	/**
+	 * DMA Code.
+	 *
+	 * Metro and DMA code are the same.
+	 * Use metro code instead.
+	 *
+	 * @var float
+	 */
+	public $dma_code;
+
+	/**
+	 * Metro code.
+	 *
+	 * @var float
+	 */
 	public $metro_code;
+
+	/**
+	 * Continent code.
+	 *
+	 * @var string
+	 */
 	public $continent_code;
 }

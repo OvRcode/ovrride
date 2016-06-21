@@ -3,12 +3,12 @@ Contributors: ahortin
 Donate link: http://quarktheme.com
 Tags: black, gray, dark, light, one-column, two-columns, right-sidebar, fluid-layout, responsive-layout, custom-background, custom-header, custom-menu, editor-style, featured-image-header, featured-images, full-width-template, microformats, post-formats, sticky-post, theme-options, threaded-comments, translation-ready
 Requires at least: 3.6
-Tested up to: 4.3.1
-Stable tag: 1.3.2
+Tested up to: 4.5.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Quark is your basic building block for creating beautiful, responsive custom themes. It's not a convoluted or confusing framework that's hard to learn or even harder to modify. It's a simple and elegant starter theme built on HTML5 & CSS3. Its base is a responsive, 12 column grid. It incorporates custom theme options that are easy to modify, a set of common templates, support for WordPress Post Formats and the gorgeous, retina friendly Font Awesome icon font. Quark is WooCommerce compatible, Multilingual Ready (WPML) and translated into Spanish, German and French. Quark is also compatable with popular page builders such as Visual Composer, Beaver Builder, Divi Builder and the SiteOrigin Page Builder.
+Quark is your basic building block for creating beautiful, responsive custom themes. It's not a convoluted or confusing framework that's hard to learn or even harder to modify. It's a simple and elegant starter theme built on HTML5 & CSS3. Its base is a responsive, 12 column grid. It incorporates custom theme options that are easy to modify, a set of common templates, support for WordPress Post Formats and the gorgeous, retina friendly Font Awesome icon font. Quark is WooCommerce compatible, Multilingual Ready (WPML) and translated into Spanish, German and French. Quark is also compatible with popular page builders such as Visual Composer, Beaver Builder, Divi Builder and the SiteOrigin Page Builder.
 
 
 == Description ==
@@ -29,7 +29,7 @@ Templates
 
 Quark includes a set of your most common theme templates, including templates for Full-Width pages, Left Sidebar, Right Sidebar (default), Front-Page, Tag, Categories, Authors, Search, Posts Archive and 404.
 
-If you're using one of the many page builder plugins that are available, such as Visual Composer, Beaver Builder, Divi Builder or the SiteOrigin Page Builder, try using the Page Builder Full-Width Template or the Page Builder Boxed Template. The Page Builder Full-Width Template is a true full browser width template while the Page Builder Boxed Template contains your content in a boxed layout. Depending which Page Builder plugin that you're using, you may find that one template provides a better layout than the other.
+If you're using one of the many page builder plugins that are available, such as Visual Composer, Beaver Builder, Divi Builder or the SiteOrigin Page Builder, try using the Page Builder Full-Width Template or the Page Builder Boxed Template. The Page Builder Full-Width Template is a true full browser width template while the Page Builder Boxed Template contains your content in a boxed layout. If you want a completely blank full-width page with no header or footer sections, such as for a landing page, then there is also a Page Builder Blank Template. Depending which Page Builder plugin that you're using, you may find that one template provides a better layout than the other.
 
 Post Formats
 
@@ -121,7 +121,7 @@ Install by uploading the theme zip file:
 
 == Getting Started ==
 
-Since Quark is a starter theme to kick off your own awesome theme, the first thing you want to do is copy the quark theme folder 
+Since Quark is a starter theme to kick off your own awesome theme, the first thing you want to do is copy the quark theme folder
 and change the name to something else. You'll then need to do a three-step find and replace on the name in all the templates.
 
 1. Search for quark inside single quotations to capture the text domain.
@@ -163,6 +163,18 @@ Quark utilises the following awesomeness:
 
 
 == Changelog ==
+
+= 1.3.3 =
+- Fixed missing ratings when leaving a review via the WooCommerce product review tab
+- Added new blank page builder template
+- Added new social icon options for CodePen, Reddit, Twitch, Slack, Snapchat, Stack Overflow, Vimeo, Vine
+- Added aria-hidden to icons to hide from screen readers
+- Removed word-break from widgets. Props to Aaron Payne (@awdience) for pointing out an issue it was causing in stoopid IE
+- Removed gradients from buttons. Gradients are sooo last year!
+- Updated Font Awesome icon font to v4.6.3
+- Updated Normalize to v4.1.1
+- Updated Modernizr to v3.1.1
+- Updated Post archive page to display excerpt if one has been added
 
 = 1.3.2 =
 - Fixed display of Related Products on Single Product page
@@ -221,7 +233,7 @@ Quark utilises the following awesomeness:
 = 1.2.6 =
 - Updated normalize.css to v2.1.3
 - Updated Font Awesome icon font to v4.0.0 (incl. renaming font classes as per their new naming convention)
-- Removed Font Awesome More font as it's now outdated and no longer needed 
+- Removed Font Awesome More font as it's now outdated and no longer needed
 - Removed minimum-scale & maximum-scale from viewport meta tag
 - Fixed extra period in blockquote style. Props @angeliquejw
 - Fixed 'Skip to main content' accessibility link
@@ -267,7 +279,7 @@ Quark utilises the following awesomeness:
 = 1.2.1 =
 - Fixed sidebars
 - Updated description in stylesheet
-- Updated IE filters in btn class 
+- Updated IE filters in btn class
 - Added extra class when styling frontpage widgets
 
 = 1.2 =
