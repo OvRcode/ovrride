@@ -43,32 +43,41 @@ class WC_Product {
 	public $id = 0;
 
 	/**
-	 * $post Stores post data
+	 * $post Stores post data.
 	 *
 	 * @var $post WP_Post
 	 */
 	public $post = null;
 
 	/**
-	 * The product's type (simple, variable etc)
+	 * The product's type (simple, variable etc).
 	 *
 	 * @var string
 	 */
 	public $product_type = null;
 
 	/**
-	 * Prouduct shipping class
+	 * Product shipping class.
 	 *
 	 * @var string
 	 */
 	protected $shipping_class    = '';
 
 	/**
-	 * ID of the shipping class this product has
+	 * ID of the shipping class this product has.
 	 *
 	 * @var int
 	 */
 	protected $shipping_class_id = 0;
+
+	/** @public string The product's total stock, including that of its children. */
+	public $total_stock;
+
+	/**
+	 * Supported features such as 'ajax_add_to_cart'.
+	 * @var array
+	 */
+	protected $supports = array();
 
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded product.
@@ -128,7 +137,7 @@ class WC_Product {
 
 		}
 
-		if ( ! empty( $value ) ) {
+		if ( false !== $value ) {
 			$this->$key = $value;
 		}
 
@@ -145,16 +154,40 @@ class WC_Product {
 	}
 
 	/**
-	 * get_gallery_attachment_ids function.
+	 * Check if a product supports a given feature.
+	 *
+	 * Product classes should override this to declare support (or lack of support) for a feature.
+	 *
+	 * @param string $feature string The name of a feature to test support for.
+	 * @return bool True if the product supports the feature, false otherwise.
+	 * @since 2.5.0
+	 */
+	public function supports( $feature ) {
+		return apply_filters( 'woocommerce_product_supports', in_array( $feature, $this->supports ) ? true : false, $feature, $this );
+	}
+
+	/**
+	 * Return the product ID
+	 *
+	 * @since 2.5.0
+	 * @return int product (post) ID
+	 */
+	public function get_id() {
+
+		return $this->id;
+	}
+
+	/**
+	 * Returns the gallery attachment ids.
 	 *
 	 * @return array
 	 */
 	public function get_gallery_attachment_ids() {
-		return apply_filters( 'woocommerce_product_gallery_attachment_ids', array_filter( (array) explode( ',', $this->product_image_gallery ) ), $this );
+		return apply_filters( 'woocommerce_product_gallery_attachment_ids', array_filter( array_filter( (array) explode( ',', $this->product_image_gallery ) ), 'wp_attachment_is_image' ), $this );
 	}
 
 	/**
-	 * Wrapper for get_permalink
+	 * Wrapper for get_permalink.
 	 *
 	 * @return string
 	 */
@@ -177,20 +210,36 @@ class WC_Product {
 	 * @return int
 	 */
 	public function get_stock_quantity() {
-		return $this->managing_stock() ? wc_stock_amount( $this->stock ) : '';
+		return apply_filters( 'woocommerce_get_stock_quantity', $this->managing_stock() ? wc_stock_amount( $this->stock ) : null, $this );
 	}
 
 	/**
 	 * Get total stock.
 	 *
+	 * This is the stock of parent and children combined.
+	 *
 	 * @return int
 	 */
 	public function get_total_stock() {
-		return $this->get_stock_quantity();
+		if ( empty( $this->total_stock ) ) {
+			if ( sizeof( $this->get_children() ) > 0 ) {
+				$this->total_stock = max( 0, $this->get_stock_quantity() );
+
+				foreach ( $this->get_children() as $child_id ) {
+					if ( 'yes' === get_post_meta( $child_id, '_manage_stock', true ) ) {
+						$stock = get_post_meta( $child_id, '_stock', true );
+						$this->total_stock += max( 0, wc_stock_amount( $stock ) );
+					}
+				}
+			} else {
+				$this->total_stock = $this->get_stock_quantity();
+			}
+		}
+		return wc_stock_amount( $this->total_stock );
 	}
 
 	/**
-	 * Check if the stock status needs changing
+	 * Check if the stock status needs changing.
 	 */
 	public function check_stock_status() {
 		if ( ! $this->backorders_allowed() && $this->get_total_stock() <= get_option( 'woocommerce_notify_no_stock_amount' ) ) {
@@ -272,7 +321,7 @@ class WC_Product {
 	}
 
 	/**
-	 * set_stock_status function.
+	 * Set stock status of the product.
 	 *
 	 * @param string $status
 	 */
@@ -315,7 +364,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Checks if a product is downloadable
+	 * Checks if a product is downloadable.
 	 *
 	 * @return bool
 	 */
@@ -371,7 +420,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Get a file by $download_id
+	 * Get a file by $download_id.
 	 *
 	 * @param string $download_id file identifier
 	 * @return array|false if not found
@@ -393,7 +442,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Get file download path identified by $download_id
+	 * Get file download path identified by $download_id.
 	 *
 	 * @param string $download_id file identifier
 	 * @return string
@@ -417,7 +466,7 @@ class WC_Product {
 	 * @return bool
 	 */
 	public function is_virtual() {
-		return $this->virtual == 'yes' ? true : false;
+		return apply_filters( 'woocommerce_is_virtual', $this->virtual == 'yes' ? true : false, $this );
 	}
 
 	/**
@@ -430,7 +479,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Check if a product is sold individually (no quantities)
+	 * Check if a product is sold individually (no quantities).
 	 *
 	 * @return bool
 	 */
@@ -446,17 +495,17 @@ class WC_Product {
 	}
 
 	/**
-	 * get_child function.
+	 * Returns the child product.
 	 *
 	 * @param mixed $child_id
-	 * @return WC_Product WC_Product or WC_Product_variation
+	 * @return WC_Product|WC_Product|WC_Product_variation
 	 */
 	public function get_child( $child_id ) {
 		return wc_get_product( $child_id );
 	}
 
 	/**
-	 * get_children function.
+	 * Returns the children.
 	 *
 	 * @return array
 	 */
@@ -529,7 +578,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Get the add to cart button text for the single page
+	 * Get the add to cart button text for the single page.
 	 *
 	 * @return string
 	 */
@@ -538,7 +587,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Get the add to cart button text
+	 * Get the add to cart button text.
 	 *
 	 * @return string
 	 */
@@ -561,13 +610,20 @@ class WC_Product {
 	 * @return bool
 	 */
 	public function is_in_stock() {
-		if ( $this->managing_stock() && $this->backorders_allowed() ) {
-			return true;
-		} elseif ( $this->managing_stock() && $this->get_total_stock() <= get_option( 'woocommerce_notify_no_stock_amount' ) ) {
-			return false;
-		} else {
-			return $this->stock_status === 'instock';
+		$status = $this->stock_status === 'instock';
+
+		/**
+		 * Sanity check to ensure stock qty is not lower than 0 but still listed
+		 * instock.
+		 *
+		 * Check is not required for products on backorder since they can be
+		 * instock regardless of actual stock quantity.
+		 */
+		if ( $this->managing_stock() && ! $this->backorders_allowed() && $this->get_total_stock() <= get_option( 'woocommerce_notify_no_stock_amount' ) ) {
+			$status = false;
 		}
+
+		return apply_filters( 'woocommerce_product_is_in_stock', $status );
 	}
 
 	/**
@@ -589,7 +645,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Check if a product is on backorder
+	 * Check if a product is on backorder.
 	 *
 	 * @param int $qty_in_cart (default: 0)
 	 * @return bool
@@ -614,61 +670,44 @@ class WC_Product {
 	 * @return string
 	 */
 	public function get_availability() {
-		$availability = $class = '';
+		// Default to in-stock
+		$availability = __( 'In stock', 'woocommerce' );
+		$class        = 'in-stock';
 
-		if ( $this->managing_stock() ) {
-
-			if ( $this->is_in_stock() && $this->get_total_stock() > get_option( 'woocommerce_notify_no_stock_amount' ) ) {
-
-				switch ( get_option( 'woocommerce_stock_format' ) ) {
-
-					case 'no_amount' :
-						$availability = __( 'In stock', 'woocommerce' );
-					break;
-
-					case 'low_amount' :
-						if ( $this->get_total_stock() <= get_option( 'woocommerce_notify_low_stock_amount' ) ) {
-							$availability = sprintf( __( 'Only %s left in stock', 'woocommerce' ), $this->get_total_stock() );
-
-							if ( $this->backorders_allowed() && $this->backorders_require_notification() ) {
-								$availability .= ' ' . __( '(can be backordered)', 'woocommerce' );
-							}
-						} else {
-							$availability = __( 'In stock', 'woocommerce' );
-						}
-					break;
-
-					default :
-						$availability = sprintf( __( '%s in stock', 'woocommerce' ), $this->get_total_stock() );
-
-						if ( $this->backorders_allowed() && $this->backorders_require_notification() ) {
-							$availability .= ' ' . __( '(can be backordered)', 'woocommerce' );
-						}
-					break;
-				}
-
-				$class        = 'in-stock';
-
-			} elseif ( $this->backorders_allowed() && $this->backorders_require_notification() ) {
-
-				$availability = __( 'Available on backorder', 'woocommerce' );
-				$class        = 'available-on-backorder';
-
-			} elseif ( $this->backorders_allowed() ) {
-
-				$availability = __( 'In stock', 'woocommerce' );
-				$class        = 'in-stock';
-
-			} else {
-
-				$availability = __( 'Out of stock', 'woocommerce' );
-				$class        = 'out-of-stock';
-			}
-
-		} elseif ( ! $this->is_in_stock() ) {
-
+		// If out of stock, this takes priority over all other settings.
+		if ( ! $this->is_in_stock() ) {
 			$availability = __( 'Out of stock', 'woocommerce' );
 			$class        = 'out-of-stock';
+
+		// Any further we can assume status is set to in stock.
+		} elseif ( $this->managing_stock() && $this->is_on_backorder( 1 ) ) {
+			$availability = __( 'Available on backorder', 'woocommerce' );
+			$class        = 'available-on-backorder';
+
+		} elseif ( $this->managing_stock() ) {
+			switch ( get_option( 'woocommerce_stock_format' ) ) {
+				case 'no_amount' :
+					$availability = __( 'In stock', 'woocommerce' );
+				break;
+				case 'low_amount' :
+					if ( $this->get_total_stock() <= get_option( 'woocommerce_notify_low_stock_amount' ) ) {
+						$availability = sprintf( __( 'Only %s left in stock', 'woocommerce' ), $this->get_total_stock() );
+
+						if ( $this->backorders_allowed() && $this->backorders_require_notification() ) {
+							$availability .= ' ' . __( '(also available on backorder)', 'woocommerce' );
+						}
+					} else {
+						$availability = __( 'In stock', 'woocommerce' );
+					}
+				break;
+				default :
+					$availability = sprintf( __( '%s in stock', 'woocommerce' ), $this->get_total_stock() );
+
+					if ( $this->backorders_allowed() && $this->backorders_require_notification() ) {
+						$availability .= ' ' . __( '(also available on backorder)', 'woocommerce' );
+					}
+				break;
+			}
 		}
 
 		return apply_filters( 'woocommerce_get_availability', array( 'availability' => $availability, 'class' => $class ), $this );
@@ -798,6 +837,7 @@ class WC_Product {
 	/**
 	 * Returns the price (including tax). Uses customer tax rates. Can work for a specific $qty for more accurate taxes.
 	 *
+	 * @param  int $qty
 	 * @param  string $price to calculate, left blank to just use get_price()
 	 * @return string
 	 */
@@ -857,6 +897,7 @@ class WC_Product {
 	 * Returns the price (excluding tax) - ignores tax_class filters since the price may *include* tax and thus needs subtracting.
 	 * Uses store base tax rates. Can work for a specific $qty for more accurate taxes.
 	 *
+	 * @param  int $qty
 	 * @param  string $price to calculate, left blank to just use get_price()
 	 * @return string
 	 */
@@ -897,7 +938,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Get the suffix to display after prices > 0
+	 * Get the suffix to display after prices > 0.
 	 *
 	 * @param  string  $price to calculate, left blank to just use get_price()
 	 * @param  integer $qty   passed on to get_price_including_tax() or get_price_excluding_tax()
@@ -1025,77 +1066,90 @@ class WC_Product {
 	}
 
 	/**
-	 * Get the average rating of product.
-	 *
+	 * Get the average rating of product. This is calculated once and stored in postmeta.
 	 * @return string
 	 */
 	public function get_average_rating() {
-		$transient_name = 'wc_average_rating_' . $this->id . WC_Cache_Helper::get_transient_version( 'product' );
-
-		if ( false === ( $average_rating = get_transient( $transient_name ) ) ) {
-
-			global $wpdb;
-
-			$average_rating = '';
-			$count          = $this->get_rating_count();
-
-			if ( $count > 0 ) {
-
-				$ratings = $wpdb->get_var( $wpdb->prepare("
-					SELECT SUM(meta_value) FROM $wpdb->commentmeta
-					LEFT JOIN $wpdb->comments ON $wpdb->commentmeta.comment_id = $wpdb->comments.comment_ID
-					WHERE meta_key = 'rating'
-					AND comment_post_ID = %d
-					AND comment_approved = '1'
-					AND meta_value > 0
-				", $this->id ) );
-
-				$average_rating = number_format( $ratings / $count, 2, '.', '' );
-			} else {
-				$average_rating = 0;
-			}
-
-			set_transient( $transient_name, $average_rating, DAY_IN_SECONDS * 30 );
+		// No meta data? Do the calculation
+		if ( ! metadata_exists( 'post', $this->id, '_wc_average_rating' ) ) {
+			$this->sync_average_rating( $this->id );
 		}
 
-		return (string) floatval( $average_rating );
+		return (string) floatval( get_post_meta( $this->id, '_wc_average_rating', true ) );
 	}
 
 	/**
 	 * Get the total amount (COUNT) of ratings.
-	 *
-	 * @param  int $value Optional. Rating value to get the count for. By default
-	 *                              returns the count of all rating values.
+	 * @param  int $value Optional. Rating value to get the count for. By default returns the count of all rating values.
 	 * @return int
 	 */
 	public function get_rating_count( $value = null ) {
-		$transient_name = 'wc_rating_count_' . $this->id . WC_Cache_Helper::get_transient_version( 'product' );
-
-		if ( ! is_array( $counts = get_transient( $transient_name ) ) ) {
-			global $wpdb;
-			$counts     = array();
-			$raw_counts = $wpdb->get_results( $wpdb->prepare("
-				SELECT meta_value, COUNT( * ) as meta_value_count FROM $wpdb->commentmeta
-				LEFT JOIN $wpdb->comments ON $wpdb->commentmeta.comment_id = $wpdb->comments.comment_ID
-				WHERE meta_key = 'rating'
-				AND comment_post_ID = %d
-				AND comment_approved = '1'
-				AND meta_value > 0
-				GROUP BY meta_value
-			", $this->id ) );
-
-			foreach ( $raw_counts as $count ) {
-				$counts[ $count->meta_value ] = $count->meta_value_count;
-			}
-
-			set_transient( $transient_name, $counts, DAY_IN_SECONDS * 30 );
+		// No meta data? Do the calculation
+		if ( ! metadata_exists( 'post', $this->id, '_wc_rating_count' ) ) {
+			$this->sync_rating_count( $this->id );
 		}
+
+		$counts = get_post_meta( $this->id, '_wc_rating_count', true );
 
 		if ( is_null( $value ) ) {
 			return array_sum( $counts );
 		} else {
 			return isset( $counts[ $value ] ) ? $counts[ $value ] : 0;
 		}
+	}
+
+	/**
+	 * Sync product rating. Can be called statically.
+	 * @param  int $post_id
+	 */
+	public static function sync_average_rating( $post_id ) {
+		if ( ! metadata_exists( 'post', $post_id, '_wc_rating_count' ) ) {
+			self::sync_rating_count( $post_id );
+		}
+
+		$count = array_sum( (array) get_post_meta( $post_id, '_wc_rating_count', true ) );
+
+		if ( $count ) {
+			global $wpdb;
+
+			$ratings = $wpdb->get_var( $wpdb->prepare("
+				SELECT SUM(meta_value) FROM $wpdb->commentmeta
+				LEFT JOIN $wpdb->comments ON $wpdb->commentmeta.comment_id = $wpdb->comments.comment_ID
+				WHERE meta_key = 'rating'
+				AND comment_post_ID = %d
+				AND comment_approved = '1'
+				AND meta_value > 0
+			", $post_id ) );
+			$average = number_format( $ratings / $count, 2, '.', '' );
+		} else {
+			$average = 0;
+		}
+		update_post_meta( $post_id, '_wc_average_rating', $average );
+	}
+
+	/**
+	 * Sync product rating count. Can be called statically.
+	 * @param  int $post_id
+	 */
+	public static function sync_rating_count( $post_id ) {
+		global $wpdb;
+
+		$counts     = array();
+		$raw_counts = $wpdb->get_results( $wpdb->prepare("
+			SELECT meta_value, COUNT( * ) as meta_value_count FROM $wpdb->commentmeta
+			LEFT JOIN $wpdb->comments ON $wpdb->commentmeta.comment_id = $wpdb->comments.comment_ID
+			WHERE meta_key = 'rating'
+			AND comment_post_ID = %d
+			AND comment_approved = '1'
+			AND meta_value > 0
+			GROUP BY meta_value
+		", $post_id ) );
+
+		foreach ( $raw_counts as $count ) {
+			$counts[ $count->meta_value ] = $count->meta_value_count;
+		}
+
+		update_post_meta( $post_id, '_wc_rating_count', $counts );
 	}
 
 	/**
@@ -1124,7 +1178,6 @@ class WC_Product {
 		return apply_filters( 'woocommerce_product_get_rating_html', $rating_html, $rating );
 	}
 
-
 	/**
 	 * Get the total amount (COUNT) of reviews.
 	 *
@@ -1132,13 +1185,10 @@ class WC_Product {
 	 * @return int The total numver of product reviews
 	 */
 	public function get_review_count() {
+		global $wpdb;
 
-		$transient_name = 'wc_review_count_' . $this->id . WC_Cache_Helper::get_transient_version( 'product' );
-
-		if ( false === ( $count = get_transient( $transient_name ) ) ) {
-
-			global $wpdb;
-
+		// No meta date? Do the calculation
+		if ( ! metadata_exists( 'post', $this->id, '_wc_review_count' ) ) {
 			$count = $wpdb->get_var( $wpdb->prepare("
 				SELECT COUNT(*) FROM $wpdb->comments
 				WHERE comment_parent = 0
@@ -1146,12 +1196,13 @@ class WC_Product {
 				AND comment_approved = '1'
 			", $this->id ) );
 
-			set_transient( $transient_name, $count, DAY_IN_SECONDS * 30 );
+			update_post_meta( $this->id, '_wc_review_count', $count );
+		} else {
+			$count = get_post_meta( $this->id, '_wc_review_count', true );
 		}
 
 		return apply_filters( 'woocommerce_product_review_count', $count, $this );
 	}
-
 
 	/**
 	 * Returns the upsell product ids.
@@ -1241,39 +1292,52 @@ class WC_Product {
 	/**
 	 * Get and return related products.
 	 *
-	 * @param int $limit (default: 5)
+	 * Notes:
+	 * 	- Results are cached in a transient for faster queries.
+	 *  - To make results appear random, we query and extra 10 products and shuffle them.
+	 *  - To ensure we always have enough results, it will check $limit before returning the cached result, if not recalc.
+	 *  - This used to rely on transient version to invalidate cache, but to avoid multiple transients we now just expire daily.
+	 *  	This means if a related product is edited and no longer related, it won't be removed for 24 hours. Acceptable trade-off for performance.
+	 *  - Saving a product will flush caches for that product.
+	 *
+	 * @param int $limit (default: 5) Should be an integer greater than 0.
 	 * @return array Array of post IDs
 	 */
 	public function get_related( $limit = 5 ) {
-		$transient_name = 'wc_related_' . $limit . '_' . $this->id . WC_Cache_Helper::get_transient_version( 'product' );
+		global $wpdb;
 
-		if ( false === ( $related_posts = get_transient( $transient_name ) ) ) {
-			global $wpdb;
+		$transient_name = 'wc_related_' . $this->id;
+		$related_posts  = get_transient( $transient_name );
+		$limit          = $limit > 0 ? $limit : 5;
 
+		// We want to query related posts if they are not cached, or we don't have enough
+		if ( false === $related_posts || sizeof( $related_posts ) < $limit ) {
 			// Related products are found from category and tag
 			$tags_array = $this->get_related_terms( 'product_tag' );
 			$cats_array = $this->get_related_terms( 'product_cat' );
 
 			// Don't bother if none are set
-			if ( sizeof( $cats_array ) == 1 && sizeof( $tags_array ) == 1 ) {
+			if ( 1 === sizeof( $cats_array ) && 1 === sizeof( $tags_array )) {
 				$related_posts = array();
 			} else {
 				// Sanitize
 				$exclude_ids = array_map( 'absint', array_merge( array( 0, $this->id ), $this->get_upsells() ) );
 
-				// Generate query
-				$query = $this->build_related_query( $cats_array, $tags_array, $exclude_ids, $limit );
+				// Generate query - but query an extra 10 results to give the appearance of random results
+				$query = $this->build_related_query( $cats_array, $tags_array, $exclude_ids, $limit + 10 );
 
 				// Get the posts
 				$related_posts = $wpdb->get_col( implode( ' ', $query ) );
 			}
 
-			set_transient( $transient_name, $related_posts, DAY_IN_SECONDS * 30 );
+			set_transient( $transient_name, $related_posts, DAY_IN_SECONDS );
 		}
 
+		// Randomise the results
 		shuffle( $related_posts );
 
-		return $related_posts;
+		// Limit the returned results
+		return array_slice( $related_posts, 0, $limit );
 	}
 
 	/**
@@ -1292,7 +1356,7 @@ class WC_Product {
 
 			$attribute = isset( $attributes[ $attr ] ) ? $attributes[ $attr ] : $attributes[ 'pa_' . $attr ];
 
-			if ( $attribute['is_taxonomy'] ) {
+			if ( isset( $attribute['is_taxonomy'] ) && $attribute['is_taxonomy'] ) {
 
 				return implode( ', ', wc_get_product_terms( $this->id, $attribute['name'], array( 'fields' => 'names' ) ) );
 
@@ -1312,7 +1376,19 @@ class WC_Product {
 	 * @return array
 	 */
 	public function get_attributes() {
-		return apply_filters( 'woocommerce_get_product_attributes', (array) maybe_unserialize( $this->product_attributes ) );
+		$attributes = array_filter( (array) maybe_unserialize( $this->product_attributes ) );
+		$taxonomies = wp_list_pluck( wc_get_attribute_taxonomies(), 'attribute_name' );
+
+		// Check for any attributes which have been removed globally
+		foreach ( $attributes as $key => $attribute ) {
+			if ( $attribute['is_taxonomy'] ) {
+				if ( ! in_array( substr( $attribute['name'], 3 ), $taxonomies ) ) {
+					unset( $attributes[ $key ] );
+				}
+			}
+		}
+
+		return apply_filters( 'woocommerce_get_product_attributes', $attributes );
 	}
 
 	/**
@@ -1401,9 +1477,9 @@ class WC_Product {
 	 */
 	public function get_dimensions() {
 		$dimensions = implode( ' x ', array_filter( array(
-			$this->get_length(),
-			$this->get_width(),
-			$this->get_height(),
+			wc_format_localized_decimal( $this->get_length() ),
+			wc_format_localized_decimal( $this->get_width() ),
+			wc_format_localized_decimal( $this->get_height() ),
 		) ) );
 
 		if ( ! empty( $dimensions ) ) {
@@ -1441,18 +1517,22 @@ class WC_Product {
 	}
 
 	/**
-	 * Returns the main product image
+	 * Returns the main product image.
 	 *
 	 * @param string $size (default: 'shop_thumbnail')
+	 * @param array $attr
+	 * @param bool True to return $placeholder if no image is found, or false to return an empty string.
 	 * @return string
 	 */
-	public function get_image( $size = 'shop_thumbnail', $attr = array() ) {
+	public function get_image( $size = 'shop_thumbnail', $attr = array(), $placeholder = true ) {
 		if ( has_post_thumbnail( $this->id ) ) {
 			$image = get_the_post_thumbnail( $this->id, $size, $attr );
 		} elseif ( ( $parent_id = wp_get_post_parent_id( $this->id ) ) && has_post_thumbnail( $parent_id ) ) {
 			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
-		} else {
+		} elseif ( $placeholder ) {
 			$image = wc_placeholder_img( $size );
+		} else {
+			$image = '';
 		}
 
 		return $image;
@@ -1464,18 +1544,17 @@ class WC_Product {
 	 * @return string Formatted product name
 	 */
 	public function get_formatted_name() {
-
 		if ( $this->get_sku() ) {
 			$identifier = $this->get_sku();
 		} else {
 			$identifier = '#' . $this->id;
 		}
 
-		return sprintf( __( '%s &ndash; %s', 'woocommerce' ), $identifier, $this->get_title() );
+		return sprintf( '%s &ndash; %s', $identifier, $this->get_title() );
 	}
 
 	/**
-	 * Retrieves related product terms
+	 * Retrieves related product terms.
 	 *
 	 * @param string $term
 	 * @return array
@@ -1492,7 +1571,7 @@ class WC_Product {
 	}
 
 	/**
-	 * Builds the related posts query
+	 * Builds the related posts query.
 	 *
 	 * @param array $cats_array
 	 * @param array $tags_array
@@ -1526,17 +1605,24 @@ class WC_Product {
 			$query['where'] .= " AND pm2.meta_value = 'instock'";
 		}
 
-		if ( apply_filters( 'woocommerce_product_related_posts_relate_by_category', true, $this->id ) ) {
-			$query['where'] .= " AND ( tt.taxonomy = 'product_cat' AND t.term_id IN ( " . implode( ',', $cats_array ) . " ) )";
-			$andor = 'OR';
-		} else {
-			$andor = 'AND';
-		}
+		$relate_by_category = apply_filters( 'woocommerce_product_related_posts_relate_by_category', true, $this->id );
+		$relate_by_tag      = apply_filters( 'woocommerce_product_related_posts_relate_by_tag', true, $this->id );
 
-		// when query is OR - need to check against excluded ids again
-		if ( apply_filters( 'woocommerce_product_related_posts_relate_by_tag', true, $this->id ) ) {
-			$query['where'] .= " {$andor} ( ( tt.taxonomy = 'product_tag' AND t.term_id IN ( " . implode( ',', $tags_array ) . " ) )";
-			$query['where'] .= " AND p.ID NOT IN ( " . implode( ',', $exclude_ids ) . " ) )";
+		if ( $relate_by_category || $relate_by_tag ) {
+			$query['where'] .= ' AND (';
+
+			if ( $relate_by_category ) {
+				$query['where'] .= " ( tt.taxonomy = 'product_cat' AND t.term_id IN ( " . implode( ',', $cats_array ) . " ) ) ";
+				if ( $relate_by_tag ) {
+					$query['where'] .= ' OR ';
+				}
+			}
+
+			if ( $relate_by_tag ) {
+				$query['where'] .= " ( tt.taxonomy = 'product_tag' AND t.term_id IN ( " . implode( ',', $tags_array ) . " ) ) ";
+			}
+
+			$query['where'] .= ')';
 		}
 
 		$query['limits'] = " LIMIT {$limit} ";

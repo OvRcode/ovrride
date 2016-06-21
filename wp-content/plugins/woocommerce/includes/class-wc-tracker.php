@@ -19,20 +19,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Tracker {
 
 	/**
-	 * URL to the WooThemes Tracker API endpoint
+	 * URL to the WooThemes Tracker API endpoint.
 	 * @var string
 	 */
 	private static $api_url = 'https://tracking.woocommerce.com/v1/';
 
 	/**
-	 * Hook into cron event
+	 * Hook into cron event.
 	 */
 	public static function init() {
 		add_action( 'woocommerce_tracker_send_event', array( __CLASS__, 'send_tracking_data' ) );
 	}
 
 	/**
-	 * Decide whether to send tracking data or not
+	 * Decide whether to send tracking data or not.
 	 *
 	 * @param boolean $override
 	 */
@@ -60,7 +60,7 @@ class WC_Tracker {
 		update_option( 'woocommerce_tracker_last_send', time() );
 
 		$params   = self::get_tracking_data();
-		$response = wp_safe_remote_post( self::$api_url, array(
+		wp_safe_remote_post( self::$api_url, array(
 				'method'      => 'POST',
 				'timeout'     => 45,
 				'redirection' => 5,
@@ -74,7 +74,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get the last time tracking data was sent
+	 * Get the last time tracking data was sent.
 	 * @return int|bool
 	 */
 	private static function get_last_send_time() {
@@ -82,7 +82,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get all the tracking data
+	 * Get all the tracking data.
 	 * @return array
 	 */
 	private static function get_tracking_data() {
@@ -103,6 +103,13 @@ class WC_Tracker {
 		$all_plugins                = self::get_all_plugins();
 		$data['active_plugins']     = $all_plugins['active_plugins'];
 		$data['inactive_plugins']   = $all_plugins['inactive_plugins'];
+
+		// Jetpack & WooCommerce Connect
+		$data['jetpack_version']    = defined( 'JETPACK__VERSION' ) ? JETPACK__VERSION : 'none';
+		$data['jetpack_connected']  = ( class_exists( 'Jetpack' ) && is_callable( 'Jetpack::is_active' ) && Jetpack::is_active() ) ? 'yes' : 'no';
+		$data['jetpack_is_staging'] = ( class_exists( 'Jetpack' ) && is_callable( 'Jetpack::is_staging_site' ) && Jetpack::is_staging_site() ) ? 'yes' : 'no';
+		$data['connect_installed']  = class_exists( 'WC_Connect_Loader' ) ? 'yes' : 'no';
+		$data['connect_active']     = ( class_exists( 'WC_Connect_Loader' ) && wp_next_scheduled( 'wc_connect_fetch_service_schemas' ) ) ? 'yes' : 'no';
 
 		// Store count info
 		$data['users']              = self::get_user_counts();
@@ -125,7 +132,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get the current theme info, theme name and version
+	 * Get the current theme info, theme name and version.
 	 * @return array
 	 */
 	public static function get_theme_info() {
@@ -154,17 +161,23 @@ class WC_Tracker {
 		$wp_data = array();
 
 		$memory = wc_let_to_num( WP_MEMORY_LIMIT );
+
+		if ( function_exists( 'memory_get_usage' ) ) {
+			$system_memory = wc_let_to_num( @ini_get( 'memory_limit' ) );
+			$memory        = max( $memory, $system_memory );
+		}
+
 		$wp_data['memory_limit'] = size_format( $memory );
-		$wp_data['debug_mode'] = ( defined('WP_DEBUG') && WP_DEBUG ) ? 'Yes' : 'No';
-		$wp_data['locale'] = get_locale();
-		$wp_data['version'] = get_bloginfo( 'version' );
-		$wp_data['multisite'] = is_multisite() ? 'Yes' : 'No';
+		$wp_data['debug_mode']   = ( defined('WP_DEBUG') && WP_DEBUG ) ? 'Yes' : 'No';
+		$wp_data['locale']       = get_locale();
+		$wp_data['version']      = get_bloginfo( 'version' );
+		$wp_data['multisite']    = is_multisite() ? 'Yes' : 'No';
 
 		return $wp_data;
 	}
 
 	/**
-	 * Get server related info
+	 * Get server related info.
 	 * @return array
 	 */
 	private static function get_server_info() {
@@ -198,7 +211,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get all plugins grouped into activated or not
+	 * Get all plugins grouped into activated or not.
 	 * @return array
 	 */
 	private static function get_all_plugins() {
@@ -240,7 +253,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get user totals based on user role
+	 * Get user totals based on user role.
 	 * @return array
 	 */
 	private static function get_user_counts() {
@@ -257,7 +270,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get product totals based on product type
+	 * Get product totals based on product type.
 	 * @return array
 	 */
 	private static function get_product_counts() {
@@ -274,7 +287,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get order counts based on order status
+	 * Get order counts based on order status.
 	 * @return array
 	 */
 	private static function get_order_counts() {
@@ -289,7 +302,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get a list of all active payment gateways
+	 * Get a list of all active payment gateways.
 	 * @return array
 	 */
 	private static function get_active_payment_gateways() {
@@ -305,7 +318,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get a list of all active shipping methods
+	 * Get a list of all active shipping methods.
 	 * @return array
 	 */
 	private static function get_active_shipping_methods() {
@@ -321,7 +334,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Get all options starting with woocommerce_ prefix
+	 * Get all options starting with woocommerce_ prefix.
 	 * @return array
 	 */
 	private static function get_all_woocommerce_options_values() {
@@ -347,7 +360,7 @@ class WC_Tracker {
 	}
 
 	/**
-	 * Look for any template override and return filenames
+	 * Look for any template override and return filenames.
 	 * @return array
 	 */
 	private static function get_all_template_overrides() {

@@ -19,7 +19,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 
 	/**
-	 * Initialize the webhook table list
+	 * Initialize the webhook table list.
 	 */
 	public function __construct() {
 		parent::__construct( array(
@@ -30,7 +30,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Get list columns
+	 * Get list columns.
 	 *
 	 * @return array
 	 */
@@ -46,7 +46,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Column cb
+	 * Column cb.
 	 *
 	 * @param  array $key
 	 * @return string
@@ -56,7 +56,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Return description column
+	 * Return description column.
 	 *
 	 * @param  array $key
 	 * @return string
@@ -93,7 +93,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Return truncated consumer key column
+	 * Return truncated consumer key column.
 	 *
 	 * @param  array $key
 	 * @return string
@@ -103,7 +103,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Return user column
+	 * Return user column.
 	 *
 	 * @param  array $key
 	 * @return string
@@ -115,17 +115,15 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 			return '';
 		}
 
-		$user_name = ! empty( $user->data->display_name ) ? $user->data->display_name : $user->data->user_login;
-
-		if ( current_user_can( 'edit_user' ) ) {
-			return '<a href="' . esc_url( add_query_arg( array( 'user_id' => $user->ID ), admin_url( 'user-edit.php' ) ) ) . '">' . esc_html( $user_name ) . '</a>';
+		if ( current_user_can( 'edit_user', $user->ID ) ) {
+			return '<a href="' . esc_url( add_query_arg( array( 'user_id' => $user->ID ), admin_url( 'user-edit.php' ) ) ) . '">' . esc_html( $user->display_name ) . '</a>';
 		}
 
-		return esc_html( $user_name );
+		return esc_html( $user->display_name );
 	}
 
 	/**
-	 * Return permissions column
+	 * Return permissions column.
 	 *
 	 * @param  array $key
 	 * @return string
@@ -146,7 +144,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Return last access column
+	 * Return last access column.
 	 *
 	 * @param  array $key
 	 * @return string
@@ -162,7 +160,7 @@ class WC_Admin_API_Keys_Table_List extends WP_List_Table {
 	}
 
 	/**
-	 * Get bulk actions
+	 * Get bulk actions.
 	 *
 	 * @return array
 	 */

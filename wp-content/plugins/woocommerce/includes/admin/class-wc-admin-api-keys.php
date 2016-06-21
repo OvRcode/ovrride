@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Admin API Keys Class.
+ * WooCommerce Admin API Keys Class
  *
  * @author   WooThemes
  * @category Admin
@@ -13,33 +13,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WC_Admin_API_Keys
+ * WC_Admin_API_Keys.
  */
 class WC_Admin_API_Keys {
 
 	/**
-	 * Initialize the API Keys admin actions
+	 * Initialize the API Keys admin actions.
 	 */
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'actions' ) );
 	}
 
 	/**
-	 * Check if is API Keys settings page
-	 *
+	 * Check if is API Keys settings page.
 	 * @return bool
 	 */
 	private function is_api_keys_settings_page() {
 		return isset( $_GET['page'] )
-			&& 'wc-settings' == $_GET['page']
+			&& 'wc-settings' === $_GET['page']
 			&& isset( $_GET['tab'] )
-			&& 'api' == $_GET['tab']
+			&& 'api' === $_GET['tab']
 			&& isset( $_GET['section'] )
-			&& 'keys' == isset( $_GET['section'] );
+			&& 'keys' === $_GET['section'];
 	}
 
 	/**
-	 * Page output
+	 * Page output.
 	 */
 	public static function page_output() {
 		// Hide the save button
@@ -56,10 +55,10 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * Table list output
+	 * Table list output.
 	 */
 	private static function table_list_output() {
-		echo '<h3>' . __( 'Keys/Apps', 'woocommerce' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=api&section=keys&create-key=1' ) ) . '" class="add-new-h2">' . __( 'Add Key', 'woocommerce' ) . '</a></h3>';
+		echo '<h2>' . __( 'Keys/Apps', 'woocommerce' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=api&section=keys&create-key=1' ) ) . '" class="add-new-h2">' . __( 'Add Key', 'woocommerce' ) . '</a></h2>';
 
 		$keys_table_list = new WC_Admin_API_Keys_Table_List();
 		$keys_table_list->prepare_items();
@@ -74,7 +73,7 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * Get key data
+	 * Get key data.
 	 *
 	 * @param  int $key_id
 	 * @return array
@@ -109,7 +108,7 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * API Keys admin actions
+	 * API Keys admin actions.
 	 */
 	public function actions() {
 		if ( $this->is_api_keys_settings_page() ) {
@@ -135,7 +134,7 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * Revoke key
+	 * Revoke key.
 	 */
 	private function revoke_key() {
 		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'revoke' ) ) {
@@ -150,7 +149,7 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * Bulk actions
+	 * Bulk actions.
 	 */
 	private function bulk_actions() {
 		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'woocommerce-settings' ) ) {
@@ -165,7 +164,7 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * Bulk revoke key
+	 * Bulk revoke key.
 	 *
 	 * @param array $keys
 	 */
@@ -176,7 +175,7 @@ class WC_Admin_API_Keys {
 	}
 
 	/**
-	 * Remove key
+	 * Remove key.
 	 *
 	 * @param  int $key_id
 	 * @return bool

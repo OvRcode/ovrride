@@ -5,12 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WooCommerce Shipping Rate Class
+ * WooCommerce Shipping Rate Class.
  *
  * Simple Class for storing rates.
  *
  * @class 		WC_Shipping_Rate
- * @version		2.3.0
+ * @version		2.6.0
  * @package		WooCommerce/Classes/Shipping
  * @category	Class
  * @author 		WooThemes
@@ -33,32 +33,62 @@ class WC_Shipping_Rate {
 	public $method_id = '';
 
 	/**
-	 * Constructor
+	 * Stores meta data for this rate
+	 * @since 2.6.0
+	 * @var array
+	 */
+	private $meta_data = array();
+
+	/**
+	 * Constructor.
 	 *
 	 * @param string $id
 	 * @param string $label
-	 * @param float $cost
+	 * @param integer $cost
 	 * @param array $taxes
 	 * @param string $method_id
 	 */
-	public function __construct( $id, $label, $cost, $taxes, $method_id ) {
-		$this->id 			= $id;
-		$this->label 		= $label;
-		$this->cost 		= $cost;
-		$this->taxes 		= $taxes ? $taxes : array();
-		$this->method_id 	= $method_id;
+	public function __construct( $id = '', $label = '', $cost = 0, $taxes = array(), $method_id = '' ) {
+		$this->id        = $id;
+		$this->label     = $label;
+		$this->cost      = $cost;
+		$this->taxes     = ! empty( $taxes ) && is_array( $taxes ) ? $taxes : array();
+		$this->method_id = $method_id;
 	}
 
 	/**
-	 * get_shipping_tax function.
+	 * Get shipping tax.
 	 *
 	 * @return array
 	 */
 	public function get_shipping_tax() {
-		$taxes = 0;
-		if ( $this->taxes && sizeof( $this->taxes ) > 0 && ! WC()->customer->is_vat_exempt() ) {
-			$taxes = array_sum( $this->taxes );
-		}
-		return apply_filters( 'woocommerce_get_shipping_tax', $taxes, $this );
+		return apply_filters( 'woocommerce_get_shipping_tax', sizeof( $this->taxes ) > 0 && ! WC()->customer->is_vat_exempt() ? array_sum( $this->taxes ) : 0, $this );
+	}
+
+	/**
+	 * Get label.
+	 *
+	 * @return string
+	 */
+	public function get_label() {
+		return apply_filters( 'woocommerce_shipping_rate_label', $this->label );
+	}
+
+	/**
+	 * Add some meta data for this rate.
+	 * @since 2.6.0
+	 * @param string $key
+	 * @param string $value
+	 */
+	public function add_meta_data( $key, $value ) {
+		$this->meta_data[ wc_clean( $key ) ] = wc_clean( $value );
+	}
+
+	/**
+	 * Get all meta data for this rate.
+	 * @since 2.6.0
+	 */
+	public function get_meta_data() {
+		return $this->meta_data;
 	}
 }

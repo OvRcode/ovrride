@@ -1,12 +1,12 @@
 <?php
 /**
- * WooCommerce Admin.
+ * WooCommerce Admin
  *
- * @class       WC_Admin
- * @author      WooThemes
- * @category    Admin
- * @package     WooCommerce/Admin
- * @version     2.3
+ * @class    WC_Admin
+ * @author   WooThemes
+ * @category Admin
+ * @package  WooCommerce/Admin
+ * @version  2.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,16 +19,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WC_Admin {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'includes' ) );
 		add_action( 'current_screen', array( $this, 'conditional_includes' ) );
+		add_action( 'admin_init', array( $this, 'buffer' ), 1 );
 		add_action( 'admin_init', array( $this, 'preview_emails' ) );
 		add_action( 'admin_init', array( $this, 'prevent_admin_access' ) );
 		add_action( 'admin_init', array( $this, 'admin_redirects' ) );
 		add_action( 'admin_footer', 'wc_print_js', 25 );
 		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
+	}
+
+	/**
+	 * Output buffering allows admin screens to make redirects later on.
+	 */
+	public function buffer() {
+		ob_start();
 	}
 
 	/**
@@ -56,12 +64,7 @@ class WC_Admin {
 			switch ( $_GET['page'] ) {
 				case 'wc-setup' :
 					include_once( 'class-wc-admin-setup-wizard.php' );
-					break;
-				case 'wc-about' :
-				case 'wc-credits' :
-				case 'wc-translators' :
-					include_once( 'class-wc-admin-welcome.php' );
-					break;
+				break;
 			}
 		}
 
@@ -72,10 +75,12 @@ class WC_Admin {
 	}
 
 	/**
-	 * Include admin files conditionally
+	 * Include admin files conditionally.
 	 */
 	public function conditional_includes() {
-		$screen = get_current_screen();
+		if ( ! $screen = get_current_screen() ) {
+			return;
+		}
 
 		switch ( $screen->id ) {
 			case 'dashboard' :
@@ -96,33 +101,42 @@ class WC_Admin {
 	/**
 	 * Handle redirects to setup/welcome page after install and updates.
 	 *
-	 * Transient must be present, the user must have access rights, and we must ignore the network/bulk plugin updaters.
+	 * For setup wizard, transient must be present, the user must have access rights, and we must ignore the network/bulk plugin updaters.
 	 */
 	public function admin_redirects() {
-		if ( ! get_transient( '_wc_activation_redirect' ) ) {
-			return;
+		// Nonced plugin install redirects (whitelisted)
+		if ( ! empty( $_GET['wc-install-plugin-redirect'] ) ) {
+			$plugin_slug = wc_clean( $_GET['wc-install-plugin-redirect'] );
+
+			if ( current_user_can( 'install_plugins' ) && in_array( $plugin_slug, array( 'woocommerce-gateway-stripe' ) ) ) {
+				$nonce = wp_create_nonce( 'install-plugin_' . $plugin_slug );
+				$url   = self_admin_url( 'update.php?action=install-plugin&plugin=' . $plugin_slug . '&_wpnonce=' . $nonce );
+			} else {
+				$url = admin_url( 'plugin-install.php?tab=search&type=term&s=' . $plugin_slug );
+			}
+
+			wp_safe_redirect( $url );
+			exit;
 		}
 
-		delete_transient( '_wc_activation_redirect' );
+		// Setup wizard redirect
+		if ( get_transient( '_wc_activation_redirect' ) ) {
+			delete_transient( '_wc_activation_redirect' );
 
-		if ( ( ! empty( $_GET['page'] ) && in_array( $_GET['page'], array( 'wc-setup', 'wc-about' ) ) ) || is_network_admin() || isset( $_GET['activate-multi'] ) || ! current_user_can( 'manage_woocommerce' ) ) {
-			return;
-		}
+			if ( ( ! empty( $_GET['page'] ) && in_array( $_GET['page'], array( 'wc-setup' ) ) ) || is_network_admin() || isset( $_GET['activate-multi'] ) || ! current_user_can( 'manage_woocommerce' ) || apply_filters( 'woocommerce_prevent_automatic_wizard_redirect', false ) ) {
+				return;
+			}
 
-		// If the user needs to install, send them to the setup wizard
-		if ( WC_Admin_Notices::has_notice( 'install' ) ) {
-			wp_safe_redirect( admin_url( 'index.php?page=wc-setup' ) );
-			exit;
-
-		// Otherwise, the welcome page
-		} else {
-			wp_safe_redirect( admin_url( 'index.php?page=wc-about' ) );
-			exit;
+			// If the user needs to install, send them to the setup wizard
+			if ( WC_Admin_Notices::has_notice( 'install' ) ) {
+				wp_safe_redirect( admin_url( 'index.php?page=wc-setup' ) );
+				exit;
+			}
 		}
 	}
 
 	/**
-	 * Prevent any user who cannot 'edit_posts' (subscribers, customers etc) from accessing admin
+	 * Prevent any user who cannot 'edit_posts' (subscribers, customers etc) from accessing admin.
 	 */
 	public function prevent_admin_access() {
 		$prevent_access = false;
@@ -140,7 +154,7 @@ class WC_Admin {
 	}
 
 	/**
-	 * Preview email template
+	 * Preview email template.
 	 *
 	 * @return string
 	 */
@@ -166,7 +180,7 @@ class WC_Admin {
 			$email         = new WC_Email();
 
 			// wrap the content with the email template and then add styles
-			$message       = $email->style_inline( $mailer->wrap_message( $email_heading, $message ) );
+			$message       = apply_filters( 'woocommerce_mail_content', $email->style_inline( $mailer->wrap_message( $email_heading, $message ) ) );
 
 			// print the preview email
 			echo $message;
@@ -175,7 +189,7 @@ class WC_Admin {
 	}
 
 	/**
-	 * Change the admin footer text on WooCommerce admin pages
+	 * Change the admin footer text on WooCommerce admin pages.
 	 *
 	 * @since  2.3
 	 * @param  string $footer_text
@@ -198,11 +212,6 @@ class WC_Admin {
 		}
 		$wc_pages = array_flip( $wc_pages );
 
-		// Add the dashboard pages
-		$wc_pages[] = 'dashboard_page_wc-about';
-		$wc_pages[] = 'dashboard_page_wc-credits';
-		$wc_pages[] = 'dashboard_page_wc-translators';
-
 		// Check to make sure we're on a WooCommerce admin page
 		if ( isset( $current_screen->id ) && apply_filters( 'woocommerce_display_admin_footer_text', in_array( $current_screen->id, $wc_pages ) ) ) {
 			// Change the footer text
@@ -221,7 +230,6 @@ class WC_Admin {
 
 		return $footer_text;
 	}
-
 }
 
 return new WC_Admin();

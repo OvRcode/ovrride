@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Cash on Delivery Gateway
+ * Cash on Delivery Gateway.
  *
  * Provides a Cash on Delivery Payment Gateway.
  *
@@ -46,7 +46,7 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
 	}
 
     /**
-     * Initialise Gateway Settings Form Fields
+     * Initialise Gateway Settings Form Fields.
      */
     public function init_form_fields() {
     	$shipping_methods = array();
@@ -108,7 +108,7 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
     }
 
 	/**
-	 * Check If The Gateway Is Available For Use
+	 * Check If The Gateway Is Available For Use.
 	 *
 	 * @return bool
 	 */
@@ -190,17 +190,16 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
 
 
     /**
-     * Process the payment and return the result
+     * Process the payment and return the result.
      *
      * @param int $order_id
      * @return array
      */
 	public function process_payment( $order_id ) {
-
 		$order = wc_get_order( $order_id );
 
-		// Mark as processing (payment won't be taken until delivery)
-		$order->update_status( 'processing', __( 'Payment to be made upon delivery.', 'woocommerce' ) );
+		// Mark as processing or on-hold (payment won't be taken until delivery)
+		$order->update_status( apply_filters( 'woocommerce_cod_process_payment_order_status', $order->has_downloadable_item() ? 'on-hold' : 'processing', $order ), __( 'Payment to be made upon delivery.', 'woocommerce' ) );
 
 		// Reduce stock levels
 		$order->reduce_order_stock();

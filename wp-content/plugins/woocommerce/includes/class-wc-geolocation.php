@@ -1,6 +1,6 @@
 <?php
 /**
- * Geolocation class.
+ * Geolocation class
  *
  * Handles geolocation and updating the geolocation database.
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WC_Geolocation Class
+ * WC_Geolocation Class.
  */
 class WC_Geolocation {
 
@@ -54,7 +54,7 @@ class WC_Geolocation {
 	}
 
 	/**
-	 * Maybe trigger a DB update for the first time
+	 * Maybe trigger a DB update for the first time.
 	 * @param  string $new_value
 	 * @param  string $old_value
 	 * @return string
@@ -67,7 +67,7 @@ class WC_Geolocation {
 	}
 
 	/**
-	 * Get current user IP Address
+	 * Get current user IP Address.
 	 * @return string
 	 */
 	public static function get_ip_address() {
@@ -84,7 +84,9 @@ class WC_Geolocation {
 	}
 
 	/**
-	 * Get user IP Address using a service
+	 * Get user IP Address using an external service.
+	 * This is used mainly as a fallback for users on localhost where
+	 * get_ip_address() will be a local IP and non-geolocatable.
 	 * @return string
 	 */
 	public static function get_external_ip_address() {
@@ -114,32 +116,41 @@ class WC_Geolocation {
 	}
 
 	/**
-	 * Geolocate an IP address
+	 * Geolocate an IP address.
 	 * @param  string $ip_address
+	 * @param  bool   $fallback If true, fallbacks to alternative IP detection (can be slower).
+	 * @param  bool   $api_fallback If true, uses geolocation APIs if the database file doesn't exist (can be slower).
 	 * @return array
 	 */
-	public static function geolocate_ip( $ip_address = '', $fallback = true ) {
-		// If GEOIP is enabled in CloudFlare, we can use that (Settings -> CloudFlare Settings -> Settings Overview)
-		if ( ! empty( $_SERVER['HTTP_CF_IPCOUNTRY'] ) ) {
-			$country_code = sanitize_text_field( strtoupper( $_SERVER['HTTP_CF_IPCOUNTRY'] ) );
-		} else {
-			$ip_address = $ip_address ? $ip_address : self::get_ip_address();
+	public static function geolocate_ip( $ip_address = '', $fallback = true, $api_fallback = true ) {
+		// Filter to allow custom geolocation of the IP address.
+		$country_code = apply_filters( 'woocommerce_geolocate_ip', false, $ip_address, $fallback, $api_fallback );
 
-			if ( self::is_IPv6( $ip_address ) ) {
-				$database = self::get_local_database_path( 'v6' );
+		if ( false === $country_code ) {
+			// If GEOIP is enabled in CloudFlare, we can use that (Settings -> CloudFlare Settings -> Settings Overview)
+			if ( ! empty( $_SERVER['HTTP_CF_IPCOUNTRY'] ) ) {
+				$country_code = sanitize_text_field( strtoupper( $_SERVER['HTTP_CF_IPCOUNTRY'] ) );
 			} else {
-				$database = self::get_local_database_path();
-			}
+				$ip_address = $ip_address ? $ip_address : self::get_ip_address();
 
-			if ( file_exists( $database ) ) {
-				$country_code = self::geolocate_via_db( $ip_address );
-			} else {
-				$country_code = self::geolocate_via_api( $ip_address );
-			}
+				if ( self::is_IPv6( $ip_address ) ) {
+					$database = self::get_local_database_path( 'v6' );
+				} else {
+					$database = self::get_local_database_path();
+				}
 
-			if ( ! $country_code && $fallback ) {
-				// May be a local environment - find external IP
-				return self::geolocate_ip( self::get_external_ip_address(), false );
+				if ( file_exists( $database ) ) {
+					$country_code = self::geolocate_via_db( $ip_address );
+				} elseif ( $api_fallback ) {
+					$country_code = self::geolocate_via_api( $ip_address );
+				} else {
+					$country_code = '';
+				}
+
+				if ( ! $country_code && $fallback ) {
+					// May be a local environment - find external IP
+					return self::geolocate_ip( self::get_external_ip_address(), false, $api_fallback );
+				}
 			}
 		}
 
@@ -150,15 +161,15 @@ class WC_Geolocation {
 	}
 
 	/**
-	 * Path to our local db
+	 * Path to our local db.
 	 * @param  string $version
 	 * @return string
 	 */
-	private static function get_local_database_path( $version = 'v4' ) {
+	public static function get_local_database_path( $version = 'v4' ) {
 		$version    = ( 'v4' == $version ) ? '' : 'v6';
 		$upload_dir = wp_upload_dir();
 
-		return $upload_dir['basedir'] . '/GeoIP' . $version . '.dat';
+		return apply_filters( 'woocommerce_geolocation_local_database_path', $upload_dir['basedir'] . '/GeoIP' . $version . '.dat', $version );
 	}
 
 	/**
@@ -275,7 +286,7 @@ class WC_Geolocation {
 	}
 
 	/**
-	 * Test if is IPv6
+	 * Test if is IPv6.
 	 *
 	 * @since  2.4.0
 	 *
