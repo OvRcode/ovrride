@@ -232,7 +232,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			// Get the order
 			$order     = new WC_Order( $order_id );
 			$url       = $this->testmode ? 'https://pilot-payflowlink.paypal.com' : 'https://payflowlink.paypal.com';
-			$post_data = $this->get_post_data( $order );
+			$post_data = $this->_get_post_data( $order );
 
 			// Request token
 			$token     = $this->get_token( $order, $post_data );
@@ -429,7 +429,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	 * @param object $order
 	 * @return array
 	 */
-	public function get_post_data( $order ) {
+	protected function _get_post_data( $order ) {
 		$post_data                 = array();
 		$post_data['USER']         = $this->paypal_user;
 		$post_data['VENDOR']       = $this->paypal_vendor;
@@ -542,7 +542,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		// Send request to paypal
 		try {
 			$url                  = $this->testmode ? $this->testurl : $this->liveurl;
-			$post_data            = $this->get_post_data( $order );
+			$post_data            = $this->_get_post_data( $order );
 			$post_data['ACCT']    = $card_number; // Credit Card
 			$post_data['EXPDATE'] = $card_exp; //MMYY
 			$post_data['CVV2']    = $card_cvc; // CVV code
