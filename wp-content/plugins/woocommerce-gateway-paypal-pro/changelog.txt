@@ -1,5 +1,13 @@
 *** PayPal Pro Changelog ***
 
+2016.06.06 - version 4.4.3
+* Fix - Strict standard notice caused by new method introduced in WooCommerce 2.6
+* Fix - Deprecated notice from get_currentuserinfo()
+
+2016.01.05 - version 4.4.2
+* Includes any Checkout Add-On fees when sending line items to PayPal to avoid an "amounts do not match" payment error
+* Fixes the tax amount passed to PayPal when shipping is taxable to avoid an "amounts do not match" payment error
+
 2015.11.12 - version 4.4.1
 * Resolve "extra space" issue in billing address.
 

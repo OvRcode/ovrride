@@ -789,6 +789,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 				if ( sizeof( $order->get_items() ) > 0 ) {
 					$ITEMAMT = 0;
+					$fee_total = 0;
 
 					foreach ( $order->get_items() as $item ) {
 						$_product = $order->get_product_from_item( $item );
@@ -809,6 +810,19 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 							$ITEMAMT += $order->get_item_total( $item, true ) * $item['qty'];
 							$item_loop++;
 						}
+					}
+
+					// Fees
+					foreach ( $order->get_fees() as $fee ) {
+						$post_data[ 'L_NUMBER' . $item_loop ] = $item_loop;
+						$post_data[ 'L_NAME' . $item_loop ] = trim( substr( $fee['name'], 0, 127 ) );
+						$post_data[ 'L_AMT' . $item_loop ] = $fee['line_total'];
+						$post_data[ 'L_QTY' . $item_loop ] = 1;
+
+						$ITEMAMT += $fee['line_total'];
+						$fee_total += $fee['line_total'];
+
+						$item_loop++;
 					}
 
 					// Shipping
@@ -843,8 +857,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 						$post_data[ 'L_QTY' . $item_loop ]    = 1;
 					}
 
-					$post_data['ITEMAMT'] = round( ( $order->get_subtotal() + $order->get_total_shipping() ) - $order->get_total_discount(), 2 );
-					$post_data['TAXAMT']  = round( $order->get_total_tax() + $order->get_shipping_tax(), 2 );
+					$post_data['ITEMAMT'] = round( ( $order->get_subtotal() + $order->get_total_shipping() + $fee_total ) - $order->get_total_discount(), 2 );
+					$post_data['TAXAMT']  = round( $order->get_total_tax(), 2 );
 				}
 			}
 

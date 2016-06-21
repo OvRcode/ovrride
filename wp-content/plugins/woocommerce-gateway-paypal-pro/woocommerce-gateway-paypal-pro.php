@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
 Plugin URI: http://www.woothemes.com/products/paypal-pro/
 Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
-Version: 4.4.1
+Version: 4.4.3
 Author: WooThemes
 Author URI: http://woothemes.com/
 
@@ -35,7 +35,7 @@ class WC_PayPal_Pro {
 	/**
 	 * PayPal Pro version
 	 */
-	const VERSION = '4.4.0';
+	const VERSION = '4.4.3';
 
 	/**
 	 * Constructor
@@ -74,7 +74,7 @@ class WC_PayPal_Pro {
 	 * Updates version
 	 */
 	public function update() {
-		// 3dsecure update logic
+		// 3dsecure update logic when updating from a version of this extension older than 4.4.0
 		if ( version_compare( get_option( 'woocommerce_paypal_pro_version', 0 ), '4.4.0', '<' ) ) {
 			$settings = get_option( 'woocommerce_paypal_pro_settings', array() );
 
@@ -93,7 +93,7 @@ class WC_PayPal_Pro {
 	public function cardinal_upgrade_notice() {
 		if ( get_option( 'woocommerce_paypal_pro_cardinal_upgrade_notice' ) && current_user_can( 'manage_options' ) ) {
 			echo '<div class="notice error is-dismissible" data-notice-id="cardinal_upgrade_notice">
-				<p>' . __( 'PayPal Pro 4.4.0+ requires the "CC" TransactionType to be enabled on your Cardinal Commerce merchant profile in order to use 3dSecure. Please contact Cardinal support to get your account updated. In the meantime, 3dsecure has been disabled so you can continue to recieve payments. Re-enable it from the settings page once your account has been updated.', 'woocommerce-gateway-paypal-pro' ) . '</p>
+				<p>' . __( 'PayPal Pro requires the "CC" TransactionType to be enabled on your Cardinal Commerce merchant profile in order to use 3dSecure. Please contact Cardinal support to get your account updated. In the meantime, 3dsecure has been disabled so you can continue to recieve payments. Re-enable it from the settings page once your account has been updated.', 'woocommerce-gateway-paypal-pro' ) . '</p>
 			</div>
 			<script type="text/javascript">
 				jQuery(function() {
@@ -152,16 +152,13 @@ class WC_PayPal_Pro {
 	 * @return bool
 	 */
 	public function update_ssl_nag() {
-		global $current_user;
-
-		get_currentuserinfo();
 
 		if ( isset( $_GET['_wpnonce'] ) && ! wp_verify_nonce( $_GET['_wpnonce'], 'wc_paypal_pro_ssl_nag_hide' ) ) {
 			return;
 		}
 
 		if ( isset( $_GET['wc_paypal_pro_ssl_nag'] ) && '1' === $_GET['wc_paypal_pro_ssl_nag'] ) {
-			add_user_meta( $current_user->ID, '_wc_paypal_pro_ssl_nag_hide', '1', true );
+			add_user_meta( get_current_user_id(), '_wc_paypal_pro_ssl_nag_hide', '1', true );
 		}
 	}
 
@@ -179,9 +176,6 @@ class WC_PayPal_Pro {
 	 * Show a notice if SSL is disabled
 	 */
 	public function ssl_check() {
-		global $current_user;
-
-		get_currentuserinfo();
 
 		$settings = get_option( 'woocommerce_paypal_pro_settings', array() );
 
@@ -191,7 +185,7 @@ class WC_PayPal_Pro {
 			&& isset( $settings['enabled'] )
 			&& $settings['enabled'] === 'yes'
 			&& $settings['testmode'] !== 'yes'
-			&& ! get_user_meta( $current_user->ID, '_wc_paypal_pro_ssl_nag_hide' )
+			&& ! get_user_meta( get_current_user_id(), '_wc_paypal_pro_ssl_nag_hide' )
 		) {
 			echo '<div class="error"><p>' . sprintf( __( 'PayPal Pro requires that the <a href="%s">Force secure checkout</a> option is enabled; your checkout may not be secure! Please enable SSL and ensure your server has a valid SSL certificate - PayPal Pro will only work in test mode.', 'woocommerce-gateway-paypal-pro') . ' <a href="%s">' . __( 'Hide Notice', 'woocommerce' ) . '</a>', admin_url('admin.php?page=woocommerce' ), wp_nonce_url( add_query_arg( 'wc_paypal_pro_ssl_nag', '1' ), 'wc_paypal_pro_ssl_nag_hide' ) ) . '</p></div>';
 		}
