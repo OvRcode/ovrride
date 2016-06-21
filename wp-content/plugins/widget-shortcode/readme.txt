@@ -3,8 +3,8 @@ Contributors: shazdeh
 Plugin Name: Widget Shortcode
 Tags: widget, shortcode, theme, admin
 Requires at least: 3.0
-Tested up to: 4.5
-Stable tag: 0.2.5
+Tested up to: 4.5.2
+Stable tag: 0.2.6
 
 Adds [widget] shortcode which enables you to output widgets anywhere you like.
 
@@ -15,6 +15,13 @@ The shortcode requires the widget ID, but no need to guess, the plugin generates
 You can also hide the widget title entirely if desired:
 <code>[widget id="text-1" title="0"]</code>
 
+Additional Parameters:
+
+* <strong>container_tag</strong>: the HTML tag to use for the widget container, default: <code>div</code>
+* <strong>container_class</strong>: CSS classname added to the widget container, default: <code>widget %2$s</code> (Note: uses sprintf for variable substitution)
+* <strong>container_id</strong>: HTML ID attribute for the widget container, default: <code>%1$s</code> (Note: uses sprintf for variable substitution)
+* <strong>title_tag</strong>: HTML tag to use for the widget title wrapper, default: <code>h2</code>
+* <strong>title_class</strong>: CSS classname for the widget title wrapper, default: <code>widgettitle</code>
 
 == Installation ==
 
@@ -28,6 +35,10 @@ You can also hide the widget title entirely if desired:
 1. The plugin generates the shortcode for you
 
 == Changelog ==
+
+= 0.4.6 =
+* Fix for possible notice message
+* Additional parameters to control the widget output
 
 = 0.4.5 =
 * Fix notice message if widget is inactive
