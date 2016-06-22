@@ -21,7 +21,7 @@ $order = wc_get_order( $order_id );
                 $url = get_site_url();
                 echo <<<AAA
                     </p>Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved.</p>
-                    <a href="{$url}/wp-content/uploads/2015/05/OvR-2014-15WAIVER.pdf"><button style="border-radius:3px;padding:10px;color:white;background-color:#2BC9F1;">
+                    <a href="{$url}/wp-content/uploads/2016/06/ovr-waiver.pdf"><button style="border-radius:3px;padding:10px;color:white;background-color:#2BC9F1;">
                     Download Waiver
                     </button>
                 </a><br /><br />

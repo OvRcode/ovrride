@@ -22,7 +22,7 @@ foreach($order->get_items() as $order_item_id ) {
         $pickups[$order_item_id['Pickup Location']]['title']    = get_the_title( $order_item_id['pickup_id'] );
         $pickups[$order_item_id['Pickup Location']]['address']  = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_address', true);
         $pickups[$order_item_id['Pickup Location']]['cross_st'] = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_cross_st', true);
-        $pickups[$order_item_id['Pickup Location']]['time']     = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_time', true); 
+        $pickups[$order_item_id['Pickup Location']]['time']     = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_time', true);
         $pickups[$order_item_id['Pickup Location']]['time'] = (strval($pickups[$order_item_id['Pickup Location']]['time']) == "" ? "" : date("g:i a", strtotime($pickups[$order_item_id['Pickup Location']]['time'])));
     }
 }
@@ -43,7 +43,7 @@ foreach($order->get_items() as $order_item_id ) {
                             </v:roundrect>
                         <![endif]-->
 
-                        <a href="<?php echo get_site_url();?>/wp-content/uploads/2015/05/OvR-2014-15WAIVER.pdf.zip" style="background-color:#2BC9F1;border:1px solid ##2BC9F1;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">Download Waiver</a>
+                        <a href="<?php echo get_site_url();?>/wp-content/uploads/2016/06/ovr-waiver.pdf.zip" style="background-color:#2BC9F1;border:1px solid ##2BC9F1;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">Download Waiver</a>
                     </div>
                 </td>
             </tr>
