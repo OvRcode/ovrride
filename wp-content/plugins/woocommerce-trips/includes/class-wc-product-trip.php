@@ -139,7 +139,7 @@ class WC_Product_Trip extends WC_Product {
 				{$toBeach}
 				</select>
 			</p>
-			<strong>Earlier pickups 3:50-4:40pm stop in Brooklyn only.</strong>
+			<strong>Pickups BEFORE 6:50pm stop in Brooklyn ONLY.</strong>
 			<p class="form-field">
 				<label for="wc_trip_from_beach">From Beach <span class="required">*</span></label>
 				<select name="wc_trip_from_beach" id="wc_trip_from_beach" data-required="true">
