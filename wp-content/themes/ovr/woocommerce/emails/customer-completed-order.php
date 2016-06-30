@@ -10,14 +10,37 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-//error_log("COMPLETED ORDER!");
-$pickups = array();
-$has_trip = false;
+
+$pickups 				= array();
+$toBeach 				= array();
+$fromBeach			= array();
+$has_trip 		 	= false;
+$has_beach_bus	= false;
+
 foreach($order->get_items() as $order_item_id ) {
     $product = get_product( $order_item_id['product_id']);
+		$subType = get_post_meta( $order_item_id['product_id'], "_wc_trip_type", true);
+		if ( "beach_bus" == $subType ) {
+			$has_beach_bus = true;
+		}
     if ( $product->is_type('trip') ) {
         $has_trip = true;
     }
+
+		if ( isset($order_item_id['to_beach_id'])) {
+			$toBeach[$order_item_id['to_beach_id']]['title'] = get_the_title( $order_item_id['to_beach_id'] );
+			$toBeach[$order_item_id['to_beach_id']]['address'] = get_post_meta( $order_item_id['to_beach_id'], '_pickup_location_address', true);
+			$toBeach[$order_item_id['to_beach_id']]['cross_st'] = get_post_meta( $order_item_id['to_beach_id'], '_pickup_location_cross_st', true);
+			$toBeach[$order_item_id['to_beach_id']]['time'] = get_post_meta( $order_item_id['to_beach_id'], '_pickup_location_time', true);
+			$toBeach[$order_item_id['to_beach_id']]['time'] = (strval($toBeach[$order_item_id['to_beach_id']]['time']) == "" ? "" : date("g:i a", strtotime($toBeach[$order_item_id['to_beach_id']]['time'])));
+		}
+		if ( isset($order_item_id['from_beach_id'])) {
+		  $fromBeach[$order_item_id['from_beach_id']]['title'] = get_the_title( $order_item_id['from_beach_id'] );
+		  $fromBeach[$order_item_id['from_beach_id']]['address'] = get_post_meta( $order_item_id['from_beach_id'], '_pickup_location_address', true);
+		  $fromBeach[$order_item_id['from_beach_id']]['cross_st'] = get_post_meta( $order_item_id['from_beach_id'], '_pickup_location_cross_st', true);
+		  $fromBeach[$order_item_id['from_beach_id']]['time'] = get_post_meta( $order_item_id['from_beach_id'], '_pickup_location_time', true);
+		  $fromBeach[$order_item_id['from_beach_id']]['time'] = (strval($fromBeach[$order_item_id['from_beach_id']]['time']) == "" ? "" : date("g:i a", strtotime($fromBeach[$order_item_id['from_beach_id']]['time'])));
+		}
     if ( isset($order_item_id['Pickup Location']) ) {
         $pickups[$order_item_id['Pickup Location']]['title']    = get_the_title( $order_item_id['pickup_id'] );
         $pickups[$order_item_id['Pickup Location']]['address']  = get_post_meta( $order_item_id['pickup_id'], '_pickup_location_address', true);
@@ -30,7 +53,7 @@ foreach($order->get_items() as $order_item_id ) {
 ?>
 
 <?php do_action( 'woocommerce_email_header', $email_heading ); ?>
-<?php if ($has_trip ): ?>
+<?php if ($has_trip && !$has_beach_bus): ?>
 <p><?php echo "Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:"; ?></p>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -89,15 +112,43 @@ foreach($order->get_items() as $order_item_id ) {
 if (! empty($pickups) ) {
     echo "<h2>Pickup Details</h2>";
     foreach($pickups as $id => $values) {
+				$urlAddress = urlencode($values['address']);
         echo <<<PICKUP
             <p><strong>{$values['title']}</strong><br />
             {$values['address']}<br />
             {$values['cross_st']}<br />
             <strong>Bus departs at {$values['time']}</strong><br />
-            <a href='http://maps.google.com/maps?q={$values['address']}' target='_blank'>View Map</a></p>
+            <a href='http://maps.google.com/?q={$urlAddress}' target='_blank'>View Map</a></p>
 PICKUP;
     }
     }
+	if ( ! empty($toBeach) ) {
+		echo "<h2>To Beach Pickup Details</h2>";
+		foreach($toBeach as $id => $values) {
+			$urlAddress = urlencode($values['address']);
+			echo <<<TOBEACH
+			<p><strong>{$values['title']}</strong><br />
+			{$values['address']}<br />
+			{$values['cross_st']}<br />
+			<strong>Bus departs at {$values['time']}</strong><br />
+			<a href='http://maps.google.com/?q={$urlAddress}' target='_blank'>View Map</a></p
+TOBEACH;
+			}
+	}
+
+	if ( ! empty($fromBeach) ) {
+		echo "<h2>From Beach Pickup Details</h2>";
+		foreach($fromBeach as $id => $values) {
+			$urlAddress = urlencode($values['address']);
+			echo <<<TOBEACH
+			<p><strong>{$values['title']}</strong><br />
+			{$values['address']}<br />
+			{$values['cross_st']}<br />
+			<strong>Bus departs at {$values['time']}</strong><br />
+			<a href='http://maps.google.com/?q={$urlAddress}' target='_blank'>View Map</a></p
+TOBEACH;
+			}
+	}
 ?>
 <?php do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text ); ?>
 
