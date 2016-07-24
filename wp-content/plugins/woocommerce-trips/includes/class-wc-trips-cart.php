@@ -195,6 +195,7 @@ class WC_Trips_Cart {
         }
     }
     public function render_meta_on_cart_item( $title = null, $cart_item = null, $cart_item_key = null ) {
+        echo $title;
         echo "<dl class='variation'>";
         foreach( $this->fields as $key => $value ) {
             if ( $cart_item_key && WC()->session->__isset( $cart_item_key . "_" . $key) ){
