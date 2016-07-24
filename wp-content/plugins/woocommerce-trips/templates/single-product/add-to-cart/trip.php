@@ -23,7 +23,16 @@ if ( "beach_bus" == $trip_type ) {
 do_action( 'woocommerce_before_add_to_cart_form' );
 ?>
 
-<noscript><?php _e( 'Your browser must support JavaScript in order to make a booking.', 'woocommerce-bookings' ); ?></noscript>
+<noscript>
+	<style>
+		.cart, .product_meta{
+			display: none;
+		}
+	</style>
+	<h4>Warning: Javascript is disabled or not supported on your browser.</h4>
+	<p> Please enable JavaScript to continue booking a trip.</p>
+	<p> Need help enabling JavaScript? <a href="http://enable-javascript.com/" style="text-decoration:underline;" target="_blank">Instructions Here</a></p>
+</noscript>
 <p class="stock">
     <?php
     echo $product->get_availability();
