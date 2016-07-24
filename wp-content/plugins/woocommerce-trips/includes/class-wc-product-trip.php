@@ -102,8 +102,8 @@ class WC_Product_Trip extends WC_Product {
 		public function beach_bus_pickups() {
 			// Check through pickups
 			// Split into to/from beach with
-			$toBeach= "<option>Select To Beach pickup location</option>";
-			$fromBeach="<option>Select From Beach pickup location</option>";
+			$toBeach= "<option value=''>Select To Beach pickup location</option>";
+			$fromBeach="<option value=''>Select From Beach pickup location</option>";
 			$pickups = get_post_meta( $this->id, "_wc_trip_pickups", true);
 			$tempTo = array();
 			$tempFrom = array();
