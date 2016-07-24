@@ -47,7 +47,7 @@
                 <?php
                     if ( $all_pickup_locations ) {
                         foreach( $all_pickup_locations as $pickup ) {
-                            if ( ! array_key_exists($pickup->ID, $pickup_locations) ) {
+                            if ( !$pickup_locations || ! array_key_exists($pickup->ID, $pickup_locations) ) {
                                 $time = get_post_meta( $pickup->ID, '_pickup_location_time', true);
                                 if ( $time) {
                                     $time = " at " . date("g:i a", strtotime($time));
