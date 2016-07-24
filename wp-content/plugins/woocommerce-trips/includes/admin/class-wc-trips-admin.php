@@ -136,7 +136,7 @@ class WC_Trips_Admin {
         for ( $i = 0; $i < $packages; $i++ ) {
             $primary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_primary_package_description'][$i] );
             $primary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_primary_package_cost'][$i] );
-            if ( FALSE !== strpos("$") ) {
+            if ( FALSE !== strpos($primary_packages[$i]['cost'], "$") ) {
                 $primary_packages[$i]['cost'] = str_replace("$","",$primary_packages[$i]['cost']);
             }
             if ( isset($_POST['_wc_trip_primary_package_stock']) && $_POST['_wc_trip_primary_package_stock'] ) {
