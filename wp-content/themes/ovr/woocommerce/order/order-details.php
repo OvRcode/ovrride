@@ -17,16 +17,28 @@ $order = wc_get_order( $order_id );
         foreach( $order->get_items() as $item ) {
 			$_product     = apply_filters( 'woocommerce_order_item_product', $order->get_product_from_item( $item ), $item );
 			$item_meta    = new WC_Order_Item_Meta( $item['item_meta'], $_product );
+			$waiver = FALSE;
+			foreach( $item_meta->meta['product_id'] as $id ){
+				$type = get_post_meta($id, '_wc_trip_type', TRUE);
+				if ( "bus" === $type ) {
+					$waiver = TRUE;
+					break;
+				}
+			}
             if ( isset($item_meta->meta['Package'][0]) ){
                 $url = get_site_url();
                 echo <<<AAA
                     </p>Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved.</p>
-                    <a href="{$url}/wp-content/uploads/2016/06/ovr-waiver.pdf"><button style="border-radius:3px;padding:10px;color:white;background-color:#2BC9F1;">
+AAA;
+								if ( $waiver ){
+								echo <<<BBB
+										<a href="{$url}/wp-content/uploads/2016/06/ovr-waiver.pdf"><button style="border-radius:3px;padding:10px;color:white;background-color:#2BC9F1;">
                     Download Waiver
                     </button>
                 </a><br /><br />
                 <p>For a smooth and prompt departure on the day of your trip, please download and print out a copy of our waiver. If you bring this 2 sided filled out and signed copy to the trip, we’ll surely appreciate it, as it will speed up our check-in process.  If you don’t have access to a printer, additional waivers will be available on the bus.</p>
-AAA;
+BBB;
+								}
             }
         }
     }
