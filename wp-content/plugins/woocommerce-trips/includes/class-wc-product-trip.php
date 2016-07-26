@@ -22,7 +22,32 @@ class WC_Product_Trip extends WC_Product {
             return "sold out";
         }
     }
+		public function packages_stock(){
+			if ( "yes" == $this->wc_trip_primary_package_stock ) {
+				$return['primary'] = $this->wc_trip_primary_packages;
+			}
+			if ( "yes" == $this->wc_trip_secondary_package_stock ) {
+					$return['secondary'] = $this->wc_trip_secondary_packages;
+			}
+			if ( "yes" == $this->wc_trip_tertiary_package_stock ) {
+					$return['tertiary'] = $this->wc_trip_tertiary_packages;
+			}
+			return $return;
+		}
+		public function get_packages_stock( $type ) {
+			return $this->{"wc_trip_".$type."_package_stock"};
+		}
+		public function get_package_stock( $type, $description) {
+			$packages = $this->{"wc_trip_".$type."_packages"};
 
+			if ( "yes" == $this->{"wc_trip_".$type."_package_stock"} ) {
+				foreach( $packages as $key => $values ) {
+					if ( $values['description'] == $description ) {
+						return $values['stock'];
+					}
+				}
+			}
+		}
     public function reduce_package_stock( $type, $description ) {
         $packages = $this->{"wc_trip_" . $type . "_packages"};
 
@@ -160,7 +185,7 @@ OUTPUT;
 			$secondary_package = get_post_meta( $this->id, "_wc_trip_secondary_packages", true);
 			foreach( $secondary_package as $key => $array ) {
 				if ( $type === $array["description"] ) {
-					if ( intval($array["stock"]) > 0 ) {
+					if ( $array["stock"] > 0 ) {
 						return true;
 					} else {
 						return false;

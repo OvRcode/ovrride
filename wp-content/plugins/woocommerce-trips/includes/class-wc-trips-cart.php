@@ -50,41 +50,133 @@ class WC_Trips_Cart {
 
     }
     public function validate_add_cart_item( $passed, $product_id, $qty ) {
+        global $woocommerce;
+        $cart = $woocommerce->cart->get_cart();
         $product      = get_product( $product_id );
-        if ( $product->product_type !== 'trip' ) {
-            return $passed;
+        //error_log(serialize($cart));
+        if ( $product->product_type == "trip"){
+          if ( "instock" == $product->stock_status && $product->stock >= 1 ) {
+            // Product is in stock and potentially has enough stock to add item
+            $packageStock = $product->packages_stock();
+            if ( "beach_bus" === $product->wc_trip_type ) {
+              if ( isset($_REQUEST['wc_trip_primary_package']) ) {
+                $package = $_REQUEST['wc_trip_primary_package'];
+                // Primary package for beach bus has no stock, nothing to check here
+              } else {
+                // Package is missing for some reason, stop and fix that!
+                wc_add_notice('Please select a package','error');
+                return FALSE;
+              }
+              if ( isset($_REQUEST['wc_trip_to_beach']) ) {
+                $toBeach = explode(":",$_REQUEST['wc_trip_to_beach']);
+                $toBeachDescription = get_the_title($toBeach[0]);
+                $toBeachTime = get_post_meta($toBeach[0],"_pickup_location_time", true);
+                $toBeachTime = date("g:i a", strtotime($toBeachTime));
+                $toBeach = $toBeach[1];
+                $toBeachKey = array_search($toBeach, array_column($packageStock['secondary'],'description'));
+                $toBeachStock = $packageStock['secondary'][$toBeachKey]['stock'];
+                if ( $toBeachStock < 1 ) {
+                  // Pickup has gone out of stock after page was loaded
+                  wc_add_notice( 'No seats left for ' . $toBeachDescription . ' at ' . $toBeachTime, 'error' );
+                  return FALSE;
+                }
+              }
+              elseif ( "One Way ( From Beach )" !== $package ) {
+                wc_add_notice('Missing To Beach option.', 'error');
+                return FALSE;
+              }
+              if ( isset($_REQUEST['wc_trip_from_beach']) ) {
+                $fromBeach = explode(":",$_REQUEST['wc_trip_from_beach']);
+                $fromBeachDescription = get_the_title($fromBeach[0]);
+                $fromBeachTime = get_post_meta($fromBeach[0],"_pickup_location_time", true);
+                $fromBeachTime = date("g:i a", strtotime($fromBeachTime));
+                $fromBeach = $fromBeach[1];
+                $fromBeachKey = array_search($fromBeach, array_column($packageStock['secondary'], 'description'));
+                $fromBeachStock = $packageStock['secondary'][$fromBeachKey]['stock'];
+                if ( $fromBeachStock < 1 ) {
+                  // Pickup has gone out of stock after page was loaded
+                  wc_add_notice( 'No seats left for ' . $fromBeachDescription . ' at ' . $fromBeachTime, 'error');
+                  return FALSE;
+                }
+              }
+              elseif ( "One Way ( To Beach )" !== $package ) {
+                wc_add_notice('Missing From Beach option.');
+                return FALSE;
+              }
+              // Find out how many of to/from beach are in cart
+              // $toBeachStock $fromBeachStock
+              if ( empty($cart) ) {
+                return TRUE;
+              } else {
+                $cart_master_stock=0;
+                $cart_to_stock=0;
+                $cart_from_stock=0;
+                foreach( $cart as $cart_id => $entry_data ) {
+                  if ( $product_id == $entry_data['product_id'] ) {
+                    error_log('product_id Match!');
+                    if ( WC()->session->__isset($cart_id."_wc_trip_primary_package") ) {
+                      if ( WC()->session->get($cart_id."_wc_trip_primary_package") == "Round Trip" ) {
+                        $cart_master_stock += 2;
+                      }
+                    } else {
+                        $cart_master_stock++;
+                    }
+
+                    if ( WC()->session->__isset($cart_id."_to_beach_route") && isset($toBeach) ){
+                      $temp_to = WC()->session->get($cart_id."_to_beach_route");
+                      if ( $temp_to == $toBeach) {
+                        $cart_to_stock++;
+                      }
+                    }
+                    if ( WC()->session->__isset($cart_id."_from_beach_route") && isset($fromBeach) ) {
+                      $temp_from = WC()->session->get($cart_id."_from_beach_route");
+                      if ( $temp_from == $fromBeach ) {
+                        $cart_from_stock++;
+                      }
+                    }
+                  }
+                }
+                // Make sure cart stock + form doesn't go over inventory
+                if ( "Round Trip" === $package && ($cart_master_stock + 2) > $product->stock ) {
+                  wc_add_notice('Sorry, this trip is now booked to capacity', 'error');
+                  return FALSE;
+                } elseif ( ($cart_master_stock + 1) > $product->stock ) {
+                  wc_add_notice('Sorry, this trip is now booked to capacity', 'error');
+                  return FALSE;
+                }
+
+                if ( ($cart_to_stock + 1) > $toBeachStock ) {
+                  wc_add_notice('Sorry, not enough seats left on ' . $toBeachDescription . ' at ' . $toBeachTime, 'error');
+                  return FALSE;
+                }
+                if ( ($cart_from_stock + 1) > $fromBeachStock ) {
+                  wc_add_notice('Sorry, not enough seats left on ' . $fromBeachDescription . ' at ' . $fromBeachTime,'error');
+                  return FALSE;
+                }
+                // If we've made it this far there are no stock conflicts at the mb_decode_numericentity
+                return TRUE;
+              }
+            }
+            //else if ( "bus" === $product->wc_trip_type ){}
+          } else {
+            // Product has gone out of stock since page was loaded.
+            wc_add_notice('Can\'t add item to cart, item is out of stock','error');
+            return FALSE;
+          }
+
         }
 
-        $stockOk = false;
-        foreach( $this->package_types as $package ) {
-            if ( isset($_POST['wc_trip_' . $package . "_package"]) ){
-                $post = $_POST['wc_trip_' . $package . "_package"];
-                $stockCheck = $product->check_package_stock( $package, $post);
-                if ( $stockCheck ) {
-                    $stockOk = true;
-                } else {
-                    wc_add_notice("Sorry, " . $post . " is out of stock", 'error');
-                    return false;
-                }
-            }
-        }
-        if ( $stockOk ) {
-            return true;
-        } else {
-            wc_add_notice("Couldn't find specified packages, try again", 'error');
-            return false;
-        }
     }
-      public function add_costs( $cart_object ) {
-        global $woocommerce;
-        foreach ( $cart_object->cart_contents as $key => $value ) {
-            if ( "trip" == $value['data']->product_type) {
-                if( WC()->session->__isset( $key.'_cost' ) ) {
-                    $additional_costs = WC()->session->get( $key.'_cost' );
-                    $value['data']->price = $additional_costs;
-                }
-            }
+    public function add_costs( $cart_object ) {
+      global $woocommerce;
+      foreach ( $cart_object->cart_contents as $key => $value ) {
+        if ( "trip" == $value['data']->product_type) {
+          if( WC()->session->__isset( $key.'_cost' ) ) {
+            $additional_costs = WC()->session->get( $key.'_cost' );
+            $value['data']->price = $additional_costs;
+          }
         }
+      }
     }
     private function get_package_cost( $description, $packages ) {
         foreach( $packages as $key => $array ) {
