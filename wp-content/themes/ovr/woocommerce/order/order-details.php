@@ -38,8 +38,13 @@ AAA;
                 </a><br /><br />
                 <p>For a smooth and prompt departure on the day of your trip, please download and print out a copy of our waiver. If you bring this 2 sided filled out and signed copy to the trip, we’ll surely appreciate it, as it will speed up our check-in process.  If you don’t have access to a printer, additional waivers will be available on the bus.</p>
 BBB;
+
 								}
             }
+						// Break out and only print once if needed.
+						if ( isset($item_meta->meta['Package'][0]) ){
+							break;
+						}
         }
     }
 ?>
