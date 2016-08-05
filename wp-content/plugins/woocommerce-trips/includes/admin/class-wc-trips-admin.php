@@ -546,13 +546,13 @@ TRAILMAP;
             and no locations have been saved to this trip
             */
         } else {
-            if ( in_array($location_id, $locations) ) {
-                unset( $locations[array_search( $location_id, $locations )] );
-                $removed = TRUE;
-                if ( ! update_post_meta( $post_id, '_wc_trip_pickups', $locations) ) {
-                    $removed = FALSE;
-                }
+          if ( isset( $locations[$location_id] ) ) {
+            unset( $locations[$location_id] );
+            $removed = TRUE;
+            if ( ! update_post_meta( $post_id, '_wc_trip_pickups', $locations) ) {
+              $removed = FALSE;
             }
+          }
         }
 
         if ( $removed ) {
