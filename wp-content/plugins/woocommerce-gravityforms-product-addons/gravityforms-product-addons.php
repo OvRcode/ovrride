@@ -161,7 +161,7 @@ if ( is_woocommerce_active() ) {
 
 		//Fix up any add to cart button that has a gravity form assoicated with the product.
 		function on_wp_footer() {
-			global $wpdb;		
+			global $wpdb;
 			$metakey = '_gravity_form_data';
 			$product_ids = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key=%s", $metakey ) );
 			if ( is_array( $product_ids ) ) {
@@ -433,7 +433,7 @@ if ( is_woocommerce_active() ) {
 
 					$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-					wp_register_script( 'accounting', WC()->plugin_url() . '/assets/js/admin/accounting' . $suffix . '.js', array('jquery'), '0.4.2' );
+					wp_register_script( 'accounting', WC()->plugin_url() . '/assets/js/accounting/accounting' . $suffix . '.js', array('jquery'), '0.4.2' );
 					wp_enqueue_script( 'wc-gravityforms-product-addons', woocommerce_gravityforms::plugin_url() . '/assets/js/gravityforms-product-addons.js', array('jquery', 'accounting'), true );
 
 					$product = wc_get_product();
@@ -459,7 +459,7 @@ if ( is_woocommerce_active() ) {
 					    'currency_format_decimal_sep' => esc_attr( wc_get_price_decimal_separator() ),
 					    'currency_format_thousand_sep' => esc_attr( wc_get_price_thousand_separator() ),
 					    'currency_format' => esc_attr( str_replace( array('%1$s', '%2$s'), array('%s', '%v'), get_woocommerce_price_format() ) ), // For accounting JS
-					    'prices' => $prices, 
+					    'prices' => $prices,
 					    'price_suffix' => $product->get_price_suffix()
 					);
 
@@ -469,7 +469,7 @@ if ( is_woocommerce_active() ) {
 				$enqueue = false;
 				$forms = array();
 				$prices = array();
-				
+
 				if ( preg_match_all( '/\[product_page[s]? +.*?((id=.+?)|(name=.+?))\]/is', $post->post_content, $matches, PREG_SET_ORDER ) ) {
 					$ajax = false;
 					foreach ( $matches as $match ) {
@@ -482,10 +482,10 @@ if ( is_woocommerce_active() ) {
 							if ( $gravity_form_data && is_array( $gravity_form_data ) ) {
 								$enqueue = true;
 								gravity_form_enqueue_scripts( $gravity_form_data['id'], false );
-								
+
 								$product = wc_get_product( $product_id );
 								$prices[$product->id] = $product->get_display_price();
-								
+
 								if ( $product->has_child() ) {
 									foreach ( $product->get_children() as $variation_id ) {
 										$variation = $product->get_child( $variation_id );
@@ -907,7 +907,7 @@ if ( is_woocommerce_active() ) {
 
 								$item_meta->add( $display_title, $display_value );
 							} catch ( Exception $e ) {
-								
+
 							}
 						}
 					}
@@ -943,7 +943,7 @@ if ( is_woocommerce_active() ) {
 						$valid_products = array();
 						foreach ( $products['products'] as $id => $product ) {
 							if ( !isset( $product['quantity'] ) ) {
-								
+
 							} elseif ( $product['quantity'] ) {
 								$valid_products[] = $id;
 							}
@@ -971,19 +971,19 @@ if ( is_woocommerce_active() ) {
 										$strip_html = false;
 										$dv = $lead[ $field['id'] ];
 										$files = json_decode($dv);
-											
+
 										if (empty($files)){
 											$files = array( $dv );
 										}
-										
+
 										$display_value = '';
-										
+
 										$sep = '';
 										foreach($files as $file){
 											$display_value .= $sep . '<a href="' . $file . '">' . $file . '</a>';
 											$sep = ', ';
 										}
-										
+
 									} else {
 
 										$display_value = GFCommon::get_lead_field_display( $field, $value, isset( $lead["currency"] ) ? $lead["currency"] : false, apply_filters( 'woocommerce_gforms_use_label_as_value', true, $value, $field, $lead, $form_meta ) );
@@ -1019,7 +1019,7 @@ if ( is_woocommerce_active() ) {
 
 									woocommerce_add_order_item_meta( $item_id, $prefix . $display_title, $display_value );
 								} catch ( Exception $e ) {
-									
+
 								}
 							}
 						}
