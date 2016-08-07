@@ -242,7 +242,9 @@ class WC_Trips_Cart {
                 return TRUE;
               }
             }
-            //else if ( "bus" === $product->wc_trip_type ){}
+            else{
+              return TRUE;
+            }
           } else {
             // Product has gone out of stock since page was loaded.
             wc_add_notice('Can\'t add item to cart, item is out of stock','error');
