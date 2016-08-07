@@ -151,6 +151,10 @@ class WC_Trips {
         }
         $beach_bus_data[] = $tempArray;
       }
+      // Sort beach bus data by trip date
+      usort($beach_bus_data, function($a, $b){
+        return strcasecmp($a['date'], $b['date']);
+      });
       return $beach_bus_data;
     }
     public function product_tabs( $tabs ) {
