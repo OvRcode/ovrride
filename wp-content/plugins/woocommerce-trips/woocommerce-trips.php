@@ -233,7 +233,13 @@ class WC_Trips {
             "priority"  => 44,
             "callback" => array($this, 'lodging_content')
           ),
+          "trail_map" => array(
+            "title" =>  "Trail Map",
+            "priority"  => 45,
+            "callback"  => array( $this, 'trail_map_content')
+          )
         );
+
         foreach ( $product_tabs as $name => $array) {
           if ( "destination" !== $name ) {
               $value = get_post_meta( $product->id, $array['meta_key'], true);
@@ -289,14 +295,21 @@ class WC_Trips {
         $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
         $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
         $destination_id = $wpdb->get_var( $query );
-        $destination_map = get_post_meta( $destination_id, '_trail_map', true);
-        echo <<<MAP
-            <p>
+        $destination_map[1] = get_post_meta( $destination_id, '_trail_map', true);
+        $destination_map[2] = get_post_meta( $destination_id, '_trail_map_2', true);
+        $destination_map[3] = get_post_meta( $destination_id, '_trail_map_3', true);
+        $destination_map[4] = get_post_meta( $destination_id, '_trail_map_4', true);
+        foreach($destination_map as $index => $destination_map){
+          if ( "" !== $destination_map && FALSE !== $destination_map ){
+            echo <<<MAP
+              <p>
                 <a href="#" data-featherlight="#wc_trip_trail_map">
                     <img  src="{$destination_map}" id="wc_trip_trail_map" alt="trail map" />
                 </a>
-            </p>
+              </p>
 MAP;
+          }
+        }
     }
     public function bus_times_content() {
         global $product;
