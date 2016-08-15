@@ -117,6 +117,7 @@ class WC_Trips {
           'menu_position' => 40,
           'supports'      => array( 'title', 'thumbnail'),
           'has_archive'   => true,
+          'publicly_queryable'  => false
         );
         register_post_type( 'destinations', $destinationArgs );
     }
