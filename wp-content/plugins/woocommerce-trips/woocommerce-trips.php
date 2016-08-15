@@ -303,8 +303,8 @@ class WC_Trips {
           if ( "" !== $destination_map && FALSE !== $destination_map ){
             echo <<<MAP
               <p>
-                <a href="#" data-featherlight="#wc_trip_trail_map">
-                    <img  src="{$destination_map}" id="wc_trip_trail_map" alt="trail map" />
+                <a href="#" data-featherlight="#wc_trip_trail_map{$index}">
+                    <img  src="{$destination_map}" id="wc_trip_trail_map{$index}" alt="trail map" />
                 </a>
               </p>
 MAP;
