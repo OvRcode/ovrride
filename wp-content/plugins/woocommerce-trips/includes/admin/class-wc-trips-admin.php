@@ -205,9 +205,6 @@ class WC_Trips_Admin {
         global $post;
         $post_id = $post->ID;
         wp_enqueue_script( 'wc_trips_admin_js' );
-        #include( 'views/html-trip-primary-packages.php' );
-        #include( 'views/html-trip-secondary-packages.php' );
-        #include( 'views/html-trip-tertiary-packages.php' );
         include( 'views/html-trip-pickup-locations.php' );
         include( 'views/html-trip-packages.php' );
         include( 'views/html-trip-to_beach.php' );
