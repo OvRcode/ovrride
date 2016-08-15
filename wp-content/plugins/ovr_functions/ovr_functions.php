@@ -44,17 +44,17 @@ add_filter('woocommerce_get_availability', 'availability_filter_func');
 // http://www.rcorreia.com/woocommerce/woocommerce-automatically-set-order-status-payment-received/
 
 add_filter( 'woocommerce_payment_complete_order_status', 'ovr_update_order_status', 10, 2 );
- 
+
 function ovr_update_order_status( $order_status, $order_id ) {
- 
+
  $order = new WC_Order( $order_id );
- 
+
  if ( 'processing' == $order_status && ( 'on-hold' == $order->status || 'pending' == $order->status || 'failed' == $order->status ) ) {
- 
+
  return 'completed';
- 
+
  }
- 
+
  return $order_status;
 }
 
@@ -72,19 +72,19 @@ function register_no_show_order_status() {
 add_action( 'init', 'register_no_show_order_status' );
 // Add to list of WC Order statuses
 function add_no_show_to_order_statuses( $order_statuses ) {
-  
+
     $new_order_statuses = array();
-  
+
     // add new order status after processing
     foreach ( $order_statuses as $key => $status ) {
-  
+
         $new_order_statuses[ $key ] = $status;
-  
+
         if ( 'wc-processing' === $key ) {
             $new_order_statuses['wc-no-show'] = 'No Show';
         }
     }
-  
+
     return $new_order_statuses;
 }
 add_filter( 'wc_order_statuses', 'add_no_show_to_order_statuses' );
@@ -103,19 +103,19 @@ function register_balance_due_order_status() {
 add_action( 'init', 'register_balance_due_order_status' );
 
 function add_balance_due_to_order_statuses( $order_statuses ) {
-  
+
     $new_order_statuses = array();
-  
+
     // add new order status after processing
     foreach ( $order_statuses as $key => $status ) {
-  
+
         $new_order_statuses[ $key ] = $status;
-  
+
         if ( 'wc-processing' === $key ) {
             $new_order_statuses['wc-balance-due'] = 'Balance Due';
         }
     }
-  
+
     return $new_order_statuses;
 }
 add_filter( 'wc_order_statuses', 'add_balance_due_to_order_statuses' );
@@ -138,17 +138,19 @@ add_action('wp_footer', 'add_google_analytics');
   function add_google_analytics() { ?>
 <!-- Google Analytics: -->
 <script type="text/javascript">
+  // Only load Analytics in production
+  if (document.location.hostname.search("ovrride.com") !== -1) {
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-11964448-1']);
+    _gaq.push(['_setDomainName', 'ovrride.com']);
+    _gaq.push(['_trackPageview']);
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-11964448-1']);
-  _gaq.push(['_setDomainName', 'ovrride.com']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  }
 
 </script>
 
@@ -225,7 +227,7 @@ add_filter('widget_text', 'do_shortcode');
 function ovr_remove_gf_data( $entry ) {
 
     // Skip entries from contact form in case of email issues, also skip constant contact
-    if ( $entry["form_id"] != "10" || $entry["form_id"] != "4" || 
+    if ( $entry["form_id"] != "10" || $entry["form_id"] != "4" ||
         strpos($entry["source_url"], "ovrride.com/contact-us") === false) {
             ovr_delete_gf_entry($entry["id"]);
     }
@@ -236,7 +238,7 @@ function ovr_remove_gf_data( $entry ) {
  *@param string $lead_id, id of gravity form entry to remove
  */
 function ovr_delete_gf_entry( $lead_id ){
-    
+
     global $wpdb;
     // Prepare variables.
     $lead_table             = RGFormsModel::get_lead_table_name();
@@ -270,14 +272,14 @@ function ovr_delete_gf_entry( $lead_id ){
  */
 function ovr_delete_old_gf_data(){
     global $wpdb;
-    
-    $lead_table = RGFormsModel::get_lead_table_name();    
+
+    $lead_table = RGFormsModel::get_lead_table_name();
     $now = new DateTime();
     // subtract 1 week from current date
     $date = $now->sub(new DateInterval('P1W'));
     $sql = $wpdb->prepare( "SELECT id FROM $lead_table WHERE date_created <= %s", $date->format('Y-m-d 00:00:00'));
     $results = $wpdb->get_results($sql);
-    
+
     foreach ( $results as $result ) {
         ovr_delete_gf_entry($result->id);
     }
@@ -286,7 +288,7 @@ function ovr_delete_old_gf_data(){
 //register_activation_hook(__FILE__, 'ovr_delete_old_gf_data_schedule');
 function ovr_delete_old_gf_data_schedule(){
     $timestamp = wp_next_scheduled('daily_ovr_delete_old_gf_data');
-    
+
     if ( $timestamp == false ) {
         wp_schedule_event( time(), 'daily', 'daily_ovr_delete_old_gf_data');
     }
