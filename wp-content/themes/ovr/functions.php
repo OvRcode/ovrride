@@ -8,7 +8,7 @@
  */
  // Force logged in users to use SSL
  if (is_user_logged_in() && ($_SERVER['HTTPS'] !== 'on')){
-    wp_redirect("https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+    wp_redirect("https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 }
 
 if ( ! function_exists( 'quark_woocommerce_before_main_content' ) ) {
