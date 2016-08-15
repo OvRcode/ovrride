@@ -65,7 +65,7 @@ class WC_Trips {
     }
 
     public function trip_scripts_and_styles() {
-        wp_enqueue_style( 'wc-trips-styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_frontend.css', null, WC_TRIPS_VERSION );
+        wp_enqueue_style( 'wc-trips-styles', WC_TRIPS_PLUGIN_URL . '/assets/css/trip_frontend.min.css', null, WC_TRIPS_VERSION );
         wp_enqueue_script( 'wc-trips-frontend-js', WC_TRIPS_PLUGIN_URL . '/assets/js/front_end.js', array('jquery'), WC_TRIPS_VERSION, TRUE );
         wp_enqueue_script( 'verimail-jquery', WC_TRIPS_PLUGIN_URL . '/assets/js/verimail.jquery.min.js', array('jquery'), WC_TRIPS_VERSION, TRUE);
     }
@@ -219,7 +219,19 @@ class WC_Trips {
             "title" => "Pics",
             "priority"  => 46,
             "callback" => array($this, 'pics_content')
-          )
+          ),
+          "itinerary" => array(
+            "meta_key" => "_wc_trip_itinerary",
+            "title" => "Itinerary",
+            "priority"  => 43,
+            "callback" => array($this, 'itinerary_content')
+          ),
+          "lodging" => array(
+            "meta_key" => "_wc_trip_lodging",
+            "title" => "Lodging",
+            "priority"  => 44,
+            "callback" => array($this, 'lodging_content')
+          ),
         );
         foreach ( $product_tabs as $name => $array) {
           if ( "destination" !== $name ) {
@@ -241,43 +253,34 @@ class WC_Trips {
 
         return $tabs;
     }
-    public function video_content(){
+    private function html_content($meta_key) {
       global $product;
-      $video_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_videos', true ) );
-
-      //echo apply_filters('the_content', $video_data);
-      echo $video_data;
+      echo apply_filters('the_content', do_shortcode( shortcode_unautop( get_post_meta( $product->id, $meta_key, true ) ) ) );
+    }
+    public function itinerary_content(){
+      $this->html_content('_wc_trip_itinerary');
+    }
+    public function lodging_content(){
+      $this->html_content('_wc_trip_lodging');
+    }
+    public function video_content(){
+      $this->html_content('_wc_trip_videos');
     }
     public function routes_content(){
-      global $product;
-      $routes_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_routes', true) );
-
-      echo apply_filters('the_content', $routes_data);
+      $this->html_content('_wc_trip_routes');
     }
-
     public function partners_content(){
-      global $product;
-      $partners_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_partners', true) );
-
-      echo apply_filters('the_content', $partners_data);
+      $this->html_content('_wc_trip_partners');
     }
     public function pics_content(){
-        global $product;
-        $pics_data = do_shortcode( get_post_meta( $product->id, '_wc_trip_pics', true) );
-        //echo do_shortcode($pics_data, FALSE);
-        echo apply_filters('the_content', $pics_data);
+      $this->html_content('_wc_trip_pics');
     }
-
     public function flight_times_content(){
-        global $product;
-        $flight_times_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_flight_times', true) ) );
-        echo apply_filters('the_content', $flight_times_data);
+      $this->html_content('_wc_trip_flight_times');
     }
 
     public function rates_content() {
-        global $product;
-        $rates_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_rates', true) ) );
-        echo apply_filters('the_content', $rates_data );
+      $this->html_content('_wc_trip_rates');
     }
 
     public function trail_map_content() {
@@ -291,8 +294,8 @@ class WC_Trips {
         echo <<<MAP
             <p>
                 <a href="#" data-featherlight="#wc_trip_trail_map">
-                    <img  src="{$destination_map}" id="wc_trip_trail_map" alt="mtsnow" />
-                    </a>
+                    <img  src="{$destination_map}" id="wc_trip_trail_map" alt="trail map" />
+                </a>
             </p>
 MAP;
     }
@@ -328,9 +331,7 @@ TESTING;
     }
 
     public function includes_content() {
-        global $product;
-        $includes_data = do_shortcode( shortcode_unautop( get_post_meta( $product->id, '_wc_trip_includes', true) ) );
-        echo apply_filters('the_content', $includes_data );
+      $this->html_content('_wc_trip_includes');
     }
 
     public function pickup_html( $post_id ) {
