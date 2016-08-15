@@ -279,11 +279,9 @@ class WC_Trips {
     public function flight_times_content(){
       $this->html_content('_wc_trip_flight_times');
     }
-
     public function rates_content() {
       $this->html_content('_wc_trip_rates');
     }
-
     public function trail_map_content() {
         global $product, $wpdb;
         wp_enqueue_style("featherlight-css", WC_TRIPS_PLUGIN_URL . "/assets/css/featherlight.min.css");
@@ -300,7 +298,6 @@ class WC_Trips {
             </p>
 MAP;
     }
-
     public function bus_times_content() {
         global $product;
 
@@ -330,11 +327,9 @@ TEMPHTML;
             <div class="busRightColumn">{$rightColumnContent}</div>
 TESTING;
     }
-
     public function includes_content() {
       $this->html_content('_wc_trip_includes');
     }
-
     public function pickup_html( $post_id ) {
         $pickup = get_post( $post_id );
         $address = get_post_meta( $post_id, '_pickup_location_address', true );
@@ -355,7 +350,6 @@ PICKUPHTML;
 
         return $output;
     }
-
     public function remove_description_header() {
         return '';
     }

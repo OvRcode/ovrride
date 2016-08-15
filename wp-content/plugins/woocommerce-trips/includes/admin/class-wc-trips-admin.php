@@ -326,6 +326,9 @@ META;
             }
 
             update_post_meta( $post_id, '_trail_map', sanitize_text_field( $_POST['upload_trail_map'] ) );
+            update_post_meta( $post_id, '_trail_map_2', sanitize_text_field( $_POST['upload_trail_map_2'] ) );
+            update_post_meta( $post_id, '_trail_map_3', sanitize_text_field( $_POST['upload_trail_map_3'] ) );
+            update_post_meta( $post_id, '_trail_map_4', sanitize_text_field( $_POST['upload_trail_map_4'] ) );
             update_post_meta( $post_id, '_contact', sanitize_text_field( $_POST['_contact'] ) );
             update_post_meta( $post_id, '_contact_phone', sanitize_text_field( $_POST['_contact_phone'] ) );
             update_post_meta( $post_id, '_rep', sanitize_text_field( $_POST['_rep'] ) );
@@ -341,14 +344,14 @@ META;
         wp_enqueue_script('destinations_upload', WC_TRIPS_PLUGIN_URL . '/assets/js/destinations.js', array('jquery','media-upload','thickbox'));
         wp_nonce_field(plugin_basename(__FILE__), 'destination_attachment_nonce');
         $map = get_post_meta( $post->ID, '_trail_map', true);
+        $map_two = get_post_meta( $post->ID, '_trail_map_2', true);
+        $map_three = get_post_meta( $post->ID, '_trail_map_3', true);
+        $map_four = get_post_meta( $post->ID, '_trail_map_4', true);
         $contact = get_post_meta( $post->ID, '_contact', true);
         $contactPhone = get_post_meta( $post->ID, '_contact_phone', true);
         $rep = get_post_meta( $post->ID, '_rep', true);
         $repPhone = get_post_meta( $post->ID, '_rep_phone', true);
-        $html = <<<TRAILMAP
-             <label>Trail Map</label><input id="upload_trail_map" type="text" size="36" name="upload_trail_map" value="{$map}" />
-             <input id="upload_trail_map_button" type="button" value="Select Trail Map" />
-             <br />
+        $html = <<<DESTFIELDS
              <label>Contact: </label><input type="text" size="36" name="_contact" value="{$contact}" />
              <br />
              <label>Contact Phone: </label><input type="text" size="20" name="_contact_phone" value="{$contactPhone}" />
@@ -356,7 +359,20 @@ META;
              <label>Rep: </label><input type="text" size="36" name="_rep" value="{$rep}" />
              <br />
              <label>Rep Phone: </label><input type="text" size="20" name="_rep_phone" value="{$repPhone}" />
-TRAILMAP;
+             <br />
+             <label>Trail Map</label><input id="upload_trail_map" type="text" size="36" name="upload_trail_map" value="{$map}" />
+             <input id="upload_trail_map_button" type="button" value="Select Trail Map" />
+             <br />
+             <label>Trail Map Two</label><input id="upload_trail_map_2" type="text" size="36" name="upload_trail_map_2" value="{$map_two}" />
+             <input id="upload_trail_map_2_button" type="button" value="Select Trail Map Two" />
+             <br />
+             <label>Trail Map Three</label><input id="upload_trail_map_3" type="text" size="36" name="upload_trail_map_3" value="{$map_three}" />
+             <input id="upload_trail_map_3_button" type="button" value="Select Trail Map Three" />
+             <br />
+             <label>Trail Map Four</label><input id="upload_trail_map_4" type="text" size="36" name="upload_trail_map_4" value="{$map_four}" />
+             <input id="upload_trail_map_4_button" type="button" value="Select Trail Map Four" />
+             <br />
+DESTFIELDS;
         echo $html;
     }
 
