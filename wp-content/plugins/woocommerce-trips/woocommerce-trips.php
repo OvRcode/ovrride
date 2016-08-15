@@ -159,83 +159,86 @@ class WC_Trips {
     }
     public function product_tabs( $tabs ) {
         global $product, $wpdb;
+        $product_tabs = array(
+          "videos" => array(
+            "meta_key" => "_wc_trip_videos",
+            "title" => "Videos",
+            "priority"  => 47,
+            "callback" => array($this, 'video_content')
+          ),
+          "routes" => array(
+            "meta_key" => "_wc_trip_routes",
+            "title" => "Bus Routes",
+            "priority"  => 38,
+            "callback" => array($this, 'routes_content')
+          ),
+          "partners" => array(
+            "meta_key" => "_wc_trip_partners",
+            "title" => "Partners",
+            "priority"  => 50,
+            "callback" => array($this, 'partners_content')
+          ),
+          "pickups" => array(
+            "meta_key" => "_wc_trip_pickups",
+            "title" => "Bus Times",
+            "priority"  => 50,
+            "callback" => array($this, 'bus_times_content')
+          ),
+          "partners" => array(
+            "meta_key" => "_wc_trip_partners",
+            "title" => "Partners",
+            "priority"  => 50,
+            "callback" => array($this, 'partners_content')
+          ),
+          "trail_map_content" => array(
+            "meta_key" => "_trail_map",
+            "title" => "Trail Map",
+            "priority"  => 45,
+            "callback" => array($this, 'trail_map_content')
+          ),
+          "includes" => array(
+            "meta_key" => "_wc_trip_includes",
+            "title" => "Includes",
+            "priority"  => 40,
+            "callback" => array($this, 'includes_content')
+          ),
+          "rates" => array(
+            "meta_key" => "_wc_trip_rates",
+            "title" => "Rates",
+            "priority"  => 42,
+            "callback" => array($this, 'rates_content')
+          ),
+          "flight_times" => array(
+            "meta_key" => "_wc_trip_flight_times",
+            "title" => "Flight Times",
+            "priority"  => 43,
+            "callback" => array($this, 'flight_times_content')
+          ),
+          "pics" => array(
+            "meta_key" => "_wc_trip_pics",
+            "title" => "Pics",
+            "priority"  => 46,
+            "callback" => array($this, 'pics_content')
+          )
+        );
+        foreach ( $product_tabs as $name => $array) {
+          if ( "destination" !== $name ) {
+              $value = get_post_meta( $product->id, $array['meta_key'], true);
+          } else {
+            $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
+            $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
+            $destination_id     = $wpdb->get_var( $query );
+            $value = get_post_meta( $destination_id, '_trail_map', true);
+          }
 
-        $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
-        $query = "SELECT ID FROM {$wpdb->posts} WHERE post_title='" . $destination . "' and post_type='destinations'";
-        $destination_id     = $wpdb->get_var( $query );
-        $destination_map    = get_post_meta( $destination_id, '_trail_map', true);
-        $trip_includes      = get_post_meta( $product->id, '_wc_trip_includes', true);
-        $pickups            = get_post_meta( $product->id, '_wc_trip_pickups', true);
-        $trip_rates         = get_post_meta( $product->id, '_wc_trip_rates', true);
-        $flight_times       = get_post_meta( $product->id, '_wc_trip_flight_times', true);
-        $pics               = get_post_meta( $product->id, '_wc_trip_pics', true);
-        $routes             = get_post_meta( $product->id, '_wc_trip_routes', true);
-        $partners           = get_post_meta( $product->id, '_wc_trip_partners', true);
-        $videos             = get_post_meta( $product->id, '_wc_trip_videos', true);
+          if ( "" !== $value && FALSE !== $value ) {
+            $tab_array = $array;
+            unset($tab_array["meta_key"]);
+            $tabs[$name] = $tab_array;
+          }
+        }
 
-        if ( "" !== $videos && FALSE !== $videos ) {
-          $tabs['videos'] = array(
-            'title'     => 'Videos',
-            'priority'  => 47,
-            'callback'  => array( $this, 'video_content')
-          );
-        }
-        if ( "" !== $routes && FALSE !== $routes ) {
-          $tabs['bus_routes'] = array(
-            'title'     => 'Bus Routes',
-            'priority'  => 38,
-            'callback'  => array( $this, 'routes_content')
-          );
-        }
-        if ( "" !== $partners && FALSE !== $partners ) {
-          $tabs['partners'] = array(
-            'title'     => 'Partners',
-            'priority'  => 50,
-            'callback'  => array( $this, 'partners_content')
-          );
-        }
-        if ( "" !== $pickups && FALSE !== $pickups ) {
-            $tabs['pickups'] = array(
-                'title'     => 'Bus Times',
-                'priority'  => 50,
-                'callback'  => array( $this, 'bus_times_content')
-                );
-        }
-        if ( "" !== $destination_map && FALSE !== $destination_map ) {
-            $tabs['trail_map'] = array(
-                'title'     => 'Trail Map',
-                'priority'  => 45,
-                'callback'  => array( $this, 'trail_map_content')
-            );
-        }
-        if ( "" !== $trip_includes && FALSE !== $trip_includes ) {
-            $tabs['includes'] = array(
-                'title'     => 'Includes',
-                'priority'  => 40,
-                'callback'  => array( $this, 'includes_content')
-            );
-        }
-        if ( "" !== $trip_rates && FALSE !== $trip_rates) {
-            $tabs['rates'] = array(
-                'title'     => 'Rates',
-                'priority'  => 42,
-                'callback'  => array( $this, 'rates_content')
-            );
-       }
-        if ( "" !== $flight_times && FALSE !== $flight_times ) {
-            $tabs['flight_times'] = array(
-                'title'     => 'Flight Times',
-                'priority'  => 43,
-                'callback'  => array( $this, 'flight_times_content')
-            );
-        }
-        if ( "" !== $pics && FALSE !== $pics ) {
-            $tabs['pics'] = array(
-                'title'     => 'Pics',
-                'priority'  => 46,
-                'callback'  => array( $this, 'pics_content')
-            );
-        }
+
         return $tabs;
     }
     public function video_content(){
