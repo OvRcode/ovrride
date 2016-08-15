@@ -19,6 +19,12 @@
 <li class="trips_tab trips_includes_tab attribute_options show_if_trip">
     <a href="#trips_includes">Includes</a>
 </li>
+<li class="trips_tab trips_itinerary shipping_options show_if_trip">
+    <a href="#trips_itinerary">Itinerary</a>
+</li>
+<li class="trips_tab trips_lodging attribute_options show_if_trip">
+    <a href="#trips_lodging">Lodging</a>
+</li>
 <li class="trips_tab trips_rates_tab attribute_options show_if_trip">
     <a href="#trips_rates">Rates</a>
 </li>

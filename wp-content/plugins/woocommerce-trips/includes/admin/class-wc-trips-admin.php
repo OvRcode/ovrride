@@ -97,7 +97,9 @@ class WC_Trips_Admin {
             '_wc_trip_partners'                 => 'html',
             '_wc_trip_flight_times'             => 'html',
             '_wc_trip_pics'                     => 'html',
-            '_wc_trip_videos'                   => 'html'
+            '_wc_trip_videos'                   => 'html',
+            '_wc_trip_itinerary'                => 'html',
+            '_wc_trip_lodging'                  => 'html'
             );
         foreach ( $meta_to_save as $meta_key => $sanitize ) {
             $value = ! empty( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '';
@@ -216,6 +218,8 @@ class WC_Trips_Admin {
         include( 'views/html-trip-packages.php' );
         include( 'views/html-trip-to_beach.php' );
         include( 'views/html-trip-videos.php' );
+        include( 'views/html-trip-itinerary.php' );
+        include( 'views/html-trip-lodging.php' );
     }
 
     public function script_style_includes() {
