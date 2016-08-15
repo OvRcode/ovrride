@@ -79,3 +79,12 @@ p.errorField {
   border-radius: 10px;
   padding: 10px;
 }
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+    list-style: none;
+    padding: 0 0 0 1em;
+    margin: 0 0 1.618em;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap-reverse;
+  }
