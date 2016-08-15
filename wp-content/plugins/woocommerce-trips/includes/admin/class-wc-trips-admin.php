@@ -205,21 +205,19 @@ class WC_Trips_Admin {
         global $post;
         $post_id = $post->ID;
         wp_enqueue_script( 'wc_trips_admin_js' );
-        include( 'views/html-trip-primary-packages.php' );
-        include( 'views/html-trip-secondary-packages.php' );
-        include( 'views/html-trip-tertiary-packages.php' );
+        #include( 'views/html-trip-primary-packages.php' );
+        #include( 'views/html-trip-secondary-packages.php' );
+        #include( 'views/html-trip-tertiary-packages.php' );
         include( 'views/html-trip-pickup-locations.php' );
-        include( 'views/html-trip-includes.php' );
-        include( 'views/html-trip-rates.php' );
-        include( 'views/html-trip-flight-times.php' );
-        include( 'views/html-trip-pics.php' );
-        include( 'views/html-trip-routes.php' );
-        include( 'views/html-trip-partners.php' );
         include( 'views/html-trip-packages.php' );
         include( 'views/html-trip-to_beach.php' );
-        include( 'views/html-trip-videos.php' );
-        include( 'views/html-trip-itinerary.php' );
-        include( 'views/html-trip-lodging.php' );
+        foreach( array("primary", "secondary", "tertiary") as $index => $type ) {
+          include('views/html-trip-package.php');
+        }
+        $inputPanels = array("includes", "rates","flight_times","pics","partners","videos","itinerary","lodging");
+        foreach($inputPanels as $index => $type) {
+          include('views/html-trip-text-input.php');
+        }
     }
 
     public function script_style_includes() {
