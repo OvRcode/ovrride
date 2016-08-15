@@ -6,13 +6,18 @@ module.exports = function(grunt){
           ids: false,
           important: false
         },
-        src: ['assets/css/trip_admin.css']
+        src: ['assets/css/trip_admin.css', 'assets/css/trip_frontend.css']
       },
     },
     cssmin: {
       target: {
-        src: ['assets/css/trip_admin.css'],
-        dest: 'assets/css/trip_admin.min.css',
+        files: [{
+          expand: true,
+          cwd: 'assets/css',
+          src: ['*.css', '!*.min.css'],
+          dest: 'assets/css',
+          ext: '.min.css'
+        }]
       }
     },
     phplint: {
