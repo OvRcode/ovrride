@@ -241,7 +241,7 @@ class WC_Trips {
         );
 
         foreach ( $product_tabs as $name => $array) {
-          if ( "destination" !== $name ) {
+          if ( "trail_map" !== $name ) {
               $value = get_post_meta( $product->id, $array['meta_key'], true);
           } else {
             $destination = get_post_meta( $product->id, '_wc_trip_destination', true);
