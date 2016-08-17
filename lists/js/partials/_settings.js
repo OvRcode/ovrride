@@ -38,7 +38,7 @@ $(function(){
     $('#clear').click(function(){ resetStatuses("All"); });
     $("#clearData").click(function(){ clearData(); });
     // Switch out buses for beachbus only
-    $("#trip").on("change", busSwitch);
+    $("#destination").on("change", busSwitch);
     $('#generate_list').click(function(){
       if ( $("#destination").val() == "none" || $("#trip").val() == "none" ) {
         alert("please select a trip or destination");
