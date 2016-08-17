@@ -60,11 +60,26 @@ $(function(){
       }
     });
 function busSwitch() {
+  var destination = $("#destination").val();
   $("#bus").html('');
-  $("#bus").append("<option value='ToEarly'>To Beach: Early</option>");
-  $("#bus").append("<option value='ToLate'>To Beach: Late</option>");
-  $("#bus").append("<option value='FromEarly'>From Beach: Early</option>");
-  $("#bus").append("<option value='FromLate'>From Beach: Late</option>");
+  if ( "Rockaway Beach" == destination ) {
+    $("#bus").append("<option value='ToEarly'>To Beach: Early</option>");
+    $("#bus").append("<option value='ToLate'>To Beach: Late</option>");
+    $("#bus").append("<option value='FromEarly'>From Beach: Early</option>");
+    $("#bus").append("<option value='FromLate'>From Beach: Late</option>");
+  } else {
+    $("#bus").append("<option value=\"1\">Bus 1</option>");
+    $("#bus").append("<option value=\"2\">Bus 2</option>");
+    $("#bus").append("<option value=\"3\">Bus 3</option>");
+    $("#bus").append("<option value=\"4\">Bus 4</option>");
+    $("#bus").append("<option value=\"5\">Bus 5</option>");
+    $("#bus").append("<option value=\"6\">Bus 6</option>");
+    $("#bus").append("<option value=\"7\">Bus 7</option>");
+    $("#bus").append("<option value=\"8\">Bus 8</option>");
+    $("#bus").append("<option value=\"9\">Bus 9</option>");
+    $("#bus").append("<option value=\"10\">Bus 10</option>");
+    $("#bus").append("<option value=\"All\">All Buses: Admin ONLY</option>");
+  }
 }
 });
 
