@@ -182,7 +182,7 @@ class Lists {
       }
       // Pull titles for pickups
       $pickupNames = array();
-      if ( isset($this->tripInfo['pickups'] ) ) {
+      if ( isset($this->tripInfo['pickups'] ) && is_array($this->tripInfo['pickups'])) {
         foreach( $this->tripInfo['pickups'] as $index => $id) {
           $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
           $result = $this->dbQuery($sql);
@@ -205,7 +205,7 @@ class Lists {
         $busData = [];
         $busData[$bus] = [];
         $busData["Other"] = [];
-        if ("beach_bus" != $this->tripInfo['type']){
+        if ("beach_bus" !== $this->tripInfo['type']){
         while( $busRow = $busResult->fetch_assoc() ) {
             if ( $busRow['Bus'] !== 0 ){
                 if ( $busRow['Bus'] == $bus ){
@@ -268,38 +268,39 @@ class Lists {
                         OR `meta_key` = 'Phone'";
                         switch ( $this->tripInfo['type'] ) {
                           case 'bus':
-                              $fields .= "OR `meta_key` = 'Pickup Location'
+                              $fields .= " OR `meta_key` = 'Pickup Location'
                               OR `meta_key` = 'Is this guest at least 18 years of age?'";
                               break;
                           case 'beach_bus':
-                              $fields .= "OR `meta_key` = 'To Beach'
+                              $fields .= " OR `meta_key` = 'To Beach'
                               OR `meta_key` = '_to_beach_route' OR `meta_key` = '_to_beach_id'
                               OR `meta_key` = 'From Beach' OR `meta_key` = '_from_beach_route'
                               OR `meta_key` = '_from_beach_id' OR `meta_key` = 'Is this guest at least 18 years of age?'";
                               break;
                           case 'domestic_flight':
-                            $fields .= "OR `meta_key` = 'Date of Birth'";
+                            $fields .= " OR `meta_key` = 'Date of Birth'";
                           case 'international_flight':
-                            $fields .= "OR `meta_key` = 'Passport Number'
+                            $fields .= " OR `meta_key` = 'Passport Number'
                                         OR `meta_key` = 'Passport Country'";
                             break;
                         }
 
 
                         if ( count($this->tripInfo['_wc_trip_primary_packages']['packages']) > 0) {
-                          $fields .= "OR `meta_key` = '{$this->tripInfo['_wc_trip_primary_packages']['label']}'";
+                          $fields .= " OR `meta_key` = '{$this->tripInfo['_wc_trip_primary_packages']['label']}'";
                         }
                         if ( count($this->tripInfo['_wc_trip_secondary_packages']['packages']) > 0) {
-                          $fields .= "OR `meta_key` = '{$this->tripInfo['_wc_trip_secondary_packages']['label']}'";
+                          $fields .= " OR `meta_key` = '{$this->tripInfo['_wc_trip_secondary_packages']['label']}'";
                         }
                         if ( count($this->tripInfo['_wc_trip_tertiary_packages']['packages']) > 0) {
-                          $fields .= "OR `meta_key` = '{$this->tripInfo['_wc_trip_tertiary_packages']['label']}'";
+                          $fields .= " OR `meta_key` = '{$this->tripInfo['_wc_trip_tertiary_packages']['label']}'";
                         }
 
                         $detailSql = "SELECT `meta_key`, `meta_value`
                             FROM `wp_woocommerce_order_itemmeta`
                             WHERE ( " . $fields . ")
                             AND `order_item_id` = '$orderItem'";
+
                         $detailResult = $this->dbQuery($detailSql);
                         while( $detailRow = $detailResult->fetch_assoc() ) {
                           switch ( $detailRow['meta_key'] ) {
@@ -319,14 +320,18 @@ class Lists {
                 }
             }
         }
-        $remove=array();
-        foreach( $this->orders as $id => $info ) {
-          if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
-            $remove[] = $id;
+
+        // Only filter beach bus orders, buses are not numeric for bb
+        if ( !is_numeric($bus) ){
+          $remove=array();
+          foreach( $this->orders as $id => $info ) {
+            if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
+              $remove[] = $id;
+            }
           }
-        }
-        foreach($remove as $id ) {
-          unset($this->orders[$id]);
+          foreach($remove as $id ) {
+            unset($this->orders[$id]);
+          }
         }
         return $this->orders;
     }
@@ -441,7 +446,7 @@ class Lists {
         $row = $result->fetch_assoc();
         $data = $row['Data'];
         $id = $orderData['num'] . ":" . $orderData['item_num'];
-        error_log(print_r($orderData, true));
+
         if ( $data !== "" ) {
             $this->orders[$orderData['num'].":".$orderData['item_num']]['State'] = $data;
         }
@@ -616,10 +621,13 @@ Flight::route('/contact/destination/@destination', function($destination){
     $list = Flight::Lists();
     echo json_encode($list->getContactInfo($destination));
 });
-Flight::route('/trip/@tripId/@bus/@status', function($tripId, $bus,$status){
+Flight::route('GET /trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
         $list->getTripInfo($tripId);
         $data = $list->tripData($bus, $tripId, $status);
+        //error_log(json_encode($data));
+        //print_r($data);
+        //echo "WHY?";
         echo json_encode($data);
     }
 );
