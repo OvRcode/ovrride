@@ -89,10 +89,10 @@ class WC_Shipping {
 		}
 	}
 
-    /**
-     * Initialize shipping.
-     */
-    public function init() {
+	/**
+	 * Initialize shipping.
+	 */
+	public function init() {
 		do_action( 'woocommerce_shipping_init' );
 	}
 
@@ -137,7 +137,7 @@ class WC_Shipping {
 			$this->shipping_methods = $shipping_zone->get_shipping_methods( true );
 
 			// Debug output
-			if ( ! empty( $status_options['shipping_debug_mode'] ) ) {
+			if ( ! empty( $status_options['shipping_debug_mode'] ) && ! defined( 'WOOCOMMERCE_CHECKOUT' ) && ! wc_has_notice( 'Customer matched zone "' . $shipping_zone->get_zone_name() . '"' ) ) {
 				wc_add_notice( 'Customer matched zone "' . $shipping_zone->get_zone_name() . '"' );
 			}
 		} else {

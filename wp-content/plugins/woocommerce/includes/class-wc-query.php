@@ -131,11 +131,35 @@ class WC_Query {
 	}
 
 	/**
+	 * Endpoint mask describing the places the endpoint should be added.
+	 *
+	 * @since 2.6.2
+	 * @return int
+	 */
+	protected function get_endpoints_mask() {
+		if ( 'page' === get_option( 'show_on_front' ) ) {
+			$page_on_front     = get_option( 'page_on_front' );
+			$myaccount_page_id = get_option( 'woocommerce_myaccount_page_id' );
+			$checkout_page_id  = get_option( 'woocommerce_checkout_page_id' );
+
+			if ( in_array( $page_on_front, array( $myaccount_page_id, $checkout_page_id ) ) ) {
+				return EP_ROOT | EP_PAGES;
+			}
+		}
+
+		return EP_PAGES;
+	}
+
+	/**
 	 * Add endpoints for query vars.
 	 */
 	public function add_endpoints() {
+		$mask = $this->get_endpoints_mask();
+
 		foreach ( $this->query_vars as $key => $var ) {
-			add_rewrite_endpoint( $var, EP_ROOT | EP_PAGES );
+			if ( ! empty( $var ) ) {
+				add_rewrite_endpoint( $var, $mask );
+			}
 		}
 	}
 
@@ -240,6 +264,11 @@ class WC_Query {
 				$q->set( 'page_id', (int) get_option( 'page_on_front' ) );
 				$q->set( 'post_type', 'product' );
 			}
+		}
+
+		// Fix product feeds
+		if ( $q->is_feed() && $q->is_post_type_archive( 'product' ) ) {
+			$q->is_comment_feed = false;
 		}
 
 		// Special check for shops with the product archive on front
@@ -398,8 +427,6 @@ class WC_Query {
 	 * @return array
 	 */
 	public function get_catalog_ordering_args( $orderby = '', $order = '' ) {
-		global $wpdb;
-
 		// Get ordering from query string unless defined
 		if ( ! $orderby ) {
 			$orderby_value = isset( $_GET['orderby'] ) ? wc_clean( $_GET['orderby'] ) : apply_filters( 'woocommerce_default_catalog_orderby', get_option( 'woocommerce_default_catalog_orderby' ) );
@@ -490,8 +517,8 @@ class WC_Query {
 
 	/**
 	 * Appends meta queries to an array.
-	 * @access public
-	 * @param array $meta_query
+	 *
+	 * @param  array $meta_query
 	 * @return array
 	 */
 	public function get_meta_query( $meta_query = array() ) {
@@ -499,10 +526,10 @@ class WC_Query {
 			$meta_query = array();
 		}
 
-		$meta_query[] = $this->visibility_meta_query();
-		$meta_query[] = $this->stock_status_meta_query();
-		$meta_query[] = $this->price_filter_meta_query();
-		$meta_query[] = $this->rating_filter_meta_query();
+		$meta_query['visibility']    = $this->visibility_meta_query();
+		$meta_query['stock_status']  = $this->stock_status_meta_query();
+		$meta_query['price_filter']  = $this->price_filter_meta_query();
+		$meta_query['rating_filter'] = $this->rating_filter_meta_query();
 
 		return array_filter( apply_filters( 'woocommerce_product_query_meta_query', $meta_query, $this ) );
 	}
@@ -661,6 +688,40 @@ class WC_Query {
 		$meta_query = isset( $args['meta_query'] ) ? $args['meta_query'] : array();
 
 		return $meta_query;
+	}
+
+	/**
+	 * Based on WP_Query::parse_search
+	 */
+	public static function get_main_search_query_sql() {
+		global $wp_the_query, $wpdb;
+
+		$args         = $wp_the_query->query_vars;
+		$search_terms = isset( $args['search_terms'] ) ? $args['search_terms'] : array();
+		$sql          = array();
+
+		foreach ( $search_terms as $term ) {
+			// Terms prefixed with '-' should be excluded.
+			$include = '-' !== substr( $term, 0, 1 );
+
+			if ( $include ) {
+				$like_op  = 'LIKE';
+				$andor_op = 'OR';
+			} else {
+				$like_op  = 'NOT LIKE';
+				$andor_op = 'AND';
+				$term     = substr( $term, 1 );
+			}
+
+			$like  = '%' . $wpdb->esc_like( $term ) . '%';
+			$sql[] = $wpdb->prepare( "(($wpdb->posts.post_title $like_op %s) $andor_op ($wpdb->posts.post_excerpt $like_op %s) $andor_op ($wpdb->posts.post_content $like_op %s))", $like, $like, $like );
+		}
+
+		if ( ! empty( $sql ) && ! is_user_logged_in() ) {
+			$sql[] = "($wpdb->posts.post_password = '')";
+		}
+
+		return implode( ' AND ', $sql );
 	}
 
 	/**

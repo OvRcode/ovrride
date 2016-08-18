@@ -220,8 +220,10 @@ class WC_Shipping_Zone extends WC_Data {
 		if ( sizeof( $location_parts ) > $max ) {
 			$remaining = sizeof( $location_parts ) - $max;
 			return sprintf( _n( '%s and %d other region', '%s and %d other regions', $remaining, 'woocommerce' ), implode( ', ', array_splice( $location_parts, 0, $max ) ), $remaining );
-		} else {
+		} elseif ( ! empty( $location_parts ) ) {
 			return implode( ', ', $location_parts );
+		} else {
+			return __( 'Everywhere', 'woocommerce' );
 		}
 	}
 
@@ -240,7 +242,7 @@ class WC_Shipping_Zone extends WC_Data {
 		$methods         = array();
 
 		foreach ( $raw_methods as $raw_method ) {
-			if ( in_array( $raw_method->method_id, array_keys( $allowed_classes ) ) ) {
+			if ( in_array( $raw_method->method_id, array_keys( $allowed_classes ), true ) ) {
 				$class_name = $allowed_classes[ $raw_method->method_id ];
 
 				// The returned array may contain instances of shipping methods, as well
@@ -349,7 +351,7 @@ class WC_Shipping_Zone extends WC_Data {
 	public function add_location( $code, $type ) {
 		if ( $this->is_valid_location_type( $type ) ) {
 			if ( 'postcode' === $type ) {
-				$code = trim( strtoupper( $code ) ); // No normalization - postcodes are matched against both normal and formatted versions to support wildcards.
+				$code = trim( strtoupper( str_replace( chr( 226 ) . chr( 128 ) . chr( 166 ), '...', $code ) ) ); // No normalization - postcodes are matched against both normal and formatted versions to support wildcards.
 			}
 			$location = array(
 				'code' => wc_clean( $code ),
