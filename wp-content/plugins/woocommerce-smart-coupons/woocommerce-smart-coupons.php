@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Smart Coupons
  * Plugin URI: http://www.woothemes.com/products/smart-coupons/
  * Description: <strong>WooCommerce Smart Coupons</strong> lets customers buy gift certificates, store credits or coupons easily. They can use purchased credits themselves or gift to someone else.
- * Version: 3.1.1
+ * Version: 3.1.2
  * Author: WooThemes
  * Author URI: http://woothemes.com/
  * Developer: Store Apps
@@ -343,6 +343,7 @@ if ( is_woocommerce_active() ) {
 
 				add_action( 'woocommerce_single_product_summary', array( $this, 'call_for_credit_form') );
 				add_filter( 'woocommerce_is_purchasable', array( $this, 'make_product_purchasable'), 10, 2 );
+				add_filter( 'woocommerce_get_price_html', array( $this, 'price_html_for_purchasing_credit' ), 10, 2 );
 				add_action( 'woocommerce_before_calculate_totals', array( $this, 'override_price_before_calculate_totals') );
 
 				add_action( 'woocommerce_after_shop_loop_item', array( $this, 'remove_add_to_cart_button_from_shop_page') );
@@ -2543,6 +2544,25 @@ if ( is_woocommerce_active() ) {
 			}
 
 			/**
+			 * Remove price html for product which is selling any amount of storecredit
+			 * 
+			 * @param string $price
+			 * @param WC_Product $product
+			 * 
+			 * @return string $price
+			 */
+			public function price_html_for_purchasing_credit( $price = null, $product = null ) {
+
+				$coupons = get_post_meta( $product->id, '_coupon_title', true );
+
+				if ( !empty( $coupons ) && $product instanceof WC_Product && $product->get_price() === '' && $this->is_coupon_amount_pick_from_product_price( $coupons ) && !( $product->get_price() > 0 ) ) {
+					return '';
+				}
+
+				return $price;
+			}
+
+			/**
 			 * Method to check whether 'pick_price_from_product' is set or not
 			 *
 			 * @param array $coupons array of coupon codes
@@ -3455,10 +3475,11 @@ if ( is_woocommerce_active() ) {
 
 							if ( sizeof( $coupon->product_ids ) > 0 || sizeof( $coupon->product_categories ) > 0 ) {
 
-								$discount = 0;
+								$line_totals = 0;
+								$line_taxes = 0;
 								$discounted_products = array();
 
-								foreach ( $this->global_wc()->cart->cart_contents as $product ) {
+								foreach ( $this->global_wc()->cart->cart_contents as $cart_item_key => $product ) {
 
 									if ( $discount >= $coupon->amount ) break;
 
@@ -3468,22 +3489,16 @@ if ( is_woocommerce_active() ) {
 	
 										$continue = false;
 
-										if ( ! empty( $product['variation_id'] ) && in_array( $product['variation_id'], $discounted_products, true ) ) {
-											$continue = true;
-										} elseif ( in_array( $product['product_id'], $discounted_products, true ) ) {
+										if ( ! empty( $cart_item_key ) && ! empty( $discounted_products ) && is_array( $discounted_products ) && in_array( $cart_item_key, $discounted_products, true ) ) {
 											$continue = true;
 										}
 
 										if ( ! $continue && sizeof( array_intersect( $product_cats, $coupon->product_categories ) ) > 0 ) {
 
-											$discounted_products[] = ( ! empty( $product['variation_id'] ) ) ? $product['variation_id'] : $product['product_id'];
+											$discounted_products[] = ( ! empty( $cart_item_key ) ) ? $cart_item_key : '';
 
-											$line_total = $product['line_total'] + wc_round_tax_total( $product['line_tax'] );
-
-											$remaining_coupon_amount = $coupon->amount - $discount;
-											$current_discount = min( $line_total, $remaining_coupon_amount );
-											$discount += $current_discount;
-											$total = $total - $current_discount;
+											$line_totals += $product['line_total'];
+											$line_taxes += $product['line_tax'];
 
 										}
 
@@ -3493,22 +3508,16 @@ if ( is_woocommerce_active() ) {
 
 										$continue = false;
 
-										if ( ! empty( $product['variation_id'] ) && in_array( $product['variation_id'], $discounted_products, true ) ) {
-											$continue = true;
-										} elseif ( in_array( $product['product_id'], $discounted_products, true ) ) {
+										if ( ! empty( $cart_item_key ) && ! empty( $discounted_products ) && is_array( $discounted_products ) && in_array( $cart_item_key, $discounted_products, true ) ) {
 											$continue = true;
 										}
 
 										if ( ! $continue && in_array( $product['product_id'], $coupon->product_ids ) || in_array( $product['variation_id'], $coupon->product_ids ) || in_array( $product['data']->get_parent(), $coupon->product_ids ) ) {
 
-											$discounted_products[] = ( ! empty( $product['variation_id'] ) ) ? $product['variation_id'] : $product['product_id'];
+											$discounted_products[] = ( ! empty( $cart_item_key ) ) ? $cart_item_key : '';
 
-											$line_total = $product['line_total'] + wc_round_tax_total( $product['line_tax'] );
-
-											$remaining_coupon_amount = $coupon->amount - $discount;
-											$current_discount = min( $line_total, $remaining_coupon_amount );
-											$discount += $current_discount;
-											$total = $total - $current_discount;
+											$line_totals += $product['line_total'];
+											$line_taxes += $product['line_tax'];
 
 										}
 
@@ -3516,12 +3525,14 @@ if ( is_woocommerce_active() ) {
 
 								}
 
-							} else {
-
-								$discount = min( $total, $coupon->amount );
-								$total = $total - $discount;
+								$line_tax = wc_round_tax_total( $line_taxes );
+								$total = $line_totals + $line_tax;
 
 							}
+
+							$discount = min( $total, $coupon->amount );
+							$total = $total - $discount;
+
 							if ( $cart_contains_subscription ) {
 								if ( $this->is_wcs_gte( '2.0.10' ) ) {
 									if ( empty( $this->global_wc()->cart->coupon_discount_amounts ) ) {
@@ -3659,10 +3670,10 @@ if ( is_woocommerce_active() ) {
 
 				<tr>
 					<td class="label"><?php _e( 'Store Credit Used', self::$text_domain ); ?> <span class="tips" data-tip="<?php _e( 'This is the total credit used.', self::$text_domain ); ?>">[?]</span>:</td>
+					<td width="1%"></td>
 					<td class="total">
 						<?php echo $this->wc_price( $total_credit_used, array( 'currency' => $order->get_order_currency() ) ); ?>
 					</td>
-					<td width="1%"></td>
 				</tr>
 
 				<?php

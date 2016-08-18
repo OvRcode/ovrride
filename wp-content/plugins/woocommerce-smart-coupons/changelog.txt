@@ -1,5 +1,11 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2016.07.18 - version 3.1.2
+ * Fix: Sometimes Store Credit is discounting only 1 product in cart (store credit is restricted to be used on products & cart contains 3 line item of same variations)
+ * Fix: Rounding totals of individual tax instead of rounding individual tax & then totaling, when store credit is applied to cart
+ * Fix: 'Store Credit Used' alignment on order edit page
+ * Fix: Sometimes product created to sell store credit showing as "Free"
+
 2016.06.20 - version 3.1.1
  * Fix: Undefined index notice on My Account Page on WooCommerce 2.6.1
  * Fix: Absence of rounding in tax causing wrong discounting when 'Product' or 'Product category' is set in store credit
