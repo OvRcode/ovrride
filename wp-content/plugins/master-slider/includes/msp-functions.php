@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  *
  * @package   MasterSlider
@@ -12,7 +12,7 @@
 
 /**
  * Displays master slider markup for specific slider ID
- * 
+ *
  * @param  int      $slider_id   the slider id
  * @return void
  */
@@ -27,7 +27,7 @@ if( ! function_exists( 'masterslider' ) ) {
 
 /**
  * Get master slider markup for specific slider ID
- * 
+ *
  * @param  int      $slider_id   the slider id
  * @return string   the slider markup
  */
@@ -35,9 +35,9 @@ if( ! function_exists( 'get_masterslider' ) ) {
 
     function get_masterslider( $slider_id, $args = NULL ){
         global $msp_instances;
-        
+
         // through an error if slider id is not valid number
-        if( ! is_numeric( $slider_id ) ) 
+        if( ! is_numeric( $slider_id ) )
             return __( 'Invalid slider id. Master Slider ID must be a valid number.', 'master-slider' );
 
         // load masterslider script
@@ -45,14 +45,14 @@ if( ! function_exists( 'get_masterslider' ) ) {
         wp_enqueue_script( 'masterslider-core');
 
         $is_cache_enabled = ( 'on' == msp_get_setting( '_enable_cache', 'msp_general_setting', 'off' ) );
-        
+
         // try to get cached copy of slider transient output
         if( ! $is_cache_enabled || false === ( $slider_output = msp_get_slider_transient( $slider_id ) ) || empty( $slider_output ) ) {
             $slider_output = msp_generate_slider_output( $slider_id, $is_cache_enabled );
-            
+
         } elseif( $is_cache_enabled ) {
             $msp_instances = is_array( $msp_instances ) ? $msp_instances : array();
-            $msp_instances[ $slider_id ][] = $slider_id; 
+            $msp_instances[ $slider_id ][] = $slider_id;
             // if there was same slider on one page generate new ones
             if( count( $msp_instances[ $slider_id ] ) > 1 ){
                 $slider_output = msp_generate_slider_output( $slider_id );
@@ -66,17 +66,17 @@ if( ! function_exists( 'get_masterslider' ) ) {
 
 /**
  * Convert panel data to ms_slider shortcode and return it
- * 
+ *
  * @param  string    $panel_data   a serialized string containing panel data object
  * @return string    ms_slider shortcode or empty string
  */
 function msp_panel_data_2_ms_slider_shortcode( $panel_data, $slider_id = null ){
-    if ( ! $panel_data ) 
+    if ( ! $panel_data )
         return '';
 
     $parser = msp_get_parser();
     $parser->set_data( $panel_data, $slider_id );
-    $results = $parser->get_results();  
+    $results = $parser->get_results();
 
     // shortcode generation
     $sf = msp_get_shortcode_factory();
@@ -88,7 +88,7 @@ function msp_panel_data_2_ms_slider_shortcode( $panel_data, $slider_id = null ){
 
 /**
  * Convert panel data to ms_slider shortcode and return it
- * 
+ *
  * @param  int      $slider_id   The ID of the slider you'd like to get its shortcode
  * @return string   ms_slider shortcode or empty string
  */
@@ -103,7 +103,7 @@ function msp_get_ms_slider_shortcode_by_slider_id( $slider_id ){
 
 /**
  * Convert panel data to ms_slider shortcode and return it
- * 
+ *
  * @param  int      $slider_id   The ID of the slider you'd like to get its output
  * @param  bool     $cache_output Whether to store output in cache or not
  * @return string   The slider output
@@ -120,12 +120,12 @@ function msp_generate_slider_output( $slider_id, $cache_output = false ){
 
 /**
  * Flush and re-cache slider output if slider cache is enabled
- * 
+ *
  * @param  int      $slider_id   The ID of the slider you'd like to flush the cache
  * @return bool     True if the cache is flushed and false otherwise
  */
 function msp_flush_slider_cache( $slider_id ){
-    
+
     $is_cache_enabled = ( 'on' == msp_get_setting( '_enable_cache', 'msp_general_setting', 'off' ) );
     if( $is_cache_enabled ){
         msp_generate_slider_output( $slider_id, true );
@@ -137,11 +137,11 @@ function msp_flush_slider_cache( $slider_id ){
 
 /**
  * Flush and re-cache all slideres if slider cache is enabled
- * 
+ *
  * @return bool     True if the cache is flushed and false otherwise
  */
 function msp_flush_all_sliders_cache(){
-    
+
     $is_cache_enabled = ( 'on' == msp_get_setting( '_enable_cache', 'msp_general_setting', 'off' ) );
     if( ! $is_cache_enabled ){ return false; }
 
@@ -149,7 +149,7 @@ function msp_flush_all_sliders_cache(){
     foreach ( $all_sliders as $slider_id => $slider_name ) {
         msp_generate_slider_output( $slider_id, true );
     }
-        
+
     return true;
 }
 
@@ -157,7 +157,7 @@ function msp_flush_all_sliders_cache(){
 /**
  * Takes a slider ID and returns slider's parsed data in an array
  * You can use this function to access slider data (setting, slides, layers, styles)
- *  
+ *
  * @param  int        $slider_id   The ID of the slider you'd like to get its parsed data
  * @return array      array containing slider's parsed data
  */
@@ -166,7 +166,7 @@ function get_masterslider_parsed_data( $slider_id ){
     global $mspdb;
     $panel_data = $mspdb->get_slider_field_val( $slider_id, 'params' );
 
-    if ( ! $panel_data ) 
+    if ( ! $panel_data )
         return array();
 
     $parser = msp_get_parser();
@@ -177,72 +177,72 @@ function get_masterslider_parsed_data( $slider_id ){
 
 /**
  * Load and init parser class on demand
- * 
+ *
  * @return Object instance of MSP_Parser class
  */
 function msp_get_parser() {
     include_once( MSWP_AVERTA_ADMIN_DIR . '/includes/classes/class-msp-parser.php' );
-    
+
     global $msp_parser;
     if ( is_null( $msp_parser ) )
         $msp_parser = new MSP_Parser();
-    
+
     return $msp_parser;
 }
 
 
 /**
  * Load and init shortcode_factory class on demand
- * 
+ *
  * @return Object instance of MSP_Shortcode_Factory class
  */
 function msp_get_shortcode_factory () {
     include_once( MSWP_AVERTA_ADMIN_DIR . '/includes/classes/class-msp-shortcode-factory.php' );
-    
+
     global $mspsf;
     if ( is_null( $mspsf ) )
         $mspsf = new MSP_Shortcode_Factory();
-    
+
     return $mspsf;
 }
 
 
 /**
  * Load and init post_slider class on demand
- * 
+ *
  * @return Object instance of MSP_Post_Slider class
  */
 function msp_get_post_slider_class() {
     include_once( MSWP_AVERTA_ADMIN_DIR . '/includes/classes/class-msp-post-sliders.php' );
-    
+
     global $msp_post_slider;
     if ( is_null( $msp_post_slider ) )
         $msp_post_slider = new MSP_Post_Slider();
-    
+
     return $msp_post_slider;
 }
 
 
 /**
  * Load and init wc_product_slider class on demand
- * 
+ *
  * @return Object instance of MSP_WC_Product_Slider class
  */
 function msp_get_wc_slider_class() {
     include_once( MSWP_AVERTA_ADMIN_DIR . '/includes/classes/class-msp-wc-product-slider.php' );
-    
+
     global $msp_wc_slider;
     if ( is_null( $msp_wc_slider ) )
         $msp_wc_slider = new MSP_WC_Product_Slider();
-    
+
     return $msp_wc_slider;
 }
 
 
 /**
  * Update custom_css, custom_fonts and slide num fields in sliders table
- * 
- * @param int $slider_id the slider id that is going to be updated             
+ *
+ * @param int $slider_id the slider id that is going to be updated
  * @return int|false The number of rows updated, or false on error.
  */
 function msp_update_slider_custom_css_and_fonts( $slider_id ) {
@@ -261,7 +261,7 @@ function msp_update_slider_custom_css_and_fonts( $slider_id ) {
     // load and get parser and start parsing data
     $parser = msp_get_parser();
     $parser->set_data( $slider_params, $slider_id );
-    
+
     // get required parsed data
     $slider_setting       = $parser->get_slider_setting();
     $slides               = $parser->get_slides();
@@ -272,7 +272,7 @@ function msp_update_slider_custom_css_and_fonts( $slider_id ) {
         'custom_styles' => $slider_custom_styles,
         'custom_fonts'  => $slider_setting[ 'gfonts' ]
     );
-    
+
     msp_save_custom_styles();
 
     $mspdb->update_slider( $slider_id, $fields );
@@ -281,7 +281,7 @@ function msp_update_slider_custom_css_and_fonts( $slider_id ) {
 
 /**
  * Set/update the value of a slider output transient.
- * 
+ *
  * @param  int   $slider_id     The slider id
  * @param  mixed $value         Slider transient output
  * @param  int   $cache_period  Time until expiration in hours, default 12
@@ -295,7 +295,7 @@ function msp_set_slider_transient( $slider_id, $value, $cache_period = null ) {
 
 /**
  * Get the value of a slider output transient.
- * 
+ *
  * @param  int     $slider_id     The slider id
  * @return mixed   Value of transient or False If the transient does not exist or does not have a value
  */
@@ -306,7 +306,7 @@ function msp_get_slider_transient( $slider_id ) {
 
 /**
  * Whether it's absolute url or not
- * 
+ *
  * @param  string $url  The URL
  * @return bool   TRUE if the URL is absolute
  */
@@ -317,7 +317,7 @@ function msp_is_absolute_url( $url ){
 
 /**
  * Whether the URL contains upload directory path or not
- * 
+ *
  * @param  string $url  The URL
  * @return bool   TRUE if the URL is absolute
  */
@@ -329,7 +329,7 @@ function msp_contains_upload_dir( $url ){
 
 /**
  * Print absolute URL for media file event if the URL is relative
- * 
+ *
  * @param  string $url  The link to media file
  * @return void
  */
@@ -339,7 +339,7 @@ function msp_the_absolute_media_url( $url ){
 
     /**
      * Get absolute URL for media file event if the URL is relative
-     * 
+     *
      * @param  string $url  The link to media file
      * @return string   The absolute URL to media file
      */
@@ -347,9 +347,9 @@ function msp_the_absolute_media_url( $url ){
 
         function msp_get_the_absolute_media_url( $url ){
             if( ! isset( $url ) || empty( $url ) )    return '';
-            
+
             if( msp_is_absolute_url( $url ) || msp_contains_upload_dir( $url ) ) return $url;
-            
+
             $uploads = wp_upload_dir();
             return set_url_scheme( $uploads['baseurl'] . $url );
         }
@@ -359,7 +359,7 @@ function msp_the_absolute_media_url( $url ){
 
 /**
  * Print relative URL for media file event if the URL is absolute
- * 
+ *
  * @param  string $url  The link to media file
  * @return void
  */
@@ -369,7 +369,7 @@ function msp_the_relative_media_url( $url ){
 
     /**
      * Get relative URL for media file event if the URL is absolute
-     * 
+     *
      * @param  string $url  The link to media file
      * @return string   The absolute URL to media file
      */
@@ -377,10 +377,10 @@ function msp_the_relative_media_url( $url ){
 
         function msp_get_the_relative_media_url($url){
             if( ! isset( $url ) || empty( $url ) )     return '';
-            
-            // if it's not internal absolute url 
+
+            // if it's not internal absolute url
             if( ! msp_contains_upload_dir( $url ) ) return $url;
-            
+
             $uploads_dir = wp_upload_dir();
             return str_replace( $uploads_dir['baseurl'], '', $url );
         }
@@ -389,7 +389,7 @@ function msp_the_relative_media_url( $url ){
 
 
 /*-----------------------------------------------------------------------------------*/
-/*  Custom functions for resizing images 
+/*  Custom functions for resizing images
 /*-----------------------------------------------------------------------------------*/
 
 
@@ -399,13 +399,13 @@ function msp_the_relative_media_url( $url ){
 function msp_the_resized_image( $img_url = "", $width = null , $height = null, $crop = null , $quality = 100 ) {
     echo msp_get_the_resized_image( $img_url , $width , $height , $crop , $quality );
 }
-    
+
     function msp_get_the_resized_image( $img_url = "", $width = null , $height = null, $crop = null , $quality = 100 ) {
         return '<img src="'.msp_aq_resize( $img_url, $width, $height, $crop, $quality ).'" alt="" />';
     }
         /**
          * Get resized image by image URL
-         * 
+         *
          * @param  string   $img_url  The original image URL
          * @param  integer  $width    New image Width
          * @param  integer  $height   New image height
@@ -417,7 +417,7 @@ function msp_the_resized_image( $img_url = "", $width = null , $height = null, $
 
             function msp_get_the_resized_image_src( $img_url = "", $width = null , $height = null, $crop = null , $quality = 100 ) {
                 $resized_img_url = msp_aq_resize( $img_url, $width, $height, $crop, $quality );
-                if( empty( $resized_img_url ) ) 
+                if( empty( $resized_img_url ) )
                     $resized_img_url = $img_url;
                 return apply_filters( 'msp_get_the_resized_image_src', $resized_img_url, $img_url );
             }
@@ -436,13 +436,13 @@ function msp_the_resized_attachment( $attach_id = null, $width = null , $height 
     // return resized image tag
     function msp_get_the_resized_attachment( $attach_id = null, $width = null , $height = null, $crop = null , $quality = 100 ) {
         $image_src = msp_get_the_resized_attachment_src( $attach_id, $width , $height, $crop, $quality );
-        
+
         return $image_src ? '<img src="'.$image_src.'" alt="" />': '';
     }
 
         /**
          * Get resized image by attachment id
-         * 
+         *
          * @param  string   $attach_id  The attachment id
          * @param  integer  $width    New image Width
          * @param  integer  $height   New image height
@@ -451,11 +451,11 @@ function msp_the_resized_attachment( $attach_id = null, $width = null , $height 
          * @return string   new image src
          */
         if( ! function_exists( 'msp_get_the_resized_attachment_src' ) ){
-            
+
             function msp_get_the_resized_attachment_src( $attach_id = null, $width = null , $height = null, $crop = null , $quality = 100 ) {
                 if( is_null( $attach_id ) ) return '';
-                
-                $img_url = wp_get_attachment_url( $attach_id ,'full'); //get img URL                     
+
+                $img_url = wp_get_attachment_url( $attach_id ); //get img URL
                 return ! empty( $img_url ) ? msp_aq_resize( $img_url, $width, $height, $crop, $quality ) : false;
             }
 
@@ -468,7 +468,7 @@ function msp_the_resized_attachment( $attach_id = null, $width = null , $height 
 function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null, $crop = null , $quality = 100 ) {
     echo msp_get_the_post_thumbnail( $post_id, $width , $height, $crop, $quality);
 }
-    
+
     // return resized image tag
     function msp_get_the_post_thumbnail( $post_id = null, $width = null , $height = null, $crop = null , $quality = 100 ) {
         $image_src = msp_get_the_post_thumbnail_src( $post_id, $width , $height, $crop, $quality);
@@ -477,7 +477,7 @@ function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null
 
         /**
          * Get resized image by post id
-         * 
+         *
          * @param  string   $post_id  The post id
          * @param  integer  $width    New image Width
          * @param  integer  $height   New image height
@@ -486,18 +486,18 @@ function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null
          * @return string   new image src
          */
         if( ! function_exists( 'msp_get_the_post_thumbnail_src' ) ){
-        
+
             function msp_get_the_post_thumbnail_src( $post_id = null, $width = null , $height = null, $crop = null , $quality = 100 ) {
                 $post_id = is_null( $post_id ) ? get_the_ID() : $post_id;
                 $post_thumbnail_id = get_post_thumbnail_id( $post_id );
-                
-                $img_url = wp_get_attachment_url( $post_thumbnail_id, 'full' ); //get img URL
-                
+
+                $img_url = wp_get_attachment_url( $post_thumbnail_id ); //get img URL
+
                 $resized_img = $post_thumbnail_id ? aq_resize( $img_url, $width, $height, $crop, $quality ) : false;
 
                 return apply_filters( 'msp_get_the_post_thumbnail_src', $resized_img, $img_url, $width, $height, $crop, $quality );
             }
-        
+
         }
 
         /**
@@ -507,14 +507,14 @@ function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null
          * @return string  Returns a full URI for featured image or false on failure.
          */
         if( ! function_exists( 'msp_get_the_post_thumbnail_full_src' ) ){
-        
+
             function msp_get_the_post_thumbnail_full_src( $post_id = null ) {
                 $post_id = is_null( $post_id ) ? get_the_ID() : $post_id;
                 $post_thumbnail_id = get_post_thumbnail_id( $post_id );
-                
-                return wp_get_attachment_url( $post_thumbnail_id, 'full' );
+
+                return wp_get_attachment_url( $post_thumbnail_id );
             }
-        
+
         }
 
         /**
@@ -522,11 +522,11 @@ function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null
          *
          * @param  integer $post_id  The post id to get post image of
          * @param  string  $image_from   where to look for post image. possible values are : auto, featured, first. Default to 'auto'
-         * 
+         *
          * @return string  Returns a full URI for post image or empty string on failure.
          */
         if( ! function_exists( 'msp_get_auto_post_thumbnail_src' ) ){
-        
+
             function msp_get_auto_post_thumbnail_src( $post_id = null, $image_from = 'auto' ) {
 
                 $post = get_post( $post_id );
@@ -550,10 +550,10 @@ function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null
           $content = get_the_content();
           $img_src = msp_get_first_image_src_from_string( $content );
         }
-                
+
                 return $img_src;
             }
-        
+
         }
 
 
@@ -561,7 +561,7 @@ function msp_the_post_thumbnail( $post_id = null, $width = null , $height = null
 
 /**
  * Get first image tag from string
- * 
+ *
  * @param  string $content  The content to extract image from
  * @return string           First image tag on success and empty string if nothing found
  */
@@ -572,7 +572,7 @@ function msp_get_first_image_from_string( $content ){
 
 /**
  * Get first image src from content
- * 
+ *
  * @param  string $content  The content to extract image from
  * @return string           First image URL on success and empty string if nothing found
  */
@@ -580,20 +580,20 @@ function msp_get_first_image_src_from_string( $content ){
     $images = msp_extract_string_images( $content );
     return ( $images && count( $images[1]) ) ? $images[1][0] : '';
 }
-    
+
     /**
      * Extract all images from content
-     * 
+     *
      * @param  string $content   The content to extract images from
      * @return array             List of images in array
      */
     if( ! function_exists( 'msp_extract_string_images' ) ){
-        
+
         function msp_extract_string_images( $content ){
             preg_match_all( '|<img.*?src=[\'"](.*?)[\'"].*?>|i', $content, $matches );
             return isset( $matches ) && count( $matches[0] ) ? $matches : false;
         }
-    
+
     }
 
 
@@ -602,25 +602,25 @@ function msp_get_first_image_src_from_string( $content ){
 
 /**
  * Get list of created slider IDs and names in an array
- * 
+ *
  * @param  bool    $id_as_key   If <code>true</code> returns slider ID as array key and slider name as value , reverse on <code>false</code>
  * @param  int     $limit       Maximum number of sliders to return - 0 means no limit
  * @param  int     $offset      The offset of the first row to return
  * @param  string  $orderby     The field name to order results by
  * @param  string  $sort        The sort type. 'DESC' or 'DESC'
- * 
+ *
  * @return array   An array containing sliders ID as array key and slider name as value
  *
  * @example   $id_as_key = true :
  *            array(
- *                '12' => 'Slider sample title 1', 
+ *                '12' => 'Slider sample title 1',
  *                '13' => 'Slider sample title 2'
  *            )
  *
  *            $id_as_key = false :
  *            array(
- *                'Slider sample title 1' => '12', 
- *                'Slider sample title 2' => '13' 
+ *                'Slider sample title 1' => '12',
+ *                'Slider sample title 2' => '13'
  *            )
  */
 function get_masterslider_names( $id_as_key = true, $limit = 0, $offset  = 0, $orderby = 'ID', $sort = 'DESC' ){
@@ -647,7 +647,7 @@ function get_masterslider_names( $id_as_key = true, $limit = 0, $offset  = 0, $o
 
 /**
  * Get an array containing row results (unserialized) from sliders table (with all slider table fields)
- * 
+ *
  * @param  int $limit       Maximum number of records to return
  * @param  int $offset      The offset of the first row to return
  * @param  string $orderby  The field name to order results by
@@ -665,7 +665,7 @@ function get_mastersliders( $limit = 0, $offset = 0, $orderby = 'ID', $sort = 'D
 
 /**
  * Get option value
- * 
+ *
  * @param   string  $option_name a unique name for option
  * @param   string  $default_value  a value to return by function if option_value not found
  * @return  string  option_value or default_value
@@ -678,10 +678,10 @@ function msp_get_option( $option_name, $default_value = '' ) {
 
 /**
  * Update option value in options table, if option_name does not exist then insert new option
- * 
+ *
  * @param   string $option_name a unique name for option
  * @param   string $option_value the option value
- *                  
+ *
  * @return int|false ID number for new inserted row or false if the option can not be updated.
  */
 function msp_update_option( $option_name, $option_value = '' ) {
@@ -692,7 +692,7 @@ function msp_update_option( $option_name, $option_value = '' ) {
 
 /**
  * Remove a specific option name from options table
- * 
+ *
  * @param   string $option_name a unique name for option
  * @return bool True, if option is successfully deleted. False on failure.
  */
@@ -728,7 +728,7 @@ function msp_get_setting( $option, $section, $default = '' ) {
 function msp_the_trimmed_string( $string, $max_length = 1000, $more = ' ...' ){
     echo msp_get_trimmed_string( $string, $max_length, $more );
 }
-    
+
     /**
      * Trim string by character length
      *
@@ -754,13 +754,13 @@ function msp_the_trim_excerpt( $post_id = null, $char_length = null, $exclude_st
 }
 
     if( ! function_exists( 'msp_get_the_trim_excerpt' ) ){
-        
+
         // make shortcodes executable in excerpt
         function msp_get_the_trim_excerpt( $post_id = null, $char_length = null, $exclude_strip_shortcode_tags = null ) {
             $post = get_post( $post_id );
             if( ! isset( $post ) ) return "";
-            
-    
+
+
             $excerpt = $post->post_content;
             $raw_excerpt = $excerpt;
             $excerpt = apply_filters( 'the_content', $excerpt );
@@ -773,7 +773,7 @@ function msp_the_trim_excerpt( $post_id = null, $char_length = null, $exclude_st
 
             return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
         }
-        
+
     }
 
 /*-----------------------------------------------------------------------------------*/
@@ -782,13 +782,13 @@ function msp_the_trim_excerpt( $post_id = null, $char_length = null, $exclude_st
 
 function msp_strip_shortcodes( $content, $exclude_strip_shortcode_tags = null ) {
     if( ! $content ) return $content;
-    
+
     if( ! $exclude_strip_shortcode_tags )
         $exclude_strip_shortcode_tags = msp_exclude_strip_shortcode_tags();
-    
+
     if( empty( $exclude_strip_shortcode_tags ) || !is_array( $exclude_strip_shortcode_tags ) )
         return preg_replace( '/\[[^\]]*\]/', '', $content );
-    
+
     $exclude_codes = join( '|', $exclude_strip_shortcode_tags );
     return preg_replace( "~(?:\[/?)(?!(?:$exclude_codes))[^/\]]+/?\]~s", '', $content );
 }
@@ -813,7 +813,7 @@ function msp_get_custom_post_types(){
 
 
 /**
- * Whether a plugin is active or not 
+ * Whether a plugin is active or not
  * @param  string $plugin_basename  plugin directory name and mail file address
  * @return bool                  True if plugin is active and FALSE otherwise
  */
@@ -826,7 +826,7 @@ function msp_is_plugin_active( $plugin_basename ){
 function msp_get_template_tag_value( $tag_name, $post = null, $args = null ){
   $post  = get_post( $post );
   $value = '{{' . $tag_name . '}}';
-  
+
   switch ( $tag_name ) {
 
     case 'title':
@@ -1023,7 +1023,7 @@ function msp_maybe_base64_encode ( $data ) {
 
 
 function msp_escape_tag( $tag_name ){
-    return tag_escape( $tag_name ); 
+    return tag_escape( $tag_name );
 }
 
 

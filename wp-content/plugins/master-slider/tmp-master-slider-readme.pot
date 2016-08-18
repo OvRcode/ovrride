@@ -1,0 +1,971 @@
+msgid ""
+msgstr "MIME-Version: 1.0\n"
+
+#. Name.
+msgid "Master Slider - Responsive Touch Slider"
+msgstr ""
+
+#. Short description.
+msgid "The most advanced responsive and HTML5 WordPress slider plugin with touch swipe navigation that works smoothly on desktop and devices."
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider without thumbnail (light skin 1)"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider with thumbnail on bottom (light skin 1)"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider with thumbnail on right (light skin 5)"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider with thumbnail on left (light skin 3)"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider with slide info on right (light skin 3)"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider with slide info on bottom (light skin 1)"
+msgstr ""
+
+#. Screenshot description.
+msgid "Sliders listing table"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slider setting"
+msgstr ""
+
+#. Screenshot description.
+msgid "Drag and Drop slide creation"
+msgstr ""
+
+#. Screenshot description.
+msgid "6 Highly customizable slider controls"
+msgstr ""
+
+#. Screenshot description.
+msgid "Flexible slider controls"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Security improvement"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Minor issue with an undefined variable fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Now the slide info sections with no conent are no longer visible"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Now Master Slider is fully compatible with new upcoming translation service on wp.org"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Now auto crop is disabled for thumbnail when user set a custom thumbnail"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Legacy widget constructor replaced with new one"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed an issue with undefined IDs while adding shortcodes to WordPress editor"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Russian translation by: oharreg"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Security improvement."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Plugin thumbnail changed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed an issue with IE9."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Under the hood improvement"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Some improvement for serving assets under SSL."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Default minHeight changed to 0."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Some CSS reset rules added to links on slider."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Arrows for the thumblist control added."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Search box for searching through the sliders added."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: New option <code>minHeight</code> added which specifies min height value for the slider, it prevents slider to be displayed tiny in small screens."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: New option for thumblist to change the slides while moving mouse cursor over thumbnails."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Brand new sticky preview and save button with new interface in admin panel."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: A conflict with new API changes in WP 4.2 for gallery fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with some special characters in slide info fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Interface improvement for slider box."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Improvement in slider performance."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with sorting sliders base on date_modified fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Escaping the brackets for rel attribute on slides."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed an issue while auto hide in controls did not function properly on touch devices."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed an issue while inserting larger numbers than slides number in preload field."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with encoding brackets in custom styles fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue in calculating thumbnails width fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue in aligning thumbnails which doesn't have fillMode option fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Improvements under the hood."
+msgstr ""
+
+#. Screenshot description.
+msgid "Master Slider is 100% secure in vulnerability check"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Some minor bugs fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Introducing \"Start On Hover\" feature, to display the slider when it appears in browser viewport."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: API methods updated"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Some minor JavaScript errors fixed."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Address an issue with rendering 3D transitions on firefox and mouse wheel"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: French. Special thanks to Thomas:www.thomasgrimaud.fr"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Brazilian Portuguese. Special thanks to WebPress"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Serbian. Special thanks to Borisa Djuraskovic:www.webhostinghub.com"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Throwing error after destroying slider with API destroy method."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed a Javascript error in IE9."
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed a bug which prevents using bracket in slide title and alt"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: New API added to let developers change default values in admin panel"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Introducing multiple image Upload"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Autoplay option for video slides added"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Custom css editor added to admin panel"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Major improvement in linking slides"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Some improvement in API for managing front end assets"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: improvement in aligning the content of tab control"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: User interface improvement"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Lots of improvement in slider performance"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Adding compatibility with wheel navigation by Magic Mouse or Trackpad in OS X"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed and issue with rendering issue in latest version of Firefox"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with slide link in latest version of Firefox fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An conflict with modal window in WordPress 4.1 fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with a missing file fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with slider fallbacks fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with wheel navigation with non-loop slider fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Fixed unexpected js errors when swipe navigation is disabled"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue removeEventListener method fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Update]: Annoying glow on buttons and links in admin panel removed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Update]: Slider base styles updated"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Update]: Translate files updated"
+msgstr ""
+
+#. Screenshot description.
+msgid "Addressed a bug which stopped the sliders in some WordPress site"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Improvement in loading front end assets"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: New developer API added"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Minor bugs fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "A conflict with modal in WordPress 4.1 fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "Some class names renamed to eliminate the conflict with others themes and plugins."
+msgstr ""
+
+#. Screenshot description.
+msgid "Mino bugs fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "Improvement in swipe on android devices"
+msgstr ""
+
+#. Screenshot description.
+msgid "Improvement in loading admin assets"
+msgstr ""
+
+#. Screenshot description.
+msgid "Improvement in Master Slider's built-in cache"
+msgstr ""
+
+#. Screenshot description.
+msgid "Minor bugs fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "Translate file updated"
+msgstr ""
+
+#. Screenshot description.
+msgid "Documentation updated"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: Addressed an issue with grap cursors in internet explorer"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with creating styles on multisite fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: New developer API to change origin_uploads_url for importing medias"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Improvement in admin interface"
+msgstr ""
+
+#. Screenshot description.
+msgid "Performance Improvement"
+msgstr ""
+
+#. Screenshot description.
+msgid "Minor bug in admin panel fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New Feature]: New button added to WordPress editor in order to add Master Slider shorcodes with just simple click"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Improving responsiveness of admin panel"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Improvement]: Interface compatibility with WordPress 4.0 in admin area applied"
+msgstr ""
+
+#. Screenshot description.
+msgid "compatibility with WordPress 4.0.0 added"
+msgstr ""
+
+#. Screenshot description.
+msgid "Slide info is now shortcode enabled"
+msgstr ""
+
+#. Screenshot description.
+msgid "compatibility with WordPress 3.9.2 added"
+msgstr ""
+
+#. Screenshot description.
+msgid "A minor bug in plugins page fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "A link added to plugins page for rating this plugin"
+msgstr ""
+
+#. Screenshot description.
+msgid ""
+"[New Feature]: New option added to global setting that let you load plugins's scripts on all pages.\n"
+"           ( Useful when loading slider via Ajax )"
+msgstr ""
+
+#. Screenshot description.
+msgid "An issue with text editor fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "[New]: Introduction video added"
+msgstr ""
+
+#. Screenshot description.
+msgid "[Fix]: An issue with uninstalling the plugin fixed"
+msgstr ""
+
+#. Screenshot description.
+msgid "initial release"
+msgstr ""
+
+#. Found in description header.
+msgid "Overview"
+msgstr ""
+
+#. Found in description header.
+msgid "Features"
+msgstr ""
+
+#. Found in description header.
+msgid "Compatible Browsers"
+msgstr ""
+
+#. Found in description header.
+msgid "Master Slider Pro Features"
+msgstr ""
+
+#. Found in description header.
+msgid "Demo for PRO Version"
+msgstr ""
+
+#. Found in description header.
+msgid "Documentations"
+msgstr ""
+
+#. Found in description header.
+msgid "Translation"
+msgstr ""
+
+#. Found in description list item.
+msgid "Fully Responsive"
+msgstr ""
+
+#. Found in description list item.
+msgid "Cross Browser IE8+ and Other Modern Browsers"
+msgstr ""
+
+#. Found in description list item.
+msgid "HTML5 Valid and SEO Friendly Markup"
+msgstr ""
+
+#. Found in description list item.
+msgid "Touch Swipe Navigation"
+msgstr ""
+
+#. Found in description list item.
+msgid "Drag and drop slider creation"
+msgstr ""
+
+#. Found in description list item.
+msgid "Extremely user friendly admin panel"
+msgstr ""
+
+#. Found in description list item.
+msgid "CSS3 Transitions with jQuery Fallback"
+msgstr ""
+
+#. Found in description list item.
+msgid "Hardware Accelerated CSS3 3D Transforms"
+msgstr ""
+
+#. Found in description list item.
+msgid "Optimized for Any Screen Sizes and Touch Devices"
+msgstr ""
+
+#. Found in description list item.
+msgid "Smart Loading Assets"
+msgstr ""
+
+#. Found in description list item.
+msgid "6+ Interactive Slide Transitions"
+msgstr ""
+
+#. Found in description list item.
+msgid "8 Starter Samples"
+msgstr ""
+
+#. Found in description list item.
+msgid "Smart auto crop"
+msgstr ""
+
+#. Found in description list item.
+msgid "Loop and Linear sliding"
+msgstr ""
+
+#. Found in description list item.
+msgid "Shuffle Ordering Slides Option"
+msgstr ""
+
+#. Found in description list item.
+msgid "Auto height Slider"
+msgstr ""
+
+#. Found in description list item.
+msgid "Vertical and Horizontal Direction Navigation"
+msgstr ""
+
+#. Found in description list item.
+msgid "Fully Customizable Thumbnail and Tabs"
+msgstr ""
+
+#. Found in description list item.
+msgid "Vertical and Horizontal Bullets"
+msgstr ""
+
+#. Found in description list item.
+msgid "Mouse Wheel Navigation"
+msgstr ""
+
+#. Found in description list item.
+msgid "Customizable Arrows"
+msgstr ""
+
+#. Found in description list item.
+msgid "Exclusive Widget and shortcodes"
+msgstr ""
+
+#. Found in description list item.
+msgid "Scroll Handle Slide Indicator"
+msgstr ""
+
+#. Found in description list item.
+msgid "Auto Play with Timing Options"
+msgstr ""
+
+#. Found in description list item.
+msgid "Smart Memory Management"
+msgstr ""
+
+#. Found in description list item.
+msgid "6 Modern and Unique Skins"
+msgstr ""
+
+#. Found in description list item.
+msgid "Timer-bar and Circle Timer UI Controls"
+msgstr ""
+
+#. Found in description list item.
+msgid "Custom user roles and capabilities"
+msgstr ""
+
+#. Found in description list item.
+msgid "5 Image Positioning Options (fill, fit, tile, ..)"
+msgstr ""
+
+#. Found in description list item.
+msgid "Extremely lightweight"
+msgstr ""
+
+#. Found in description list item.
+msgid "Advanced Import And Export Tool"
+msgstr ""
+
+#. Found in description list item.
+msgid "Built-in cache boosting"
+msgstr ""
+
+#. Found in description list item.
+msgid "Translate Ready"
+msgstr ""
+
+#. Found in description list item.
+msgid "Multisite Compatible"
+msgstr ""
+
+#. Found in description list item.
+msgid "Extensive Developer API"
+msgstr ""
+
+#. Found in description list item.
+msgid "<a href=\"http://masterslider.com/wordpress/free/?mslf\">Full List of Features</a>"
+msgstr ""
+
+#. Found in description list item.
+msgid "IE8+"
+msgstr ""
+
+#. Found in description list item.
+msgid "Firefox"
+msgstr ""
+
+#. Found in description list item.
+msgid "Safari"
+msgstr ""
+
+#. Found in description list item.
+msgid "Opera"
+msgstr ""
+
+#. Found in description list item.
+msgid "Chrome"
+msgstr ""
+
+#. Found in description list item.
+msgid "iOS browser"
+msgstr ""
+
+#. Found in description list item.
+msgid "Android browser"
+msgstr ""
+
+#. Found in description list item.
+msgid "Full-width, Full-screen and Boxed Layout"
+msgstr ""
+
+#. Found in description list item.
+msgid "Post Slider - with Advanced Filtering Tool (Any Post-type)"
+msgstr ""
+
+#. Found in description list item.
+msgid "WooCommerce Product Slider - With Advanced Filtering Tool"
+msgstr ""
+
+#. Found in description list item.
+msgid "Flickr Slider - Make Slider Dynamically From Flickr Photosets or User Latest Photos"
+msgstr ""
+
+#. Found in description list item.
+msgid "Facebook Slider - Make Image Gallery Dynamically From Facebook Public Images"
+msgstr ""
+
+#. Found in description list item.
+msgid "HD Video Backgrounds for Slides"
+msgstr ""
+
+#. Found in description list item.
+msgid "Embedding YouTube and Vimeo Videos"
+msgstr ""
+
+#. Found in description list item.
+msgid "Animated Layers"
+msgstr ""
+
+#. Found in description list item.
+msgid "4 Different Layer Types (Text, Image, Button and Video)"
+msgstr ""
+
+#. Found in description list item.
+msgid "Huge Verity of Layer Transitions"
+msgstr ""
+
+#. Found in description list item.
+msgid "Transition In and Out Available for Each Layer"
+msgstr ""
+
+#. Found in description list item.
+msgid "Hotspots and Tooltips over Slides"
+msgstr ""
+
+#. Found in description list item.
+msgid "Deep-linking"
+msgstr ""
+
+#. Found in description list item.
+msgid "Parallax Effect while Scrolling"
+msgstr ""
+
+#. Found in description list item.
+msgid "Layers Parallax Effect while Swiping"
+msgstr ""
+
+#. Found in description list item.
+msgid "Layers Parallax Effect while Moving Mouse over Slide"
+msgstr ""
+
+#. Found in description list item.
+msgid "Boxed with Visible Nearby Slides"
+msgstr ""
+
+#. Found in description list item.
+msgid "Auto Height and Auto Fill Layout"
+msgstr ""
+
+#. Found in description list item.
+msgid "Binding Special Actions to Layers (Go to slide, scroll down, play, pause, ..)"
+msgstr ""
+
+#. Found in description list item.
+msgid "Custom Pattern and Color Overlay"
+msgstr ""
+
+#. Found in description list item.
+msgid "Auto Resizing and Aligning Layers while Resizing"
+msgstr ""
+
+#. Found in description list item.
+msgid "Option to Linking Slides, Layers and Hotspots"
+msgstr ""
+
+#. Found in description list item.
+msgid "30+ Ready to Use Sample Sliders (One Click Import)"
+msgstr ""
+
+#. Found in description list item.
+msgid "Nice Looking and Easy to Use Layout"
+msgstr ""
+
+#. Found in description list item.
+msgid "WYSIWYG Drag &amp; Drop Editor"
+msgstr ""
+
+#. Found in description list item.
+msgid "Easy to Use Timeline animation tool"
+msgstr ""
+
+#. Found in description list item.
+msgid "Visual Style Editor"
+msgstr ""
+
+#. Found in description list item.
+msgid "Visual Transition Effect Editor"
+msgstr ""
+
+#. Found in description list item.
+msgid "Visual Button Editor"
+msgstr ""
+
+#. Found in description list item.
+msgid "Easy Aligning Layers over Stage"
+msgstr ""
+
+#. Found in description list item.
+msgid "Snapping Option on Drag &amp; Drop Layers"
+msgstr ""
+
+#. Found in description list item.
+msgid "9 Different Positioning Origin Points for Each Layer"
+msgstr ""
+
+#. Found in description list item.
+msgid "Realtime Animation Preview"
+msgstr ""
+
+#. Found in description list item.
+msgid "Moving Layers by Arrow Keys"
+msgstr ""
+
+#. Found in description list item.
+msgid "Using WordPress Native Text Editor"
+msgstr ""
+
+#. Found in description list item.
+msgid "Using Google Fonts (600+ Fonts)"
+msgstr ""
+
+#. Found in description list item.
+msgid "<a href=\"http://masterslider.com/wordpress/pro/?mslf\">Full List of Pro Features</a>"
+msgstr ""
+
+#. Found in description list item.
+msgid "<a href=\"http://avt.li/mswptem\">Master Slider Demo Sliders</a>"
+msgstr ""
+
+#. Found in description list item.
+msgid "<a href=\"http://avt.li/mswpfea\">Master Slider Features</a>"
+msgstr ""
+
+#. Found in description list item.
+msgid "<a href=\"http://avt.li/mswpdoc\">Master Slider Manual</a>"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "<a href=\"http://avt.li/mswftem\" title=\"Live demos of Master Slider free version\">Demo sliders</a> | <a href=\"http://avt.li/mswfea\" title=\"All features\">Features</a> | <a href=\"http://avt.li/mswfdoc\" title=\"Master Slider documentation\">Documentation</a> | <a href=\"http://avt.li/msfvids\" title=\"Watch all video tutorials\">Video tutorials</a> | <a href=\"http://wordpress.org/support/plugin/master-slider\" title=\"Free support\">Support forum</a>"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Master Slider is a free responsive image and content slider with super smooth hardware accelerated transitions. It supports touch navigation with pure swipe gesture that you have never experienced before. It's a truly responsive and device friendly slider which works perfectly in all major devices."
+msgstr ""
+
+#. Found in description paragraph.
+msgid "[youtube https://www.youtube.com/watch?v=nyjpGEHwOn8]"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "<a href=\"http://avt.li/msfvids\">Watch all video tutorials</a>"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Master Slider is built using WordPress best practices both on the front and the back end. This results in an efficient, robust and intuitive plugin. It's works with any theme, including the default WordPress themes."
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Upgrade to <a href=\"http://masterslider.com/purchase/?mslf\">Pro Version</a>"
+msgstr ""
+
+#. Found in description paragraph, faq paragraph.
+msgid "If you have any question about working with \"Master Slider\", you can take a look at <a href=\"http://masterslider.com/doc/wp/free/\">online documentations</a>"
+msgstr ""
+
+#. Found in description paragraph.
+msgid ""
+"French. Special thanks to <a href=\"http://www.thomasgrimaud.fr\">Thomas</a>\n"
+"Brazilian Portuguese. Special thanks to <a href=\"http://www.themeforest.net/user/WebPress-CodeLayer\">WebPress</a>\n"
+"Serbian. Special thanks to <a href=\"http://www.webhostinghub.com\">Borisa Djuraskovic</a>"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "You can start translating Master Slider by our <a href=\"http://translate.averta.net/projects/masterslider/free-version\">online translation service</a>."
+msgstr ""
+
+#. Found in installation header.
+msgid "Minimum Requirements"
+msgstr ""
+
+#. Found in installation header.
+msgid "Automatic installation (easiest way)"
+msgstr ""
+
+#. Found in installation header.
+msgid "Manual installation"
+msgstr ""
+
+#. Found in installation header.
+msgid "Updating"
+msgstr ""
+
+#. Found in installation list item.
+msgid "WordPress 3.8 or greater"
+msgstr ""
+
+#. Found in installation list item.
+msgid "PHP version 5.2.4 or greater"
+msgstr ""
+
+#. Found in installation list item.
+msgid "MySQL version 5.0 or greater"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Download <code>master-slider.zip</code>"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Navigate to the 'Add New' in the plugins dashboard"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Navigate to the 'Upload' area"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Select <code>master-slider.zip</code> from your computer"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Click 'Install Now'"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Activate the plugin in the Plugin dashboard"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Extract the <code>master-slider</code> directory to your computer"
+msgstr ""
+
+#. Found in installation list item.
+msgid "Upload the <code>master-slider</code> directory to the <code>/wp-content/plugins/</code> directory"
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "<strong>This section describes how to install the plugin and get it working</strong>"
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "To do an automatic install of Master Slider, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New."
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "In the search field type \"Master Slider\" and click Search Plugins. Once you have found it you can install it by simply clicking \"Install Now\"."
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "<strong>Uploading in WordPress Dashboard</strong>"
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "<strong>Using FTP</strong>"
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "The WordPress codex contains <a href=\"http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation\">instructions on how to install a WordPress plugin</a>."
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "You can use automatic update to update the plugin safely."
+msgstr ""
+
+#. Found in faq header.
+msgid "Where can I find Master Slider documentation and user guides"
+msgstr ""
+
+#. Found in faq header.
+msgid "Will Master Slider work with my theme?"
+msgstr ""
+
+#. Found in faq header.
+msgid "I added text to slide (slide info), but it does not appear in slider"
+msgstr ""
+
+#. Found in faq header.
+msgid "After I've removed a slider, it still appears on my website"
+msgstr ""
+
+#. Found in faq header.
+msgid "Where can I report bugs?"
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "If you get stuck you can follow these <a href=\"http://masterslider.com/doc/wp/free/#support\">steps to get support</a>."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "Master Slider works with any theme, including the default WordPress themes."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "You need to add \"slide info\" control too. To do that, go for editing slider, under \"slider controls\" tab, select and add \"slide info\" control"
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "Maybe you have a cache plugin enabled on your website or Master Slider's built-in cache is enabled."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "Bugs can be reported in our <a href=\"http://wordpress.org/tags/master-slider\">support forums</a>."
+msgstr ""
