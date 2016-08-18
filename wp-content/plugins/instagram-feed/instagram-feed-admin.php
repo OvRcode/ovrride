@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function sb_instagram_menu() {
     add_menu_page(
@@ -101,92 +102,123 @@ function sb_instagram_settings_page() {
     $sb_instagram_custom_js = $options[ 'sb_instagram_custom_js' ];
     $sb_instagram_disable_awesome = $options[ 'sb_instagram_disable_awesome' ];
 
-    // See if the user has posted us some information. If they did, this hidden field will be set to 'Y'.
-    if( isset($_POST[ $sb_instagram_settings_hidden_field ]) && $_POST[ $sb_instagram_settings_hidden_field ] == 'Y' ) {
 
-        if( isset($_POST[ $sb_instagram_configure_hidden_field ]) && $_POST[ $sb_instagram_configure_hidden_field ] == 'Y' ) {
-            $sb_instagram_at = $_POST[ 'sb_instagram_at' ];
-            $sb_instagram_user_id = $_POST[ 'sb_instagram_user_id' ];
-            isset($_POST[ 'sb_instagram_preserve_settings' ]) ? $sb_instagram_preserve_settings = $_POST[ 'sb_instagram_preserve_settings' ] : $sb_instagram_preserve_settings = '';
-            isset($_POST[ 'sb_instagram_ajax_theme' ]) ? $sb_instagram_ajax_theme = $_POST[ 'sb_instagram_ajax_theme' ] : $sb_instagram_ajax_theme = '';
+    //Check nonce before saving data
+    if ( ! isset( $_POST['sb_instagram_settings_nonce'] ) || ! wp_verify_nonce( $_POST['sb_instagram_settings_nonce'], 'sb_instagram_saving_settings' ) ) {
+        //Nonce did not verify
+    } else {
+        // See if the user has posted us some information. If they did, this hidden field will be set to 'Y'.
+        if( isset($_POST[ $sb_instagram_settings_hidden_field ]) && $_POST[ $sb_instagram_settings_hidden_field ] == 'Y' ) {
 
-            $options[ 'sb_instagram_at' ] = $sb_instagram_at;
-            $options[ 'sb_instagram_user_id' ] = $sb_instagram_user_id;
-            $options[ 'sb_instagram_preserve_settings' ] = $sb_instagram_preserve_settings;
-            $options[ 'sb_instagram_ajax_theme' ] = $sb_instagram_ajax_theme;
-        } //End config tab post
+            if( isset($_POST[ $sb_instagram_configure_hidden_field ]) && $_POST[ $sb_instagram_configure_hidden_field ] == 'Y' ) {
 
-        if( isset($_POST[ $sb_instagram_customize_hidden_field ]) && $_POST[ $sb_instagram_customize_hidden_field ] == 'Y' ) {
-            $sb_instagram_width = $_POST[ 'sb_instagram_width' ];
-            $sb_instagram_width_unit = $_POST[ 'sb_instagram_width_unit' ];
-            isset($_POST[ 'sb_instagram_feed_width_resp' ]) ? $sb_instagram_feed_width_resp = $_POST[ 'sb_instagram_feed_width_resp' ] : $sb_instagram_feed_width_resp = '';
+                $sb_instagram_at = sanitize_text_field( $_POST[ 'sb_instagram_at' ] );
+                $sb_instagram_user_id = sanitize_text_field( $_POST[ 'sb_instagram_user_id' ] );
 
-            $sb_instagram_height = $_POST[ 'sb_instagram_height' ];
-            $sb_instagram_height_unit = $_POST[ 'sb_instagram_height_unit' ];
-            $sb_instagram_num = $_POST[ 'sb_instagram_num' ];
-            $sb_instagram_cols = $_POST[ 'sb_instagram_cols' ];
-            isset($_POST[ 'sb_instagram_disable_mobile' ]) ? $sb_instagram_disable_mobile = $_POST[ 'sb_instagram_disable_mobile' ] : $sb_instagram_disable_mobile = '';
+                isset($_POST[ 'sb_instagram_preserve_settings' ]) ? $sb_instagram_preserve_settings = sanitize_text_field( $_POST[ 'sb_instagram_preserve_settings' ] ) : $sb_instagram_preserve_settings = '';
+                isset($_POST[ 'sb_instagram_ajax_theme' ]) ? $sb_instagram_ajax_theme = sanitize_text_field( $_POST[ 'sb_instagram_ajax_theme' ] ) : $sb_instagram_ajax_theme = '';
 
-            $sb_instagram_image_padding = $_POST[ 'sb_instagram_image_padding' ];
-            $sb_instagram_image_padding_unit = $_POST[ 'sb_instagram_image_padding_unit' ];
-            $sb_instagram_sort = $_POST[ 'sb_instagram_sort' ];
-            $sb_instagram_background = $_POST[ 'sb_instagram_background' ];
-            isset($_POST[ 'sb_instagram_show_btn' ]) ? $sb_instagram_show_btn = $_POST[ 'sb_instagram_show_btn' ] : $sb_instagram_show_btn = '';
-            $sb_instagram_btn_background = $_POST[ 'sb_instagram_btn_background' ];
-            $sb_instagram_btn_text_color = $_POST[ 'sb_instagram_btn_text_color' ];
-            $sb_instagram_btn_text = $_POST[ 'sb_instagram_btn_text' ];
-            $sb_instagram_image_res = $_POST[ 'sb_instagram_image_res' ];
-            //Header
-            isset($_POST[ 'sb_instagram_show_header' ]) ? $sb_instagram_show_header = $_POST[ 'sb_instagram_show_header' ] : $sb_instagram_show_header = '';
-            $sb_instagram_header_color = $_POST[ 'sb_instagram_header_color' ];
-            //Follow button
-            isset($_POST[ 'sb_instagram_show_follow_btn' ]) ? $sb_instagram_show_follow_btn = $_POST[ 'sb_instagram_show_follow_btn' ] : $sb_instagram_show_follow_btn = '';
-            $sb_instagram_folow_btn_background = $_POST[ 'sb_instagram_folow_btn_background' ];
-            $sb_instagram_follow_btn_text_color = $_POST[ 'sb_instagram_follow_btn_text_color' ];
-            $sb_instagram_follow_btn_text = $_POST[ 'sb_instagram_follow_btn_text' ];
-            //Misc
-            $sb_instagram_custom_css = $_POST[ 'sb_instagram_custom_css' ];
-            $sb_instagram_custom_js = $_POST[ 'sb_instagram_custom_js' ];
-            isset($_POST[ 'sb_instagram_disable_awesome' ]) ? $sb_instagram_disable_awesome = $_POST[ 'sb_instagram_disable_awesome' ] : $sb_instagram_disable_awesome = '';
+                $options[ 'sb_instagram_at' ] = $sb_instagram_at;
+                $options[ 'sb_instagram_user_id' ] = $sb_instagram_user_id;
+                $options[ 'sb_instagram_preserve_settings' ] = $sb_instagram_preserve_settings;
+                $options[ 'sb_instagram_ajax_theme' ] = $sb_instagram_ajax_theme;
+            } //End config tab post
 
-            $options[ 'sb_instagram_width' ] = $sb_instagram_width;
-            $options[ 'sb_instagram_width_unit' ] = $sb_instagram_width_unit;
-            $options[ 'sb_instagram_feed_width_resp' ] = $sb_instagram_feed_width_resp;
-            $options[ 'sb_instagram_height' ] = $sb_instagram_height;
-            $options[ 'sb_instagram_height_unit' ] = $sb_instagram_height_unit;
-            $options[ 'sb_instagram_num' ] = $sb_instagram_num;
-            $options[ 'sb_instagram_cols' ] = $sb_instagram_cols;
-            $options[ 'sb_instagram_disable_mobile' ] = $sb_instagram_disable_mobile;
-            $options[ 'sb_instagram_image_padding' ] = $sb_instagram_image_padding;
-            $options[ 'sb_instagram_image_padding_unit' ] = $sb_instagram_image_padding_unit;
-            $options[ 'sb_instagram_sort' ] = $sb_instagram_sort;
-            $options[ 'sb_instagram_background' ] = $sb_instagram_background;
-            $options[ 'sb_instagram_show_btn' ] = $sb_instagram_show_btn;
-            $options[ 'sb_instagram_btn_background' ] = $sb_instagram_btn_background;
-            $options[ 'sb_instagram_btn_text_color' ] = $sb_instagram_btn_text_color;
-            $options[ 'sb_instagram_btn_text' ] = $sb_instagram_btn_text;
-            $options[ 'sb_instagram_image_res' ] = $sb_instagram_image_res;
-            //Header
-            $options[ 'sb_instagram_show_header' ] = $sb_instagram_show_header;
-            $options[ 'sb_instagram_header_color' ] = $sb_instagram_header_color;
-            //Follow button
-            $options[ 'sb_instagram_show_follow_btn' ] = $sb_instagram_show_follow_btn;
-            $options[ 'sb_instagram_folow_btn_background' ] = $sb_instagram_folow_btn_background;
-            $options[ 'sb_instagram_follow_btn_text_color' ] = $sb_instagram_follow_btn_text_color;
-            $options[ 'sb_instagram_follow_btn_text' ] = $sb_instagram_follow_btn_text;
-            //Misc
-            $options[ 'sb_instagram_custom_css' ] = $sb_instagram_custom_css;
-            $options[ 'sb_instagram_custom_js' ] = $sb_instagram_custom_js;
-            $options[ 'sb_instagram_disable_awesome' ] = $sb_instagram_disable_awesome;
+            if( isset($_POST[ $sb_instagram_customize_hidden_field ]) && $_POST[ $sb_instagram_customize_hidden_field ] == 'Y' ) {
+                
+                //Validate and sanitize width field
+                $safe_width = intval( sanitize_text_field( $_POST['sb_instagram_width'] ) );
+                if ( ! $safe_width ) $safe_width = '';
+                if ( strlen( $safe_width ) > 4 ) $safe_width = substr( $safe_width, 0, 4 );
+                $sb_instagram_width = $safe_width;
+
+                $sb_instagram_width_unit = sanitize_text_field( $_POST[ 'sb_instagram_width_unit' ] );
+                isset($_POST[ 'sb_instagram_feed_width_resp' ]) ? $sb_instagram_feed_width_resp = sanitize_text_field( $_POST[ 'sb_instagram_feed_width_resp' ] ) : $sb_instagram_feed_width_resp = '';
+
+                //Validate and sanitize height field
+                $safe_height = intval( sanitize_text_field( $_POST['sb_instagram_height'] ) );
+                if ( ! $safe_height ) $safe_height = '';
+                if ( strlen( $safe_height ) > 4 ) $safe_height = substr( $safe_height, 0, 4 );
+                $sb_instagram_height = $safe_height;
+
+                $sb_instagram_height_unit = sanitize_text_field( $_POST[ 'sb_instagram_height_unit' ] );
+
+                //Validate and sanitize number of photos field
+                $safe_num = intval( sanitize_text_field( $_POST['sb_instagram_num'] ) );
+                if ( ! $safe_num ) $safe_num = '';
+                if ( strlen( $safe_num ) > 4 ) $safe_num = substr( $safe_num, 0, 4 );
+                $sb_instagram_num = $safe_num;
+
+                $sb_instagram_cols = sanitize_text_field( $_POST[ 'sb_instagram_cols' ] );
+                isset($_POST[ 'sb_instagram_disable_mobile' ]) ? $sb_instagram_disable_mobile = sanitize_text_field( $_POST[ 'sb_instagram_disable_mobile' ] ) : $sb_instagram_disable_mobile = '';
+
+                //Validate and sanitize padding field
+                $safe_padding = intval( sanitize_text_field( $_POST['sb_instagram_image_padding'] ) );
+                if ( ! $safe_padding ) $safe_padding = '';
+                if ( strlen( $safe_padding ) > 4 ) $safe_padding = substr( $safe_padding, 0, 4 );
+                $sb_instagram_image_padding = $safe_padding;
+
+                $sb_instagram_image_padding_unit = sanitize_text_field( $_POST[ 'sb_instagram_image_padding_unit' ] );
+                $sb_instagram_sort = sanitize_text_field( $_POST[ 'sb_instagram_sort' ] );
+                $sb_instagram_background = sanitize_text_field( $_POST[ 'sb_instagram_background' ] );
+                isset($_POST[ 'sb_instagram_show_btn' ]) ? $sb_instagram_show_btn = sanitize_text_field( $_POST[ 'sb_instagram_show_btn' ] ) : $sb_instagram_show_btn = '';
+                $sb_instagram_btn_background = sanitize_text_field( $_POST[ 'sb_instagram_btn_background' ] );
+                $sb_instagram_btn_text_color = sanitize_text_field( $_POST[ 'sb_instagram_btn_text_color' ] );
+                $sb_instagram_btn_text = sanitize_text_field( $_POST[ 'sb_instagram_btn_text' ] );
+                $sb_instagram_image_res = sanitize_text_field( $_POST[ 'sb_instagram_image_res' ] );
+                //Header
+                isset($_POST[ 'sb_instagram_show_header' ]) ? $sb_instagram_show_header = sanitize_text_field( $_POST[ 'sb_instagram_show_header' ] ) : $sb_instagram_show_header = '';
+                $sb_instagram_header_color = sanitize_text_field( $_POST[ 'sb_instagram_header_color' ] );
+                //Follow button
+                isset($_POST[ 'sb_instagram_show_follow_btn' ]) ? $sb_instagram_show_follow_btn = sanitize_text_field( $_POST[ 'sb_instagram_show_follow_btn' ] ) : $sb_instagram_show_follow_btn = '';
+                $sb_instagram_folow_btn_background = sanitize_text_field( $_POST[ 'sb_instagram_folow_btn_background' ] );
+                $sb_instagram_follow_btn_text_color = sanitize_text_field( $_POST[ 'sb_instagram_follow_btn_text_color' ] );
+                $sb_instagram_follow_btn_text = sanitize_text_field( $_POST[ 'sb_instagram_follow_btn_text' ] );
+                //Misc
+                $sb_instagram_custom_css = $_POST[ 'sb_instagram_custom_css' ];
+                $sb_instagram_custom_js = $_POST[ 'sb_instagram_custom_js' ];
+                isset($_POST[ 'sb_instagram_disable_awesome' ]) ? $sb_instagram_disable_awesome = sanitize_text_field( $_POST[ 'sb_instagram_disable_awesome' ] ) : $sb_instagram_disable_awesome = '';
+
+                $options[ 'sb_instagram_width' ] = $sb_instagram_width;
+                $options[ 'sb_instagram_width_unit' ] = $sb_instagram_width_unit;
+                $options[ 'sb_instagram_feed_width_resp' ] = $sb_instagram_feed_width_resp;
+                $options[ 'sb_instagram_height' ] = $sb_instagram_height;
+                $options[ 'sb_instagram_height_unit' ] = $sb_instagram_height_unit;
+                $options[ 'sb_instagram_num' ] = $sb_instagram_num;
+                $options[ 'sb_instagram_cols' ] = $sb_instagram_cols;
+                $options[ 'sb_instagram_disable_mobile' ] = $sb_instagram_disable_mobile;
+                $options[ 'sb_instagram_image_padding' ] = $sb_instagram_image_padding;
+                $options[ 'sb_instagram_image_padding_unit' ] = $sb_instagram_image_padding_unit;
+                $options[ 'sb_instagram_sort' ] = $sb_instagram_sort;
+                $options[ 'sb_instagram_background' ] = $sb_instagram_background;
+                $options[ 'sb_instagram_show_btn' ] = $sb_instagram_show_btn;
+                $options[ 'sb_instagram_btn_background' ] = $sb_instagram_btn_background;
+                $options[ 'sb_instagram_btn_text_color' ] = $sb_instagram_btn_text_color;
+                $options[ 'sb_instagram_btn_text' ] = $sb_instagram_btn_text;
+                $options[ 'sb_instagram_image_res' ] = $sb_instagram_image_res;
+                //Header
+                $options[ 'sb_instagram_show_header' ] = $sb_instagram_show_header;
+                $options[ 'sb_instagram_header_color' ] = $sb_instagram_header_color;
+                //Follow button
+                $options[ 'sb_instagram_show_follow_btn' ] = $sb_instagram_show_follow_btn;
+                $options[ 'sb_instagram_folow_btn_background' ] = $sb_instagram_folow_btn_background;
+                $options[ 'sb_instagram_follow_btn_text_color' ] = $sb_instagram_follow_btn_text_color;
+                $options[ 'sb_instagram_follow_btn_text' ] = $sb_instagram_follow_btn_text;
+                //Misc
+                $options[ 'sb_instagram_custom_css' ] = $sb_instagram_custom_css;
+                $options[ 'sb_instagram_custom_js' ] = $sb_instagram_custom_js;
+                $options[ 'sb_instagram_disable_awesome' ] = $sb_instagram_disable_awesome;
+                
+            } //End customize tab post
             
-        } //End customize tab post
-        
-        //Save the settings to the settings array
-        update_option( 'sb_instagram_settings', $options );
+            //Save the settings to the settings array
+            update_option( 'sb_instagram_settings', $options );
 
-    ?>
-    <div class="updated"><p><strong><?php _e('Settings saved.', 'instagram-feed' ); ?></strong></p></div>
-    <?php } ?>
+        ?>
+        <div class="updated"><p><strong><?php _e('Settings saved.', 'instagram-feed' ); ?></strong></p></div>
+        <?php } ?>
+
+    <?php } //End nonce check ?>
 
 
     <div id="sbi_admin" class="wrap">
@@ -197,6 +229,7 @@ function sb_instagram_settings_page() {
     
         <form name="form1" method="post" action="">
             <input type="hidden" name="<?php echo $sb_instagram_settings_hidden_field; ?>" value="Y">
+            <?php wp_nonce_field( 'sb_instagram_saving_settings', 'sb_instagram_settings_nonce' ); ?>
 
             <?php $sbi_active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'configure'; ?>
             <h2 class="nav-tab-wrapper">
@@ -222,7 +255,7 @@ function sb_instagram_settings_page() {
                     <tr valign="top">
                         <th scope="row"><label><?php _e('Access Token', 'instagram-feed'); ?></label></th>
                         <td>
-                            <input name="sb_instagram_at" id="sb_instagram_at" type="text" value="<?php esc_attr_e( $sb_instagram_at, 'instagram-feed' ); ?>" size="60" placeholder="Click button above to get your Access Token" />
+                            <input name="sb_instagram_at" id="sb_instagram_at" type="text" value="<?php esc_attr_e( $sb_instagram_at, 'instagram-feed' ); ?>" size="60" maxlength="60" placeholder="Click button above to get your Access Token" />
                             &nbsp;<a class="sbi_tooltip_link" href="JavaScript:void(0);"><?php _e("What is this?", 'instagram-feed'); ?></a>
                             <p class="sbi_tooltip"><?php _e("In order to display your photos you need an Access Token from Instagram. To get yours, simply click the button above and log into Instagram. You can also use the button on <a href='https://smashballoon.com/instagram-feed/token/' target='_blank'>this page</a>.", 'instagram-feed'); ?></p>
                         </td>
@@ -253,6 +286,14 @@ function sb_instagram_settings_page() {
                                 &nbsp;<a class="sbi_tooltip_link sbi_pro" href="JavaScript:void(0);"><?php _e("What is this?", 'instagram-feed'); ?></a><span class="sbi_note"> - <a href="https://smashballoon.com/instagram-feed/" target="_blank">Upgrade to Pro to show posts by Hashtag</a></span>
                                 <p class="sbi_tooltip"><?php _e("Display posts from a specific hashtag instead of from a user", 'instagram-feed'); ?></p>
                             </span>
+
+                            <div class="sbi_pro sbi_row">
+                                <input disabled type="radio" name="sb_instagram_type" id="sb_instagram_type_self_likes" value="liked" <?php if($sb_instagram_type == "liked") echo "checked"; ?> />
+                                <label class="sbi_radio_label" for="sb_instagram_type_self_likes">Liked:</label>
+                                <input readonly type="text" size="25" />
+                                    &nbsp;<a class="sbi_tooltip_link sbi_pro" href="JavaScript:void(0);"><?php _e("What is this?"); ?></a><span class="sbi_note"> - <a href="https://smashballoon.com/instagram-feed/" target="_blank">Upgrade to Pro to show posts that you've Liked</a></span>
+                                <p class="sbi_tooltip"><?php _e("Display posts that your user account has liked."); ?></p>
+                            </div>
 
                             <span class="sbi_pro sbi_row">
                                 <input disabled type="radio" name="sb_instagram_type" id="sb_instagram_type_location" value="location" <?php if($sb_instagram_type == "location") echo "checked"; ?> />
@@ -324,7 +365,7 @@ function sb_instagram_settings_page() {
                     <th scope="row"><label><?php _e('Width of Feed', 'instagram-feed'); ?></label><code class="sbi_shortcode"> width  widthunit
                         Eg: width=50 widthunit=%</code></th>
                     <td>
-                        <input name="sb_instagram_width" type="text" value="<?php esc_attr_e( $sb_instagram_width, 'instagram-feed' ); ?>" id="sb_instagram_width" size="4" />
+                        <input name="sb_instagram_width" type="text" value="<?php esc_attr_e( $sb_instagram_width, 'instagram-feed' ); ?>" id="sb_instagram_width" size="4" maxlength="4" />
                         <select name="sb_instagram_width_unit" id="sb_instagram_width_unit">
                             <option value="px" <?php if($sb_instagram_width_unit == "px") echo 'selected="selected"' ?> ><?php _e('px', 'instagram-feed'); ?></option>
                             <option value="%" <?php if($sb_instagram_width_unit == "%") echo 'selected="selected"' ?> ><?php _e('%', 'instagram-feed'); ?></option>
@@ -340,7 +381,7 @@ function sb_instagram_settings_page() {
                     <th scope="row"><label><?php _e('Height of Feed', 'instagram-feed'); ?></label><code class="sbi_shortcode"> height  heightunit
                         Eg: height=500 heightunit=px</code></th>
                     <td>
-                        <input name="sb_instagram_height" type="text" value="<?php esc_attr_e( $sb_instagram_height, 'instagram-feed' ); ?>" size="4" />
+                        <input name="sb_instagram_height" type="text" value="<?php esc_attr_e( $sb_instagram_height, 'instagram-feed' ); ?>" size="4" maxlength="4" />
                         <select name="sb_instagram_height_unit">
                             <option value="px" <?php if($sb_instagram_height_unit == "px") echo 'selected="selected"' ?> ><?php _e('px', 'instagram-feed'); ?></option>
                             <option value="%" <?php if($sb_instagram_height_unit == "%") echo 'selected="selected"' ?> ><?php _e('%', 'instagram-feed'); ?></option>
@@ -388,7 +429,7 @@ function sb_instagram_settings_page() {
                     <th scope="row"><label><?php _e('Number of Photos', 'instagram-feed'); ?></label><code class="sbi_shortcode"> num
                         Eg: num=6</code></th>
                     <td>
-                        <input name="sb_instagram_num" type="text" value="<?php esc_attr_e( $sb_instagram_num, 'instagram-feed' ); ?>" size="4" />
+                        <input name="sb_instagram_num" type="text" value="<?php esc_attr_e( $sb_instagram_num, 'instagram-feed' ); ?>" size="4" maxlength="4" />
                         <span class="sbi_note"><?php _e('Number of photos to show initially. Maximum of 33.', 'instagram-feed'); ?></span>
                         &nbsp;<a class="sbi_tooltip_link" href="JavaScript:void(0);"><?php _e("Using multiple IDs or hashtags?", 'instagram-feed'); ?></a>
                             <p class="sbi_tooltip"><?php _e("If you're displaying photos from multiple User IDs or hashtags then this is the number of photos which will be displayed from each.", 'instagram-feed'); ?></p>
@@ -434,7 +475,7 @@ function sb_instagram_settings_page() {
                 <tr valign="top">
                     <th scope="row"><label><?php _e('Padding around Images', 'instagram-feed'); ?></label><code class="sbi_shortcode"> imagepadding  imagepaddingunit</code></th>
                     <td>
-                        <input name="sb_instagram_image_padding" type="text" value="<?php esc_attr_e( $sb_instagram_image_padding, 'instagram-feed' ); ?>" size="4" />
+                        <input name="sb_instagram_image_padding" type="text" value="<?php esc_attr_e( $sb_instagram_image_padding, 'instagram-feed' ); ?>" size="4" maxlength="4" />
                         <select name="sb_instagram_image_padding_unit">
                             <option value="px" <?php if($sb_instagram_image_padding_unit == "px") echo 'selected="selected"' ?> ><?php _e('px', 'instagram-feed'); ?></option>
                             <option value="%" <?php if($sb_instagram_image_padding_unit == "%") echo 'selected="selected"' ?> ><?php _e('%', 'instagram-feed'); ?></option>
@@ -582,7 +623,7 @@ function sb_instagram_settings_page() {
                 <tr valign="top" class="sbi_pro">
                     <th scope="row"><label><?php _e('Remove photos containing these words or hashtags', 'instagram-feed'); ?></label></th>
                     <td>
-                       <input name="sb_instagram_exclude_words" id="sb_instagram_exclude_words" type="text" style="width: 70%;" value="" />
+                       <input disabled name="sb_instagram_exclude_words" id="sb_instagram_exclude_words" type="text" style="width: 70%;" value="" />
                         <br />
                         <span class="sbi_note" style="margin-left: 0;"><?php _e('Separate words/hashtags using commas', 'instagram-feed'); ?></span>
                         &nbsp;<a class="sbi_tooltip_link sbi_pro" href="JavaScript:void(0);"><?php _e("What is this?", 'instagram-feed'); ?></a>
@@ -593,7 +634,7 @@ function sb_instagram_settings_page() {
                 <tr valign="top" class="sbi_pro">
                     <th scope="row"><label><?php _e('Show photos containing these words or hashtags', 'instagram-feed'); ?></label></th>
                     <td>
-                        <input name="sb_instagram_include_words" id="sb_instagram_include_words" type="text" style="width: 70%;" value="" />
+                        <input disabled name="sb_instagram_include_words" id="sb_instagram_include_words" type="text" style="width: 70%;" value="" />
                         <br />
                         <span class="sbi_note" style="margin-left: 0;"><?php _e('Separate words/hashtags using commas', 'instagram-feed'); ?></span>
                         &nbsp;<a class="sbi_tooltip_link sbi_pro" href="JavaScript:void(0);"><?php _e("What is this?", 'instagram-feed'); ?></a>
@@ -612,7 +653,7 @@ function sb_instagram_settings_page() {
                 <tr valign="top" class="sbi_pro">
                     <th scope="row"><label><?php _e('Hide specific photos', 'instagram-feed'); ?></label></th>
                     <td>
-                        <textarea name="sb_instagram_hide_photos" id="sb_instagram_hide_photos" style="width: 70%;" rows="3"></textarea>
+                        <textarea disabled name="sb_instagram_hide_photos" id="sb_instagram_hide_photos" style="width: 70%;" rows="3"></textarea>
                         <br />
                         <span class="sbi_note" style="margin-left: 0;"><?php _e('Separate IDs using commas', 'instagram-feed'); ?></span>
                         &nbsp;<a class="sbi_tooltip_link sbi_pro" href="JavaScript:void(0);"><?php _e("What is this?", 'instagram-feed'); ?></a>
@@ -623,7 +664,7 @@ function sb_instagram_settings_page() {
                 <tr valign="top" class="sbi_pro">
                     <th scope="row"><label><?php _e('Block users', 'instagram-feed'); ?></label></th>
                     <td>
-                        <input name="sb_instagram_block_users" id="sb_instagram_block_users" type="text" style="width: 70%;" value="" />
+                        <input disabled name="sb_instagram_block_users" id="sb_instagram_block_users" type="text" style="width: 70%;" value="" />
                         <br />
                         <span class="sbi_note" style="margin-left: 0;"><?php _e('Separate usernames using commas', 'instagram-feed'); ?></span>
                         &nbsp;<a class="sbi_tooltip_link sbi_pro" href="JavaScript:void(0);"><?php _e("What is this?", 'instagram-feed'); ?></a>
@@ -649,7 +690,7 @@ function sb_instagram_settings_page() {
                 </tr>
                 <tr valign="top">
                     <td>
-                        <textarea name="sb_instagram_custom_css" id="sb_instagram_custom_css" style="width: 70%;" rows="7"><?php esc_attr_e( stripslashes($sb_instagram_custom_css), 'instagram-feed' ); ?></textarea>
+                        <textarea name="sb_instagram_custom_css" id="sb_instagram_custom_css" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($sb_instagram_custom_css), 'instagram-feed' ); ?></textarea>
                     </td>
                 </tr>
                 <tr valign="top" id="customjs">
@@ -659,7 +700,7 @@ function sb_instagram_settings_page() {
                 </tr>
                 <tr valign="top">
                     <td>
-                        <textarea name="sb_instagram_custom_js" id="sb_instagram_custom_js" style="width: 70%;" rows="7"><?php esc_attr_e( stripslashes($sb_instagram_custom_js), 'instagram-feed' ); ?></textarea>
+                        <textarea name="sb_instagram_custom_js" id="sb_instagram_custom_js" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($sb_instagram_custom_js), 'instagram-feed' ); ?></textarea>
                     </td>
                 </tr>
             </tbody>
@@ -975,7 +1016,7 @@ function sb_instagram_settings_page() {
         <h3><?php _e('Setting up and Customizing the plugin', 'instagram-feed'); ?></h3>
         <p><i class="fa fa-life-ring" aria-hidden="true"></i>&nbsp; <?php _e('<a href="https://smashballoon.com/instagram-feed/free/" target="_blank">Click here for step-by-step setup directions</a>', 'instagram-feed'); ?></p>
         <p style="max-width: 960px;">See below for a short video demonstrating how to set up, customize and use the plugin. <b>Please note</b> that the video shows the set up and use of the <b><a href="https://smashballoon.com/instagram-feed/" target="_blank">PRO version</a></b> of the plugin, but the process is the same for this free version. The only difference is some of the features available.</p>
-        <iframe class="youtube-video" src="//www.youtube.com/embed/3tc-UvcTcgk?theme=light&amp;showinfo=0&amp;controls=2" width="960" height="540" frameborder="0" allowfullscreen="allowfullscreen" style="border: 1px solid #ddd;"></iframe>
+        <iframe class="youtube-video" src="//www.youtube.com/embed/V_fJ_vhvQXM?theme=light&amp;showinfo=0&amp;controls=2" width="960" height="540" frameborder="0" allowfullscreen="allowfullscreen" style="border: 1px solid #ddd;"></iframe>
 
         <br />
         <br />
@@ -1146,5 +1187,83 @@ function sb_instagram_token_nag_ignore_2016() {
              add_user_meta($user_id, 'sb_instagram_ignore_notice_2016', 'true', true);
     }
 }
+
+
+
+//REVIEW REQUEST NOTICE
+
+// checks $_GET to see if the nag variable is set and what it's value is
+function sbi_check_nag_get( $get, $nag, $option, $transient ) {
+    if ( isset( $_GET[$nag] ) && $get[$nag] == 1 ) {
+        update_option( $option, 'dismissed' );
+    } elseif ( isset( $_GET[$nag] ) && $get[$nag] == 'later' ) {
+        $time = 2 * WEEK_IN_SECONDS;
+        set_transient( $transient, 'waiting', $time );
+        update_option( $option, 'pending' );
+    }
+}
+
+// will set a transient if the notice hasn't been dismissed or hasn't been set yet
+function sbi_maybe_set_transient( $transient, $option ) {
+    $sbi_rating_notice_waiting = get_transient( $transient );
+    $notice_status = get_option( $option, false );
+
+    if ( ! $sbi_rating_notice_waiting && !( $notice_status === 'dismissed' || $notice_status === 'pending' ) ) {
+        $time = 2 * WEEK_IN_SECONDS;
+        set_transient( $transient, 'waiting', $time );
+        update_option( $option, 'pending' );
+    }
+}
+
+// generates the html for the admin notice
+function sbi_rating_notice_html() {
+
+    //Only show to admins
+    if ( current_user_can( 'manage_options' ) ){
+
+        global $current_user;
+        $user_id = $current_user->ID;
+
+        /* Check that the user hasn't already clicked to ignore the message */
+        if ( ! get_user_meta( $user_id, 'sbi_ignore_rating_notice') ) {
+
+            _e("
+            <div class='sbi_notice sbi_review_notice'>
+                <img src='". plugins_url( 'instagram-feed/img/sbi-icon.png' ) ."' alt='Instagram Feed'>
+                <div class='ctf-notice-text'>
+                    <p>It's great to see that you've been using the <strong>Instagram Feed</strong> plugin for a while now. Hopefully you're happy with it!&nbsp; If so, would you consider leaving a positive review? It really helps to support the plugin and helps others to discover it too!</p>
+                    <p class='links'>
+                        <a class='sbi_notice_dismiss' href='https://wordpress.org/support/view/plugin-reviews/instagram-feed' target='_blank'>Sure, I'd love to!</a>
+                        &middot;
+                        <a class='sbi_notice_dismiss' href='" .esc_url( add_query_arg( 'sbi_ignore_rating_notice_nag', '1' ) ). "'>No thanks</a>
+                        &middot;
+                        <a class='sbi_notice_dismiss' href='" .esc_url( add_query_arg( 'sbi_ignore_rating_notice_nag', '1' ) ). "'>I've already given a review</a>
+                        &middot;
+                        <a class='sbi_notice_dismiss' href='" .esc_url( add_query_arg( 'sbi_ignore_rating_notice_nag', 'later' ) ). "'>Ask Me Later</a>
+                    </p>
+                </div>
+                <a class='sbi_notice_close' href='" .esc_url( add_query_arg( 'sbi_ignore_rating_notice_nag', '1' ) ). "'><i class='fa fa-close'></i></a>
+            </div>
+            ");
+
+        }
+
+    }
+}
+
+// variables to define certain terms
+$transient = 'instagram_feed_rating_notice_waiting';
+$option = 'sbi_rating_notice';
+$nag = 'sbi_ignore_rating_notice_nag';
+
+sbi_check_nag_get( $_GET, $nag, $option, $transient );
+sbi_maybe_set_transient( $transient, $option );
+$notice_status = get_option( $option, false );
+
+// only display the notice if the time offset has passed and the user hasn't already dismissed it
+if ( get_transient( $transient ) !== 'waiting' && $notice_status !== 'dismissed' ) {
+    add_action( 'admin_notices', 'sbi_rating_notice_html' );
+}
+
 
 ?>
