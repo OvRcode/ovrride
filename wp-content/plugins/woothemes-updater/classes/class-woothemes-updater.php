@@ -23,7 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * private $file
  *
  * - __construct()
- * - load_localisation()
  * - load_plugin_textdomain()
  * - activation()
  * - register_plugin_version()
@@ -67,7 +66,6 @@ class WooThemes_Updater {
 		$this->products = array();
 
 		$this->load_plugin_textdomain();
-		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
 		// Run this on activation.
 		register_activation_hook( $this->file, array( $this, 'activation' ) );
@@ -88,16 +86,6 @@ class WooThemes_Updater {
 
 		add_filter( 'site_transient_' . 'update_plugins', array( $this, 'change_update_information' ) );
 	} // End __construct()
-
-	/**
-	 * Load the plugin's localisation file.
-	 * @access public
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public function load_localisation () {
-		load_plugin_textdomain( 'woothemes-updater', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
-	} // End load_localisation()
 
 	/**
 	 * Load the plugin textdomain from the main WordPress "languages" folder.
@@ -277,7 +265,7 @@ class WooThemes_Updater {
 	 */
 	public function need_license_message ( $plugin_data, $r ) {
 		if ( empty( $r->package ) ) {
-			echo wp_kses_post( '<div class="woothemes-updater-plugin-upgrade-notice">' . __( 'To enable this update please activate your WooThemes license by visiting the Dashboard > WooThemes Helper screen.', 'woothemes-updater' ) . '</div>' );
+			echo wp_kses_post( '<div class="woothemes-updater-plugin-upgrade-notice">' . __( 'To enable this update please connect your WooThemes subscription by visiting the Dashboard > WooThemes Helper screen.', 'woothemes-updater' ) . '</div>' );
 		}
 	} // End need_license_message()
 
@@ -295,7 +283,7 @@ class WooThemes_Updater {
 
 			if( empty( $woothemes_queued_updates ) ) return $transient;
 
-			$notice_text = __( 'To enable this update please activate your WooThemes license by visiting the Dashboard > WooThemes Helper screen.' , 'woothemes-updater' );
+			$notice_text = __( 'To enable this update please connect your WooThemes license by visiting the Dashboard > WooThemes Helper screen.' , 'woothemes-updater' );
 
 			foreach ( $woothemes_queued_updates as $key => $value ) {
 				if( isset( $transient->response[ $value->file ] ) && isset( $transient->response[ $value->file ]->package ) && '' == $transient->response[ $value->file ]->package && ( FALSE === stristr($transient->response[ $value->file ]->upgrade_notice, $notice_text ) ) ){

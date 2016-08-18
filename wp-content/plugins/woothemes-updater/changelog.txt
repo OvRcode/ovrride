@@ -1,5 +1,9 @@
 *** WooThemes Helper Changelog ***
 
+2016.07.27 - version 1.7.0
+ * New ‘connect to WooCommerce.com functionality’
+ * Various connection/activation bug fixes
+
 2016.04.18 - version 1.6.2
  * Fix - Ensure no subscription renewal messages after a subscription was renewed.
 

@@ -3,6 +3,27 @@ module.exports = function( grunt ){
 	'use strict';
 
 	grunt.initConfig({
+		less: {
+			development: {
+				options: {
+					compress: true,
+					yuicompress: true,
+					optimization: 2
+				},
+				files: {
+					"assets/css/admin.css": "assets/css/admin.less" // destination file and source file
+				}
+			}
+		},
+		watch: {
+			styles: {
+				files: ['assets/css/*.less'], // which files to watch
+				tasks: ['less'],
+				options: {
+					nospawn: true
+				}
+			}
+		},
 		pot: {
 			options:{
 				text_domain: 'woothemes-updater',
@@ -36,10 +57,13 @@ module.exports = function( grunt ){
 	});
 
 	// Load NPM tasks to be used here
+	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-pot');
 
 	// Register tasks
 	grunt.registerTask( 'default', [
-		'pot'
+		'less',
+		'watch'
 	]);
 };

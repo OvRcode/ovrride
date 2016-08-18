@@ -4,7 +4,7 @@ jQuery( document ).ready(function( $ ) {
 		var license_keys_object = [];
 		$('input[name^="license_keys["]').each(function( i, item ) {
 			if ( $( this ).val().length > 0 ) {
-				var license_object = { name: $( this ).attr("name").replace( 'license_keys[', '' ).replace( ']', '' ), key: $( this ).val() };
+				var license_object = { name: $( this ).attr("name").replace( 'license_keys[', '' ).replace( ']', '' ), key: $( this ).val(), method: $( this ).data( 'method' ) };
 				license_keys_object.push( license_object );
 			}
 		});
@@ -35,4 +35,39 @@ jQuery( document ).ready(function( $ ) {
 		}
 		event.preventDefault();
 	});
+
+	// Tooltip for renews on in license table
+	$('.dashicons-info').on('mouseover', function() {
+		$(this).siblings('.renews-on-tooltip').css('display', 'block');
+	});
+	$('.dashicons-info').on('mouseout', function() {
+		const tooltip = $(this).siblings('.renews-on-tooltip');
+		setTimeout(function() {
+			tooltip.fadeOut('fast');
+		}, 1000);
+	});
+
+	// Variables
+	var $submitButton = $('.woothemes-helper-submit-wrapper button');
+	var $keyInputs = $('.dashboard_page_woothemes-helper .product_status input');
+
+	// Click connect for them if they've just connected to WooThemes.com
+	if (window.location.search.indexOf('key=') > 0 && $('.woothemes-updater-wrap #activate-products').data('connected')) {
+		$submitButton.trigger('submit');
+	}
+
+	// Add a message to show after key input manually
+	$keyInputs.on('input', function() {
+		var $connectMessage = $(this).siblings('.click-connect-message');
+		if ($(this).val().length > 10) {
+			var message = '<strong>Great!</strong> Now click the \'Connect Subscriptions\' button below.';
+			if ($connectMessage.length > 0) {
+				$connectMessage.html(message);
+			} else {
+				$(this).after('<div class="click-connect-message">' + message + '</div>');
+			}
+		} else {
+			$connectMessage.remove();
+		}
+	})
 });

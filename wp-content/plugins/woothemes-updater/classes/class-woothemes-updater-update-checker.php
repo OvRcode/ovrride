@@ -17,13 +17,13 @@ class WooThemes_Updater_Update_Checker {
 	 * URL of endpoint to check for product/changelog info
 	 * @var string
 	 */
-	private $api_url = 'https://www.woothemes.com/wc-api/woothemes-installer-api';
+	private $api_url = 'https://woocommerce.com/wc-api/woothemes-installer-api';
 
 	/**
 	 * URL of endpoint to check for updates
 	 * @var string
 	 */
-	private $update_check_url = 'https://www.woothemes.com/wc-api/update-check';
+	private $update_check_url = 'https://woocommerce.com/wc-api/update-check';
 
 	/**
 	 * Array of plugins info
@@ -78,15 +78,39 @@ class WooThemes_Updater_Update_Checker {
 		// Check For Plugin Information
 		add_filter( 'plugins_api', array( $this, 'plugin_information' ), 20, 3 );
 
+		add_action( 'upgrader_process_complete', array( $this, 'after_update' ), 10, 2 );
+
 		// Clear the cache when a force update is done via WP
 		if ( isset( $_GET['force-check'] ) && 1 == $_GET['force-check'] ) {
-			delete_transient( 'woothemes_helper_updates' );
-		}
-		// Clear the cache when a plugin is updated to avoid showing updates for already updated products.
-		if ( isset( $_GET['action'] ) && ( 'do-plugin-upgrade' == $_GET['action'] || 'upgrade-plugin' == $_GET['action'] || 'do-theme-upgrade' == $_GET['action'] ) ) {
-			delete_transient( 'woothemes_helper_updates' );
+			$this->clean_cache();
 		}
 	} // End init()
+
+	/**
+	 * Called the WordPress update process finishes and used
+	 * to clear WooThemes Helper cache when a plugin or theme
+	 * is updated to avoid showing updates for already updated
+	 * products.
+	 *
+	 * @param WP_Upgrader $upgrader_object
+	 * @param array $options
+	 * @return void
+	 */
+	public function after_update( $upgrader_object, $options ) {
+		if ( $options['action'] == 'update' && in_array( $options['type'], array( 'plugin', 'theme' ) ) )  {
+			$this->clean_cache();
+		}
+	}
+
+	/**
+	 * Clear cache by deleting the transient used to store
+	 * information about installed Woo themes and plugins.
+	 *
+	 * @return void
+	 */
+	public function clean_cache() {
+		delete_transient( 'woothemes_helper_updates' );
+	}
 
 	/**
 	 * Make a call to WooThemes.com and fetch update info for all products and put in transient for 30min
@@ -257,7 +281,7 @@ class WooThemes_Updater_Update_Checker {
 						$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
 					}
 					$transient->response[ $theme_key ]['new_version'] = $theme->new_version;
-		        	$transient->response[ $theme_key ]['url'] = 'http://www.woothemes.com/';
+		        	$transient->response[ $theme_key ]['url'] = 'http://woocommerce.com/';
 		        	$transient->response[ $theme_key ]['package'] = $theme->package;
 				} elseif ( isset( $theme->error ) ) {
 					$this->errors[] = $theme->error;
@@ -417,7 +441,7 @@ class WooThemes_Updater_Update_Checker {
 			) );
 		// Make sure the request was successful
 		if ( is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) != 200 ) {
-			trigger_error( __( 'An unexpected error occurred. Something may be wrong with WooThemes.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://support.woothemes.com/hc/en-us">help center</a>.', 'woothemes-updater' ) . ' ' . __( '(WordPress could not establish a secure connection to WooThemes.com. Please contact your server administrator.)', 'woothemes-updater' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
+			trigger_error( __( 'An unexpected error occurred. Something may be wrong with WooCommerce.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://support.woothemes.com/hc/en-us">help center</a>.', 'woothemes-updater' ) . ' ' . __( '(WordPress could not establish a secure connection to WooThemes.com. Please contact your server administrator.)', 'woothemes-updater' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
 			return false;
 		}
 		// Read server response, which should be an object

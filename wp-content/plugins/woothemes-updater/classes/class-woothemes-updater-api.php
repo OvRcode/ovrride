@@ -36,22 +36,63 @@ class WooThemes_Updater_API {
 	private $version;
 
 	public function __construct () {
-		$this->version = '1.6.2';
+		$this->version = '1.7.0';
 		$this->token = 'woothemes-updater';
-		$this->api_url = 'https://www.woothemes.com/wc-api/product-key-api';
-		$this->products_api_url = 'https://www.woothemes.com/wc-api/woothemes-installer-api';
-		$this->license_check_url = 'https://www.woothemes.com/wc-api/license-status-check';
+		$this->api_url = 'https://woocommerce.com/wc-api/product-key-api';
+		$this->products_api_url = 'https://woocommerce.com/wc-api/woothemes-installer-api';
+		$this->license_check_url = 'https://woocommerce.com/wc-api/license-status-check';
+		$this->connect_url = 'https://woocommerce.com/my-account/connect-helper';
 		$this->errors = array();
 	} // End __construct()
+
+	/**
+	 * Get master key info if there is a token saved.
+	 * @return bool | object
+	 */
+	public function get_master_key_info() {
+		$token = get_option( 'woothemes_helper_master_key' );
+
+		if ( ! $token ) {
+			return false;
+		}
+
+		$info = $this->master_key_request( $token );
+		return $info;
+	}
+
+	/**
+	 * Get info about a master key from the Woo API, like the user it belongs to and products it has access to.
+	 * @param $key
+	 * @return bool
+	 */
+	public function master_key_request( $key ) {
+		if ( false === ( $response = get_transient( 'wth_master_key_info' ) ) ) {
+			$response = $this->request( 'master', array( 'master_key' => $key ) );
+			set_transient( 'wth_master_key_info', $response, 1 * HOUR_IN_SECONDS );
+		}
+		return ! isset( $response->error ) ? $response : false;
+	}
+
+	/**
+	 * Delete a master key remotely.
+	 * @param $key
+	 * @return array|bool
+	 */
+	public function delete_master_key_request( $key ) {
+		$response = $this->request( 'master-delete', array( 'master_key' => $key ), 'post', 10 );
+		return ! isset( $response->error ) ? $response : false;
+	}
 
 	/**
 	 * Activate a given license key for this installation.
 	 * @since    1.0.0
 	 * @param   string $key 		 	The license key to be activated.
 	 * @param   string $product_id	 	Product ID to be activated.
+	 * @param	string $plugin_file
+	 * @param	string $method			Method, default is manual - could also be 'master'
 	 * @return boolean      			Whether or not the activation was successful.
 	 */
-	public function activate ( $key, $product_id, $plugin_file = '' ) {
+	public function activate ( $key, $product_id, $plugin_file = '', $method = 'manual' ) {
 		$response = false;
 
 		//Ensure we have a correct product id.
@@ -59,12 +100,12 @@ class WooThemes_Updater_API {
 		if( ! is_numeric( $product_id ) ){
 			$plugins = get_plugins();
 			$plugin_name = isset( $plugins[ $plugin_file ]['Name'] ) ? $plugins[ $plugin_file ]['Name'] : $plugin_file;
-			$error = '<strong>There seems to be incorrect data for the plugin ' . $plugin_name . '. Please contact <a href="https://support.woothemes.com" target="_blank">WooThemes Support</a> with this message.</strong>';
+			$error = '<strong>There seems to be incorrect data for the plugin ' . $plugin_name . '. Please contact <a href="https://support.woothemes.com" target="_blank">WooCommerce Support</a> with this message.</strong>';
 			$this->log_request_error( $error );
 			return false;
 		}
 
-		$request = $this->request( 'activation', array( 'licence_key' => $key, 'product_id' => $product_id, 'home_url' => esc_url( home_url( '/' ) ) ) );
+		$request = $this->request( 'activation', array( 'licence_key' => $key, 'product_id' => $product_id, 'home_url' => esc_url( home_url( '/' ) ), 'method' => $method ) );
 
 		if ( isset( $request->error ) ) {
 			return 0;
@@ -152,28 +193,30 @@ class WooThemes_Updater_API {
 	 * @since 1.0.0
 	 * @param string $endpoint (must include / prefix)
 	 * @param array $params
+	 * @param string $method
+	 * @param int $timeout
 	 * @return array $data
 	 */
-	private function request ( $endpoint = 'check', $params = array(), $method = 'get' ) {
+	private function request ( $endpoint = 'check', $params = array(), $method = 'get', $timeout = 45 ) {
 		$url = $this->api_url;
 
 		if ( in_array( $endpoint, array( 'themeupdatecheck', 'pluginupdatecheck' ) ) ) {
 			$url = $this->products_api_url;
 		}
 
-		$supported_methods = array( 'check', 'activation', 'deactivation', 'ping', 'pluginupdatecheck', 'themeupdatecheck' );
-		$supported_params = array( 'licence_key', 'file_id', 'product_id', 'home_url', 'license_hash', 'plugin_name', 'theme_name', 'version' );
+		$supported_methods = array( 'check', 'activation', 'deactivation', 'ping', 'pluginupdatecheck', 'themeupdatecheck', 'master', 'master-delete' );
+		$supported_params = array( 'licence_key', 'file_id', 'product_id', 'home_url', 'license_hash', 'plugin_name', 'theme_name', 'version', 'master_key', 'method' );
 
 		$defaults = array(
 			'method' => strtoupper( $method ),
-			'timeout' => 45,
+			'timeout' => $timeout,
 			'redirection' => 5,
 			'httpversion' => '1.0',
 			'blocking' => true,
 			'headers' => array( 'user-agent' => 'WooThemesUpdater/' . $this->version ),
 			'cookies' => array(),
 			'ssl_verify' => false,
-			'user-agent' => 'WooThemes Updater; http://www.woothemes.com'
+			'user-agent' => 'WooCommerce Updater; http://woocommerce.com'
 	    );
 
 		if ( 'GET' == strtoupper( $method ) ) {
@@ -211,7 +254,7 @@ class WooThemes_Updater_API {
 		$args = wp_parse_args( (array)apply_filters( 'woothemes_updater_request_args', $defaults, $endpoint, $params, $method ), $defaults );
 
 		$response = wp_remote_get( $url, $args );
-
+		
 		if( is_wp_error( $response ) ) {
 			$data = new StdClass;
 			$data->error = __( 'WooThemes Request Error', 'woothemes-updater' );

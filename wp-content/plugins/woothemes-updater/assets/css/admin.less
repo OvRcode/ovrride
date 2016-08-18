@@ -1,3 +1,6 @@
+@red: #CC0033;
+@green: #71b02f;
+
 .about-wrap {
 	.woothemes-helper-about-text {
 		min-height: auto;
@@ -22,6 +25,114 @@
 			height: auto;
 		}
 	}
+	.connect-wrapper {
+		margin-bottom: 25px;
+		.connected {
+			display: inline-block;
+			vertical-align: top;
+			img {
+				border: 1px solid #ddd;
+				vertical-align: top;
+			}
+			p {
+				display: inline-block;
+				margin: 0 0 0 10px;
+				.buttons {
+					display: block;
+					margin-top: 10px;
+				}
+			}
+		}
+		.connect-button {
+			font-size: 14px;
+			height: 45px;
+			margin-top: 6px;
+			padding: 9px 15px;
+			.dashicons {
+				margin-right: 5px;
+				&:before {
+					font-size: 22px;
+				}
+			}
+		}
+		.short-description {
+			color: #888;
+			display: inline-block;
+			font-size: 13px;
+			margin-left: 25px;
+			margin-top: 0;
+			max-width: 53%;
+			@media only screen and (max-width: 1000px) {
+				display: block;
+				margin-left: 0;
+				margin-top: 20px;
+				max-width: 100%;
+			}
+		}
+		a.allow {
+			display: inline-block;
+			margin-top: 14px;
+		}
+	}
+	input[type=text] {
+		&::-webkit-input-placeholder {
+			color: #bbb;
+		}
+		&:-moz-placeholder {
+			color:    #bbb;
+			opacity:  1;
+		}
+		&::-moz-placeholder {
+			color:    #bbb;
+			opacity:  1;
+		}
+		&:-ms-input-placeholder {
+			color:    #bbb;
+		}
+	}
+	.dashicons-info {
+		color: #0073aa;
+		font-size: 17px;
+		margin-top: 1px;
+	}
+	.renews-on-tooltip {
+		background: #333;
+		border-radius: 4px;
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		color: #fff;
+		display: none;
+		font-size: 13px;
+		margin-top: 8px;
+		padding: 8px 12px;
+		position: absolute;
+	}
+	.enable-connection {
+		color: #999;
+		.dashicons-circle {
+			background: #999;
+			-webkit-border-radius: 100%;
+			-moz-border-radius: 100%;
+			border-radius: 100%;
+			color: #fff;
+			font-size: 13px;
+			line-height: 1.5;
+			margin-right: 3px;
+		}
+	}
+	.not-seeing-notice,
+	.enable-autorenew-notice {
+		color: #888;
+		line-height: 1.8;
+		margin-bottom: 15px;
+		margin-top: 0;
+	}
+	.woothemes-helper-submit-wrapper {
+		.dashicons {
+			font-size: 18px;
+			margin-top: 3px;
+		}
+	}
 	.feature-section {
 		ul {
 			margin-bottom:4em;
@@ -41,82 +152,6 @@
 			-moz-box-shadow:none;
 			box-shadow:none;
 			border:0;
-		}
-	}
-	.panic-button-wrap {
-		padding: 40px;
-		width:100% !important;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
-		background-color: #fff;
-		overflow: hidden;
-		zoom:1;
-		text-align: center;
-		margin:0 auto 20px;
-		-webkit-border-radius:4px;
-		border-radius:4px;
-		a {
-			text-decoration: none;
-		}
-		em {
-			display: block;
-			font-style: normal;
-			color: #666;
-		}
-		a {
-			display: block;
-			position: relative;
-			outline: none;
-			&:before {
-				content: "";
-				display:block;
-				height:6em;
-				width:6em;
-				background: red;
-				margin:0 auto 1.618em;
-				-webkit-border-radius:100%;
-				border-radius:100%;
-				background: rgb(255,48,25);
-				background: -moz-linear-gradient(top,  rgba(255,48,25,1) 0%, rgba(207,4,4,1) 100%);
-				background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,48,25,1)), color-stop(100%,rgba(207,4,4,1)));
-				background: -webkit-linear-gradient(top,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%);
-				background: -o-linear-gradient(top,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%);
-				background: -ms-linear-gradient(top,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%);
-				background: linear-gradient(to bottom,  rgba(255,48,25,1) 0%,rgba(207,4,4,1) 100%);
-				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 );
-				border:3px solid darken(#cf0404,5%);
-				-webkit-box-shadow:
-					inset 0 1px 1px rgba(255,255,255,0.3),
-					0 0 0 .618em #eee;
-				box-shadow:
-					inset 0 1px 1px rgba(255,255,255,0.3),
-					0 0 0 .618em #eee;
-			}
-			&:hover {
-				&:before {
-					background: rgb(255,70,53);
-					background: -moz-linear-gradient(top,  rgba(255,70,53,1) 0%, rgba(206,39,39,1) 100%);
-					background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,70,53,1)), color-stop(100%,rgba(206,39,39,1)));
-					background: -webkit-linear-gradient(top,  rgba(255,70,53,1) 0%,rgba(206,39,39,1) 100%);
-					background: -o-linear-gradient(top,  rgba(255,70,53,1) 0%,rgba(206,39,39,1) 100%);
-					background: -ms-linear-gradient(top,  rgba(255,70,53,1) 0%,rgba(206,39,39,1) 100%);
-					background: linear-gradient(to bottom,  rgba(255,70,53,1) 0%,rgba(206,39,39,1) 100%);
-					filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff4635', endColorstr='#ce2727',GradientType=0 );
-				}
-			}
-			&:active {
-				&:before {
-					background: rgb(207,4,4);
-					background: -moz-linear-gradient(top,  rgba(207,4,4,1) 0%, rgba(255,48,25,1) 100%);
-					background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(207,4,4,1)), color-stop(100%,rgba(255,48,25,1)));
-					background: -webkit-linear-gradient(top,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
-					background: -o-linear-gradient(top,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
-					background: -ms-linear-gradient(top,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
-					background: linear-gradient(to bottom,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
-					filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff3019',GradientType=0 );
-				}
-			}
 		}
 	}
 }
@@ -140,17 +175,36 @@
 		vertical-align: top;
 	}
 }
-.dashboard_page_woothemes-helper, index_page_woothemes-helper-network {
+.dashboard_page_woothemes-helper, .index_page_woothemes-helper-network {
 	.column-product_status {
 		width: 350px;
 	}
 	.column-product_version {
 		width: 220px;
 		.update-available {
-			color: #CC0033;
+			color: @red;
 		}
 		.latest-version {
-			color: #228B22;
+			color: @green;
+		}
+	}
+	.column-product_expiry {
+		.button {
+			float: right;
+			font-size: 12px;
+		}
+	}
+
+	.click-connect-message {
+		margin-top: 8px;
+		padding: 2px;
+		width: 80%;
+	}
+	@media screen and (max-width: 1200px) {
+		.column-product_expiry a {
+			display: block;
+			float: none !important;
+			text-align: center;
 		}
 	}
 }

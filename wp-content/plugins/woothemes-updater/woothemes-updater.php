@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WooThemes Helper
- * Plugin URI: http://woothemes.com/products/
- * Description: Hi there. I'm here to help you manage licenses for your WooThemes products, as well as help out when you need a guiding hand.
- * Version: 1.6.2
- * Author: WooThemes
- * Author URI: http://woothemes.com/
+ * Plugin Name: WooCommerce Helper
+ * Plugin URI: http://woocommerce.com/products/
+ * Description: Hi there. I'm here to help you manage subscriptions for your WooCommerce products, as well as help out when you need a guiding hand.
+ * Version: 1.7.0
+ * Author: WooCommerce
+ * Author URI: http://woocommerce.com/
  * License: GPL version 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Network: true
  * Requires at least: 3.8.1
@@ -41,6 +41,5 @@ function __woothemes_updater () {
     require_once( 'classes/class-woothemes-updater.php' );
 
     global $woothemes_updater;
-    $woothemes_updater = new WooThemes_Updater( __FILE__, '1.6.2' );
+    $woothemes_updater = new WooThemes_Updater( __FILE__, '1.7.0' );
 }
-?>

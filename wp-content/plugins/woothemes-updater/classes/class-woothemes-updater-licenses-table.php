@@ -9,6 +9,7 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	public $per_page = 100;
 
 	public $data;
+	private $api;
 
 	/**
 	 * Constructor.
@@ -28,6 +29,10 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 
 		$this->data = array();
 
+		// Load the API.
+		require_once( 'class-woothemes-updater-api.php' );
+		$this->api = new WooThemes_Updater_API();
+
 		// Make sure this file is loaded, so we have access to plugins_api(), etc.
 		require_once( ABSPATH . '/wp-admin/includes/plugin-install.php' );
 
@@ -40,7 +45,7 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	 * @return  void
 	 */
 	public function no_items () {
-		echo wpautop( __( 'No WooThemes products found.', 'woothemes-updater' ) );
+		echo wpautop( __( 'No WooCommerce products found.', 'woothemes-updater' ) );
 	} // End no_items(0)
 
 	/**
@@ -76,11 +81,12 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	 * @return array Key => Value pairs.
 	 */
 	public function get_columns () {
+		$renews_on_info = $this->api->get_master_key_info() ? '' : ' <span class="dashicons dashicons-info"></span> <div class="renews-on-tooltip">Please connect your account or paste in a subscription key to enable upgrades.</div>';
 		$columns = array(
 			'product_name' => __( 'Product', 'woothemes-updater' ),
 			'product_version' => __( 'Version', 'woothemes-updater' ),
 			'product_status' => __( 'Key', 'woothemes-updater' ),
-			'product_expiry' => __( 'Renews On', 'woothemes-updater' )
+			'product_expiry' => __( 'Renews On', 'woothemes-updater' ) . $renews_on_info,
 		);
 		 return $columns;
 	} // End get_columns()
@@ -103,7 +109,7 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	 */
 	public function column_product_version ( $item ) {
 		if ( isset( $item['latest_version'], $item['product_version'] ) && version_compare( $item['product_version'], $item['latest_version'], '<' ) ) {
-			$version_text = '<strong>' . $item['product_version'] . '<span class="update-available"> - ' . sprintf( __( 'version %1$s available', 'woothemes-updater' ), esc_html( $item['latest_version'] ) ) .  '</span></strong>' . "\n";
+			$version_text = '<strong>' . $item['product_version'] . '<a href="' . admin_url( 'update-core.php' ) . '" class="update-available"> - ' . sprintf( __( 'version %1$s available', 'woothemes-updater' ), esc_html( $item['latest_version'] ) ) .  '</span></strong>' . "\n";
 		} else {
 			$version_text = '<strong class="latest-version">' . $item['product_version'] . '</strong>' . "\n";
 		}
@@ -119,25 +125,69 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 	 */
 	public function column_product_status ( $item ) {
 		$response = '';
-		if ( 'active' == $item['product_status'] ) {
-			$deactivate_url = wp_nonce_url( add_query_arg( 'action', 'deactivate-product', add_query_arg( 'filepath', $item['product_file_path'], add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) ) ) ), 'bulk-licenses' );
-			$response = '<a href="' . esc_url( $deactivate_url ) . '">' . __( 'Deactivate', 'woothemes-updater' ) . '</a>' . "\n";
+		if ( 'active' == $item['product_status'] && $item['license_expiry'] !== 'Please activate' ) {
+			$response = '<em>Connected</em>'; // Could be connected to any account - not just the linked one
 		} else {
-			$response .= '<input name="license_keys[' . esc_attr( $item['product_file_path'] ) . ']" id="license_keys-' . esc_attr( $item['product_file_path'] ) . '" type="text" value="" size="37" aria-required="true" placeholder="' . esc_attr__( 'Place your subscription key here', 'woothemes-updater' ) . '" />' . "\n";
+			$match = isset( $item['product_id'] ) && ! empty( $item['product_id'] ) ? $this->get_master_key_product_match( $item['product_id'] ) : false;
+			$key = $match ? $match->product_key : '';
+			$method = $match ? 'master' : 'manual';
+
+			$response .= '<input data-method="' . $method . '" name="license_keys[' . esc_attr( $item['product_file_path'] ) . ']" id="license_keys-' . esc_attr( $item['product_file_path'] ) . '" type="text" value="' . $key . '" size="37" aria-required="true" placeholder="' . esc_attr__( 'Place your subscription key here', 'woothemes-updater' ) . '" />' . "\n";
+			$response .= '<input type="hidden" name="license_methods[' . esc_attr( $item['product_file_path'] ) . ']" value="' . $method . '" />';
 		}
 
 		return $response;
 	} // End column_status()
 
 	public function column_product_expiry ( $item ) {
-		if ( '-' != $item['license_expiry'] && 'Please activate' != $item['license_expiry'] ) {
-			$renew_link = add_query_arg( array( 'utm_source' => 'product', 'utm_medium' => 'upsell', 'utm_campaign' => 'licenserenewal' ), 'https://www.woothemes.com/my-account/my-subscriptions/' );
-			$date = new DateTime( $item['license_expiry'] );
-			$date_string = $date->format( get_option( 'date_format' ) );
-
-			return $date_string;
+		if ( isset( $item['license_expiry'] ) && $item['license_expiry'] == 'Please activate' ) {
+			$item['license_expiry'] = 'Please connect';
 		}
-		return esc_html( $item['license_expiry'] );
+
+		// Disconnect url
+		$disconnect = '';
+		if ( $item['product_status'] == 'active' && $item['license_expiry'] !== 'Please connect' ) {
+			$deactivate_url = wp_nonce_url( add_query_arg( 'action', 'deactivate-product', add_query_arg( 'filepath', $item['product_file_path'], add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) ) ) ), 'bulk-licenses' );
+			$disconnect = '<a href="' . esc_url( $deactivate_url ) . '" class="button button-secondary">' . __( 'Disconnect', 'woothemes-updater' ) . '</a>' . "\n";
+		}
+
+		// Format / set expiry date
+		if ( '-' !== $item['license_expiry'] && 'active' == $item['product_status'] ) {
+			if ( 'Please connect' !== $item['license_expiry'] ) {
+				$date = new DateTime( $item['license_expiry'] );
+				if ( $date > new DateTime() ) {
+					$date_string = $date->format( 'M j, Y' );
+				} else {
+					$date_string = '<a href="' . esc_url( 'https://woocommerce.com/my-account/my-subscriptions?renew_expired_subscription=' . $item['product_id'] ) . '" target="_blank" title="Click to renew now">Expired</a>';
+				}
+			} else {
+				$date_string = '<em>Unknown</em>';
+			}
+		} else {
+			if ( $item['license_expiry'] == '-' ) {
+				$date_string = 'Lifetime';
+			} else {
+				$date_string = sanitize_text_field( $item['license_expiry'] );
+			}
+		}
+
+		// If current key not connected/active but matches existing master key, show helpful message
+		if ( isset( $item['license_expiry'] ) && $item['license_expiry'] == 'Please connect' && $item['product_status'] !== 'active' ) {
+			// check if current product has match in our master key retrieved data
+			if ( $this->get_master_key_product_match( $item['product_id'] ) ) {
+				return '<div class="enable-connection"><span class="dashicons dashicons-admin-plugins dashicons-circle"></span> Click connect below</div>';
+			}
+
+			// no match - check if they're even connected
+			if ( ! $this->api->get_master_key_info() ) {
+				return '<div class="enable-connection"><span class="dashicons dashicons-admin-plugins dashicons-circle"></span> Enable connection above</div>';
+			}
+
+			// no match but still connected
+			return '<div class="enable-connection"><a href="https://woocommerce.com?utm_source=helper&utm_medium=product&utm_content=subscriptiontab" target="_blank"><span class="dashicons dashicons-admin-plugins dashicons-circle"></span> Purchase or add a key</a></div>';
+		}
+
+		return $date_string . $disconnect;
 	}
 
 	/**
@@ -169,5 +219,29 @@ class WooThemes_Updater_Licenses_Table extends WP_List_Table {
 		) );
 	  	$this->items = $this->data;
 	} // End prepare_items()
+
+	/**
+	 * Gets a master key product match.
+	 * Goes through all master key products and if the input product id matches, returns that product object.
+	 * Otherwise returns false.
+	 * @param $product_id | int
+	 * @return mixed
+	 */
+	public function get_master_key_product_match( $product_id ) {
+		$master_key_products = $this->api->get_master_key_info() ? $this->api->get_master_key_info()->user_products : false;
+		$product_id = intval( $product_id );
+
+		$match = false;
+		if ( $master_key_products && $product_id > 0 ) {
+			foreach( $master_key_products as $product ) {
+				if ( $product->product_id == $product_id ) {
+					$match = $product;
+					break;
+				}
+			}
+		}
+
+		return $match;
+	}
 } // End Class
 ?>
