@@ -475,13 +475,16 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 *
 		 */
 		public function cancel_process() {
+			ewwwio_debug_message( 'cancelling background process' );
 			if ( ! $this->is_queue_empty() ) {
 				$batch = $this->get_batch();
 
+			ewwwio_debug_message( 'retrieved key ' . $batch->key );
 				$this->delete( $batch->key );
 
 				wp_clear_scheduled_hook( $this->cron_hook_identifier );
 			}
+			ewww_image_optimizer_debug_log();
 
 		}
 

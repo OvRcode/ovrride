@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: image, attachment, optimize, optimization, lossless, lossy, photo, picture, seo, compression, gmagick, jpegtran, gifsicle, optipng, pngout, pngquant, jpegmini, tinyjpg, tinypng, webp, wp-cli 
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 2.9.5
+Stable tag: 2.9.6
 License: GPLv3
 
 Reduce image sizes in WordPress including NextGEN, GRAND FlAGallery, FooGallery and more using lossless/lossy methods and image format conversion.
@@ -252,6 +252,14 @@ Pngout, TinyJPG/TinyPNG, JPEGmini, and Pngquant were recommended by EWWW IO user
 
 * feature requests are sticky at the top of the support forums, vote for the ones you like: https://wordpress.org/support/plugin/ewww-image-optimizer
 * If you would like to help translate this plugin in your language, get started here: https://translate.wordpress.org/projects/wp-plugins/ewww-image-optimizer/
+
+= 2.9.6 =
+* fixed: set_time_limit() was still being called in a couple spots even if set_time_limit() is disabled by PHP
+* fixed: regression in scheduled optimization which allowed multiple processes to run
+* fixed: total savings for multisite was incorrectly requerying site 1 for each blog
+* fixed: optimization being attempted via API even if license exceeded
+* added: ewwwio_images table is checked on settings page to make sure it exists
+* added: run utf8_encode() on all filenames for Scheduled Optimize and Scan & Optimize to avoid database update issues, please report any new issues with Scan & Optimize right away
 
 = 2.9.5 =
 * fixed: wrong path pre-pended using parallel optimization and wp-content or uploads folder is not within the WP root
