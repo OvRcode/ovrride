@@ -16,10 +16,16 @@
 
 
 function msp_thankyou_footer() {
-  $text  = sprintf( __( 'Thank you for creating with <a href="%s">WordPress</a>.' ), __( 'https://wordpress.org/' ) );
-  $text .= sprintf( __(' and using <a href="%s">Master Slider</a> %s', 'master-slider' ), 'http://masterslider.com/?msl', MSWP_AVERTA_VERSION );
 
-  return '<span id="footer-thankyou">' . $text . '</span>';
+    $text = sprintf(
+        __('If you like %sMaster Slider%s and want to support us, please rate us %s ★★★★★ %s, that is a huge help!', 'master-slider' ),
+        '<a href="http://masterslider.com/?msl" title="Version ' . MSWP_AVERTA_VERSION . '" target="_blank">',
+        '</a>',
+        '<a href="https://wordpress.org/support/view/plugin-reviews/master-slider/?filter=5#postform" target="_blank">',
+        '</a>'
+    );
+
+    return '<span id="footer-thankyou">' . $text . '</span>';
 }
 add_filter( 'admin_footer_text',  'msp_thankyou_footer' );
 
@@ -28,8 +34,8 @@ add_filter( 'admin_footer_text',  'msp_thankyou_footer' );
 
 <div id="msp-main-wrapper" class="wrap" data-nonce="<?php echo $msp_nonce; ?>" >
 
-<?php 
-  
+<?php
+
   // process slider data and generate required thumbnails for slider panel
   // if( ! empty( $slider_id ) && isset( $_REQUEST['fr'] ) )
   //  msp_get_ms_slider_shortcode_by_slider_id( $slider_id );

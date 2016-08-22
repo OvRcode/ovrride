@@ -134,22 +134,23 @@ class MSP_Shortcode_Factory {
 	}
 
 
-	public function get_ms_slides_shortcode() {
+    public function get_ms_slides_shortcode() {
 
-		if( ! isset( $this->parsed_slider_data['slides'] ) )
-			return '';
+        if( ! isset( $this->parsed_slider_data['slides'] ) )
+            return '';
 
-		$slides = $this->parsed_slider_data['slides'];
+        $slides = $this->parsed_slider_data['slides'];
 
-		$shortcodes = '';
+        $shortcodes = '';
 
-		foreach ( $slides as $slide ) {
-			if( 'true' != $slide['ishide'] )
-				$shortcodes .= $this->get_ms_slide_shortcode( $slide );
-		}
+        foreach ( $slides as $slide ) {
+            if( ! empty( $slide['ishide'] ) && 'true' != $slide['ishide'] ){
+                $shortcodes .= $this->get_ms_slide_shortcode( $slide );
+            }
+        }
 
-		return $shortcodes;
-	}
+        return $shortcodes;
+    }
 
 
 

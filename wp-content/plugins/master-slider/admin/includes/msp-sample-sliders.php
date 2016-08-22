@@ -12,6 +12,11 @@ function msp_get_slider_starter_sections () {
             'id'  => 'masterslider_samples_group1',
             'title' => __( 'Sample Sliders', 'master-slider' ),
             'desc'  => ''
+        ),
+        array(
+            'id'  => 'masterslider_pro_custom_samples1',
+            'title' => __( 'Sample Sliders for PRO version (Upgrade to unlock)', 'master-slider' ),
+            'desc'  => ''
         )
     );
 
@@ -112,8 +117,8 @@ function msp_get_slider_starter_fields () {
       'screenshot'=> MSWP_AVERTA_ADMIN_URL . '/assets/images/starters/slider-with-slide-info-v2.jpg'
     )
   );
-  
-  
+
+
   return apply_filters( 'masterslider_starter_fields', $starters );
 }
 

@@ -1,5 +1,5 @@
 /**
- * Master Slider Panel 
+ * Master Slider Panel
  * Core style sheet file
  * @version 1.0
  * @autor averta
@@ -13,7 +13,7 @@
 
 .msp-clearboth{clear: both;}
 
-#msp-header{	
+#msp-header{
 	background: white;
 	height: 80px;
 	margin-bottom: 20px;
@@ -67,7 +67,7 @@
 
 /* Icons */
 .msp-ico { background: url(../images/ui-spritesheet.png) no-repeat; display: inline-block;}
-.msp-ico-settings { 
+.msp-ico-settings {
 	background-position: -1px -1px;
 	width: 16px;
 	height: 16px;
@@ -110,12 +110,12 @@
 }
 
 .msp-ico-whiteduplicate {
-	width: 18px;	height: 18px;	
+	width: 18px;	height: 18px;
 	background-position: -122px -23px;
 }
 
 .msp-ico-whiteremove {
-	width: 18px;	height: 18px;	
+	width: 18px;	height: 18px;
 	background-position: -147px -23px;
 }
 
@@ -127,25 +127,25 @@
 
 .msp-ico-altop {
 	background-position: -76px -1px;
-	width: 15px;	
+	width: 15px;
 	height: 14px;
 }
 .msp-ico-almid {
-	background-position: -100px -1px;	
-	width: 19px;	
+	background-position: -100px -1px;
+	width: 19px;
 	height: 13px;
 }
 .msp-ico-albot {
-	background-position: -124px -1px;	width: 19px;	
+	background-position: -124px -1px;	width: 19px;
 	height: 14px;
 }
 .msp-ico-alleft {
-	background-position: -148px -1px;	width: 19px;	
+	background-position: -148px -1px;	width: 19px;
 	height: 15px;
 }
 .msp-ico-alcenter {
-	background-position: -197px -1px;	
-	width: 19px;	
+	background-position: -197px -1px;
+	width: 19px;
 	height: 17px;
 }
 .msp-ico-alright {
@@ -157,11 +157,11 @@
 	background-position: -174px -72px;
 }
 .msp-ico.msp-ico-blackiso {
-	width: 16px;	height: 16px;	
+	width: 16px;	height: 16px;
 	background-position: -123px -73px;
 }
 .msp-ico.msp-ico-blacklock {
-	width: 16px;	height: 16px;	
+	width: 16px;	height: 16px;
 	background-position: -148px -74px;
 }
 .msp-ico.msp-ico-graypoint {
@@ -170,8 +170,8 @@
 	background-position: -221px -21px;
 }
 .msp-ico.msp-ico-grayduplicate {
-	width: 15px;	
-	height: 15px;	
+	width: 15px;
+	height: 15px;
 	background-position: -224px -49px;
 }
 
@@ -208,9 +208,9 @@
 }
 
 .msp-ico-posts {
-    width: 17px;  
+    width: 17px;
     vertical-align: top !important;
-    height: 20px;  
+    height: 20px;
     top: -2px;
     background-position: -226px -225px;
 }
@@ -271,7 +271,7 @@
 .msp-main-nav ul li.msp-upgrade-btn a:hover {
     background-color: #5FC524;
 }
-.msp-main-nav ul li.msp-upgrade-btn a.active:hover { 
+.msp-main-nav ul li.msp-upgrade-btn a.active:hover {
 	background-color: white;
 }
 
@@ -444,7 +444,7 @@ a.msp-pf-btn.msp-pf-more-btn:hover {
 .msp-main-nav ul li a.active .msp-ico-wooc { background-position: -200px -200px; }
 
 .msp-main-nav ul li a.active .msp-ico-pro { background-position: -250px -252px; }
-.msp-save-bar-placeholder { 
+.msp-save-bar-placeholder {
 	height: 35px;
 }
 
@@ -465,7 +465,7 @@ a.msp-pf-btn.msp-pf-more-btn:hover {
 }
 
 .msp-save-status,
-.msp-time-ago { 
+.msp-time-ago {
 	display: inline-block;
 	margin-left: 5px;
 	-webkit-transition: opacity 500ms;
@@ -494,8 +494,8 @@ a.msp-pf-btn.msp-pf-more-btn:hover {
 	background: url(../images/info.png);
 }
 
-.msp-saving-msg-cont { 
-	position: relative; 
+.msp-saving-msg-cont {
+	position: relative;
 	display: inline-block;
 	width: 50%;
 }
@@ -601,7 +601,7 @@ a.msp-pf-btn.msp-pf-more-btn:hover {
 	float: left;
 }
 .msp-metabox-tabs .tabs li a {
-	color: white;	
+	color: white;
 	padding: 0 20px;
 	border-right: solid 1px #FFF;
 	height: 50px;	line-height: 50px;
@@ -709,7 +709,7 @@ a.msp-pf-btn.msp-pf-more-btn:hover {
 }
 
 .msp-container button.msp-med-btn{
-	
+
 }
 
 button.msp-add-btn {
@@ -857,7 +857,7 @@ button.msp-remove-btn-med {
 }
 
 .ui-widget-overlay {
-	background: url(../images/patt.png) rgba(24, 24, 24, 0.89) !important; 
+	background: url(../images/patt.png) rgba(24, 24, 24, 0.89) !important;
 	opacity: 1 !important;
 }
 
@@ -968,7 +968,7 @@ button.msp-remove-btn-med {
 
 	box-shadow: 4px 4px 4px -3px rgba(0, 0, 0, 0.17);
 }
-	
+
 .dd-option {
 	display:block;
 	border-bottom:solid 1px #ddd;
@@ -1085,19 +1085,18 @@ button.msp-img-btn {
 }
 
 /* Manage Slides */
-
 .msp-slides {
-	list-style: none;
-	padding: 0;
+    list-style: none;
+    padding: 0;
 }
 .msp-slides>li {
-	float: left;
+    float: left;
 }
 .msp-slideframe ul {
-	list-style: none;
+    list-style: none;
 }
 .msp-slideframe ul li {
-	float: left;
+    float: left;
 }
 
 .msp-frame-slideorder {
@@ -1113,34 +1112,57 @@ button.msp-img-btn {
 .msp-ico-whiteshow { opacity: 0.5; }
 
 .msp-container .msp-frames-srtplaceholder {
-	width: 106px;
-	height: 99px;
-	border: solid 1px #dedede;
-	margin: 20px 20px 0 0;
-	background: #f1f1f1;
+    width: 106px;
+    height: 99px;
+    border: solid 1px #dedede;
+    margin: 20px 20px 0 0;
+    background: #f1f1f1;
 
  }
 
 .msp-slideframe {
-	position: relative;
-	width: 106px;
-	height: 98px;
-	border: solid 1px #777;
-	border-bottom: solid 2px #656565;
-	margin: 20px 20px 0 0;
-	background: #777;
+    position: relative;
+    width: 106px;
+    height: 98px;
+    border: solid 1px #777;
+    border-bottom: solid 2px #656565;
+    margin: 20px 20px 0 0;
+    background: #777;
 }
 
 .msp-slideframe.active {
-	border-color: #2ea2cc;
-	border-bottom-color: #278aae;
-	background: #2ea2cc;
+    border-color: #2ea2cc;
+    border-bottom-color: #278aae;
+    background: #2ea2cc;
 }
 
+.msp-slideframe.msp-overlay-layers {
+    float: left;
+/*     background-color: khaki;
+    border-color: khaki; */
+}
+
+.msp-slide-spliter {
+    border-left: solid 1px #f1f1f1;
+    float: left;
+    height: 98px;
+    margin: 20px 20px 0 0;
+}
+
+.msp-slideframe.msp-overlay-layers .msp-img-cont {
+    background: url(../images/overlay-layer.png) center no-repeat white;
+}
+
+.msp-slideframe.msp-overlay-layers .msp-frame-slideorder {
+    cursor: auto;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
 
 .msp-slideframe .msp-img-cont {
-	background-color: white;
-	height: 67px;
+    background-color: white;
+    height: 67px;
 	border: none;
 }
 
@@ -1396,7 +1418,7 @@ button.msp-img-btn {
 	left: 241px;
 	right: 0;
 	float: left;
-	height: 100%;	 
+	height: 100%;
 	overflow: auto;
 }
 
@@ -1457,7 +1479,7 @@ button.msp-img-btn {
 .msp-layer-labeltext {
 	line-height: 27px;
 	margin-left: 4px;
-	white-space:nowrap; 
+	white-space:nowrap;
 	-ms-text-overflow: ellipsis;
 	text-overflow: ellipsis;
 	overflow:hidden;
@@ -1530,7 +1552,7 @@ button.msp-img-btn {
 
 .msp-timeline-range.avt-disabled .msp-range{
 	cursor: default !important;
-} 
+}
 
 .msp-range-delay	{ background: url(../images/patt.png) #dcdada;}
 .msp-range-show	 { background: #2ea2cc;}
@@ -1641,6 +1663,7 @@ button.msp-img-btn {
 	overflow: hidden;
 	width: 100%;
 	height: 100%;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RjBDNDlERkQ1NjE4MTFFNkEwRTNGQzgxMERCNjc0QTciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RjBDNDlERkU1NjE4MTFFNkEwRTNGQzgxMERCNjc0QTciPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGMEM0OURGQjU2MTgxMUU2QTBFM0ZDODEwREI2NzRBNyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGMEM0OURGQzU2MTgxMUU2QTBFM0ZDODEwREI2NzRBNyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pn7EKAQAAAAGUExURf///+Dg4AJUEkoAAAAXSURBVHjaYmCEAgYYGCCBAbYeJgAQYABFEACBH3S9GAAAAABJRU5ErkJggg==');
 }
 
 .msp-stage-bg>img{
@@ -1678,11 +1701,11 @@ button.msp-img-btn {
 }
 
 .msp-stage-hotspot {
-	width: 14px;	
-	height: 14px;	
-	border-radius: 15px;	
-	border: 2px solid #BBB; 
-	background: #FFF; 
+	width: 14px;
+	height: 14px;
+	border-radius: 15px;
+	border: 2px solid #BBB;
+	background: #FFF;
 	margin: -8px 0px 0px -8px;	position: absolute;
 }
 
@@ -1692,6 +1715,22 @@ button.msp-img-btn {
 	animation: mswp-pulse 1s infinite ease-out;
 	outline-width: 1px;
 	outline-style: dashed;
+}
+
+.msp-stage-layer .msp-layer-mask {
+    overflow: hidden;
+    outline: solid 1px #2ea2cc;
+    background-color: rgba(46,162,204,0.3);
+}
+.ui-draggable-disabled .msp-layer-mask {
+    background: transparent;
+    outline: none;
+}
+
+
+.msp-stage-layer.active {
+    width: auto !important;
+    height: auto !important;
 }
 
 /* CKEditor style */
@@ -2165,7 +2204,7 @@ button.msp-tempalte-save {
 .ms-default-btn:active{top:1px;}
 
 .ms-btn-s{
-    padding: 14px 17px;  
+    padding: 14px 17px;
     font-size: 80%;
     line-height: 0;
 }
@@ -2180,7 +2219,7 @@ button.msp-tempalte-save {
 }
 
 .ms-btn-l{
-    padding: 17px 50px;  
+    padding: 17px 50px;
     font-size: 120%;
 }
 
@@ -2207,14 +2246,14 @@ button.msp-tempalte-save {
 }
 
 .msp-selection .border {
-	background-image: -webkit-gradient(linear, 0 0, 100% 100%, 
+	background-image: -webkit-gradient(linear, 0 0, 100% 100%,
 						color-stop(.25, #FFF),
 						color-stop(.25, rgba(0, 0, 0, 0)),
 						color-stop(.5, rgba(0, 0, 0, 0)),
 						color-stop(.5, #FFF),
 						color-stop(0.75, #FFF),
 						color-stop(.75, rgba(0, 0, 0, 0)),
-						to(rgba(0, 0, 0, 0)) 
+						to(rgba(0, 0, 0, 0))
 					);
 	background-size: 30px 30px;
 	position: absolute;

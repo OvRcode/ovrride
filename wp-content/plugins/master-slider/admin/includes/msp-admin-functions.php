@@ -108,10 +108,14 @@ function msp_save_custom_styles() {
 }
 
 
-
-
-
-
+/**
+ * Get the number of PRO users
+ *
+ * @return int
+ */
+function msp_get_pro_users_num(){
+    echo '12500+';
+}
 
 
 

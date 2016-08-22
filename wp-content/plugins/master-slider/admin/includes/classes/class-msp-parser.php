@@ -712,42 +712,50 @@ class MSP_Parser {
   }
 
 
-  public function get_parsable_slides() {
+    public function get_parsable_slides() {
 
-    if( ! $raw_slides = $this->get_raw_slides() ){
-      return array();
+        if( ! $raw_slides = $this->get_raw_slides() ){
+            return array();
+        }
+
+        $valid_slides  = array();
+        $overlay_slide = array();
+
+        foreach ( $raw_slides as $id => $raw_slide ) {
+            $raw_json_decoded_slide = json_decode( $raw_slide, true );
+
+            if( isset( $raw_json_decoded_slide['order'] ) && $raw_json_decoded_slide['order'] > -1 ){
+                $valid_slides[ $raw_json_decoded_slide['order'] ] = $raw_json_decoded_slide;
+            } else {
+                $overlay_slide = $raw_json_decoded_slide;
+            }
+        }
+
+        ksort( $valid_slides );
+        array_unshift( $valid_slides, $overlay_slide );
+
+        return $valid_slides;
     }
 
-    $valid_slides = array();
 
-    foreach ( $raw_slides as $id => $raw_slide ) {
-      $raw_json_decoded_slide = json_decode( $raw_slide, true );
-      $valid_slides[ $raw_json_decoded_slide['order'] ] = $raw_json_decoded_slide;
-    }
+    public function get_slides( $force_new_parse = false ) {
 
-    ksort( $valid_slides );
-    return $valid_slides;
-  }
+        if( is_null( $this->recent_slides ) || $force_new_parse ) {
 
+          $parsable_slides = $this->get_parsable_slides();
 
-  public function get_slides( $force_new_parse = false ) {
+          if ( empty( $parsable_slides ) )
+            return  $parsable_slides;
 
-    if( is_null( $this->recent_slides ) || $force_new_parse ) {
+          $slides = array();
 
-      $parsable_slides = $this->get_parsable_slides();
+          foreach ( $parsable_slides as $slide ) {
+            $slides[] = $this->parse_slide( $slide );
+          }
 
-      if ( empty( $parsable_slides ) )
-        return  $parsable_slides;
-
-      $slides = array();
-
-      foreach ( $parsable_slides as $slide ) {
-        $slides[] = $this->parse_slide( $slide );
-      }
-
-      $this->recent_slides = $slides;
-    }
-    return $this->recent_slides;
+          $this->recent_slides = $slides;
+        }
+        return $this->recent_slides;
   }
 
 

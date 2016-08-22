@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Master Slider Import/Export Class.
  *
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
  * @since 1.2.0
  */
 class MSP_Importer {
-  
+
 
   var $origin_upload_baseurl = '';
 
@@ -43,7 +43,7 @@ class MSP_Importer {
 
 
   public function admin_init() {
-    
+
     $upload = wp_upload_dir();
     $this->upload_baseurl = $upload['baseurl'];
     $this->upload_basedir = $upload['basedir'];
@@ -111,10 +111,10 @@ class MSP_Importer {
 
   // if it's relative url, get absolute origin url
   function get_absolute_media_url( $url ){
-          
-        if( $this->is_absolute_url( $url ) || $this->contains_origin_upload_dir( $url ) ) 
+
+        if( $this->is_absolute_url( $url ) || $this->contains_origin_upload_dir( $url ) )
           return $url;
-        
+
         return $this->origin_upload_baseurl . $url;
     }
 
@@ -171,22 +171,22 @@ class MSP_Importer {
           <input type="file" name="msp-import-file" class="msp-select-file">
 
           <small><?php printf( __( 'Maximum size: %s', 'master-slider' ), $size ); ?></small><br /><br /><br />
-          
+
           <input type="submit" class="button" value="<?php esc_attr_e( 'Upload file and import', 'master-slider' ); ?>" />
         </fieldset>
 
-        
-      
+
+
       </form>
 
       </div>
 
-      <?php 
+      <?php
     }
 
     // Import sliders from export file
     if( isset( $_POST['msp-import'] ) ) {
-      
+
       if( current_user_can('export_masterslider') ) {
 
         if( check_admin_referer('import-msp-sliders') ) {
@@ -195,12 +195,12 @@ class MSP_Importer {
 
           if( 2 == $step ){
 
-            if ( $_FILES['msp-import-file']['error'] == UPLOAD_ERR_OK  && is_uploaded_file( $_FILES['msp-import-file']['tmp_name'] ) ) { 
+            if ( $_FILES['msp-import-file']['error'] == UPLOAD_ERR_OK  && is_uploaded_file( $_FILES['msp-import-file']['tmp_name'] ) ) {
               // get import file content
-              $import_data = file_get_contents( $_FILES['msp-import-file']['tmp_name'] ); 
+              $import_data = file_get_contents( $_FILES['msp-import-file']['tmp_name'] );
               $this->import_data( $import_data );
             }
-            
+
           }
         }
 
@@ -211,7 +211,7 @@ class MSP_Importer {
 
     // Import slider by starter id
     if( isset( $_REQUEST['starter_id'] ) && ! empty( $_REQUEST['starter_id'] ) ) {
-      
+
       if( current_user_can('export_masterslider') || apply_filters( 'masterslider_user_can_import_starter_content', 0 ) ) {
 
         if ( $starter_field = msp_get_slider_starter_field( $_REQUEST['starter_id'] ) ) {
@@ -243,7 +243,7 @@ class MSP_Importer {
 
     // Export sliders
     if( isset( $_POST['msp-export'] ) ) {
-      
+
       if( current_user_can('export_masterslider') ) {
 
         if( check_admin_referer('export-msp-sliders') ) {
@@ -268,8 +268,8 @@ class MSP_Importer {
    * @return void
    */
   public function import_export_notice(){
-    printf( '<div class="error" style="display:block;" ><p>%s</p></div>', 
-        apply_filters( 'masterslider_import_export_access_denied_message', __( "Sorry, You don't have enough permission to import/export sliders.", 'master-slider' ) ) 
+    printf( '<div class="error" style="display:block;" ><p>%s</p></div>',
+        apply_filters( 'masterslider_import_export_access_denied_message', __( "Sorry, You don't have enough permission to import/export sliders.", 'master-slider' ) )
     );
   }
 
@@ -280,7 +280,7 @@ class MSP_Importer {
 
   /**
    * Get slider export data
-   * 
+   *
    * @param  int|array  $slider_id  the slider id(s)
    * @param  array      The other options that should be included in export data ( preset_styles, preset_effects )
    * @param  bool       $base64     encode output data to base64 or not
@@ -318,12 +318,12 @@ class MSP_Importer {
     }
 
     // add origin_uploads_url to export data - this helps us to fetch images from origin domian
-    
+
     // if you need to bundle sample sliders in your theme you can change the origin_uploads_url
     // by default origin_uploads_url is the uploads baseurl on domain you exported the sliders from (e.g www.domain.com/wp-content/uploads)
-    // when you decide to import data to new domain, importer will use the origin_uploads_url to fetch images from. 
+    // when you decide to import data to new domain, importer will use the origin_uploads_url to fetch images from.
     // you can change origin_uploads_url by using 'masterslider_export_origin_uploads_url' filter
-    // if you change origin_uploads_url to something else, importer will import slider images 
+    // if you change origin_uploads_url to something else, importer will import slider images
     // from your custom origin_uploads_url instead of default origin_uploads_url
     $custom_export_origin_uploads_url = apply_filters( 'masterslider_export_origin_uploads_url', null );
 
@@ -332,7 +332,7 @@ class MSP_Importer {
       $export_data['origin_uploads_url'] = '{{masterslider}}/samples';
 
     // if filter passed a string with our special tags :
-    } elseif( false !== strpos( $custom_export_origin_uploads_url, '{{masterslider}}'    )  || 
+    } elseif( false !== strpos( $custom_export_origin_uploads_url, '{{masterslider}}'    )  ||
               false !== strpos( $custom_export_origin_uploads_url, '{{theme_dir}}'       )  ||
           false !== strpos( $custom_export_origin_uploads_url, '{{child_theme_dir}}' ) ) {
 
@@ -357,7 +357,7 @@ class MSP_Importer {
 
   /**
    * Print slider export data
-   * 
+   *
    * @param  int|array  $slider_id  the slider id(s)
    * @param  array      The other options that should be included in export data ( preset_styles, preset_effects )
    * @param  bool       $base64     encode output data to base64 or not
@@ -371,7 +371,7 @@ class MSP_Importer {
 
   /**
    * Export slider(s) data to file
-   * 
+   *
    * @param  int|array  $slider_id  slider(s) ID to export
    * @param  array      The other options that should be included in export data ( preset_style, preset_effect )
    * @return void
@@ -396,7 +396,7 @@ class MSP_Importer {
 
   /**
    * Import sliders and options by previousely exported data
-   * 
+   *
    * @param  string $exported_data  the exported string
    * @return bool   true on success and false on failure
    */
@@ -459,14 +459,14 @@ class MSP_Importer {
     echo "<br />" . __( 'All data imported successfully, have fun :)' ) . "<br />";
 
     printf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=' . MSWP_SLUG ), __( 'Back to panel ..', 'master-slider' ) );
-    
+
     return true;
   }
 
 
   /**
    * Import slider(s) by exported data
-   * 
+   *
    * @param  string $sliders_data  the exported string
    * @return bool   true on success and false on failure
    */
@@ -485,8 +485,8 @@ class MSP_Importer {
 
       // do not publish slider if user has not enough permission to publish sliders
       $slider_fields['status'] = current_user_can( 'publish_masterslider' ) ? 'published' : 'draft';
-      
-      // import slider 
+
+      // import slider
       $new_slider_id = $mspdb->import_slider( $slider_fields );
       $this->last_new_slider_id = $new_slider_id;
       msp_update_slider_custom_css_and_fonts( $new_slider_id );
@@ -500,7 +500,7 @@ class MSP_Importer {
 
     if( $this->import_medias )
       $this->fetch_all_medias();
-    
+
     return true;
   }
 
@@ -515,7 +515,7 @@ class MSP_Importer {
 
     $parser = msp_get_parser();
       $parser->set_data( $slider_params );
-      $results = $parser->get_results(); 
+      $results = $parser->get_results();
 
       // collect slider background image
       $this->image_import_queue[] = $results['setting']['bg_image'];
@@ -527,9 +527,14 @@ class MSP_Importer {
       if( isset( $results['slides'] ) ) {
 
         foreach ( $results['slides'] as $slide ) {
-          $this->image_import_queue[] = $slide['src'];
-          $this->image_import_queue[] = $slide['thumb'];
+            // skip if current slide is 'overlay' slide not 'standard' slide
+            if( empty( $slide['src'] ) )
+                continue;
+
+            $this->image_import_queue[] = $slide['src'];
+            $this->image_import_queue[] = $slide['thumb'];
         }
+
       }
 
       $this->image_import_queue = apply_filters( 'masterslider_extract_slider_images_to_import', $this->image_import_queue, $results );
@@ -545,7 +550,7 @@ class MSP_Importer {
 
     echo "<br />";
     $this->image_import_queue = array_filter( $this->image_import_queue );
-    
+
     foreach ( $this->image_import_queue as $url ) {
       $this->download_media( $url );
     }
@@ -555,7 +560,7 @@ class MSP_Importer {
   public function download_media( $url ){
 
     if( ! isset( $url ) || empty( $url ) )  return '';
-        
+
         // remove upload directory and get relative url
         if( $this->contains_origin_upload_dir( $url ) ) {
           $url = str_replace( $this->origin_upload_baseurl, '', $url );
@@ -569,7 +574,7 @@ class MSP_Importer {
 
 
         $relative_url = $url;
-        
+
         // extract the file name and extension from the url
     $file_name = basename( $relative_url );
 
@@ -602,7 +607,7 @@ class MSP_Importer {
 
     // Prepare an array of post data for the attachment.
     $attachment = array(
-      'guid'           => '', 
+      'guid'           => '',
       'post_mime_type' => '',
       'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $upload['file'] ) ),
       'post_content'   => '',
