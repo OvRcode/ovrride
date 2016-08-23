@@ -1,6 +1,24 @@
-div.ctct-embed-signup {
-    background-color: #292F33 !important;
-    border-radius: 4px;
-    padding: 10px;
-    color: #FFFFFF;
+#ovr_contact_comment {
+  width: 85%;
+  height: 200px;
+}
+#ovr_contact_phone {
+  width:20%;
+}
+#ovr_contact_first, #ovr_contact_last {
+  width:40%;
+}
+.email {
+  width: 40%;
+  float: left;
+}
+.errors{
+  background: #B30000;
+  padding: 5px;
+  color: #FFFFFF;
+  border: 1px solid white;
+  display: none;
+}
+.formContainer{
+    position:relative;
 }
