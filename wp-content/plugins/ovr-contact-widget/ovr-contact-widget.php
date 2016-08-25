@@ -26,7 +26,6 @@ class ovr_contact_widget extends WP_Widget {
   add_action('wp_ajax_nopriv_ovr_contact_form_submit', array($this,'ovr_contact_form_submit'));
 
   $this->fields = array(
-    "sp_key"        =>  array("text" => "Please set Sparkpost Key", "label" => "Sparkpost Key"),
     "recipient"     =>  array("text" => "Recipient for contact emails", "label" => "Recipient"),
     "recipientName" =>  array("text" => "Recipient Name to show on emails", "label" => "Recipient Name"),
     "phoneNumber"   =>  array("text" => "Phone number to display on widget", "label" => "Phone Number")
@@ -116,44 +115,19 @@ ADMINFIELD;
 
     $settings = get_option( $this->option_name ); //Get All widget options
     $settings = $settings[$this->number]; // Only keep options for this widget
-
-    $jsonOut                                                = (object)[];
-    $jsonOut->recipients                                    = [];
-    $jsonOut->recipients[0]                                 = (object)[];
-    $jsonOut->recipients[0]->address                        = (object)[];
-    $jsonOut->recipients[0]->address->email                 = $settings['recipient'];
-    $jsonOut->recipients[0]->address->name                  = $settings['recipientName'];
-    $jsonOut->recipients[0]->{substitution_data}            = (object)[];
-    $jsonOut->recipients[0]->{substitution_data}->from      = "info@ovrride.com";
-    $jsonOut->recipients[0]->{substitution_data}->reply_to  = sanitize_text_field($_POST['from']);// From = customer email from form
-    $jsonOut->recipients[0]->{substitution_data}->subject   = "OvR Comment Form Message";
-    $jsonOut->recipients[0]->{substitution_data}->name      = sanitize_text_field( $_POST['name'] );
-    $jsonOut->recipients[0]->{substitution_data}->phone     = sanitize_text_field( $_POST['phone'] );
-    $jsonOut->recipients[0]->{substitution_data}->content   = sanitize_text_field( $_POST['comment'] );
-    $jsonOut->content                                       = (object)[];
-    $jsonOut->content->{template_id}                        = "ovr-wordpress-contact-form";
-
-    $jsonOut = json_encode( $jsonOut );
-
-
-    $ch   = curl_init('https://api.sparkpost.com/api/v1/transmissions/');
-    $auth = "Authorization: Basic " . base64_encode($settings['sp_key'].":");
-
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonOut);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $auth, 'Content-Length: '.strlen($jsonOut)));
-    curl_setopt($ch, CURLOPT_HEADER, 1);
-
-    $result = curl_exec($ch);
-
-    if ( property_exists($result, 'errors') ) {
-      error_log("COMMENT FORM ERROR: " . $result->errors->message . ", " . $result->errors->description . ", " . $result->errors->code);
-      curl_close($ch);
-      return http_response_code(404);
-    } else {
-      curl_close($ch);
+    $to = $settings['recipientName'] . " <" . $settings['recipient'] .">";
+    $subject = "OvR Comment Form Message From " . sanitize_text_field($_POST['from']);
+    $message = "Message from: " . sanitize_text_field($_POST['name']) . "\n";
+    if ( isset($_POST['phone']) && "" !== $_POST['phone'] ) {
+      $message .= "Phone: " . sanitize_text_field($_POST['phone']) . "\n";
+    }
+    $message .= "Message: " . sanitize_text_field($_POST['comment']) . "\n";
+    $headers[] = "From: no-reply@ovrride.com";
+    $headers[] = "Reply-To: " . sanitize_text_field($_POST['from']);
+    if ( wp_mail( $to, $subject, $message, $headers) ) {
       return http_response_code(200);
+    } else {
+      return http_response_code(404);
     }
   }
 }
