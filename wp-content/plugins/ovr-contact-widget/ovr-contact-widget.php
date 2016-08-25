@@ -4,7 +4,7 @@
 * Description: Widget to display contact info and a form
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
-* Version: 0.1.0
+* Version: 0.2.0
 * License: MIT License
 */
 // FROM: http://www.wpbeginner.com/wp-tutorials/how-to-create-a-custom-wordpress-widget/
