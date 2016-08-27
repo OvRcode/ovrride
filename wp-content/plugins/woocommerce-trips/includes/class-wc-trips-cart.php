@@ -251,6 +251,8 @@ class WC_Trips_Cart {
             return FALSE;
           }
 
+        } else {
+          return TRUE;
         }
 
     }

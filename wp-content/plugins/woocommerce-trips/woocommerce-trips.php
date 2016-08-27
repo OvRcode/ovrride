@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.1.3
+Version: 1.1.4
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
