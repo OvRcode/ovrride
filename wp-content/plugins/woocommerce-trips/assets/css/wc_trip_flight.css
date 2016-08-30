@@ -1,4 +1,4 @@
-.name div, .dob div{
+.name div {
   float: left;
 }
 
@@ -30,21 +30,6 @@
 .passportComment {
   width: 90%;
   display: block;
-}
-
-.packages {
-  display: block;
-  margin-top: 20px;
-  float: left;
-  clear:both;
-}
-.packages label {
-  float: left;
-  clear:both;
-}
-.packages select {
-  clear:both;
-  float: left;
 }
 .gender {
   display: block;

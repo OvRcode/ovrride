@@ -1,0 +1,31 @@
+.pickups {
+  display: block;
+  margin-top: 20px;
+  float: left;
+  clear:both;
+}
+.pickups label {
+  float: left;
+  clear:both;
+}
+.pickups select {
+  clear:both;
+  float: left;
+}
+.name label {
+  clear: both;
+  float: left;
+}
+.firstName {
+  clear:left;
+  float:left;
+  width: 50%;
+}
+.lastName {
+  clear: right;
+  float: left;
+  width: 50%;
+}
+.dob, .dobLabel {
+  display: none;
+}

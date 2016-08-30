@@ -18,7 +18,7 @@ jQuery(document).ready(function($){
     event.preventDefault();
     var errors = {};
     $.each($("input[name^=wc_trip_], select[name^=wc_trip_]"), function(key,field){
-      if ( $(field).data("required")){
+      if ( $(field).data("required") && $(field).data("required") === true){
         var label = $(field).siblings('label').text().replace(" *","");
         if ( "text" == $(field).attr("type") && "" === $(field).val()){
           $(field).addClass("errorField");
@@ -27,10 +27,9 @@ jQuery(document).ready(function($){
           $(field).addClass("errorField");
           errors[label] = "Select an option for " + label;
         } else if ( "radio" == $(field).attr("type") ) {
-          //  label = $(field).parents('label').text().replace(" *","");
           var fieldName = $(field).attr("name");
           var radio = $("input[name=" + fieldName + "]");
-          if ( true === radio.data("required") && !radio.is(":checked") ) {
+          if ( !radio.is(":checked") ) {
             errors[label] = "Select an option for " + label;
             radio.addClass('errorField');
             radio.parents('p').addClass('errorField');
@@ -76,20 +75,14 @@ jQuery(document).ready(function($){
 
   if ( "domestic_flight" !== $("#wc_trip_type").val() && "international_flight" !== $("#wc_trip_type").val()){
     $("input[name=wc_trip_age_check]").on("change", function(){
-      var fields = [$("label[for=wc_trip_dob]"), $("#wc_trip_dob_month"), $("#wc_trip_dob_day"), $("#wc_trip_dob_year")];
-      if ( "no" == $(this).val() ) {
-        $.each(fields, function(k,v){
-          v.attr('data-required', 'true').show();
-          v.siblings('label').show();
-        });
-        $(".DOB").after('<br class="postDOB" /><br class="postDOB" /><br class="postDOB" />');
+      if ( "yes" == $(this).val() ) {
+        $(".dob, .dobLabel").hide();
+        $("#wc_trip_dob_year, #wc_trip_dob_day, #wc_trip_dob_month").data('required', false);
       } else {
-        $.each(fields, function(k,v){
-          v.removeData('required').removeAttr('data-required').hide();
-          v.siblings('label').hide();
-        });
-        $(".postDOB").remove();
+        $(".dob, .dobLabel").show();
+        $("#wc_trip_dob_year, #wc_trip_dob_day, #wc_trip_dob_month").data('required', true);
       }
+
     });
   } else {
     $(".DOB").show();

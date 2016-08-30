@@ -1,4 +1,36 @@
-.dob, .dobLabel {
+.dobCheck {
+  display: block;
+  clear: both;
+  float: left;
+  margin-top: 15px;
+}
+.dobCheck p {
+  margin-top: 10px;
+}
+.packages {
+  display: block;
+  margin-top: 20px;
+  float: left;
+  clear:both;
+}
+.packages label {
+  float: left;
+  clear:both;
+}
+.packages select {
+  clear:both;
+  float: left;
+}
+.dob {
+  display:block;
+  clear: both;
+  float: left;
+}
+.dob div {
+  float:left;
+}
+.dobLabel {
+  display: block;
   clear: both;
   float: left;
 }
@@ -22,11 +54,15 @@
   display: block;
   width:80%;
 }
+.emailPhone label {
+  display: inline-block;
+  margin-top: 15px;
+}
 .email {
-  width: 60%;
+  width: 62%;
 }
 .phone {
-  width: 40%;
+  width: 38%;
 }
 
 #emailValidation {
