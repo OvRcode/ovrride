@@ -9,14 +9,13 @@
     "url": "https://github.com/OvRCode/ovrride.git"
   },
   "devDependencies": {
-    "grunt": "*",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-csslint": "*",
-    "grunt-contrib-cssmin": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-phplint": "*",
-    "grunt-notify": "*"
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-csslint": "^1.0.0",
+    "grunt-contrib-cssmin": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-phplint": "*"
   }
 }
