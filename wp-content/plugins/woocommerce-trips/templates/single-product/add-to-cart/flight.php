@@ -83,16 +83,7 @@ wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc
 
         	foreach ( $packages as $type => $info ) {
             	if ( $info ) {
-                	echo <<<PACKAGE
-                  <br />
-                    	<div class='packages'>
-                        	<label for="wc_trip_{$type}_package" ><strong>{$info['label']}</strong> <span class="required">*</span></label>
-                        	<select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package" data-required="true">
-                        	<option value="">Select option</option>
-PACKAGE;
-                	echo $info['html'];
-                	echo "</select></div>";
-                	echo "<input type='hidden' name='wc_trip_{$type}_package_label' value='{$info['label']}' />";
+                	include("_package.php");
             	}
         	}
 include("_add-to-cart.php");
