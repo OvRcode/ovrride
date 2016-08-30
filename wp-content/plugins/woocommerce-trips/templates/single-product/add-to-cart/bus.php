@@ -9,7 +9,7 @@ global $product;
 
 do_action( 'woocommerce_before_add_to_cart_form' );
 
-wp_enqueue_style("wc-trips-bus-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc_trip_bus.css", null, WC_TRIPS_VERSION );
+wp_enqueue_style("wc-trips-bus-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc_trip_bus.min.css", null, WC_TRIPS_VERSION );
 
 include("_noscript.php");
 ?>

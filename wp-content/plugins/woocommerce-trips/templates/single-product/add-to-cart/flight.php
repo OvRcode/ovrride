@@ -10,7 +10,7 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 
 include("_noscript.php");
 
-wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc_trip_flight.css", null, WC_TRIPS_VERSION );
+wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc_trip_flight.min.css", null, WC_TRIPS_VERSION );
 ?>
 
 

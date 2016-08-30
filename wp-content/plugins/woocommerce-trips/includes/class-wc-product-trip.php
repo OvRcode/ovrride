@@ -158,19 +158,21 @@ class WC_Product_Trip extends WC_Product {
 				$fromBeach .= $option;
 			}
 			return <<<OUTPUT
-			<p class="form-field">
-				<label for="wc_trip_to_beach">To Beach <span class="required">*</span></label>
-				<select name="wc_trip_to_beach" id="wc_trip_to_beach" data-required="true">
-				{$toBeach}
-				</select>
-			</p>
-			<p class="form-field">
-				<label for="wc_trip_from_beach">From Beach <span class="required">*</span></label>
-				<select name="wc_trip_from_beach" id="wc_trip_from_beach" data-required="true">
-				{$fromBeach}
-				</select>
-				<br /><strong>Pickups BEFORE 6:50pm stop in Brooklyn ONLY.</strong>
-			</p>
+			<div class="toFromBeach">
+				<div class="toBeach">
+					<label for="wc_trip_to_beach"><strong>To Beach</strong> <span class="required">*</span></label>
+					<select name="wc_trip_to_beach" id="wc_trip_to_beach" data-required="true">
+					{$toBeach}
+					</select>
+				</div>
+				<div class="fromBeach">
+					<label for="wc_trip_from_beach"><strong>From Beach</strong> <span class="required">*</span></label>
+					<select name="wc_trip_from_beach" id="wc_trip_from_beach" data-required="true">
+					{$fromBeach}
+					</select>
+				</div>
+				<p><strong>Pickups BEFORE 6:50pm stop in Brooklyn ONLY.</strong></p>
+			</div>
 OUTPUT;
 		}
 		public function get_pickup_route( $pickup_id ) {

@@ -424,6 +424,7 @@ CARTMETA;
           break;
           case "beach_bus":
             $template = "beach_bus.php";
+            unset($template_data["packages"]["secondary"]);
           break;
           default:
             $template = "bus.php";

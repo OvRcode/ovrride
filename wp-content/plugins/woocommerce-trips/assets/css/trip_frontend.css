@@ -1,3 +1,17 @@
+.name label {
+  clear: both;
+  float: left;
+}
+.firstName {
+  clear:left;
+  float:left;
+  width: 50%;
+}
+.lastName {
+  clear: right;
+  float: left;
+  width: 50%;
+}
 .dobCheck {
   display: block;
   clear: both;

@@ -1,1 +1,1 @@
-.firstName,.lastName{float:left;width:50%}.pickups{display:block;margin-top:20px;float:left;clear:both}.pickups label{float:left;clear:both}.name label,.pickups select{clear:both;float:left}.firstName{clear:left}.lastName{clear:right}
+.pickups,.pickups label,.pickups select{clear:both;float:left}.pickups{display:block;margin-top:20px}.dob,.dobLabel{display:none}
