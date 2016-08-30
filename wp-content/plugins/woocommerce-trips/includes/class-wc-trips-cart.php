@@ -4,8 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class WC_Trips_Cart {
-    public $fields = array( "wc_trip_first" => "First", "wc_trip_last" => "Last", "wc_trip_email" => "Email",
-        "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
+    public $fields = array( "wc_trip_first" => "First", "wc_trip_middle" => "Middle","wc_trip_last" => "Last",
+        "wc_trip_gender"  => "Gender","wc_trip_email" => "Email", "wc_trip_phone" => "Phone",
+        "wc_trip_passport_num" => "Passport Number","wc_trip_passport_country" => "Passport Country",
         "wc_trip_dob_field" => "Date of Birth", "wc_trip_age_check" => "Is this guest at least 18 years of age?",
         "wc_trip_primary_package" => "primary", "wc_trip_secondary_package" => "secondary",
         "wc_trip_tertiary_package" => "tertiary", "wc_trip_pickup_location" => "Pickup Location",
@@ -400,21 +401,35 @@ CARTMETA;
     public function add_to_cart( $cart_item_key ) {
         global $product;
 
-        $type = get_post_meta( $product->id, '_wc_trip_type', true );
-        $fields = array("first","last","email","phone");
-        switch( $type ) {
-            case "flight_domestic":
-                $fields[] = "dob";
-                break;
-            case "flight_international":
-                $fields[] = "passport_num";
-                $fields[] = "passport_country";
-                break;
+        $template_data = [
+          "trip_type" => get_post_meta( $product->id, '_wc_trip_type', true),
+          "pickups"   => $this->pickupField( $product->id ),
+          "packages"  => [
+            "primary"   => $product->output_packages("primary"),
+        		"secondary" => $product->output_packages("secondary"),
+        		"tertiary"  => $product->output_packages("tertiary")
+          ],
+          "base_price"  => floatval( get_post_meta( $product->id, '_wc_trip_base_price', true ) ),
+          "stock"       => $product->get_availability()
+        ];
+
+        $template = "";
+        switch( $template_data['trip_type'] ) {
+          case "bus":
+            $template = "bus.php";
+          break;
+          case "international_flight":
+          case "domestic_flight":
+            $template = "flight.php";
+          break;
+          case "beach_bus":
+            $template = "beach_bus.php";
+          break;
+          default:
+            $template = "bus.php";
         }
-        $trip_type = get_post_meta( $product->id, '_wc_trip_type', true);
-        $pickups = $this->pickupField( $product->id );
-        $template_data = array('fields' => $fields, 'trip_type' => $trip_type, 'pickups' => $pickups);
-        wc_get_template( 'single-product/add-to-cart/trip.php', $template_data, 'woocommerce-trips', WC_TRIPS_TEMPLATE_PATH );
+
+        wc_get_template( 'single-product/add-to-cart/' . $template , $template_data, 'woocommerce-trips', WC_TRIPS_TEMPLATE_PATH );
     }
     private function pickupField( $post_id ) {
         $pickup_ids = get_post_meta( $post_id, '_wc_trip_pickups', true);
