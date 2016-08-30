@@ -18,11 +18,13 @@ $order = wc_get_order( $order_id );
 			$_product     = apply_filters( 'woocommerce_order_item_product', $order->get_product_from_item( $item ), $item );
 			$item_meta    = new WC_Order_Item_Meta( $item['item_meta'], $_product );
 			$waiver = FALSE;
-			foreach( $item_meta->meta['product_id'] as $id ){
+			$flight = FALSE;
+			foreach( $item_meta->meta['_product_id'] as $id ){
 				$type = get_post_meta($id, '_wc_trip_type', TRUE);
 				if ( "bus" === $type ) {
 					$waiver = TRUE;
-					break;
+				} else if ( "international_flight" === $type || "domestic_flight" === $type ) {
+					$flight = TRUE;
 				}
 			}
             if ( isset($item_meta->meta['Package'][0]) ){
@@ -38,6 +40,15 @@ AAA;
                 </a><br /><br />
                 <p>For a smooth and prompt departure on the day of your trip, please download and print out a copy of our waiver. If you bring this 2 sided filled out and signed copy to the trip, we’ll surely appreciate it, as it will speed up our check-in process.  If you don’t have access to a printer, additional waivers will be available on the bus.</p>
 BBB;
+
+								} else if ( $flight ) {
+									echo <<<CCC
+									<a href="{$url}/wp-content/uploads/2016/06/ovr-waiver.pdf"><button style="border-radius:3px;padding:10px;color:white;background-color:#2BC9F1;">
+									Download Waiver
+									</button>
+							</a><br /><br />
+							<p>Since we'll be flying please print, sign scan and email your completed waiver to <a href="mailto:info@ovrride.com">info@ovrride.com</a> . Please send in your waiver as soon as possible, at least 48 hours before your scheduled departure.</p>									
+CCC;
 
 								}
             }
