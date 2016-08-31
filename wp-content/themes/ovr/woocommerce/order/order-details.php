@@ -47,7 +47,8 @@ BBB;
 									Download Waiver
 									</button>
 							</a><br /><br />
-							<p>Since we'll be flying please print, sign scan and email your completed waiver to <a href="mailto:info@ovrride.com">info@ovrride.com</a> . Please send in your waiver as soon as possible, at least 48 hours before your scheduled departure.</p>									
+							<p>Since we'll be flying please print, sign scan and email your completed waiver to <a href="mailto:info@ovrride.com">info@ovrride.com</a> . Please send in your waiver as soon as possible, at least 48 hours before your scheduled departure.</p>
+							<p>For all trips including flight a group meetup at the airport will be setup closer to the date of travel and after all final reservations have been made.</p>
 CCC;
 
 								}

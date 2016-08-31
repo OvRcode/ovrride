@@ -88,6 +88,7 @@ foreach($order->get_items() as $order_item_id ) {
 	                        <![endif]-->
 
 	                        <a href="<?php echo get_site_url();?>/wp-content/uploads/2016/06/ovr-waiver.pdf.zip" style="background-color:#2BC9F1;border:1px solid ##2BC9F1;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;">Download Waiver</a>
+													<p>For all trips including flight a group meetup at the airport will be setup closer to the date of travel and after all final reservations have been made.</p>
 	                    </div>
 	                </td>
 	            </tr>
