@@ -187,7 +187,8 @@ class Lists {
       // Pull titles for pickups
       $pickupNames = array();
       if ( isset($this->tripInfo['pickups'] ) && is_array($this->tripInfo['pickups'])) {
-        foreach( $this->tripInfo['pickups'] as $index => $id) {
+        // TODO: Add fix for beach bus trips here
+        foreach( $this->tripInfo['pickups'] as $id => $route) {
           $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
           $result = $this->dbQuery($sql);
           $name = $result->fetch_assoc();
