@@ -1,9 +1,8 @@
 /*
-Theme Name: _tk
+Theme Name: OvR-2016
 Theme URI: http://themekraft.com/store/_tk-free-wordpress-starter-theme-based-on-twitter-bootstrap/
-Author: ThemeKraft
-Author URI: http://themekraft.com/
-Description: Hi, I am the ultra minimal starter theme _tk, ready for your next awesome WordPress project! I am the most seamless and minimalistic integration of Twitter Bootstrap Framework into the _s starter theme from Automattic, the guys behind WordPress. You can find me on GitHub. Fork me! I'm waiting for you ;)
+Author: ThemeKraft, Mike Barnard
+Description: OvRride 2016 Redesign
 Version: 1.1.10
 License: GNU General Public License v3.0 /
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -264,4 +263,91 @@ nav .input-group,
 nav .input-group-btn,
 nav .form-control {
     display: inline;
+}
+
+/* Navbar height adjustment */
+.navbar {
+	min-height: 60px;
+}
+.navbar-brand {
+	height: inherit;
+}
+.navbar-nav li a {
+ line-height: 50px;
+}
+/* Larger nav font */
+.navbar-nav > li {
+  font-size: 20px;
+  }
+.dropdown-menu {
+    font-size: 20px;
+  }
+/* Center navbar items */
+.navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+}
+
+.navbar .navbar-collapse {
+    text-align: center;
+}
+#main-menu > li:first-of-type > a{
+	color:#112233;
+	width: 70px;
+	height: 50px;
+	margin: 15px 10px 0 0;
+	background: url('/wp-content/themes/ovr2016/includes/images/ovr_logo.png');
+}
+@media screen and (min-width: 960px) {
+	.navbar-brand {
+		visibility: hidden;
+	}
+}
+@media screen and (max-width: 959px) {
+	.navbar-brand {
+		visibility: visible;
+	}
+}
+
+/**
+	* Homepage background box
+	*/
+.mainBackground {
+	background-color: #E8E8E8;
+}
+/**
+ * Full Width Menu dropdown
+ */
+ .nav > li.dropdown.open {
+	 position: static;
+ }
+ .nav > li.dropdown.open .dropdown-menu {
+	 display:inline;
+	 width: 100%;
+	 overflow: hidden;
+	 text-align: center;
+	 left:0;
+	 right:0;
+	 background: rgba(255, 255, 255, 0.9);
+	 border-bottom: 3px solid grey;
+ }
+ .dropdown-menu>li {
+	 display: inline-block;
+	 width: 50%;
+	 float: left;
+ }
+ .dropdown-menu > li:nth-of-type(odd) {
+	 text-align: right;
+ }
+ .dropdown-menu > li:nth-of-type(odd) a {
+	 padding-right: 10%;
+ }
+ .dropdown-menu > li:nth-of-type(even) {
+	 text-align: left;
+ }
+.dropdown-menu > li:nth-of-type(even) a {
+	padding-left: 10%;
+}
+a:hover {
+	background-color: #16AFE1;
 }

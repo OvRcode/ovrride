@@ -4,7 +4,7 @@
  *
  * @package _tk
  */
- 
+
  /**
   * Store the theme's directory path and uri in constants
   */
@@ -58,7 +58,7 @@ function _tk_setup() {
 		'default-color' => 'ffffff',
 		'default-image' => '',
 		) ) );
-	
+
 	/**
 	 * Make theme available for translation
 	 * Translations can be filed in the /languages/ directory
@@ -166,3 +166,21 @@ add_action( 'after_setup_theme', 'woocommerce_support' );
 function woocommerce_support() {
 	add_theme_support( 'woocommerce' );
 }
+
+/**
+ * Add Theme widget areas
+ */
+ function register_widget_areas() {
+	register_sidebar( array(
+		'name'          => 'Top Banner Ad',
+		'id'            => 'banner-ad',
+		'description'   => 'Banner Ad at top of home page',
+	) );
+  register_sidebar( array(
+		'name'          => 'Upcoming Events',
+		'id'            => 'events',
+		'description'   => 'Spot for upcoming events widget (on every page)',
+	) );
+}
+add_action( 'widgets_init', 'register_widget_areas' );
+;
