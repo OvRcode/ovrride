@@ -19,11 +19,11 @@ jQuery(document).ready(function($){
   }
   });
   $( "#_wc_trip_end_date").change(function() {
-      var start = $("#_wc_trip_start_date");
-      var end = $(this);
-      if ( end.val() < start.val() ) {
-          end.val("");
-          end.focus();
+      var start = new Date($("#_wc_trip_start_date").val());
+      var end = new Date($(this).val());
+      if ( end < start ) {
+          $(this).val("");
+          $(this).focus();
           alert("Please set an end date that is greater than or equal to the start date");
       }
   });
