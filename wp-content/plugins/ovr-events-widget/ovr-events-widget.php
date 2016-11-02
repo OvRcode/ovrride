@@ -70,8 +70,12 @@ public function update( $new_instance, $old_instance ) {
   return $instance;
 }
 public function widget( $args, $instance ) {
-  wp_enqueue_style( 'ovr_event_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-event-widget.css');
+  wp_enqueue_style( 'ovr_event_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-events-widget.min.css');
+  wp_enqueue_script( 'ovr_event_widget_script', plugin_dir_url( __FILE__ ) . 'ovr-events-widget.min.js', array('jquery'), false, true);
   $trip = $this->returnTrips($instance['events'], $instance['menu_order']);
+  echo "<div class='events'>";
+  echo "<i class='leftArrow'></i>";
+  echo "<div class='eventScroll'>";
   foreach($trip as $id => $data ) {
 
     if ( strcmp($data->stock_status, "outofstock") === 0 ) {
@@ -83,14 +87,14 @@ public function widget( $args, $instance ) {
     }
 
     echo <<<WIDGETHTML
-    <div class="event_block">
-    <a href="{$data->guid}">{$data->post_title}</a><br />
-    {$data->dateLabel}<br />
-    {$label}
-    </p>
+    <div class="event">
+      <a href="{$data->guid}">{$data->post_title}</a><br />
+      {$data->dateLabel}<br />
+      {$label}
+    </div>
 WIDGETHTML;
-
   }
+  echo "</div><i class='rightArrow'></i></div>";
 }
 function returnTrips($numberOfTrips, $menu_order){
   global $wpdb;
