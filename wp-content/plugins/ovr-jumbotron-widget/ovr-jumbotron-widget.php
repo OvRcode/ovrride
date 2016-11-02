@@ -25,7 +25,7 @@ class ovr_jumbotron_widget extends WP_Widget {
     // Widget Admin Form
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_jumbotron_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-admin.js', array('jquery'));
+    wp_enqueue_script('ovr_jumbotron_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-admin.min.js', array('jquery'));
     // Get list of recent posts
     $args = array(
       'numberposts' => 20,
@@ -84,10 +84,34 @@ ADMINFORM;
     $instance = array();
     $instance['post'] = ( ! empty( $new_instance['post'] ) ) ? strip_tags( $new_instance['post'] ) : '';
     $instance['image'] = ( ! empty( $new_instance['image'] ) ) ? $new_instance['image'] : '';
+    if ( "" !== $instance['post'] ) {
+      $instance['title'] = get_the_title($instance['post']);
+      $instance['excerpt'] = get_the_excerpt($instance['post']);
+      $instance['link'] = get_the_permalink($instance['post']);
+    } else {
+      $instance['title'] = '';
+      $instance['excerpt'] = '';
+      $instance['link'] = '';
+    }
     return $instance;
   }
   public function widget( $args, $instance ) {
-    echo $instance['post'];
+    wp_enqueue_style( 'ovr_jumbotron_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-widget.css');
+
+    echo <<<FRONTEND
+    <div class="ovr_jumbotron">
+      <div class="jumbotron_inner">
+        <div class="jumbotron_content">
+          <img src="{$instance['image']}">
+          <h1>{$instance['title']}</h1>
+          <p>
+            {$instance['excerpt']}<a href="{$instance['link']}">...Read More</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+FRONTEND;
   }
 }
 function ovr_jumbotron_load_widget() {
