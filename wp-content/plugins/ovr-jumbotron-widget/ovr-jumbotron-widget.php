@@ -23,6 +23,9 @@ class ovr_jumbotron_widget extends WP_Widget {
   }
   public function form($instance) {
     // Widget Admin Form
+    wp_enqueue_script('media-upload');
+    wp_enqueue_media();
+    wp_enqueue_script('ovr_jumbotron_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-admin.js', array('jquery'));
     // Get list of recent posts
     $args = array(
       'numberposts' => 20,
@@ -52,25 +55,35 @@ class ovr_jumbotron_widget extends WP_Widget {
       $options .= "<option value='{$post_data['ID']}' {$selected}>{$post_data['post_title']}</option>";
     }
     unset($recent_posts);
-    if ( !$instanceCheck ) {
+    if ( !$instanceCheck && "" !== $instance['post']) {
       $options .= "<option value='{$instance['post']}' selected>". get_the_title($instance['post']) ."</option>";
     }
-    // Setup field id and name
+
+    // Setup field ids and names
     $postID = $this->get_field_id( 'post' );
     $postLabel = 'Selected post:';
     $postFieldName = $this->get_field_name('post');
+    $image = esc_url(! empty( $instance['image'] ) ? $instance['image'] : '');
+    $imageID = $this->get_field_id( 'image' );
+    $imageName = $this->get_field_name('image');
+    $imageLabel = "Image: ";
     echo <<<ADMINFORM
     <p>
-    <label for="{$postID}">{$postLabel}</label>
-    <select id="{$postID}" name="{$postFieldName}" style="width:100%;">
-      {$options}
-    </select>
+      <label for="{$imageID}">{$imageLabel}</label>
+      <input class="widefat" id="{$imageID}" name="{$imageName}" type="text" value="{$image}" />
+      <button class="upload_image_button button button-primary">Upload Image</button>
+    <p>
+      <label for="{$postID}">{$postLabel}</label>
+      <select id="{$postID}" name="{$postFieldName}" style="width:100%;">
+        {$options}
+      </select>
     </p>
 ADMINFORM;
   }
   public function update( $new_instance, $old_instance ) {
     $instance = array();
     $instance['post'] = ( ! empty( $new_instance['post'] ) ) ? strip_tags( $new_instance['post'] ) : '';
+    $instance['image'] = ( ! empty( $new_instance['image'] ) ) ? $new_instance['image'] : '';
     return $instance;
   }
   public function widget( $args, $instance ) {
