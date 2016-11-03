@@ -72,6 +72,7 @@ class ovr_jumbotron_widget extends WP_Widget {
       <label for="{$imageID}">{$imageLabel}</label>
       <input class="widefat" id="{$imageID}" name="{$imageName}" type="text" value="{$image}" />
       <button class="upload_image_button button button-primary">Upload Image</button>
+    </p>
     <p>
       <label for="{$postID}">{$postLabel}</label>
       <select id="{$postID}" name="{$postFieldName}" style="width:100%;">
@@ -96,7 +97,7 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style( 'ovr_jumbotron_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-widget.css');
+    wp_enqueue_style( 'ovr_jumbotron_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-widget.min.css');
 
     echo <<<FRONTEND
     <div class="ovr_jumbotron">
