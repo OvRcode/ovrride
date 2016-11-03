@@ -1,0 +1,56 @@
+.ovr_trip_feature {
+  position: relative;
+  float:left;
+  top: 20px;
+  left: 20px;
+  width: 48%;
+  background: rgb(236,236,236);
+  margin: auto;
+  height: 320px;
+  cursor: pointer;
+}
+.ovr_trip_feature_inner {
+  position: relative;
+  width: 96%;
+  height: 94%;
+  top: 10px;
+  background: rgb(255,255,255);
+  display: block;
+  margin: auto;
+  padding-bottom: 20px;
+  text-align: center;
+}
+.ovr_trip_feature_inner img {
+  margin-top: 10px;
+  max-width: 95%;
+  max-height: 150px;
+}
+.ovr_trip_feature_destination {
+  position:absolute;
+  color: rgb(89, 15, 38);
+  text-transform: uppercase;
+  top: 165px;
+  margin: 0 10px 0 10px;
+}
+.ovr_trip_feature_title {
+  position: absolute;
+  top: 190px;
+  left: 8px;
+  white-space:nowrap;
+  max-width: 225px;
+  overflow: hidden;
+  color: rgb(22, 174, 223);
+}
+.ovr_trip_feature_date {
+  position: absolute;
+  top: 220px;
+  left: 8px;
+}
+.ovr_trip_feature_secondaryImage {
+  max-height: 50px;
+  max-width: 140px;
+  position:absolute;
+  bottom: 10px;
+  right: 10px;
+
+}
