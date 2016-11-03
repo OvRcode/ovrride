@@ -23,19 +23,33 @@ get_header();
       </div>
     </div>
   <?php endif; ?>
+  <?php if ( is_active_sidebar('first-row-left') || is_active_sidebar('first-row-right') ): ?>
     <div class="row">
       <?php if ( is_active_sidebar( 'first-row-left' ) ): ?>
         <div class="col-sm-6">
           <?php dynamic_sidebar('first-row-left' ); ?>
         </div>
       <?php endif; ?>
-    </div>
       <?php if ( is_active_sidebar( 'first-row-right' ) ): ?>
         <div class="col-sm-6">
           <?php dynamic_sidebar( 'first-row-right' ); ?>
         </div>
+      <?php endif; ?>
+    </div>
+  <?php endif; ?>
+  <?php if ( is_active_sidebar('second-row-left') || is_active_sidebar('second-row-right') ): ?>
+    <div class="row">
+      <?php if ( is_active_sidebar( 'second-row-left' ) ): ?>
+        <div class="col-sm-6">
+          <?php dynamic_sidebar('second-row-left' ); ?>
+        </div>
+      <?php endif;?>
+      <?php if ( is_active_sidebar( 'second-row-right' ) ): ?>
+        <div class="col-sm-6">
+          <?php dynamic_sidebar('second-row-right' ); ?>
+        </div>
       <?php endif;?>
     </div>
-
+  <?php endif; ?>
 </div><!-- Grey Background-->
 <?php get_footer(); ?>

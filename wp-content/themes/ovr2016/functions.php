@@ -196,6 +196,36 @@ function woocommerce_support() {
 		'id'            => 'first-row-right',
 		'description'   => 'Right Half of first row below feature',
 	) );
+  register_sidebar( array(
+		'name'          => 'Second Row, left side',
+		'id'            => 'second-row-left',
+		'description'   => 'Left Half of second row',
+	) );
+  register_sidebar( array(
+		'name'          => 'Second Row, right side',
+		'id'            => 'second-row-right',
+		'description'   => 'Right Half of second row',
+	) );
+  register_sidebar( array(
+    'name'          => 'Third Row, left side',
+    'id'            => 'third-row-left',
+    'description'   => 'Left Half of third row',
+  ) );
+  register_sidebar( array(
+    'name'          => 'Third Row, right side',
+    'id'            => 'third-row-right',
+    'description'   => 'Right Half of third row',
+  ) );
+  register_sidebar( array(
+    'name'          => 'Fourth Row, left side',
+    'id'            => 'fourth-row-left',
+    'description'   => 'Left Half of fourth row',
+  ) );
+  register_sidebar( array(
+    'name'          => 'Fourth Row, right side',
+    'id'            => 'fourth-row-right',
+    'description'   => 'Right Half of fourth row',
+  ) );
 }
 add_action( 'widgets_init', 'register_widget_areas' );
 ;
