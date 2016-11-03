@@ -1,7 +1,7 @@
 <?php
 /*
 * Plugin Name: OvRride Trip Feature Widget
-* Description:  Widget to display a story from blog in a small tile
+* Description:  Widget to display a trip product in a small tile
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
 * Version: 0.1.0
@@ -82,7 +82,7 @@ ADMINFORM;
       $instance['date'] = '';
       $instance['link'] = '';
     }
-    error_log(print_r($instance,true));
+    
     return $instance;
   }
   private function get_trips_options( $selectedTrip ) {
