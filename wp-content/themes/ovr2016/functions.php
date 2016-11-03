@@ -181,6 +181,21 @@ function woocommerce_support() {
 		'id'            => 'events',
 		'description'   => 'Spot for upcoming events widget (on every page)',
 	) );
+  register_sidebar( array(
+		'name'          => 'Top Featured Story',
+		'id'            => 'top-feature',
+		'description'   => 'Top story on home page',
+	) );
+  register_sidebar( array(
+		'name'          => 'First Row, left side',
+		'id'            => 'first-row-left',
+		'description'   => 'Left Half of first row below feature',
+	) );
+  register_sidebar( array(
+		'name'          => 'First Row, right side',
+		'id'            => 'first-row-right',
+		'description'   => 'Right Half of first row below feature',
+	) );
 }
 add_action( 'widgets_init', 'register_widget_areas' );
 ;

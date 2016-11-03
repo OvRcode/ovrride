@@ -15,9 +15,27 @@ get_header();
     </div>
   </div>
 <?php endif; ?>
-<div class="col-lg-10 col-lg-offset-1 mainBackground">
-  <div class="row">
-    <h4>Box?</h4>
-  </div>
+<div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
+  <?php if ( is_active_sidebar( 'top-feature' ) ) :?>
+    <div class="row">
+      <div class="col-sm-12">
+        <?php dynamic_sidebar( 'top-feature' ); ?>
+      </div>
+    </div>
+  <?php endif; ?>
+    <div class="row">
+      <?php if ( is_active_sidebar( 'first-row-left' ) ): ?>
+        <div class="col-sm-6">
+          <?php dynamic_sidebar('first-row-left' ); ?>
+        </div>
+      <?php endif; ?>
+    </div>
+      <?php if ( is_active_sidebar( 'first-row-right' ) ): ?>
+        <div class="col-sm-6">
+          <?php dynamic_sidebar( 'first-row-right' ); ?>
+        </div>
+      <?php endif;?>
+    </div>
+
 </div><!-- Grey Background-->
 <?php get_footer(); ?>

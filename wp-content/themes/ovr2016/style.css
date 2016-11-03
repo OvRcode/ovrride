@@ -264,10 +264,16 @@ nav .input-group-btn,
 nav .form-control {
     display: inline;
 }
-
+/* Full bleed fluid container */
+.container-fluid {
+	padding-right: 0;
+	padding-left: 0;
+}
 /* Navbar height adjustment */
 .navbar {
 	min-height: 60px;
+	margin-bottom: 0;
+	border-radius: 0;
 }
 .navbar-brand {
 	height: inherit;
@@ -291,21 +297,27 @@ nav .form-control {
 .navbar .navbar-collapse {
     text-align: center;
 }
+
 #main-menu > li:first-of-type > a{
 	color:#112233;
 	width: 70px;
 	height: 50px;
-	margin: 15px 10px 0 0;
+	margin: 15px 0 0 0;
+	font-size:0;
 	background: url('/wp-content/themes/ovr2016/includes/images/ovr_logo.png');
 }
-@media screen and (min-width: 960px) {
+
+@media screen and (min-width: 768px) {
 	.navbar-brand {
 		visibility: hidden;
 	}
 }
-@media screen and (max-width: 959px) {
+@media screen and (max-width: 767px) {
 	.navbar-brand {
 		visibility: visible;
+	}
+	#main-menu > li:first-of-type {
+		display: none;
 	}
 }
 
@@ -314,6 +326,7 @@ nav .form-control {
 	*/
 .mainBackground {
 	background-color: #E8E8E8;
+	margin-top:20px;
 }
 /**
  * Full Width Menu dropdown
@@ -331,7 +344,7 @@ nav .form-control {
 	 background: rgba(255, 255, 255, 0.9);
 	 border-bottom: 3px solid grey;
  }
- .dropdown-menu>li {
+ .dropdown-menu > li {
 	 display: inline-block;
 	 width: 50%;
 	 float: left;
@@ -350,4 +363,8 @@ nav .form-control {
 }
 a:hover {
 	background-color: #16AFE1;
+}
+.main-content {
+	background: url('includes/images/bkg.png');
+	background-repeat: repeat-x;
 }

@@ -73,7 +73,7 @@
 			<div id="content" class="main-content-inner col-sm-12">
 				<?php if ( is_active_sidebar( 'events' ) ) : ?>
 				  <div class="row">
-				    <div class="col-sm-12">
+				    <div class="col-sm-12 hidden-xs">
 				      <?php dynamic_sidebar( 'events' ); ?>
 				    </div>
 				  </div>
