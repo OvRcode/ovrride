@@ -135,7 +135,7 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-widget.css');
+    wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-widget.min.css');
     echo <<<FRONTEND
     <div class="ovr_dual_trip_feature" data-link="{$instance['link']}">
       <div class="ovr_dual_trip_feature_inner">
