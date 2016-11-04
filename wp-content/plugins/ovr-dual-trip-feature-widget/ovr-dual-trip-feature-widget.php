@@ -136,6 +136,7 @@ ADMINFORM;
   }
   public function widget( $args, $instance ) {
     wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-widget.min.css');
+    wp_enqueue_script('ovr_dual_trip_feature_widget_js', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-widget.min.js', array('jquery') );
     echo <<<FRONTEND
     <div class="ovr_dual_trip_feature" data-link="{$instance['link']}">
       <div class="ovr_dual_trip_feature_inner">
@@ -145,12 +146,12 @@ ADMINFORM;
           <p>
             {$instance['widgetExcerpt']}
           </p>
-          <div class="ovr_dual_trip_feature_trip_one">
+          <div class="ovr_dual_trip_feature_trip_one" data-link="{$instance['tripOneLink']}">
             <span class="ovr_dual_trip_feature_trip_one_title">{$instance['tripOneTitle']}</span>
             <span class="ovr_dual_trip_feature_trip_one_date">{$instance['tripOneDate']}</span>
             <img src="{$instance['tripOneImage']}">
           </div>
-          <div class="ovr_dual_trip_feature_trip_two">
+          <div class="ovr_dual_trip_feature_trip_two" data-link="{$instance['tripTwoLink']}">
             <span class="ovr_dual_trip_feature_trip_two_title">{$instance['tripTwoTitle']}</span>
             <span class="ovr_dual_trip_feature_trip_two_date">{$instance['tripTwoDate']}</span>
             <img src="{$instance['tripTwoImage']}">

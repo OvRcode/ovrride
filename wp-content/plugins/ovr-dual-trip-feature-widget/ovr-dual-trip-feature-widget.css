@@ -42,6 +42,7 @@
   text-transform: uppercase;
 }
 .ovr_dual_trip_feature_trip_one, .ovr_dual_trip_feature_trip_two {
+  cursor: pointer;
   position: relative;
   display: block;
   float: left;
