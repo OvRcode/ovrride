@@ -1,12 +1,7 @@
 .ovr_dual_trip_feature {
-  position: relative;
-  display: block;
-  top: 40px;
-  left: 15px;
-  width: 98%;
+  width: 100%;
   background: rgb(236,236,236);
-  height: 380px;
-  margin-bottom: 20px;
+  height: 420px;
 }
 .ovr_dual_trip_feature_inner {
   position: relative;

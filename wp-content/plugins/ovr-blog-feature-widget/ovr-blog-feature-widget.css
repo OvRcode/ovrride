@@ -1,23 +1,18 @@
 .ovr_blog_feature {
-  position: relative;
   float:left;
-  top: 20px;
-  left: 20px;
-  width: 48%;
+  width: 50%;
   background: rgb(236,236,236);
-  margin: auto;
   height: 320px;
   cursor: pointer;
 }
 .ovr_blog_feature_inner {
   position: relative;
-  width: 96%;
+  width: 92%;
   height: 94%;
   top: 10px;
   background: rgb(255,255,255);
   display: block;
   margin: auto;
-  padding-bottom: 20px;
   text-align: center;
 }
 .ovr_blog_feature_inner img {

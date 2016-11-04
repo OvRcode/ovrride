@@ -368,3 +368,9 @@ a:hover {
 	background: url('includes/images/bkg.png');
 	background-repeat: repeat-x;
 }
+.leftCol {
+	padding-right: 0;
+}
+.rightCol {
+	padding-left: 0;
+}

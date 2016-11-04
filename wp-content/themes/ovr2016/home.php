@@ -25,58 +25,42 @@ get_header();
   <?php endif; ?>
   <?php if ( is_active_sidebar('first-row-left') || is_active_sidebar('first-row-right') ): ?>
     <div class="row">
-      <?php if ( is_active_sidebar( 'first-row-left' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 leftCol">
           <?php dynamic_sidebar('first-row-left' ); ?>
         </div>
-      <?php endif; ?>
-      <?php if ( is_active_sidebar( 'first-row-right' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 rightCol">
           <?php dynamic_sidebar( 'first-row-right' ); ?>
         </div>
-      <?php endif; ?>
     </div>
   <?php endif; ?>
   <?php if ( is_active_sidebar('second-row-left') || is_active_sidebar('second-row-right') ): ?>
     <div class="row">
-      <?php if ( is_active_sidebar( 'second-row-left' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 leftCol">
           <?php dynamic_sidebar('second-row-left' ); ?>
         </div>
-      <?php endif;?>
-      <?php if ( is_active_sidebar( 'second-row-right' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 rightCol">
           <?php dynamic_sidebar('second-row-right' ); ?>
         </div>
-      <?php endif;?>
     </div>
   <?php endif; ?>
   <?php if ( is_active_sidebar('third-row-left') || is_active_sidebar('third-row-right') ): ?>
     <div class="row">
-      <?php if ( is_active_sidebar( 'third-row-left' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 leftCol">
           <?php dynamic_sidebar('third-row-left' ); ?>
         </div>
-      <?php endif;?>
-      <?php if ( is_active_sidebar( 'third-row-right' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 rightCol">
           <?php dynamic_sidebar('third-row-right' ); ?>
         </div>
-      <?php endif;?>
     </div>
   <?php endif; ?>
   <?php if ( is_active_sidebar('fourth-row-left') || is_active_sidebar('fourth-row-right') ): ?>
     <div class="row">
-      <?php if ( is_active_sidebar( 'fourth-row-left' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 leftCol">
           <?php dynamic_sidebar('fourth-row-left' ); ?>
         </div>
-      <?php endif;?>
-      <?php if ( is_active_sidebar( 'fourth-row-right' ) ): ?>
-        <div class="col-sm-6">
+        <div class="col-sm-6 rightCol">
           <?php dynamic_sidebar('fourth-row-right' ); ?>
         </div>
-      <?php endif;?>
     </div>
   <?php endif; ?>
 </div><!-- Grey Background-->
