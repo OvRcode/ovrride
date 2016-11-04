@@ -1,6 +1,9 @@
 .ovr_jumbotron {
+  width: 100%;
+  height: 475px;
+  margin: 10px 0 10px 0;
   background: rgb(236,236,236);
-  margin: auto;
+
 }
 .jumbotron_inner {
   position: relative;
