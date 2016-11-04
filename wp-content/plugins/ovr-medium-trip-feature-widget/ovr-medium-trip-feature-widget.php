@@ -101,7 +101,7 @@ ADMINFORM;
     wp_enqueue_style('ovr-medium-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-medium-trip-feature-widget.min.css');
     wp_enqueue_script('ovr_medium_trip_feature_widget_js', plugin_dir_url( __FILE__ ) . 'ovr-medium-trip-feature-widget.min.js', array('jquery') );
     echo <<<FRONTEND
-    <div class="ovr_medium_trip_feature" data-link="{$instance['link']}">
+    <div class="ovr_medium_trip_feature">
       <div class="ovr_medium_trip_feature_inner">
         <div class="ovr_medium_trip_feature_content">
           <h4 class="ovr_medium_trip_feature_title">{$instance['widgetTitle']}</h4>
