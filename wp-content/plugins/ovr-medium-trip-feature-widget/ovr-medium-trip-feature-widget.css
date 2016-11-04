@@ -41,7 +41,8 @@
   color: rgb(103,28,51);
   text-transform: uppercase;
 }
-.ovr_medium_trip_feature_trip{
+.ovr_medium_trip_feature_trip {
+  cursor: pointer;
   position: relative;
   display: block;
   float: left;

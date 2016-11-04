@@ -98,7 +98,8 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr-medium-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-medium-trip-feature-widget.css');
+    wp_enqueue_style('ovr-medium-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-medium-trip-feature-widget.min.css');
+    wp_enqueue_script('ovr_medium_trip_feature_widget_js', plugin_dir_url( __FILE__ ) . 'ovr-medium-trip-feature-widget.min.js', array('jquery') );
     echo <<<FRONTEND
     <div class="ovr_medium_trip_feature" data-link="{$instance['link']}">
       <div class="ovr_medium_trip_feature_inner">
@@ -108,8 +109,8 @@ ADMINFORM;
           <p>
             {$instance['widgetExcerpt']}
           </p>
-          <div class="ovr_medium_trip_feature_trip">
-            <span class="ovr_medium_trip_feature_trip_title">{$instance['tripTitle']}</span>
+          <div class="ovr_medium_trip_feature_trip" data-link="{$instance['tripLink']}">
+            <a href="{$instance['tripLink']}"><span class="ovr_medium_trip_feature_trip_title">{$instance['tripTitle']}</span></a>
             <span class="ovr_medium_trip_feature_trip_date">{$instance['tripDate']}</span>
             <img src="{$instance['tripImage']}">
           </div>
