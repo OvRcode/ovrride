@@ -23,7 +23,7 @@ class ovr_dual_trip_feature_widget extends WP_Widget {
   public function form($instance) {
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_dual_trip_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-admin.min.js', array('jquery') );
+    wp_enqueue_script('ovr_dual_trip_feature_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-dual-trip-feature-admin.min.js', array('jquery') );
     $widgetTitleID = $this->get_field_id('widgetTitle');
     $widgetTitleName = $this->get_field_name('widgetTitle');
     $widgetTitle = $instance['widgetTitle'];
@@ -135,8 +135,8 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-widget.min.css');
-    wp_enqueue_script('ovr_dual_trip_feature_widget_js', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-widget.min.js', array('jquery') );
+    wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-dual-trip-feature-widget.min.css');
+    wp_enqueue_script('ovr_dual_trip_feature_widget_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-dual-trip-feature-widget.min.js', array('jquery') );
     echo <<<FRONTEND
     <div class="ovr_dual_trip_feature" data-link="{$instance['link']}">
       <div class="ovr_dual_trip_feature_inner">
@@ -219,7 +219,3 @@ FRONTEND;
     return $options;
   }
 }
-function ovr_dual_trip_feature_load_widget() {
-  register_widget( 'ovr_dual_trip_feature_widget' );
-}
-add_action( 'widgets_init', 'ovr_dual_trip_feature_load_widget' );
