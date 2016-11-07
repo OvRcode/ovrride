@@ -23,7 +23,7 @@ class ovr_small_ad_widget extends WP_Widget {
   public function form($instance) {
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_small_ad_widget_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-small-ad-widget-admin.min.js', array('jquery') );
+    wp_enqueue_script('ovr_small_ad_widget_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-small-ad-widget-admin.min.js', array('jquery') );
 
     $adID       = $this->get_field_id('ad');
     $adLinkID   = $this->get_field_id('link');
@@ -52,7 +52,7 @@ WIDGETADMIN;
     return $instance;
   }
   public function widget($args, $instance) {
-    wp_enqueue_style('ovr_small_ad_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-small-ad-widget.min.css');
+    wp_enqueue_style('ovr_small_ad_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-small-ad-widget.min.css');
     echo <<<WIDGET
       <div class="ovr_small_ad_widget">
         <div class="ovr_small_ad_inner">
@@ -64,7 +64,3 @@ WIDGETADMIN;
 WIDGET;
   }
 }
-function ovr_small_ad_widget_load_widget() {
-  register_widget( 'ovr_small_ad_widget' );
-}
-add_action( 'widgets_init', 'ovr_small_ad_widget_load_widget' );
