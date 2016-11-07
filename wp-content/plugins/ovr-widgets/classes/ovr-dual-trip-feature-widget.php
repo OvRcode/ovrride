@@ -138,15 +138,17 @@ ADMINFORM;
           <p>
             {$instance['widgetExcerpt']}
           </p>
-          <div class="ovr_dual_trip_feature_trip_one" data-link="{$instance['tripOneLink']}">
-            <a href="{$instance['tripOneLink']}"><span class="ovr_dual_trip_feature_trip_one_title">{$instance['tripOneTitle']}</span></a>
-            <span class="ovr_dual_trip_feature_trip_one_date">{$instance['tripOneDate']}</span>
-            <img src="{$instance['tripOneImage']}">
-          </div>
-          <div class="ovr_dual_trip_feature_trip_two" data-link="{$instance['tripTwoLink']}">
-            <a href="{$instance['tripTwoLink']}"><span class="ovr_dual_trip_feature_trip_two_title">{$instance['tripTwoTitle']}</span></a>
-            <span class="ovr_dual_trip_feature_trip_two_date">{$instance['tripTwoDate']}</span>
-            <img src="{$instance['tripTwoImage']}">
+          <div class="ovr_dual_trip_feature_trip_box">
+            <div class="ovr_dual_trip_feature_trip_one" data-link="{$instance['tripOneLink']}">
+              <a href="{$instance['tripOneLink']}"><span class="ovr_dual_trip_feature_trip_one_title">{$instance['tripOneTitle']}</span></a>
+              <span class="ovr_dual_trip_feature_trip_one_date">{$instance['tripOneDate']}</span>
+              <img src="{$instance['tripOneImage']}">
+              </div>
+            <div class="ovr_dual_trip_feature_trip_two" data-link="{$instance['tripTwoLink']}">
+              <a href="{$instance['tripTwoLink']}"><span class="ovr_dual_trip_feature_trip_two_title">{$instance['tripTwoTitle']}</span></a>
+              <span class="ovr_dual_trip_feature_trip_two_date">{$instance['tripTwoDate']}</span>
+              <img src="{$instance['tripTwoImage']}">
+            </div>
           </div>
         </div>
       </div>

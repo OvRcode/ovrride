@@ -14,7 +14,8 @@
 }
 
 .ovr_dual_trip_feature_content img {
-  width: 96%;
+  max-width: 96%;
+  max-height: 250px;
   position: relative;
   top: 3px;
   display: block;
@@ -50,6 +51,12 @@
 .ovr_dual_trip_feature_trip_one {
   border: 1px rgb(236,236,236);
   border-right-style: solid;
+}
+.ovr_dual_trip_feature_trip_box {
+  position:absolute;
+  width: 96%;
+  bottom: 26px;
+  margin:auto;
 }
 .ovr_dual_trip_feature_trip_one_title, .ovr_dual_trip_feature_trip_two_title {
   color: rgb(22, 175, 225);

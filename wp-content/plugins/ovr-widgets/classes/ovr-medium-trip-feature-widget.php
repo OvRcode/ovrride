@@ -97,14 +97,14 @@ ADMINFORM;
       <div class="ovr_medium_trip_feature_inner">
         <div class="ovr_medium_trip_feature_content">
           <h4 class="ovr_medium_trip_feature_title">{$instance['widgetTitle']}</h4>
-          <img src="{$instance['widgetImage']}">
+          <img class="ovr_medium_trip_feature_primary_image" src="{$instance['widgetImage']}">
           <p>
             {$instance['widgetExcerpt']}
           </p>
           <div class="ovr_medium_trip_feature_trip" data-link="{$instance['tripLink']}">
             <a href="{$instance['tripLink']}"><span class="ovr_medium_trip_feature_trip_title">{$instance['tripTitle']}</span></a>
             <span class="ovr_medium_trip_feature_trip_date">{$instance['tripDate']}</span>
-            <img src="{$instance['tripImage']}">
+            <img class="ovr_medium_trip_feature_secondary_image"src="{$instance['tripImage']}">
           </div>
         </div>
       </div>

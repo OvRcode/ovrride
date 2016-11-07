@@ -12,13 +12,17 @@
   height: 96%;
   background: rgb(255,255,255);
 }
-
-.ovr_medium_trip_feature_content img {
-  width: 96%;
+.ovr_medium_trip_feature_primary_image {
+  max-width: 96%;
+  max-height: 235px;
   position: relative;
   top: 3px;
   display: block;
   margin: auto;
+}
+.ovr_medium_trip_feature_content {
+  height: 100%;
+  display: block;
 }
 .ovr_medium_trip_feature_content p {
   width: 96%;
@@ -38,10 +42,10 @@
 }
 .ovr_medium_trip_feature_trip {
   cursor: pointer;
-  position: relative;
+  position: absolute;;
   display: block;
   float: left;
-  top: 10px;
+  bottom: 8px;
   width: 96%;
   margin: auto;
   height: 80px;
@@ -60,6 +64,7 @@
   display: block;
 }
 
-.ovr_medium_trip_feature_trip img {
-  max-width: 130px;
+.ovr_medium_trip_feature_secondary_image {
+  max-width: 150px;
+  max-height: 45px;
 }
