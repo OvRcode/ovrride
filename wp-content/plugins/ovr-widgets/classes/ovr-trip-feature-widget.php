@@ -25,7 +25,7 @@ class ovr_trip_feature_widget extends WP_Widget {
     // Widget Admin Form
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_trip_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-trip-feature-admin.min.js', array('jquery') );
+    wp_enqueue_script('ovr_trip_feature_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-trip-feature-admin.min.js', array('jquery') );
 
     $options              = $this->get_trips_options($instance['trip']);
     $primaryImage         = esc_url(! empty( $instance['primaryImage'] ) ? $instance['primaryImage'] : '');
@@ -143,8 +143,8 @@ ADMINFORM;
     return $options;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr_trip_feature_style', plugin_dir_url( __FILE__ ) . 'ovr-trip-feature-widget.min.css');
-    wp_enqueue_script('ovr_trip_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-trip-feature-widget.min.js', array('jquery'), false, true );
+    wp_enqueue_style('ovr_trip_feature_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-trip-feature-widget.min.css');
+    wp_enqueue_script('ovr_trip_feature_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-trip-feature-widget.min.js', array('jquery'), false, true );
 
     echo <<<FRONTEND
       <div class="ovr_trip_feature" data-link="{$instance['link']}">
@@ -163,7 +163,3 @@ ADMINFORM;
 FRONTEND;
   }
 }
-function ovr_trip_feature_load_widget() {
-  register_widget( 'ovr_trip_feature_widget' );
-}
-add_action( 'widgets_init', 'ovr_trip_feature_load_widget' );
