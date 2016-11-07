@@ -2,7 +2,7 @@
   float:left;
   width: 50%;
   background: rgb(236,236,236);
-  height: 320px;
+  height: 420px;
   cursor: pointer;
 }
 .ovr_trip_feature_inner {
@@ -16,37 +16,47 @@
   padding-bottom: 20px;
   text-align: center;
 }
-.ovr_trip_feature_inner img {
+
+.ovr_trip_feature_primary_image {
   margin-top: 10px;
-  max-width: 95%;
-  max-height: 150px;
+  max-width: 92%;
+  max-height: 180px;
 }
-.ovr_trip_feature_destination {
+.ovr_trip_feature_header {
   position:absolute;
   color: rgb(89, 15, 38);
   text-transform: uppercase;
-  top: 165px;
+  top: 195px;
   margin: 0 10px 0 10px;
 }
 .ovr_trip_feature_title {
   position: absolute;
-  top: 190px;
-  left: 8px;
+  top: 220px;
+  left: 10px;
   white-space:nowrap;
-  max-width: 225px;
+  word-wrap: break-word;
+  max-width: 92%;
   overflow: hidden;
   color: rgb(22, 174, 223);
 }
+.ovr_trip_feature_title a {
+  color: rgb(22, 174, 223);
+}
+.ovr_trip_feature_content a:hover{
+  color: rgb(22, 174, 223);
+  background: none;
+  text-decoration: underline;
+}
 .ovr_trip_feature_date {
   position: absolute;
-  top: 220px;
-  left: 8px;
+  top: 260px;
+  left: 10px;
 }
-.ovr_trip_feature_secondaryImage {
+.ovr_trip_feature_secondary_image {
   max-height: 50px;
-  max-width: 140px;
+  max-width: 150px;
   position:absolute;
-  bottom: 10px;
+  bottom: 20px;
   right: 10px;
 
 }

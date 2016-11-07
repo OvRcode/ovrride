@@ -82,7 +82,7 @@ ADMINFORM;
       $instance['date'] = '';
       $instance['link'] = '';
     }
-    
+
     return $instance;
   }
   private function get_trips_options( $selectedTrip ) {
@@ -150,11 +150,13 @@ ADMINFORM;
       <div class="ovr_trip_feature" data-link="{$instance['link']}">
         <div class="ovr_trip_feature_inner">
           <div class="ovr_trip_feature_content">
-            <img src="{$instance['primaryImage']}">
-            <h5 class="ovr_trip_feature_destination">destination</h5>
-            <span class="ovr_trip_feature_title" maxlength="25">{$instance['title']}</span>
+            <img class="ovr_trip_feature_primary_image" src="{$instance['primaryImage']}">
+            <h5 class="ovr_trip_feature_header">destination</h5>
+            <span class="ovr_trip_feature_title" maxlength="25">
+              <a href="{$instance['link']}">{$instance['title']}</a>
+            </span>
             <p class="ovr_trip_feature_date">{$instance['date']}</p>
-            <img class="ovr_trip_feature_secondaryImage" src={$instance['secondaryImage']}>
+            <img class="ovr_trip_feature_secondary_image" src={$instance['secondaryImage']}>
           </div>
         </div>
       </div>
