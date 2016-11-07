@@ -7,7 +7,6 @@
 
 .ovr_featured_video_inner {
   position: relative;
-  top: 10px;
   width: 96%;
   height: 93%;
   background: rgb(255,255,255);
@@ -26,7 +25,7 @@
 }
 .ovr_featured_video_box {
   display: block;
-  width: 96%;
+  max-width: 96%;
   height: 96%;
   margin: auto;
 }
