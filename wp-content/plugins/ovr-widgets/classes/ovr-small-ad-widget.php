@@ -1,12 +1,4 @@
 <?php
-/*
-* Plugin Name: OvRride Small Ad widget
-* Description:  Small tile widget to display an ad.
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 0.1.0
-* License: MIT License
-*/
 class ovr_small_ad_widget extends WP_Widget {
   function __construct() {
     parent::__construct(

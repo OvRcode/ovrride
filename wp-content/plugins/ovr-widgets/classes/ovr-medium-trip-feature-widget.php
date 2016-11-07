@@ -1,12 +1,4 @@
 <?php
-/*
-* Plugin Name: OvRride Medium Trip Feature Widget
-* Description:  Medium tile widget to display a trip in a medium tile.
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 0.1.0
-* License: MIT License
-*/
 class ovr_medium_trip_feature_widget extends WP_Widget {
   function __construct() {
     parent::__construct(

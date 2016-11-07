@@ -1,13 +1,4 @@
 <?php
-/*
-* Plugin Name: OvRride Events Widget
-* Description: Widget to display upcoming events
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 0.1.0
-* License: MIT License
-*/
-
 class ovr_events_widget extends WP_Widget {
   function __construct() {
     parent::__construct(

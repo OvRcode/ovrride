@@ -1,12 +1,4 @@
 <?php
-/*
-* Plugin Name: OvRride Dual Trip Feature Widget
-* Description:  Widget to display Two Trips products in a single medium tile.
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 0.1.0
-* License: MIT License
-*/
 class ovr_dual_trip_feature_widget extends WP_Widget {
   function __construct() {
     parent::__construct(

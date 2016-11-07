@@ -1,14 +1,4 @@
 <?php
-/*
-* Plugin Name: OvRride Email Signup Widget
-* Description: Constant Contact signup widget
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 0.1.0
-* License: MIT License
-*/
-// FROM: http://www.wpbeginner.com/wp-tutorials/how-to-create-a-custom-wordpress-widget/
-// Creating the widget
 class ovr_email_signup_widget extends WP_Widget {
 
   function __construct() {
@@ -81,7 +71,7 @@ ADMINFORM;
   public function update( $new_instance, $old_instance ) {
     $instance = array();
     $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-    
+
     return $instance;
   }
 }
