@@ -36,6 +36,14 @@
   overflow: hidden;
   color: rgb(22, 174, 223);
 }
+.ovr_blog_feature_title a {
+  color: rgb(22, 174, 223);
+}
+.ovr_blog_feature_title a:hover {
+  background: none;
+  color: rgb(22, 174, 223);
+  text-decoration: underline;
+}
 .ovr_blog_feature_date {
   position: absolute;
   top: 260px;
