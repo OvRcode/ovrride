@@ -40,7 +40,7 @@ class ovr_featured_video_widget extends WP_Widget {
         $vimeoClass   = "vimeo_inactive";
       }
 
-    wp_enqueue_style('ovr-featured-video-admin', plugin_dir_url( __FILE__ ) . 'ovr-featured-video-admin.min.css');
+    wp_enqueue_style('ovr-featured-video-admin', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-featured-video-admin.min.css');
     echo <<<ADMINFORM
     <p>
       <label for="{$titleID}">Video title: 30 characters</label>
@@ -80,8 +80,8 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr-featured-video-widget', plugin_dir_url( __FILE__ ) . 'ovr-featured-video-widget.min.css');
-    wp_enqueue_script('ovr-featured-video-widget-js', plugin_dir_url( __FILE__ ) . 'ovr-featured-video-widget.min.js', array('jquery') );
+    wp_enqueue_style('ovr-featured-video-widget', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-featured-video-widget.min.css');
+    wp_enqueue_script('ovr-featured-video-widget-js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-featured-video-widget.min.js', array('jquery') );
     echo <<<FRONTEND
       <div class="ovr_featured_video">
         <div class="ovr_featured_video_inner">
@@ -94,7 +94,3 @@ ADMINFORM;
 FRONTEND;
   }
 }
-function ovr_featured_video_load_widget() {
-  register_widget( 'ovr_featured_video_widget' );
-}
-add_action( 'widgets_init', 'ovr_featured_video_load_widget' );
