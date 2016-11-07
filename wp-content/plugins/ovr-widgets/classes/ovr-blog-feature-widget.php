@@ -25,7 +25,7 @@ class ovr_blog_feature_widget extends WP_Widget {
     // Widget Admin Form
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_blog_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-blog-feature-admin.min.js', array('jquery') );
+    wp_enqueue_script('ovr_blog_feature_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-blog-feature-admin.min.js', array('jquery') );
     // Get list of recent posts
     $options = $this->get_recent_posts_options($instance['post']);
     // Setup field variables
@@ -77,8 +77,8 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr_blog_feature_style', plugin_dir_url( __FILE__ ) . 'ovr-blog-feature-widget.min.css');
-    wp_enqueue_script('ovr_blog_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-blog-feature-widget.min.js', array('jquery'), false, true );
+    wp_enqueue_style('ovr_blog_feature_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-blog-feature-widget.min.css');
+    wp_enqueue_script('ovr_blog_feature_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-blog-feature-widget.min.js', array('jquery'), false, true );
 
     echo <<<FRONTEND
       <div class="ovr_blog_feature" data-link="{$instance['link']}">
@@ -132,7 +132,3 @@ FRONTEND;
     return $options;
   }
 }
-function ovr_blog_feature_load_widget() {
-  register_widget( 'ovr_blog_feature_widget' );
-}
-add_action( 'widgets_init', 'ovr_blog_feature_load_widget' );
