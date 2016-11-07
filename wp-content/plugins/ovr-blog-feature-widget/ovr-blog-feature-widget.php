@@ -35,7 +35,7 @@ class ovr_blog_feature_widget extends WP_Widget {
     $primaryImage = esc_url(! empty( $instance['primaryImage'] ) ? $instance['primaryImage'] : '');
     $primaryImageID = $this->get_field_id( 'primaryImage' );
     $primaryImageName = $this->get_field_name('primaryImage');
-    $primaryImageLabel = "Primary Image: 225x150px ";
+    $primaryImageLabel = "Primary Image: 247x164px ";
     $secondaryImage = esc_url(! empty( $instance['secondaryImage'] ) ? $instance['secondaryImage'] : '');
     $secondaryImageID = $this->get_field_id( 'secondaryImage' );
     $secondaryImageName = $this->get_field_name('secondaryImage');
@@ -84,11 +84,11 @@ ADMINFORM;
       <div class="ovr_blog_feature" data-link="{$instance['link']}">
         <div class="ovr_blog_feature_inner">
           <div class="ovr_blog_feature_content">
-            <img src="{$instance['primaryImage']}">
-            <h5 class="on_the_blog">on the blog</h5>
-            <span class="title" maxlength="25">{$instance['title']}</span>
-            <p class="date">{$instance['date']}</p>
-            <img class="secondaryImage" src={$instance['secondaryImage']}>
+            <img class="ovr_blog_feature_primary_image" src="{$instance['primaryImage']}">
+            <h5 class="ovr_blog_feature_header">on the blog</h5>
+            <span class="ovr_blog_feature_title" maxlength="25">{$instance['title']}</span>
+            <p class="ovr_blog_feature_date">{$instance['date']}</p>
+            <img class="ovr_blog_feature_secondary_image" src={$instance['secondaryImage']}>
           </div>
         </div>
       </div>
