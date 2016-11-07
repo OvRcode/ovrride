@@ -23,7 +23,7 @@ class ovr_dual_trip_feature_widget extends WP_Widget {
   public function form($instance) {
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_trip_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-admin.min.js', array('jquery') );
+    wp_enqueue_script('ovr_dual_trip_feature_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-dual-trip-feature-admin.min.js', array('jquery') );
     $widgetTitleID = $this->get_field_id('widgetTitle');
     $widgetTitleName = $this->get_field_name('widgetTitle');
     $widgetTitle = $instance['widgetTitle'];
