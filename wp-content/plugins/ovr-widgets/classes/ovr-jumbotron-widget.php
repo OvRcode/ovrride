@@ -1,13 +1,4 @@
 <?php
-/*
-* Plugin Name: OvRride Jumbotron Widget
-* Description: Widget to display a large feature story
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 0.1.0
-* License: MIT License
-*/
-
 class ovr_jumbotron_widget extends WP_Widget {
   function __construct() {
     parent::__construct(
@@ -25,7 +16,7 @@ class ovr_jumbotron_widget extends WP_Widget {
     // Widget Admin Form
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_jumbotron_admin_js', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-admin.min.js', array('jquery'));
+    wp_enqueue_script('ovr_jumbotron_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-jumbotron-admin.min.js' , array('jquery'));
     // Get list of recent posts
     $args = array(
       'numberposts' => 20,
@@ -97,7 +88,7 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style( 'ovr_jumbotron_widget_style', plugin_dir_url( __FILE__ ) . 'ovr-jumbotron-widget.min.css');
+    wp_enqueue_style( 'ovr_jumbotron_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-jumbotron-widget.min.css' );
 
     echo <<<FRONTEND
     <div class="ovr_jumbotron">
@@ -115,7 +106,3 @@ ADMINFORM;
 FRONTEND;
   }
 }
-function ovr_jumbotron_load_widget() {
-	register_widget( 'ovr_jumbotron_widget' );
-}
-add_action( 'widgets_init', 'ovr_jumbotron_load_widget' );
