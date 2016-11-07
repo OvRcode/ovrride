@@ -42,7 +42,7 @@ class ovr_medium_trip_feature_widget extends WP_Widget {
       <textarea style="width:100%" maxlength="126" id="{$widgetExcerptID}" name="{$widgetExcerptName}">{$widgetExcerpt}</textarea>
     </p>
     <p>
-      <label for="{$widgetImage}">Widget Main Image: 460x200px</label>
+      <label for="{$widgetImage}">Widget Main Image: 588x235px</label>
       <input class="widefat" id="{$widgetImageID}" name="{$widgetImageName}" type="text" value="{$widgetImage}" />
       <button class="medium_trip_upload_image_button button button-primary">Upload Widget Image</button>
     </p>
