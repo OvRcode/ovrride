@@ -7,8 +7,9 @@
 * Version: 1.0.0
 * License: MIT License
 */
-include_once('classes/ovr-jumbotron-widget.php');
-include_once('classes/ovr-trip-feature-widget.php');
+require('classes/ovr-jumbotron-widget.php');
+require('classes/ovr-trip-feature-widget.php');
+require('classes/ovr-blog-feature-widget.php');
 
 function ovr_load_widgets() {
 	register_widget( 'ovr_jumbotron_widget' );
