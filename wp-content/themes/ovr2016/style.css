@@ -6,7 +6,7 @@ Description: OvRride 2016 Redesign
 Version: 1.1.10
 License: GNU General Public License v3.0 /
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
-Tags: gray, light, two-columns, right-sidebar, responsive-layout, custom-background, custom-colors, custom-header, custom-menu, featured-images, flexible-header, sticky-post,  theme-options, threaded-comments, translation-ready
+Tags: gray, light, text-columns, right-sidebar, responsive-layout, custom-background, custom-colors, custom-header, custom-menu, featured-images, flexible-header, sticky-post,  theme-options, threaded-comments, translation-ready
 
 This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
@@ -373,4 +373,67 @@ a:hover {
 }
 .rightCol {
 	padding-left: 0;
+}
+
+/* Footer styling */
+.footer-square {
+	cursor: pointer;
+	display: block;
+	top: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	margin-bottom: 15px;
+	width: 100%;
+	position: relative;
+	text-align:center;
+	background: rgb(221,221,221);
+	color: white;
+	padding: 10px;
+
+}
+.footer-square-inner {
+	width: 94%;
+	height: 94%;
+	display: block;
+	margin: auto;
+	vertical-align: middle;
+	word-wrap: break-word;
+	padding-top: 10px;
+}
+.footer-square-inner .text {
+	display: none;
+	position: relative;
+}
+.footer-square:hover .footer-square-inner .text {
+	display:block;
+}
+.footer-square:hover {
+	background: rgb(150,150,150);
+}
+.footer-square:hover .footer-square-inner .icon {
+	display: none;
+}
+.footer-square-inner .fa {
+	color: rgb(22,175,225);
+}
+.square-link:hover  {
+	text-decoration: none;
+}
+.footer {
+	display: block;
+	background: rgb(0,0,0);
+	text-align: center;
+	font-size: 1.3em;
+	color: rgb(219, 220, 221);
+	margin-top: 10px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+}
+.footer a {
+	color: rgb(22,175,225);
+}
+.footer a:hover {
+	background: none;
+	text-decoration: underline;
 }

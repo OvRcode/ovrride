@@ -1,6 +1,31 @@
 (function($){
+
   $(window).on("resize", function(){
     $(".footer-square").height($(".footer-square").width());
-  }).resize();
+    //$(".footer-square").width($(".footer-square").width());
+    if ( $(".footer-square").width() > 200) {
+      var fontSize = $(".footer-square").width() - 100;
+    } else {
+      var fontSize = 100;
+    }
 
+    $(".footer-square-inner .icon").css("font-size", $(".footer-square-inner").height() + "px");
+
+    // Find the widest word in footer squares and use that to calculate best font size
+    var maxTextWidth = 0;
+    $(".text").css("font-size", "initial");
+    $(".text").each(function( index, value){
+      if ( $(this).width() > maxTextWidth ) {
+        maxTextWidth = $(this).width();
+      }
+    });
+    var containerWidth = $(".footer-square-inner").width();
+    var currentFontSize = $(".footer-square-inner .text").css("font-size").slice(0,-2);
+    // Round down, full decimal on font size was causing overflow
+    var newFontSize = Math.floor(containerWidth / (maxTextWidth/currentFontSize)) - 1;
+    // Vertical Center rollover words
+    var top = (parseInt($(".footer-square-inner").height()) - (parseInt($(".text").height())/2))/2;
+    $(".footer-square-inner .text").css({"font-size": newFontSize, "top": top});
+  }).resize();
+  
 })( jQuery );

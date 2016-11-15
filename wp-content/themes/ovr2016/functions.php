@@ -111,21 +111,21 @@ function _tk_scripts() {
 	wp_enqueue_style( '_tk-style', get_stylesheet_uri() );
 
 	// load bootstrap js
-	wp_enqueue_script('_tk-bootstrapjs', THEME_DIR_URI . '/includes/resources/bootstrap/js/bootstrap.min.js', array('jquery') );
+	wp_enqueue_script('_tk-bootstrapjs', THEME_DIR_URI . '/includes/resources/bootstrap/js/bootstrap.min.js', array('jquery') , false, true);
 
 	// load bootstrap wp js
-	wp_enqueue_script( '_tk-bootstrapwp', THEME_DIR_URI . '/includes/js/bootstrap-wp.js', array('jquery') );
+	wp_enqueue_script( '_tk-bootstrapwp', THEME_DIR_URI . '/includes/js/bootstrap-wp.js', array('jquery'), false, true );
 
 	wp_enqueue_script( '_tk-skip-link-focus-fix', THEME_DIR_URI . '/includes/js/skip-link-focus-fix.js', array(), '20130115', true );
 
   wp_enqueue_script( 'ovr_footer_script', THEME_DIR_URI . '/includes/js/ovr-footer.js', array('jquery'), false, true);
-  
+
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 
 	if ( is_singular() && wp_attachment_is_image() ) {
-		wp_enqueue_script( '_tk-keyboard-image-navigation', THEME_DIR_URI . '/includes/js/keyboard-image-navigation.js', array( 'jquery' ), '20120202' );
+		wp_enqueue_script( '_tk-keyboard-image-navigation', THEME_DIR_URI . '/includes/js/keyboard-image-navigation.js', array( 'jquery' ), '20120202', true );
 	}
 
 }
@@ -231,7 +231,7 @@ function woocommerce_support() {
 }
 add_action( 'widgets_init', 'register_widget_areas' );
 ;
-/*DISABLE RSS FEEDS
+/* DISABLE RSS FEEDS */
 function itsme_disable_feed() {
 wp_die( __( 'No feed available, please visit the <a href="'. esc_url( home_url( '/' ) ) .'">homepage</a>!' ) );
 }
@@ -246,4 +246,71 @@ add_action('do_feed_atom_comments', 'itsme_disable_feed', 1);
 
 remove_action( 'wp_head', 'feed_links_extra', 3 );
 remove_action( 'wp_head', 'feed_links', 2 );
-*/
+
+/* Add theme settings to admin page */
+function theme_settings_page(){}
+
+function add_theme_menu_item()
+{
+	add_menu_page("OvR Settings", "OvR Settings", "manage_options", "ovr-settings", "ovr_settings_page", null, 56);
+}
+
+add_action("admin_menu", "add_theme_menu_item");
+
+function ovr_settings_page()
+{
+    ?>
+	    <div class="wrap">
+	    <h1>OvR Theme Settings</h1>
+	    <form method="post" action="options.php">
+	        <?php
+	            settings_fields("section");
+	            do_settings_sections("theme-options");
+	            submit_button();
+	        ?>
+	    </form>
+		</div>
+	<?php
+}
+
+function display_twitter_element()
+{
+	?>
+    	<input type="text" name="twitter_url" id="twitter_url" value="<?php echo get_option('twitter_url'); ?>" />
+    <?php
+}
+
+function display_facebook_element()
+{
+	?>
+    	<input type="text" name="facebook_url" id="facebook_url" value="<?php echo get_option('facebook_url'); ?>" />
+    <?php
+}
+function display_instagram_element()
+{
+	?>
+    	<input type="text" name="instagram_url" id="instagram_url" value="<?php echo get_option('instagram_url'); ?>" />
+    <?php
+}
+function display_youtube_element()
+{
+	?>
+    	<input type="text" name="youtube_url" id="youtube_url" value="<?php echo get_option('youtube_url'); ?>" />
+    <?php
+}
+function display_theme_panel_fields()
+{
+	add_settings_section("section", "Footer Settings", null, "theme-options");
+
+	add_settings_field("twitter_url", "Twitter Profile Url", "display_twitter_element", "theme-options", "section");
+  add_settings_field("facebook_url", "Facebook Profile Url", "display_facebook_element", "theme-options", "section");
+  add_settings_field("youtube_url", "Youtube Chanel Url", "display_youtube_element", "theme-options", "section");
+  add_settings_field("instagram_url", "Instagram Profile Url", "display_instagram_element", "theme-options", "section");
+
+  register_setting("section", "twitter_url");
+  register_setting("section", "facebook_url");
+  register_setting("section", "youtube_url");
+  register_setting("section", "instagram_url");
+}
+
+add_action("admin_init", "display_theme_panel_fields");
