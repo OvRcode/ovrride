@@ -333,6 +333,7 @@ META;
             update_post_meta( $post_id, '_contact_phone', sanitize_text_field( $_POST['_contact_phone'] ) );
             update_post_meta( $post_id, '_rep', sanitize_text_field( $_POST['_rep'] ) );
             update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
+            update_post_meta( $post_id, '_report_email', sanitize_text_field( $_POST['_report_email'] ) );
         } else {
             return $post_id;
         }
@@ -351,7 +352,11 @@ META;
         $contactPhone = get_post_meta( $post->ID, '_contact_phone', true);
         $rep = get_post_meta( $post->ID, '_rep', true);
         $repPhone = get_post_meta( $post->ID, '_rep_phone', true);
+        $reportEmail = get_post_meta( $post->ID, '_report_email', true);
+
         $html = <<<DESTFIELDS
+             <label>Automated Report Email:</label><input type="text" size="36" name="_report_email" value="{$reportEmail}" />
+             <br />
              <label>Contact: </label><input type="text" size="36" name="_contact" value="{$contact}" />
              <br />
              <label>Contact Phone: </label><input type="text" size="20" name="_contact_phone" value="{$contactPhone}" />
