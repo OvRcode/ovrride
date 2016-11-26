@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.2.1
+Version: 1.3.0
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -12,6 +12,7 @@ Text Domain: woocommerce-trips
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+require_once( ABSPATH . "/wp-load.php");
 include( 'includes/wc-checks.php' );
 
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
@@ -19,8 +20,8 @@ if ( ! function_exists( 'is_woocommerce_active' ) ) {
         return WC_Checks::woocommerce_active_check();
     }
 }
-
 if ( is_woocommerce_active() ) {
+
 class WC_Trips {
 
     public function __construct() {
@@ -33,6 +34,18 @@ class WC_Trips {
         add_action( 'init', array( $this, 'init_post_types' ) );
         add_filter( 'woocommerce_product_tabs', array( $this, 'product_tabs'), 98 );
         add_filter('woocommerce_product_description_heading',array( $this, 'remove_description_header'));
+
+        // Email report hook
+        add_action( 'wc_trips_email_report', array($this, "email_report"), 10, 2);
+        // Email report scheduling hook
+        add_action( 'wc_check_auto_reports', array($this, 'check_auto_reports') );
+
+        // Make sure trip email scheduling is Setup
+        if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
+          wp_schedule_event(strtotime(date('m/d/y')), 'daily', 'wc_check_auto_reports');
+        }
+        //$this->check_auto_reports();
+
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
         }
@@ -121,7 +134,144 @@ class WC_Trips {
         );
         register_post_type( 'destinations', $destinationArgs );
     }
+    public function email_report ( $email, $trip ) {
+      error_log("Report for " . $trip . " sent");
+      global $wpdb;
+      $sql = <<<QUERY
+      SELECT `wp_woocommerce_order_items`.`order_item_id` AS 'OrderID',
+      (SELECT `meta_value` FROM `wp_woocommerce_order_itemmeta` WHERE `order_item_id` = OrderID AND `meta_key` = 'First') AS 'First',
+      (SELECT `meta_value` FROM `wp_woocommerce_order_itemmeta` WHERE `order_item_id` = OrderID AND `meta_key` = 'Last') AS 'Last',
+      (SELECT `meta_value` FROM `wp_woocommerce_order_itemmeta` WHERE `order_item_id` = OrderID AND `meta_key` = 'Email') AS 'Email',
+      (SELECT `meta_value` FROM `wp_woocommerce_order_itemmeta` WHERE `order_item_id` = OrderID AND `meta_key` = 'Phone') AS 'Phone',
+      (SELECT `meta_value` FROM `wp_woocommerce_order_itemmeta` WHERE `order_item_id` = OrderID AND `meta_key` = 'Package') AS 'Package'
+      FROM `wp_posts`
+      INNER JOIN `wp_woocommerce_order_items` ON `wp_posts`.`id` = `wp_woocommerce_order_items`.`order_id`
+      INNER JOIN `wp_woocommerce_order_itemmeta` ON `wp_woocommerce_order_items`.`order_item_id` = `wp_woocommerce_order_itemmeta`.`order_item_id`
+      WHERE `wp_posts`.`post_type` =  'shop_order'
+      AND `wp_posts`.`post_status` = 'wc-completed'
+      AND `wp_woocommerce_order_items`.`order_item_type` =  'line_item'
+      AND `wp_woocommerce_order_itemmeta`.`meta_key` =  '_product_id'
+      AND `wp_woocommerce_order_itemmeta`.`meta_value` =  '{$trip}'
+QUERY;
+      $results = $wpdb->get_results($sql);
 
+      $guests = array();
+      foreach($results as $key => $values) {
+        $guests[$values->Package][$key]['First'] = $values->First;
+        $guests[$values->Package][$key]['Last'] = $values->Last;
+        $guests[$values->Package][$key]['Email'] = $values->Email;
+        $guests[$values->Package][$key]['Phone'] = $values->Phone;
+        //reformat phone Number
+        // Strip leading +1 if present
+        $guests[$values->Package][$key]['Phone'] = preg_replace("/\+1\s/", "", $guests[$values->Package][$key]['Phone']);
+        // Strip dashes and braces
+        $guests[$values->Package][$key]['Phone'] = preg_replace("/[\(\)\s-]/", "", $guests[$values->Package][$key]['Phone']);
+        // Formate 10 digit #
+        $guests[$values->Package][$key]['Phone'] = preg_replace("/(\d{3})(\d{3})(\d{4})/", "($1) $2-$3", $guests[$values->Package][$key]['Phone']);
+      }
+      ob_flush();
+      ob_start();
+      echo <<<STYLE
+        <style>
+          table {
+            width: 100%;
+            border-radius: 10px;
+
+            background: rgb(0,0,0);
+            border-collapse: collapse;
+          }
+          table caption {
+            text-align: left;
+          }
+            table, th, td{
+              padding: 3px;
+              text-align: center;
+            }
+            tbody {
+              background: white;
+            }
+            tbody tr td {
+              border-bottom: 1px solid black;
+              border-right: none;
+              border-left: none;
+            }
+            tbody tr:nth-child(even) {
+              background: rgb(200,200,200);
+            }
+            tbody tr {
+              border-left: 1px solid black;
+              border-right: 1px solid black;
+            }
+            thead tr{
+              color: rgb(0,188,230);
+            }
+            </style>
+STYLE;
+      echo $wpdb->num_rows . " total guests<br /><br />";
+      foreach($guests as $package => $info ) {
+        $caption = "<strong>".trim($package) . ":</strong> " . count($info) ."<br />";
+        if ( count($info) > 0 ) {
+          echo "<table><caption>{$caption}</caption><thead><tr><td>First</td><td>Last</td><td>Phone</td><td>Email</td></tr></thead><tbody>";
+          foreach($info as $id => $guest ) {
+            echo "<tr><td>{$guest['First']}</td><td>{$guest['Last']}</td><td>{$guest['Phone']}</td><td>{$guest['Email']}</td></tr>";
+          }
+          echo "</tbody></table><br />";
+        }
+      }
+      $emailBody = ob_get_contents();
+      ob_end_clean();
+      add_filter('wp_mail_content_type', function(){ return "text/html"; });
+      $headers[] = 'From: OvRride <info@ovrride.com>';
+      $headers[] = 'Cc: OvRride <info@ovrride.com>';
+      $emailTitle = "OvRride Trip Count: " . get_post_meta( $trip, "_wc_trip_destination", true) . " " . get_post_meta($trip, "_wc_trip_start_date", true);
+      wp_mail($email, $emailTitle, $emailBody, $headers);
+      remove_filter('wp_mail_content_type', function(){ return "text/html"; });
+    }
+    private function checkCron($time, $hook, $args) {
+      $args =md5(serialize($args));
+      $crons = _get_cron_array();
+      if( isset( $crons[$time][$hook][$args]) ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    private function check_auto_reports(){
+      global $wpdb;
+      error_log("checking auto reports");
+      $sql = "SELECT `post_title` as `destination`, `ID`, `meta_value` as `email`
+      FROM `wp_posts`
+      JOIN `wp_postmeta` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
+      WHERE `meta_key` = '_report_email'
+      AND `meta_value` != ''
+      AND `post_status` = 'publish'";
+      $results = $wpdb->get_results($sql);
+      foreach($results as $key => $value) {
+        $destination = $value->destination;
+        $recipient = $value->email;
+        $tripSql = "SELECT `ID`, `post_status`,
+        ( SELECT `meta_value` FROM `wp_postmeta` WHERE meta_key = '_wc_trip_start_date' AND `post_id` = `ID`) as 'date'
+        FROM `wp_postmeta`
+        JOIN `wp_posts` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
+        WHERE `meta_key` = '_wc_trip_destination'
+        AND `meta_value` = '{$destination}'";
+        $tripResults = $wpdb->get_results($tripSql);
+
+        foreach($tripResults as $id => $data) {
+          $time = strtotime($data->date) + 7200;
+          // 7200 is the 2hr offset from midnight utc for email date, 2*60*60 to get seconds in 2hrs
+          if ( "publish" == $data->post_status && ! $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
+            // Setup cronjob for a published event that has not been scheduled
+            wp_schedule_single_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
+            error_log("scheduled " . $data->ID);
+          } else if ( "publish" !== $data->post_status && $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
+            // Remove cronjob for event that has switched to draft or cancelled
+            wp_unschedule_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
+            error_log("unscheduled " . $data->ID);
+          }
+        }
+      }
+    }
     public function beach_bus_api() {
       global $wpdb;
       // Find all beach bus trips
