@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.3.0
+Version: 1.3.1
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -12,7 +12,7 @@ Text Domain: woocommerce-trips
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-require_once( ABSPATH . "/wp-load.php");
+
 include( 'includes/wc-checks.php' );
 
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
@@ -44,7 +44,6 @@ class WC_Trips {
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
           wp_schedule_event(strtotime(date('m/d/y')), 'daily', 'wc_check_auto_reports');
         }
-        //$this->check_auto_reports();
 
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
