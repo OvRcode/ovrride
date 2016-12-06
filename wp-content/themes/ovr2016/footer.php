@@ -58,10 +58,15 @@
 		<div class="row">
 		<div class="col-sm-3 col-xs-6">
 			<div class="footer-square">
-				<div class="footer-square-inner">
+				<div id="newsletter" class="footer-square-inner">
 					<i class="fa fa-envelope icon" aria-hidden="true"></i>
 					<span class="text">NEWSLETTER</span>
 				</div>
+				<?php if ( is_active_sidebar( 'footer-newsletter' ) ): ?>
+					<div id="newsletter_back" class="footer-square-back">
+						<?php dynamic_sidebar( 'footer-newsletter' ); ?>
+					</div>
+				<?php endif;?>
 			</div>
 		</div>
 		<div class="col-sm-3 col-xs-6">

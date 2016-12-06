@@ -228,6 +228,12 @@ function woocommerce_support() {
     'id'            => 'fourth-row-right',
     'description'   => 'Right Half of fourth row',
   ) );
+  register_sidebar( array(
+    'name'          => 'Footer: Newsletter',
+    'id'            => 'footer-newsletter',
+    'description'   => 'Contents of newsletter tile'
+  ) );
+  
 }
 add_action( 'widgets_init', 'register_widget_areas' );
 ;
