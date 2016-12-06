@@ -126,3 +126,6 @@
 .days .icon.summer {
   color: rgb(254, 210, 8);
 }
+.webui-popover-content a:hover {
+  background: none;
+}
