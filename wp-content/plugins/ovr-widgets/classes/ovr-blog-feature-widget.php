@@ -26,7 +26,7 @@ class ovr_blog_feature_widget extends WP_Widget {
     $primaryImage = esc_url(! empty( $instance['primaryImage'] ) ? $instance['primaryImage'] : '');
     $primaryImageID = $this->get_field_id( 'primaryImage' );
     $primaryImageName = $this->get_field_name('primaryImage');
-    $primaryImageLabel = "Primary Image: 247x164px ";
+    $primaryImageLabel = "Primary Image: 225x150px ";
     $secondaryImage = esc_url(! empty( $instance['secondaryImage'] ) ? $instance['secondaryImage'] : '');
     $secondaryImageID = $this->get_field_id( 'secondaryImage' );
     $secondaryImageName = $this->get_field_name('secondaryImage');
