@@ -97,8 +97,11 @@
     background: rgb(59,59,59);
     color: white !important
 }
-
+i.icon {
+  cursor: pointer;
+}
 .days .icon {
+
   font-size: 30px;
   margin-top: 5px;
   margin-bottom: 5px;
