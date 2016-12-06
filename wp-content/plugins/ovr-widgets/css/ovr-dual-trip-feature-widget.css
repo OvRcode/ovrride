@@ -72,3 +72,7 @@
 .ovr_dual_trip_feature_trip_one img, .ovr_dual_trip_feature_trip_two img {
   max-width: 130px;
 }
+.ovr_dual_trip_feature_trip_box a:hover {
+  text-decoration: underline;
+  color: rgb(22, 175, 225);
+}

@@ -361,7 +361,7 @@ nav .form-control {
 .dropdown-menu > li:nth-of-type(even) a {
 	padding-left: 10%;
 }
-a:hover {
+.dropdown-menu a:hover {
 	background-color: #16AFE1;
 }
 .main-content {
