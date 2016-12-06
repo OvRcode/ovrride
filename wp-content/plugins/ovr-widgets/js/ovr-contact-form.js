@@ -3,8 +3,7 @@
   $("#ovr_contact_form").validate({
     submitHandler: function(form){
       var data = {
-        action : 'ovr_contact_form_submit',
-        security : ovr_contact_vars.nonce,
+        action : 'ovr_contact_form_submit',        
         from : $('#ovr_contact_email').val(),
         name : $('#ovr_contact_first').val() + " " + $('#ovr_contact_last').val(),
         phone : $('#ovr_contact_phone').val(),
