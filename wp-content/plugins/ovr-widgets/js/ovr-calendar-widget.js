@@ -1,4 +1,5 @@
 (function($){
+
   $(".ovr_calendar .icon").webuiPopover();
   $(".next, .prev").on("click", function(){
     $(".ovr_calendar").spin();
@@ -12,12 +13,12 @@
     } else {
       return;
     }
-    jQuery.post(
-      OvRCalVars.ajaxurl,
+    window.date = window.date.getFullYear() + "-" + (window.date.getMonth()+1) + "-" + window.date.getDate();
+    $.post(
+      ovr_calendar_vars.ajax_url ,
       {
         action : 'ovr_calendar',
         calendarDate : window.date,
-        calendarNonce : OvRCalVars.calendarNonce
       },
       function( response ) {
         $(".ovr_calendar").spin(false);

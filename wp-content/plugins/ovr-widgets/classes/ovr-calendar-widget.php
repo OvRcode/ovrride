@@ -12,18 +12,20 @@ class ovr_calendar_widget extends WP_Widget {
     array( 'description' => 'Calendar for small tile display or full page' )
     );
     add_action( 'wp_ajax_nopriv_ovr_calendar', array( $this, "generate_calendar_ajax") );
-    add_action( 'wp_ajax_myajax_ovr_calendar', array( $this, "generate_calendar_ajax") );
+    add_action( 'wp_ajax_ovr_calendar', array( $this, "generate_calendar_ajax") );
   }
   public function form( $instance ) {
 
   }
   public function generate_calendar_ajax() {
-    $nonce = $_POST['calendarNonce'];
-    error_log("NONCE: " . $nonce);
-    error_log(wp_verify_nonce( $nonce, 'ovr-calendar-nonce' ));
+    
+    if ( ! wp_verify_nonce( $_GET['ovr_calendar_shift'], 'ovr_calendar' ) ) {
+      die('OvR Calendar Ajax nonce failed');
+    }
 
 
-    $date = new DateTime($_POST['calendarDate']);
+    // Create php date object with correct timezone for calendar generation
+    $date = new DateTime($_POST['calendarDate'], new DateTimeZone('America/New_York'));
 
     wp_send_json( array("html" => $this->generate_calendar($date), "month_year" => $date->format('F Y') ) );
   }
@@ -39,6 +41,9 @@ class ovr_calendar_widget extends WP_Widget {
     $month = $date->format('m');
     $day = $date->format('d');
     $year = $date->format('Y');
+    $sqlDate = $date->format('F %, Y');
+
+    // Find trips happening this month
     $trips = $wpdb->get_results("SELECT `wp_posts`.`post_title`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
     FROM `wp_posts`
     JOIN `wp_postmeta` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
@@ -50,17 +55,10 @@ class ovr_calendar_widget extends WP_Widget {
     AND `wp_term_taxonomy`.`taxonomy` = 'product_type'
     AND `wp_terms`.`name` = 'trip'
     AND `wp_postmeta`.`meta_key` = '_wc_trip_start_date'
-    ORDER BY `Date`;", OBJECT_K);
+    AND `wp_postmeta`.`meta_value` LIKE '{$sqlDate}'
+    ORDER BY `Date`", ARRAY_A);
+
     $search_date = $year . "-" . $month . "-";
-    // Narrow down trips to current month
-    $trips_this_month = array();
-    foreach($trips as $title => $info ) {
-      if ( strpos($info->Date, $search_date) !== FALSE) {
-        $temp = $info;
-        $temp->post_title = preg_replace("/(.*)\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,4}[snrtdh]{1,2}/", "$1", $temp->post_title);
-        $trips_this_month[$info->Date][] = $temp;
-      }
-    }
 
     // loop through month and assemble
     $date->modify('last day of this month');
@@ -69,41 +67,53 @@ class ovr_calendar_widget extends WP_Widget {
     $date->modify('first day of this month');
     $start_week_offset = $date->format('w');
     $days = '';
-    for($i=1; $i <= $start_week_offset; $i++) {
-      $days .= '<li>&nbsp;</li>';
-    }
 
-    for($i=1; $i <= $lastDay; $i++){
-      if ( $day == $i && $activate) {
+    // All calendars will have space for 6 weeks
+    for($i = 1; $i <= 42; $i++ ) {
+      $adjustedDay = $i - $start_week_offset;
+      // Popover datafield
+      $data = '';
+      if ( $i <= $start_week_offset || $adjustedDay > $lastDay) {
+        // Pad beginning and end of month with empty squares
+        $add = '&nbsp;';
+      } else if ( $i > $start_week_offset ) {
+        // Add number to day
+        $add = $i - $start_week_offset;
+        $icon = false;
+        $calendarDate = $date->format('Y-m-') . str_pad($adjustedDay, 2 , "0", STR_PAD_LEFT);
+        // If the current calendar date exists in the trips array add the trip info
+        while( $trips[0]['Date'] == $calendarDate ) {
+          if ( ! $icon ) {
+              $icon = true;
+          }
+          // Remove trip from array after processing
+          $temp = array_shift($trips);
+          if ( $data === '' ) {
+            $data .= 'data-placement="auto-bottom" data-content="';
+          }
+          $stripped_title = preg_replace("/(.*)\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,4}[snrtdh]{1,2}/", "$1", $temp['post_title']);
+          $data .= '<a href=\''.$temp['guid'].'\'>'. $stripped_title .'</a><br />';
+        }
+        // If data was added to day then add an icon with link info
+        if ( $icon ) {
+          $data .= '"';
+          $add .= '<i class="fa fa-snowflake-o icon winter" ' . $data . ' aria-hidden="true"></i>';
+        }
+
+      }
+      // Should the current date be highlighted on this calendar?
+      if ( $activate && $adjustedDay == $day) {
         $days .= '<li class="active">';
       } else {
         $days .= '<li>';
       }
-      $days .= $i;
-      $temp_date = $search_date . $i;
-      if ( isset($trips_this_month[$temp_date] ) ) {
-        $data = 'data-placement="auto-bottom" data-content="';
-
-        foreach( $trips_this_month[$temp_date] as $date => $info ) {
-          $data .= '<a href=\''.$info->guid.'\'>'.$info->post_title.'</a><br />';
-        }
-        $data .= '"';
-        $days .= '<i class="fa fa-snowflake-o icon winter" ' . $data . ' aria-hidden="true"></i>';
-      }
-      $days .="</li>";
+      $days .= $add . '</li>';
     }
 
-    for($i=1; $i <= (7 - ($end_week_offset + 1) ); $i++) {
-      $days .= '<li>&nbsp;</li>';
-    }
-    if ( $start_week_offset <= 4 || ( $start_week_offset == 5 && $lastDay <= 30 )
-    || ( $start_week_offset == 6 && $lastDay <= 29) || ( $start_week_offset <= 1 && $lastDay == 28)) {
-      // Pad a full week
-      $days .= '<li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li>';
-    }
     return $days;
   }
   public function widget( $args, $instance ) {
+
     $days = $this->generate_calendar(new DateTime('now'));
     $date = new DateTime('now');
     $month_year = $date->format('F Y');
@@ -113,11 +123,11 @@ class ovr_calendar_widget extends WP_Widget {
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.js', array('jquery.webui-popover-js', 'jquery_spin_js'), false, true);
     wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.css');
-    wp_localize_script( 'ovr_calendar_js', 'OvRCalVars', array(
-      'ajaxurl'          => admin_url( 'admin-ajax.php' ),
-      'calendarNonce' => wp_create_nonce( 'ovr-calendar-nonce' ),
-      )
-    );
+    //$nonce = wp_create_nonce('ovr_calendar');
+    $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php'), 'ovr_calendar', 'ovr_calendar_shift' );
+    error_log("nonced_url:" . $nonced_url);
+    wp_localize_script('ovr_calendar_js', 'ovr_calendar_vars', array( 'ajax_url' => $nonced_url ) );
+
     echo <<<FRONTEND
     <div class="ovr_calendar_widget">
       <div class="ovr_calendar_widget_inner">
@@ -128,7 +138,7 @@ class ovr_calendar_widget extends WP_Widget {
                 <li class="prev"><i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i></li>
                 <li class="next"><i class="fa fa-arrow-right fa-lg" aria-hidden="true"></i></li>
                 <li>
-                  <a href="/calendar"><h4 class="month_year">{$month_year}</h4><a/>
+                  <a href="/calendar"><h4 class="month_year">{$month_year}</h4></a>
                 </li>
               </ul>
             </div>
