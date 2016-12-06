@@ -18,8 +18,10 @@ class ovr_calendar_widget extends WP_Widget {
 
   }
   public function generate_calendar_ajax() {
-    
-    if ( ! wp_verify_nonce( $_GET['ovr_calendar_shift'], 'ovr_calendar' ) ) {
+
+    if ( ! wp_verify_nonce( $_REQUEST['ovr_calendar_shift'], 'ovr_calendar' ) ) {
+      error_log("WTF?");
+      error_log($_REQUEST['ovr_calendar_shift']);
       die('OvR Calendar Ajax nonce failed');
     }
 
@@ -33,7 +35,10 @@ class ovr_calendar_widget extends WP_Widget {
     global $wpdb;
     $date->setTimezone(new DateTimeZone('America/New_York'));
     $currentDay = new DateTime('now');
-    if ( $date == $currentDay ) {
+    if ( $currentDay->format('m') == $date->format('m') ) {
+      $date = new DateTime('now', new DateTimeZone('America/New_York'));
+    }
+    if ( $date == $currentDay) {
       $activate = true;
     } else {
       $activate = false;
@@ -91,7 +96,8 @@ class ovr_calendar_widget extends WP_Widget {
           if ( $data === '' ) {
             $data .= 'data-placement="auto-bottom" data-content="';
           }
-          $stripped_title = preg_replace("/(.*)\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,4}[snrtdh]{1,2}/", "$1", $temp['post_title']);
+
+          $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $temp['post_title']);
           $data .= '<a href=\''.$temp['guid'].'\'>'. $stripped_title .'</a><br />';
         }
         // If data was added to day then add an icon with link info
@@ -125,7 +131,6 @@ class ovr_calendar_widget extends WP_Widget {
     wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.css');
     //$nonce = wp_create_nonce('ovr_calendar');
     $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php'), 'ovr_calendar', 'ovr_calendar_shift' );
-    error_log("nonced_url:" . $nonced_url);
     wp_localize_script('ovr_calendar_js', 'ovr_calendar_vars', array( 'ajax_url' => $nonced_url ) );
 
     echo <<<FRONTEND
