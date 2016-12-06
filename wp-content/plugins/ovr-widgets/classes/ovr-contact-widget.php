@@ -39,7 +39,7 @@ class ovr_contact_widget extends WP_Widget {
     wp_enqueue_script( 'ovr_contact_form_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-contact-form.js', array('jquery_validate','jquery_spin_js'));
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'));
-    wp_localize_script('ovr_contact_form_js', 'ovr_contact_vars', array( 'ajax_url' => $nonced_url);
+    wp_localize_script('ovr_contact_form_js', 'ovr_contact_vars', array( 'ajax_url' => $nonced_url));
 
     echo "<h1>Contact Us</h1>";
     if ( $phoneNumber ) {
