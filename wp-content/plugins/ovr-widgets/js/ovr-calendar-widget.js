@@ -2,6 +2,7 @@
 
   $(".ovr_calendar .icon").webuiPopover();
   $(".next, .prev").on("click", function(){
+    $(".ovr_calendar").fadeTo("slow", 0.6);
     $(".ovr_calendar").spin();
 
     window.date = new Date( $(".month_year").text() );
@@ -21,6 +22,7 @@
         calendarDate : window.date,
       },
       function( response ) {
+        $(".ovr_calendar").fadeTo("fast", 1);
         $(".ovr_calendar").spin(false);
         $(".month_year").text(response.month_year);
         $(".ovr_calendar .days").html(response.html);
