@@ -1,6 +1,11 @@
-div.ctct-embed-signup {
-    background-color: #292F33 !important;
-    border-radius: 4px;
-    padding: 10px;
-    color: #FFFFFF;
+#email {
+  width:100%;
+  margin-top: 10%;
+  color: black;
+}
+div.ctct-embed-signup  button {
+    background: rgb(22,175,225);
+}
+.email_signup i {
+  float: left;
 }

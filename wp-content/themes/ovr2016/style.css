@@ -417,6 +417,16 @@ nav .form-control {
 .footer-square-inner .fa {
 	color: rgb(22,175,225);
 }
+.footer-square-back {
+	height: 100%;
+	width: 100%;
+	margin: auto;
+	vertical-align: middle;
+	word-wrap: break-word;
+	padding-top: 10px;
+	display: none;
+	background: rgb(150,150,150);
+}
 .square-link:hover  {
 	text-decoration: none;
 }

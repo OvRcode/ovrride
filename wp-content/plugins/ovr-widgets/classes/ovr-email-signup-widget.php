@@ -15,17 +15,13 @@ class ovr_email_signup_widget extends WP_Widget {
   }
 
   public function widget( $args, $instance ) {
-    $title = apply_filters( 'widget_title', $instance['title'] );
-
-    echo $args['before_widget'];
-    if ( ! empty( $title ) )
-      echo $args['before_title'] . $title . $args['after_title'];
-
     wp_enqueue_style( 'ovr_email_signup_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-email-signup-widget.css');
     wp_enqueue_script( 'constant_contact_signup_errors', plugin_dir_url( dirname(__FILE__) ) . 'js/constant_contact_errors.js');
     wp_enqueue_script( 'constant_contact_signup_form', 'https://static.ctctcdn.com/h/contacts-embedded-signup-assets/1.0.2/js/signup-form.js', array('constant_contact_signup_errors'));
-
+    wp_enqueue_script( 'ovr_email_signup_widget_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr_email_signup_widget.js', array('jquery'), false, true);
     echo <<<FORM
+    <div class="email_signup">
+    <i class="fa fa-times fa-lg" aria-hidden="true"></i>
       <!--Begin CTCT Sign-Up Form-->
       <div class="ctct-embed-signup">
         <div>
@@ -40,38 +36,24 @@ class ovr_email_signup_widget extends WP_Widget {
             <input data-id="source:input" type="hidden" name="source" value="EFD">
             <input data-id="required:input" type="hidden" name="required" value="list,email">
             <input data-id="url:input" type="hidden" name="url" value="">
-            <p data-id="Email Address:p" ><label data-id="Email Address:label" data-name="email" class="ctct-form-required">Email Address</label> <input data-id="Email Address:input" type="text" name="email" value="" maxlength="80"></p>
+            <p data-id="Email Address:p" ><label data-id="Email Address:label" data-name="email" class="ctct-form-required">Email Address</label> <input id="email" data-id="Email Address:input" type="text" name="email" value="" maxlength="80"></p>
             <button type="submit" class="Button ctct-button Button--block Button-secondary" data-enabled="enabled">Sign Up</button>
           </form>
         </div>
       </div>
     <!--End CTCT Sign-Up Form-->
+    </div>
 FORM;
     echo $args['after_widget'];
   }
 
   public function form( $instance ) {
-    if ( isset( $instance[ 'title' ] ) ) {
-      $title = $instance[ 'title' ];
-    } else {
-      $title = __( 'New title', 'ovr_email_signup_domain' );
-    }
-    $titleID    = $this->get_field_id('title');
-    $titleName  = $this->get_field_name('title');
-    echo <<<ADMINFORM
-      <p>
-        <label for="{$titleID}">'Title:' </label>
-        <input class="widefat" id="{$titleID}" name="{$titleName}" type="text" value="{$title}" />
-      </p>
-ADMINFORM;
 
   }
 
 
   public function update( $new_instance, $old_instance ) {
-    $instance = array();
-    $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
 
-    return $instance;
+    return array();
   }
 }
