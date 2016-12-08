@@ -233,7 +233,7 @@ function woocommerce_support() {
     'id'            => 'footer-newsletter',
     'description'   => 'Contents of newsletter tile'
   ) );
-  
+
 }
 add_action( 'widgets_init', 'register_widget_areas' );
 ;
@@ -304,6 +304,11 @@ function display_youtube_element()
     	<input type="text" name="youtube_url" id="youtube_url" value="<?php echo get_option('youtube_url'); ?>" />
     <?php
 }
+function display_about_element() {
+  ?>
+    <textarea rows="10" cols="100" name="about_ovr" id="about_ovr"><?php echo get_option('about_ovr');?></textarea>
+  <?php
+}
 function display_theme_panel_fields()
 {
 	add_settings_section("section", "Footer Settings", null, "theme-options");
@@ -312,11 +317,12 @@ function display_theme_panel_fields()
   add_settings_field("facebook_url", "Facebook Profile Url", "display_facebook_element", "theme-options", "section");
   add_settings_field("youtube_url", "Youtube Chanel Url", "display_youtube_element", "theme-options", "section");
   add_settings_field("instagram_url", "Instagram Profile Url", "display_instagram_element", "theme-options", "section");
-
+  add_settings_field("about_text", "About OvR Text", "display_about_element", "theme-options", "section");
   register_setting("section", "twitter_url");
   register_setting("section", "facebook_url");
   register_setting("section", "youtube_url");
   register_setting("section", "instagram_url");
+  register_setting("section", "about_ovr");
 }
 
 add_action("admin_init", "display_theme_panel_fields");

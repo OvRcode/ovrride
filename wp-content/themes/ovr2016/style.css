@@ -447,3 +447,22 @@ nav .form-control {
 	background: none;
 	text-decoration: underline;
 }
+.aboutOvR {
+	display: none;
+	background: rgb(150,150,150);
+	color: rgb( 255,255,255 );
+	font-size: 15px;
+	padding: 10px;
+}
+.aboutActive {
+	background: rgb(150,150,150);
+}
+.aboutShow {
+	display: block !important;
+}
+.aboutHide {
+	display: none;
+}
+.aboutOvR i {
+	cursor: pointer;
+}

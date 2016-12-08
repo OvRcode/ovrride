@@ -27,5 +27,22 @@
     var top = (parseInt($(".footer-square-inner").height()) - (parseInt($(".text").height())/2))/2;
     $(".footer-square-inner .text").css({"font-size": newFontSize, "top": top});
   }).resize();
-  
+  $("#about").on("click", aboutToggle);
+  $(".aboutOvR i").on("click", aboutToggle);
+  function aboutToggle() {
+    if ( $('.aboutOvR:visible').size() > 0 ) {
+      $("#about").removeClass("aboutActive");
+      $("#about .text").removeClass("aboutShow");
+      $("#about .icon").removeClass("aboutHide");
+    } else {
+      $("#about").addClass("aboutActive");
+      $("#about .text").addClass("aboutShow");
+      $("#about .icon").addClass("aboutHide");
+      $('html,body').delay(100).animate({
+          scrollTop: $("#about").offset().top
+        }, 1000);
+    }
+
+    $(".aboutOvR").toggle();
+  }
 })( jQuery );

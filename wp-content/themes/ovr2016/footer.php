@@ -70,7 +70,7 @@
 			</div>
 		</div>
 		<div class="col-sm-3 col-xs-6">
-			<div class="footer-square">
+			<div id="about" class="footer-square">
 				<div class="footer-square-inner">
 					<i class="fa fa-file-text-o icon" aria-hidden="true"></i>
 					<span class="text">ABOUT OVRRIDE</span>
@@ -91,6 +91,12 @@
 				<i class="fa fa-pencil icon" aria-hidden="true"></i>
 				<span class="text">CONTACT US</span>
 			</div>
+		</div>
+	</div>
+	<div class="col-sm-12">
+		<div class="aboutOvR">
+			<i class="fa fa-times fa-2x" aria-hidden="true"></i>
+				<?php echo get_option('about_ovr');?>
 		</div>
 	</div>
 </div>
