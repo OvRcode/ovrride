@@ -256,59 +256,54 @@ remove_action( 'wp_head', 'feed_links', 2 );
 /* Add theme settings to admin page */
 function theme_settings_page(){}
 
-function add_theme_menu_item()
-{
+function add_theme_menu_item() {
 	add_menu_page("OvR Settings", "OvR Settings", "manage_options", "ovr-settings", "ovr_settings_page", null, 56);
 }
 
-add_action("admin_menu", "add_theme_menu_item");
+function ovr_settings_page() {
 
-function ovr_settings_page()
-{
-    ?>
+  ob_start();
+    settings_fields("section");
+    do_settings_sections("theme-options");
+    submit_button();
+    $settings_form = ob_get_contents();
+  ob_end_clean();
+
+  echo <<<SETTINGSPAGE
 	    <div class="wrap">
 	    <h1>OvR Theme Settings</h1>
 	    <form method="post" action="options.php">
-	        <?php
-	            settings_fields("section");
-	            do_settings_sections("theme-options");
-	            submit_button();
-	        ?>
+	         {$settings_form}
 	    </form>
 		</div>
-	<?php
+SETTINGSPAGE;
 }
 
-function display_twitter_element()
-{
-	?>
-    	<input type="text" name="twitter_url" id="twitter_url" value="<?php echo get_option('twitter_url'); ?>" />
-    <?php
+function display_twitter_element() {
+  $twitter_url = get_option('twitter_url');
+  echo "<input type='text' name='twitter_url' id='twitter_url' value='{$twitter_url}' />";
 }
 
-function display_facebook_element()
-{
-	?>
-    	<input type="text" name="facebook_url" id="facebook_url" value="<?php echo get_option('facebook_url'); ?>" />
-    <?php
+function display_facebook_element() {
+	$facebook_url = get_option('facebook_url');
+  echo "<input type='text' name='facebook_url' id='facebook_url' value='{$facebook_url}' />";
 }
-function display_instagram_element()
-{
-	?>
-    	<input type="text" name="instagram_url" id="instagram_url" value="<?php echo get_option('instagram_url'); ?>" />
-    <?php
+
+function display_instagram_element() {
+	$instagram_url = get_option('instagram_url');
+  echo "<input type='text' name='instagram_url' id='instagram_url' value='{$instagram_url}' />";
 }
-function display_youtube_element()
-{
-	?>
-    	<input type="text" name="youtube_url" id="youtube_url" value="<?php echo get_option('youtube_url'); ?>" />
-    <?php
+
+function display_youtube_element() {
+  $youtube_url = get_option('youtube_url');
+  echo "<input type='text' name='youtube_url' id='youtube_url' value='{$youtube_url}' />";
 }
+
 function display_about_element() {
-  ?>
-    <textarea rows="10" cols="100" name="about_ovr" id="about_ovr"><?php echo get_option('about_ovr');?></textarea>
-  <?php
+  $about_ovr = get_option('about_ovr');
+  echo "<textarea rows='10' cols='100' name='about_ovr' id='about_ovr'>{$about_ovr}</textarea>";
 }
+
 function display_theme_panel_fields()
 {
 	add_settings_section("section", "Footer Settings", null, "theme-options");
@@ -326,3 +321,4 @@ function display_theme_panel_fields()
 }
 
 add_action("admin_init", "display_theme_panel_fields");
+add_action("admin_menu", "add_theme_menu_item");
