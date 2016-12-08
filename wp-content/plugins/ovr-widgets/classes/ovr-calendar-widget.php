@@ -130,7 +130,7 @@ class ovr_calendar_widget extends WP_Widget {
     wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.js', array('jquery.webui-popover-js', 'jquery_spin_js'), false, true);
     wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css');
 
-    $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php'), 'ovr_calendar', 'ovr_calendar_shift' );
+    $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php', 'https'), 'ovr_calendar', 'ovr_calendar_shift' );
     wp_localize_script('ovr_calendar_js', 'ovr_calendar_vars', array( 'ajax_url' => $nonced_url ) );
 
     echo <<<FRONTEND
