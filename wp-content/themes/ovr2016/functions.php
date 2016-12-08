@@ -350,8 +350,34 @@ function ovr_add_new_postmeta_orderby( $sortby ) {
   unset($sortby['rating']);
 
 	$sortby['date'] = __( 'Sort by trip date', 'woocommerce' );
+
 	return $sortby;
 }
 add_filter( 'woocommerce_get_catalog_ordering_args', 'ovr_add_postmeta_ordering_args' );
 add_filter( 'woocommerce_default_catalog_orderby_options', 'ovr_add_new_postmeta_orderby' );
 add_filter( 'woocommerce_catalog_orderby', 'ovr_add_new_postmeta_orderby' );
+
+// 20 Products per page
+add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 20;' ), 20 );
+// Remove sorting drop dropdown-menu
+remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
+
+// Make sure products other than trips have date field to show during sort
+add_action( 'after_setup_theme', 'activate_theme_cron' );
+
+function activate_theme_cron() {
+    if (! wp_next_scheduled ( 'sort_date_check_hourly' )) {
+	     wp_schedule_event(time(), 'hourly', 'sort_date_check_hourly');
+    }
+}
+
+add_action('sort_date_check_hourly', 'sort_date_check');
+
+function sort_date_check() {
+	global $wpdb;
+  // Find all published products, insert dummy _wc_trip_sort_date
+  // Will not overwrite existing sort dates
+  $wpdb->query("INSERT IGNORE INTO wp_postmeta (`post_id`,`meta_key`,`meta_value`)
+  SELECT `ID` AS `post_id`, '_wc_trip_sort_date' AS `meta_key`, '30000000' AS `meta_value`
+  FROM `wp_posts` WHERE `post_type` = 'product' AND `post_status` = 'publish'");
+}

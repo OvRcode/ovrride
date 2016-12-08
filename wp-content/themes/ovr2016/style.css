@@ -466,3 +466,18 @@ nav .form-control {
 .aboutOvR i {
 	cursor: pointer;
 }
+/* Woocommerce style adjustments */
+.woocommerce ul.products li.product, .woocommerce-page ul.products li.product {
+	width: 100%;
+	text-align: center;
+}
+.woocommerce ul.products li.product a img {
+	width:inherit;
+	max-width: 150px;
+	margin:auto;
+}
+.shop_btn {
+	clear: left;
+	float: left;
+	display: inline-block;
+}

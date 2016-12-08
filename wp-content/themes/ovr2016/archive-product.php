@@ -15,8 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header( 'alt' ); ?>
 
-<div class="container">
-	
+<div class="container-fluid">
+
 
 	<?php
 		/**
@@ -27,11 +27,12 @@ get_header( 'alt' ); ?>
 		 */
 		do_action( 'woocommerce_before_main_content' );
 		?>
+	<div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
 
 		<?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
 
 			<h1 class="page-title"><?php woocommerce_page_title(); ?></h1>
-
+		
 		<?php endif; ?>
 
 		<?php do_action( 'woocommerce_archive_description' ); ?>
@@ -55,15 +56,15 @@ get_header( 'alt' ); ?>
 				<?php $i=0; ?>
 				<div class="row">
 					<?php while ( have_posts() ) : the_post(); ?>
-						<div class="col-sm-4">
+						<div class="col-xs-5 col-md-3">
 							<?php wc_get_template_part( 'content', 'product' ); ?>
 						</div>
-						<?php 
+						<?php
 						$i++;
-						if ($i%3==0) {
+						if ($i%4==0) {
 							echo '</div><div class="row">';
-						} 
-						
+						}
+
 						?>
 					<?php endwhile; // end of the loop. ?>
 				</div>
@@ -93,5 +94,6 @@ get_header( 'alt' ); ?>
 		do_action( 'woocommerce_after_main_content' );
 		?>
 	</div>
-	
+</div>
+
 	<?php get_footer( 'alt' ); ?>
