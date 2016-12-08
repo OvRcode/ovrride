@@ -322,3 +322,36 @@ function display_theme_panel_fields()
 
 add_action("admin_init", "display_theme_panel_fields");
 add_action("admin_menu", "add_theme_menu_item");
+
+/* Sort Shop by trip start date */
+//_wc_trip_start_date
+function ovr_add_postmeta_ordering_args( $sort_args ) {
+
+	$orderby_value = isset( $_GET['orderby'] ) ? wc_clean( $_GET['orderby'] ) : apply_filters( 'woocommerce_default_catalog_orderby', get_option( 'woocommerce_default_catalog_orderby' ) );
+	switch( $orderby_value ) {
+
+		// Name your sortby key whatever you'd like; must correspond to the $sortby in the next function
+		case 'date':
+			$sort_args['orderby']  = 'meta_value_num';
+			// Sort by meta_value because we're using alphabetic sorting
+			$sort_args['order']    = 'asc';
+      //$sort_args['meta_type'] = 'DATETIME';
+			$sort_args['meta_key'] = '_wc_trip_sort_date';
+			// use the meta key you've set for your custom field, i.e., something like "location" or "_wholesale_price"
+			break;
+	}
+
+	return $sort_args;
+}
+
+// Add trip starting date to frontend
+function ovr_add_new_postmeta_orderby( $sortby ) {
+  // Ratings are disabled anyway, remove the sort option
+  unset($sortby['rating']);
+
+	$sortby['date'] = __( 'Sort by trip date', 'woocommerce' );
+	return $sortby;
+}
+add_filter( 'woocommerce_get_catalog_ordering_args', 'ovr_add_postmeta_ordering_args' );
+add_filter( 'woocommerce_default_catalog_orderby_options', 'ovr_add_new_postmeta_orderby' );
+add_filter( 'woocommerce_catalog_orderby', 'ovr_add_new_postmeta_orderby' );

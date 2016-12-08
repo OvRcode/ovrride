@@ -125,6 +125,11 @@ class WC_Trips_Admin {
                 update_post_meta( $post_id, "_stock", $value );
             } else if ( "_wc_trip_stock_status" == $meta_key ) {
                 update_post_meta( $post_id, "_stock_status", $value );
+            } else if ( "_wc_trip_start_date" == $meta_key ) {
+              update_post_meta( $post_id, "_wc_trip_start_date", $value);
+              $sort_date = new DateTime($value, new DateTimeZone("EST"));
+              $sort_date = $sort_date->format('Ymd');
+              update_post_meta( $post_id, "_wc_trip_sort_date", $sort_date);
             } else {
                 update_post_meta( $post_id, $meta_key, $value );
             }
