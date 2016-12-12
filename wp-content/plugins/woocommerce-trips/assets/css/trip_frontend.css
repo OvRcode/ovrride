@@ -141,7 +141,31 @@ p.errorField {
     display: flex;
     flex-wrap: wrap-reverse;
   }
-  .woocommerce div.product .woocommerce-tabs div.panel {
-    margin: 0 0 2em;
-    padding: 15px;
-  }
+.woocommerce div.product .woocommerce-tabs div.panel {
+  margin: 0 0 2em;
+  padding: 15px;
+}
+
+.wc_trip_rates {
+  width: 100%;
+}
+.options_title,
+.rate_title {
+  font-weight: 600;
+}
+.wc_trip_rates .options,
+.wc_trip_rates .rate {
+  padding-top: 5px;
+}
+.wc_trip_rates .options_title,
+.wc_trip_rates .options {
+  width: 80%;
+  clear: left;
+  float: left;
+}
+.wc_trip_rates .rate_title,
+.wc_trip_rates .rate {
+  width: 20%;
+  clear: right;
+  float: left;
+}
