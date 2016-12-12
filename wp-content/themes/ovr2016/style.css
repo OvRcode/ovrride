@@ -497,3 +497,10 @@ nav .form-control {
 		width: 100%;
 		padding-right: 5px;
 }
+
+.gallery a img {
+	max-width: 33%;
+	padding-right: 3%;
+	padding-top: 3%;
+	float: left;
+}
