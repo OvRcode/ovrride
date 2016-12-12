@@ -381,3 +381,11 @@ function sort_date_check() {
   SELECT `ID` AS `post_id`, '_wc_trip_sort_date' AS `meta_key`, '30000000' AS `meta_value`
   FROM `wp_posts` WHERE `post_type` = 'product' AND `post_status` = 'publish'");
 }
+//Reposition WooCommerce breadcrumb
+function woocommerce_remove_breadcrumb(){
+remove_action(
+    'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20);
+}
+add_action(
+    'woocommerce_before_main_content', 'woocommerce_remove_breadcrumb'
+);

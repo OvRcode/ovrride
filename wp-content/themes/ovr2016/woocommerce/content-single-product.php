@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 *
 	 * @hooked wc_print_notices - 10
 	 */
-	 do_action( 'woocommerce_before_single_product' );
+	 //do_action( 'woocommerce_before_single_product' );
 
 	 if ( post_password_required() ) {
 	 	echo get_the_password_form();
@@ -38,7 +38,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
 	<div itemscope itemtype="<?php echo woocommerce_get_product_schema(); ?>" id="product-<?php the_ID(); ?>" <?php post_class(); ?>>
 		<div class="row">
+			<div class="col-sm-12">
 	<?php
+		woocommerce_breadcrumb();
 		/**
 		 * woocommerce_before_single_product_summary hook.
 		 *
@@ -47,8 +49,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		 */
 		do_action( 'woocommerce_before_single_product_summary' );
 	?>
+	</div>
 </div>
 <div class="col-sm-12 col-md-6">
+
 		<div class="summary entry-summary">
 
 		<?php

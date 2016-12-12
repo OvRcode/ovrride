@@ -497,10 +497,14 @@ nav .form-control {
 		width: 100%;
 		padding-right: 5px;
 }
-
+/* Make Gallery imgs 1/3 of the tab */
 .gallery a img {
 	max-width: 33%;
 	padding-right: 3%;
 	padding-top: 3%;
 	float: left;
+}
+
+.woocommerce nav.woocommerce-breadcrumb {
+	margin-top: 10px;
 }
