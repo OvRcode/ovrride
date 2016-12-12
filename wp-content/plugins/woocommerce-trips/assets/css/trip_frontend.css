@@ -141,3 +141,7 @@ p.errorField {
     display: flex;
     flex-wrap: wrap-reverse;
   }
+  .woocommerce div.product .woocommerce-tabs div.panel {
+    margin: 0 0 2em;
+    padding: 15px;
+  }

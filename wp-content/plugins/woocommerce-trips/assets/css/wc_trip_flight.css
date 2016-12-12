@@ -20,12 +20,12 @@
 .passportNum {
   float: left;
   clear: left;
-  width: 49%;
+  width: 50%;
 }
 .passportCountry {
   float: left;
   clear: right;
-  width: 49%;
+  width: 50%;
 }
 .passportComment {
   width: 100%;
