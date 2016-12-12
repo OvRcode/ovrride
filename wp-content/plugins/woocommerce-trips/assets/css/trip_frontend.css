@@ -1,6 +1,12 @@
+.name {
+  width: 100%;
+}
 .name label {
   clear: both;
   float: left;
+}
+.name input {
+  width: 96%;
 }
 .firstName {
   clear:left;
@@ -24,16 +30,12 @@
 .packages {
   display: block;
   margin-top: 20px;
-  float: left;
-  clear:both;
 }
-.packages label {
-  float: left;
-  clear:both;
+.name label, .packages label, .pickups label {
+  width: 100%;
 }
-.packages select {
-  clear:both;
-  float: left;
+.woocommerce select {
+  max-width: 100%;
 }
 .dob {
   display:block;
@@ -66,7 +68,7 @@
 
 .emailPhone {
   display: block;
-  width:80%;
+  width:100%;
 }
 .emailPhone label {
   display: inline-block;
@@ -78,7 +80,9 @@
 .phone {
   width: 38%;
 }
-
+.email input, .phone input {
+  width: 90%;
+}
 #emailValidation {
   display: none;
 }
@@ -104,9 +108,7 @@
   float:right;
 }
 .pickup {
-  width: 100%;
-  padding-left: 10px;
-  padding-top: 20px;
+  max-width: 100%;
 }
 .errorBorder {
   border:1px solid red;

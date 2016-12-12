@@ -481,3 +481,19 @@ nav .form-control {
 	float: left;
 	display: inline-block;
 }
+.woocommerce div.product div.images img {
+		width: inherit;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs {
+	margin-bottom: 0;
+}
+
+.woocommerce #content div.product div.summary,
+.woocommerce div.product div.summary,
+.woocommerce-page #content div.product div.summary,
+.woocommerce-page div.product div.summary {
+		float: none;
+		width: 100%;
+		padding-right: 5px;
+}

@@ -1,5 +1,5 @@
 <label class="dobLabel"><strong>Date of Birth</strong><span class="required">*</span></label>
-<div class="dob">
+<div class="dob clearfix">
   <div class="monthGroup">
     <input type="text" maxlength="2" name="wc_trip_dob_month" id="wc_trip_dob_month" data-required="true" />
     <label for="wc_trip_dob_month">MM</label>

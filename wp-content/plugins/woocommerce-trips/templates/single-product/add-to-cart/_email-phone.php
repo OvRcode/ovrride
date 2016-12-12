@@ -1,4 +1,4 @@
-<div class="emailPhone">
+<div class="emailPhone clearfix">
   <div class="email">
     <label for="wc_trip_email"><strong>Email</strong> <span class="required">*</span></label><br />
     <input type="text" id="wc_trip_email" name="wc_trip_email" data-required="true" />

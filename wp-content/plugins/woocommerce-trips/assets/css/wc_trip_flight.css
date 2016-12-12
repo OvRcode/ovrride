@@ -15,20 +15,20 @@
   margin-top: 20px;
   clear:both;
   float:left;
-  width: 80%;
+  width: 100%;
 }
 .passportNum {
   float: left;
   clear: left;
-  width: 50%;
+  width: 49%;
 }
 .passportCountry {
   float: left;
   clear: right;
-  width: 50%;
+  width: 49%;
 }
 .passportComment {
-  width: 90%;
+  width: 100%;
   display: block;
 }
 .gender {
