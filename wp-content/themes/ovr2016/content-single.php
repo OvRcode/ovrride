@@ -3,6 +3,8 @@
  * @package _tk
  */
 ?>
+<div class="container-fluid">
+	<div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header>
@@ -14,9 +16,6 @@
 	</header><!-- .entry-header -->
 
 	<div class="entry-content">
-		<div class="entry-content-thumbnail">
-			<?php the_post_thumbnail(); ?>
-		</div>
 		<?php the_content(); ?>
 		<?php _tk_link_pages(); ?>
 	</div><!-- .entry-content -->
@@ -59,3 +58,6 @@
 		<?php edit_post_link( __( 'Edit', '_tk' ), '<span class="edit-link">', '</span>' ); ?>
 	</footer><!-- .entry-meta -->
 </article><!-- #post-## -->
+
+	</div>
+</div>
