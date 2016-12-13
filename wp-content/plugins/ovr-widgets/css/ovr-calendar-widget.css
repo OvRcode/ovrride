@@ -93,7 +93,7 @@
 }
 
 /* Highlight the "current" day */
-.active {
+.ovr_calendar_widget .active {
     background: rgb(59,59,59);
     color: white !important
 }
