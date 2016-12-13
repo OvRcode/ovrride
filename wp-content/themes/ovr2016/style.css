@@ -688,3 +688,28 @@ ins {
 .noleftpad {
 	padding-left: 0;
 }
+/* Bus Stop Styles */
+.bus_map {
+	width: 96%;
+	height: 300px;
+}
+.tab-content {
+	background: white;
+}
+.tab-pane {
+	padding: 20px;
+	margin-bottom: 15px;
+}
+.nav-tabs li a{
+	text-transform: capitalize;
+}
+.bus_thumb, .bus_title {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+/* Woocommerce product category shortcode */
+div.woocommerce.columns-4 ul.products li.product {
+	width: 22%;
+	float: left;
+}

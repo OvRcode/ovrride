@@ -395,3 +395,44 @@ remove_action(
 add_action(
     'woocommerce_before_main_content', 'woocommerce_remove_breadcrumb'
 );
+
+/* Bootstrap accordion shortcodes */
+function AccordionOpen_func( $atts ) {
+  $id = ( isset($atts['id']) && "" !== $atts['id'] ? $atts['id'] : "accordionID");
+
+  return "<div class='panel-group' id='{$id}'>";
+}
+
+function AccordionQuestion_func( $atts ) {
+  $id = ( isset($atts['id']) && "" !== $atts['id'] ? $atts['id'] : "accordionID");
+  $question = ( isset($atts['question']) && "" !== $atts['question'] ? $atts['question'] : 0);
+  $title = ( isset($atts['title']) && "" !== $atts['title'] ? $atts['title'] : 'Nada');
+
+  return <<<QOPEN
+    <div class="panel panel-default ">
+      <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#{$id}" data-target="#question{$question}">
+        <h4 class="panel-title">
+          <a class="ing">Q: {$title}</a>
+        </h4>
+      </div>
+QOPEN;
+}
+function AccordionAnswer_func( $atts ) {
+  $question = ( isset($atts['question']) && "" !== $atts['question'] ? $atts['question'] : 0);
+  return <<<AOPEN
+    <div id="question{$question}" class="panel-collapse collapse" style="height: 0px;">
+      <div class="panel-body">
+        <h5><span class="label label-primary">Answer</span></h5>
+AOPEN;
+}
+function AccordionAnswerClose_func() {
+  return "</div></div></div>";
+}
+function AccordionClose_func() {
+  return "</div>";
+}
+add_shortcode( 'AccordionOpen', 'AccordionOpen_func' );
+add_shortcode( 'AccordionQuestion', 'AccordionQuestion_func');
+add_shortcode( 'AccordionAnswer', 'AccordionAnswer_func');
+add_shortcode( 'AccordionAnswerClose', 'AccordionAnswerClose_func');
+add_shortcode( 'AccordionClose', 'AccordionClose_func');
