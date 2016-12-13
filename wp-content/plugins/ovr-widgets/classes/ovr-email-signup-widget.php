@@ -18,7 +18,7 @@ class ovr_email_signup_widget extends WP_Widget {
     wp_enqueue_style( 'ovr_email_signup_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-email-signup-widget.css');
     wp_enqueue_script( 'constant_contact_signup_errors', plugin_dir_url( dirname(__FILE__) ) . 'js/constant_contact_errors.js');
     wp_enqueue_script( 'constant_contact_signup_form', 'https://static.ctctcdn.com/h/contacts-embedded-signup-assets/1.0.2/js/signup-form.js', array('constant_contact_signup_errors'));
-    wp_enqueue_script( 'ovr_email_signup_widget_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr_email_signup_widget.js', array('jquery'), false, true);
+    wp_enqueue_script( 'ovr_email_signup_widget_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr_email_signup_widget.min.js', array('jquery'), false, true);
     echo <<<FORM
     <div class="email_signup">
     <i class="fa fa-times fa-lg" aria-hidden="true"></i>
