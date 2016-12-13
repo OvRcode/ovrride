@@ -10,11 +10,11 @@
 get_header(); ?>
 
 	<?php // add the class "panel" below here to wrap the content-padder in Bootstrap style ;) ?>
-	<div class="content-padder">
+	<div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
+		<div class="col-sm-10 col-sm-push-2 col-md-10">
+			<?php if ( have_posts() ) : ?>
 
-		<?php if ( have_posts() ) : ?>
-
-			<header>
+			<header class="ovr_archive">
 				<h1 class="page-title">
 					<?php
 						if ( is_category() ) :
@@ -94,8 +94,11 @@ get_header(); ?>
 			<?php get_template_part( 'no-results', 'archive' ); ?>
 
 		<?php endif; ?>
-
+	</div>
+	<div class="col-sm-2 col-sm-pull-10 col-md-2">
+		<?php get_sidebar(); ?>
+	</div>
 	</div><!-- .content-padder -->
 
-<?php get_sidebar(); ?>
+
 <?php get_footer(); ?>

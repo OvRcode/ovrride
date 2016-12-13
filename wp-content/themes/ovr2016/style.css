@@ -656,8 +656,8 @@ ins {
 	margin-top: 20px;
 }
 .ovr_post_thumb {
-	height: 250px;
-	width: 250px;
+	max-height: 250px;
+	max-width: 250px;
 }
 .ovr_post_date {
 	margin-top: 20px;
@@ -669,8 +669,22 @@ ins {
 
 .ovr_post_title {
 	position: relative;
-	top: 20px;
+	top: 5px;
 }
 #nav-posts {
 	margin-top: 20px;
+}
+.ovr_post_excerpt {
+	margin-bottom: 20px;
+}
+/* Post Archive Styles */
+.ovr_archive{
+	margin-top: 15px;
+}
+
+.entry-meta {
+	margin-top: 20px;
+}
+.noleftpad {
+	padding-left: 0;
 }

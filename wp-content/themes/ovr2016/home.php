@@ -18,10 +18,12 @@ get_header();
       <div class="row ovr_post">
         <div class="col-sm-4">
           <div class="ovr_post_thumb">
-            <?php echo get_the_post_thumbnail(get_the_ID(), array( 250,250)); ?>
+            <a href="<?php the_permalink(); ?>" title="Read more">
+              <?php echo get_the_post_thumbnail(get_the_ID(), array( 250,250)); ?>
+            </a>
           </div>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8 noleftpad">
           <div class="ovr_post_title">
   		      <h1><a href="<?php the_permalink(); ?>" title="Read more"><?php the_title(); ?></a></h1>
           </div>
@@ -59,19 +61,7 @@ get_header();
 
 
   <div class="col-sm-2 col-sm-pull-10 col-md-2">
-    <?php do_action( 'before_sidebar' ); ?>
-    <?php //if ( ! dynamic_sidebar( 'sidebar-1' ) ) : ?>
-    <aside id="search" class="widget widget_search sidebar_search">
-      <?php get_search_form(); ?>
-    </aside>
-
-    <aside id="archives" class="widget widget_archive">
-      <h3 class="widget-title"><?php _e( 'Archives', '_tk' ); ?></h3>
-        <ul>
-          <?php wp_get_archives( array( 'type' => 'monthly' ) ); ?>
-        </ul>
-    </aside>
-  <?php //endif; ?>
+    <?php get_sidebar(); ?>
   </div>
 </div>
 <?php
