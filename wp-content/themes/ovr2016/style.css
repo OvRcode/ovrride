@@ -330,6 +330,7 @@ nav .form-control {
 .mainBackground {
 	background-color: #E8E8E8;
 	margin-top:20px;
+	padding-top: 10px;
 }
 /**
  * Full Width Menu dropdown
@@ -707,7 +708,6 @@ ins {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-
 /* Woocommerce product category shortcode */
 div.woocommerce.columns-4 ul.products li.product {
 	width: 22%;

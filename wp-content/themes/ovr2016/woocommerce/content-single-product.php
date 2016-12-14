@@ -36,6 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	 }
 ?>
 <div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
+	<?php woocommerce_show_messages(); ?>
 	<div itemscope itemtype="<?php echo woocommerce_get_product_schema(); ?>" id="product-<?php the_ID(); ?>" <?php post_class(); ?>>
 		<div class="row">
 			<div class="col-sm-12">

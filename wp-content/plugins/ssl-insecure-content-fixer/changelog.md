@@ -2,6 +2,16 @@
 
 ## Changelog
 
+### 2.2.1, 2016-11-19
+
+* fixed: improve accessibility of admin pages
+* removed: update message display forced on multisite; just leave that for WordPress to handle (it does it so well)
+
+### 2.2.0, 2016-09-09
+
+* added: stop WooCommerce cached widgets from http showing on https
+* added: fix Gravity Forms confirmation content
+
 ### 2.1.6, 2016-02-02
 
 * fixed: malware warning with GOTMLS vulnerability scanner
@@ -35,7 +45,7 @@
 
 * **SECURITY FIX**: restrict access to AJAX test script; don't disclose server environment with system information
 * changed: always show server environment on test results
-* added: Bulgarian translation (thanks, [Ivan Arnaudov](http://templateinspector.com/)!)
+* added: Bulgarian translation (thanks, [Ivan Arnaudov](https://www.bvionline.eu/)!)
 * added: .htaccess file for AJAX SSL Tests, fixes conflict with some security plugins
 
 ### 2.0.0, 2015-07-26

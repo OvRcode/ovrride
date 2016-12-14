@@ -187,7 +187,7 @@ class WooThemes_Updater_API {
 	} // End product_active_statuses_check()
 
 	/**
-	 * Make a request to the WooThemes API.
+	 * Make a request to the WooCommerce API.
 	 *
 	 * @access private
 	 * @since 1.0.0
@@ -254,10 +254,10 @@ class WooThemes_Updater_API {
 		$args = wp_parse_args( (array)apply_filters( 'woothemes_updater_request_args', $defaults, $endpoint, $params, $method ), $defaults );
 
 		$response = wp_remote_get( $url, $args );
-		
+
 		if( is_wp_error( $response ) ) {
 			$data = new StdClass;
-			$data->error = __( 'WooThemes Request Error', 'woothemes-updater' );
+			$data->error = __( 'WooCommerce Request Error', 'woothemes-updater' );
 		} else {
 			$data = $response['body'];
 			$data = json_decode( $data );
