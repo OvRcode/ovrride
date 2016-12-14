@@ -127,8 +127,8 @@ do_action( 'woocommerce_before_cart' ); ?>
 						<?php do_action( 'woocommerce_cart_coupon' ); ?>
 					</div>
 				<?php } ?>
-
-				<input type="submit" class="button" name="update_cart" value="<?php esc_attr_e( 'Update Cart', 'woocommerce' ); ?>" />
+				<input type="submit" id="update-cart" class="button" name="update_cart" value="<?php esc_attr_e( 'Update Cart', 'woocommerce' ); ?>" />
+				<a class="button" id="empty-cart" href="<?php echo wc_get_cart_url();  ?>?empty-cart"><?php _e( 'Empty Cart', 'woocommerce' ); ?></a>
 
 				<?php do_action( 'woocommerce_cart_actions' ); ?>
 

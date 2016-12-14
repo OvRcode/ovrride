@@ -724,3 +724,27 @@ div.woocommerce.columns-4 ul.products li.product {
 	margin-left: auto;
 	margin-right: auto;
 }
+.woocommerce div.product p.stock {
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 1.2em;
+}
+/* Woocommerce cart styling */
+table.cart {
+	background: white;
+}
+.woocommerce table.cart td.actions .input-text,
+.woocommerce-page #content table.cart td.actions .input-text,
+.woocommerce-page table.cart td.actions .input-text {
+	width: 150px;
+}
+
+#empty-cart {
+	margin-top: 10px;
+}
+
+.woocommerce-checkout-review-order-table,
+table.shop_table.order_details,
+table.shop_table.customer_details {
+	background: white;
+}

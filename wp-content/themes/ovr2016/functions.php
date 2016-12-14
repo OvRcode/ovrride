@@ -436,3 +436,30 @@ add_shortcode( 'AccordionQuestion', 'AccordionQuestion_func');
 add_shortcode( 'AccordionAnswer', 'AccordionAnswer_func');
 add_shortcode( 'AccordionAnswerClose', 'AccordionAnswerClose_func');
 add_shortcode( 'AccordionClose', 'AccordionClose_func');
+
+add_filter( 'wp_mail_from', function() {
+    return 'wordpress@ovrride.com';
+} );
+
+// Remove order again button
+remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
+
+// check for empty-cart get param to clear the cart
+add_action( 'init', 'woocommerce_clear_cart_url' );
+function woocommerce_clear_cart_url() {
+  global $woocommerce;
+
+	if ( isset( $_GET['empty-cart'] ) ) {
+		$woocommerce->cart->empty_cart();
+	}
+}
+
+
+// Remove company field from checkout
+add_filter( 'woocommerce_checkout_fields' , 'ovr_checkout_fields' );
+function ovr_checkout_fields( $fields ) {
+	unset($fields['billing']['billing_company']);
+	unset($fields['shipping']['shipping_company']);
+
+	return $fields;
+}
