@@ -758,3 +758,7 @@ span.options.heading,
 span.rate.heading {
 	font-weight: 700;
 }
+
+.footer-square a:hover {
+	text-decoration: none;
+}

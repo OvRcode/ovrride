@@ -79,18 +79,22 @@
 		</div>
 		<div class="col-sm-3 col-xs-6">
 			<div class="footer-square">
+				<a href="/shop">
 				<div class="footer-square-inner">
 					<i class="fa fa-book icon" aria-hidden="true"></i>
 					<span class="text">BOOK A TRIP</span>
 			</div>
+			</a>
 		</div>
 	</div>
 	<div class="col-sm-3 col-xs-6">
 		<div class="footer-square">
+			<a href="/contact-us"
 			<div class="footer-square-inner">
 				<i class="fa fa-pencil icon" aria-hidden="true"></i>
 				<span class="text">CONTACT US</span>
 			</div>
+		</a>
 		</div>
 	</div>
 	<div class="col-sm-12">
