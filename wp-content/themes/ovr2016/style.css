@@ -745,6 +745,7 @@ span.rate.heading {
 
 .footer-square a:hover {
 	text-decoration: none;
+	color: white;
 }
 /* Change nav breakpoint to 990px */
 @media (max-width: 990px) {
