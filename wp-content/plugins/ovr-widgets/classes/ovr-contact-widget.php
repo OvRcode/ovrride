@@ -25,52 +25,70 @@ class ovr_contact_widget extends WP_Widget {
 
   public function widget( $args, $instance ) {
 
-    echo $args['before_widget'];
-    echo $args['before_title'];
-    echo $args['after_title'];
-
     $phoneNumber    = ( isset($instance['phoneNumber']) ? $instance['phoneNumber'] : FALSE );
     $recipient      = ( isset($instance['recipient']) ? $instance['recipient'] : FALSE );
     $recipientName  = ( isset($instance['recipientName']) ? $instance['recipientName'] : FALSE );
 
     $nonced_url     = wp_nonce_url( admin_url( 'admin-ajax.php'), 'ovr_contact_form_submit', 'ovr_contact_form_submit_nonce' );
-    wp_enqueue_style( 'ovr_contact_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-contact-widget.css');
+    wp_enqueue_style( 'ovr_contact_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-contact-widget.min.css');
     wp_enqueue_script( 'jquery_validate', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.validate.min.js', array('jquery'));
     wp_enqueue_script( 'ovr_contact_form_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-contact-form.js', array('jquery_validate','jquery_spin_js'));
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'));
     wp_localize_script('ovr_contact_form_js', 'ovr_contact_vars', array( 'ajax_url' => $nonced_url));
-
-    echo "<h1>Contact Us</h1>";
+    echo "<div class='ovr_contact_form'>";
+    echo "<div class='row'>";
     if ( $phoneNumber ) {
+      echo "<div class='col-sm-10 col-sm-offset-1'>";
       echo "<strong>Phone: </strong><a href='tel:{$phoneNumber}'>{$phoneNumber}</a><br /><br />";
+      echo "</div>";
     }
 
     if ( $recipient ) {
+      echo "<div class='col-sm-10 col-sm-offset-1'>";
       echo "<strong>Email: </strong><a href='mailto:{$recipient}'>{$recipient}</a><br /><br />";
+      echo "</div>";
     }
-
+    echo "</div>";
     echo <<<FORM
-      <h2>Comment Form</h2>
-      <br />
-      <div class="formContainer">
-        <span class="required">*</span> Required Fields<br /><br />
-        <form action="" id="ovr_contact_form" method="POST">
-        <label><strong>Name&nbsp;<span class="required">*</span></strong>
-        <input type="text" name="ovr_contact_first" id="ovr_contact_first" placeholder="First" required/>
-        <input type="text" name="ovr_contact_last" id="ovr_contact_last" placeholder="Last" required/></label>
-        <br />
-        <span class="email"><label for="ovr_contact_email"><strong>Email&nbsp;</strong><span class="required">*</span>&nbsp;
-        <input type="text" name="ovr_contact_email" id="ovr_contact_email" required/></label></span>
-        <span class="phone"><label for="ovr_contact_phone"><strong>Phone</strong>&nbsp;
-        <input type="text" name="ovr_contact_phone" id="ovr_contact_phone" /></label></span>
-        <br />
-        <label for="ovr_contact_comment"><strong>Comments&nbsp;</strong><span class="required">*</span><br />
-        <textarea name="ovr_contact_comment" id="ovr_contact_comment" required></textarea></label>
-        <input type="submit" value="Submit" />
+      <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          <span class="required">*</span> Required Fields<br /><br />
+        </div>
       </div>
+      <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          <form action="" id="ovr_contact_form" method="POST">
+          <label><strong>Name&nbsp;<span class="required">*</span></strong>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5 col-sm-offset-1">
+          <input type="text" name="ovr_contact_first" id="ovr_contact_first" placeholder="First" required/>
+        </div>
+        <div class="col-sm-5">
+          <input type="text" name="ovr_contact_last" id="ovr_contact_last" placeholder="Last" required/></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5 col-sm-offset-1">
+          <span class="email"><label for="ovr_contact_email"><strong>Email&nbsp;</strong><span class="required">*</span>&nbsp;
+          <input type="text" name="ovr_contact_email" id="ovr_contact_email" required/></label></span>
+        </div>
+        <div class="col-sm-5">
+          <span class="phone"><label for="ovr_contact_phone"><strong>Phone</strong>&nbsp;
+          <input type="text" name="ovr_contact_phone" id="ovr_contact_phone" /></label></span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          <label for="ovr_contact_comment"><strong>Comments&nbsp;</strong><span class="required">*</span><br />
+          <textarea name="ovr_contact_comment" id="ovr_contact_comment" required></textarea></label>
+          <input type="submit" value="Submit" />
+        </div>
+      </div>
+    </div>
 FORM;
-    echo $args['after_widget'];
   }
 
   public function form( $instance ) {

@@ -463,3 +463,16 @@ function ovr_checkout_fields( $fields ) {
 
 	return $fields;
 }
+
+add_filter('wp_nav_menu_items', 'ovr_menu_mods', 10, 2);
+
+function ovr_menu_mods($items, $args) {
+  ob_start();
+  wp_loginout('index.php');
+  $loginoutlink = ob_get_contents();
+  ob_end_clean();
+  $items = "<li><a href='" . get_site_url() . "'><img src='" . get_template_directory_uri() . "/includes/images/ovr_logo.png'></a></li>" . $items;
+  $items .= '<li><a>|</a></li><li><a href="/cart" title="Cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>';
+  $items .= '<li>'. $loginoutlink .'</li>';
+  return $items;
+}

@@ -1,17 +1,3 @@
-#ovr_contact_comment {
-  width: 85%;
-  height: 200px;
-}
-#ovr_contact_phone {
-  width:20%;
-}
-#ovr_contact_first, #ovr_contact_last {
-  width:40%;
-}
-.email {
-  width: 40%;
-  float: left;
-}
 .errors{
   background: #B30000;
   padding: 5px;
@@ -19,6 +5,19 @@
   border: 1px solid white;
   display: none;
 }
-.formContainer{
-    position:relative;
+#ovr_contact_first,
+#ovr_contact_last,
+#ovr_contact_email,
+#ovr_contact_phone,
+#ovr_contact_comment {
+  width: 80%;
+}
+#ovr_contact_comment {
+  height: 250px;
+}
+label[for=ovr_contact_email],
+label[for=ovr_contact_phone],
+label[for=ovr_contact_comment]{
+  width: 100%;
+  margin-top: 10px;
 }
