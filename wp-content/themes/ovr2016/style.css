@@ -713,3 +713,14 @@ div.woocommerce.columns-4 ul.products li.product {
 	width: 22%;
 	float: left;
 }
+
+/* 404 Styling */
+.error-404 {
+	margin-top:20px;
+}
+.error-404 img{
+	width: 463px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
