@@ -472,7 +472,7 @@ function ovr_menu_mods($items, $args) {
   $loginoutlink = ob_get_contents();
   ob_end_clean();
   $items = "<li><a href='" . get_site_url() . "'><img src='" . get_template_directory_uri() . "/includes/images/ovr_logo.png'></a></li>" . $items;
-  $items .= '<li><a>|</a></li><li><a href="/cart" title="Cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>';
+  $items .= '<li class="hidden-sm hidden-xs"><a>|</a></li><li><a href="/cart" title="Cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>';
   $items .= '<li>'. $loginoutlink .'</li>';
   return $items;
 }

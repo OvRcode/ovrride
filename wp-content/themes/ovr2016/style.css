@@ -301,29 +301,6 @@ nav .form-control {
     text-align: center;
 }
 
-#main-menu > li:first-of-type > a{
-	color:#112233;
-	width: 70px;
-	height: 50px;
-	margin: 15px 0 0 0;
-	font-size:0;
-	background: url('/wp-content/themes/ovr2016/includes/images/ovr_logo.png');
-}
-
-@media screen and (min-width: 768px) {
-	.navbar-brand {
-		visibility: hidden;
-	}
-}
-@media screen and (max-width: 767px) {
-	.navbar-brand {
-		visibility: visible;
-	}
-	#main-menu > li:first-of-type {
-		display: none;
-	}
-}
-
 /**
 	* Homepage background box
 	*/
@@ -339,7 +316,7 @@ nav .form-control {
 	 position: static;
  }
  .nav > li.dropdown.open .dropdown-menu {
-	 display:inline;
+	 display:block;
 	 width: 100%;
 	 overflow: hidden;
 	 text-align: center;
@@ -348,10 +325,17 @@ nav .form-control {
 	 background: rgba(255, 255, 255, 0.9);
 	 border-bottom: 3px solid grey;
  }
+ @media (max-width: 990px) {
+	 .nav > li.dropdown.open .dropdown-menu {
+		 background: none;
+	 }
+ }
+
  .dropdown-menu > li {
 	 display: inline-block;
 	 width: 50%;
 	 float: left;
+	 word-break: break-all;
  }
  .dropdown-menu > li:nth-of-type(odd) {
 	 text-align: right;
@@ -550,7 +534,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'OswaldBook', Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 600;
   color: #333;
@@ -761,4 +745,41 @@ span.rate.heading {
 
 .footer-square a:hover {
 	text-decoration: none;
+}
+/* Change nav breakpoint to 990px */
+@media (max-width: 990px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-left,.navbar-right {
+        float: none !important;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-fixed-top {
+        top: 0;
+        border-width: 0 0 1px;
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin-top: 7.5px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .collapse.in{
+        display:block !important;
+    }
 }
