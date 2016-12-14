@@ -8,7 +8,7 @@
  get_header();
  $place = get_post_custom_values( 'bus_stop' );
  $place = urlencode($place[0]);
-wp_enqueue_script("ovr_bus_stop_js", get_template_directory_uri(). '/includes/js/ovr_bus_stop.min.js', array('jquery'), false, true);
+wp_enqueue_script("ovr_tab_js", get_template_directory_uri(). '/includes/js/ovr_tab.min.js', array('jquery'), false, true);
  ?>
 
  <div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">

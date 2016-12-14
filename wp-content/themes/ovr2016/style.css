@@ -748,3 +748,13 @@ table.shop_table.order_details,
 table.shop_table.customer_details {
 	background: white;
 }
+
+.destination_img {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+span.options.heading,
+span.rate.heading {
+	font-weight: 700;
+}
