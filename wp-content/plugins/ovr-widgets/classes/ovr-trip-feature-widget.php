@@ -142,7 +142,7 @@ ADMINFORM;
         <div class="ovr_trip_feature_inner">
           <div class="ovr_trip_feature_content">
             <img class="ovr_trip_feature_primary_image" src="{$instance['primaryImage']}">
-            <h5 class="ovr_trip_feature_header">destination</h5>
+            <h4 class="ovr_trip_feature_header">destination</h4>
             <span class="ovr_trip_feature_title" maxlength="25">
               <a href="{$instance['link']}">{$instance['title']}</a>
             </span>

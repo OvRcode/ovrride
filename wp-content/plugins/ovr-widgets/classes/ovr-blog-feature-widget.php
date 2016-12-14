@@ -76,7 +76,7 @@ ADMINFORM;
         <div class="ovr_blog_feature_inner">
           <div class="ovr_blog_feature_content">
             <img class="ovr_blog_feature_primary_image" src="{$instance['primaryImage']}">
-            <h5 class="ovr_blog_feature_header">on the blog</h5>
+            <h4 class="ovr_blog_feature_header">on the blog</h4>
             <span class="ovr_blog_feature_title" maxlength="25">
               <a href="{$instance['link']}">{$instance['title']}</a>
             </span>

@@ -31,7 +31,7 @@
   position: absolute;
   top: 220px;
   left: 10px;
-  white-space:nowrap;
+  word-wrap: break-word;
   max-width: 92%;
   overflow: hidden;
   color: rgb(22, 174, 223);
@@ -46,7 +46,7 @@
 }
 .ovr_blog_feature_date {
   position: absolute;
-  top: 260px;
+  top: 265px;
   left: 10px;
 }
 .ovr_blog_feature_secondary_image {
