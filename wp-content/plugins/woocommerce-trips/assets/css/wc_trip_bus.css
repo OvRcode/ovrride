@@ -1,16 +1,9 @@
 .pickups {
   display: block;
   margin-top: 20px;
-  float: left;
-  clear:both;
 }
-.pickups label {
-  float: left;
-  clear:both;
-}
-.pickups select {
-  clear:both;
-  float: left;
+.pickup {
+  padding-top: 15px;
 }
 .dob, .dobLabel {
   display: none;

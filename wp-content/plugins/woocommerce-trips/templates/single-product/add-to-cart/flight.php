@@ -26,7 +26,7 @@ wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc
         <div id="errors">
         </div>
         <label><strong>Name</strong></label><br />
-				<div class="name">
+				<div class="name clearfix">
             <div id="firstGroup">
               <input type="text" id="wc_trip_first" name="wc_trip_first" data-required="true" />
               <label for="wc_trip_first">First <span class="required">*</span></label>
@@ -60,7 +60,7 @@ wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc
         <br />
 				<?php include("_email-phone.php"); ?>
         <?php if( "international_flight" === $trip_type ): ?>
-        <div class="passport">
+        <div class="passport clearfix">
           <label><strong>Passport Information</strong></label>
           <br />
           <div class="passportNum">
@@ -68,7 +68,7 @@ wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc
             <input type="text" id="wc_trip_passport_num" name="wc_trip_passport_num" data-required="false" />
           </div>
           <div class="passportCountry">
-            <label for="wc_trip_passport_country">Passport Country of Issue</label><br />
+            <label for="wc_trip_passport_country">Passport Country</label><br />
             <input type="text" id="wc_trip_passport_country" name="wc_trip_passport_country" data-required="false" />
           </div>
           <div class="passportComment">

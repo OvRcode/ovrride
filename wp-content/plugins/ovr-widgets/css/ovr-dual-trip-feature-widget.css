@@ -1,0 +1,78 @@
+.ovr_dual_trip_feature {
+  width: 100%;
+  background: rgb(236,236,236);
+  height: 420px;
+}
+.ovr_dual_trip_feature_inner {
+  position: relative;
+  display: block;
+  margin: auto;
+  top: 10px;
+  width: 96%;
+  height: 96%;
+  background: rgb(255,255,255);
+}
+
+.ovr_dual_trip_feature_content img {
+  max-width: 96%;
+  max-height: 250px;
+  position: relative;
+  top: 3px;
+  display: block;
+  margin: auto;
+}
+.ovr_dual_trip_feature_content p {
+  width: 96%;
+  position: relative;
+  display: block;
+  margin: auto;
+  top: 10px;
+  text-align: center;
+}
+.ovr_dual_trip_feature_title {
+  position: relative;
+  display: block;
+  top: 5px;
+  text-align: center;
+  color: rgb(103,28,51);
+  text-transform: uppercase;
+}
+.ovr_dual_trip_feature_trip_one, .ovr_dual_trip_feature_trip_two {
+  cursor: pointer;
+  position: relative;
+  display: block;
+  float: left;
+  top: 10px;
+  width: 48%;
+  left: 2%;
+  height: 80px;
+  text-align: center;
+}
+.ovr_dual_trip_feature_trip_one {
+  border: 1px rgb(236,236,236);
+  border-right-style: solid;
+}
+.ovr_dual_trip_feature_trip_box {
+  position:absolute;
+  width: 96%;
+  bottom: 26px;
+  margin:auto;
+}
+.ovr_dual_trip_feature_trip_one_title, .ovr_dual_trip_feature_trip_two_title {
+  color: rgb(22, 175, 225);
+  font-weight: 600;
+  display: block;
+
+}
+.ovr_dual_trip_feature_trip_one_date, .ovr_dual_trip_feature_trip_two_date {
+  font-weight: 500;
+  display: block;
+}
+
+.ovr_dual_trip_feature_trip_one img, .ovr_dual_trip_feature_trip_two img {
+  max-width: 130px;
+}
+.ovr_dual_trip_feature_trip_box a:hover {
+  text-decoration: underline;
+  color: rgb(22, 175, 225);
+}

@@ -1,5 +1,15 @@
 *** WooThemes Helper Changelog ***
 
+2016.11.01 - version 1.7.2
+ * New - Add support for new `Woo` header in WooCommerce extensions, will allow the user to see updates, even for inactive products
+ * Fix - Prevent a PHP notice when the license expiry date is invalid (or set to infinity)
+ * Fix - Remove some old references to WooThemes for consistency
+ * Fix - Use consistent array keys for themes and extensions data structures
+ * Fix - Plugin information display (View details) for non-WordPress.org hosted plugins
+
+2016.08.31 - version 1.7.1
+ * Adds a check to ensure we're on the 'woothemes-helper' page, before validating and storing the Helper master key.
+
 2016.07.27 - version 1.7.0
  * New ‘connect to WooCommerce.com functionality’
  * Various connection/activation bug fixes

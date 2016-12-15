@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 /**
 * manage admin
 */
@@ -29,11 +33,6 @@ class SSLInsecureContentFixerAdmin {
 	public function adminInit() {
 		add_settings_section(SSLFIX_PLUGIN_OPTIONS, false, false, SSLFIX_PLUGIN_OPTIONS);
 		register_setting(SSLFIX_PLUGIN_OPTIONS, SSLFIX_PLUGIN_OPTIONS, array($this, 'settingsValidate'));
-
-		// in_plugin_update_message isn't supported on multisite != blog-1, so just add another row
-		if (current_user_can('update_plugins')) {
-			add_action('after_plugin_row_' . SSLFIX_PLUGIN_NAME, array($this, 'upgradeMessage'), 20, 2);
-		}
 	}
 
 	/**
@@ -74,7 +73,7 @@ class SSLInsecureContentFixerAdmin {
 			$links[] = sprintf('<a href="https://wordpress.org/support/plugin/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Get help', 'plugin details links', 'ssl-insecure-content-fixer'));
 			$links[] = sprintf('<a href="https://wordpress.org/plugins/ssl-insecure-content-fixer/" target="_blank">%s</a>', _x('Rating', 'plugin details links', 'ssl-insecure-content-fixer'));
 			$links[] = sprintf('<a href="https://translate.wordpress.org/projects/wp-plugins/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Translate', 'plugin details links', 'ssl-insecure-content-fixer'));
-			$links[] = sprintf('<a href="http://shop.webaware.com.au/donations/?donation_for=SSL+Insecure+Content+Fixer" target="_blank">%s</a>', _x('Donate', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://shop.webaware.com.au/donations/?donation_for=SSL+Insecure+Content+Fixer" target="_blank">%s</a>', _x('Donate', 'plugin details links', 'ssl-insecure-content-fixer'));
 		}
 
 		return $links;
@@ -115,27 +114,6 @@ class SSLInsecureContentFixerAdmin {
 		}
 
 		return $links;
-	}
-
-	/**
-	* show upgrade messages on Plugins admin page
-	* @param string $file
-	* @param object $current_meta
-	*/
-	public function upgradeMessage($file, $plugin_data) {
-		$current = get_site_transient('update_plugins');
-
-		if (isset($current->response[$file])) {
-			$r = $current->response[$file];
-
-			if (!empty($r->upgrade_notice)) {
-				$wp_list_table = _get_list_table('WP_Plugins_List_Table');
-				$colspan = $wp_list_table->get_column_count();
-				$plugin_name = wp_kses($plugin_data['Name'], 'strip');
-
-				require SSLFIX_PLUGIN_ROOT . 'views/admin-upgrade-message.php';
-			}
-		}
 	}
 
 	/**

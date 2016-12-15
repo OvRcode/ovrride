@@ -19,17 +19,17 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: classes/class-woothemes-updater-admin.php:76
-msgid "The WooThemes Helper"
+msgid "The WooCommerce Helper"
 msgstr ""
 
 #: classes/class-woothemes-updater-admin.php:77
-msgid "WooThemes Helper"
+msgid "WooCommerce Helper"
 msgstr ""
 
 #: classes/class-woothemes-updater-admin.php:142
 #, php-format
 msgid ""
-"%sYour WooThemes products are almost ready.%s To get started, %sactivate "
+"%sYour WooCommerce products are almost ready.%s To get started, %sactivate "
 "your product subscriptions%s."
 msgstr ""
 
@@ -64,7 +64,7 @@ msgid ""
 msgstr ""
 
 #: classes/class-woothemes-updater-admin.php:288
-msgid "Welcome to WooThemes Helper"
+msgid "Welcome to the WooCommerce Helper"
 msgstr ""
 
 #: classes/class-woothemes-updater-admin.php:292
@@ -103,7 +103,7 @@ msgid "Getting Started"
 msgstr ""
 
 #: classes/class-woothemes-updater-admin.php:365
-msgid "Follow WooThemes on Twitter"
+msgid "Follow WooCommerce on Twitter"
 msgstr ""
 
 #: classes/class-woothemes-updater-admin.php:378
@@ -205,7 +205,7 @@ msgid "Please activate"
 msgstr ""
 
 #: classes/class-woothemes-updater-api.php:217
-msgid "WooThemes Request Error"
+msgid "WooCommerce Request Error"
 msgstr ""
 
 #: classes/class-woothemes-updater-api.php:230
@@ -213,7 +213,7 @@ msgid "There was an error making your request, please try again."
 msgstr ""
 
 #: classes/class-woothemes-updater-licenses-table.php:43
-msgid "No WooThemes products found."
+msgid "No WooCommerce products found."
 msgstr ""
 
 #: classes/class-woothemes-updater-licenses-table.php:80
@@ -255,14 +255,14 @@ msgstr ""
 
 #: classes/class-woothemes-updater-update-checker.php:420
 msgid ""
-"An unexpected error occurred. Something may be wrong with WooThemes.com or "
+"An unexpected error occurred. Something may be wrong with WooCommerce.com or "
 "this server&#8217;s configuration. If you continue to have problems, please "
-"try the <a href=\"https://support.woothemes.com/hc/en-us\">help center</a>."
+"try the <a href=\"https://support.WooCommerce.com/hc/en-us\">help center</a>."
 msgstr ""
 
 #: classes/class-woothemes-updater-update-checker.php:420
 msgid ""
-"(WordPress could not establish a secure connection to WooThemes.com. Please "
+"(WordPress could not establish a secure connection to WooCommerce.com. Please "
 "contact your server administrator.)"
 msgstr ""
 
@@ -276,14 +276,14 @@ msgstr ""
 
 #: classes/class-woothemes-updater.php:254
 msgid ""
-"WooThemes Updater must be network activated when in multisite environment."
+"WooCommerce Updater must be network activated when in multisite environment."
 msgstr ""
 
 #: classes/class-woothemes-updater.php:280
 #: classes/class-woothemes-updater.php:298
 msgid ""
-"To enable this update please activate your WooThemes license by visiting the "
-"Dashboard > WooThemes Helper screen."
+"To enable this update please activate your WooCommerce license by visiting the "
+"Dashboard > WooCommerce Helper screen."
 msgstr ""
 
 #: node_modules/grunt-pot/test/fixtures/some-file.php:3
@@ -309,7 +309,7 @@ msgstr ""
 #: screens/screen-manage.php:5
 #, php-format
 msgid ""
-"See below for a list of the WooThemes products in use on %s. You can %s, as "
+"See below for a list of the WooCommerce products in use on %s. You can %s, as "
 "well as our %s on how this works. %s"
 msgstr ""
 
@@ -328,7 +328,7 @@ msgstr ""
 #: screens/woothemes-api-unreachable.php:4
 #, php-format
 msgid ""
-"There seems to be an error reaching the WooThemes API at this time. Please "
+"There seems to be an error reaching the WooCommerce API at this time. Please "
 "try again later. Should this error persist, please %slog a ticket%s in our "
 "help desk."
 msgstr ""

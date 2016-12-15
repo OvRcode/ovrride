@@ -1,0 +1,26 @@
+.ovr_small_ad_widget {
+  float:left;
+  width: 50%;
+  background: rgb(236,236,236);
+  height: 420px;
+  display: inline-block;
+}
+.ovr_small_ad_inner {
+  position: relative;
+  width: 92%;
+  height: 94%;
+  top: 10px;
+  background: rgb(255,255,255);
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+.ovr_small_ad_inner a:hover {
+  background: none;
+}
+.ovr_small_ad_img {
+  position: relative;
+  max-width: 96%;
+  max-height: 96%;
+  top: 10px;
+}

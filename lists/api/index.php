@@ -75,6 +75,7 @@ class Lists {
     function csv($type,$trip,$status){
         $orders = $this->tripData("All",$trip,$status);
         $output = "";
+
         if ( $type == "list" ){
             if ( $this->pickup ) {
                 $header = "First, Last, Phone, Pickup, Package, Order, AM, Waiver, Product Rec, PM\n";
@@ -82,6 +83,7 @@ class Lists {
                 $header = "First, Last, Phone, Package, Order, AM, Waiver, Product Rec, PM\n";
             }
             $output .= $header;
+
             foreach ( $orders as $ID => $data ) {
                 $first      = ( isset( $data['Data']['First'] ) ? $data['Data']['First'] : '' );
                 $last       = ( isset( $data['Data']['Last'] ) ? $data['Data']['Last'] : '' );
@@ -116,6 +118,7 @@ class Lists {
                 $header ="Email, First, Last, Package\n";
             }
             $output .= $header;
+
             foreach( $orders as $ID => $data ) {
                 $first = (isset($data['Data']['First']) ? $data['Data']['First'] : '');
                 $last = (isset($data['Data']['Last']) ? $data['Data']['Last'] : '');
@@ -132,6 +135,7 @@ class Lists {
                 $output .= $row;
             }
         }
+
         if ( $output !== "" ){
             return $output;
         }
@@ -255,7 +259,6 @@ class Lists {
                     $searchID = $row['ID'] . ":" . $row['order_item_id'];
                     if ( $bus == "All" || array_search($searchID, $busData[$bus]) !== FALSE ||
                         array_search($searchID, $busData['Other']) === FALSE) {
-
                         $orderData = [];
                         $orderData['num'] = $row['ID'];
                         $orderData['item_num'] = $row['order_item_id'];
@@ -322,7 +325,7 @@ class Lists {
         }
 
         // Only filter beach bus orders, buses are not numeric for bb
-        if ( !is_numeric($bus) ){
+        if ( !is_numeric($bus) && "All" !== $bus){
           $remove=array();
           foreach( $this->orders as $id => $info ) {
             if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
@@ -333,6 +336,7 @@ class Lists {
             unset($this->orders[$id]);
           }
         }
+
         return $this->orders;
     }
     function getReports($tripId){
@@ -625,9 +629,6 @@ Flight::route('GET /trip/@tripId/@bus/@status', function($tripId, $bus,$status){
         $list = Flight::Lists();
         $list->getTripInfo($tripId);
         $data = $list->tripData($bus, $tripId, $status);
-        //error_log(json_encode($data));
-        //print_r($data);
-        //echo "WHY?";
         echo json_encode($data);
     }
 );

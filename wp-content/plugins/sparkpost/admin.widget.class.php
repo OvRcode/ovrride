@@ -9,11 +9,11 @@ if (!defined('ABSPATH')) exit();
  */
 class SparkPostAdmin
 {
-    private $options;
+    private $settings;
 
     public function __construct()
     {
-        $this->options = SparkPost::get_options();
+        $this->settings = SparkPost::get_settings(false);
         add_action('admin_menu', array($this, 'add_plugin_page'));
         add_action('admin_init', array($this, 'admin_page_init'));
 
@@ -80,7 +80,7 @@ class SparkPostAdmin
         }
 
         if ($result) {
-            if (!$this->options['enable_sparkpost']) {
+            if (!$this->settings['enable_sparkpost']) {
                 $this->render_message('Test email sent successfully but not through SparkPost.<br/>Note: the SparkPost plugin is not enabled.  To enable it, check "Send email using SparkPost" on the SparkPost settings page.', 'updated');
             } else {
                 $this->render_message('Test email sent successfully', 'updated');
@@ -132,6 +132,7 @@ class SparkPostAdmin
         add_settings_field('password', 'API Key*', array($this, 'render_password_field'), 'sp-options', 'general');
         add_settings_field('enable_tracking', 'Enable tracking*', array($this, 'render_enable_tracking_field'), 'sp-options', 'general');
         add_settings_field('template', 'Template', array($this, 'render_template_field'), 'sp-options', 'general');
+        add_settings_field('transactional', 'Transactional', array($this, 'render_transactional_field'), 'sp-options', 'general');
 
         add_settings_section('overrides', 'Overrides', null, 'sp-overrides');
         add_settings_field('from_name', 'From name', array($this, 'render_from_name_field'), 'sp-overrides', 'overrides');
@@ -163,7 +164,7 @@ class SparkPostAdmin
             add_settings_error('Password', esc_attr('password'), 'API Key is required', 'error');
         } else {
             if(SparkPost::is_key_obfuscated(esc_attr($input['password']))) { //do not change password
-                $new_input['password'] = $this->options['password'];
+                $new_input['password'] = $this->settings['password'];
             } else {
                 $new_input['password'] = sanitize_text_field($input['password']);
             }
@@ -199,15 +200,21 @@ class SparkPostAdmin
             $new_input['enable_tracking'] = true;
         } else {
             $new_input['enable_tracking'] = false;
-
         }
+
+        if(!empty($input['transactional'])) {
+          $new_input['transactional'] = true;
+        } else {
+          $new_input['transactional'] = false;
+        }
+
         return $new_input;
     }
 
     public function render_enable_sparkpost_field()
     {
         printf(
-            '<label><input type="checkbox" id="enable_sparkpost" name="sp_settings[enable_sparkpost]" value="1" %s />Send email using SparkPost</label>', $this->options['enable_sparkpost'] ? 'checked' : ''
+            '<label><input type="checkbox" id="enable_sparkpost" name="sp_settings[enable_sparkpost]" value="1" %s />Send email using SparkPost</label>', $this->settings['enable_sparkpost'] ? 'checked' : ''
         );
     }
 
@@ -218,7 +225,7 @@ class SparkPostAdmin
 
     public function render_password_field()
     {
-        $api_key = SparkPost::obfuscate_api_key($this->options['password']);
+        $api_key = SparkPost::obfuscate_api_key($this->settings['password']);
 
         printf(
             '<input type="text" id="password" name="sp_settings[password]" class="regular-text" value="%s" /><br/>
@@ -231,7 +238,7 @@ class SparkPostAdmin
     {
         ?>
         <input type="text" id="template" name="sp_settings[template]" class="regular-text"
-               value="<?php echo $this->options['template']; ?>"/><br/>
+               value="<?php echo $this->settings['template']; ?>"/><br/>
         <small>
             <ul>
                 <li>- Please see <a href="https://support.sparkpost.com/customer/portal/articles/2409547-using-templates-with-the-sparkpost-wordpress-plugin">this article</a> for detailed information about using templates with this plugin.</li>
@@ -245,7 +252,7 @@ class SparkPostAdmin
     public function render_from_email_field()
     {
         $hint = 'Important: Domain must match with one of your verified sending domains.';
-        if(empty($this->options['from_email'])){
+        if(empty($this->settings['from_email'])){
             $hostname = parse_url(get_bloginfo('url'), PHP_URL_HOST);
             $hint .= sprintf(' When left blank, <strong>%s</strong> will be used as email domain', $hostname);
         }
@@ -253,7 +260,7 @@ class SparkPostAdmin
         $hint = sprintf('<small>%s</small>', $hint);
         printf(
             '<input type="email" id="from_email" name="sp_settings[from_email]" class="regular-text" value="%s" /><br/>%s',
-            isset($this->options['from_email']) ? esc_attr($this->options['from_email']) : '', $hint
+            isset($this->settings['from_email']) ? esc_attr($this->settings['from_email']) : '', $hint
         );
     }
 
@@ -261,14 +268,14 @@ class SparkPostAdmin
     {
         printf(
             '<input type="text" id="from_name" name="sp_settings[from_name]" class="regular-text" value="%s" />',
-            isset($this->options['from_name']) ? esc_attr($this->options['from_name']) : ''
+            isset($this->settings['from_name']) ? esc_attr($this->settings['from_name']) : ''
         );
     }
 
     public function render_sending_method_field()
     {
-        $method = esc_attr($this->options['sending_method']);
-        $port = esc_attr($this->options['port']);
+        $method = esc_attr($this->settings['sending_method']);
+        $port = esc_attr($this->settings['port']);
 
         $selected_method = !empty($method) ? $method : 'api';
         $selected_port = !empty($port) ? $port : 587;
@@ -283,7 +290,7 @@ class SparkPostAdmin
     public function render_enable_tracking_field()
     {
         printf(
-            '<label><input type="checkbox" id="enable_tracking" name="sp_settings[enable_tracking]" value="1" %s />Track clicks/opens in SparkPost</label>', $this->options['enable_tracking'] ? 'checked' : ''
+            '<label><input type="checkbox" id="enable_tracking" name="sp_settings[enable_tracking]" value="1" %s />Track clicks/opens in SparkPost</label>', $this->settings['enable_tracking'] ? 'checked' : ''
         );
     }
 
@@ -296,4 +303,12 @@ class SparkPostAdmin
     {
         echo '<label><input type="checkbox" id="enable_debugging" name="enable_debugging" value="1" checked />Show email debugging messages</label>';
     }
+
+      public function render_transactional_field()
+      {
+          printf('<label><input type="checkbox" id="transactional" name="sp_settings[transactional]" value="1" %s />Mark emails as transactional</label>
+          <br/><small>Upon checked, by default, it\'ll set mark all emails as transactional. It should be set false (using hooks) for non-transactional emails.</small>',
+           $this->settings['transactional'] ? 'checked' : '');
+
+      }
 }

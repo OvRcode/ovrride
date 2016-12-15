@@ -1,21 +1,21 @@
 <?php
 /**
  * Plugin Name: WooCommerce Helper
- * Plugin URI: http://woocommerce.com/products/
+ * Plugin URI: https://woocommerce.com/products/
  * Description: Hi there. I'm here to help you manage subscriptions for your WooCommerce products, as well as help out when you need a guiding hand.
- * Version: 1.7.0
+ * Version: 1.7.2
  * Author: WooCommerce
- * Author URI: http://woocommerce.com/
+ * Author URI: https://woocommerce.com/
  * License: GPL version 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Network: true
  * Requires at least: 3.8.1
- * Tested up to: 4.3.0
+ * Tested up to: 4.6.0
  *
  * Text Domain: woothemes-updater
  * Domain Path: /languages/
  */
 /*
-    Copyright 2012  WooThemes  (email : info@woothemes.com)
+    Copyright 2012  Automattic  (email : info@automattic.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -41,5 +41,5 @@ function __woothemes_updater () {
     require_once( 'classes/class-woothemes-updater.php' );
 
     global $woothemes_updater;
-    $woothemes_updater = new WooThemes_Updater( __FILE__, '1.7.0' );
+    $woothemes_updater = new WooThemes_Updater( __FILE__, '1.7.2' );
 }
