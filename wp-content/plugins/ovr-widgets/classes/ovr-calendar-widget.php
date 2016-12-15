@@ -127,7 +127,7 @@ class ovr_calendar_widget extends WP_Widget {
     wp_enqueue_script( 'jquery.webui-popover-js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.webui-popover.min.js', array('jquery'), false, true);
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'), false, true);
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
-    wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.js', array('jquery.webui-popover-js', 'jquery_spin_js'), false, true);
+    wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.js', array('jquery.webui-popover-js', 'jquery_spin_js'), "1.0", true);
     wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css');
     if ( is_ssl() ) {
         $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php', 'https'), 'ovr_calendar', 'ovr_calendar_shift' );
