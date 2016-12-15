@@ -28,14 +28,19 @@ class ovr_contact_widget extends WP_Widget {
     $phoneNumber    = ( isset($instance['phoneNumber']) ? $instance['phoneNumber'] : FALSE );
     $recipient      = ( isset($instance['recipient']) ? $instance['recipient'] : FALSE );
     $recipientName  = ( isset($instance['recipientName']) ? $instance['recipientName'] : FALSE );
-
-    $nonced_url     = wp_nonce_url( admin_url( 'admin-ajax.php'), 'ovr_contact_form_submit', 'ovr_contact_form_submit_nonce' );
+    if ( is_ssl() ) {
+      $admin_url = admin_url( 'admin-ajax.php', 'https');
+    } else {
+      $admin_url = admin_url( 'admin-ajax.php', 'http');
+    }
+    $nonced_url     = wp_nonce_url( $admin_url, 'ovr_contact_form_submit', 'ovr_contact_form_submit_nonce' );
     wp_enqueue_style( 'ovr_contact_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-contact-widget.min.css');
     wp_enqueue_script( 'jquery_validate', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.validate.min.js', array('jquery'));
-    wp_enqueue_script( 'ovr_contact_form_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-contact-form.js', array('jquery_validate','jquery_spin_js'));
+    wp_enqueue_script( 'ovr_contact_form_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-contact-form.js', array('jquery','jquery_validate','jquery_spin_js'));
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'));
     wp_localize_script('ovr_contact_form_js', 'ovr_contact_vars', array( 'ajax_url' => $nonced_url));
+    echo "<div class='ovr_contact_form_spinner'></div>";
     echo "<div class='ovr_contact_form'>";
     echo "<div class='row'>";
     if ( $phoneNumber ) {
