@@ -127,7 +127,8 @@ function _tk_scripts() {
 	if ( is_singular() && wp_attachment_is_image() ) {
 		wp_enqueue_script( '_tk-keyboard-image-navigation', THEME_DIR_URI . '/includes/js/keyboard-image-navigation.js', array( 'jquery' ), '20120202', true );
 	}
-
+  wp_enqueue_script( 'ovr_google_analytics', THEME_DIR_URI . '/includes/js/ga.js', false, false, true);
+  wp_localize_script( 'ovr_google_analytics', 'ovr', array( 'ga_id' => get_option("google_analytics_id") ) );
 }
 add_action( 'wp_enqueue_scripts', '_tk_scripts' );
 
@@ -307,7 +308,10 @@ function display_about_element() {
   $about_ovr = get_option('about_ovr');
   echo "<textarea rows='10' cols='100' name='about_ovr' id='about_ovr'>{$about_ovr}</textarea>";
 }
-
+function display_google_analytics_element() {
+  $analytics_id = get_option("google_analytics_id");
+  echo "<input type='text' name='google_analytics_id' id='google_analytics_id' value='{$analytics_id}' />";
+}
 function display_theme_panel_fields()
 {
 	add_settings_section("section", "Footer Settings", null, "theme-options");
@@ -317,12 +321,14 @@ function display_theme_panel_fields()
   add_settings_field("youtube_url", "Youtube Chanel Url", "display_youtube_element", "theme-options", "section");
   add_settings_field("instagram_url", "Instagram Profile Url", "display_instagram_element", "theme-options", "section");
   add_settings_field("google_maps_api", "Google Maps API Key", "display_google_maps_api_element", "theme-options", "section");
+  add_settings_field("google_analytics_id", "Google Analytics ID", "display_google_analytics_element", "theme-options", "section");
   add_settings_field("about_text", "About OvR Text", "display_about_element", "theme-options", "section");
   register_setting("section", "twitter_url");
   register_setting("section", "facebook_url");
   register_setting("section", "youtube_url");
   register_setting("section", "instagram_url");
   register_setting("section", "google_maps_api");
+  register_setting("section", "google_analytics_id");
   register_setting("section", "about_ovr");
 }
 
