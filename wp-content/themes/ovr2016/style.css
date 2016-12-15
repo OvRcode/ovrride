@@ -784,3 +784,7 @@ span.rate.heading {
         display:block !important;
     }
 }
+
+table.woocommerce-MyAccount-orders.shop_table.shop_table_responsive.my_account_orders.account-orders-table {
+	background: white;
+}

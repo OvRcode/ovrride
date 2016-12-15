@@ -476,3 +476,13 @@ function ovr_menu_mods($items, $args) {
   $items .= '<li>'. $loginoutlink .'</li>';
   return $items;
 }
+
+function ovr_login_style() {
+    wp_enqueue_style( 'custom-login', get_template_directory_uri() . '/includes/css/login.min.css' );
+}
+add_action( 'login_enqueue_scripts', 'ovr_login_style' );
+
+function ovr_logo_url() {
+    return home_url();
+}
+add_filter( 'login_headerurl', 'ovr_logo_url' );
