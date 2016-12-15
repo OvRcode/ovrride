@@ -27,7 +27,7 @@ class ovr_calendar_widget extends WP_Widget {
 
 
     // Create php date object with correct timezone for calendar generation
-    $date = new DateTime($_POST['calendarDate'], new DateTimeZone('America/New_York'));
+    $date = new DateTime($_POST['calendarDate'], new DateTimeZone('EST'));
 
     wp_send_json( array("html" => $this->generate_calendar($date), "month_year" => $date->format('F Y') ) );
   }
