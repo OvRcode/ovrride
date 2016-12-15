@@ -362,6 +362,14 @@ nav .form-control {
 .rightCol {
 	padding-left: 0;
 }
+@media only screen and (max-width: 767px) {
+	.rightCol {
+		padding-left: 15px;
+	}
+	.leftCol {
+		padding-right: 15px;
+	}
+}
 
 /* Footer styling */
 .footer-square {
