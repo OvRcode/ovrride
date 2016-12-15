@@ -5,7 +5,10 @@
     $(".ovr_calendar").fadeTo("slow", 0.6);
     $(".ovr_calendar").spin();
 
-    window.date = new Date( $(".month_year").text() );
+    date =  $(".month_year").text();
+    date = window.date.split(" ");
+    date = new Date(date[0] + "-01-" + date[1]);
+    window.date = date;
 
     if ( $(this).hasClass("next") ) {
       window.date.setMonth( window.date.getMonth() + 1 );
