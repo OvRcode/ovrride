@@ -1,4 +1,4 @@
-<div class="name">
+<div class="name clearfix">
   <label><strong>Name</strong></label>
   <div class="firstName">
     <input type="text" id="wc_trip_first" name="wc_trip_first" data-required="true" /><br />

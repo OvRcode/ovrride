@@ -6,7 +6,7 @@
 Plugin Name: SparkPost
 Plugin URI: http://sparkpost.com/
 Description: Send all your email from Wordpress through SparkPost, the world's most advanced email delivery service.
-Version: 2.4.1
+Version: 2.5.0
 Author: SparkPost
 Author URI: http://sparkpost.com
 License: GPLv2 or later
@@ -28,9 +28,8 @@ if (is_admin()) {
 }
 $sp = new SparkPost();
 
-if (SparkPost::get_option('enable_sparkpost')) {
-
-    if (SparkPost::get_option('sending_method') == 'smtp') {
+if (SparkPost::get_setting('enable_sparkpost')) {
+    if (SparkPost::get_setting('sending_method') == 'smtp') {
         require_once(WPSP_PLUGIN_DIR . 'mailer.smtp.class.php');
         new SparkPostSMTPMailer();
     } else {

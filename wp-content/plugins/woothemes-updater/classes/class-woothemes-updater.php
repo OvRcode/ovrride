@@ -78,6 +78,10 @@ class WooThemes_Updater {
 			// Look for enabled updates across all themes (active or otherwise). If they are available, queue them.
 			add_action( 'init', array( $this, 'maybe_queue_theme_updates' ), 1 );
 
+			// Look for enabled updates across all plugins (active or otherwise). If they are available, queue them.
+			add_filter( 'extra_plugin_headers', array( $this, 'extra_plugin_headers' ) );
+			add_action( 'init', array( $this, 'maybe_queue_plugin_updates' ), 2 );
+
 			// Get queued plugin updates - Run on init so themes are loaded as well as plugins.
 			add_action( 'init', array( $this, 'load_queued_updates' ), 2 );
 		}
@@ -144,6 +148,42 @@ class WooThemes_Updater {
 			}
 		}
 	} // End maybe_queue_theme_updates()
+
+	/**
+	 * Allow the Woo header in plugin files.
+	 * @access public
+	 * @since 1.7.2
+	 * @return array
+	 */
+	public function extra_plugin_headers( $headers ) {
+		$headers[] = 'Woo';
+		return $headers;
+	}
+
+	/**
+	 * Queue updates for any plugin that have valid update credentials.
+	 * @access  public
+	 * @since   1.2.0
+	 * @return  void
+	 */
+	public function maybe_queue_plugin_updates () {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		}
+
+		$plugins = get_plugins();
+		foreach ( $plugins as $filename => $data ) {
+			if ( empty( $data['Woo'] ) ) {
+				continue;
+			}
+
+			// The header format is Woo: product_id:file_id
+			list( $product_id, $file_id ) = explode( ':', $data['Woo'] );
+			if ( ! empty( $product_id ) && ! empty( $file_id ) ) {
+				$this->add_product( $filename, $file_id, $product_id );
+			}
+		}
+	} // End maybe_queue_plugin_updates()
 
 	/**
 	 * Maybe find the theme_info.txt file.
@@ -239,7 +279,7 @@ class WooThemes_Updater {
 	 * @return  void
 	 */
 	public function admin_notice_require_network_activation () {
-		echo '<div class="error"><p>' . __( 'WooThemes Updater must be network activated when in multisite environment.', 'woothemes-updater' ) . '</p></div>';
+		echo '<div class="error"><p>' . __( 'WooCommerce Updater must be network activated when in multisite environment.', 'woothemes-updater' ) . '</p></div>';
 	} // End admin_notice_require_network_activation()
 
 	/**
@@ -265,12 +305,12 @@ class WooThemes_Updater {
 	 */
 	public function need_license_message ( $plugin_data, $r ) {
 		if ( empty( $r->package ) ) {
-			echo wp_kses_post( '<div class="woothemes-updater-plugin-upgrade-notice">' . __( 'To enable this update please connect your WooThemes subscription by visiting the Dashboard > WooThemes Helper screen.', 'woothemes-updater' ) . '</div>' );
+			echo wp_kses_post( '<div class="woothemes-updater-plugin-upgrade-notice">' . __( 'To enable this update please connect your WooCommerce subscription by visiting the Dashboard > WooCommerce Helper screen.', 'woothemes-updater' ) . '</div>' );
 		}
 	} // End need_license_message()
 
 	/**
-	 * Change the update information for unlicense WooThemes products
+	 * Change the update information for unlicense WooCommerce products
 	 * @param  object $transient The update-plugins transient
 	 * @return object
 	 */
@@ -283,7 +323,7 @@ class WooThemes_Updater {
 
 			if( empty( $woothemes_queued_updates ) ) return $transient;
 
-			$notice_text = __( 'To enable this update please connect your WooThemes license by visiting the Dashboard > WooThemes Helper screen.' , 'woothemes-updater' );
+			$notice_text = __( 'To enable this update please connect your WooCommerce license by visiting the Dashboard > WooCommerce Helper screen.' , 'woothemes-updater' );
 
 			foreach ( $woothemes_queued_updates as $key => $value ) {
 				if( isset( $transient->response[ $value->file ] ) && isset( $transient->response[ $value->file ]->package ) && '' == $transient->response[ $value->file ]->package && ( FALSE === stristr($transient->response[ $value->file ]->upgrade_notice, $notice_text ) ) ){

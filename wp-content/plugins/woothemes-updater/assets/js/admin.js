@@ -51,7 +51,7 @@ jQuery( document ).ready(function( $ ) {
 	var $submitButton = $('.woothemes-helper-submit-wrapper button');
 	var $keyInputs = $('.dashboard_page_woothemes-helper .product_status input');
 
-	// Click connect for them if they've just connected to WooThemes.com
+	// Click connect for them if they've just connected to WooCommerce.com
 	if (window.location.search.indexOf('key=') > 0 && $('.woothemes-updater-wrap #activate-products').data('connected')) {
 		$submitButton.trigger('submit');
 	}

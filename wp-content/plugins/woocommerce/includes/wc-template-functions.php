@@ -2060,21 +2060,22 @@ if ( ! function_exists( 'wc_dropdown_variation_attribute_options' ) ) {
 			'show_option_none' => __( 'Choose an option', 'woocommerce' )
 		) );
 
-		$options   = $args['options'];
-		$product   = $args['product'];
-		$attribute = $args['attribute'];
-		$name      = $args['name'] ? $args['name'] : 'attribute_' . sanitize_title( $attribute );
-		$id        = $args['id'] ? $args['id'] : sanitize_title( $attribute );
-		$class     = $args['class'];
+		$options          = $args['options'];
+		$product          = $args['product'];
+		$attribute        = $args['attribute'];
+		$name             = $args['name'] ? $args['name'] : 'attribute_' . sanitize_title( $attribute );
+		$id               = $args['id'] ? $args['id'] : sanitize_title( $attribute );
+		$class            = $args['class'];
+		$show_option_none = $args['show_option_none'] ? true : false;
 
 		if ( empty( $options ) && ! empty( $product ) && ! empty( $attribute ) ) {
 			$attributes = $product->get_variation_attributes();
 			$options    = $attributes[ $attribute ];
 		}
 
-		$html = '<select id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" name="' . esc_attr( $name ) . '" data-attribute_name="attribute_' . esc_attr( sanitize_title( $attribute ) ) . '">';
+		$html = '<select id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" name="' . esc_attr( $name ) . '" data-attribute_name="attribute_' . esc_attr( sanitize_title( $attribute ) ) . '"' . '" data-show_option_none="' . ( $show_option_none ? 'yes' : 'no' ) . '">';
 
-		if ( $args['show_option_none'] ) {
+		if ( $show_option_none ) {
 			$html .= '<option value="">' . esc_html( $args['show_option_none'] ) . '</option>';
 		}
 
@@ -2225,5 +2226,22 @@ if ( ! function_exists( 'woocommerce_account_edit_account' ) ) {
 	 */
 	function woocommerce_account_edit_account() {
 		WC_Shortcode_My_Account::edit_account();
+	}
+}
+
+/**
+ * Get logout endpoint.
+ *
+ * @since  2.6.9
+ * @return string
+ */
+function wc_logout_url( $redirect = '' ) {
+	$logout_endpoint = get_option( 'woocommerce_logout_endpoint' );
+	$redirect        = $redirect ? $redirect : wc_get_page_permalink( 'myaccount' );
+
+	if ( $logout_endpoint ) {
+		return wc_get_endpoint_url( 'customer-logout', '', $redirect );
+	} else {
+		return wp_logout_url( $redirect );
 	}
 }

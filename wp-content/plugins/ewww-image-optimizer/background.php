@@ -18,6 +18,7 @@ class EWWWIO_Media_Background_Process extends WP_Background_Process {
 		$id = $item['id'];
 		if ( empty( $item['attempts'] ) ) {
 			$item['attempts'] = 0;
+			sleep(4); // on the first attempt, hold off and wait for the db to catchup
 		}
 		ewwwio_debug_message( "background processing $id, type: " . $item['type'] );
 		$type = $item['type'];
@@ -155,12 +156,12 @@ class EWWWIO_Ngg_Background_Process extends WP_Background_Process {
 		} elseif ( empty( $image ) ) {
 			ewwwio_debug_message( "could not retrieve meta, out of attempts" );
 			ewww_image_optimizer_debug_log();
-			delete_transient( 'ewwwio-background-in-progress-flag-' . $id );
+			delete_transient( 'ewwwio-background-in-progress-ngg-' . $id );
 			return false;
 		}
-		global $ewwwflag;
-		$ewwwflag->ewww_added_new_image( $id, $image );
-		delete_transient( 'ewwwio-background-in-progress-flag-' . $id );
+		global $ewwwngg;
+		$ewwwngg->ewww_added_new_image( $id, $image );
+		delete_transient( 'ewwwio-background-in-progress-ngg-' . $id );
 		sleep( ewww_image_optimizer_get_option( 'ewww_image_optimizer_delay' ) );
 		ewww_image_optimizer_debug_log();
 		return false;
@@ -236,7 +237,7 @@ class EWWWIO_Async_Request extends WP_Async_Request {
 		if ( ! empty( $_POST['ewwwio_path'] ) && $size == 'full' ) {
 			$file_path = $this->find_file( $_POST['ewwwio_path'] );
 			if ( ! empty( $file_path ) ) {
-				ewwwio_debug_message( 'processing async optimization request' );
+				ewwwio_debug_message( "processing async optimization request for {$_POST['ewwwio_path']}" );
 				list( $file, $msg, $conv, $original ) = ewww_image_optimizer( $file_path, 1, false, false, true );
 			} else {
 				ewwwio_debug_message( "could not process async optimization request for {$_POST['ewwwio_path']}" );
@@ -244,7 +245,7 @@ class EWWWIO_Async_Request extends WP_Async_Request {
 		} elseif ( ! empty( $_POST['ewwwio_path'] ) ) {
 			$file_path = $this->find_file( $_POST['ewwwio_path'] );
 			if ( ! empty( $file_path ) ) {
-				ewwwio_debug_message( 'processing async optimization request' );
+				ewwwio_debug_message( "processing async optimization request for {$_POST['ewwwio_path']}" );
 				list( $file, $msg, $conv, $original ) = ewww_image_optimizer( $file_path );
 			} else {
 				ewwwio_debug_message( "could not process async optimization request for {$_POST['ewwwio_path']}" );
@@ -253,6 +254,7 @@ class EWWWIO_Async_Request extends WP_Async_Request {
 			ewwwio_debug_message( 'ignored async optimization request' );
 			return;
 		}
+		ewww_image_optimizer_hidpi_optimize( $file_path );
 		ewwwio_debug_message( 'checking for: ' . $file_path . '.processing' );
 		if ( is_file( $file_path . '.processing' ) ) {
 			ewwwio_debug_message( 'removing ' . $file_path . '.processing' );
@@ -295,11 +297,40 @@ class EWWWIO_Async_Key_Verification extends WP_Async_Request {
 	protected $action = 'ewwwio_async_key_verification';
 
 	protected function handle() {
+		session_write_close();
 		ewww_image_optimizer_cloud_verify( false );
 		ewww_image_optimizer_debug_log();
-		session_write_close();
 	}
 }
 
 global $ewwwio_async_key_verification;
 $ewwwio_async_key_verification = new EWWWIO_Async_Key_Verification();
+
+class EWWWIO_Test_Async_Handler extends WP_Async_Request {
+
+	protected $action = 'ewwwio_test_optimize';
+
+	protected function handle() {
+		session_write_close();
+		if ( empty( $_POST['ewwwio_test_verify'] ) ) {
+			return;
+		}
+		$item = $_POST['ewwwio_test_verify'];
+		ewwwio_debug_message( "testing async handling, received $item" );
+		if ( ewww_image_optimizer_detect_wpsf_location_lock() ) {
+			ewwwio_debug_message( 'detected location lock, not enabling background opt' );
+			ewww_image_optimizer_debug_log();
+			return;
+		}
+		if ( $item != '949c34123cf2a4e4ce2f985135830df4a1b2adc24905f53d2fd3f5df5b162932' ) {
+			ewwwio_debug_message( 'wrong item received, not enabling background opt' );
+			ewww_image_optimizer_debug_log();
+			return;
+		}
+		ewww_image_optimizer_set_option( 'ewww_image_optimizer_background_optimization', true );
+		ewww_image_optimizer_debug_log();
+	}
+}
+
+global $ewwwio_test_async;
+$ewwwio_test_async = new EWWWIO_Test_Async_Handler();

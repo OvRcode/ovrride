@@ -1,0 +1,26 @@
+body.login {
+  background: black;
+}
+
+.login h1 a,
+.interim-login.login h1 a {
+  width: 300px;
+  height: 214px;
+  background: url("/wp-content/themes/ovr2016/includes/images/ovr_login.png");
+}
+
+.login #backtoblog a, .login #nav a {
+  color: white;
+}
+
+.wp-core-ui .button-group.button-large .button, .wp-core-ui .button.button-large {
+  background: rgb(22,175,225);
+}
+
+body.login div#login form#loginform {
+  background: rgb(99, 99, 99);
+}
+
+label[for=user_login], label[for=user_pass], label[for=rememberme] {
+  color: white;
+}

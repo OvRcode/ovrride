@@ -3,7 +3,7 @@
 Plugin Name:    Widget Shortcode
 Description:    Output widgets using a simple shortcode.
 Author:         Hassan Derakhshandeh
-Version:        0.2.6
+Version:        0.3.0
 Text Domain:    widget-shortcode
 Domain Path:    /languages
 
@@ -88,7 +88,7 @@ class Widget_Shortcode {
 	 * @return void
 	 */
 	function in_widget_form( $widget, $return, $instance ) {
-		echo '<p>' . __( 'Shortcode', 'widget-shortcode' ) . ': ' . ( ( $widget->number == '__i__' ) ? __( 'Please save this first.', 'widget-shortcode' ) : '<code>[widget id="'. $widget->id .'"]</code>' ) . '</p>';
+		echo '<p>' . __( 'Shortcode', 'widget-shortcode' ) . ': ' . ( ( $widget->number == '__i__' ) ? __( 'Please save this first.', 'widget-shortcode' ) : '<input type="text" value="' . esc_attr( '[widget id="'. $widget->id .'"]' ) . '" readonly="readonly" class="widefat" onclick="this.select()" />' ) . '</p>';
 	}
 
 	/**
@@ -125,11 +125,13 @@ class Widget_Shortcode {
 	 */
 	public function get_widget_options( $widget_id ) {
 		global $wp_registered_widgets;
-		preg_match( '/(\d+)/', $widget_id, $number );
-		$options = get_option( $wp_registered_widgets[$widget_id]['callback'][0]->option_name );
-		$instance = $options[$number[0]];
+		if( isset( $wp_registered_widgets[ $widget_id ] ) ) {
+			preg_match( '/(\d+)/', $widget_id, $number );
+			$options = get_option( $wp_registered_widgets[ $widget_id ]['callback'][0]->option_name );
+			$instance = $options[$number[0]];
+		}
 
-		return $instance;
+		return isset( $instance ) ? $instance : array();
 	}
 
 	/**
@@ -172,21 +174,17 @@ class Widget_Shortcode {
 		$options = ( ! empty( $wp_registered_widgets ) && ! empty( $wp_registered_widgets[$id] ) ) ? get_option( $wp_registered_widgets[$id]['callback'][0]->option_name ) : array();
 		$instance = isset( $options[$number[0]] ) ? $options[$number[0]] : array();
 		$class = get_class( $wp_registered_widgets[$id]['callback'][0] );
-		$widgets_map = $this->get_widgets_map();
-		$_original_widget_position = $widgets_map[$id];
 
 		// maybe the widget is removed or de-registered
 		if( ! $class )
 			return;
 
-		$show_title = ( '0' == $title ) ? false : true;
-
 		/* build the widget args that needs to be filtered through dynamic_sidebar_params */
 		$params = array(
 			0 => array(
-				'name' => isset( $wp_registered_sidebars[$_original_widget_position]['name'] ) ? $wp_registered_sidebars[$_original_widget_position]['name'] : '',
-				'id' => isset( $wp_registered_sidebars[$_original_widget_position]['id'] ) ? $wp_registered_sidebars[$_original_widget_position]['id'] : '',
-				'description' => isset( $wp_registered_sidebars[$_original_widget_position]['description'] ) ? $wp_registered_sidebars[$_original_widget_position]['description'] : '',
+				'name' => '',
+				'id' => '',
+				'description' => '',
 				'before_widget' => $before_widget,
 				'before_title' => $before_title,
 				'after_title' => $after_title,
@@ -198,11 +196,21 @@ class Widget_Shortcode {
 				'number' => $number[0]
 			)
 		);
+
+		// if feasable, use sidebar's parameters
+		$widgets_map = $this->get_widgets_map();
+		if( isset( $widgets_map[$id] ) ) {
+			$params[0]['name'] = $wp_registered_sidebars[ $widgets_map[$id] ]['name'];
+			$params[0]['id'] = $wp_registered_sidebars[ $widgets_map[$id] ]['id'];
+			$params[0]['description'] = $wp_registered_sidebars[ $widgets_map[$id] ]['description'];
+		}
+
 		$params = apply_filters( 'dynamic_sidebar_params', $params );
 
+		$show_title = ( '0' === $title || 'no' === $title || false === $title ) ? false : true;
 		if( ! $show_title ) {
-			$params[0]['before_title'] = '<h3 class="widgettitle">';
-			$params[0]['after_title'] = '</h3>';
+			$params[0]['before_title'] = '<!-- widget_shortcode_before_title -->';
+			$params[0]['after_title'] = '<!-- widget_shortcode_after_title -->';
 		} elseif( is_string( $title ) && strlen( $title ) > 0 ) {
 			$instance['title'] = $title;
 		}
@@ -227,7 +235,7 @@ class Widget_Shortcode {
 
 		// supress the title if we wish
 		if( ! $show_title ) {
-			$content = preg_replace( '/<h3 class="widgettitle">(.*?)<\/h3>/', '', $content );
+			$content = preg_replace( '/<!-- widget_shortcode_before_title -->(.*?)<!-- widget_shortcode_after_title -->/', '', $content );
 		}
 
 		if( $echo !== true )
@@ -255,10 +263,10 @@ class Widget_Shortcode {
 		if( ! empty( $all_widgets ) ) {
 			foreach( $all_widgets as $id => $position ) {
 				if( $position == 'arbitrary' ) {
-					$title = $wp_registered_widgets[$id]['name'];
+					$title = isset( $wp_registered_widgets[$id]['name'] ) ? $wp_registered_widgets[$id]['name'] : '';
 					$options = $this->get_widget_options( $id );
 					if( isset( $options['title'] ) && ! empty( $options['title'] ) ) {
-						$title .= ': ' . $options['title'];
+						$title = join( ': ', array( $title, $options['title'] ) );
 					}
 					$widgets[] = array(
 						'id' => $id,

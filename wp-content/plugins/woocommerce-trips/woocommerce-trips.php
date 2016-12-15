@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.3.0
+Version: 1.3.1
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -12,7 +12,7 @@ Text Domain: woocommerce-trips
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-require_once( ABSPATH . "/wp-load.php");
+
 include( 'includes/wc-checks.php' );
 
 if ( ! function_exists( 'is_woocommerce_active' ) ) {
@@ -44,7 +44,6 @@ class WC_Trips {
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
           wp_schedule_event(strtotime(date('m/d/y')), 'daily', 'wc_check_auto_reports');
         }
-        //$this->check_auto_reports();
 
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
@@ -412,7 +411,9 @@ STYLE;
     }
     private function html_content($meta_key) {
       global $product;
+      echo "<div class='clearfix'>";
       echo apply_filters('the_content', do_shortcode( shortcode_unautop( get_post_meta( $product->id, $meta_key, true ) ) ) );
+      echo "</div>";
     }
     public function itinerary_content(){
       $this->html_content('_wc_trip_itinerary');
@@ -465,7 +466,7 @@ MAP;
         global $product;
 
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
-
+        echo "<div class='clearfix'>";
         echo "<h4>&nbsp;&nbsp;Bus Times:</h4>";
         $leftRight = "left";
         $count = 0;
@@ -489,6 +490,7 @@ TEMPHTML;
             <div class="busLeftColumn">{$leftColumnContent}</div>
             <div class="busRightColumn">{$rightColumnContent}</div>
 TESTING;
+        echo "</div>";
     }
     public function includes_content() {
       $this->html_content('_wc_trip_includes');

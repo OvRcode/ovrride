@@ -45,10 +45,9 @@ var BJLL = {
 	},
 
 	show: function( el ) {
-
 		el.className = el.className.replace( /(?:^|\s)lazy-hidden(?!\S)/g , '' );
-
 		el.addEventListener( 'load', function() {
+			el.className += " lazy-loaded";
 			BJLL.customEvent( el, 'lazyloaded' );
 		}, false );
 
@@ -56,8 +55,8 @@ var BJLL = {
 
 		if ( 'image' == type ) {
 			el.setAttribute( 'src', el.getAttribute('data-lazy-src') );
-			if ( null != el.getAttribute('data-srcset') ) {
-				el.setAttribute( 'srcset', el.getAttribute('data-srcset') );
+			if ( null != el.getAttribute('data-lazy-srcset') ) {
+				el.setAttribute( 'srcset', el.getAttribute('data-lazy-srcset') );
 			}
 		} else if ( 'iframe' == type ) {
 			var s = el.getAttribute('data-lazy-src'),

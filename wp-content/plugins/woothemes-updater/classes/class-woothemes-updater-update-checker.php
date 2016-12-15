@@ -88,7 +88,7 @@ class WooThemes_Updater_Update_Checker {
 
 	/**
 	 * Called the WordPress update process finishes and used
-	 * to clear WooThemes Helper cache when a plugin or theme
+	 * to clear WooCommerce Helper cache when a plugin or theme
 	 * is updated to avoid showing updates for already updated
 	 * products.
 	 *
@@ -113,14 +113,14 @@ class WooThemes_Updater_Update_Checker {
 	}
 
 	/**
-	 * Make a call to WooThemes.com and fetch update info for all products and put in transient for 30min
+	 * Make a call to WooCommerce.com and fetch update info for all products and put in transient for 30min
 	 * @return bool|array
 	 */
 	public function fetch_remote_update_data() {
 		global $woothemes_updater;
 		$plugins_to_fetch_updates_for = array();
 
-		// Loop through all WooThemes plugins/extensions
+		// Loop through all WooCommerce plugins/extensions
 		foreach ( $this->plugins as $plugin ) {
 			// $plugin - 0=file, 1=product_id, 2=file_id, 3=license_hash, 4=version
 			// Always fetch all plugins data in one call, we loop to append the url
@@ -129,7 +129,7 @@ class WooThemes_Updater_Update_Checker {
 		}
 
 		$themes_to_check_updates_for = array();
-		// Loop through all WooThemes themes
+		// Loop through all WooCommerce themes
 		foreach ( $this->themes as $theme ) {
 			// $theme - 0=file, 1=product_id, 2=file_id, 3=license_hash, 4=version
 			// Always fetch all theme data in one call, we loop to append the url
@@ -156,7 +156,7 @@ class WooThemes_Updater_Update_Checker {
 			$args['helper'] = $helper_update_info;
 		}
 
-		// We store the update data in a cache for 5 minutes, to avoid multiple calls to WooThemes.com as
+		// We store the update data in a cache for 5 minutes, to avoid multiple calls to WooCommerce.com as
 		// this transient filter fires multiple times when checking for updates in WP. Cache can be cleared
 		// by using the check for updates button on the core updates page in WP
 		if ( FALSE == $response = get_transient( 'woothemes_helper_updates' ) ) {
@@ -234,7 +234,7 @@ class WooThemes_Updater_Update_Checker {
 			update_option( 'woothemes-updater-activated', $activated_products );
 		}
 
-		// Set WooThemes Helper update info into transient
+		// Set WooCommerce Helper update info into transient
 		if ( isset( $response->helper ) ) {
 			foreach ( $response->helper as $plugin_key => $plugin ) {
 				if ( isset( $plugin->no_update ) ) {
@@ -278,7 +278,7 @@ class WooThemes_Updater_Update_Checker {
 			foreach ( $response->themes as $theme_key => $theme ) {
 				if ( isset( $theme->new_version ) ) {
 					if ( isset( $theme->license_expiry_date ) ) {
-						$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
+						$activated_products[ $theme_key . '/style.css' ][3] = $theme->license_expiry_date;
 					}
 					$transient->response[ $theme_key ]['new_version'] = $theme->new_version;
 		        	$transient->response[ $theme_key ]['url'] = 'http://woocommerce.com/';
@@ -291,7 +291,7 @@ class WooThemes_Updater_Update_Checker {
 					$woothemes_updater->admin->deactivate_product( $theme_key . '/style.css', true );
 				} else {
 					if ( isset( $theme->license_expiry_date ) ) {
-						$activated_products[ $theme_key ][3] = $theme->license_expiry_date;
+						$activated_products[ $theme_key . '/style.css' ][3] = $theme->license_expiry_date;
 					}
 				}
 			}
@@ -342,9 +342,10 @@ class WooThemes_Updater_Update_Checker {
 		// Loop through all woo plugins
 		foreach ( $this->plugins as $plugin ) {
 			// $plugin - 0=file, 1=product_id, 2=file_id, 3=license_hash
+			$plugin_slug = dirname( $plugin[0] );
 
 			// Check if this plugins API is about one of the woo plugins
-			if ( $args->slug == $plugin[0] && isset( $transient->checked[ $plugin[0] ] ) ) {
+			if ( ( $args->slug == $plugin_slug || $args->slug == $plugin[0] ) && isset( $transient->checked[ $plugin[0] ] ) ) {
 				$found = true;
 				$found_plugin = $plugin;
 			}
@@ -441,7 +442,7 @@ class WooThemes_Updater_Update_Checker {
 			) );
 		// Make sure the request was successful
 		if ( is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) != 200 ) {
-			trigger_error( __( 'An unexpected error occurred. Something may be wrong with WooCommerce.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://support.woothemes.com/hc/en-us">help center</a>.', 'woothemes-updater' ) . ' ' . __( '(WordPress could not establish a secure connection to WooThemes.com. Please contact your server administrator.)', 'woothemes-updater' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
+			trigger_error( __( 'An unexpected error occurred. Something may be wrong with WooCommerce.com or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://support.woothemes.com/hc/en-us">help center</a>.', 'woothemes-updater' ) . ' ' . __( '(WordPress could not establish a secure connection to WooCommerce.com. Please contact your server administrator.)', 'woothemes-updater' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
 			return false;
 		}
 		// Read server response, which should be an object

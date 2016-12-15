@@ -86,7 +86,7 @@ class WooThemes_Updater_Admin {
 		$this->pending_products = array();
 
 		// Setup URLs to go to the Woo.com account management screens.
-		$utm_tags = array( 
+		$utm_tags = array(
 			'utm_source' => 'helper',
 			'utm_medium' => 'product',
 			'utm_content' => 'subscriptiontab',
@@ -148,7 +148,7 @@ class WooThemes_Updater_Admin {
 
 			if ( $has_inactive_products ) {
 				$url = add_query_arg( 'page', 'woothemes-helper', network_admin_url( 'index.php' ) );
-				echo '<div id="woothemes-helper-product-activation-message" class="updated fade notice is-dismissible"><p>' . sprintf( __( '%sYour WooThemes products are almost ready.%s To get started, %sactivate your product subscriptions%s.', 'woothemes-updater' ), '<strong>', '</strong>', '<a href="' . esc_url( $url ) . '">', '</a>' ) . '</p></div>' . "\n";
+				echo '<div id="woothemes-helper-product-activation-message" class="updated fade notice is-dismissible"><p>' . sprintf( __( '%sYour WooCommerce products are almost ready.%s To get started, %sactivate your product subscriptions%s.', 'woothemes-updater' ), '<strong>', '</strong>', '<a href="' . esc_url( $url ) . '">', '</a>' ) . '</p></div>' . "\n";
 			}
 		}
 	} // End maybe_display_activation_notice()
@@ -190,12 +190,15 @@ class WooThemes_Updater_Admin {
 			$response = 1;
 		} else {
 			$data = get_transient( 'woothemes_helper_updates' );
+			$maybe_theme_name = str_replace( '/style.css', '', $file );
 
 			if ( is_object( $data ) ) {
 				if ( isset( $data->plugins->$file->autorenew ) ) {
 					$response = (bool)$data->plugins->$file->autorenew;
-				} else if ( isset( $data->themes->$file->autorenew ) ) {
-					$response = (bool)$data->themes->$file->autorenew;
+				} elseif ( isset( $data->themes->{$maybe_theme_name}->autorenew ) ) {
+					$response = (bool) $data->themes->{$maybe_theme_name}->autorenew;
+				} elseif ( isset( $data->themes->{$file}->autorenew ) ) {
+					$response = (bool) $data->themes->{$file}->autorenew;
 				}
 			}
 		}
@@ -221,7 +224,7 @@ class WooThemes_Updater_Admin {
 				continue;
 			}
 
-			if ( isset( $product['license_expiry'] ) ) {
+			if ( isset( $product['license_expiry'] ) && strtotime( $product['license_expiry'] ) ) {
 				try {
 					$date = new DateTime( $product['license_expiry'] );
 				} catch ( Exception $e ) {
@@ -399,7 +402,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 		echo '<img src="' . esc_url( $this->assets_url . 'images/getting-started.png' ) . '" alt="' . __( 'Getting Started', 'woothemes-updater' ) . '" />' . "\n";
 		echo '<h4>' . __( 'Getting Started', 'woothemes-updater' ) . '</h4>' . "\n";
 		echo '<ul>' . $this->_generate_link_list( $links ) . "\n";
-		echo '<li><em><a href="' . esc_url( 'https://twitter.com/WooCommerce/' ) . '" title="' . esc_attr__( 'Follow WooCommerce on Twitter', 'woothemes-updater' ) . '">' . __( 'Follow WooThemes on Twitter', 'woothemes-updater' ) . '</a></em></li>' . "\n";
+		echo '<li><em><a href="' . esc_url( 'https://twitter.com/WooCommerce/' ) . '" title="' . esc_attr__( 'Follow WooCommerce on Twitter', 'woothemes-updater' ) . '">' . __( 'Follow WooCommerce on Twitter', 'woothemes-updater' ) . '</a></em></li>' . "\n";
 		echo '</ul>' . "\n";
 	} // End display_general_links()
 
@@ -792,7 +795,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	} // End get_activated_products()
 
 	/**
-	 * Get a list of products from WooThemes.
+	 * Get a list of products from WooCommerce.
 	 *
 	 * @access public
 	 * @since   1.0.0
@@ -806,7 +809,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	} // End get_product_reference_list()
 
 	/**
-	 * Get a list of WooThemes products found on this installation.
+	 * Get a list of WooCommerce products found on this installation.
 	 *
 	 * @access public
 	 * @since   1.0.0
@@ -815,8 +818,8 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	protected function get_detected_products () {
 		$response = array();
 		$products = get_plugins();
-
 		$themes = wp_get_themes();
+
 		if ( 0 < count( $themes ) ) {
 			foreach ( $themes as $k => $v ) {
 				$filepath = basename( $v->__get( 'stylesheet_dir' ) ) . '/style.css';
@@ -827,9 +830,10 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 		if ( is_array( $products ) && ( 0 < count( $products ) ) ) {
 			$reference_list = $this->get_product_reference_list();
 			$activated_products = $this->get_activated_products();
+
 			if ( is_array( $reference_list ) && ( 0 < count( $reference_list ) ) ) {
 				foreach ( $products as $k => $v ) {
-					if ( in_array( $k, array_keys( $reference_list ) ) ) {
+					if ( isset( $reference_list[$k] ) ) {
 						$status = 'inactive';
 						$license_expiry = __( 'Please connect', 'woothemes-updater' );
 						if ( in_array( $k, array_keys( $activated_products ) ) ) {
@@ -955,7 +959,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	 * Deactivate a given product key.
 	 * @since    1.0.0
 	 * @param    string $filename File name of the to deactivate plugin licence
-	 * @param    bool $local_only Deactivate the product locally without pinging WooThemes.com.
+	 * @param    bool $local_only Deactivate the product locally without pinging WooCommerce.com.
 	 * @return   boolean          Whether or not the deactivation was successful.
 	 */
 	public function deactivate_product ( $filename, $local_only = false ) {
@@ -989,6 +993,11 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	 * Also handles tracking optin.
 	 */
 	public function handle_master_key() {
+		// If we're not where we want to be (the 'woothemes-helper' page), then get out quick.
+		if ( ! isset( $_GET['page'] ) || 'woothemes-helper' != $_GET['page'] ) {
+			return;
+		}
+
 		// Token
 		$token = isset( $_GET['key'] ) ? sanitize_text_field( $_GET['key'] ) : false;
 		if ( $token ) {
@@ -1028,7 +1037,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	}
 
 	/**
-	 * Load an instance of the updater class for each activated WooThemes Product.
+	 * Load an instance of the updater class for each activated WooCommerce Product.
 	 * @access public
 	 * @since  1.0.0
 	 * @return void
@@ -1057,7 +1066,7 @@ if ( jQuery( 'form[name="upgrade-themes"]' ).length ) {
 	} // End load_updater_instances()
 
 	/**
-	 * Run checks against the API to ensure the product keys are actually active on WooThemes.com. If not, deactivate them locally as well.
+	 * Run checks against the API to ensure the product keys are actually active on WooCommerce.com. If not, deactivate them locally as well.
 	 * @access public
 	 * @since  1.3.0
 	 * @return void

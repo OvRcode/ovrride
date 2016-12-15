@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+	exit;
+}
+
 /**
 * class for managing the plugin
 */
@@ -43,6 +47,12 @@ class SSLInsecureContentFixer {
 			if (!is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) {
 				add_filter('wp_get_attachment_url', 'ssl_insecure_content_fix_url', 100);
 			}
+
+			// filter WooCommerce cached widget ID
+			add_filter('woocommerce_cached_widget_id', array(__CLASS__, 'woocommerceWidgetID'));
+
+			// filter Gravity Forms confirmation content
+			add_filter('gform_confirmation', array($this, 'fixContent'));
 
 			// filter plugin Image Widget old-style image links
 			add_filter('image_widget_image_url', 'ssl_insecure_content_fix_url');
@@ -144,9 +154,9 @@ class SSLInsecureContentFixer {
 
 		if (!empty($this->options['fix_specific']['woo_https'])) {
 			// stop old WooCommerce versions from falsely detecting HTTPS from Google Chrome/Chromium
-			// @link http://develop.woothemes.com/woocommerce/2015/07/woocommerce-2-3-13-security-and-maintenance-release/
+			// @link https://woocommerce.wordpress.com/2015/07/07/woocommerce-2-3-13-security-and-maintenance-release/
 			// @link https://github.com/woothemes/woocommerce/issues/8479
-			// @link http://superuser.com/a/943989/473190
+			// @link https://superuser.com/a/943989/473190
 			unset($_SERVER['HTTP_HTTPS']);
 		}
 	}
@@ -155,7 +165,7 @@ class SSLInsecureContentFixer {
 	* load text translations
 	*/
 	public function init() {
-		load_plugin_textdomain('ssl-insecure-content-fixer', false, basename(dirname(SSLFIX_PLUGIN_FILE)) . '/languages/');
+		load_plugin_textdomain('ssl-insecure-content-fixer');
 	}
 
 	/**
@@ -272,6 +282,17 @@ class SSLInsecureContentFixer {
 		$uploads['baseurl']	= ssl_insecure_content_fix_url($uploads['baseurl']);
 
 		return $uploads;
+	}
+
+	/**
+	* make sure that WooCommerce caches its widgets on HTTPS separately to on HTTP
+	* @param string $widget_id
+	* @return string
+	*/
+	public static function woocommerceWidgetID($widget_id) {
+		$widget_id .= '_https';
+
+		return $widget_id;
 	}
 
 }

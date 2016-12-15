@@ -170,11 +170,13 @@
 
 		// Upon gaining focus
 		.on( 'focusin touchstart', '.variations select', function() {
-			$( this ).find( 'option:selected' ).attr( 'selected', 'selected' );
+			if ( 'ontouchstart' in window || navigator.maxTouchPoints ) {
+				$( this ).find( 'option:selected' ).attr( 'selected', 'selected' );
 
-			if ( ! $use_ajax ) {
-				$form.trigger( 'woocommerce_variation_select_focusin' );
-				$form.trigger( 'check_variations', [ $( this ).data( 'attribute_name' ) || $( this ).attr( 'name' ), true ] );
+				if ( ! $use_ajax ) {
+					$form.trigger( 'woocommerce_variation_select_focusin' );
+					$form.trigger( 'check_variations', [ $( this ).data( 'attribute_name' ) || $( this ).attr( 'name' ), true ] );
+				}
 			}
 		} )
 
@@ -332,18 +334,20 @@
 			// Loop through selects and disable/enable options based on selections
 			$form.find( '.variations select' ).each( function( index, el ) {
 
-				var current_attr_name, current_attr_select = $( el );
+				var current_attr_name, current_attr_select = $( el ),
+					show_option_none                       = $( el ).data( 'show_option_none' ),
+					option_gt_filter                       = 'no' === show_option_none ? '' : ':gt(0)';
 
 				// Reset options
 				if ( ! current_attr_select.data( 'attribute_options' ) ) {
-					current_attr_select.data( 'attribute_options', current_attr_select.find( 'option:gt(0)' ).get() );
+					current_attr_select.data( 'attribute_options', current_attr_select.find( 'option' + option_gt_filter ).get() );
 				}
 
-				current_attr_select.find( 'option:gt(0)' ).remove();
+				current_attr_select.find( 'option' + option_gt_filter ).remove();
 				current_attr_select.append( current_attr_select.data( 'attribute_options' ) );
-				current_attr_select.find( 'option:gt(0)' ).removeClass( 'attached' );
-				current_attr_select.find( 'option:gt(0)' ).removeClass( 'enabled' );
-				current_attr_select.find( 'option:gt(0)' ).removeAttr( 'disabled' );
+				current_attr_select.find( 'option' + option_gt_filter ).removeClass( 'attached' );
+				current_attr_select.find( 'option' + option_gt_filter ).removeClass( 'enabled' );
+				current_attr_select.find( 'option' + option_gt_filter ).removeAttr( 'disabled' );
 
 				// Get name from data-attribute_name, or from input name if it doesn't exist
 				if ( typeof( current_attr_select.data( 'attribute_name' ) ) !== 'undefined' ) {
@@ -385,7 +389,7 @@
 
 									} else {
 
-										current_attr_select.find( 'option:gt(0)' ).addClass( 'attached ' + variation_active );
+										current_attr_select.find( 'option' + option_gt_filter ).addClass( 'attached ' + variation_active );
 
 									}
 								}
@@ -395,10 +399,10 @@
 				}
 
 				// Detach unattached
-				current_attr_select.find( 'option:gt(0):not(.attached)' ).remove();
+				current_attr_select.find( 'option' + option_gt_filter + ':not(.attached)' ).remove();
 
 				// Grey out disabled
-				current_attr_select.find( 'option:gt(0):not(.enabled)' ).attr( 'disabled', 'disabled' );
+				current_attr_select.find( 'option' + option_gt_filter + ':not(.enabled)' ).attr( 'disabled', 'disabled' );
 
 			});
 

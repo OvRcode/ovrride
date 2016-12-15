@@ -1,7 +1,7 @@
 {
   "name": "woothemes-updater",
-  "version": "1.7.0",
-  "description": "WooThemes Helper",
+  "version": "1.7.2",
+  "description": "WooCommerce Helper",
   "main": "Gruntfile.js",
   "dependencies": {
     "grunt": "^0.4.5",
