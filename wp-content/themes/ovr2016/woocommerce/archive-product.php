@@ -29,10 +29,10 @@ get_header( 'alt' ); ?>
 		?>
 	<div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
 
-		<?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
+		<?php if ( apply_filters( 'woocommerce_show_page_title', true ) &&
+		"Shop" != woocommerce_page_title(FALSE)) : ?>
+				<h1 class="page-title"><?php woocommerce_page_title(); ?></h1>
 
-			<h1 class="page-title"><?php woocommerce_page_title(); ?></h1>
-		
 		<?php endif; ?>
 
 		<?php do_action( 'woocommerce_archive_description' ); ?>
