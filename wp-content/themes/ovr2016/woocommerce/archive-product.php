@@ -28,7 +28,14 @@ get_header( 'alt' ); ?>
 		do_action( 'woocommerce_before_main_content' );
 		?>
 	<div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
-
+		<div class="row">
+			<div class="col-sm-12 shop_buttons">
+				<a class="button" href="/product-category/gear/">Gear</a>
+				<a class="button" href="/product-tag/gift-certificate-2/">Gift Certificates</a>
+				<a class="button" href="/product-category/high-five-2/">High Fives</a>
+				<a class="button" href="/shop/">Book A Trip</a>
+			</div>
+		</div>
 		<?php if ( apply_filters( 'woocommerce_show_page_title', true ) &&
 		"Shop" != woocommerce_page_title(FALSE)) : ?>
 				<h1 class="page-title"><?php woocommerce_page_title(); ?></h1>

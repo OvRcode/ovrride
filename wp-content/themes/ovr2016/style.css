@@ -800,3 +800,8 @@ table.woocommerce-MyAccount-orders.shop_table.shop_table_responsive.my_account_o
 #adminbarsearch {
 		display: none;
 }
+
+div.shop_buttons {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

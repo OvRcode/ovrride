@@ -1,5 +1,10 @@
 (function($){
-
+  $(".shop_buttons a").each(function(key, value){
+    if ( window.location.pathname.search($(value).attr('href')) >= 0 ) {
+    //if ( $(value).attr('href') == window.location.pathname ) {
+      $(value).hide();
+    }
+  });
   $(window).on("resize", function(){
     $(".footer-square").height($(".footer-square").width());
     //$(".footer-square").width($(".footer-square").width());
