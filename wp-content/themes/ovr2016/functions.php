@@ -482,11 +482,13 @@ function ovr_checkout_fields( $fields ) {
 add_filter('wp_nav_menu_items', 'ovr_menu_mods', 10, 2);
 
 function ovr_menu_mods($items, $args) {
+  if ( strpos($args->container_class, "collapse") === FALSE ) {
+    return $items;
+  }
   ob_start();
   wp_loginout('index.php');
   $loginoutlink = ob_get_contents();
   ob_end_clean();
-  $items = "<li><a href='" . get_site_url() . "'><img src='" . get_template_directory_uri() . "/includes/images/ovr_logo.png'></a></li>" . $items;
   $items .= '<li class="hidden-sm hidden-xs"><a>|</a></li><li><a href="/cart" title="Cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>';
   $items .= '<li>'. $loginoutlink .'</li>';
   return $items;
@@ -501,3 +503,14 @@ function ovr_logo_url() {
     return home_url();
 }
 add_filter( 'login_headerurl', 'ovr_logo_url' );
+
+
+function register_ovr_menus() {
+  register_nav_menus(
+    array(
+      'main-no-collapse' => __( 'Main Menu No Collapse' ),
+      'main-collapse' => __( 'Main Menu Collapse' )
+    )
+  );
+}
+add_action( 'init', 'register_ovr_menus' );

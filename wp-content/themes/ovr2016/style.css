@@ -3,7 +3,7 @@ Theme Name: OvR-2016
 Theme URI: http://themekraft.com/store/_tk-free-wordpress-starter-theme-based-on-twitter-bootstrap/
 Author: ThemeKraft, Mike Barnard
 Description: OvRride 2016 Redesign
-Version: 1.1.10
+Version: 1.1.11
 License: GNU General Public License v3.0 /
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Tags: gray, light, text-columns, right-sidebar, responsive-layout, custom-background, custom-colors, custom-header, custom-menu, featured-images, flexible-header, sticky-post,  theme-options, threaded-comments, translation-ready
@@ -282,7 +282,7 @@ nav .form-control {
 	height: inherit;
 }
 .navbar-nav li a {
- line-height: 50px;
+ line-height: 80px;
 }
 /* Larger nav font */
 .navbar-nav > li {
@@ -756,6 +756,7 @@ span.rate.heading {
 	color: white;
 }
 /* Change nav breakpoint to 990px */
+/*
 @media (max-width: 990px) {
     .navbar-header {
         float: none;
@@ -791,7 +792,7 @@ span.rate.heading {
     .collapse.in{
         display:block !important;
     }
-}
+}*/
 
 table.woocommerce-MyAccount-orders.shop_table.shop_table_responsive.my_account_orders.account-orders-table {
 	background: white;
@@ -804,4 +805,36 @@ table.woocommerce-MyAccount-orders.shop_table.shop_table_responsive.my_account_o
 div.shop_buttons {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+/* Logo on main menu */
+#main-no-collapse li:first-of-type {
+	padding: 15px;
+}
+#main-no-collapse li:first-of-type a {
+	background: url('includes/images/ovr_logo.png');
+	width: 113px;
+	height: 80px;
+}
+
+#main-no-collapse ul {
+	float: right;
+}
+#main-no-collapse li {
+	float: left;
+
+}
+
+#navbar-collapse-button {
+	position: absolute;
+	top: 30px;
+	right: 10px;
+}
+
+@media (max-width: 767px) {
+	#main-no-collapse li:first-of-type {
+		padding: 20px;
+	}
+	.navbar-nav li a {
+	 line-height: 99px;
+	}
 }
