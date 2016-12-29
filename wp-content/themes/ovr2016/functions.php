@@ -118,7 +118,7 @@ function _tk_scripts() {
 
 	wp_enqueue_script( '_tk-skip-link-focus-fix', THEME_DIR_URI . '/includes/js/skip-link-focus-fix.js', array(), '20130115', true );
 
-  wp_enqueue_script( 'ovr_footer_script', THEME_DIR_URI . '/includes/js/ovr-footer.js', array('jquery'), false, true);
+  wp_enqueue_script( 'ovr_footer_script', THEME_DIR_URI . '/includes/js/ovr-footer.js', array('jquery'), 1.0, true);
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
