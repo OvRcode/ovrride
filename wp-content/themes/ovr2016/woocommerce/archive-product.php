@@ -12,6 +12,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+wp_enqueue_script('ovr_shop_js', THEME_DIR_URI . '/includes/js/ovr_shop.min.js', array('jquery'), "1.0", true);
 
 get_header( 'alt' ); ?>
 

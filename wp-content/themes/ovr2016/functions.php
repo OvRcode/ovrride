@@ -514,3 +514,33 @@ function register_ovr_menus() {
   );
 }
 add_action( 'init', 'register_ovr_menus' );
+
+add_filter( 'woocommerce_product_add_to_cart_text' , 'custom_woocommerce_product_add_to_cart_text' );
+
+/**
+ * custom_woocommerce_template_loop_add_to_cart
+*/
+function custom_woocommerce_product_add_to_cart_text() {
+	global $product;
+
+	$product_type = $product->product_type;
+
+	switch ( $product_type ) {
+		case 'trip':
+      if ( $product->get_stock_quantity() > 0 && $product->get_stock_quantity() < 30 ) {
+        return "Only " . $product->get_stock_quantity() . " left";
+      } else if ( ! $product->is_in_stock() ) {
+        return "Sold Out";
+      } else {
+        return "Book now";
+      }
+			return __( 'Book Now', 'woocommerce' );
+		break;
+		case 'simple':
+			return __( 'Add to cart', 'woocommerce' );
+		break;
+		default:
+			return __( 'Read more', 'woocommerce' );
+	}
+
+}
