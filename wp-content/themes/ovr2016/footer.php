@@ -108,9 +108,11 @@
 </div>
 <footer id="colophon" class="footer" role="contentinfo">
 	<div class="row">
-		<div class="col-xs-12">
-			<a href="/waiver/">Waiver</a>
+		<div class="col-xs-10 col-xs-offset-1">
+				<a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/waiver/">Waiver</a> |
+				<a href="/terms-and-conditions">Terms &amp; Conditions</a> | <a href="/faq">FAQ</a>
 		</div>
+	</div>
 	<div class="row">
 		<div class="col-xs-12">
 			<i class="fa fa-copyright" aria-hidden="true"></i><?php echo date("Y"); ?> <a href="http://ovrride.com">OVR RIDE LLC.</a>- ALL RIGHTS RESERVED
