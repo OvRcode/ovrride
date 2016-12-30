@@ -400,7 +400,14 @@ CARTMETA;
     }
     public function add_to_cart( $cart_item_key ) {
         global $product;
-
+        $stock_count = $product->get_stock_quantity();
+        if ( $stock_count > 30 ) {
+          $stock_text = $stock_count . " Available";
+        } else if ( $stock_count <= 30 && $stock_count > 0 ) {
+          $stock_text = "Only " . $stock_count . " Left";
+        } else {
+          $stock_text = "";
+        }
         $template_data = [
           "trip_type" => get_post_meta( $product->id, '_wc_trip_type', true),
           "pickups"   => $this->pickupField( $product->id ),
@@ -410,7 +417,7 @@ CARTMETA;
         		"tertiary"  => $product->output_packages("tertiary")
           ],
           "base_price"  => floatval( get_post_meta( $product->id, '_wc_trip_base_price', true ) ),
-          "stock"       => $product->get_availability()
+          "stock"       => $stock_text
         ];
 
         $template = "";
