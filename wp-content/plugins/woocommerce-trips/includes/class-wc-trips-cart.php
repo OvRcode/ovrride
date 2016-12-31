@@ -404,7 +404,7 @@ CARTMETA;
         if ( !$product->is_in_stock() ) {
           $stock_text = "Sold Out";
         } else if ( $stock_count > 30 ) {
-          $stock_text = $stock_count . " Available";
+          $stock_text = "Seats Available";
         } else if ( $stock_count <= 30 && $stock_count > 0 ) {
           $stock_text = "Only " . $stock_count . " Left";
         } else {
