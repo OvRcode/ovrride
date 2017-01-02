@@ -62,7 +62,7 @@ public function update( $new_instance, $old_instance ) {
 }
 public function widget( $args, $instance ) {
   wp_enqueue_style( 'ovr_event_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-events-widget.min.css');
-  wp_enqueue_script( 'ovr_event_widget_script', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-events-widget.min.js', array('jquery'), false, true);
+  wp_enqueue_script( 'ovr_event_widget_script', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-events-widget.min.js', array('jquery'), "1.0", true);
   $trip = $this->returnTrips($instance['events'], $instance['menu_order']);
   echo "<div class='events'>";
   echo "<i class='leftArrow'></i>";

@@ -4,10 +4,10 @@ jQuery(function($) {
     window.location.href=$(this).children("a:first-child").attr("href");
   });
   // Click functions to drive upcoming events scroll action
-  $("i.leftArrow").on("click", function(){
+  $("i.rightArrow").on("click", function(){
     $(".event:first-of-type").appendTo(".eventScroll");
   });
-  $("i.rightArrow").on("click", function(){
+  $("i.leftArrow").on("click", function(){
     $(".event:last-of-type").prependTo(".eventScroll");
   });
 });
