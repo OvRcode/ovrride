@@ -93,16 +93,13 @@ class ovr_calendar_widget extends WP_Widget {
           }
           // Remove trip from array after processing
           $temp = array_shift($trips);
-          if ( $data === '' ) {
-            $data .= 'data-placement="auto-bottom" data-content="';
-          }
 
           $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $temp['post_title']);
           $data .= '<a href=\''.$temp['guid'].'\'>'. $stripped_title .'</a><br />';
         }
         // If data was added to day then add an icon with link info
         if ( $icon ) {
-          $data .= '"';
+          $data = 'data-placement="auto-bottom" data-content="' . htmlentities($data) .'"';
           $add .= '<i class="fa fa-snowflake-o icon winter" ' . $data . ' aria-hidden="true"></i>';
         }
 
