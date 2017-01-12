@@ -57,17 +57,14 @@
 		</div>
 		<div class="row">
 		<div class="col-sm-3 col-xs-6">
-			<div class="footer-square">
-				<div id="newsletter" class="footer-square-inner">
-					<i class="fa fa-envelope icon" aria-hidden="true"></i>
-					<span class="text">NEWSLETTER</span>
-				</div>
-				<?php if ( is_active_sidebar( 'footer-newsletter' ) ): ?>
-					<div id="newsletter_back" class="footer-square-back">
-						<?php dynamic_sidebar( 'footer-newsletter' ); ?>
+			<a class="square-link" target="_blank" href="https://visitor.r20.constantcontact.com/d.jsp?llr=oc9qxciab&amp;p=oi&amp;m=1108193339470&amp;sit=acf46lmgb&amp;f=032f36cb-3cd6-4a22-babf-0f7d1699e710">
+				<div class="footer-square">
+					<div id="newsletter" class="footer-square-inner">
+						<i class="fa fa-envelope icon" aria-hidden="true"></i>
+						<span class="text">NEWSLETTER</span>
 					</div>
-				<?php endif;?>
-			</div>
+				</div>
+			</a>
 		</div>
 		<div class="col-sm-3 col-xs-6">
 			<div id="about" class="footer-square">
