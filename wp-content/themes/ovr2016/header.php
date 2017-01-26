@@ -6,12 +6,35 @@
  *
  * @package _tk
  */
+
+$title = wp_title( '|', false, 'right' );
+$ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_login.png');
+if (  is_front_page() || is_archive() || is_home() ) {
+	$ogDescription = "Lead by New York’s most experienced Snowboard industry veterans, the OvRride team helps riders and skiers escape from the concrete canyons of NYC to the pristine peaks of America’s North East and beyond. Our goal in mind; to OvRride the Everyday!";
+} else {
+	global $post;
+	$ogDescription = wp_strip_all_tags(do_shortcode($post->post_content));
+	if ( is_woocommerce() ) {
+		$ogDescription = esc_attr(substr(preg_replace("/(.* Description:\W{0,4})/", "", $ogDescription), 0, 300));
+	} else {
+		$ogDescription = esc_attr(substr(get_the_excerpt($post), 0, 300));
+	}
+}
+
+if ( "" == $ogDescription ) {
+	$ogDescription = $title;
+}
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta propterty="og:title" content="<?php echo $title; ?>">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="<?php echo get_permalink(); ?>">
+	<meta property="og:image" content="<?php echo $ogImage; ?>">
+	<meta property="og:description" content="<?php echo $ogDescription; ?>">
 
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 
