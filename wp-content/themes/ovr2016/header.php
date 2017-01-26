@@ -34,7 +34,7 @@ if ( "" == $ogDescription ) {
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="<?php echo get_permalink(); ?>">
 	<meta property="og:image" content="<?php echo $ogImage; ?>">
-	<meta property="og:image:height" content="214">
+	<meta property="og:image:height" content="406">
 	<meta property="og:image:width" content="406">
 	<meta property="og:image:type" content="image/png">
 	<meta property="og:description" content="<?php echo $ogDescription; ?>">
