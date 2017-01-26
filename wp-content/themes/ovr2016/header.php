@@ -8,7 +8,7 @@
  */
 
 $title = wp_title( '|', false, 'right' );
-$ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_login.png');
+$ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_og.png');
 if (  is_front_page() || is_archive() || is_home() ) {
 	$ogDescription = "Lead by New York’s most experienced Snowboard industry veterans, the OvRride team helps riders and skiers escape from the concrete canyons of NYC to the pristine peaks of America’s North East and beyond. Our goal in mind; to OvRride the Everyday!";
 } else {
@@ -30,10 +30,13 @@ if ( "" == $ogDescription ) {
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta propterty="og:title" content="<?php echo $title; ?>">
+	<meta property="og:title" content="<?php echo $title; ?>">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="<?php echo get_permalink(); ?>">
 	<meta property="og:image" content="<?php echo $ogImage; ?>">
+	<meta property="og:image:height" content="214">
+	<meta property="og:image:width" content="406">
+	<meta property="og:image:type" content="image/png">
 	<meta property="og:description" content="<?php echo $ogDescription; ?>">
 
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
