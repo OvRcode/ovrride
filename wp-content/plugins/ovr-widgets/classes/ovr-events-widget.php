@@ -122,10 +122,15 @@ function returnTrips($numberOfTrips, $menu_order){
     } else {
       $trip[$id]->dateLabel = date('F jS, Y', strtotime($trip[$id]->date));
     }
-    // Remove Dates from title
-    $trip[$id]->post_title = preg_replace('/[JFMASOND][aepuco][nbrylgptvc][.eyt].*/','',$trip[$id]->post_title);
-    // Remove any leftover day abbreviations in titile
-    $trip[$id]->post_title = preg_replace('/[STMWF][uhaoer][neutdi][rs.][.$]/','',trim($trip[$id]->post_title));
+    preg_match("/.*:\s(Lady\sShred\sSession\s[1-9])/", $trip[$id]->post_title, $ladiesCheck);
+    if ( $ladiesCheck ) {
+      $trip[$id]->post_title = $ladiesCheck[1];
+    } else {
+      // Remove Dates from title
+      $trip[$id]->post_title = preg_replace('/[JFMASOND][aepuco][nbrylgptvc][.eyt].*/','',$trip[$id]->post_title);
+      // Remove any leftover day abbreviations in titile
+      $trip[$id]->post_title = preg_replace('/[STMWF][uhaoer][neutdi][rs.][.$]/','',trim($trip[$id]->post_title));
+    }
   }
   // Sort trips by trip date
   usort($trip, function($a, $b){
