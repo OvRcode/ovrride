@@ -6,6 +6,7 @@
  *
  * @package _tk
  */
+ $theme_dir = get_template_directory_uri();
 ?>
 			</div><!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
 		</div><!-- close .row -->
@@ -104,6 +105,38 @@
 </div><!-- close .container -->
 </div>
 <footer id="colophon" class="footer" role="contentinfo">
+	<div class="row">
+		<div class="col-xs-4 col-sm-2">
+			<a href="http://www.arcteryx.com" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/arcteryx.png"; ?>">
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-2">
+			<a href="https://www.atomic.com/en-us" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/atomic.png"; ?>">
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-2">
+			<a href="http://www.burton.com" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/burton.png"; ?>">
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-2">
+			<a href="http://www.patagonia.com/home/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/patagonia.png"; ?>">
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-2">
+			<a href="http://www.salomon.com/us/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/salomon.png"; ?>">
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-2">
+			<a href="https://www.thenorthface.com/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir ."/includes/images/tnf.png"; ?>">
+			</a>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-xs-10 col-xs-offset-1">
 				<a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/waiver/">Waiver</a> |

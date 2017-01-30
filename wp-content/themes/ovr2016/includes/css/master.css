@@ -796,3 +796,8 @@ div.shop_buttons {
 	 line-height: 99px;
 	}
 }
+
+a.ovr_sponsor {
+	display: block;
+	margin-bottom: 15px;
+}
