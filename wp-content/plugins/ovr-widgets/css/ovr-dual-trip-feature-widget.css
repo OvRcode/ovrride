@@ -62,6 +62,10 @@
   color: rgb(22, 175, 225);
   font-weight: 600;
   display: block;
+  margin-left: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
 }
 .ovr_dual_trip_feature_trip_one_date, .ovr_dual_trip_feature_trip_two_date {
