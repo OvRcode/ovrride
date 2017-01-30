@@ -10,19 +10,22 @@
 $title = wp_title( '|', false, 'right' );
 $ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_og.png');
 if (  is_front_page() || is_archive() || is_home() ) {
-	$ogDescription = "Lead by New York’s most experienced Snowboard industry veterans, the OvRride team helps riders and skiers escape from the concrete canyons of NYC to the pristine peaks of America’s North East and beyond. Our goal in mind; to OvRride the Everyday!";
-} else {
+	$ogDescription = esc_attr(wp_strip_all_tags(get_option("about_ovr", "OvRride"), true));
+	} else {
 	global $post;
 	$ogDescription = wp_strip_all_tags(do_shortcode($post->post_content));
 	if ( is_woocommerce() ) {
-		$ogDescription = esc_attr(substr(preg_replace("/(.* Description:\W{0,4})/", "", $ogDescription), 0, 300));
+		$ogDescription = esc_attr( preg_replace("/(.* Description:\W{0,4})/", "", $ogDescription) );
 	} else {
-		$ogDescription = esc_attr(substr(get_the_excerpt($post), 0, 300));
+		$ogDescription = esc_attr( get_the_excerpt($post) );
 	}
 }
 
 if ( "" == $ogDescription ) {
 	$ogDescription = $title;
+} else {
+	$description = $ogDescription;
+	$ogDescription = substr($ogDescription, 0, 300);
 }
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -38,7 +41,7 @@ if ( "" == $ogDescription ) {
 	<meta property="og:image:width" content="406">
 	<meta property="og:image:type" content="image/png">
 	<meta property="og:description" content="<?php echo $ogDescription; ?>">
-
+	<meta name="description" content="<?php echo $description; ?>">
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 
 	<link rel="profile" href="http://gmpg.org/xfn/11">
