@@ -127,7 +127,7 @@ ADMINFORM;
     return $instance;
   }
   public function widget( $args, $instance ) {
-    wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-dual-trip-feature-widget.min.css');
+    wp_enqueue_style('ovr-dual-trip-feature-widget', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-dual-trip-feature-widget.min.css', array(), "1.0");
     wp_enqueue_script('ovr_dual_trip_feature_widget_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-dual-trip-feature-widget.min.js', array('jquery') );
     echo <<<FRONTEND
     <div class="ovr_dual_trip_feature" data-link="{$instance['link']}">
