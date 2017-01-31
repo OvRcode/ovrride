@@ -27,7 +27,7 @@
     var containerWidth = $(".footer-square-inner").width();
     var currentFontSize = $(".footer-square-inner .text").css("font-size").slice(0,-2);
     // Round down, full decimal on font size was causing overflow
-    var newFontSize = Math.floor(containerWidth / (maxTextWidth/currentFontSize)) - 1;
+    var newFontSize = Math.floor(containerWidth / (maxTextWidth/currentFontSize));
     // Vertical Center rollover words
     var top = (parseInt($(".footer-square-inner").height()) - (parseInt($(".text").height())/2))/2;
     $(".footer-square-inner .text").css({"font-size": newFontSize, "top": top});
