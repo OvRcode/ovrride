@@ -76,7 +76,6 @@ public function widget( $args, $instance ) {
     } else {
       $label = "<span class='available'>AVAILABLE</span>";
     }
-    error_log(print_r($data,true));
     echo <<<WIDGETHTML
     <div class="event">
       <a href="{$data->link}">{$data->post_title}</a><br />
