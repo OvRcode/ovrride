@@ -76,10 +76,10 @@ public function widget( $args, $instance ) {
     } else {
       $label = "<span class='available'>AVAILABLE</span>";
     }
-
+    error_log(print_r($data,true));
     echo <<<WIDGETHTML
     <div class="event">
-      <a href="{$data->guid}">{$data->post_title}</a><br />
+      <a href="{$data->link}">{$data->post_title}</a><br />
       {$data->dateLabel}<br />
       {$label}
     </div>
@@ -90,7 +90,7 @@ WIDGETHTML;
 function returnTrips($numberOfTrips, $menu_order){
   global $wpdb;
   // Get All Trip Products
-  $trip = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, `wp_posts`.`guid`, `wp_posts`.`menu_order`
+  $trip = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, `wp_posts`.`menu_order`
   FROM `wp_posts`
   JOIN `wp_term_relationships` ON `wp_posts`.`ID` = `wp_term_relationships`.`object_id`
   JOIN `wp_term_taxonomy` ON `wp_term_relationships`.`term_taxonomy_id` = `wp_term_taxonomy`.`term_taxonomy_id`
@@ -116,7 +116,7 @@ function returnTrips($numberOfTrips, $menu_order){
     $trip[$id]->stock = $meta[$id]->stock;
     $trip[$id]->stock_status = $meta[$id]->stock_status;
     $trip[$id]->date = $meta[$id]->date;
-
+    $trip[$id]->link = get_permalink($id);
     if ( strtotime($meta[$id]->end_date) > strtotime($meta[$id]->date) ) {
       $trip[$id]->dateLabel = date('F jS - ', strtotime($trip[$id]->date)) . date('jS, Y', strtotime($meta[$id]->end_date));
     } else {
