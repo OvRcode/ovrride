@@ -42,7 +42,9 @@ class WC_Trips {
 
         // Make sure trip email scheduling is Setup
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
-          wp_schedule_event(strtotime(date('m/d/y')), 'daily', 'wc_check_auto_reports');
+          wp_schedule_event(strtotime('+1day 05:00:00', strtotime(date('m/d/y'))), 'daily', 'wc_check_auto_reports');
+          error_log("Scheduled auto report check");
+          do_action('wc_check_auto_reports');
         }
 
         if ( is_admin() ) {
@@ -235,7 +237,7 @@ STYLE;
         return false;
       }
     }
-    private function check_auto_reports(){
+    function check_auto_reports(){
       global $wpdb;
       error_log("checking auto reports");
       $sql = "SELECT `post_title` as `destination`, `ID`, `meta_value` as `email`
@@ -257,16 +259,18 @@ STYLE;
         $tripResults = $wpdb->get_results($tripSql);
 
         foreach($tripResults as $id => $data) {
-          $time = strtotime($data->date) + 7200;
-          // 7200 is the 2hr offset from midnight utc for email date, 2*60*60 to get seconds in 2hrs
-          if ( "publish" == $data->post_status && ! $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
-            // Setup cronjob for a published event that has not been scheduled
-            wp_schedule_single_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
-            error_log("scheduled " . $data->ID);
-          } else if ( "publish" !== $data->post_status && $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
-            // Remove cronjob for event that has switched to draft or cancelled
-            wp_unschedule_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
-            error_log("unscheduled " . $data->ID);
+          $times[0] = date('U', strtotime('last Thursday 13:00:00', strtotime($data->date)));
+          $times[1] = date('U', strtotime('last Friday 13:00:00', strtotime($data->date)));
+          foreach($times as $index => $time ) {
+            if ( "publish" == $data->post_status && ! $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
+              // Setup cronjob for a published event that has not been scheduled
+              wp_schedule_single_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
+              error_log("scheduled " . $data->ID . " at " . date('m/d/Y H:i:s', $time));
+            } else if ( "publish" !== $data->post_status && $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
+              // Remove cronjob for event that has switched to draft or cancelled
+              wp_unschedule_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
+              error_log("unscheduled " . $data->ID);
+            }
           }
         }
       }
