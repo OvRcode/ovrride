@@ -39,7 +39,7 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
@@ -131,7 +131,7 @@ $version = file_get_contents('lists.version');
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-6 packageTotals"></div>
-                    <div class="col-xs-12 col-md-6 pickupTotals"></div>      
+                    <div class="col-xs-12 col-md-6 pickupTotals"></div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-md-3">
@@ -139,11 +139,14 @@ $version = file_get_contents('lists.version');
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-6 col-md-3">
+                    <div class="col-xs-6 col-md-3 clearfix">
                        <strong>Contact:</strong> <span class="contact"></span>
                     </div>
                     <div class="col-xs-6 col-md-3">
                         <strong>Phone:</strong> <span class="contactPhone"></span>
+                    </div>
+                    <div class="col-xs-12 hidden-md hidden-lg">
+                      <hr>
                     </div>
                     <div class="col-xs-6 col-md-3">
                         <strong>Rep:</strong> <span class="rep"></span>
