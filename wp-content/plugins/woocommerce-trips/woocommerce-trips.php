@@ -39,7 +39,6 @@ class WC_Trips {
         add_action( 'wc_trips_email_report', array($this, "email_report"), 10, 2);
         // Email report scheduling hook
         add_action( 'wc_check_auto_reports', array($this, 'check_auto_reports') );
-
         // Make sure trip email scheduling is Setup
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
           wp_schedule_event(strtotime('+1day 05:00:00', strtotime(date('m/d/y'))), 'daily', 'wc_check_auto_reports');
@@ -223,9 +222,16 @@ STYLE;
       ob_end_clean();
       add_filter('wp_mail_content_type', function(){ return "text/html"; });
       $headers[] = 'From: OvRride <info@ovrride.com>';
-      $headers[] = 'Cc: OvRride <info@ovrride.com>';
-      $emailTitle = "OvRride Trip Count: " . get_post_meta( $trip, "_wc_trip_destination", true) . " " . get_post_meta($trip, "_wc_trip_start_date", true);
+      $emailTitle = "OvRride Count on " .date('l') . ": " . get_post_meta( $trip, "_wc_trip_destination", true) . " " . date('m/d/y', get_post_meta($trip, "_wc_trip_start_date", true));
       wp_mail($email, $emailTitle, $emailBody, $headers);
+      /*  Send a copy to info@ovrride.com also, needs to be a seprate message for Amazon SES */
+      $headers = array();
+      $headers[] = 'From: OvRride <info@ovrride.com>';
+      wp_mail("info@ovrride.com", $emailTitle, $emailBody, $headers);
+      $headers = array();
+      $headers[] = 'From: OvrRide <info@ovrride.com>';
+      wp_mail("devops@ovrride.com", $emailTitle, $emailBody, $headers);
+
       remove_filter('wp_mail_content_type', function(){ return "text/html"; });
     }
     private function checkCron($time, $hook, $args) {
