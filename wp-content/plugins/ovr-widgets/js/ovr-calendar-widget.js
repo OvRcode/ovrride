@@ -17,7 +17,8 @@
     } else {
       return;
     }
-    window.date = window.date.getFullYear() + "-" + (window.date.getMonth()+1) + "-" + window.date.getDate();
+    window.date = Math.abs(window.date.getFullYear()) + "-" + (window.date.getMonth()+1) + "-" + window.date.getDate();
+  
     $.post(
       ovr_calendar_vars.ajax_url ,
       {
