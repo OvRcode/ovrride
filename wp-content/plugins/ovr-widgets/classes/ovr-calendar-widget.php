@@ -25,7 +25,7 @@ class ovr_calendar_widget extends WP_Widget {
       die('OvR Calendar Ajax nonce failed');
     }
 
-    error_log($_POST['calendarDate']);
+    
     // Create php date object with correct timezone for calendar generation
     $date = new DateTime($_POST['calendarDate'], new DateTimeZone('EST'));
 
