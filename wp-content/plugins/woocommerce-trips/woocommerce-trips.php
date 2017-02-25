@@ -270,8 +270,12 @@ STYLE;
           foreach($times as $index => $time ) {
             if ( "publish" == $data->post_status && ! $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
               // Setup cronjob for a published event that has not been scheduled
-              wp_schedule_single_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
-              error_log("scheduled " . $data->ID . " at " . date('m/d/Y H:i:s', $time));
+              if ( $time > time() ) { // Don't schedule email for past events
+                wp_schedule_single_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
+                error_log("scheduled " . $data->ID . " at " . date('m/d/Y H:i:s', $time));
+              } else {
+                error_log("Event " . $data->ID . " has passed, not scheduling event");
+              }
             } else if ( "publish" !== $data->post_status && $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
               // Remove cronjob for event that has switched to draft or cancelled
               wp_unschedule_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
