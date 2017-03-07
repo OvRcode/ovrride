@@ -16,7 +16,7 @@
     "dbcache.memcached.persistent": "1",
     "dbcache.memcached.aws_autodiscovery": false,
     "dbcache.memcached.servers": [
-        "10.132.220.235:11211"
+        "memcached:11211"
     ],
     "dbcache.memcached.username": "",
     "dbcache.memcached.password": "",
@@ -106,7 +106,7 @@
     "pgcache.file.locking": false,
     "pgcache.lifetime": "3600",
     "pgcache.memcached.servers": [
-        "10.132.220.235:11211"
+        "memcached:11211"
     ],
     "pgcache.memcached.persistent": "1",
     "pgcache.memcached.aws_autodiscovery": false,
