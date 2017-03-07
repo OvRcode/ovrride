@@ -1,5 +1,43 @@
 *** WooCommerce Smart Coupons Changelog ***
 
+2017.02.06 - version 3.2
+ * New: Show Store Credit & other coupons separately on Coupons tab under My Account page (WooCommerce 2.6+)
+ * New: Show total credit amount available to reedem on Coupons tab under My Account page (WooCommerce 2.6+)
+ * Update: Do not show Coupon Received section on My Account page (can be changed via option - show_coupon_received_on_my_account)
+ * Update: CSS tweaks for showing scroll bar on Cart & Checkout page for coupons
+ * Update: POT file
+
+2017.01.05 - version 3.1.9
+ * Fix: Coupons sent in email is not applying when clicked
+ * Fix: Coupon code applied via URL is not working sometimes
+ * Update: POT file
+
+2016.12.15 - version 3.1.8
+ * Fix: Store Credit restricted to products or product categories not calculating the total correctly
+ * Update: Email Subject line for store credit emails
+ * Update: Grammatical correction in Send Store Credit form on checkout page (when sending to multiple people)
+ * Update: POT file
+
+2016.09.27 - version 3.1.7
+ * Fix: Store Credit not applying discount
+
+2016.09.19 - version 3.1.6
+ * Fix: Store Credit, restricted to products or product categories, making cart/order total zero
+ * Fix: Export existing coupon is not using correct delimiter in case of multiple products & product categories
+
+2016.09.09 - version 3.1.5
+ * Fix: Striping currency of products on shop page
+
+2016.09.08 - version 3.1.4
+ * Fix: Fatal error - Can't use method return value in write context
+
+2016.09.07 - version 3.1.3
+ * Fix: Coupon's field will not be displayed if there is no other field in General tab of Product data metabox (Thanks to: Remi Corson)
+ * Fix: 1-click apply coupon is not working after quantity is updated in cart
+ * Fix: 'Any amount' coupon product displays `free` when Memberships plugin is activated
+ * Fix: Fatal error 'wc_help_tip' not defined (only for WooCommerce lower than 2.5)
+ * Tweak: Remove tax information text from cart & order, when total is zero due to store credit
+
 2016.07.18 - version 3.1.2
  * Fix: Sometimes Store Credit is discounting only 1 product in cart (store credit is restricted to be used on products & cart contains 3 line item of same variations)
  * Fix: Rounding totals of individual tax instead of rounding individual tax & then totaling, when store credit is applied to cart
