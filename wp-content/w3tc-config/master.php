@@ -1,5 +1,5 @@
-{
-    "version": "0.9.5.1",
+<?php exit; ?>{
+    "version": "0.9.5.2",
     "cluster.messagebus.debug": false,
     "cluster.messagebus.enabled": false,
     "cluster.messagebus.sns.region": "",
@@ -60,6 +60,8 @@
     "objectcache.configuration_overloaded": false,
     "objectcache.enabled": "0",
     "objectcache.debug": false,
+    "objectcache.enabled_for_wp_admin": true,
+    "objectcache.fallback_transients": true,
     "objectcache.engine": "file",
     "objectcache.file.gc": 3600,
     "objectcache.file.locking": false,
@@ -233,14 +235,16 @@
         "google_ad_",
         "RSPEAK_"
     ],
+    "minify.css.combine": false,
     "minify.css.enable": true,
     "minify.css.engine": "css",
-    "minify.css.combine": false,
+    "minify.css.http2push": false,
     "minify.css.strip.comments": false,
     "minify.css.strip.crlf": false,
     "minify.css.embed": false,
     "minify.css.imports": "",
     "minify.css.groups": [],
+    "minify.js.http2push": false,
     "minify.js.enable": true,
     "minify.js.engine": "js",
     "minify.js.combine.header": false,
@@ -291,6 +295,7 @@
     "minify.cache.files": [
         ""
     ],
+    "minify.cache.files_regexp": false,
     "cdn.configuration_overloaded": false,
     "cdn.enabled": "0",
     "cdn.debug": false,
@@ -654,5 +659,9 @@
     "plugin.type": "",
     "fragmentcache": {
         "engine": ""
+    },
+    "pgcache.bad_behavior_path": "",
+    "newrelic": {
+        "monitoring_type": "apm"
     }
 }

@@ -425,8 +425,10 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Get a list of parameters to send to paypal
-	 * @param object $order
+	 * Get a list of parameters to send to paypal.
+	 *
+	 * @param object $order Order object.
+	 *
 	 * @return array
 	 */
 	protected function _get_post_data( $order ) {
@@ -472,7 +474,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				}
 			}
 
-			// Shipping
+			// Shipping.
 			if ( ( $order->get_total_shipping() + $order->get_shipping_tax() ) > 0 ) {
 				$post_data[ 'L_NAME' . $item_loop ] = 'Shipping';
 				$post_data[ 'L_DESC' . $item_loop ] = 'Shipping and shipping taxes';
@@ -484,11 +486,11 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				$item_loop++;
 			}
 
-			// Discount
-			if ( $order->get_order_discount() > 0 ) {
+			// Discount.
+			if ( $order->get_total_discount( false ) > 0 ) {
 				$post_data[ 'L_NAME' . $item_loop ] = 'Order Discount';
-				$post_data[ 'L_DESC' . $item_loop ] = 'Discounts after tax';
-				$post_data[ 'L_COST' . $item_loop ] = '-' . $order->get_order_discount();
+				$post_data[ 'L_DESC' . $item_loop ] = 'Discounts including tax';
+				$post_data[ 'L_COST' . $item_loop ] = '-' . $order->get_total_discount( false );
 				$post_data[ 'L_QTY' . $item_loop ]  = 1;
 
 				$item_loop++;
@@ -496,7 +498,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 			$ITEMAMT = round( $ITEMAMT, 2 );
 
-			// Fix rounding
+			// Fix rounding.
 			if ( absint( $order->get_total() * 100 ) !== absint( $ITEMAMT * 100 ) ) {
 				$post_data[ 'L_NAME' . $item_loop ] = 'Rounding amendment';
 				$post_data[ 'L_DESC' . $item_loop ] = 'Correction if rounding is off (this can happen with tax inclusive prices)';
@@ -504,7 +506,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				$post_data[ 'L_QTY' . $item_loop ]  = 1;
 			}
 
-			$post_data[ 'ITEMAMT' ] = $order->get_total();
+			$post_data['ITEMAMT'] = $order->get_total();
 		}
 
 		$post_data['ORDERDESC']      = 'Order ' . $order->get_order_number() . ' on ' . wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
@@ -530,22 +532,24 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * do_payment function.
+	 * Do payment request.
 	 *
-	 * @param object $order
-	 * @param string $card_number
-	 * @param string $card_exp
-	 * @param string $card_cvc
+	 * @throws Exception If request failed or got unexpected response.
+	 *
+	 * @param object $order       Order object.
+	 * @param string $card_number Card number.
+	 * @param string $card_exp    Card expire date.
+	 * @param string $card_cvc    Card CVV.
 	 */
 	public function do_payment( $order, $card_number, $card_exp, $card_cvc ) {
 
-		// Send request to paypal
+		// Send request to paypal.
 		try {
 			$url                  = $this->testmode ? $this->testurl : $this->liveurl;
 			$post_data            = $this->_get_post_data( $order );
 			$post_data['ACCT']    = $card_number; // Credit Card
-			$post_data['EXPDATE'] = $card_exp; //MMYY
-			$post_data['CVV2']    = $card_cvc; // CVV code
+			$post_data['EXPDATE'] = $card_exp; // MMYY
+			$post_data['CVV2']    = $card_cvc; // CVV code.
 
 			if ( $this->debug ) {
 				$log         = $post_data;
@@ -559,8 +563,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_request', $post_data, $order ), null, '&' ) ),
 				'timeout'     => 70,
 				'user-agent'  => 'WooCommerce',
-				'httpversion' => '1.1'
-			));
+				'httpversion' => '1.1',
+			) );
 
 			if ( is_wp_error( $response ) ) {
 				$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
@@ -571,7 +575,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			if ( empty( $response['body'] ) ) {
 				$this->log( 'Empty response!' );
 
-				throw new Exception( __( 'Empty Paypal response.', 'woocommerce-gateway-paypal-pro' ) );
+				throw new Exception( __( 'Empty PayPal response.', 'woocommerce-gateway-paypal-pro' ) );
 			}
 
 			parse_str( $response['body'], $parsed_response );
@@ -581,38 +585,38 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			if ( isset( $parsed_response['RESULT'] ) && in_array( $parsed_response['RESULT'], array( 0, 126, 127 ) ) ) {
 
 				switch ( $parsed_response['RESULT'] ) {
-					// Approved or screening service was down
+					// Approved or screening service was down.
 					case 0 :
 					case 127 :
 						$txn_id = ( ! empty( $parsed_response['PNREF'] ) ) ? wc_clean( $parsed_response['PNREF'] ) : '';
 
-						// get transaction details
+						// Get transaction details.
 						$details = $this->get_transaction_details( $txn_id );
 
-						// check if it is captured or authorization only [transstate 3 is authoriztion only]
+						// Check if it is captured or authorization only [transstate 3 is authoriztion only].
 						if ( $details && strtolower( $details['TRANSSTATE'] ) === '3' ) {
-							// Store captured value
+							// Store captured value.
 							update_post_meta( $order->id, '_paypalpro_charge_captured', 'no' );
 							add_post_meta( $order->id, '_transaction_id', $txn_id, true );
 
-							// Mark as on-hold
+							// Mark as on-hold.
 							$order->update_status( 'on-hold', sprintf( __( 'PayPal Pro (PayFlow) charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-pro' ), $txn_id ) );
 
-							// Reduce stock levels
+							// Reduce stock levels.
 							$order->reduce_order_stock();
 						} else {
 
-							// Add order note
+							// Add order note.
 							$order->add_order_note( sprintf( __( 'PayPal Pro (Payflow) payment completed (PNREF: %s)', 'woocommerce-gateway-paypal-pro' ), $parsed_response['PNREF'] ) );
 
-							// Payment complete
+							// Payment complete.
 							$order->payment_complete( $txn_id );
 						}
 
-						// Remove cart
+						// Remove cart.
 						WC()->cart->empty_cart();
 					break;
-					// Under Review by Fraud Service
+					// Under Review by Fraud Service.
 					case 126 :
 						$order->add_order_note( $parsed_response['RESPMSG'] );
 						$order->add_order_note( $parsed_response['PREFPSMSG'] );
@@ -622,29 +626,32 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 				$redirect = $order->get_checkout_order_received_url();
 
-				// Return thank you page redirect
+				// Return thank you page redirect.
 				return array(
 					'result' 	=> 'success',
-					'redirect'	=> $redirect
+					'redirect'	=> $redirect,
 				);
 
 			} else {
 
-				// Payment failed :(
+				// Payment failed.
 				$order->update_status( 'failed', __( 'PayPal Pro (Payflow) payment failed. Payment was rejected due to an error: ', 'woocommerce-gateway-paypal-pro' ) . '(' . $parsed_response['RESULT'] . ') ' . '"' . $parsed_response['RESPMSG'] . '"' );
 
 				wc_add_notice( __( 'Payment error:', 'woocommerce-gateway-paypal-pro' ) . ' ' . $parsed_response['RESPMSG'], 'error' );
 				return;
 			}
-
-		} catch( Exception $e ) {
-			wc_add_notice( __('Connection error:', 'woocommerce-gateway-paypal-pro' ) . ': "' . $e->getMessage() . '"', 'error' );
+		} catch ( Exception $e ) {
+			wc_add_notice( __( 'Connection error:', 'woocommerce-gateway-paypal-pro' ) . ': "' . $e->getMessage() . '"', 'error' );
 			return;
 		}
 	}
 
 	/**
-	 * Get transaction details
+	 * Get transaction details.
+	 *
+	 * @throws Exception
+	 *
+	 * @param string $transaction_id Transaction ID.
 	 */
 	public function get_transaction_details( $transaction_id = 0 ) {
 		$url = $this->testmode ? $this->testurl : $this->liveurl;
@@ -662,8 +669,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_transaction_details_request', $post_data, null, '&' ) ) ),
 			'timeout'     => 70,
 			'user-agent'  => 'WooCommerce',
-			'httpversion' => '1.1'
-		));
+			'httpversion' => '1.1',
+		) );
 
 		if ( is_wp_error( $response ) ) {
 			$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
@@ -673,7 +680,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 		parse_str( $response['body'], $parsed_response );
 
-		if ( $parsed_response['RESULT'] === '0' ) {
+		if ( isset( $parsed_response['RESULT'] ) && '0' === $parsed_response['RESULT'] ) {
 			return $parsed_response;
 		}
 
@@ -681,11 +688,15 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Process a refund if supported
-	 * @param  int $order_id
-	 * @param  float $amount
-	 * @param  string $reason
-	 * @return  bool|wp_error True or false based on success, or a WP_Error object
+	 * Process a refund if supported.
+	 *
+	 * @throws Exception If refund failed.
+	 *
+	 * @param int    $order_id Order ID.
+	 * @param float  $amount   Amount.
+	 * @param string $reason   Refund reason.
+	 *
+	 * @return bool|wp_error True or false based on success, or a WP_Error object
 	 */
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
@@ -696,10 +707,10 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			return false;
 		}
 
-		// get transaction details
+		// Get transaction details.
 		$details = $this->get_transaction_details( $order->get_transaction_id() );
 
-		// check if it is authorized only we need to void instead
+		// Check if it is authorized only we need to void instead.
 		if ( $details && strtolower( $details['TRANSSTATE'] ) === '3' ) {
 			$order->add_order_note( __( 'This order cannot be refunded due to an authorized only transaction.  Please use cancel instead.', 'woocommerce-gateway-paypal-pro' ) );
 
@@ -713,7 +724,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		$post_data['VENDOR']  = $this->paypal_vendor;
 		$post_data['PARTNER'] = $this->paypal_partner;
 		$post_data['PWD']     = $this->paypal_password;
-		$post_data['TRXTYPE'] = 'C'; // credit/refund
+		$post_data['TRXTYPE'] = 'C'; // credit/refund.
 		$post_data['ORIGID']  = $order->get_transaction_id();
 
 		if ( ! is_null( $amount ) ) {
@@ -734,7 +745,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			'body'        => urldecode( http_build_query( apply_filters( 'woocommerce-gateway-paypal-pro_payflow_refund_request', $post_data, null, '&' ) ) ),
 			'timeout'     => 70,
 			'user-agent'  => 'WooCommerce',
-			'httpversion' => '1.1'
+			'httpversion' => '1.1',
 		));
 
 		parse_str( $response['body'], $parsed_response );
@@ -743,12 +754,18 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 			$this->log( 'Error ' . print_r( $response->get_error_message(), true ) );
 
 			throw new Exception( __( 'There was a problem connecting to the payment gateway.', 'woocommerce-gateway-paypal-pro' ) );
-		} elseif ( $parsed_response['RESULT'] !== '0' ) {
-				// log it
+		}
+
+		if ( ! isset( $parsed_response['RESULT'] ) ) {
+			throw new Exception( __( 'Unexpected response from PayPal.', 'woocommerce-gateway-paypal-pro' ) );
+		}
+
+		if ( '0' !== $parsed_response['RESULT'] ) {
+				// Log it.
 				$this->log( 'Parsed Response (refund) ' . print_r( $parsed_response, true ) );
 		} else {
 
-			$order->add_order_note( sprintf( __( 'Refunded %s - PNREF: %s', 'woocommerce-gateway-paypal-pro' ), wc_price( number_format( $amount, 2, '.', '' ) ), $parsed_response['PNREF'] ) );
+			$order->add_order_note( sprintf( __( 'Refunded %1$s - PNREF: %2$s', 'woocommerce-gateway-paypal-pro' ), wc_price( number_format( $amount, 2, '.', '' ) ), $parsed_response['PNREF'] ) );
 
 			return true;
 		}
@@ -757,8 +774,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	}
 
 	/**
-     * Payment form on checkout page
-     */
+	 * Payment form on checkout page.
+	 */
 	public function payment_fields() {
 		if ( $this->description ) {
 			if ( $this->transparent_redirect ) {
@@ -767,27 +784,47 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				echo '<p>' . $this->description . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4111111111111111 with any CVC and a valid expiration date.', 'woocommerce-gateway-paypal-pro' ) : '' ) . '</p>';
 			}
 		}
+
 		if ( ! $this->transparent_redirect ) {
-			$this->credit_card_form();
+			?>
+			<fieldset>
+				<p class="form-row form-row-first">
+					<label for="<?php echo esc_attr( $this->id ); ?>-card-number"><?php  esc_html_e( 'Card Number', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
+					<input id="<?php echo esc_attr( $this->id ); ?>-card-number" class="input-text wc-credit-card-form-card-number" type="text" maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="<?php echo esc_attr( $this->id ); ?>-card-number" />
+				</p>
+
+				<p class="form-row form-row-last">
+					<label for="<?php echo esc_attr( $this->id ); ?>-card-expiry"><?php esc_html_e( 'Expiry (MM/YY)', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
+					<input id="<?php echo esc_attr( $this->id ); ?>-card-expiry" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="<?php esc_attr_e( 'MM / YY', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-expiry" />
+				</p>
+
+				<p class="form-row form-row-first">
+					<label for="<?php echo esc_attr( $this->id ); ?>-card-cvc"><?php esc_html_e( 'Card Code', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
+					<input id="<?php echo esc_attr( $this->id ); ?>-card-cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" placeholder="<?php esc_attr_e( 'CVC', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-cvc" />
+				</p>
+			</fieldset>
+			<?php
 		}
 	}
 
 	/**
-     * Get user's IP address
-     */
+	 * Get user's IP address.
+	 */
 	public function get_user_ip() {
 		return ! empty( $_SERVER['HTTP_X_FORWARD_FOR'] ) ? $_SERVER['HTTP_X_FORWARD_FOR'] : $_SERVER['REMOTE_ADDR'];
 	}
 
-    /**
-     * Add a log entry
-     */
-    public function log( $message ) {
-    	if ( $this->debug ) {
-    		if ( ! isset( $this->log ) ) {
-    			$this->log = new WC_Logger();
-    		}
+	/**
+	 * Add a log entry.
+	 *
+	 * @param string $message Message to log
+	 */
+	public function log( $message ) {
+		if ( $this->debug ) {
+			if ( ! isset( $this->log ) ) {
+				$this->log = new WC_Logger();
+			}
 			$this->log->add( 'paypal-pro-payflow', $message );
-    	}
-    }
+		}
+	}
 }
