@@ -43,6 +43,22 @@ The plugin to help you make shortcode by yourself and get them listed in the wp 
 
 ## Changelog ##
 
+## 4.0.1 ##
+
+1. [fix] Tab render issue fixed
+2. [fix] Accordion render issue fixed
+
+## 4.0 ##
+
+1. [new] Packaged shortcode added.
+2. [new] Builtin shortcodes for different widgets added.
+3. [new] Shortcode package panel added
+4. [fix] Shortcode content format fixed
+
+## 3.0 ##
+
+1. [new] PHP Code now can be added to the shortcode definition in editor.
+
 #### 2.2 ####
 
 1. [new] Transation scope added.

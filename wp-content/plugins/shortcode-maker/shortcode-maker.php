@@ -7,7 +7,7 @@
  * Author: Mithu A Quayium
  * Text Domain: shortcode-maker
  * Domain Path: /languages
- * Version: 3.0.1
+ * Version: 4.0.3
  * License: GPL2
  */
 /**
@@ -40,6 +40,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+define( 'SHORTCODE_MAKER_ROOT', dirname(__FILE__) );
+define( 'SHORTCODE_MAKER_ASSET_PATH', plugins_url('assets',__FILE__) );
+
 class shortcode_maker{
 
 	private $shorcode_array = array();
@@ -59,19 +62,27 @@ class shortcode_maker{
 
         add_action( 'admin_head', array( $this , 'shortcode_array_js' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts_styles' ) );
+
         //ajax
         add_action( 'wp_ajax_show_shortcodes', array( $this, 'render_shortcode_modal' ) );
         add_action( 'wp_ajax_sm_get_shortcode_atts', array( $this, 'get_shortcode_atts_panel' ) );
 
         add_action( 'init', array($this, 'load_textdomain') );
+        register_activation_hook( __FILE__, array( $this, 'plugin_activation_task' ) );
 
 
         $this->includes();
 	}
 
+	public function plugin_activation_task() {
+	    do_action( 'shortcode_maker_activation_task' );
+    }
+
     function includes(){
+        require_once dirname(__FILE__).'/sm-functions.php';
         require_once dirname(__FILE__).'/cc-products-page.php';
         require_once dirname(__FILE__).'/shortcode-field.php';
+        include_once dirname(__FILE__).'/packaged-shortcodes/packaged-shortcodes.php';
     }
 
     /**
@@ -264,6 +275,7 @@ class shortcode_maker{
 
             $post_id = array_search($tag,$this->shorcode_array);
             $default_atts = get_post_meta( $post_id, 'sm_shortcode_atts', true );
+            !is_array($default_atts) ? $default_atts = array() : '';
 
             $atts = shortcode_atts(
                 $default_atts,
@@ -278,7 +290,7 @@ class shortcode_maker{
             }
 
             if( !$content ) {
-                $content = do_shortcode( get_post($post_id)->post_content );
+                $content = do_shortcode( nl2br( get_post($post_id)->post_content ) );
             }
 
             return str_replace( $search, $replace, $content );
@@ -311,9 +323,9 @@ class shortcode_maker{
 	function sm_add_buttons( $plugin_array )
     {
 		if(get_bloginfo('version') >= 3.9){
-	        $plugin_array['pushortcodes'] = plugin_dir_url( __FILE__ ) . 'js/shortcode-tinymce-button.js';
+	        $plugin_array['pushortcodes'] = plugin_dir_url( __FILE__ ) . 'assets/js/shortcode-tinymce-button.js';
 		}else{
-			$plugin_array['pushortcodes'] = plugin_dir_url( __FILE__ ) . 'js/shortcode-tinymce-button-older.js';
+			$plugin_array['pushortcodes'] = plugin_dir_url( __FILE__ ) . 'assets/js/shortcode-tinymce-button-older.js';
 		}
 
 
@@ -345,13 +357,20 @@ class shortcode_maker{
     /**
      * Add scripts and styles
      */
-    public function admin_enqueue_scripts_styles() {
+    public function admin_enqueue_scripts_styles( $hook ) {
         global $post;
-        wp_enqueue_style( 'sm-style', plugins_url('css/style.css',__FILE__) );
-        wp_enqueue_script( 'sm-vue-js', plugins_url('js/vue.js',__FILE__) );
+
+        if( in_array( $hook, array(
+            'post.php',
+            'post-new.php'
+        ))) {
+            /*SHORTCODE_MAKER_ASSET_PATH*/
+            wp_enqueue_style( 'sm-style', SHORTCODE_MAKER_ASSET_PATH.'/css/style.css' );
+            wp_enqueue_script( 'sm-vue-js', SHORTCODE_MAKER_ASSET_PATH.'/js/vue.js' );
+        }
 
         if( isset( $post->ID ) && get_post_type( $post->ID ) == 'sm_shortcode' ) {
-            wp_enqueue_script( 'sm-script-js', plugins_url('js/script.js',__FILE__), array( 'sm-vue-js' ) );
+            wp_enqueue_script( 'sm-script-js', SHORTCODE_MAKER_ASSET_PATH.'/js/script.js', array( 'sm-vue-js' ) );
         }
 
     }
@@ -359,8 +378,8 @@ class shortcode_maker{
 new shortcode_maker;
 
 // add plugin upgrade notification
-add_action('in_plugin_update_message-shortcode-maker/index.php', 'showUpgradeNotification', 10, 2);
-function showUpgradeNotification($currentPluginMetadata, $newPluginMetadata){
+add_action('in_plugin_update_message-shortcode-maker/index.php', 'sm_showUpgradeNotification', 10, 2);
+function sm_showUpgradeNotification($currentPluginMetadata, $newPluginMetadata){
     // check "upgrade_notice"
     if (isset($newPluginMetadata->upgrade_notice) && strlen(trim($newPluginMetadata->upgrade_notice)) > 0){
         echo '<p style="background-color: #d54e21; padding: 10px; color: #f9f9f9; margin-top: 10px"><strong>Important Upgrade Notice:</strong></p> ';
