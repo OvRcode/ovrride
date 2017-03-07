@@ -51,9 +51,20 @@ if (!defined('ABSPATH')) {
 			<li>
 				<input type="radio" name="ssl_insecure_content_fixer[fix_level]" id="fix_level_capture" value="capture" <?php checked($options['fix_level'], 'capture'); ?> />
 				<label for="fix_level_capture"><?php echo esc_html_x('Capture', 'fix level settings', 'ssl-insecure-content-fixer'); ?></label>
-				<p class="sslfix-level-desc"><?php echo esc_html_x('The most impact on memory usage and biggest potential to break things', 'fix level settings', 'ssl-insecure-content-fixer'); ?></p>
+				<p class="sslfix-level-desc"><?php echo esc_html_x('Everything on the page, from the header to the footer:', 'fix level settings', 'ssl-insecure-content-fixer'); ?></p>
 				<ul class="sslfix-bullets">
 					<li><?php echo esc_html_x('capture the whole page and fix scripts, stylesheets, and other resources', 'fix level settings', 'ssl-insecure-content-fixer'); ?></li>
+					<li><?php echo esc_html_x('excludes AJAX calls, which can cause compatibility and performance problems', 'fix level settings', 'ssl-insecure-content-fixer'); ?></li>
+				</ul>
+			</li>
+
+			<li>
+				<input type="radio" name="ssl_insecure_content_fixer[fix_level]" id="fix_level_capture_all" value="capture_all" <?php checked($options['fix_level'], 'capture_all'); ?> />
+				<label for="fix_level_capture_all"><?php echo esc_html_x('Capture All', 'fix level settings', 'ssl-insecure-content-fixer'); ?></label>
+				<p class="sslfix-level-desc"><?php echo esc_html_x('The biggest potential to break things, but sometimes necessary', 'fix level settings', 'ssl-insecure-content-fixer'); ?></p>
+				<ul class="sslfix-bullets">
+					<li><?php echo esc_html_x('capture the whole page and fix scripts, stylesheets, and other resources', 'fix level settings', 'ssl-insecure-content-fixer'); ?></li>
+					<li><?php echo esc_html_x('includes AJAX calls, which can cause compatibility and performance problems', 'fix level settings', 'ssl-insecure-content-fixer'); ?></li>
 				</ul>
 			</li>
 
@@ -85,11 +96,12 @@ if (!defined('ABSPATH')) {
 		<p><?php
 		$proxies = array(
 			/* translators: standard WordPress function means no reverse proxy, just plain website access */
-			'normal'					=> _x('standard WordPress function', 'proxy settings', 'ssl-insecure-content-fixer'),
-			'HTTP_X_FORWARDED_PROTO'	=> _x('HTTP_X_FORWARDED_PROTO (e.g. load balancer, reverse proxy, NginX)', 'proxy settings', 'ssl-insecure-content-fixer'),
-			'HTTP_X_FORWARDED_SSL'		=> _x('HTTP_X_FORWARDED_SSL (e.g. reverse proxy)', 'proxy settings', 'ssl-insecure-content-fixer'),
-			'HTTP_CF_VISITOR'			=> _x('HTTP_CF_VISITOR (CloudFlare Flexible SSL)', 'proxy settings', 'ssl-insecure-content-fixer'),
-			'detect_fail'				=> _x('unable to detect HTTPS', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'normal'							=> _x('standard WordPress function', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'HTTP_X_FORWARDED_PROTO'			=> _x('HTTP_X_FORWARDED_PROTO (e.g. load balancer, reverse proxy, NginX)', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'HTTP_X_FORWARDED_SSL'				=> _x('HTTP_X_FORWARDED_SSL (e.g. reverse proxy)', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'HTTP_CLOUDFRONT_FORWARDED_PROTO'	=> _x('HTTP_CLOUDFRONT_FORWARDED_PROTO (Amazon CloudFront HTTPS cached content)', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'HTTP_CF_VISITOR'					=> _x('HTTP_CF_VISITOR (Cloudflare Flexible SSL); deprecated, since Cloudflare sends HTTP_X_FORWARDED_PROTO now', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'detect_fail'						=> _x('unable to detect HTTPS', 'proxy settings', 'ssl-insecure-content-fixer'),
 		);
 
 		foreach ($proxies as $value => $label) {

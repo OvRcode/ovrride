@@ -68,6 +68,10 @@ function sslfix_get_recommended() {
 			$response['recommended'] = 'HTTP_X_FORWARDED_SSL';
 			break;
 
+		case 'HTTP_CLOUDFRONT_FORWARDED_PROTO':
+			$response['recommended'] = 'HTTP_CLOUDFRONT_FORWARDED_PROTO';
+			break;
+
 		case 'HTTP_CF_VISITOR':
 			$response['recommended'] = 'HTTP_CF_VISITOR';
 			break;
@@ -176,12 +180,16 @@ function sslfix_get_environment() {
 		$env['detect'] = 'port';
 		$env['ssl'] = true;
 	}
-	elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+	elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') {
 		$env['detect'] = 'HTTP_X_FORWARDED_PROTO';
 		$env['ssl'] = true;
 	}
-	elseif (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && ($_SERVER['HTTP_X_FORWARDED_SSL'] === 'on' || $_SERVER['HTTP_X_FORWARDED_SSL'] === '1')) {
+	elseif (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && (strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on' || $_SERVER['HTTP_X_FORWARDED_SSL'] === '1')) {
 		$env['detect'] = 'HTTP_X_FORWARDED_SSL';
+		$env['ssl'] = true;
+	}
+	elseif (isset($_SERVER['HTTP_CLOUDFRONT_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_CLOUDFRONT_FORWARDED_PROTO']) === 'https') {
+		$env['detect'] = 'HTTP_CLOUDFRONT_FORWARDED_PROTO';
 		$env['ssl'] = true;
 	}
 	elseif (isset($_SERVER['HTTP_CF_VISITOR']) && strpos($_SERVER['HTTP_CF_VISITOR'], 'https') !== false) {

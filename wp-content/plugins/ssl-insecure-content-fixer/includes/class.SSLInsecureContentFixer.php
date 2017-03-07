@@ -44,7 +44,7 @@ class SSLInsecureContentFixer {
 			add_filter('upload_dir', array(__CLASS__, 'uploadDir'));
 
 			// filter image links on front end e.g. in calls to wp_get_attachment_image(), wp_get_attachment_image_src(), etc.
-			if (!is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) {
+			if (!is_admin() || $this->isAjax()) {
 				add_filter('wp_get_attachment_url', 'ssl_insecure_content_fix_url', 100);
 			}
 
@@ -70,8 +70,13 @@ class SSLInsecureContentFixer {
 				add_action('dynamic_sidebar_after', array($this, 'fixWidgetsEnd'), 9999, 2);
 			}
 
-			// handle Capture fix level
-			if ($this->options['fix_level'] === 'capture') {
+			// handle Capture fix level (excludes AJAX calls)
+			if ($this->options['fix_level'] === 'capture' && !$this->isAjax()) {
+				add_action('init', array($this, 'fixCaptureStart'), 5);
+			}
+
+			// handle Capture All fix level (even AJAX calls)
+			if ($this->options['fix_level'] === 'capture_all' && !$this->isAjaxExcluded()) {
 				add_action('init', array($this, 'fixCaptureStart'), 5);
 			}
 
@@ -85,6 +90,45 @@ class SSLInsecureContentFixer {
 			require SSLFIX_PLUGIN_ROOT . 'includes/class.SSLInsecureContentFixerAdmin.php';
 			new SSLInsecureContentFixerAdmin();
 		}
+	}
+
+	/**
+	* detect AJAX call
+	* @return bool
+	*/
+	protected function isAjax() {
+		if (function_exists('wp_doing_ajax')) {
+			$is_ajax = wp_doing_ajax();
+		}
+		else {
+			$is_ajax = defined('DOING_AJAX') && DOING_AJAX;
+		}
+
+		return $is_ajax;
+	}
+
+	/**
+	* exclude certain AJAX calls from capture_all
+	* @return bool
+	*/
+	protected function isAjaxExcluded() {
+		$exclude = false;
+
+		if ($this->isAjax()) {
+			if (!empty($_REQUEST['action'])) {
+				$exclude = in_array($_REQUEST['action'], array(
+					// some standard WordPress actions
+					'heartbeat',
+
+					// this plugin
+					'sslfix-test-https',
+				));
+			}
+
+			$exclude = apply_filters('ssl_insecure_content_ajax_exclude', $exclude);
+		}
+
+		return $exclude;
 	}
 
 	/**
@@ -122,13 +166,19 @@ class SSLInsecureContentFixer {
 			switch ($this->options['proxy_fix']) {
 
 				case 'HTTP_X_FORWARDED_PROTO':
-					if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+					if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') {
 						$_SERVER['HTTPS'] = 'on';
 					}
 					break;
 
 				case 'HTTP_X_FORWARDED_SSL':
-					if (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && ($_SERVER['HTTP_X_FORWARDED_SSL'] === 'on' || $_SERVER['HTTP_X_FORWARDED_SSL'] === '1')) {
+					if (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && (strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on' || $_SERVER['HTTP_X_FORWARDED_SSL'] === '1')) {
+						$_SERVER['HTTPS'] = 'on';
+					}
+					break;
+
+				case 'HTTP_CLOUDFRONT_FORWARDED_PROTO':
+					if (isset($_SERVER['HTTP_CLOUDFRONT_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_CLOUDFRONT_FORWARDED_PROTO']) === 'https') {
 						$_SERVER['HTTPS'] = 'on';
 					}
 					break;
@@ -176,7 +226,7 @@ class SSLInsecureContentFixer {
 	public function fixContent($content) {
 		static $searches = array(
 			'#<(?:img|iframe) .*?src=[\'"]\Khttp://[^\'"]+#i',		// fix image and iframe elements
-			'#<link .*?href=[\'"]\Khttp://[^\'"]+#i',				// fix link elements
+			'#<link [^>]+href=[\'"]\Khttp://[^\'"]+#i',				// fix link elements
 			'#<script [^>]*?src=[\'"]\Khttp://[^\'"]+#i',			// fix script elements
 			'#url\([\'"]?\Khttp://[^)]+#i',							// inline CSS e.g. background images
 		);
@@ -186,6 +236,7 @@ class SSLInsecureContentFixer {
 		static $embed_searches = array(
 			'#<object .*?</object>#is',								// fix object elements, including contained embed elements
 			'#<embed .*?(?:/>|</embed>)#is',						// fix embed elements, not contained in object elements
+			'#<img [^>]+srcset=["\']\K[^"\']+#is',					// responsive image srcset links (to external images; WordPress already handles local images)
 		);
 		$content = preg_replace_callback($embed_searches, array(__CLASS__, 'fixContent_embed_callback'), $content);
 
@@ -207,8 +258,8 @@ class SSLInsecureContentFixer {
 	* @return string
 	*/
 	public static function fixContent_embed_callback($matches) {
-		// match from start of http: URL until either end quotes or query parameter separator, thus allowing for URLs in parameters
-		$content = preg_replace_callback('#http://[^\'"&\?]+#i', array(__CLASS__, 'fixContent_src_callback'), $matches[0]);
+		// match from start of http: URL until either end quotes, space, or query parameter separator, thus allowing for URLs in parameters
+		$content = preg_replace_callback('#http://[^\'"&\? ]+#i', array(__CLASS__, 'fixContent_src_callback'), $matches[0]);
 
 		return $content;
 	}

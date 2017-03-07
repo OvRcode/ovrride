@@ -2,6 +2,18 @@
 
 ## Changelog
 
+### 2.2.3, 2017-02-01
+
+* fixed: breaks Visual Composer back end editing due to a regular expression problem (now you have two!)
+* changed: Capture no longer captures AJAX requests; new mode Capture All introduced to capture AJAX requests too
+* added: prerequisites check, to ensure that plugin can run successfully
+
+### 2.2.2, 2017-01-21
+
+* fixed: make protocol header tests case-insensitive (thanks, [waja](https://github.com/waja)!)
+* added: support for Amazon CloudFront `CloudFront-Forwarded-Proto` header (thanks, [gmazovec](https://github.com/gmazovec)!)
+* added: clean up responsive image srcset links to external images (WordPress already handles local images)
+
 ### 2.2.1, 2016-11-19
 
 * fixed: improve accessibility of admin pages
