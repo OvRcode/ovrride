@@ -871,6 +871,7 @@ class WC_Product {
 		if ( $price === '' ) {
 			$price = $this->get_price();
 		}
+		$price = (float) $price;
 
 		if ( $this->is_taxable() ) {
 
@@ -931,6 +932,7 @@ class WC_Product {
 		if ( $price === '' ) {
 			$price = $this->get_price();
 		}
+		$price = (float) $price;
 
 		if ( $this->is_taxable() && 'yes' === get_option( 'woocommerce_prices_include_tax' ) ) {
 			$tax_rates  = WC_Tax::get_base_tax_rates( $this->tax_class );
@@ -1117,7 +1119,7 @@ class WC_Product {
 			$this->sync_rating_count( $this->id );
 		}
 
-		$counts = get_post_meta( $this->id, '_wc_rating_count', true );
+		$counts = array_filter( (array) get_post_meta( $this->id, '_wc_rating_count', true ) );
 
 		if ( is_null( $value ) ) {
 			return array_sum( $counts );
