@@ -126,9 +126,17 @@ i.icon {
 .days .icon.winter {
   color: rgb(22,175,225);
 }
+.days .icon.past {
+  color: rgb(161,162,163);
+}
 .days .icon.summer {
   color: rgb(254, 210, 8);
 }
 .webui-popover-content a:hover {
   background: none;
+}
+.calendar_past_trip,
+.calendar_past_trip:hover {
+  color: #606060;
+  text-decoration: none;
 }
