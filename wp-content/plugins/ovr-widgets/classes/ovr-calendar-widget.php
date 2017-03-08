@@ -13,6 +13,7 @@ class ovr_calendar_widget extends WP_Widget {
     );
     add_action( 'wp_ajax_nopriv_ovr_calendar', array( $this, "generate_calendar_ajax") );
     add_action( 'wp_ajax_ovr_calendar', array( $this, "generate_calendar_ajax") );
+    add_action( 'init', array( $this, 'register_archive') );
   }
   public function form( $instance ) {
 
@@ -49,18 +50,19 @@ class ovr_calendar_widget extends WP_Widget {
     $sqlDate = $date->format('F %, Y');
 
     // Find trips happening this month
-    $raw_trips = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
+    $raw_trips = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, `wp_posts`.`post_status`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
     FROM `wp_posts`
     JOIN `wp_postmeta` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
     JOIN `wp_term_relationships` ON `wp_posts`.`ID` = `wp_term_relationships`.`object_id`
     JOIN `wp_term_taxonomy` ON `wp_term_relationships`.`term_taxonomy_id` = `wp_term_taxonomy`.`term_taxonomy_id`
     JOIN `wp_terms` ON `wp_term_taxonomy`.`term_id` = `wp_terms`.`term_id`
-    WHERE `wp_posts`.`post_status` = 'publish'
+    WHERE (`wp_posts`.`post_status` = 'publish'
+      OR `wp_posts`.`post_status` = 'archive')
     AND `wp_posts`.`post_type`='product'
     AND `wp_term_taxonomy`.`taxonomy` = 'product_type'
     AND `wp_terms`.`name` = 'trip'
     AND `wp_postmeta`.`meta_key` = '_wc_trip_start_date'
-    AND `wp_postmeta`.`meta_value` LIKE '{$sqlDate}'
+    AND `wp_postmeta`.`meta_value` LIKE 'March %, 2017'
     ORDER BY `Date`", ARRAY_A);
 
     $search_date = $year . "-" . $month . "-";
@@ -71,7 +73,12 @@ class ovr_calendar_widget extends WP_Widget {
       $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $current_trip['post_title']);
       $stripped_title = preg_replace("/[-\s]{1,2}[0-9][0-9][tsr][hnd]/", "", $stripped_title); // edge case for weird date formatting
       $stripped_title = preg_replace("/[MTWFS][ouehra][neduitn][\.]/", "", $stripped_title);// edge case for weird day of week
-      $current_trip_link = '<a href=\''.$current_trip['guid'].'\'>'. $stripped_title .'</a>';
+      if ( 'publish' === $current_trip['post_status'] ) {
+        $current_trip_link = '<a href=\'' . $current_trip['guid'] . '\'>';
+      } else {
+        $current_trip_link = '<a class=\'calendar_past_trip\'>';
+      }
+      $current_trip_link .= $stripped_title .'</a>';
       $trips[$trip_date][] = $current_trip_link;
       $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
       if ( $trip_date === $end ) {
@@ -105,13 +112,18 @@ class ovr_calendar_widget extends WP_Widget {
         $icon = false;
         $calendarDate = $date->format('Y-m-') . str_pad($adjustedDay, 2 , "0", STR_PAD_LEFT);
         // If the current calendar date exists in the trips array add the trip info
-        
+
         if ( isset($trips[$calendarDate])) {
           foreach( $trips[$calendarDate] as $trip_date => $link ) {
             $data .= $link . "<br />";
           }
           $data = 'data-placement="auto-bottom" data-content="' . htmlentities($data) .'"';
-          $add .= '<i class="fa fa-snowflake-o icon winter" ' . $data . ' aria-hidden="true"></i>';
+          if ( strpos($data, 'href') !== FALSE) {
+            $add .= '<i class="fa fa-snowflake-o icon winter "';
+          } else {
+            $add .= '<i class="fa fa-snowflake-o icon past" ';
+          }
+          $add .= $data . ' aria-hidden="true"></i>';
         }
 
       }
@@ -136,7 +148,8 @@ class ovr_calendar_widget extends WP_Widget {
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'), false, true);
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.min.js', array('jquery.webui-popover-js', 'jquery_spin_js'), "1.1.0", true);
-    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css');
+    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', "1.2");
+
     if ( is_ssl() ) {
         $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php', 'https'), 'ovr_calendar', 'ovr_calendar_shift' );
     } else {
@@ -177,5 +190,23 @@ class ovr_calendar_widget extends WP_Widget {
       </div>
     </div>
 FRONTEND;
+  }
+  function register_archive() {
+    register_post_status( 'archive', array(
+            'label'                       => __( 'Archive', 'wp-statuses' ),
+            'label_count'                 => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>', 'wp-statuses' ),
+            'public'                      => false,
+            'show_in_admin_all_list'      => false,
+            'show_in_admin_status_list'   => true,
+            'post_type'                   => array( 'product' ),
+            'show_in_metabox_dropdown'    => true,
+            'show_in_inline_dropdown'     => true,
+            'show_in_press_this_dropdown' => true,
+            'labels'                      => array(
+                'metabox_dropdown' => __( 'Archived',        'wp-statuses' ),
+                'inline_dropdown'  => __( 'Archived',        'wp-statuses' ),
+            ),
+            'dashicon'                    => 'dashicons-archive',
+        ) );
   }
 }
