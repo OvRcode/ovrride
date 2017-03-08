@@ -82,7 +82,7 @@ class ovr_calendar_widget extends WP_Widget {
         $trips[$i][] = $current_trip_link;
       }
     }
-    error_log(print_r($trips,true));
+
     // loop through month and assemble
     $date->modify('last day of this month');
     $lastDay = $date->format('d');
@@ -105,7 +105,7 @@ class ovr_calendar_widget extends WP_Widget {
         $icon = false;
         $calendarDate = $date->format('Y-m-') . str_pad($adjustedDay, 2 , "0", STR_PAD_LEFT);
         // If the current calendar date exists in the trips array add the trip info
-        error_log($calendarDate);
+        
         if ( isset($trips[$calendarDate])) {
           foreach( $trips[$calendarDate] as $trip_date => $link ) {
             $data .= $link . "<br />";
