@@ -125,6 +125,7 @@ class Lists {
                 $package = (isset($data['Data']['Package']) ? $data['Data']['Package'] : '');
                 $pickup = (isset($data['Data']['Pickup']) ? $data['Data']['Pickup'] : '');
                 $email = ( isset($data['Data']['Email']) ? $data['Data']['Email'] : 'none');
+                if ( 'none' === $email ) continue;
                 $row = "";
                 $row .= "\"" . $email . "\"";
                 $row .= ",\"" . $first . "\",\"" . $last . "\",\"" . $package;
