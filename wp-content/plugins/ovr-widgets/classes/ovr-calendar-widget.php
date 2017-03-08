@@ -73,6 +73,7 @@ class ovr_calendar_widget extends WP_Widget {
       $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $current_trip['post_title']);
       $stripped_title = preg_replace("/[-\s]{1,2}[0-9][0-9][tsr][hnd]/", "", $stripped_title); // edge case for weird date formatting
       $stripped_title = preg_replace("/[MTWFS][ouehra][neduitn][\.]/", "", $stripped_title);// edge case for weird day of week
+      $stripped_title = preg_replace("/Thur\.-[0-9]{0,1}[0-9][tsr][htd]/", "", $stripped_title);//ugh, we need to fix titles
       if ( 'publish' === $current_trip['post_status'] ) {
         $current_trip_link = '<a href=\'' . $current_trip['guid'] . '\'>';
       } else {
