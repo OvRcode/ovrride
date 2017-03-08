@@ -126,7 +126,7 @@ class Lists {
                 $pickup = (isset($data['Data']['Pickup']) ? $data['Data']['Pickup'] : '');
                 $email = ( isset($data['Data']['Email']) ? $data['Data']['Email'] : 'none');
                 $row = "";
-                $row .= "\"" . $email . ",\"";
+                $row .= "\"" . $email . "\"";
                 $row .= ",\"" . $first . "\",\"" . $last . "\",\"" . $package;
                 if ( $this->pickup ) {
                   $row .= "\",\"" . $pickup;
