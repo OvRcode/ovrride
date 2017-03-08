@@ -97,6 +97,13 @@ $version = file_get_contents('lists.version');
                                           <option value=''>Select Pickup</option>
                                         </select><br /><br />
                                         <select class='input-sm' id='walkonPackage'></select><br /><br />
+                                        <select class='input-sm' id='walkonCrew'>
+                                          <option value='none'>Normal customer</option>
+                                          <option value='burton'>Burton Employee</option>
+                                          <option value='ovr'>OvR Crew</option>
+                                          <option value='patagonia'>Patagonia Employee</option>
+                                        </select>
+                                        <br />
                                         <button type='button' class='btn btn-success disabled' id='saveWalkOn'>
                                           <i class='fa fa-plus'></i>&nbsp<i class='fa fa-list'></i>&nbsp;Add to list
                                        </button>

@@ -207,7 +207,7 @@ $(function() {
     function addWalkonButton(){
         var fields = [$("#walkonPackage").val(), $("#first").val(),
                       $("#last").val(), $("#phone").val(),
-                      $("#walkonPickup").val()];
+                      $("#walkonPickup").val(), $("#walkonCrew").val()];
         $.each(fields, function( key,value){
           if ( "" === value ) {
             $("#saveWalkOn").addClass('disabled');
@@ -407,7 +407,6 @@ $(function() {
     }
     function saveWalkOn(){
         // Saves to local storage
-        var walkonPackage = $("#walkonPackage").val();
         var orderNum = Math.floor((Math.random() * 99999) + 1);
         orderNum = "WO" + String(orderNum.pad(4));
         var orderItem = Math.floor((Math.random() * 99999) + 1);
@@ -416,7 +415,8 @@ $(function() {
         var walkOn = {First: $("#first").val(),
                       Last: $("#last").val(),
                       Phone: $("#phone").val(),
-                      Package: walkonPackage};
+                      Package: $("#walkonPackage").val(),
+                      Crew: $("#walkonCrew").val(),};
         if( settings.isSet('Pickup') ) {
             walkOn.Pickup = $("#walkonPickup").val();
         }

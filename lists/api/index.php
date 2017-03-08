@@ -241,6 +241,7 @@ class Lists {
                         $walkOnOrder['Phone'] = $row['Phone'];
                         $walkOnOrder['Package'] = $row['Package'];
                         $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
+                        $walkOnOrder['Crew'] = $row['Crew'];
                         $this->listHTML($walkOnOrder);
                         $this->customerData($walkOnOrder);
                     }
@@ -379,12 +380,13 @@ class Lists {
             if ( ! isset($fields['Pickup']) ){
                 $fields['Pickup'] = "";
             }
-            $sql = "INSERT INTO `ovr_lists_manual_orders` (ID, First, Last, Pickup, Phone, Package, Trip, Bus)
+            $sql = "INSERT INTO `ovr_lists_manual_orders` (ID, First, Last, Pickup, Phone, Package, Trip, Bus, Crew)
                     VALUES('" . $ID . "', '" . $fields['First'] . "', '" . $fields['Last']. "', '" . $fields['Pickup']. "',
-                    '" . $fields['Phone']. "', '" . $fields['Package'] . "', '" . $fields['Trip']. "', '" . $fields['Bus'] . "')
+                    '" . $fields['Phone']. "', '" . $fields['Package'] . "', '" . $fields['Trip']. "', '" . $fields['Bus'] . "',
+                    '" . $fields['Crew'] . "')
                     ON DUPLICATE KEY UPDATE
                     First=VALUES(First), Last=VALUES(Last), Pickup=VALUES(Pickup), Phone=VALUES(Phone), Package=VALUES(Package),
-                    Trip=VALUES(Trip), Bus=VALUES(Bus)";
+                    Trip=VALUES(Trip), Bus=VALUES(Bus), Crew=VALUES(Crew)";
             $this->dbQuery($sql);
         }
     }
@@ -542,6 +544,23 @@ class Lists {
             $pickupName = $orderData['Pickup'];
         } else {
             $pickup = FALSE;
+        }
+        if ( isset($orderData['Crew']) ){
+          switch( $orderData['Crew']) {
+            case 'burton':
+              $crew = "/images/burton.png";
+              break;
+            case 'patagonia':
+              $crew = "/images/patagonia.png";
+              break;
+            case 'ovr':
+              $crew = "/images/ovr.png";
+              break;
+            default:
+              if ( isset($crew) ) {
+                unset($crew);
+              }
+          }
         }
         // TODO: Setup conditions for rockaway trips
         // TODO: implement mustache.php to use same template on client/server

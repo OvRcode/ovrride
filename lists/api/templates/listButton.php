@@ -69,12 +69,19 @@
       </div>
     </div>
     <div class="row">
+      <?php if ( isset($email) && "" !== $email ): ?>
       <div class="buttonCell col-xs-12 col-md-6">
         <strong>Email: </strong>
         <a href="mailto:<?php echo $email; ?>">
           <span class="email"><?php echo $email; ?></span>
         </a>
       </div>
+      <?php endif; ?>
+      <?php if ( isset($crew) ) : ?>
+      <div class="buttonCell col-xs-12 col-md-6">
+          <img src="<?php echo $crew; ?>">
+      </div>
+      <?php endif; ?>
     </div>
     <div class="row">
       <br />
