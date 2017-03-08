@@ -20,12 +20,12 @@ class ovr_calendar_widget extends WP_Widget {
   public function generate_calendar_ajax() {
 
     if ( ! wp_verify_nonce( $_REQUEST['ovr_calendar_shift'], 'ovr_calendar' ) ) {
-      error_log("WTF?");
+      error_log("Failed Nonce:");
       error_log($_REQUEST['ovr_calendar_shift']);
       die('OvR Calendar Ajax nonce failed');
     }
 
-    
+
     // Create php date object with correct timezone for calendar generation
     $date = new DateTime($_POST['calendarDate'], new DateTimeZone('EST'));
 
@@ -49,7 +49,7 @@ class ovr_calendar_widget extends WP_Widget {
     $sqlDate = $date->format('F %, Y');
 
     // Find trips happening this month
-    $trips = $wpdb->get_results("SELECT `wp_posts`.`post_title`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
+    $raw_trips = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
     FROM `wp_posts`
     JOIN `wp_postmeta` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
     JOIN `wp_term_relationships` ON `wp_posts`.`ID` = `wp_term_relationships`.`object_id`
@@ -64,7 +64,25 @@ class ovr_calendar_widget extends WP_Widget {
     ORDER BY `Date`", ARRAY_A);
 
     $search_date = $year . "-" . $month . "-";
-
+    $trips = array();
+    foreach($raw_trips as $index => $current_trip) {
+      $ID = $current_trip['ID'];
+      $trip_date = $current_trip['Date'];
+      $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $current_trip['post_title']);
+      $stripped_title = preg_replace("/[-\s]{1,2}[0-9][0-9][tsr][hnd]/", "", $stripped_title); // edge case for weird date formatting
+      $stripped_title = preg_replace("/[MTWFS][ouehra][neduitn][\.]/", "", $stripped_title);// edge case for weird day of week
+      $current_trip_link = '<a href=\''.$current_trip['guid'].'\'>'. $stripped_title .'</a>';
+      $trips[$trip_date][] = $current_trip_link;
+      $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
+      if ( $trip_date === $end ) {
+        continue;
+      }
+      $trip_date++;
+      for($i=$trip_date; $i <= $end; $i++) {
+        $trips[$i][] = $current_trip_link;
+      }
+    }
+    error_log(print_r($trips,true));
     // loop through month and assemble
     $date->modify('last day of this month');
     $lastDay = $date->format('d');
@@ -87,18 +105,11 @@ class ovr_calendar_widget extends WP_Widget {
         $icon = false;
         $calendarDate = $date->format('Y-m-') . str_pad($adjustedDay, 2 , "0", STR_PAD_LEFT);
         // If the current calendar date exists in the trips array add the trip info
-        while( $trips[0]['Date'] == $calendarDate ) {
-          if ( ! $icon ) {
-              $icon = true;
+        error_log($calendarDate);
+        if ( isset($trips[$calendarDate])) {
+          foreach( $trips[$calendarDate] as $trip_date => $link ) {
+            $data .= $link . "<br />";
           }
-          // Remove trip from array after processing
-          $temp = array_shift($trips);
-
-          $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $temp['post_title']);
-          $data .= '<a href=\''.$temp['guid'].'\'>'. $stripped_title .'</a><br />';
-        }
-        // If data was added to day then add an icon with link info
-        if ( $icon ) {
           $data = 'data-placement="auto-bottom" data-content="' . htmlentities($data) .'"';
           $add .= '<i class="fa fa-snowflake-o icon winter" ' . $data . ' aria-hidden="true"></i>';
         }
