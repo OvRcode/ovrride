@@ -62,7 +62,7 @@ class ovr_calendar_widget extends WP_Widget {
     AND `wp_term_taxonomy`.`taxonomy` = 'product_type'
     AND `wp_terms`.`name` = 'trip'
     AND `wp_postmeta`.`meta_key` = '_wc_trip_start_date'
-    AND `wp_postmeta`.`meta_value` LIKE 'March %, 2017'
+    AND `wp_postmeta`.`meta_value` LIKE '{$sqlDate}'
     ORDER BY `Date`", ARRAY_A);
 
     $search_date = $year . "-" . $month . "-";
