@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo, Mike Barnard
  * Author URI: http://ajacevedo.com
- * Version: 0.6.0
+ * Version: 0.6.1
  * License: MIT License
  */
 
@@ -88,8 +88,15 @@ function register_custom_order_statuses() {
       'show_in_admin_status_list' => true,
       'label_count'               => _n_noop( 'Completed, Modified <span class="count">(%s)</span>', 'Completed, Modified<span class="count">(%s)</span>' )
   ) );
-
-  // More to come here vvv
+  // Add Comped status
+  register_post_status( 'wc-comped', array(
+      'label'                     => 'Comped',
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true,
+      'label_count'               => _n_noop( 'Comped <span class="count">(%s)</span>', 'Comped<span class="count">(%s)</span>' )
+  ) );
 }
 add_action( 'init', 'register_custom_order_statuses' );
 
@@ -104,8 +111,9 @@ function add_custom_statuses_to_order_statuses( $order_statuses ) {
       if ( 'wc-processing' === $key ) {
           $new_order_statuses['wc-no-show'] = 'No Show';
           $new_order_statuses['wc-balance-due'] = 'Balance Due';
-      } else if ( 'wc-on-hold' === $key ) {
+      } else if ( 'wc-completed' === $key ) {
           $new_order_statuses['wc-modified'] = 'Completed, Modified';
+          $new_order_statuses['wc-comped'] = 'Comped';
       }
   }
 
