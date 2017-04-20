@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo, Mike Barnard
  * Author URI: http://ajacevedo.com
- * Version: 0.5.0
+ * Version: 0.6.0
  * License: MIT License
  */
 
@@ -58,67 +58,60 @@ function ovr_update_order_status( $order_status, $order_id ) {
  return $order_status;
 }
 
-// Add no-show status
-function register_no_show_order_status() {
-    register_post_status( 'wc-no-show', array(
-        'label'                     => 'No Show',
-        'public'                    => true,
-        'exclude_from_search'       => false,
-        'show_in_admin_all_list'    => true,
-        'show_in_admin_status_list' => true,
-        'label_count'               => _n_noop( 'No Show <span class="count">(%s)</span>', 'No Show <span class="count">(%s)</span>' )
-    ) );
+// Add custom order statuses
+function register_custom_order_statuses() {
+  // Add No Show status
+  register_post_status( 'wc-no-show', array(
+      'label'                     => 'No Show',
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true,
+      'label_count'               => _n_noop( 'No Show <span class="count">(%s)</span>', 'No Show <span class="count">(%s)</span>' )
+  ) );
+
+  // Add Balance Due status
+  register_post_status( 'wc-balance-due', array(
+      'label'                     => 'Balance Due',
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true,
+      'label_count'               => _n_noop( 'Balance Due <span class="count">(%s)</span>', 'Balance Due<span class="count">(%s)</span>' )
+  ) );
+  // Add Completed Modified status
+  register_post_status( 'wc-modified', array(
+      'label'                     => 'Completed, Modified',
+      'public'                    => true,
+      'exclude_from_search'       => false,
+      'show_in_admin_all_list'    => true,
+      'show_in_admin_status_list' => true,
+      'label_count'               => _n_noop( 'Completed, Modified <span class="count">(%s)</span>', 'Completed, Modified<span class="count">(%s)</span>' )
+  ) );
+
+  // More to come here vvv
 }
-add_action( 'init', 'register_no_show_order_status' );
-// Add to list of WC Order statuses
-function add_no_show_to_order_statuses( $order_statuses ) {
+add_action( 'init', 'register_custom_order_statuses' );
 
-    $new_order_statuses = array();
+function add_custom_statuses_to_order_statuses( $order_statuses ) {
+  $new_order_statuses = array();
 
-    // add new order status after processing
-    foreach ( $order_statuses as $key => $status ) {
+  // add new order status after processing
+  foreach ( $order_statuses as $key => $status ) {
 
-        $new_order_statuses[ $key ] = $status;
+      $new_order_statuses[ $key ] = $status;
 
-        if ( 'wc-processing' === $key ) {
-            $new_order_statuses['wc-no-show'] = 'No Show';
-        }
-    }
+      if ( 'wc-processing' === $key ) {
+          $new_order_statuses['wc-no-show'] = 'No Show';
+          $new_order_statuses['wc-balance-due'] = 'Balance Due';
+      } else if ( 'wc-on-hold' === $key ) {
+          $new_order_statuses['wc-modified'] = 'Completed, Modified';
+      }
+  }
 
-    return $new_order_statuses;
+  return $new_order_statuses;
 }
-add_filter( 'wc_order_statuses', 'add_no_show_to_order_statuses' );
-
-// Add Balance Due Status
-function register_balance_due_order_status() {
-    register_post_status( 'wc-balance-due', array(
-        'label'                     => 'Balance Due',
-        'public'                    => true,
-        'exclude_from_search'       => false,
-        'show_in_admin_all_list'    => true,
-        'show_in_admin_status_list' => true,
-        'label_count'               => _n_noop( 'Balance Due <span class="count">(%s)</span>', 'Balance Due<span class="count">(%s)</span>' )
-    ) );
-}
-add_action( 'init', 'register_balance_due_order_status' );
-
-function add_balance_due_to_order_statuses( $order_statuses ) {
-
-    $new_order_statuses = array();
-
-    // add new order status after processing
-    foreach ( $order_statuses as $key => $status ) {
-
-        $new_order_statuses[ $key ] = $status;
-
-        if ( 'wc-processing' === $key ) {
-            $new_order_statuses['wc-balance-due'] = 'Balance Due';
-        }
-    }
-
-    return $new_order_statuses;
-}
-add_filter( 'wc_order_statuses', 'add_balance_due_to_order_statuses' );
+add_filter( 'wc_order_statuses', 'add_custom_statuses_to_order_statuses' );
 //Remove Reviews tab from woocommerce
 function woocommerce_remove_reviews($tabs){
     unset( $tabs['reviews'] );
