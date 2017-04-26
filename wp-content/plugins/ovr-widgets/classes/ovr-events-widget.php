@@ -126,9 +126,13 @@ function returnTrips($numberOfTrips, $menu_order){
       $trip[$id]->post_title = $ladiesCheck[1];
     } else {
       // Remove Dates from title
-      $trip[$id]->post_title = preg_replace('/[JFMASOND][aepuco][nbrylgptvc][.eyt].*/','',$trip[$id]->post_title);
+      $trip[$id]->post_title = preg_replace('/[JFMASOND][aepuco][nbrylgptvc][.eyt][^h].*/','',$trip[$id]->post_title);
+
       // Remove any leftover day abbreviations in titile
       $trip[$id]->post_title = preg_replace('/[STMWF][uhaoer][neutdi][rs.][.$]/','',trim($trip[$id]->post_title));
+
+      // Remove any leftover brackets
+      $trip[$id]->post_title =  str_replace( array("(",")"), "", $trip[$id]->post_title);
     }
   }
   // Sort trips by trip date
