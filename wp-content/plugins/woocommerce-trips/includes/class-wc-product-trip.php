@@ -158,7 +158,7 @@ class WC_Product_Trip extends WC_Product {
 				$fromBeach .= $option;
 			}
 			return <<<OUTPUT
-			<div class="toFromBeach">
+			<div class="clearfix toFromBeach">
 				<div class="toBeach">
 					<label for="wc_trip_to_beach"><strong>To Beach</strong> <span class="required">*</span></label>
 					<select name="wc_trip_to_beach" id="wc_trip_to_beach" data-required="true">
