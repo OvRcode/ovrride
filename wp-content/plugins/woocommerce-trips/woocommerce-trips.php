@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.3.3
+Version: 1.3.4
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -25,7 +25,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
 
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '1.0.0' );
+        define( 'WC_TRIPS_VERSION', '1.3.4' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -438,6 +438,7 @@ STYLE;
     public function video_content(){
       $this->html_content('_wc_trip_videos');
     }
+    // TODO: Look at removing this vv
     public function routes_content(){
       $this->html_content('_wc_trip_routes');
     }
@@ -478,7 +479,7 @@ MAP;
     }
     public function bus_times_content() {
         global $product;
-
+        $trip_type = get_post_meta( $product->id, '_wc_trip_type', true);
         $pickups = get_post_meta( $product->id, '_wc_trip_pickups', true);
         echo "<div class='clearfix'>";
         echo "<h4>&nbsp;&nbsp;Bus Times:</h4>";
@@ -486,37 +487,69 @@ MAP;
         $count = 0;
         $leftColumnContent = "";
         $rightColumnContent = "";
-        foreach ( $pickups as $pickup => $route ) {
-            $pickupHtml = $this->pickup_html($pickup);
-            $tempHtml =<<<TEMPHTML
-                <div class="pickup">
-                    {$pickupHtml}
-                </div>
-TEMPHTML;
-            if ( $count & 1 ) {
-                $rightColumnContent .= $tempHtml;
+        if ( "beach_bus" === $trip_type ) {
+          foreach( $pickups as $pickup => $route ) {
+            $decluttered[get_the_title($pickup)][] = $pickup;
+          }
+          ksort($decluttered, SORT_STRING);
+          foreach( $decluttered as $stop => $times ) {
+            $pickupHtml = $this->pickup_html($times);
+            $tempHtml = <<<BBTEMPHTML
+              <div class="pickup">
+                {$pickupHtml}
+              </div>
+BBTEMPHTML;
+            if ( $count & 1) {
+              $rightColumnContent .= $tempHtml;
             } else {
-                $leftColumnContent .= $tempHtml;
+              $leftColumnContent .= $tempHtml;
             }
             $count++;
+          }
+        } else {
+          foreach ( $pickups as $pickup => $route ) {
+              $pickupHtml = $this->pickup_html($pickup);
+              $tempHtml =<<<TEMPHTML
+                  <div class="pickup">
+                      {$pickupHtml}
+                  </div>
+TEMPHTML;
+              if ( $count & 1 ) {
+                  $rightColumnContent .= $tempHtml;
+              } else {
+                  $leftColumnContent .= $tempHtml;
+              }
+              $count++;
+          }
         }
-        echo <<<TESTING
+        echo <<<BUSOUTPUT
             <div class="busLeftColumn">{$leftColumnContent}</div>
             <div class="busRightColumn">{$rightColumnContent}</div>
-TESTING;
+BUSOUTPUT;
         echo "</div>";
     }
     public function includes_content() {
       $this->html_content('_wc_trip_includes');
     }
     public function pickup_html( $post_id ) {
+        if ( "array" == gettype($post_id) ) {
+          $time_array = $post_id;
+          $post_id = $post_id[0];
+        }
         $pickup = get_post( $post_id );
         $address = get_post_meta( $post_id, '_pickup_location_address', true );
         $output = "";
         if ( $address ) {
             $cross_st = get_post_meta( $post_id, '_pickup_location_cross_st', true);
             $address = explode(",", ucwords( strtolower( $address ) ), 2);
-            $time = date("g:i a", strtotime(get_post_meta( $post_id, '_pickup_location_time', true)));
+            if ( !isset($time_array) ) {
+              $time = date("g:i a", strtotime(get_post_meta( $post_id, '_pickup_location_time', true)));
+            } else {
+              foreach( $time_array as $index => $id ) {
+                $time .= date("g:i a", strtotime(get_post_meta( $id, '_pickup_location_time', true))) . ", ";
+              }
+              $time = rtrim($time, ", ");
+            }
             $output = <<<PICKUPHTML
                 <strong>{$pickup->post_title}</strong><br />
                 {$address[0]}<br />
