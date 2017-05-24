@@ -329,16 +329,12 @@ META;
             if ( !current_user_can( 'edit_post', $post_id ) ) {
                 return $post_id;
             }
+            $variables = array('_trail_map', '_trail_map_2', '_trail_map_3', '_trail_map_4',
+              '_contact', '_contact_phone', '_rep', '_rep_phone', '_report_email', '_type');
 
-            update_post_meta( $post_id, '_trail_map', sanitize_text_field( $_POST['upload_trail_map'] ) );
-            update_post_meta( $post_id, '_trail_map_2', sanitize_text_field( $_POST['upload_trail_map_2'] ) );
-            update_post_meta( $post_id, '_trail_map_3', sanitize_text_field( $_POST['upload_trail_map_3'] ) );
-            update_post_meta( $post_id, '_trail_map_4', sanitize_text_field( $_POST['upload_trail_map_4'] ) );
-            update_post_meta( $post_id, '_contact', sanitize_text_field( $_POST['_contact'] ) );
-            update_post_meta( $post_id, '_contact_phone', sanitize_text_field( $_POST['_contact_phone'] ) );
-            update_post_meta( $post_id, '_rep', sanitize_text_field( $_POST['_rep'] ) );
-            update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
-            update_post_meta( $post_id, '_report_email', sanitize_text_field( $_POST['_report_email'] ) );
+            foreach($variables as $index => $variable) {
+              update_post_meta( $post_id, $variable, sanitize_text_field( $_POST[$variable] ) );
+            }
         } else {
             return $post_id;
         }
@@ -358,8 +354,19 @@ META;
         $rep = get_post_meta( $post->ID, '_rep', true);
         $repPhone = get_post_meta( $post->ID, '_rep_phone', true);
         $reportEmail = get_post_meta( $post->ID, '_report_email', true);
-
+        $type = get_post_meta( $post->ID, '_type', true);
+        $types = array("winter" => "Winter", "summer" => "Summer", "summer_snow" => "Summer Snow");
+        $type_drop_down = "<select name='_type'>";
+        foreach( $types as $value => $label ) {
+          $type_drop_down .= "<option value='{$value}'";
+          if ( $type == $value ) {
+            $type_drop_down .= " selected ";
+          }
+          $type_drop_down .= "> {$label}</option>";
+        }
+        $type_drop_down .= "</select>";
         $html = <<<DESTFIELDS
+            <label>Type:</label>{$type_drop_down}<br />
              <label>Automated Report Email:</label><input type="text" size="36" name="_report_email" value="{$reportEmail}" />
              <br />
              <label>Contact: </label><input type="text" size="36" name="_contact" value="{$contact}" />
