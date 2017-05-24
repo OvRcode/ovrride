@@ -88,7 +88,9 @@ class ovr_calendar_widget extends WP_Widget {
       WHERE `post_title` = '{$trip_destination}'
       AND `post_type` = 'destinations'
       AND `meta_key` = '_type'");
-
+      if ( !isset($trip_type[0]->trip) || '' == $trip_type[0]->trip ) {
+        $trip_type[0]->trip = 'winter';
+      }
       $trips[$trip_date][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
       $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
       if ( $trip_date === $end ) {
