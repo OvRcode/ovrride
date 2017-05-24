@@ -329,12 +329,18 @@ META;
             if ( !current_user_can( 'edit_post', $post_id ) ) {
                 return $post_id;
             }
-            $variables = array('_trail_map', '_trail_map_2', '_trail_map_3', '_trail_map_4',
-              '_contact', '_contact_phone', '_rep', '_rep_phone', '_report_email', '_type');
+            error_log($_POST['upload_trail_map']);
+            update_post_meta( $post_id, '_trail_map', sanitize_text_field( $_POST['upload_trail_map'] ) );
+            update_post_meta( $post_id, '_trail_map_2', sanitize_text_field( $_POST['upload_trail_map_2'] ) );
+            update_post_meta( $post_id, '_trail_map_3', sanitize_text_field( $_POST['upload_trail_map_3'] ) );
+            update_post_meta( $post_id, '_trail_map_4', sanitize_text_field( $_POST['upload_trail_map_4'] ) );
+            update_post_meta( $post_id, '_contact', sanitize_text_field( $_POST['_contact'] ) );
+            update_post_meta( $post_id, '_contact_phone', sanitize_text_field( $_POST['_contact_phone'] ) );
+            update_post_meta( $post_id, '_rep', sanitize_text_field( $_POST['_rep'] ) );
+            update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
+            update_post_meta( $post_id, '_report_email', sanitize_text_field( $_POST['_report_email'] ) );
+            update_post_meta( $post_id, '_type', sanitize_text_field( $_POST['_type'] ) );
 
-            foreach($variables as $index => $variable) {
-              update_post_meta( $post_id, $variable, sanitize_text_field( $_POST[$variable] ) );
-            }
         } else {
             return $post_id;
         }
