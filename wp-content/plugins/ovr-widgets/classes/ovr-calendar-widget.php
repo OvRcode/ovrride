@@ -65,6 +65,7 @@ class ovr_calendar_widget extends WP_Widget {
     AND `wp_postmeta`.`meta_value` LIKE '{$sqlDate}'
     ORDER BY `Date`", ARRAY_A);
 
+    //SELECT ID FROM `wp_posts` WHERE `post_title`='{$trip_destination}' AND `post_type` = 'destinations';
     $search_date = $year . "-" . $month . "-";
     $trips = array();
     foreach($raw_trips as $index => $current_trip) {
@@ -79,7 +80,15 @@ class ovr_calendar_widget extends WP_Widget {
         $current_trip_link = '<a class=\'calendar_past_trip\'>';
       }
       $current_trip_link .= $stripped_title .'</a>';
-      $trips[$trip_date][] = $current_trip_link;
+      $trip_destination = get_post_meta( $ID, '_wc_trip_destination', true);
+
+      $trip_type = $wpdb->get_results("SELECT `meta_value` as 'type' FROM `wp_postmeta`
+      JOIN wp_posts ON wp_postmeta.post_id = wp_posts.ID
+      WHERE `post_title` = '{$trip_destination}'
+      AND `post_type` = 'destinations'
+      AND `meta_key` = '_type'");
+
+      $trips[$trip_date][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
       $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
       if ( $trip_date === $end ) {
         continue;
@@ -114,15 +123,52 @@ class ovr_calendar_widget extends WP_Widget {
         // If the current calendar date exists in the trips array add the trip info
 
         if ( isset($trips[$calendarDate])) {
-          foreach( $trips[$calendarDate] as $trip_date => $link ) {
-            $data .= $link . "<br />";
+          $same_type = TRUE;
+          unset($previous_type);
+          foreach( $trips[$calendarDate] as $trip_date => $array ) {
+            $data .= $array['link'] . "<br />";
+            if ( !isset($previous_type) ) {
+              $previous_type = $array['type'];
+            }
+            if ( $array['type'] !== $previous_type && $same_type) {
+              error_log("previous:".$previous_type);
+              error_log("array:".$array['type']);
+              $same_type = FALSE;
+            }
           }
+
+          if ( ! $same_type ) {
+            $icon = "fa-circle";
+            if ( strpos($data, 'href') !== FALSE) {
+              $icon .= " winter";
+            } else {
+              $icon .= " past";
+            }
+          } else if ( "winter" === $previous_type ) {
+            $icon = "fa-snowflake-o";
+            if ( strpos($data, 'href') !== FALSE) {
+              $icon .= " winter";
+            } else {
+              $icon .= " past";
+            }
+          } else if ( "summer_snow" === $previous_type ) {
+            $icon = "fa-snowflake-o";
+            if ( strpos($data, 'href') !== FALSE) {
+              $icon .= " summer";
+            } else {
+              $icon .= " past";
+            }
+          } else if ( "summer" === $previous_type ) {
+            $icon = "fa-sun-o";
+            if ( strpos($data, 'href') !== FALSE) {
+              $icon .= " summer";
+            } else {
+              $icon .= " past";
+            }
+          }
+
           $data = 'data-placement="auto-bottom" data-content="' . htmlentities($data) .'"';
-          if ( strpos($data, 'href') !== FALSE) {
-            $add .= '<i class="fa fa-snowflake-o icon winter "';
-          } else {
-            $add .= '<i class="fa fa-snowflake-o icon past" ';
-          }
+          $add .= '<i class="fa icon ' . $icon . ' "';
           $add .= $data . ' aria-hidden="true"></i>';
         }
 
