@@ -65,9 +65,9 @@ class ovr_calendar_widget extends WP_Widget {
     AND `wp_postmeta`.`meta_value` LIKE '{$sqlDate}'
     ORDER BY `Date`", ARRAY_A);
 
-    //SELECT ID FROM `wp_posts` WHERE `post_title`='{$trip_destination}' AND `post_type` = 'destinations';
     $search_date = $year . "-" . $month . "-";
     $trips = array();
+    error_log(serialize($raw_trips));
     foreach($raw_trips as $index => $current_trip) {
       $ID = $current_trip['ID'];
       $trip_date = $current_trip['Date'];
@@ -93,12 +93,14 @@ class ovr_calendar_widget extends WP_Widget {
       }
       $trips[$trip_date][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
       $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
+      // Exit current loop iteration if trip_date is trip end date
       if ( $trip_date === $end ) {
         continue;
       }
       $trip_date++;
+      // Loop until we find end of trip and add trip data to array on those days
       for($i=$trip_date; $i <= $end; $i++) {
-        $trips[$i][] = $current_trip_link;
+        $trips[$i][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
       }
     }
 
@@ -134,8 +136,6 @@ class ovr_calendar_widget extends WP_Widget {
               $previous_type = $array['type'];
             }
             if ( $array['type'] !== $previous_type && $same_type) {
-              error_log("previous:".$previous_type);
-              error_log("array:".$array['type']);
               $same_type = FALSE;
             }
           }
@@ -147,17 +147,10 @@ class ovr_calendar_widget extends WP_Widget {
             } else {
               $icon .= " past";
             }
-          } else if ( "winter" === $previous_type ) {
+          } else if ( "winter" === $previous_type || "summer_snow" === $previous_type ) {
             $icon = "fa-snowflake-o";
             if ( strpos($data, 'href') !== FALSE) {
               $icon .= " winter";
-            } else {
-              $icon .= " past";
-            }
-          } else if ( "summer_snow" === $previous_type ) {
-            $icon = "fa-snowflake-o";
-            if ( strpos($data, 'href') !== FALSE) {
-              $icon .= " summer";
             } else {
               $icon .= " past";
             }
