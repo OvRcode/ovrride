@@ -62,6 +62,16 @@ jQuery(document).ready(function($){
     $(".navbar-inverse .navbar-nav>li>a").on('mouseleave',function() {
       $(this).css("color", "#FFF");
     });
+    //Modify Shop links on page
+    //$("a.woocommerce-LoopProduct-link").attr("href", $(this).attr("href") + "?bb=1");
+    function modifyShopLink(e) {
+      e.preventDefault();
+      var url = jQuery(this).attr("href").concat("?bb=1");
+      window.location.href=url;
+    }
+    // Keep BB referal on links
+    $("a.woocommerce-LoopProduct-link").click( jQuery(this), modifyShopLink );
+    $("a.woocommerce-LoopProduct-link").siblings('a').click( jQuery(this), modifyShopLink );
   }
   // Set price on page
   var base_price = Number($("#base_price").val());
