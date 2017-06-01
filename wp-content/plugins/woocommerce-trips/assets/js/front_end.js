@@ -1,13 +1,67 @@
 jQuery(document).ready(function($){
   var vars = window.location.search.replace("?","");
   if ( vars.indexOf("bb=1") >= 0 ){
-  $(".social-media-icons").remove();
-  $('.site-title').find('img').attr('src','http://rockawaybeachbus.com/img/rbb_logo.png');
-  $('#maincontentcontainer').css({"background": "url('https://rockawaybeachbus.com/img/bkgsm.png') #FFFFFF"});
-  $("#masthead a").attr('href', 'http://rockawaybeachbus.com/');
-  $("#headercontainer").css({"background": "#002549"});
-  $('.images').remove();
-  $('.wc_trip_add').css({'background':'#a4366d'});
+    $(".navbar-inverse").css({"background-color":"#002549"});
+    // Transform logo and logo placement
+    var title_logo = $("a[title='Home']");
+    var title_li = title_logo.parent('li');
+    title_logo.attr('href','http://rockawaybeachbus.com');
+    //title_logo.css({'width':'','height':''});
+    title_li.css({'background':'url(http://rockawaybeachbus.com/img/rbb_logo.png)'});
+    title_li.css({'background-repeat':'no-repeat'});
+    title_li.css({'background-size': 'contain'});
+    title_logo.css({'width':'170px'});
+    title_logo.css({'height':'140px'});
+    title_li.css({'margin-top':'10px'});
+    title_li.css({'left':'40%'});
+    $("#main-no-collapse li:first-of-type a").css({"background":"none"});
+
+    // Remove and Replace menu items
+    $("a[title='Book A Trip']").remove();
+    var main_collapse = $("ul#main-collapse");
+    main_collapse.html('');
+    main_collapse.append("<li><a title='home' href='http://rockawaybeachbus.com'>HOME</a></li>");
+    main_collapse.append("<li><a title='calendar' href='http://rockawaybeachbus.com/calendar.php'>CALENDAR</a></li>");
+    main_collapse.append("<li><a title='partners' href='http://rockawaybeachbus.com/partners.php'>PARTNERS</a></li>");
+    main_collapse.append("<li><a title='faq' href='http://rockawaybeachbus.com/faq.php'>FAQ</a></li>");
+    main_collapse.append("<li><a title='terms and conditions' href='http://rockawaybeachbus.com/terms.php'>TERMS AND CONDITIONS</a></li>");
+    main_collapse.find('li a').css({'font-size':'1em'});
+
+    // Move navbar down and to the right
+    var collapse_div = main_collapse.parent('div');
+    main_collapse.addClass('navbar-right');
+    collapse_div.css({'position':'absolute'});
+    collapse_div.css({'right':'10px'});
+    collapse_div.css({'bottom':'-28px'});
+    // Switch site background
+    $("body").css({'background':'url(http://rockawaybeachbus.com/img/bkgsm.png) repeat'});
+    $("div.main-content").css({'background':'none'});
+
+    //Hide upcoming events list
+    $("div.events").parent().parent('div.row').remove();
+    //Hide product image
+    $("div.images").remove();
+    // Remove footer squares
+    $("div.footer-square-container").remove();
+    //Remove ovr footer sponsors
+    $("div.ovr-sponsors").remove();
+    // Remove footer links
+    $("div.ovr-footer-links").remove();
+    // Remove Woocommerce breadcrumb links
+    $("nav.woocommerce-breadcrumb").remove();
+    // Change stock and price color
+    $("p.stock, span#trip_price").css({'color':'#A4366D'});
+    // Change Add to cart button color
+    $("button.wc_trip_add").css({'background':'#A4366D'});
+    //Change header link colors
+    $(".navbar-inverse .navbar-nav>li>a:link, .navbar-inverse .navbar-nav>li>a:visited").css({'color':'#FFF'});
+	  // Had to setup JS events for :hover due to jquery hardcoding new link color onto links
+    $(".navbar-inverse .navbar-nav>li>a").on('mouseenter',function() {
+      $(this).css("color", "#ED665E");
+    });
+    $(".navbar-inverse .navbar-nav>li>a").on('mouseleave',function() {
+      $(this).css("color", "#FFF");
+    });
   }
   // Set price on page
   var base_price = Number($("#base_price").val());

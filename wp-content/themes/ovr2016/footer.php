@@ -12,7 +12,7 @@
 		</div><!-- close .row -->
 	</div><!-- close .container -->
 </div><!-- close .main-content -->
-<div class="container-fluid">
+<div class="container-fluid footer-square-container">
 	<div class="col-sm-12 col-md-10 col-md-offset-1">
     <div class="row">
       <div class="col-xs-12 col-sm-6">
@@ -110,7 +110,7 @@
 </div><!-- close .container -->
 </div>
 <footer id="colophon" class="footer" role="contentinfo">
-	<div class="row">
+	<div class="row ovr-sponsors">
 		<div class="col-xs-4 col-sm-2">
 			<a href="http://www.arcteryx.com" class="ovr_sponsor" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/arcteryx.png"; ?>">
@@ -142,7 +142,7 @@
 			</a>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row ovr-footer-links">
 		<div class="col-xs-10 col-xs-offset-1">
 				<a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/waiver/">Waiver</a> |
 				<a href="/terms-and-conditions">Terms &amp; Conditions</a> | <a href="/faq">FAQ</a>
