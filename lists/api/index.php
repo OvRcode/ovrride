@@ -52,6 +52,7 @@ class Lists {
     }
     function destinationDropdown(){
         $output = "";
+        asort($this->destinations);
         foreach ( $this->destinations as $index => $destination) {
           $output .= "<option value='{$destination}'>{$destination}</option>\n";
         }
