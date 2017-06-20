@@ -60,14 +60,48 @@ class Lists {
     }
     function tripDropdown(){
         $options = "";
+        $options_trips = array();
         foreach( $this->destinations as $index => $destination) {
           if ( isset( $this->trips[$destination] ) ) {
             foreach( $this->trips[$destination] as $id => $info) {
                 $sql = "SELECT `meta_value` FROM `wp_postmeta` WHERE `post_id` = '{$id}' AND `meta_key` = '_wc_trip_start_date' LIMIT 1";
                 $result = $this->dbQuery($sql);
                 $result = $result->fetch_assoc();
-                $options .= "<option value='{$id}' class='{$destination}' data-date='{$result['meta_value']}'>{$info['title']}</option>\n";
+                $date = strtotime($result['meta_value']);
+                $year = date('Y', $date);
+                $month = date('m', $date);
+                $day = date('d', $date);
+                $options_trips[$year][$month][$day][$id] = array("title" => $info['title'], "destination" => $destination);
               }
+          }
+        }
+        // reverse sort years
+        krsort($options_trips);
+        foreach($options_trips as $year => $month_info) {
+          // sort months numerically
+          ksort($options_trips[$year]);
+          foreach($month_info as $month => $day_info) {
+            // sort days numerically
+            ksort($options_trips[$year][$month]);
+            foreach($day_info as $day => $trip_info) {
+              // sort trips inside each day alphabetically
+              asort($options_trips[$year][$month][$day]);
+            }
+          }
+        }
+        $divider_class = "";
+        foreach($this->destinations as $index => $destination) {
+          $divider_class .= " $destination ";
+        }
+        foreach($options_trips as $year => $month_info) {
+          $options .= "<option class='$divider_class' disabled>$year</option>";
+          foreach($month_info as $month => $day_info){
+            foreach($day_info as $day => $trip_info) {
+              foreach($trip_info as $id => $trip) {
+                $trip_date = "$year-$month-$day";
+                $options .= "<option value='$id' class='{$trip['destination']}' data-date='$trip_date'>{$trip['title']}</option>\n";
+              }
+            }
           }
         }
         echo $options;
