@@ -266,12 +266,25 @@ $(function() {
         if ( order['Is this guest at least 21 years of age?'] == "No" ) {
           underAge = "<i class='fa fa-child fa-3x'></i>";
         }
+        var crewHTML = '';
+        if ( typeof(order.Crew) !== 'undefined' && "none" !== order.Crew) {
+          crewHTML = "<span class='crew'>";
+          if ( "ovr" === order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/ovr.png' />");
+          } else if ( "patagonia" === order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/patagonia.png' />");
+          } else if ( "burton" === order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/burton.png' />");
+          }
+          crewHTML = crewHTML.concat("</span>");
+        }
         var output = "<div class='row listButton bg-none ' id='" + ID + "'>\
                           <div class='row primary'>\
                               <div class='buttonCell col-xs-3 col-md-1'>\
                                 <span class='icon'><i class='fa fa-square-o fa-3x'></i></span>\
                               </div>\
                               <div class='buttonCell name col-xs-9 col-md-3'>\
+                                  " + crewHTML + "\
                                   <span class='underAge'>" + underAge + "</span> \
                                   <span class='first'>&nbsp;" + order.First + "</span>\
                                   <span class='last'>" + order.Last + "</span>\
@@ -417,6 +430,7 @@ $(function() {
                       Phone: $("#phone").val(),
                       Package: $("#walkonPackage").val(),
                       Crew: $("#walkonCrew").val(),};
+
         if( settings.isSet('Pickup') ) {
             walkOn.Pickup = $("#walkonPickup").val();
         }
