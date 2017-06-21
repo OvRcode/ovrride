@@ -549,13 +549,13 @@ class Lists {
         if ( isset($orderData['Crew']) ){
           switch( $orderData['Crew']) {
             case 'burton':
-              $crew = "/images/burton.png";
+              $crew = "images/burton.png";
               break;
             case 'patagonia':
-              $crew = "/images/patagonia.png";
+              $crew = "images/patagonia.png";
               break;
             case 'ovr':
-              $crew = "/images/ovr.png";
+              $crew = "images/ovr.png";
               break;
             default:
               if ( isset($crew) ) {

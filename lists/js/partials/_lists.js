@@ -264,9 +264,10 @@ $(function() {
         var split = ID.split(":");
         var underAge = "";
         if ( order['Is this guest at least 21 years of age?'] == "No" ) {
-          underAge = "<i class='fa fa-child fa-3x'></i>";
+          underAge = "<span class='underAge'><i class='fa fa-child fa-3x'></i></span>";
         }
         var crewHTML = '';
+        var crewLabel = '';
         if ( typeof(order.Crew) !== 'undefined' && "none" !== order.Crew) {
           crewHTML = "<span class='crew'>";
           if ( "ovr" === order.Crew ) {
@@ -285,7 +286,7 @@ $(function() {
                               </div>\
                               <div class='buttonCell name col-xs-9 col-md-3'>\
                                   " + crewHTML + "\
-                                  <span class='underAge'>" + underAge + "</span> \
+                                  " + underAge + "\
                                   <span class='first'>&nbsp;" + order.First + "</span>\
                                   <span class='last'>" + order.Last + "</span>\
                               </div>\
