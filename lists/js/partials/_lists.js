@@ -1,8 +1,12 @@
 /*jshint multistr: true */
 $(function() {
     bounceToIndex();
-    $("button.saveList").on("click", function(){
+    $("#menuSave").on("click", function(){
+      $(this).removeClass("btn-success");
+      setTimeout(function(){
         saveData();
+        $("#menuSave").addClass("btn-success");
+      }, 1000);
     });
     if ( jQuery.browser.mobile ) {
       $("#top").addClass("iosFix");
@@ -416,6 +420,10 @@ $(function() {
           $.post("api/save/data", {data: orderLocalData}, function(){
             tripData.removeAll();
             getTripData();
+            alert("Trip data has been saved!");
+          })
+          .fail(function(){
+            alert("Trip data failed to save!");
           });
         }
     }
