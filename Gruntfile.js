@@ -42,6 +42,7 @@ module.exports = function(grunt){
       strict: {
         options: {
           ids: false,
+          "box-model": false,
           important: false
         },
         src: ['lists/css/lists.css', 'lists/css/simple-sidebar.css']
