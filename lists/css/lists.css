@@ -3,15 +3,12 @@
 }
 
 .sidebar-nav .half {
+    margin: 0 auto 10px auto;
     width: 75%;
-    margin-bottom: 10px;
-    margin-right: auto;
-    margin-left: auto;
-
 }
 
 .center {
-    margin-left: auto; 
+    margin-left: auto;
     margin-right: auto;
 }
 
@@ -32,44 +29,40 @@
 }
 
 #menu-toggle, #addWalkOn, #addDestination {
-    position: relative;
-    top:9px;
-    float: right;
+  float: right;
+  position: relative;
+  top:9px;
 }
 #addDestination {
     margin-bottom: 15px;
 }
 #menuSave {
-    position: relative;
-    top: 15px;
-    float: right;
-    margin-bottom: 20px;
+  float: right;
+  margin-bottom: 20px;
+  position: relative;
+  top: 15px;
 }
-
-#generate_list, #clearData {
-    margin-top: 20px;
-    margin-bottom: 40px;
-    /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */
+#clearData, #generate_list {
+  /* Padded bottom to avoid mobile safari scolling bottom bar up when clicking on button */
+  margin: 20px 0 40px 0;
 }
 
 .listButton {
     border-radius:10px;
-    padding: 7px 15px 7px 15px;
-    margin-bottom: 10px;
-    margin-left:3px;
-    margin-right:3px;
     box-shadow: 3px 3px 1px 1px #ccc;
+    margin: 0 3px 10px 3px;
+    padding: 7px 15px 7px 15px;
     -webkit-touch-callout: none;
-    -webkit-user-select: none;
+    user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+    -webkit-user-select: none;
 }
 
 .listButton a {
     color: #777777;
-    text-decoration: underline;   
+    text-decoration: underline;
 }
 
 .listButton a:hover {
@@ -116,17 +109,15 @@
 }
 
 .bg-noshow a{
-    color:#111111;
+  color:#111111;
 }
 
 .btn-black {
-    background-color:#000000;
-    color:#FFFFFF;
-    border: 1px solid #D1D1D1;
-    
+  background-color:#000000;
+  border: 1px solid #D1D1D1;
+  color:#FFFFFF;
 }
-
-.btn-black:hover, .btn-black:active {
+.btn-black:active, .btn-black:hover {
     color:#FFFFFF;
 }
 
@@ -140,26 +131,24 @@
 }
 
 .summary th {
-    border: 3px solid black;
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: #D1D1D1;
+  background-color: #D1D1D1;
+  border: 3px solid black;
+  padding: 0 10px 0 10px;
 }
 
 .summary td {
     border: 1px solid grey;
 }
 .reports button {
-    margin-top:20px;
-    margin-bottom:10px;
-}    
+  margin: 20px 0 10px 0;
+}
 
 #reportsContent p {
-    width:100%;
-    border:1px solid grey;
-    border-radius: 10px;
-    padding: 10px;
-    background: #D1D1D1;
+  background: #D1D1D1;
+  border:1px solid grey;
+  border-radius: 10px;
+  padding: 10px;
+  width:100%;
 }
 #destTable td,th{
     padding: 3px;
@@ -168,15 +157,15 @@
 #content {
     margin-left:5px;
 }
-#walkonPackage { 
+#walkonPackage {
   width: 190px;
 }
 #walkon {
   width: 195px;
 }
 .version {
-  padding-top: 10px;
   color: #FFFFFF;
+  padding-top: 10px;
 }
 @media (min-width: 768px) {
   .login-window {
@@ -202,15 +191,25 @@
 }
 
 .pickupList, .packageList {
+  margin: 10px 25px 5px;
   position: relative;
   top: 0;
   width: 70%;
-  margin: 10px 25px 5px;
 }
-#backMobile { 
+#backMobile {
   position: relative;
   top: -3px;
 }
 #newReport {
   resize:vertical;
+}
+#walkon select {
+  max-width: 100%;
+}
+#walkonCrew {
+  margin-bottom: 10px;
+}
+.crew img {
+  height: 40px;
+  width: 40px;
 }

@@ -207,7 +207,7 @@ $(function() {
     function addWalkonButton(){
         var fields = [$("#walkonPackage").val(), $("#first").val(),
                       $("#last").val(), $("#phone").val(),
-                      $("#walkonPickup").val()];
+                      $("#walkonPickup").val(), $("#walkonCrew").val()];
         $.each(fields, function( key,value){
           if ( "" === value ) {
             $("#saveWalkOn").addClass('disabled');
@@ -264,7 +264,20 @@ $(function() {
         var split = ID.split(":");
         var underAge = "";
         if ( order['Is this guest at least 21 years of age?'] == "No" ) {
-          underAge = "<i class='fa fa-child fa-3x'></i>";
+          underAge = "<span class='underAge'><i class='fa fa-child fa-3x'></i></span>";
+        }
+        var crewHTML = '';
+        var crewLabel = '';
+        if ( typeof(order.Crew) !== 'undefined' && "none" !== order.Crew) {
+          crewHTML = "<span class='crew'>";
+          if ( "ovr" === order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/ovr.png' />");
+          } else if ( "patagonia" === order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/patagonia.png' />");
+          } else if ( "burton" === order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/burton.png' />");
+          }
+          crewHTML = crewHTML.concat("</span>");
         }
         var output = "<div class='row listButton bg-none ' id='" + ID + "'>\
                           <div class='row primary'>\
@@ -272,7 +285,8 @@ $(function() {
                                 <span class='icon'><i class='fa fa-square-o fa-3x'></i></span>\
                               </div>\
                               <div class='buttonCell name col-xs-9 col-md-3'>\
-                                  <span class='underAge'>" + underAge + "</span> \
+                                  " + crewHTML + "\
+                                  " + underAge + "\
                                   <span class='first'>&nbsp;" + order.First + "</span>\
                                   <span class='last'>" + order.Last + "</span>\
                               </div>\
@@ -407,7 +421,6 @@ $(function() {
     }
     function saveWalkOn(){
         // Saves to local storage
-        var walkonPackage = $("#walkonPackage").val();
         var orderNum = Math.floor((Math.random() * 99999) + 1);
         orderNum = "WO" + String(orderNum.pad(4));
         var orderItem = Math.floor((Math.random() * 99999) + 1);
@@ -416,7 +429,9 @@ $(function() {
         var walkOn = {First: $("#first").val(),
                       Last: $("#last").val(),
                       Phone: $("#phone").val(),
-                      Package: walkonPackage};
+                      Package: $("#walkonPackage").val(),
+                      Crew: $("#walkonCrew").val(),};
+
         if( settings.isSet('Pickup') ) {
             walkOn.Pickup = $("#walkonPickup").val();
         }

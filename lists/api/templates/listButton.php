@@ -4,11 +4,16 @@
       <span class="icon"><i class="fa <?php echo $statusIcon; ?> fa-3x"></i></span>
     </div>
     <div class="buttonCell name col-xs-9 col-md-3">
-      <span class="underage">
       <?php if ( $underAge ): ?>
+      <span class="underage">
         <i class='fa fa-child fa-3x'></i>
-      <?php endif; ?>
       </span>
+      <?php endif; ?>
+      <?php if ( isset($crew) ): ?>
+      <span class="crew">
+        <img src="<?php echo $crew;?>" />
+      </span>
+    <?php endif; ?>
       <span class="first"><?php echo $first; ?>&nbsp;</span>
       <span class="last"><?php echo $last; ?></span>
     </div>
@@ -69,12 +74,19 @@
       </div>
     </div>
     <div class="row">
+      <?php if ( isset($email) && "" !== $email ): ?>
       <div class="buttonCell col-xs-12 col-md-6">
         <strong>Email: </strong>
         <a href="mailto:<?php echo $email; ?>">
           <span class="email"><?php echo $email; ?></span>
         </a>
       </div>
+      <?php endif; ?>
+      <?php if ( isset($crew) ) : ?>
+      <div class="buttonCell col-xs-12 col-md-6">
+          <img src="<?php echo $crew; ?>">
+      </div>
+      <?php endif; ?>
     </div>
     <div class="row">
       <br />

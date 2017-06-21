@@ -2,6 +2,7 @@ CREATE TABLE `ovr_lists_manual_orders` (
   `ID` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `First` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `Last` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `Crew` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'none',
   `Pickup` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'NO PICKUP',
   `Transit To Rockaway` text COLLATE utf8_unicode_ci,
   `Transit From Rockaway` text COLLATE utf8_unicode_ci,
