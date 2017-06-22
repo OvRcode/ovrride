@@ -157,9 +157,7 @@
 #content {
     margin-left:5px;
 }
-/*#walkonPackage {
-  width: 190px;
-}*/
+
 #walkon {
   width: 195px;
 }
@@ -204,6 +202,7 @@
   resize:vertical;
 }
 #walkon select {
+  float: left;
   max-width: 100%;
 }
 #walkonCrew {
