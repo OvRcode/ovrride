@@ -21,7 +21,7 @@ $(function() {
         $("#walkonPickup").append(dd.get('pickups'));
 
         // WalkOn Order listeners
-        $("#first, #last, #phone, #walkonPackage, #walkonPickup").on("change", function(){
+        $("#first, #last, #phone, #walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").on("change", function(){
           addWalkonButton();
         });
 
@@ -209,11 +209,18 @@ $(function() {
       console.log(element.find("span.icon i"));
     }
     function addWalkonButton(){
-        var fields = [$("#walkonPackage").val(), $("#first").val(),
-                      $("#last").val(), $("#phone").val(),
-                      $("#walkonPickup").val(), $("#walkonCrew").val()];
+        var fields = [$("#first"), $("#last"), $("#phone"),
+                      $("#walkonPickup"), $("#walkonCrew"),
+                      $("#walkonPrimaryPackage"), $("#walkonSecondaryPackage"),
+                      $("#walkonTertiaryPackage")
+                    ];
+
         $.each(fields, function( key,value){
-          if ( "" === value ) {
+          // Check that field exists before checking value
+          if ( 0 === value.length) {
+            return;// Skip this iteration if field doesn't exist
+          }
+          if ( "" === value.val() ) {
             $("#saveWalkOn").addClass('disabled');
             return false;
           } else {
