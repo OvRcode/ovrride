@@ -378,6 +378,9 @@ $(function() {
     function packageList(){
         var output = "";
         jQuery.each(packages.keys(), function(index,label){
+          if ( '' === label ) {
+            return;
+          }
           output = output.concat("<select class='input-sm' id='");
           if ( 0 === index ) {
             output = output.concat("walkonPrimaryPackage");
