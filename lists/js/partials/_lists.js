@@ -243,14 +243,16 @@ $(function() {
         }
     }
     function getPackages(){
-      var output = "<option value='none'>Package</option>";
+      var output = "<option value='none'>Packages</option>";
       jQuery.each( packages.keys() , function(key, value){
         var tempPackage = packages.get(value);
+
+        if ( key > 0) {
+          output = output.concat("<option value='none' disabled>"+value+"</option>");
+        }
         jQuery.each(tempPackage, function(index, packageInfo){
           output = output.concat("<option value='" + packageInfo.description + "'>" + packageInfo.description + "</option>");
         });
-        //var row = "<option value='" + value + "'>" + value + "</option>";
-        //output = output.concat(row);
       });
       $("select.packageList").append(output);
     }

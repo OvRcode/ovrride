@@ -102,6 +102,7 @@ function downloadReports(){
 function getTripInfo() {
   var trip = settings.get('tripNum');
   var deferred = $.Deferred();
+  packages.removeAll();
   $.get("api/trip/" + trip, function(data){
     settings.set('pickups', data.pickups);
     if ( ! $.isEmptyObject(data._wc_trip_primary_packages)) {
