@@ -96,7 +96,7 @@ $version = file_get_contents('lists.version');
                                         <select class='input-sm' id='walkonPickup'>
                                           <option value=''>Select Pickup</option>
                                         </select><br /><br />
-                                        <select class='input-sm' id='walkonPackage'></select><br /><br />
+                                        <div class='walkonPackages'></div>
                                         <select class='input-sm' id='walkonCrew'>
                                           <option value='none'>Normal customer</option>
                                           <option value='burton'>Burton Employee</option>

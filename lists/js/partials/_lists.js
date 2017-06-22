@@ -17,7 +17,7 @@ $(function() {
 
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
-        $("#walkonPackage").append(dd.get('packages'));
+        $(".walkonPackages").append(dd.get('packages'));
         $("#walkonPickup").append(dd.get('pickups'));
 
         // WalkOn Order listeners
@@ -369,15 +369,28 @@ $(function() {
     }
 
     function packageList(){
-        var output = "<option value='' selected>Select Package</option>";
+        var output = "";
         jQuery.each(packages.keys(), function(index,label){
+          output = output.concat("<select class='input-sm' id='");
+          if ( 0 === index ) {
+            output = output.concat("walkonPrimaryPackage");
+          } else if ( 1 === index ) {
+            output = output.concat("walkonSecondaryPackage");
+          } else if ( 2 === index ) {
+            output = output.concat("walkonTertiaryPackage");
+          }
+          output = output.concat("'>");
+          output = output.concat("<option value='' selected>Select " + label + "</option>");
           jQuery.each(packages.get(label), function(key, value){
-            output = output.concat("<option value='" + value.description + "'>" + value.description + " $" + value.cost + "</option>");
+            var outputCost = '';
+            if ( parseFloat(value.cost).toFixed(2) > 0.00 ) {
+              outputCost = " $" + value.cost;
+            }
+            output = output.concat("<option value='" + value.description + "'>" + value.description + outputCost + "</option>");
           });
+          output = output.concat("</select><br /><br />");
         });
-      /*  jQuery.each(packageList, function(key,value){
-            output = output.concat("<option value='" + value + "'>" + value + "</option>");
-        });*/
+
         dd.set('packages',output);
     }
     function pageTotal(){
