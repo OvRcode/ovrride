@@ -112,6 +112,7 @@ function clearData(){
     newWalkon.removeAll();
     unsavedReports.removeAll();
     messages.removeAll();
+    packages.removeAll();
     $("#destination").val("none").trigger("change");
     resetStatuses('Default');
     $("#bus").val("1");
