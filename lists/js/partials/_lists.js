@@ -464,10 +464,23 @@ $(function() {
                       Phone: $("#phone").val(),
                       Package: $("#walkonPackage").val(),
                       Crew: $("#walkonCrew").val(),};
-
-        if( settings.isSet('Pickup') ) {
+        var packageKeys = packages.keys();
+        if ( $("#walkonPrimaryPackage").length > 0 ) {
+          console.log(packageKeys[0]);
+          walkOn[packageKeys[0]] = $("#walkonPrimaryPackage").val();
+        }
+        if ( $("#walkonSecondaryPackage").length > 0 ) {
+          console.log(packageKeys[1]);
+          walkOn[packageKeys[1]] = $("#walkonSecondaryPackage").val();
+        }
+        if ( $("#walkonTertiaryPackage").length > 0 ) {
+          console.log(packageKeys[2]);
+          walkOn[packageKeys[2]] = $("#walkonTertiaryPackage").val();
+        }
+        if ( $("#walkonPickup").length > 0) {
             walkOn.Pickup = $("#walkonPickup").val();
         }
+        console.log(walkOn);
         listHTML(ID, walkOn);
         orders.set(ID,walkOn);
         newWalkon.set(ID,"unsaved");
