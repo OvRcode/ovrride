@@ -309,16 +309,32 @@ $(function() {
             var pickupHTML = '<div class="buttonCell col-xs-9 col-md-2 flexPickup">' + order.Pickup + '</div>';
             output = output.concat(pickupHTML);
         }
+        var packageLabels = packages.keys();
+        var combinedPackages = '';
+        $.each(packageLabels, function(index, label){
+          if ( label in order ) {
+            combinedPackages = combinedPackages.concat( order[label] + "<br />" );
+          }
+        });
+        // Remove trailing line break from string
+        combinedPackages = combinedPackages.replace(/<br \/>$/,"");
+
         var packageHTML = "<div class='buttonCell col-xs-9 col-md-3 flexPackage visible-md visible-lg'>\
-                            " + order.Package + "</div>\
+                            " + combinedPackages + "</div>\
                             <div class='buttonCell col-xs-3 col-md-offset-0 col-md-1 expand'>\
                               <i class='fa fa-bars fa-3x'></i>\
                             </div>\
                         </div>\
                         <div class='expanded'>\
                             <div class='row'>\
-                                <div class='buttonCell col-xs-5 col-md-6'>\
-                                <strong>Package:</strong> " + order.Package + "</div>";
+                                <div class='buttonCell col-xs-5 col-md-6'>";
+        $.each(packageLabels, function(index, label){
+          if ( label in order) {
+            packageHTML = packageHTML.concat("<strong>"+label+":</strong> " + order[label] + "<br />");
+          }
+        });
+        packageHTML = packageHTML.replace(/<br \/>$/, "");
+        packageHTML = packageHTML.concat("</div>");
         output = output.concat(packageHTML);
         if ( settings.isSet('Pickup') ) {
             var packageHTML2 = "<div class='buttonCell col-xs-12 col-md-6'>\
