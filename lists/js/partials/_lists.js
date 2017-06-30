@@ -17,11 +17,11 @@ $(function() {
 
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
-        $("#walkonPackage").append(dd.get('packages'));
-        $("#walkonPickup").append(dd.get('pickups'));
+        $(".walkonPackages").append(dd.get('packages'));
+        $(".walkonPickups").append(dd.get('walkonPickups'));
 
         // WalkOn Order listeners
-        $("#first, #last, #phone, #walkonPackage, #walkonPickup").on("change", function(){
+        $("#first, #last, #phone, #walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").on("change", function(){
           addWalkonButton();
         });
 
@@ -209,11 +209,18 @@ $(function() {
       console.log(element.find("span.icon i"));
     }
     function addWalkonButton(){
-        var fields = [$("#walkonPackage").val(), $("#first").val(),
-                      $("#last").val(), $("#phone").val(),
-                      $("#walkonPickup").val(), $("#walkonCrew").val()];
+        var fields = [$("#first"), $("#last"), $("#phone"),
+                      $("#walkonPickup"), $("#walkonCrew"),
+                      $("#walkonPrimaryPackage"), $("#walkonSecondaryPackage"),
+                      $("#walkonTertiaryPackage")
+                    ];
+
         $.each(fields, function( key,value){
-          if ( "" === value ) {
+          // Check that field exists before checking value
+          if ( 0 === value.length) {
+            return;// Skip this iteration if field doesn't exist
+          }
+          if ( "" === value.val() ) {
             $("#saveWalkOn").addClass('disabled');
             return false;
           } else {
@@ -243,26 +250,32 @@ $(function() {
         }
     }
     function getPackages(){
-      var output = "<option value='none'>Package</option>";
+      var output = "<option value='none'>Packages</option>";
       jQuery.each( packages.keys() , function(key, value){
         var tempPackage = packages.get(value);
+
+        if ( key > 0) {
+          output = output.concat("<option value='none' disabled>"+value+"</option>");
+        }
         jQuery.each(tempPackage, function(index, packageInfo){
           output = output.concat("<option value='" + packageInfo.description + "'>" + packageInfo.description + "</option>");
         });
-        //var row = "<option value='" + value + "'>" + value + "</option>";
-        //output = output.concat(row);
       });
       $("select.packageList").append(output);
     }
     function getPickups(){
-      var output = "";
+      var walkonSelect = "<select class='input-sm' id='walkonPickup'><option value=''>Select Pickup</option>";
+      var pickupOptions = "";
       jQuery.each(settings.get('pickups'), function(key,value){
         var row = "<option value='" + value + "'>" + value + "</option>";
-        output = output.concat(row);
+        pickupOptions = pickupOptions.concat(row);
       });
-      dd.set("pickups", output);
-      output = "<option value='none'>Pickup</option>" + output;
-      $("select.pickupList").append(output);
+      walkonSelect = walkonSelect.concat(pickupOptions);
+      walkonSelect = walkonSelect.concat("</select>");
+      dd.set("walkonPickups", walkonSelect);
+      pickupOptions = "<option value='none'>Pickups</option>" + pickupOptions;
+      $("select.pickupList").append(pickupOptions);
+      dd.set("pickups", pickupOptions);
     }
     function listHTML(ID, order){
         var split = ID.split(":");
@@ -300,16 +313,32 @@ $(function() {
             var pickupHTML = '<div class="buttonCell col-xs-9 col-md-2 flexPickup">' + order.Pickup + '</div>';
             output = output.concat(pickupHTML);
         }
+        var packageLabels = packages.keys();
+        var combinedPackages = '';
+        $.each(packageLabels, function(index, label){
+          if ( label in order ) {
+            combinedPackages = combinedPackages.concat( order[label] + "<br />" );
+          }
+        });
+        // Remove trailing line break from string
+        combinedPackages = combinedPackages.replace(/<br \/>$/,"");
+
         var packageHTML = "<div class='buttonCell col-xs-9 col-md-3 flexPackage visible-md visible-lg'>\
-                            " + order.Package + "</div>\
+                            " + combinedPackages + "</div>\
                             <div class='buttonCell col-xs-3 col-md-offset-0 col-md-1 expand'>\
                               <i class='fa fa-bars fa-3x'></i>\
                             </div>\
                         </div>\
                         <div class='expanded'>\
                             <div class='row'>\
-                                <div class='buttonCell col-xs-5 col-md-6'>\
-                                <strong>Package:</strong> " + order.Package + "</div>";
+                                <div class='buttonCell col-xs-5 col-md-6'>";
+        $.each(packageLabels, function(index, label){
+          if ( label in order) {
+            packageHTML = packageHTML.concat("<strong>"+label+":</strong> " + order[label] + "<br />");
+          }
+        });
+        packageHTML = packageHTML.replace(/<br \/>$/, "");
+        packageHTML = packageHTML.concat("</div>");
         output = output.concat(packageHTML);
         if ( settings.isSet('Pickup') ) {
             var packageHTML2 = "<div class='buttonCell col-xs-12 col-md-6'>\
@@ -367,15 +396,31 @@ $(function() {
     }
 
     function packageList(){
-        var output = "<option value='' selected>Select Package</option>";
+        var output = "";
         jQuery.each(packages.keys(), function(index,label){
+          if ( '' === label ) {
+            return;
+          }
+          output = output.concat("<select class='input-sm' id='");
+          if ( 0 === index ) {
+            output = output.concat("walkonPrimaryPackage");
+          } else if ( 1 === index ) {
+            output = output.concat("walkonSecondaryPackage");
+          } else if ( 2 === index ) {
+            output = output.concat("walkonTertiaryPackage");
+          }
+          output = output.concat("'>");
+          output = output.concat("<option value='' selected>Select " + label + "</option>");
           jQuery.each(packages.get(label), function(key, value){
-            output = output.concat("<option value='" + value.description + "'>" + value.description + " $" + value.cost + "</option>");
+            var outputCost = '';
+            if ( parseFloat(value.cost).toFixed(2) > 0.00 ) {
+              outputCost = " $" + value.cost;
+            }
+            output = output.concat("<option value='" + value.description + "'>" + value.description + outputCost + "</option>");
           });
+          output = output.concat("</select><br /><br />");
         });
-      /*  jQuery.each(packageList, function(key,value){
-            output = output.concat("<option value='" + value + "'>" + value + "</option>");
-        });*/
+
         dd.set('packages',output);
     }
     function pageTotal(){
@@ -439,10 +484,23 @@ $(function() {
                       Phone: $("#phone").val(),
                       Package: $("#walkonPackage").val(),
                       Crew: $("#walkonCrew").val(),};
-
-        if( settings.isSet('Pickup') ) {
+        var packageKeys = packages.keys();
+        if ( $("#walkonPrimaryPackage").length > 0 ) {
+          console.log(packageKeys[0]);
+          walkOn[packageKeys[0]] = $("#walkonPrimaryPackage").val();
+        }
+        if ( $("#walkonSecondaryPackage").length > 0 ) {
+          console.log(packageKeys[1]);
+          walkOn[packageKeys[1]] = $("#walkonSecondaryPackage").val();
+        }
+        if ( $("#walkonTertiaryPackage").length > 0 ) {
+          console.log(packageKeys[2]);
+          walkOn[packageKeys[2]] = $("#walkonTertiaryPackage").val();
+        }
+        if ( $("#walkonPickup").length > 0) {
             walkOn.Pickup = $("#walkonPickup").val();
         }
+        console.log(walkOn);
         listHTML(ID, walkOn);
         orders.set(ID,walkOn);
         newWalkon.set(ID,"unsaved");
@@ -516,7 +574,7 @@ $(function() {
             $('#content').append(initialHTML.get(value));
         });
         // Hide pickup select
-        if ( ! settings.isSet('Pickup') ) {
+        if ( settings.get('pickups').length === 0 ) {
           $("select.pickupList").hide();
         } else {
           getPickups();
