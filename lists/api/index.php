@@ -379,7 +379,19 @@ class Lists {
         if ( !is_numeric($bus) && "All" !== $bus){
           $remove=array();
           foreach( $this->orders as $id => $info ) {
-            if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
+            //if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
+            //if ( strpos($info['Data']['Bus'], $bus) === FALSE ) {
+            //  $remove[] = $id;
+            //}
+            //error_log($info['Data']['Bus']);
+            //error_log(print_r($info['Data'],true));
+            error_log($id);
+            if ( isset($info['Data']['Bus']) && strpos($info['Data']['Bus'], $bus) === FALSE) {
+              error_log("INFO BUS:".$info['Data']['Bus']);
+              error_log("BUS VAR:".$bus);
+              error_log("Removed");
+              //$remove[] = $id;
+            } else if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
               $remove[] = $id;
             }
           }
@@ -426,17 +438,39 @@ class Lists {
     }
     function saveWalkOn(){
         foreach( $_POST['walkon'] as $ID => $fields ) {
-            if ( ! isset($fields['Pickup']) ){
-                $fields['Pickup'] = "";
-            }
-            $sql = "INSERT INTO `ovr_lists_manual_orders` (ID, First, Last, Pickup, Phone, Package, Trip, Bus, Crew)
-                    VALUES('" . $ID . "', '" . $fields['First'] . "', '" . $fields['Last']. "', '" . $fields['Pickup']. "',
-                    '" . $fields['Phone']. "', '" . $fields['Package'] . "', '" . $fields['Trip']. "', '" . $fields['Bus'] . "',
-                    '" . $fields['Crew'] . "')
-                    ON DUPLICATE KEY UPDATE
-                    First=VALUES(First), Last=VALUES(Last), Pickup=VALUES(Pickup), Phone=VALUES(Phone), Package=VALUES(Package),
-                    Trip=VALUES(Trip), Bus=VALUES(Bus), Crew=VALUES(Crew)";
-            $this->dbQuery($sql);
+
+          if ( isset($fields['RBB']) && $fields['RBB'] ) {
+              if ( !isset($fields['Secondary Package']) ) {
+                $fields['Secondary Package'] = null;
+              }
+              if ( !isset($fields['Tertiary Package']) ) {
+                $fields['Tertiary Package'] = null;
+              }
+
+              $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`,
+                `Last`, `Crew`, `Transit To Rockaway`, `Transit From Rockaway`, `Phone`, `Package`, `Secondary Package`, `Tertiary Package`, `Trip`, `Bus`)
+                VALUES ('{$ID}', '{$fields['First']}', '{$fields['Last']}', '{$fields['Crew']}', '{$fields['To Beach']}', '{$fields['From Beach']}',
+                '{$fields['Phone']}', '{$fields['Package']}', '{$fields['Secondary Package']}', '{$fields['Tertiary Package']}',
+                '{$fields['Trip']}', '{$fields['Bus']}')
+                ON DUPLICATE KEY UPDATE
+                First=VALUES(First), Last=VALUES(Last), Crew=VALUES(Crew), `Transit To Rockaway`=VALUES(`Transit To Rockaway`),
+                `Transit From Rockaway`=VALUES(`Transit From Rockaway`), Phone=VALUES(Phone), Package=VALUES(Package), `Secondary Package`=VALUES(`Secondary Package`),
+                `Tertiary Package`=VALUES(`Tertiary Package`), Trip=VALUES(Trip), Bus=VALUES(Bus)";
+
+              $this->dbQuery($sql);
+          } else {
+              if ( ! isset($fields['Pickup']) ){
+                  $fields['Pickup'] = "";
+              }
+              $sql = "INSERT INTO `ovr_lists_manual_orders` (ID, First, Last, Pickup, Phone, Package, Trip, Bus, Crew)
+                      VALUES('" . $ID . "', '" . $fields['First'] . "', '" . $fields['Last']. "', '" . $fields['Pickup']. "',
+                      '" . $fields['Phone']. "', '" . $fields['Package'] . "', '" . $fields['Trip']. "', '" . $fields['Bus'] . "',
+                      '" . $fields['Crew'] . "')
+                      ON DUPLICATE KEY UPDATE
+                      First=VALUES(First), Last=VALUES(Last), Pickup=VALUES(Pickup), Phone=VALUES(Phone), Package=VALUES(Package),
+                      Trip=VALUES(Trip), Bus=VALUES(Bus), Crew=VALUES(Crew)";
+              $this->dbQuery($sql);
+          }
         }
     }
     function deleteOrder($tripId){

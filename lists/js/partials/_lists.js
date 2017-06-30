@@ -247,7 +247,7 @@ $(function() {
             } else {
               time = (time[0] - 12) + ":" + time[1] + " Pm";
             }
-            var pickupString = pickup.name + " - " + time;
+            var pickupString = pickup.name.replace("'","&#8217;") + " - " + time;
 
             pickupOptions = pickupOptions.concat("<option value='" + pickupString + "  '>" + pickupString + "</option>");
             if ( ! beachBusOptions.hasOwnProperty(direction) ) {
@@ -487,7 +487,6 @@ $(function() {
                 orderLocalData[ID].Data = valueName;
             }
         });
-
         // get walkon data if not previously saved
         if ( newWalkon.keys().length > 0 ){
             var walkonData = {};
@@ -495,7 +494,12 @@ $(function() {
                  walkonData[value]= orders.get(value);
                 walkonData[value].Bus = settings.get('bus');
                 walkonData[value].Trip = settings.get('tripNum');
+                if ( "Rockaway Beach" == settings.get("destination") ) {
+                  walkonData[value].Bus = walkonData[value].Bus.concat(" " + walkonData[value]["From Beach Route"]);
+                  walkonData[value].RBB = true;
+                }
             });
+            console.log(walkonData);
             $.post("api/save/walkon", {walkon: walkonData}, function(){
                 newWalkon.removeAll();
             });
@@ -525,9 +529,9 @@ $(function() {
                       Crew: $("#walkonCrew").val(),};
         if ( "Rockaway Beach" == settings.get('destination') ) {
           walkOn["To Beach"] = $("#walkonPickupTo").val();
-          walkon._to_beach_route = $("#walkonPickupTo :selected").data("route");
+          walkOn["To Beach Route"] = $("#walkonPickupTo :selected").data("route");
           walkOn["From Beach"] = $("#walkonPickupFrom").val();
-          walkon._from_beach_route = $("#walkonPickupFrom :selected").data("route");
+          walkOn["From Beach Route"] = $("#walkonPickupFrom :selected").data("route");
           if ( walkOn.hasOwnProperty("To Beach") && walkOn.hasOwnProperty("From Beach") ){
             if ( walkOn["To Beach"].includes("One Way") ) {
               walkOn.Package = walkOn["To Beach"];
