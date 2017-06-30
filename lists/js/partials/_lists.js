@@ -139,7 +139,12 @@ $(function() {
           if ( "" === value.val() || null === value.val()) {
             $("#saveWalkOn").addClass('disabled');
             return false;
-          } else {
+          } else if ("Rockaway Beach" == settings.get('destination') &&
+          $("#walkonPickupTo").val().includes("One Way") &&
+        $("#walkonPickupFrom").val().includes("One Way")){
+          alert("Can't be One Way in both directions!");
+          return false;
+        } else {
             $("#saveWalkOn").removeClass('disabled');
             return true;
           }
@@ -255,6 +260,12 @@ $(function() {
         var beachBusOptionsTemp = "";
         $.each(beachBusOptions, function(direction,routes){
           beachBusOptionsTemp = beachBusOptionsTemp.concat("<select class='input-sm' id='walkonPickup" + direction +"'><option value='' selected disabled>"+direction+" Beach</option>");
+          if ( direction == "To") {
+            beachBusOptionsTemp = beachBusOptionsTemp.concat("<option value='One Way ( From Beach )'>One Way ( From Beach )</option>");
+          }
+          if ( direction == "From") {
+            beachBusOptionsTemp = beachBusOptionsTemp.concat("<option value='One Way ( To Beach )'>One Way ( To Beach )</option>");
+          }
           $.each(routes, function(route, options){
             beachBusOptionsTemp = beachBusOptionsTemp.concat("<option value='' disabled>"+route+"</option>");
             beachBusOptionsTemp = beachBusOptionsTemp.concat(options);
