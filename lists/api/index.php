@@ -221,21 +221,23 @@ class Lists {
         }
       }
       // Pull titles for pickups
-      $pickupNames = array();
-      if ( isset($this->tripInfo['pickups'] ) && is_array($this->tripInfo['pickups'])) {
-        // TODO: Add fix for beach bus trips here
-        foreach( $this->tripInfo['pickups'] as $id => $route) {
-          $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
-          $result = $this->dbQuery($sql);
-          $name = $result->fetch_assoc();
-          $pickupNames[] = $name['name'];
-        }
-        unset($this->tripInfo['pickups']);
-        $this->tripInfo['pickups'] = $pickupNames;
-      }
       if ( 'bus' == $this->tripInfo['type'] ) {
+      $pickupNames = array();
+        if ( isset($this->tripInfo['pickups'] ) && is_array($this->tripInfo['pickups'])) {
+          $this->pickup = TRUE;
+          foreach( $this->tripInfo['pickups'] as $id => $route) {
+            $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
+            $result = $this->dbQuery($sql);
+            $name = $result->fetch_assoc();
+            $pickupNames[] = $name['name'];
+          }
+          unset($this->tripInfo['pickups']);
+          $this->tripInfo['pickups'] = $pickupNames;
+        }
+      } elseif ( 'beach_bus' == $this->tripInfo['type'] ) {
         $this->pickup = TRUE;
       }
+
       return $this->tripInfo;
     }
     function tripData($bus, $tripId, $status){
