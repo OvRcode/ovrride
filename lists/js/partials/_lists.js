@@ -140,8 +140,10 @@ $(function() {
             $("#saveWalkOn").addClass('disabled');
             return false;
           } else if ("Rockaway Beach" == settings.get('destination') &&
+          $("#walkonPickupTo").val() !== null &&
+          $("#walkonPickupFrom").val() !== null &&
           $("#walkonPickupTo").val().includes("One Way") &&
-        $("#walkonPickupFrom").val().includes("One Way")){
+          $("#walkonPickupFrom").val().includes("One Way")){
           alert("Can't be One Way in both directions!");
           return false;
         } else {
@@ -246,14 +248,15 @@ $(function() {
               time = (time[0] - 12) + ":" + time[1] + " Pm";
             }
             var pickupString = pickup.name + " - " + time;
-            pickupOptions = pickupOptions.concat("<option value='" + pickupString + "'>" + pickupString + "</option>");
+
+            pickupOptions = pickupOptions.concat("<option value='" + pickupString + "  '>" + pickupString + "</option>");
             if ( ! beachBusOptions.hasOwnProperty(direction) ) {
               beachBusOptions[direction] = {};
             }
             if ( ! beachBusOptions[direction].hasOwnProperty(tempRoute) ) {
               beachBusOptions[direction][tempRoute] = "";
             }
-            beachBusOptions[direction][tempRoute] = beachBusOptions[direction][tempRoute].concat("<option value='" + pickupString + "'>" + pickupString + "</option>");
+            beachBusOptions[direction][tempRoute] = beachBusOptions[direction][tempRoute].concat("<option value='" + pickupString + "' data-route='" + route +"' >" + pickupString + "</option>");
           });
         });
 
@@ -338,10 +341,18 @@ $(function() {
                             <div class='buttonCell col-xs-3 col-md-offset-0 col-md-1 expand'>\
                               <i class='fa fa-bars fa-3x'></i>\
                             </div>\
-                        </div>\
-                        <div class='expanded'>\
+                        </div>";
+        if ( "Rockaway Beach" == settings.get('destination') ) {
+          packageHTML = packageHTML.concat("<div class='row'>\
+                                              <div class='col-md-offset-1 col-md-4'>\
+                                              To Beach: "+ order["To Beach"] + "</div>\
+                                              <div class='col-md-4'>\
+                                              From Beach: " + order["From Beach"] +"</div>\
+                                              </div>");
+        }
+        packageHTML = packageHTML.concat("<div class='expanded'>\
                             <div class='row'>\
-                                <div class='buttonCell col-xs-5 col-md-6'>";
+                                <div class='buttonCell col-xs-5 col-md-6'>");
         $.each(packageLabels, function(index, label){
           if ( label in order) {
             packageHTML = packageHTML.concat("<strong>"+label+":</strong> " + order[label] + "<br />");
@@ -512,6 +523,21 @@ $(function() {
                       Phone: $("#phone").val(),
                       Package: $("#walkonPackage").val(),
                       Crew: $("#walkonCrew").val(),};
+        if ( "Rockaway Beach" == settings.get('destination') ) {
+          walkOn["To Beach"] = $("#walkonPickupTo").val();
+          walkon._to_beach_route = $("#walkonPickupTo :selected").data("route");
+          walkOn["From Beach"] = $("#walkonPickupFrom").val();
+          walkon._from_beach_route = $("#walkonPickupFrom :selected").data("route");
+          if ( walkOn.hasOwnProperty("To Beach") && walkOn.hasOwnProperty("From Beach") ){
+            if ( walkOn["To Beach"].includes("One Way") ) {
+              walkOn.Package = walkOn["To Beach"];
+            } else if ( walkOn["From Beach"].includes("One Way") ) {
+              walkOn.Package = walkOn["From Beach"];
+            } else {
+              walkOn.Package = "Round Trip";
+            }
+          }
+        }
         var packageKeys = packages.keys();
         if ( $("#walkonPrimaryPackage").length > 0 ) {
           walkOn[packageKeys[0]] = $("#walkonPrimaryPackage").val();
