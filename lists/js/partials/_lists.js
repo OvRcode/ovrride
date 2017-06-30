@@ -118,27 +118,27 @@ $(function() {
     setupAllListeners();
     packageList();
     pageTotal();
+    function addWalkonButton(){
+        var fields = [$("#first"), $("#last"), $("#phone"),
+                      $("#walkonPickup"), $("#walkonCrew"),
+                      $("#walkonPrimaryPackage"), $("#walkonSecondaryPackage"),
+                      $("#walkonTertiaryPackage")
+                    ];
 
-    function setupAllListeners() {
-      $("span.icon").on("click", function(){
-        changeStatus( $(this).parents("div.row.listButton"));
-      });
-      $("div.expand").on("click", function(){
-        toggleExpanded( $(this) );
-      });
-      $("button.reset").on("click", function(){
-        resetGuest( $(this).parents('div.listButton').attr('id') );
-      });
-      $("button.noShow").on("click", function(){
-        noShow( $(this).parents('div.row.listButton').attr('id') );
-      });
-      $("button.removeOrder").click(function(){
-          var rootElement = $(this).parents('div.row.listButton');
-          tripData.set(rootElement.attr('id')+":Delete", "Delete");
-          rootElement.remove();
-      });
+        $.each(fields, function( key,value){
+          // Check that field exists before checking value
+          if ( 0 === value.length) {
+            return;// Skip this iteration if field doesn't exist
+          }
+          if ( "" === value.val() ) {
+            $("#saveWalkOn").addClass('disabled');
+            return false;
+          } else {
+            $("#saveWalkOn").removeClass('disabled');
+            return true;
+          }
+        });
     }
-
     function changeStatus( element) {
       // updates status of selected guest. changes css and sets local data
       var icon = $(element).find("span.icon i");
@@ -173,61 +173,6 @@ $(function() {
         flexPickup.removeClass('visible-md visible-lg');
         tripData.set(id + ':Product', 1);
       }
-    }
-    function toggleExpanded( element ) {
-      var button = $(element).parents("div.row.listButton");
-      var drawer = button.find("div.expanded");
-
-      if ( $(".expanded").not(drawer).is(':visible') ) {
-        $(".expanded").hide().not(drawer);
-      }
-
-      if ( drawer.is(':visible') ) {
-        drawer.hide();
-      } else {
-        drawer.show();
-      }
-    }
-    function resetGuest(id){
-      var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
-      var selector = $("#"+id.replace(":","\\\:"));
-      selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none bg-noshow").addClass("bg-none");
-      selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
-
-      jQuery.each(clearVars, function(key,value){
-        tripData.remove(value);
-      });
-      tripData.set(id + ":Delete", "delete");
-    }
-
-    function noShow(id) {
-      tripData.set(id+":NoShow", 1);
-      var element = $("#" + id.replace(":","\\\:"));
-      console.log(element);
-      element.removeClass('bg-none bg-am bg-waiver bg-productrec bg-pm').addClass('bg-noshow');
-      element.find("span.icon i").removeClass('fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o').addClass('fa-times-circle-o');
-      console.log(element.find("span.icon i"));
-    }
-    function addWalkonButton(){
-        var fields = [$("#first"), $("#last"), $("#phone"),
-                      $("#walkonPickup"), $("#walkonCrew"),
-                      $("#walkonPrimaryPackage"), $("#walkonSecondaryPackage"),
-                      $("#walkonTertiaryPackage")
-                    ];
-
-        $.each(fields, function( key,value){
-          // Check that field exists before checking value
-          if ( 0 === value.length) {
-            return;// Skip this iteration if field doesn't exist
-          }
-          if ( "" === value.val() ) {
-            $("#saveWalkOn").addClass('disabled');
-            return false;
-          } else {
-            $("#saveWalkOn").removeClass('disabled');
-            return true;
-          }
-        });
     }
     function checkData(){
         var localData = {};
@@ -394,7 +339,14 @@ $(function() {
         // Hide expanded area of reservation
         $("div.expanded").hide();
     }
-
+    function noShow(id) {
+      tripData.set(id+":NoShow", 1);
+      var element = $("#" + id.replace(":","\\\:"));
+      console.log(element);
+      element.removeClass('bg-none bg-am bg-waiver bg-productrec bg-pm').addClass('bg-noshow');
+      element.find("span.icon i").removeClass('fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o').addClass('fa-times-circle-o');
+      console.log(element.find("span.icon i"));
+    }
     function packageList(){
         var output = "";
         jQuery.each(packages.keys(), function(index,label){
@@ -426,6 +378,17 @@ $(function() {
     function pageTotal(){
       var totalGuests = $("div.listButton:visible").length;
       $("span.listTotal").text(totalGuests + " Guests");
+    }
+    function resetGuest(id){
+      var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
+      var selector = $("#"+id.replace(":","\\\:"));
+      selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none bg-noshow").addClass("bg-none");
+      selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
+
+      jQuery.each(clearVars, function(key,value){
+        tripData.remove(value);
+      });
+      tripData.set(id + ":Delete", "delete");
     }
     function saveData(){
         // get state data from localstorage
@@ -528,6 +491,55 @@ $(function() {
         } else {
             $(".listButton").show();
         }
+    }
+    function setState(element, state){
+      element.removeClass("bg-am bg-waiver bg-productrec bg-pm");
+      element.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o");
+      var bg = "";
+      var icon = "";
+      if ( state == 'AM' ){
+        bg = "bg-am";
+        icon = "fa-sun-o";
+      } else if ( state == 'Waiver' ) {
+        bg = "bg-waiver";
+        icon = "fa-file-word-o";
+      } else if ( state == 'Product' ) {
+        bg = "bg-productrec";
+        icon = "fa-ticket";
+      } else if ( state == 'PM' ) {
+        bg = "bg-pm";
+        icon = "fa-moon-o";
+        element.find('.flexPackage').addClass('visible-md visible-lg');
+        element.find('.flexPickup').removeClass('visible-md visible-lg');
+        } else if ( state == 'NoShow' ){
+          bg = "bg-noshow";
+          icon = "fa-times-circle-o";
+        } else {
+          bg = "bg-none";
+          icon = "fa-square-o";
+        }
+
+        element.addClass(bg);
+        element.find("span.icon i").addClass(icon);
+    }
+    function setupAllListeners() {
+      $("span.icon").on("click", function(){
+        changeStatus( $(this).parents("div.row.listButton"));
+      });
+      $("div.expand").on("click", function(){
+        toggleExpanded( $(this) );
+      });
+      $("button.reset").on("click", function(){
+        resetGuest( $(this).parents('div.listButton').attr('id') );
+      });
+      $("button.noShow").on("click", function(){
+        noShow( $(this).parents('div.row.listButton').attr('id') );
+      });
+      $("button.removeOrder").click(function(){
+          var rootElement = $(this).parents('div.row.listButton');
+          tripData.set(rootElement.attr('id')+":Delete", "Delete");
+          rootElement.remove();
+      });
     }
     function setupListener(ID){
         var split = ID.split(":");
@@ -653,34 +665,18 @@ $(function() {
                 break;
         }
     }
-    function setState(element, state){
-      element.removeClass("bg-am bg-waiver bg-productrec bg-pm");
-      element.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o");
-      var bg = "";
-      var icon = "";
-      if ( state == 'AM' ){
-        bg = "bg-am";
-        icon = "fa-sun-o";
-      } else if ( state == 'Waiver' ) {
-        bg = "bg-waiver";
-        icon = "fa-file-word-o";
-      } else if ( state == 'Product' ) {
-        bg = "bg-productrec";
-        icon = "fa-ticket";
-      } else if ( state == 'PM' ) {
-        bg = "bg-pm";
-        icon = "fa-moon-o";
-        element.find('.flexPackage').addClass('visible-md visible-lg');
-        element.find('.flexPickup').removeClass('visible-md visible-lg');
-        } else if ( state == 'NoShow' ){
-          bg = "bg-noshow";
-          icon = "fa-times-circle-o";
-        } else {
-          bg = "bg-none";
-          icon = "fa-square-o";
-        }
+    function toggleExpanded( element ) {
+      var button = $(element).parents("div.row.listButton");
+      var drawer = button.find("div.expanded");
 
-        element.addClass(bg);
-        element.find("span.icon i").addClass(icon);
+      if ( $(".expanded").not(drawer).is(':visible') ) {
+        $(".expanded").hide().not(drawer);
+      }
+
+      if ( drawer.is(':visible') ) {
+        drawer.hide();
+      } else {
+        drawer.show();
+      }
     }
 });
