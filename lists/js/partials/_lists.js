@@ -264,7 +264,7 @@ $(function() {
       $("select.packageList").append(output);
     }
     function getPickups(){
-      var walkonSelect = "<select class='input-sm' id='walkonPickup'><option value='none'>Select Pickup</option>";
+      var walkonSelect = "<select class='input-sm' id='walkonPickup'><option value=''>Select Pickup</option>";
       var pickupOptions = "";
       jQuery.each(settings.get('pickups'), function(key,value){
         var row = "<option value='" + value + "'>" + value + "</option>";
