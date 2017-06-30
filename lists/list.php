@@ -93,9 +93,7 @@ $version = file_get_contents('lists.version');
                                         <input type='text' class='form-control' id='first' placeholder='Enter Fist Name'><br />
                                         <input type='text' class='form-control' id='last' placeholder='Enter Last Name'><br />
                                         <input type='text' class='form-control' id='phone' placeholder='Enter Phone Number'><br />
-                                        <select class='input-sm' id='walkonPickup'>
-                                          <option value=''>Select Pickup</option>
-                                        </select><br /><br />
+                                        <div class='walkonPickups'></div><br /><br />
                                         <div class='walkonPackages'></div>
                                         <select class='input-sm' id='walkonCrew'>
                                           <option value='none'>Normal customer</option>

@@ -18,7 +18,7 @@ $(function() {
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         $(".walkonPackages").append(dd.get('packages'));
-        $("#walkonPickup").append(dd.get('pickups'));
+        $(".walkonPickups").append(dd.get('walkonPickups'));
 
         // WalkOn Order listeners
         $("#first, #last, #phone, #walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").on("change", function(){
@@ -264,14 +264,18 @@ $(function() {
       $("select.packageList").append(output);
     }
     function getPickups(){
-      var output = "";
+      var walkonSelect = "<select class='input-sm' id='walkonPickup'><option value='none'>Select Pickup</option>";
+      var pickupOptions = "";
       jQuery.each(settings.get('pickups'), function(key,value){
         var row = "<option value='" + value + "'>" + value + "</option>";
-        output = output.concat(row);
+        pickupOptions = pickupOptions.concat(row);
       });
-      dd.set("pickups", output);
-      output = "<option value='none'>Pickup</option>" + output;
-      $("select.pickupList").append(output);
+      walkonSelect = walkonSelect.concat(pickupOptions);
+      walkonSelect = walkonSelect.concat("</select>");
+      dd.set("walkonPickups", walkonSelect);
+      pickupOptions = "<option value='none'>Pickups</option>" + pickupOptions;
+      $("select.pickupList").append(pickupOptions);
+      dd.set("pickups", pickupOptions);
     }
     function listHTML(ID, order){
         var split = ID.split(":");
@@ -570,7 +574,7 @@ $(function() {
             $('#content').append(initialHTML.get(value));
         });
         // Hide pickup select
-        if ( ! settings.isSet('Pickup') ) {
+        if ( settings.get('pickups').length === 0 ) {
           $("select.pickupList").hide();
         } else {
           getPickups();
