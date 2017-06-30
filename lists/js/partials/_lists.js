@@ -18,7 +18,11 @@ $(function() {
     // Zoom to popover when shown
     $('[data-toggle="popover"]').on('shown.bs.popover', function(){
         $(".walkonPackages").append(dd.get('packages'));
-        $(".walkonPickups").append(dd.get('walkonPickups'));
+        if ( "Rockaway Beach" == settings.get('destination') ) {
+          $(".walkonPickups").append(dd.get('beachBusPickups'));
+        } else {
+          $(".walkonPickups").append(dd.get('walkonPickups'));
+        }
 
         // WalkOn Order listeners
         $("#first, #last, #phone, #walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").on("change", function(){
@@ -211,7 +215,18 @@ $(function() {
       var walkonSelect = "<select class='input-sm' id='walkonPickup'><option value=''>Select Pickup</option>";
       var pickupOptions = "";
       if ( "Rockaway Beach" == settings.get("destination") ) {
+        walkonSelect = "";
+        beachBusOptions = {};
         $.each(settings.get('pickups'), function(route, pickups){
+          var tempRoute = "";
+          var direction = "";
+          if ( route.includes("To") ) {
+            direction = "To";
+            tempRoute = route.replace("To","");
+          } else if ( route.includes("From") ) {
+            direction = "From";
+            tempRoute = route.replace("From","");
+          }
           pickupOptions = pickupOptions.concat("<option value='' disabled>" + route + "</option>");
           $.each(pickups, function(id, pickup){
             var time = pickup.time.split(":");
@@ -222,8 +237,27 @@ $(function() {
             }
             var pickupString = pickup.name + " - " + time;
             pickupOptions = pickupOptions.concat("<option value='" + pickupString + "'>" + pickupString + "</option>");
+            if ( ! beachBusOptions.hasOwnProperty(direction) ) {
+              beachBusOptions[direction] = {};
+            }
+            if ( ! beachBusOptions[direction].hasOwnProperty(tempRoute) ) {
+              beachBusOptions[direction][tempRoute] = "";
+            }
+            beachBusOptions[direction][tempRoute] = beachBusOptions[direction][tempRoute].concat("<option value='" + pickupString + "'>" + pickupString + "</option>");
           });
         });
+        
+        var beachBusOptionsTemp = "";
+        $.each(beachBusOptions, function(direction,routes){
+          beachBusOptionsTemp = beachBusOptionsTemp.concat("<select class='input-sm' id='walkonPickup" + direction +"'><option value='' selected disabled>"+direction+" Beach</option>");
+          $.each(routes, function(route, options){
+            beachBusOptionsTemp = beachBusOptionsTemp.concat("<option value='' disabled>"+route+"</option>");
+            beachBusOptionsTemp = beachBusOptionsTemp.concat(options);
+          });
+          beachBusOptionsTemp = beachBusOptionsTemp.concat("</select><br />");
+        });
+
+        dd.set("beachBusPickups", beachBusOptionsTemp);
       } else {
         $.each(settings.get('pickups'), function(key,value){
           var row = "<option value='" + value + "'>" + value + "</option>";
