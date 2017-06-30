@@ -144,7 +144,6 @@ $(function() {
       var icon = $(element).find("span.icon i");
       var button = $(element);
       var flexPickup = $(element).find(".flexPickup");
-      console.log(flexPickup);
       var flexPackage = $(element).find(".flexPackage");
       var id = $(element).attr("ID");
       tripData.remove( id + ":Delete");
@@ -211,10 +210,26 @@ $(function() {
     function getPickups(){
       var walkonSelect = "<select class='input-sm' id='walkonPickup'><option value=''>Select Pickup</option>";
       var pickupOptions = "";
-      jQuery.each(settings.get('pickups'), function(key,value){
-        var row = "<option value='" + value + "'>" + value + "</option>";
-        pickupOptions = pickupOptions.concat(row);
-      });
+      if ( "Rockaway Beach" == settings.get("destination") ) {
+        $.each(settings.get('pickups'), function(route, pickups){
+          pickupOptions = pickupOptions.concat("<option value='' disabled>" + route + "</option>");
+          $.each(pickups, function(id, pickup){
+            var time = pickup.time.split(":");
+            if ( time[0] <= 12 ) {
+              time = time[0] + ":" + time[1] + " Am";
+            } else {
+              time = (time[0] - 12) + ":" + time[1] + " Pm";
+            }
+            var pickupString = pickup.name + " - " + time;
+            pickupOptions = pickupOptions.concat("<option value='" + pickupString + "'>" + pickupString + "</option>");
+          });
+        });
+      } else {
+        $.each(settings.get('pickups'), function(key,value){
+          var row = "<option value='" + value + "'>" + value + "</option>";
+          pickupOptions = pickupOptions.concat(row);
+        });
+      }
       walkonSelect = walkonSelect.concat(pickupOptions);
       walkonSelect = walkonSelect.concat("</select>");
       dd.set("walkonPickups", walkonSelect);
@@ -331,7 +346,6 @@ $(function() {
         newOrder.find("button.removeOrder").click(function(){
             var rootElement = $(this).parents("div.row.listButton");
             var id = rootElement.attr('id');
-            console.log(id);
             tripData.set(rootElement.attr('id')+":Delete", "Delete");
             rootElement.remove();
         });
@@ -342,10 +356,8 @@ $(function() {
     function noShow(id) {
       tripData.set(id+":NoShow", 1);
       var element = $("#" + id.replace(":","\\\:"));
-      console.log(element);
       element.removeClass('bg-none bg-am bg-waiver bg-productrec bg-pm').addClass('bg-noshow');
       element.find("span.icon i").removeClass('fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o').addClass('fa-times-circle-o');
-      console.log(element.find("span.icon i"));
     }
     function packageList(){
         var output = "";
@@ -449,21 +461,17 @@ $(function() {
                       Crew: $("#walkonCrew").val(),};
         var packageKeys = packages.keys();
         if ( $("#walkonPrimaryPackage").length > 0 ) {
-          console.log(packageKeys[0]);
           walkOn[packageKeys[0]] = $("#walkonPrimaryPackage").val();
         }
         if ( $("#walkonSecondaryPackage").length > 0 ) {
-          console.log(packageKeys[1]);
           walkOn[packageKeys[1]] = $("#walkonSecondaryPackage").val();
         }
         if ( $("#walkonTertiaryPackage").length > 0 ) {
-          console.log(packageKeys[2]);
           walkOn[packageKeys[2]] = $("#walkonTertiaryPackage").val();
         }
         if ( $("#walkonPickup").length > 0) {
             walkOn.Pickup = $("#walkonPickup").val();
         }
-        console.log(walkOn);
         listHTML(ID, walkOn);
         orders.set(ID,walkOn);
         newWalkon.set(ID,"unsaved");

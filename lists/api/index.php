@@ -236,6 +236,17 @@ class Lists {
         }
       } elseif ( 'beach_bus' == $this->tripInfo['type'] ) {
         $this->pickup = TRUE;
+        foreach( $this->tripInfo['pickups'] as $id => $route ) {
+          $sql = "SELECT `post_title` as `name` FROM `wp_posts` WHERE `ID` = '{$id}' LIMIT 1";
+          $result = $this->dbQuery($sql);
+          $name = $result->fetch_assoc();
+          $beach_bus_pickups[$route][$id]['name'] = $name['name'];
+          $sql = "SELECT `meta_value` as `time` FROM `wp_postmeta` WHERE post_id ='{$id}' AND `meta_key` = '_pickup_location_time' LIMIT 1";
+          $result = $this->dbQuery($sql);
+          $time = $result->fetch_assoc();
+          $beach_bus_pickups[$route][$id]['time'] = $time['time'];
+        }
+        $this->tripInfo['pickups'] = $beach_bus_pickups;
       }
 
       return $this->tripInfo;
