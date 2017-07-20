@@ -1,11 +1,13 @@
 /*jshint multistr: true */
 $(function() {
     bounceToIndex();
-    $("#menuSave").on("click", function(){
+    $("#menuSave, button.saveList").on("click", function(){
       $(this).removeClass("btn-success");
+      window.saveIdentifier = $(this);
       setTimeout(function(){
         saveData();
-        $("#menuSave").addClass("btn-success");
+        window.saveIdentifier.addClass("btn-success");
+        //$("#menuSave").addClass("btn-success");
       }, 1000);
     });
     if ( jQuery.browser.mobile ) {
