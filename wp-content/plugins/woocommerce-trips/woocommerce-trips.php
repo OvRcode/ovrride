@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.3.9
+Version: 1.3.10
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -25,7 +25,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
 
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '1.3.9' );
+        define( 'WC_TRIPS_VERSION', '1.3.10' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -290,10 +290,13 @@ STYLE;
       // Find all beach bus trips
       $results = $wpdb->get_results("SELECT `ID`, `post_title`, `guid`
       FROM `wp_posts`
-      JOIN `wp_postmeta` on `wp_posts`.`ID` = `wp_postmeta`.`post_id`
-      WHERE `post_type` = 'product' AND `post_status` = 'publish'
-      AND `meta_key` = '_wc_trip_type'
-      AND `meta_value` = 'beach_bus'", ARRAY_A);
+      JOIN `wp_postmeta` m1 on `wp_posts`.`ID` = m1.`post_id`
+      JOIN `wp_postmeta` m2 on `wp_posts`.`ID` = m2.`post_id`
+      WHERE `wp_posts`.`post_type` = 'product' AND `wp_posts`.`post_status` = 'publish'
+      AND ( m1.`meta_key` = '_wc_trip_type'
+        AND m1.meta_value = 'beach_bus' )
+      AND ( m2.`meta_key` = '_wc_trip_destination'
+        AND m2.`meta_value` = 'Rockaway Beach')", ARRAY_A);
 
       foreach( $results as $index => $array ) {
         $rowResult = $wpdb->get_results("SELECT `meta_key`, `meta_value`
