@@ -624,6 +624,15 @@ class Lists {
         if ( substr($orderNum,0,2) == "WO" ) {
             $walkOn = TRUE;
             $orderLink = "#";
+            $woSQL = "SELECT `Transit To Rockaway`, `Transit From Rockaway` FROM ovr_lists_manual_orders WHERE `ID` = '{$id}'";
+            $woResult = $this->dbQuery($woSQL);
+            $woRow = $woResult->fetch_assoc();
+            if ( isset($woRow['Transit To Rockaway']) ) {
+              $toBeach = $woRow['Transit To Rockaway'];
+            }
+            if ( isset($woRow['Transit From Rockaway']) ) {
+              $fromBeach = $woRow['Transit From Rockaway'];
+            }
         } else {
             $walkOn = FALSE;
             $orderLink = "https://ovrride.com/wp-admin/post.php?post={$orderNum}&action=edit";
