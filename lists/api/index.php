@@ -276,7 +276,10 @@ class Lists {
                 $sql = "SELECT * FROM `ovr_lists_manual_orders` WHERE `Trip` = '" . $tripId . "'";
                 $result = $this->dbQuery($sql);
                 while($row = $result->fetch_assoc()){
-                    if ( $bus == "All" || array_search($row['ID'], $busData[$bus]) !== FALSE ||
+                  $bus_check = preg_grep("/" . $bus. "/", $row);
+
+                    if ( $bus == "All" || count($bus_check) > 0 ||
+                        array_search($row['ID'], $busData[$bus]) !== FALSE ||
                         array_search($row['ID'], $busData['Other']) === FALSE) {
                         $walkOnOrder = [];
                         $split = preg_split("/:/", $row['ID']);
@@ -289,7 +292,12 @@ class Lists {
                         }
                         $walkOnOrder['Phone'] = $row['Phone'];
                         $walkOnOrder['Package'] = $row['Package'];
-                        $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
+                        if ( isset($row['Bus'])) {
+                          $walkOnOrder['Bus'] = $row['Bus'];
+                        } else {
+                          $walkOnOrder['Bus'] = "";
+                        }
+                        //$walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
                         $walkOnOrder['Crew'] = $row['Crew'];
                         $this->listHTML($walkOnOrder);
                         $this->customerData($walkOnOrder);
@@ -379,22 +387,15 @@ class Lists {
         if ( !is_numeric($bus) && "All" !== $bus){
           $remove=array();
           foreach( $this->orders as $id => $info ) {
-            //if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
-            //if ( strpos($info['Data']['Bus'], $bus) === FALSE ) {
-            //  $remove[] = $id;
-            //}
-            //error_log($info['Data']['Bus']);
-            //error_log(print_r($info['Data'],true));
-            error_log($id);
-            if ( isset($info['Data']['Bus']) && strpos($info['Data']['Bus'], $bus) === FALSE) {
-              error_log("INFO BUS:".$info['Data']['Bus']);
-              error_log("BUS VAR:".$bus);
-              error_log("Removed");
-              //$remove[] = $id;
-            } else if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] ) ) {
+            if ( isset($info['Data']['Bus']) && strpos($info['Data']['Bus'], $bus) !== FALSE ) {
+              continue;
+            } else if ( isset($info['Data']['Bus']) && strpos($info['Data']['Bus'], $bus) === FALSE) {
+              $remove[] = $id;
+            } else if ( ! in_array( ucwords(strtolower($bus)), $info['Data'] )) {
               $remove[] = $id;
             }
           }
+
           foreach($remove as $id ) {
             unset($this->orders[$id]);
           }
@@ -430,7 +431,10 @@ class Lists {
                     Bus=VALUES(Bus), Data=VALUES(Data)";
             }
             $this->dbQuery($sql);
-            if ( substr($ID,0,2) == "WO" ) {
+            //error_log(print_r($_POST,true));
+            // Skip this for the beachbus
+            if ( isset($field['Bus']) && is_numeric($field['Bus']) && substr($ID,0,2) == "WO") {
+            //if ( substr($ID,0,2) == "WO" && !isset($field['Transit To Rockaway'])) {
                 $sql = "UPDATE `ovr_lists_manual_orders` SET `Bus` = '" . $field['Bus'] . "' WHERE ID ='" . $ID . "'";
                 $this->dbQuery($sql);
             }
@@ -446,16 +450,27 @@ class Lists {
               if ( !isset($fields['Tertiary Package']) ) {
                 $fields['Tertiary Package'] = null;
               }
-
-              $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`,
-                `Last`, `Crew`, `Transit To Rockaway`, `Transit From Rockaway`, `Phone`, `Package`, `Secondary Package`, `Tertiary Package`, `Trip`, `Bus`)
-                VALUES ('{$ID}', '{$fields['First']}', '{$fields['Last']}', '{$fields['Crew']}', '{$fields['To Beach']}', '{$fields['From Beach']}',
-                '{$fields['Phone']}', '{$fields['Package']}', '{$fields['Secondary Package']}', '{$fields['Tertiary Package']}',
-                '{$fields['Trip']}', '{$fields['Bus']}')
-                ON DUPLICATE KEY UPDATE
-                First=VALUES(First), Last=VALUES(Last), Crew=VALUES(Crew), `Transit To Rockaway`=VALUES(`Transit To Rockaway`),
-                `Transit From Rockaway`=VALUES(`Transit From Rockaway`), Phone=VALUES(Phone), Package=VALUES(Package), `Secondary Package`=VALUES(`Secondary Package`),
-                `Tertiary Package`=VALUES(`Tertiary Package`), Trip=VALUES(Trip), Bus=VALUES(Bus)";
+              if ( isset($fields['RBB']) && $fields['RBB'] ) {
+                $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`,
+                  `Last`, `Crew`, `Transit To Rockaway`, `Transit From Rockaway`, `Phone`, `Package`, `Secondary Package`, `Tertiary Package`, `Trip`, `Bus`)
+                  VALUES ('{$ID}', '{$fields['First']}', '{$fields['Last']}', '{$fields['Crew']}', '{$fields['To Beach']}', '{$fields['From Beach']}',
+                  '{$fields['Phone']}', '{$fields['Package']}', '{$fields['Secondary Package']}', '{$fields['Tertiary Package']}',
+                  '{$fields['Trip']}', '{$fields['Bus']}')
+                  ON DUPLICATE KEY UPDATE
+                  First=VALUES(First), Last=VALUES(Last), Crew=VALUES(Crew), `Transit To Rockaway`=VALUES(`Transit To Rockaway`),
+                  `Transit From Rockaway`=VALUES(`Transit From Rockaway`), Phone=VALUES(Phone), Package=VALUES(Package), `Secondary Package`=VALUES(`Secondary Package`),
+                  `Tertiary Package`=VALUES(`Tertiary Package`), Trip=VALUES(Trip)";
+              } else {
+                $sql = "INSERT INTO `ovr_lists_manual_orders` (`ID`, `First`,
+                  `Last`, `Crew`, `Transit To Rockaway`, `Transit From Rockaway`, `Phone`, `Package`, `Secondary Package`, `Tertiary Package`, `Trip`, `Bus`)
+                  VALUES ('{$ID}', '{$fields['First']}', '{$fields['Last']}', '{$fields['Crew']}', '{$fields['To Beach']}', '{$fields['From Beach']}',
+                  '{$fields['Phone']}', '{$fields['Package']}', '{$fields['Secondary Package']}', '{$fields['Tertiary Package']}',
+                  '{$fields['Trip']}', '{$fields['Bus']}')
+                  ON DUPLICATE KEY UPDATE
+                  First=VALUES(First), Last=VALUES(Last), Crew=VALUES(Crew), `Transit To Rockaway`=VALUES(`Transit To Rockaway`),
+                  `Transit From Rockaway`=VALUES(`Transit From Rockaway`), Phone=VALUES(Phone), Package=VALUES(Package), `Secondary Package`=VALUES(`Secondary Package`),
+                  `Tertiary Package`=VALUES(`Tertiary Package`), Trip=VALUES(Trip), Bus=VALUES(Bus)";
+                }
 
               $this->dbQuery($sql);
           } else {
