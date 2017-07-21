@@ -252,7 +252,6 @@ class Lists {
       return $this->tripInfo;
     }
     function tripData($bus, $tripId, $status){
-        //$this->pickup = FALSE;
         /* Get saved trip data and sort into array based on bus # */
         $busSql = "select ID,Bus from ovr_lists_data where Trip='" . $tripId . "'";
         $busResult = $this->dbQuery($busSql);
@@ -292,12 +291,7 @@ class Lists {
                         }
                         $walkOnOrder['Phone'] = $row['Phone'];
                         $walkOnOrder['Package'] = $row['Package'];
-                        if ( isset($row['Bus'])) {
-                          $walkOnOrder['Bus'] = $row['Bus'];
-                        } else {
-                          $walkOnOrder['Bus'] = "";
-                        }
-                        //$walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
+                        $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
                         $walkOnOrder['Crew'] = $row['Crew'];
                         $this->listHTML($walkOnOrder);
                         $this->customerData($walkOnOrder);
@@ -431,10 +425,8 @@ class Lists {
                     Bus=VALUES(Bus), Data=VALUES(Data)";
             }
             $this->dbQuery($sql);
-            //error_log(print_r($_POST,true));
             // Skip this for the beachbus
             if ( isset($field['Bus']) && is_numeric($field['Bus']) && substr($ID,0,2) == "WO") {
-            //if ( substr($ID,0,2) == "WO" && !isset($field['Transit To Rockaway'])) {
                 $sql = "UPDATE `ovr_lists_manual_orders` SET `Bus` = '" . $field['Bus'] . "' WHERE ID ='" . $ID . "'";
                 $this->dbQuery($sql);
             }
