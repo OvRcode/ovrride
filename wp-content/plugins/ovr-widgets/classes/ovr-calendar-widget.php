@@ -49,6 +49,8 @@ class ovr_calendar_widget extends WP_Widget {
     $year = $date->format('Y');
     $sqlDate = $date->format('F %, Y');
 
+    $date->modify('last day of this month');
+    $lastDay = $date->format('d');
     // Find trips happening this month
     $raw_trips = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, `wp_posts`.`post_status`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
     FROM `wp_posts`
@@ -67,7 +69,7 @@ class ovr_calendar_widget extends WP_Widget {
 
     $search_date = $year . "-" . $month . "-";
     $trips = array();
-    error_log(serialize($raw_trips));
+    //error_log(serialize($raw_trips));
     foreach($raw_trips as $index => $current_trip) {
       $ID = $current_trip['ID'];
       $trip_date = $current_trip['Date'];
@@ -97,6 +99,15 @@ class ovr_calendar_widget extends WP_Widget {
       if ( $trip_date === $end ) {
         continue;
       }
+
+      $end_month = substr($end, 5, 2);
+      $trip_month = substr($trip_date, 5, 2);
+
+      if ( $trip_month < $end_month ) {
+        $end = $year . "-" . $month . "-". $lastDay;
+      }
+      error_log("End Month: $end_month");
+      // Add check to see if end is in this month, if it isn't then make the $end be the last day of the month
       $trip_date++;
       // Loop until we find end of trip and add trip data to array on those days
       for($i=$trip_date; $i <= $end; $i++) {
@@ -105,8 +116,6 @@ class ovr_calendar_widget extends WP_Widget {
     }
 
     // loop through month and assemble
-    $date->modify('last day of this month');
-    $lastDay = $date->format('d');
     $end_week_offset = $date->format('w');
     $date->modify('first day of this month');
     $start_week_offset = $date->format('w');
