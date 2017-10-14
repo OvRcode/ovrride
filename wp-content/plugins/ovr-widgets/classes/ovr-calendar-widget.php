@@ -114,6 +114,25 @@ class ovr_calendar_widget extends WP_Widget {
         $trips[$i][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
       }
     }
+    // ADD CUSTOM TRIPS HERE
+    $extra_trips = maybe_unserialize(get_option("ovr_calendar_custom_events", array()));
+    foreach( $extra_trips as $index => $info ) {
+      if ( $info["active"] == 1 ){
+        $event = ["link" => "<a href='{$info["url"]}'>{$info["name"]}</a>", "type" => $info["season"]];
+        $trips[$info["start"]][] = $event;
+        if ( $info["start"] !== $info["end"] ) {
+          // Check if start and end are in the same month
+          if ( strncmp( $info["start"], $info["end"], 7) < 0 ) {
+            $info["end"] = substr($info["start"], 0, 8) . $lastDay;
+            error_log($info["end"]);
+          }
+          while( $info["start"] < $info["end"] ) {
+            $info["start"]++;
+            $trips[$info["start"]][] = $event;
+          }
+        }
+      }
+    }
 
     // loop through month and assemble
     $end_week_offset = $date->format('w');
