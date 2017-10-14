@@ -99,6 +99,9 @@ function ovr_calendar_add_event() {
 	$existing_events = get_option("ovr_calendar_custom_events", array());
 	$event = [ "name" => $_POST['name'], "url"	=> $_POST["url"],
 		"start"	=> $_POST["start"], "end"	=> $_POST["end"], "active" => 0, "season" => "winter" ];
+	if ( preg_match("/^http[s]{0,1}:\/\//", $event["url"]) == false ) {
+		$event["url"] = "http://" . $event["url"];
+	}
 	if ( count($existing_events) == 0 ) {
 		$events[0] = $event;
 	} else {
