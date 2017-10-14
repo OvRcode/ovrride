@@ -114,7 +114,7 @@ class ovr_calendar_widget extends WP_Widget {
         $trips[$i][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
       }
     }
-
+    error_log(print_r($trips, true));
     // loop through month and assemble
     $end_week_offset = $date->format('w');
     $date->modify('first day of this month');
