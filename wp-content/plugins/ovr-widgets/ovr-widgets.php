@@ -39,7 +39,7 @@ function ovr_widgets_admin_setup_menu() {
 
 function ovr_calendar_events() {
 	//delete_option("ovr_calendar_custom_events");
-	wp_enqueue_script('ovr_calendar_add_events', plugin_dir_url( __FILE__ ).'ovr_calendar_custom_events.js', array('jquery'), false, true);
+	wp_enqueue_script('ovr_calendar_add_events', plugin_dir_url( __FILE__ ).'js/ovr_calendar_custom_events.js', array('jquery'), false, true);
 	wp_localize_script( 'ovr_calendar_add_events', 'ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ),
 	 'add_nonce' => wp_create_nonce("ovr_calendar_add_events"),
 	 'remove_nonce' => wp_create_nonce("ovr_calendar_remove_events"),
@@ -62,12 +62,17 @@ CALADMIN;
 		echo "No Custom events set";
 	} else {
 		$events = maybe_unserialize($events);
-		echo "<table id='ovr_calendar_custom_events_table'><tr><th>Name</th><th>URL</th><th>Start</th><th>End</th><th>Active</th></tr>";
+		echo "<table id='ovr_calendar_custom_events_table'><tr><th>Name</th><th>URL</th><th>Start</th><th>End</th><th>Season</th><th>Active</th></tr>";
 		foreach ($events as $id => $info ) {
 			if ( $info['active'] === 0 ) {
-				$options = "<option value=0 selected>Inactive</option><option value=1>Active</option>";
+				$activeOptions = "<option value=0 selected>Inactive</option><option value=1>Active</option>";
 			} else if ( $info['active'] == 1) {
-				$options = "<option value=0>Inactive</option><option value=1 selected>Active</option>";
+				$activeOptions = "<option value=0>Inactive</option><option value=1 selected>Active</option>";
+			}
+			if ( $info['season'] === "winter" ) {
+				$seasonOptions = "<option value='winter' selected>Winter</option><option value='summer'>Summer</option>";
+			} else if ( $info['season'] === "summer" ) {
+				$seasonOptions = "<option value='winter'>Winter</option><option value='summer' selected>Summer</option>";
 			}
 			echo <<<TABLELINE
 				<tr><td>{$info['name']}</td>
@@ -75,9 +80,12 @@ CALADMIN;
 				<td>{$info['start']}</td>
 				<td>{$info['end']}</td>
 				<td>
-					<select class="activeInactive" id="{$id}">{$options}</select>
+					<select class="season" data-id="{$id}">{$seasonOptions}</select>
 				</td>
-				<td><i class='dashicons dashicons-no' id="{$id}"></td></tr>
+				<td>
+					<select class="activeInactive" data-id="{$id}">{$activeOptions}</select>
+				</td>
+				<td><i class='dashicons dashicons-no' data-id="{$id}"></td></tr>
 TABLELINE;
 		}
 		echo "</table>";
@@ -90,7 +98,7 @@ function ovr_calendar_add_event() {
 
 	$existing_events = get_option("ovr_calendar_custom_events", array());
 	$event = [ "name" => $_POST['name'], "url"	=> $_POST["url"],
-		"start"	=> $_POST["start"], "end"	=> $_POST["end"], "active" => 0 ];
+		"start"	=> $_POST["start"], "end"	=> $_POST["end"], "active" => 0, "season" => "winter" ];
 	if ( count($existing_events) == 0 ) {
 		$events[0] = $event;
 	} else {
@@ -137,6 +145,7 @@ function ovr_calendar_update_event() {
 
 	if ( isset( $existing_events[$_POST['id']] ) ) {
 			$existing_events[$_POST['id']]['active'] = $_POST['active'];
+			$existing_events[$_POST['id']]['season'] = $_POST['season'];
 			if ( update_option("ovr_calendar_custom_events", $existing_events) ) {
 				return "true";
 			} else {

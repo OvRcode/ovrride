@@ -67,11 +67,11 @@ jQuery(document).ready(function( $ ) {
   });
 	// Delete an evenet from the existing events list
 	$('table#ovr_calendar_custom_events_table i.dashicons-no').on('click', function(event){
-		$.post( ajax.ajaxurl,
+    $.post( ajax.ajaxurl,
 		{
 			action: 'ovr_calendar_remove_event',
 			remove_nonce: ajax.remove_nonce,
-			id: event.target.id
+			id: $(this).data('id')
 		},
 		function( response ) {
 			if ( response == "false" ) {
@@ -84,13 +84,14 @@ jQuery(document).ready(function( $ ) {
 	);
 });
 // Change status on an event
-$('table#ovr_calendar_custom_events_table select.activeInactive').on('change', function(event) {
-		$.post( ajax.ajaxurl,
+$('table#ovr_calendar_custom_events_table select.activeInactive, table#ovr_calendar_custom_events_table select.season').on('change', function() {
+    $.post( ajax.ajaxurl,
 		{
 			action: 'ovr_calendar_update_event',
 			update_nonce: ajax.update_nonce,
-			id: event.target.id,
-			active: $(this).val()
+			id: $(this).data('id'),
+			active: $(this).parents("tr").children("td").children("select.activeInactive").val(),
+      season: $(this).parents("tr").children("td").children("select.season").val()
 		},
 		function( response ) {
 			if ( response == "false" ) {
