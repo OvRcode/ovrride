@@ -1,4 +1,8 @@
 jQuery(document).ready(function( $ ) {
+  $.datepicker.setDefaults({
+    dateFormat: "yy-mm-dd"
+  });
+  $("#ovr_calendar_event_start, #ovr_calendar_event_end").datepicker();
   // Admin form click event
 	$('form[name="ovr_calendar_add_event"] input[type="button"]').on('click', function(){
     var check = { fail: false, reason: ""};

@@ -4,7 +4,7 @@
 * Description:  Collection of widgets for the ovrride.com site
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
-* Version: 1.3.0
+* Version: 1.4.0
 * License: MIT License
 */
 require('classes/ovr-blog-feature-widget.php');
@@ -39,11 +39,12 @@ function ovr_widgets_admin_setup_menu() {
 
 function ovr_calendar_events() {
 	//delete_option("ovr_calendar_custom_events");
-	wp_enqueue_script('ovr_calendar_add_events', plugin_dir_url( __FILE__ ).'js/ovr_calendar_custom_events.js', array('jquery'), false, true);
+	wp_enqueue_script('ovr_calendar_add_events', plugin_dir_url( __FILE__ ).'js/ovr_calendar_custom_events.js', array('jquery','jquery-ui-datepicker'), "1.0", true);
 	wp_localize_script( 'ovr_calendar_add_events', 'ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ),
 	 'add_nonce' => wp_create_nonce("ovr_calendar_add_events"),
 	 'remove_nonce' => wp_create_nonce("ovr_calendar_remove_events"),
 	  'update_nonce' => wp_create_nonce("ovr_calendar_update_events") ) );
+	wp_enqueue_style('ovr-calendar-admin-ui-css','http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/base/jquery-ui.css',false,"1.9.0",false);
 	echo <<<CALADMIN
 	<h1>OvRride Calendar Widget</h1>
 	<h3> Add/Remove non-trip events here</h3>
@@ -51,8 +52,8 @@ function ovr_calendar_events() {
 		<h4>Event Info: </h4>
 		<div><label>Name <label><input type='text' name='ovr_calendar_event_name' id='ovr_calendar_event_name'></input></div>
 		<div><label>Url </label><input type='text' name='ovr_calendar_event_url' id='ovr_calendar_event_url'></input></div>
-		<div><label>Start </label><input type="date" id="ovr_calendar_event_start" name="ovr_calendar_event_start" value="" class="ovr-event-calendar-datepicker" /></div>
-		<div><label>End </label><input type="date" id="ovr_calendar_event_end" name="ovr_calendar_event_end" value="" class="ovr-event-calendar-datepicker" /></div>
+		<div><label>Start </label><input id="ovr_calendar_event_start" name="ovr_calendar_event_start" class="datepicker" /></div>
+		<div><label>End </label><input id="ovr_calendar_event_end" name="ovr_calendar_event_end" class="datepicker" /></div>
 		<input type="button" value="Add Event" />
 	</form>
 CALADMIN;
