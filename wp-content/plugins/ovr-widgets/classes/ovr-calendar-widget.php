@@ -103,7 +103,7 @@ class ovr_calendar_widget extends WP_Widget {
       $end_month = substr($end, 5, 2);
       $trip_month = substr($trip_date, 5, 2);
 
-      if ( $trip_month < $end_month ) {
+      if ( $trip_month != $end_month ) {
         $end = $year . "-" . $month . "-". $lastDay;
       }
       error_log("End Month: $end_month");
