@@ -801,3 +801,8 @@ a.ovr_sponsor {
 	display: block;
 	margin-bottom: 15px;
 }
+
+/* quick fix for chapmans front page workaround */
+li.widget_text {
+	list-style: none;
+}
