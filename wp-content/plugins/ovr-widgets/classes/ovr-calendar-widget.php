@@ -14,9 +14,15 @@ class ovr_calendar_widget extends WP_Widget {
     add_action( 'wp_ajax_nopriv_ovr_calendar', array( $this, "generate_calendar_ajax") );
     add_action( 'wp_ajax_ovr_calendar', array( $this, "generate_calendar_ajax") );
     add_action( 'init', array( $this, 'register_archive') );
+    add_action( 'ovr_calendar_refresh', array( $this, "refresh") );
   }
   public function form( $instance ) {
-
+    if ( ! wp_next_scheduled( 'ovr_calendar_refresh' ) ) {
+      wp_schedule_event(time(), 'hourly', 'ovr_calendar_refresh');
+      error_log("scheduling calendar refresh");
+    } else {
+      error_log("calendar refresh already scheduled!");
+    }
   }
   public function generate_calendar_ajax() {
 
@@ -31,6 +37,11 @@ class ovr_calendar_widget extends WP_Widget {
     $date = new DateTime($_POST['calendarDate'], new DateTimeZone('EST'));
 
     wp_send_json( array("html" => $this->generate_calendar($date), "month_year" => $date->format('F Y') ) );
+  }
+  public function refresh() {
+    // refresh stored data for current month, will be run hourly by wp cron
+    $date = new DateTime('now');
+    $this->generate_calendar( new DateTime('now') );
   }
   public function generate_calendar( $date ) {
     global $wpdb;
@@ -69,53 +80,62 @@ class ovr_calendar_widget extends WP_Widget {
 
     $search_date = $year . "-" . $month . "-";
     $trips = array();
-    //error_log(serialize($raw_trips));
-    foreach($raw_trips as $index => $current_trip) {
-      $ID = $current_trip['ID'];
-      $trip_date = $current_trip['Date'];
-      $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $current_trip['post_title']);
-      $stripped_title = preg_replace("/[-\s]{1,2}[0-9][0-9][tsr][hnd]/", "", $stripped_title); // edge case for weird date formatting
-      $stripped_title = preg_replace("/[MTWFS][ouehra][neduitn][\.]/", "", $stripped_title);// edge case for weird day of week
-      $stripped_title = preg_replace("/Thur\.-[0-9]{0,1}[0-9][tsr][htd]/", "", $stripped_title);//ugh, we need to fix titles
-      if ( 'publish' === $current_trip['post_status'] ) {
-        $current_trip_link = '<a href=\'' . $current_trip['guid'] . '\'>';
-      } else {
-        $current_trip_link = '<a class=\'calendar_past_trip\'>';
-      }
-      $current_trip_link .= $stripped_title .'</a>';
-      $trip_destination = get_post_meta( $ID, '_wc_trip_destination', true);
+    $trips_hash = md5(serialize($raw_trips));
+    $saved_trips_hash = get_option("ovr_calendar_trips_hash");
+    if ( !$saved_trips_hash || $saved_trips_hash !== $trips_hash ) {
+      foreach($raw_trips as $index => $current_trip) {
+        $ID = $current_trip['ID'];
+        $trip_date = $current_trip['Date'];
+        $stripped_title = preg_replace("/(.*[^:]):*\s[ADFJMNOS][aceopu][bcglnprtvy].\s[0-9\-]{1,5}[snrtdh]{1,2}/", "$1", $current_trip['post_title']);
+        $stripped_title = preg_replace("/[-\s]{1,2}[0-9][0-9][tsr][hnd]/", "", $stripped_title); // edge case for weird date formatting
+        $stripped_title = preg_replace("/[MTWFS][ouehra][neduitn][\.]/", "", $stripped_title);// edge case for weird day of week
+        $stripped_title = preg_replace("/Thur\.-[0-9]{0,1}[0-9][tsr][htd]/", "", $stripped_title);//ugh, we need to fix titles
+        if ( 'publish' === $current_trip['post_status'] ) {
+          $current_trip_link = '<a href=\'' . $current_trip['guid'] . '\'>';
+        } else {
+          $current_trip_link = '<a class=\'calendar_past_trip\'>';
+        }
+        $current_trip_link .= $stripped_title .'</a>';
+        $trip_destination = get_post_meta( $ID, '_wc_trip_destination', true);
 
-      $trip_type = $wpdb->get_results("SELECT `meta_value` as 'type' FROM `wp_postmeta`
-      JOIN wp_posts ON wp_postmeta.post_id = wp_posts.ID
-      WHERE `post_title` = '{$trip_destination}'
-      AND `post_type` = 'destinations'
-      AND `meta_key` = '_type'");
-      if ( !isset($trip_type[0]->trip) || '' == $trip_type[0]->trip ) {
-        $trip_type[0]->trip = 'winter';
-      }
-      $trips[$trip_date][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
-      $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
-      // Exit current loop iteration if trip_date is trip end date
-      if ( $trip_date === $end ) {
-        continue;
-      }
+        $trip_type = $wpdb->get_results("SELECT `meta_value` as 'type' FROM `wp_postmeta`
+        JOIN wp_posts ON wp_postmeta.post_id = wp_posts.ID
+        WHERE `post_title` = '{$trip_destination}'
+        AND `post_type` = 'destinations'
+        AND `meta_key` = '_type'");
+        if ( !isset($trip_type[0]->trip) || '' == $trip_type[0]->trip ) {
+          $trip_type[0]->trip = 'winter';
+        }
+        $trips[$trip_date][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
+        $end = $wpdb->get_var("select STR_TO_DATE(`meta_value`, '%M %d, %Y') as `End` FROM wp_postmeta where post_id='{$ID}' and meta_key='_wc_trip_end_date'");
+        // Exit current loop iteration if trip_date is trip end date
+        if ( $trip_date === $end ) {
+          continue;
+        }
 
-      $end_month = substr($end, 5, 2);
-      $trip_month = substr($trip_date, 5, 2);
+        $end_month = substr($end, 5, 2);
+        $trip_month = substr($trip_date, 5, 2);
 
-      if ( $trip_month != $end_month ) {
-        $end = $year . "-" . $month . "-". $lastDay;
+        if ( $trip_month != $end_month ) {
+          $end = $year . "-" . $month . "-". $lastDay;
+        }
+        error_log("End Month: $end_month");
+        // Add check to see if end is in this month, if it isn't then make the $end be the last day of the month
+        $trip_date++;
+        // Loop until we find end of trip and add trip data to array on those days
+        for($i=$trip_date; $i <= $end; $i++) {
+          $trips[$i][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
+        }
       }
-      error_log("End Month: $end_month");
-      // Add check to see if end is in this month, if it isn't then make the $end be the last day of the month
-      $trip_date++;
-      // Loop until we find end of trip and add trip data to array on those days
-      for($i=$trip_date; $i <= $end; $i++) {
-        $trips[$i][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
-      }
+      update_option("ovr_calendar_trips_hash", $trips_hash);
+      update_option("ovr_calendar_trips_data", $trips);
+    } else {
+      // pull saved trips data from options
+      $trips = get_option("ovr_calendar_trips_data", array() );
     }
     // ADD CUSTOM TRIPS HERE
-    $extra_trips = maybe_unserialize(get_option("ovr_calendar_custom_events", array()));
+    $extra_trips = maybe_unserialize( get_option("ovr_calendar_custom_events", array() ) );
+
     foreach( $extra_trips as $index => $info ) {
       if ( $info["active"] == 1 ){
         $event = ["link" => "<a href='{$info["url"]}'>{$info["name"]}</a>", "type" => $info["season"]];
@@ -133,7 +153,6 @@ class ovr_calendar_widget extends WP_Widget {
         }
       }
     }
-
     // loop through month and assemble
     $end_week_offset = $date->format('w');
     $date->modify('first day of this month');
@@ -205,12 +224,16 @@ class ovr_calendar_widget extends WP_Widget {
       }
       $days .= $add . '</li>';
     }
-
+    update_option("ovr_calendar_days_data", $days);
     return $days;
   }
   public function widget( $args, $instance ) {
 
-    $days = $this->generate_calendar(new DateTime('now'));
+    //$days = $this->generate_calendar(new DateTime('now'));
+    $days = get_option("ovr_calendar_days_data");
+    if( !$days ) {
+      $days = $this->generate_calendar(new DateTime('now'));
+    }
     $date = new DateTime('now');
     $month_year = $date->format('F Y');
     wp_enqueue_style('jquery.webui-popover-style', plugin_dir_url( dirname(__FILE__) ) . 'css/jquery.webui-popover.min.css');
