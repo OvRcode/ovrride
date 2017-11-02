@@ -101,15 +101,16 @@ i.icon {
   cursor: pointer;
 }
 .days .icon {
-
-  font-size: 30px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  font-size: 19px;
+  margin-top: 19px;
+  /*margin-bottom: 5px;*/
+  margin-right:5px;
+  margin-bottom:5px;
   float: right;
 }
 @media screen and ( max-width: 1050px ) {
   .days .icon {
-    font-size: 25px;
+    font-size: 22px;
   }
 }
 @media screen and (min-width: 1130px) {
