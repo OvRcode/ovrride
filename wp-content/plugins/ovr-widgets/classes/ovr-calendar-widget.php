@@ -36,14 +36,14 @@ class ovr_calendar_widget extends WP_Widget {
     // Create php date object with correct timezone for calendar generation
     $date = new DateTime($_POST['calendarDate'], new DateTimeZone('EST'));
 
-    wp_send_json( array("html" => $this->generate_calendar($date), "month_year" => $date->format('F Y') ) );
+    wp_send_json( array("html" => $this->generate_calendar($date, false), "month_year" => $date->format('F Y') ) );
   }
   public function refresh() {
     // refresh stored data for current month, will be run hourly by wp cron
     $date = new DateTime('now');
-    $this->generate_calendar( new DateTime('now') );
+    $this->generate_calendar( new DateTime('now'), true );
   }
-  public function generate_calendar( $date ) {
+  public function generate_calendar( $date, $refresh ) {
     global $wpdb;
     $date->setTimezone(new DateTimeZone('America/New_York'));
     $currentDay = new DateTime('now');
@@ -119,7 +119,6 @@ class ovr_calendar_widget extends WP_Widget {
         if ( $trip_month != $end_month ) {
           $end = $year . "-" . $month . "-". $lastDay;
         }
-        error_log("End Month: $end_month");
         // Add check to see if end is in this month, if it isn't then make the $end be the last day of the month
         $trip_date++;
         // Loop until we find end of trip and add trip data to array on those days
@@ -127,8 +126,10 @@ class ovr_calendar_widget extends WP_Widget {
           $trips[$i][] = array("link" => $current_trip_link, "type" => $trip_type[0]->type);
         }
       }
-      update_option("ovr_calendar_trips_hash", $trips_hash);
-      update_option("ovr_calendar_trips_data", $trips);
+      if ( $refresh ) {
+        update_option("ovr_calendar_trips_hash", $trips_hash);
+        update_option("ovr_calendar_trips_data", $trips);
+      }
     } else {
       // pull saved trips data from options
       $trips = get_option("ovr_calendar_trips_data", array() );
@@ -224,7 +225,9 @@ class ovr_calendar_widget extends WP_Widget {
       }
       $days .= $add . '</li>';
     }
-    update_option("ovr_calendar_days_data", $days);
+    if ( $refresh ){
+      update_option("ovr_calendar_days_data", $days);
+    }
     return $days;
   }
   public function widget( $args, $instance ) {
@@ -232,7 +235,7 @@ class ovr_calendar_widget extends WP_Widget {
     //$days = $this->generate_calendar(new DateTime('now'));
     $days = get_option("ovr_calendar_days_data");
     if( !$days ) {
-      $days = $this->generate_calendar(new DateTime('now'));
+      $days = $this->generate_calendar(new DateTime('now'), true);
     }
     $date = new DateTime('now');
     $month_year = $date->format('F Y');
