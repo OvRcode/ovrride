@@ -58,15 +58,24 @@ public function update( $new_instance, $old_instance ) {
   $instance['events'] = ( ! empty( $new_instance['events'] ) ) ? strip_tags( $new_instance['events'] ) : '';
   $instance['menu_order'] = ( ! empty( $new_instance['menu_order'] ) ) ? strip_tags( $new_instance['menu_order'] ) : '';
   $instance['seat_count'] = ( ! empty( $new_instance['seat_count'] ) ) ? strip_tags( $new_instance['seat_count'] ) : '';
+  update_option("ovr_events_widget_html", $this->buildHTML($instance) );
   return $instance;
 }
 public function widget( $args, $instance ) {
   wp_enqueue_style( 'ovr_event_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-events-widget.min.css');
   wp_enqueue_script( 'ovr_event_widget_script', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-events-widget.min.js', array('jquery'), "1.0", true);
+  $widget = get_option("ovr_event_widget_html");
+  if( !$widget ) {
+    $widget = $this->buildHTML($instance);
+  }
+  echo $widget;
+}
+
+function buildHTML($instance) {
+  $html = "<div class='events'>";
+  $html .= "<i class='leftArrow'></i>";
+  $html .= "<div class='eventScroll'>";
   $trip = $this->returnTrips($instance['events'], $instance['menu_order']);
-  echo "<div class='events'>";
-  echo "<i class='leftArrow'></i>";
-  echo "<div class='eventScroll'>";
   foreach($trip as $id => $data ) {
 
     if ( strcmp($data->stock_status, "outofstock") === 0 ) {
@@ -76,7 +85,7 @@ public function widget( $args, $instance ) {
     } else {
       $label = "<span class='available'>AVAILABLE</span>";
     }
-    echo <<<WIDGETHTML
+    $html .= <<<WIDGETHTML
     <div class="event">
       <a href="{$data->link}">{$data->post_title}</a><br />
       {$data->dateLabel}<br />
@@ -84,7 +93,9 @@ public function widget( $args, $instance ) {
     </div>
 WIDGETHTML;
   }
-  echo "</div><i class='rightArrow'></i></div>";
+  $html .= "</div><i class='rightArrow'></i></div>";
+  update_option( "ovr_events_widget_html", $html);
+  return $html;
 }
 function returnTrips($numberOfTrips, $menu_order){
   global $wpdb;
