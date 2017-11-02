@@ -4,7 +4,7 @@
 * Description:  Collection of widgets for the ovrride.com site
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
-* Version: 1.4.0
+* Version: 1.5.0
 * License: MIT License
 */
 require('classes/ovr-blog-feature-widget.php');
@@ -151,6 +151,7 @@ function ovr_calendar_update_event() {
 			$existing_events[$_POST['id']]['active'] = $_POST['active'];
 			$existing_events[$_POST['id']]['season'] = $_POST['season'];
 			if ( update_option("ovr_calendar_custom_events", $existing_events) ) {
+				do_action("ovr_calendar_refresh");
 				return "true";
 			} else {
 				return "false";
