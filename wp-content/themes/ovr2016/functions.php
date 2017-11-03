@@ -547,14 +547,11 @@ function custom_woocommerce_product_add_to_cart_text() {
 
 /* Parallelize host names */
 function parallelize_hostnames($url, $id) {
-$hostname = par_get_hostname($url); //call supplemental function
-$url = str_replace(parse_url(get_bloginfo('url'), PHP_URL_HOST), $hostname, $url);
-return $url;
-}
-function par_get_hostname($name) {
-$subdomains = array('static1.ovrride.com','static2.ovrride.com'); //add your subdomains here, as many as you want.
-$host = abs(crc32(basename($name)) % count($subdomains));
-$hostname = $subdomains[$host];
-return $hostname;
+  $base_url = explode(":",site_url());
+  $base_url[1] = substr($base_url[1],2);
+  $subdomains = array('static1.'.$base_url[1],'static2.'.$base_url[1]);
+  $hostname = $subdomains[mt_rand(0, count($subdomains) - 1)];
+  $url = str_replace(parse_url(get_bloginfo('url'), PHP_URL_HOST), $hostname, $url);
+  return $url;
 }
 add_filter('wp_get_attachment_url', 'parallelize_hostnames', 10, 2);
