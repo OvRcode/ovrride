@@ -8,10 +8,10 @@
 get_header();
 ?>
 
-<?php if ( is_active_sidebar( 'banner-ad' ) ) : ?>
+<?php if ( is_active_sidebar( 'ovr-banner-ad' ) ) : ?>
   <div class="row">
-    <div class="col-sm-12">
-      <?php dynamic_sidebar( 'banner-ad' ); ?>
+    <div class="col-sm-12 col-md-10 col-md-offset-1 ovr-banner-ad">
+      <?php dynamic_sidebar( 'ovr-banner-ad' ); ?>
     </div>
   </div>
 <?php endif; ?>

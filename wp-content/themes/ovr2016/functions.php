@@ -131,7 +131,7 @@ function _tk_scripts() {
   //wp_localize_script( 'ovr_google_analytics', 'ovr', array( 'ga_id' => get_option("google_analytics_id") ) );
   wp_enqueue_script( 'ovr_pingdom_js', THEME_DIR_URI . '/includes/js/pingdom.js', false, false, false);
   wp_localize_script( 'ovr_pingdom_js', 'ovr', array('pingdom_id' => get_option("pingdom_id") ) );
-  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), '1.3');
+  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), '1.3.1');
 }
 add_action( 'wp_enqueue_scripts', '_tk_scripts' );
 
@@ -179,7 +179,7 @@ function woocommerce_support() {
  function register_widget_areas() {
 	register_sidebar( array(
 		'name'          => 'Top Banner Ad',
-		'id'            => 'banner-ad',
+		'id'            => 'ovr-banner-ad',
 		'description'   => 'Banner Ad at top of home page',
 	) );
   register_sidebar( array(
