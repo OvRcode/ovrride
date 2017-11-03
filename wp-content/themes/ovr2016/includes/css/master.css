@@ -802,6 +802,10 @@ a.ovr_sponsor {
 	margin-bottom: 15px;
 }
 
+.ovr-banner-ad {
+	margin-top:10px;
+	margin-bottom: -35px;
+}
 /* quick fix for chapmans front page workaround */
 li.widget_text {
 	list-style: none;
