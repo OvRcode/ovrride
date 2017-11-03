@@ -145,7 +145,6 @@ class ovr_calendar_widget extends WP_Widget {
           // Check if start and end are in the same month
           if ( strncmp( $info["start"], $info["end"], 7) < 0 ) {
             $info["end"] = substr($info["start"], 0, 8) . $lastDay;
-            error_log($info["end"]);
           }
           while( $info["start"] < $info["end"] ) {
             $info["start"]++;
