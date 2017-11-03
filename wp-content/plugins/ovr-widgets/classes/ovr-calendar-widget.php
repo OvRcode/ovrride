@@ -171,6 +171,7 @@ class ovr_calendar_widget extends WP_Widget {
       } else if ( $i > $start_week_offset ) {
         // Add number to day
         $add = $i - $start_week_offset;
+        $add = str_pad($add, 2, "0", STR_PAD_LEFT);
         $icon = false;
         $calendarDate = $date->format('Y-m-') . str_pad($adjustedDay, 2 , "0", STR_PAD_LEFT);
         // If the current calendar date exists in the trips array add the trip info
@@ -223,7 +224,9 @@ class ovr_calendar_widget extends WP_Widget {
       } else {
         $days .= '<li>';
       }
+
       $days .= $add . '</li>';
+
     }
     if ( $refresh ){
       update_option("ovr_calendar_days_data", $days);
@@ -244,7 +247,7 @@ class ovr_calendar_widget extends WP_Widget {
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'), false, true);
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.min.js', array('jquery.webui-popover-js', 'jquery_spin_js'), "1.1.0", true);
-    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', FALSE, "1.3");
+    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', FALSE, "1.4");
 
     if ( is_ssl() ) {
         $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php', 'https'), 'ovr_calendar', 'ovr_calendar_shift' );
