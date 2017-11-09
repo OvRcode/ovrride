@@ -1,0 +1,31 @@
+.metaslider .youtube .spinner {
+	position: absolute;
+	top: 13px;
+	right: 26px;
+}
+
+.metaslider .youtube input[type=text] {
+	font-family: sans-serif;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #dfdfdf;
+	line-height: 1.2em;
+	font-size: 18px;
+	padding: 12px 14px;
+	width: 100%;
+	min-width: 200px;
+	box-shadow: inset 2px 2px 4px -2px rgba( 0, 0, 0, 0.1 );
+}
+
+.metaslider .thumb .youtube {
+  height: 100%;
+  width: 100%;
+  float: left;
+  background: url('icon.png') no-repeat center center;
+}

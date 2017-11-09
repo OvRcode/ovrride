@@ -1,0 +1,238 @@
+.layerEditorCbox #cboxClose,
+.layerEditorCbox #cboxClose:hover {
+  background: white;
+  border-color: #bbb;
+  color: #333;
+  text-shadow: 0 1px 0 #fff;
+  top: 10px;
+  right: 10px;
+  bottom: auto;
+  display: inline-block;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 23px;
+  height: 24px;
+  margin: 0;
+  padding: 0 10px 1px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-border-radius: 3px;
+  -webkit-appearance: none;
+  border-radius: 3px;
+  white-space: nowrap;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: auto;
+  text-transform: capitalize;
+  text-indent: 0;
+}
+.layerEditorCbox {
+   margin-top: 28px;
+}
+.layerEditorCbox #cboxLoadedContent {
+  margin-bottom: 0;
+}
+.layer_editor .layer {
+  overflow: hidden;
+}
+.layer_editor .layer * {
+  margin: 0;
+  line-height: 1.4em;
+  font-size: 1em;
+}
+.layer_editor .layer img {
+  max-width: 100%;
+  height: auto !important;
+}
+.layer_editor .spinner {
+  float: left;
+}
+.layer_editor .addLayer,
+.layer_editor .addLayer:hover,
+.layer_editor .addLayer:focus {
+  background: url('images/addLayer.png') no-repeat 3px;
+  padding-left: 24px;
+  float: left;
+  outline: 0;
+}
+.layer_editor .save,
+.layer_editor .save:hover,
+.layer_editor .save:focus {
+  background: url('images/save.png') no-repeat 3px;
+  padding-left: 24px;
+  float: left;
+  outline: 0;
+}
+.layer_editor .animation_in,
+.layer_editor .animation_out {
+  height: 100%;
+  width: 100%;
+}
+.layer_editor .container {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+}
+.layer_editor .metaslider-active {
+  border: 1px dashed #ccc;
+  margin: -1px 0 0 -1px;
+}
+.layer_editor #animation_in_delay,
+.layer_editor #animation_out_delay,
+.layer_editor #layer_padding {
+  width: 60px;
+}
+.layer_editor #wysiwyg_buttons {
+  height: 33px;
+}
+.layer_editor .button {
+  margin: 0px 5px 10px 0;
+}
+.layer_editor .toolbar_wrapper {
+  clear: both;
+  border-radius: 3px 3px 0 0;
+  border: 1px solid #b6b6b6;
+  padding: 6px 8px 2px;
+  white-space: normal;
+  -moz-box-shadow: 0 1px 0 #fff inset;
+  -webkit-box-shadow: 0 1px 0 #fff inset;
+  box-shadow: 0 1px 0 #fff inset;
+  background: #f1f1f1;
+  background-image: -webkit-gradient(linear, left bottom, left top, from(#ececec), to(#f9f9f9));
+  background-image: -webkit-linear-gradient(bottom, #ececec, #f9f9f9);
+  background-image: -moz-linear-gradient(bottom, #ececec, #f9f9f9);
+  background-image: -o-linear-gradient(bottom, #ececec, #f9f9f9);
+  background-image: linear-gradient(to top, #ececec, #f9f9f9);
+}
+.layer_editor .cke {
+  border: 0 !important;
+  box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+.layer_editor .cke_inner {
+  background: transparent;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.layer_editor .cke_top {
+  border-bottom: 0;
+  padding: 0;
+  white-space: normal;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background: transparent;
+  background-image: none;
+}
+.layer_editor #style_toolbar,
+.layer_editor #animation_toolbar {
+  margin-top: 6px;
+}
+.layer_editor #style_toolbar {
+  margin-bottom: 6px;
+}
+.layer_editor #animation_toolbar .sp-preview,
+.layer_editor #style_toolbar .sp-preview {
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  margin-right: 0;
+  border-radius: 2px;
+}
+.layer_editor #animation_toolbar #snapToGrid input,
+.layer_editor #style_toolbar #snapToGrid input {
+  height: auto;
+  background-image: none;
+  border: 0;
+}
+.layer_editor #animation_toolbar select,
+.layer_editor #style_toolbar select,
+.layer_editor #animation_toolbar input,
+.layer_editor #style_toolbar input,
+.layer_editor #animation_toolbar .sp-replacer,
+.layer_editor #style_toolbar .sp-replacer {
+  vertical-align: middle;
+  height: 27px;
+  margin: 0 6px;
+  border: 1px solid #a6a6a6;
+  border-bottom-color: #979797;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 2px rgba(255, 255, 255, 0.15) inset, 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  background: #e4e4e4;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e4e4e4));
+  background-image: -moz-linear-gradient(top, #ffffff, #e4e4e4);
+  background-image: -webkit-linear-gradient(top, #ffffff, #e4e4e4);
+  background-image: -o-linear-gradient(top, #ffffff, #e4e4e4);
+  background-image: -ms-linear-gradient(top, #ffffff, #e4e4e4);
+  background-image: linear-gradient(top, #ffffff, #e4e4e4);
+}
+.layer_editor #animation_toolbar .sp-replacer,
+.layer_editor #style_toolbar .sp-replacer {
+  padding: 0 5px;
+}
+.layer_editor .drag_handle {
+  position: absolute;
+  display: none;
+  width: 15px;
+  height: 15px;
+  bottom: 0;
+  left: 0;
+  text-indent: -9999px;
+  border-radius: 0 2px 0 0;
+  background: url('images/move.png') no-repeat center center;
+}
+.layer_editor .layer p {
+  margin-top: 0;
+}
+.layer_editor .layer:hover .drag_handle {
+  display: block;
+  cursor: move;
+}
+.layer_editor .layer .delete_button {
+  z-index: 9999999;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  width: 15px;
+  height: 15px;
+  text-indent: -9999px;
+  background: url('images/delete.png') no-repeat center center;
+  cursor: pointer;
+}
+.layer_editor .layer:hover .delete_button {
+  display: block;
+}
+.layer_editor .layer .ui-resizable-handle {
+  background: url('images/resize.png') no-repeat center center;
+  display: none !important;
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: se-resize;
+}
+.layer_editor .layer:hover .ui-resizable-handle {
+  display: block !important;
+}
+
+.metaslider .rawEdit {
+  text-align: center;
+  font-style: italic;
+  cursor: pointer;
+}
+.metaslider .CodeMirror {
+  height: 118px;
+  cursor: text;
+}
+.metaslider .CodeMirror-wrap .CodeMirror-scroll {
+  height: 118px;
+  overflow-x: auto;
+}

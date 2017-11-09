@@ -1,0 +1,59 @@
+.metaslider.metaslider_themeEditor {
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-top: 10px;
+}
+.metaslider.metaslider_themeEditor .confirm {
+  margin-top: 10px;
+}
+html[dir='rtl'] .metaslider.metaslider_themeEditor .wrap {
+  position: inherit;
+}
+.metaslider.metaslider_themeEditor table .highlight {
+  background: #f1f1f1;
+  font-weight: bold;
+}
+.metaslider .theme_editor_left {
+  width: 40%;
+  margin-right: 5%;
+  float: left;
+}
+.metaslider .theme_editor_right {
+  width: 55%;
+  float: right;
+}
+
+.metaslider div.error, .metaslider div.updated {
+  margin: 0;
+}
+
+#remove_custom_prev_arrow,
+#remove_custom_next_arrow {
+  float: right;
+}
+.after,
+input.number {
+    display: inline-block;
+    float: left;
+    height: 26px;
+    margin: 0;
+}
+input.number,
+input.number:focus {
+    outline: none;
+    width: 70px;
+    margin-right: 0;
+    box-shadow: none;
+    border-right: 0;
+}
+.after {
+    border: 1px solid #ddd;
+    border-left: 0;
+    box-shadow: none;
+    font-size: 11px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 3px;
+    background: white;
+}

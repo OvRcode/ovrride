@@ -1,0 +1,31 @@
+
+.media-frame.hide-router .media-frame-title {
+  box-shadow: none !important;
+  border-bottom: 0px !important;
+}
+.metaslider .left table tr.slide.youtube label input,
+.metaslider .left table tr.slide.vimeo label input {
+	margin-right: 5px;
+	margin-bottom: 2px;
+	margin-left: 5px;
+}
+.metaslider .left table tr.slide.youtube ul,
+.metaslider .left table tr.slide.vimeo ul {
+	margin: 5px 0;
+}
+.metaslider .left table tr.slide.youtube ul select {
+	font-size: 0.9em;
+}
+.metaslider .left table tr.slide.youtube .title,
+.metaslider .left table tr.slide.vimeo .title {
+	font-weight: bold;
+	font-size: 0.9em;
+	text-transform: uppercase;
+	width: 100%;
+	border-bottom: 1px solid #cccccc;
+	padding-bottom: 4px;
+}
+.metaslider .left table tr.external td.col-1 .thumb {
+	background-size: contain;
+	background-repeat: no-repeat;
+}
