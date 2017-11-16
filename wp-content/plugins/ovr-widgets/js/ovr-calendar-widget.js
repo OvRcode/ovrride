@@ -1,6 +1,6 @@
 (function($){
 
-  $(".ovr_calendar .icon").webuiPopover();
+  $(".ovr_calendar li.calendarEvent").webuiPopover();
   $(".next, .prev").on("click", function(){
     $(".ovr_calendar").fadeTo("slow", 0.6);
     $(".ovr_calendar").spin();
@@ -18,7 +18,7 @@
       return;
     }
     window.date = Math.abs(window.date.getFullYear()) + "-" + (window.date.getMonth()+1) + "-" + window.date.getDate();
-  
+
     $.post(
       ovr_calendar_vars.ajax_url ,
       {
@@ -30,7 +30,7 @@
         $(".ovr_calendar").spin(false);
         $(".month_year").text(response.month_year);
         $(".ovr_calendar .days").html(response.html);
-        $(".ovr_calendar .icon").webuiPopover();
+        $(".ovr_calendar li.calendarEvent").webuiPopover();
       }
     );
   });
