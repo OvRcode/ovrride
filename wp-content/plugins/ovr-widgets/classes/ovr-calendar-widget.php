@@ -154,7 +154,7 @@ class ovr_calendar_widget extends WP_Widget {
     // Trips that do not end in this month
     foreach($start_trips as $id => $trip_data) {
       $start_date = $trip_data['Date'];
-      $trip_data['Date'] = $lastDay;
+      $trip_data['Date'] = $year."-".$month."-".$lastDay;
       $trips[$start_date][] = $trip_data;
     }
     // Add custom events
@@ -239,15 +239,12 @@ class ovr_calendar_widget extends WP_Widget {
     // Calendar has room for six weeks
     for($i = -1 * abs($start_week_offset) + 1; $i <= $adjusted_end_of_month; $i++) {
       if ( $i <= 0 || $i > $lastDay) {
-        $days .= "<li>&nbsp;</li>";
+        $days .= "<li class='calendarInactive'>&nbsp;<br />&nbsp;</li>";
       } else if ( $i > 0 && $i <= $lastDay ) {
         $calendar_key = $year ."-".$month."-".str_pad($i, 2, 0, STR_PAD_LEFT);
         $day_class = '';
         $day_content = '';
         if ( isset($calendar[$calendar_key]) && count($calendar[$calendar_key]) > 0 ) {
-          if ( $calendar_key == $currentDay->format('Y-m-d') ) {
-            $day_class .= "active ";
-          }
           foreach( $calendar[$calendar_key] as $index => $event) {
             if ( strpos( $day_class, "calendarEvent") === FALSE ) {
               $day_class .= "calendarEvent ";
@@ -255,19 +252,35 @@ class ovr_calendar_widget extends WP_Widget {
             if ( strpos( $day_class, $event["season"]) === FALSE ) {
                 $day_class .= $event["season"] . " ";
             }
-            $day_content .="<a href='{$event["url"]}'>{$event["name"]}</a><br />";
+            if ( $calendar_key < $currentDay->format('Y-m-d') ) {
+                if ( strpos( $day_class, "past") === FALSE ) {
+                  $day_class .= "past ";
+                }
+                $day_content .="<a>{$event["name"]}</a><br />";
+            } else {
+              $day_content .="<a href='{$event["url"]}'>{$event["name"]}</a><br />";
+            }
           }
-          $day_content = htmlentities( substr( $day_content, 0, -6 ) );
-          $day_class = substr($day_class, 0, -1);
+        }
+        if ( $calendar_key == $currentDay->format('Y-m-d') ) {
+          $day_class .= "active ";
+        }
+        $day_content = htmlentities( substr( $day_content, 0, -6 ) );
+        $day_class = substr($day_class, 0, -1);
+        if ( '' !== $day_content) {
+          $icon = '<i class="fa fa-circle" aria-hidden="true"></i>';
+        } else {
+          $icon = "&nbsp;";
         }
         $days .=<<<DAYTEMPLATE
         <li class="{$day_class}" data-placement="auto-bottom" data-content="{$day_content}" aria-hidden="true">
-        {$i}
+        {$i}<br />
+        {$icon}
         </li>
 DAYTEMPLATE;
       }
     }
-    error_log(json_encode($calendar));
+
     update_option("ovr_calendar_days_data", $days);
     return $days;
   }
@@ -284,7 +297,7 @@ DAYTEMPLATE;
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'), false, true);
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.min.js', array('jquery.webui-popover-js', 'jquery_spin_js'), "1.2.0", true);
-    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', FALSE, "1.4");
+    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', FALSE, "1.5");
 
     if ( is_ssl() ) {
         $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php', 'https'), 'ovr_calendar', 'ovr_calendar_shift' );
@@ -318,7 +331,7 @@ DAYTEMPLATE;
               <li>S</li>
             </ul>
 
-            <ul class="days">
+            <ul class="days clearfix">
             {$days}
             </ul>
           </div>
