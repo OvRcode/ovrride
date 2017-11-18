@@ -810,3 +810,33 @@ a.ovr_sponsor {
 li.widget_text {
 	list-style: none;
 }
+
+.feature-main {
+	max-height:560px;
+	overflow:hidden;
+}
+
+@media only screen and (max-width: 991px ) {
+	.feature-right {
+		max-height: none;
+	}
+	.kind-wide {
+		display: block;
+		text-align: center;
+		margin: 2% auto 0 auto;
+	}
+	.kind-small {
+		display: none;
+	}
+}
+@media only screen and (min-width: 992px ) {
+	.feature-right {
+		overflow:hidden;
+	}
+	.kind-wide {
+		display: none;
+	}
+	.kind-small {
+		display: block;
+	}
+}

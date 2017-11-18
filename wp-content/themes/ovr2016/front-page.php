@@ -16,13 +16,25 @@ get_header();
   </div>
 <?php endif; ?>
 <div class="col-sm-12 col-md-10 col-md-offset-1 mainBackground">
-  <?php if ( is_active_sidebar( 'top-feature' ) ) :?>
-    <div class="row">
-      <div class="col-sm-12">
-        <?php dynamic_sidebar( 'top-feature' ); ?>
+  <div class="row">
+  <?php if ( is_active_sidebar( 'feature-main' ) ) :?>
+      <div class="col-sm-12 col-md-8 feature-main">
+        <?php dynamic_sidebar( 'feature-main' ); ?>
+      </div>
+  <?php endif; ?>
+  <?php if ( is_active_sidebar( 'feature-top') ) :?>
+    <div class="col-sm-12 col-md-4 feature-right">
+      <div class="row">
+        <?php dynamic_sidebar( 'feature-top' ); ?>
+      </div>
+      <div class="row">
+        <?php if ( is_active_sidebar('feature-bottom') ) :?>
+          <?php dynamic_sidebar( 'feature-bottom' ); ?>
+        <?php endif; ?>
       </div>
     </div>
   <?php endif; ?>
+  </div>
   <?php if ( is_active_sidebar('first-row-left') || is_active_sidebar('first-row-right') ): ?>
     <div class="row">
         <div class="col-sm-6 leftCol">
