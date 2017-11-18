@@ -1,7 +1,7 @@
 .ovr_calendar_widget {
   width: 100%;
   background: rgb(236,236,236);
-  height: 420px;
+  /*height: 420px;*/
 }
 .ovr_calendar_widget_inner {
   position: relative;
@@ -20,6 +20,7 @@
 }
 .ovr_calendar_widget_content h4 {
   color: rgb(103,28,51);
+  font-size: 30px;
 }
 .ovr_calendar {
   width: 96%;
@@ -60,8 +61,9 @@
 
 /* Weekdays (Mon-Sun) */
 .weekdays {
-    margin: 0;
-    padding: 10px 0;
+    margin: 1% 0 0 0;
+    padding-top: 1%;
+    padding-bottom: 1%;
     background-color: rgb(0,0,0);
 }
 
@@ -74,63 +76,57 @@
 
 /* Days (1-31) */
 .days {
-    padding: 10px 0;
+    padding-top: 1%;
+    padding-bottom: 1%;
     background: #eee;
-    margin: 0;
 }
 
 .days li {
     list-style-type: none;
     display: inline-block;
-    width: 13%;
-    height: 45px;
-    text-align: left;
-    font-size: 15px;
+    width: 13.2%;
+    margin: 0 0 0.3% 0.3%;
+    padding: 2.5% 0 2.5% 0;
+    text-align: center;
+    font-size: 20px;
     color:#777;
-    outline: 1px solid white;
-    padding-left: 5px;
-    margin-top: 4px;
+    outline: 1px solid rgb(69, 69, 69);
+    outline-offset: -1px;
+    border-collapse: collapse;
+    float:left;
 }
 
 /* Highlight the "current" day */
-.ovr_calendar_widget .active {
-    background: rgb(59,59,59);
-    color: white !important
+.days li.active {
+  outline: 3px solid rgb(59, 59, 59);
+  outline-offset: -3px;
 }
-i.icon {
-  cursor: pointer;
+.days li.active.winter {
+  background: rgb(22, 175, 225);
+  color: white;
 }
-.days .icon {
-  font-size: 19px;
-  /*margin-top: 19px;
-  margin-bottom: 5px;*/
-  margin-right:5px;
-  margin-bottom:5px;
-  float: right;
+.days li.active.summer {
+  background: rgb(254, 210, 8);
+  color: black !important;
 }
-@media screen and ( max-width: 1050px ) {
-  .days .icon {
-    font-size: 22px;
-  }
+.days li.active.summer.winter.calendarEvent {
+  background: rgb(59, 59, 59);
+  color: white !important;
 }
-@media screen and (min-width: 1130px) {
-  .days .icon {
-    margin-right: 10%;
-  }
+li.winter, li.summer {
+  cursor:pointer;
 }
 
-@media screen and ( max-width: 1130px) {
-  .days .icon {
-    margin-right: 0;
-  }
+.days li.winter.summer {
+  color: rgb(0, 0, 0);
 }
-.days .icon.winter {
+.days li.winter {
   color: rgb(22,175,225);
 }
-.days .icon.past {
+.days li.calendarEvent.past {
   color: rgb(161,162,163);
 }
-.days .icon.summer {
+.days li.summer {
   color: rgb(254, 210, 8);
 }
 .webui-popover-content a:hover {
@@ -140,4 +136,8 @@ i.icon {
 .calendar_past_trip:hover {
   color: #606060;
   text-decoration: none;
+}
+li.calendarInactive {
+  outline: none;
+
 }

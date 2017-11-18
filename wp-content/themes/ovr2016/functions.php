@@ -118,7 +118,7 @@ function _tk_scripts() {
 
 	wp_enqueue_script( '_tk-skip-link-focus-fix', THEME_DIR_URI . '/includes/js/skip-link-focus-fix.js', array(), '20130115', true );
 
-  wp_enqueue_script( 'ovr_footer_script', THEME_DIR_URI . '/includes/js/ovr-footer.js', array('jquery'), 1.0, true);
+  wp_enqueue_script( 'ovr_footer_script', THEME_DIR_URI . '/includes/js/ovr-footer.min.js', array('jquery'), 1.1, true);
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -131,7 +131,7 @@ function _tk_scripts() {
   //wp_localize_script( 'ovr_google_analytics', 'ovr', array( 'ga_id' => get_option("google_analytics_id") ) );
   wp_enqueue_script( 'ovr_pingdom_js', THEME_DIR_URI . '/includes/js/pingdom.js', false, false, false);
   wp_localize_script( 'ovr_pingdom_js', 'ovr', array('pingdom_id' => get_option("pingdom_id") ) );
-  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), '1.3.1');
+  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), "1.5");
 }
 add_action( 'wp_enqueue_scripts', '_tk_scripts' );
 
@@ -188,10 +188,20 @@ function woocommerce_support() {
 		'description'   => 'Spot for upcoming events widget (on every page)',
 	) );
   register_sidebar( array(
-		'name'          => 'Top Featured Story',
-		'id'            => 'top-feature',
-		'description'   => 'Top story on home page',
+		'name'          => 'Feature Main',
+		'id'            => 'feature-main',
+		'description'   => 'featured slider on home page',
 	) );
+  register_sidebar( array(
+    'name'          => 'Feature Top',
+    'id'            =>  'feature-top',
+    'description'   =>  'Top of column that sits next to slider'
+  ) );
+  register_sidebar( array(
+    'name'          =>  'Feature Bottom',
+    'id'            =>  'feature-bottom',
+    'description'   =>  'Bottom of column that sits next to slider'
+  ) );
   register_sidebar( array(
 		'name'          => 'First Row, left side',
 		'id'            => 'first-row-left',

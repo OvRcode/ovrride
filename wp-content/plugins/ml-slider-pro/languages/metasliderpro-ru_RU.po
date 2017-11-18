@@ -1,0 +1,1272 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Meta Slider - Pro Addon Pack v2.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-05-12 16:41:53+0000\n"
+"Last-Translator: admin <info@1245.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%100/10==1 ? 2 : n%10==1 ? 0 : (n+9)%10>3 ? 2 : 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: inc/class-tgm-plugin-activation.php:164
+#: ml-slider-pro.php:240
+#@ metasliderpro
+msgid "Install Required Plugins"
+msgstr "Установить необходимые плагины"
+
+#: inc/class-tgm-plugin-activation.php:165
+#: ml-slider-pro.php:241
+#@ metasliderpro
+msgid "Install Plugins"
+msgstr "Установить плагины"
+
+#: inc/class-tgm-plugin-activation.php:166
+#: ml-slider-pro.php:242
+#, php-format
+#@ metasliderpro
+msgid "Installing Plugin: %s"
+msgstr "Установка плагина:  %s"
+
+#: inc/class-tgm-plugin-activation.php:167
+#@ metasliderpro
+msgid "Something went wrong."
+msgstr "Что-то пошло не так."
+
+#: inc/class-tgm-plugin-activation.php:168
+#, php-format
+#@ metasliderpro
+msgid "This theme requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] "Эта тема требует наличия следующего плагина: %1$s."
+msgstr[1] "Эта тема требует наличия следующих плагинов: %1$s."
+msgstr[2] "Эта тема требует наличия следующих плагинов: %1$s."
+
+#: inc/class-tgm-plugin-activation.php:169
+#: ml-slider-pro.php:245
+#, php-format
+#@ metasliderpro
+msgid "This theme recommends the following plugin: %1$s."
+msgid_plural "This theme recommends the following plugins: %1$s."
+msgstr[0] "С этой темой рекомендуется использовать следующий плагин: %1$s."
+msgstr[1] "С этой темой рекомендуется использовать следующие плагины: %1$s."
+msgstr[2] "С этой темой рекомендуется использовать следующие плагины: %1$s."
+
+#: inc/class-tgm-plugin-activation.php:170
+#: ml-slider-pro.php:246
+#, php-format
+#@ metasliderpro
+msgid "Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed."
+msgid_plural "Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed."
+msgstr[0] "Извините, не у Вас недостаточно прав для установки плагина %s. Свяжитесь с администратором сайта, чтобы получить помощь в установке этого плагина."
+msgstr[1] "Извините, не у Вас недостаточно прав для установки плагинов %s. Свяжитесь с администратором сайта, чтобы получить помощь в установке этих плагинов."
+msgstr[2] ""
+
+#: inc/class-tgm-plugin-activation.php:171
+#: ml-slider-pro.php:247
+#, php-format
+#@ metasliderpro
+msgid "The following required plugin is currently inactive: %1$s."
+msgid_plural "The following required plugins are currently inactive: %1$s."
+msgstr[0] "Следующий необходимый плагин в настоящее время неактивен: %1$s."
+msgstr[1] "Следующие необходимые плагины в настоящее время неактивны: %1$s."
+msgstr[2] "Следующие необходимые плагины в настоящее время неактивны: %1$s."
+
+#: inc/class-tgm-plugin-activation.php:172
+#: ml-slider-pro.php:248
+#, php-format
+#@ metasliderpro
+msgid "The following recommended plugin is currently inactive: %1$s."
+msgid_plural "The following recommended plugins are currently inactive: %1$s."
+msgstr[0] "Следующий рекомендуемый плагин в настоящее время неактивен: %1$s."
+msgstr[1] "Следующие рекомендуемые плагины в настоящее время неактивны: %1$s."
+msgstr[2] "Следующие рекомендуемые плагины в настоящее время неактивны: %1$s."
+
+#: inc/class-tgm-plugin-activation.php:173
+#: ml-slider-pro.php:249
+#, php-format
+#@ metasliderpro
+msgid "Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated."
+msgid_plural "Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated."
+msgstr[0] "Извините, не у Вас недостаточно прав для активации плагина %s. Свяжитесь с администратором сайта, чтобы получить помощь в активации этого плагина."
+msgstr[1] "Извините, не у Вас недостаточно прав для активации плагинов %s. Свяжитесь с администратором сайта, чтобы получить помощь в активации этих плагинов."
+msgstr[2] "Извините, не у Вас недостаточно прав для активации плагинов %s. Свяжитесь с администратором сайта, чтобы получить помощь в активации этих плагинов."
+
+#: inc/class-tgm-plugin-activation.php:174
+#: ml-slider-pro.php:250
+#, php-format
+#@ metasliderpro
+msgid "The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s."
+msgid_plural "The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s."
+msgstr[0] "Следующий плагин необходимо обновить до последней версии, чтобы достичь максимальной совместимости с этой темой: %1$s."
+msgstr[1] "Следующие плагины необходимо обновить до последней версии, чтобы достичь максимальной совместимости с этой темой: %1$s."
+msgstr[2] "Следующие плагины необходимо обновить до последней версии, чтобы достичь максимальной совместимости с этой темой: %1$s."
+
+#: inc/class-tgm-plugin-activation.php:175
+#: ml-slider-pro.php:251
+#, php-format
+#@ metasliderpro
+msgid "Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated."
+msgid_plural "Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated."
+msgstr[0] "Извините, не у Вас недостаточно прав для обновления плагина %s. Свяжитесь с администратором сайта, чтобы получить помощь в обновлении этого плагина."
+msgstr[1] "Извините, не у Вас недостаточно прав для обновления плагинов %s. Свяжитесь с администратором сайта, чтобы получить помощь в обновлении этих плагинов."
+msgstr[2] "Извините, не у Вас недостаточно прав для обновления плагинов %s. Свяжитесь с администратором сайта, чтобы получить помощь в обновлении этих плагинов."
+
+#: inc/class-tgm-plugin-activation.php:176
+#: ml-slider-pro.php:252
+#@ metasliderpro
+msgid "Begin installing plugin"
+msgid_plural "Begin installing plugins"
+msgstr[0] "Начать установку плагина"
+msgstr[1] "Начать установку плагинов"
+msgstr[2] "Начать установку плагинов"
+
+#: inc/class-tgm-plugin-activation.php:177
+#: ml-slider-pro.php:253
+#@ metasliderpro
+msgid "Activate installed plugin"
+msgid_plural "Activate installed plugins"
+msgstr[0] "Активировать установленный плагин"
+msgstr[1] "Активировать установленные плагины"
+msgstr[2] "Активировать установленные плагины"
+
+#: inc/class-tgm-plugin-activation.php:178
+#: inc/class-tgm-plugin-activation.php:490
+#: ml-slider-pro.php:254
+#@ metasliderpro
+msgid "Return to Required Plugins Installer"
+msgstr "Вернуться к установщику необходимых плагинов"
+
+#: inc/class-tgm-plugin-activation.php:179
+#: inc/class-tgm-plugin-activation.php:1851
+#: ml-slider-pro.php:255
+#@ metasliderpro
+msgid "Plugin activated successfully."
+msgstr "Плагин успешно активирован."
+
+#: inc/class-tgm-plugin-activation.php:180
+#, php-format
+#@ metasliderpro
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr "Все установленные плагины успешно активированы. %1$s"
+
+#: inc/class-tgm-plugin-activation.php:517
+#: inc/class-tgm-plugin-activation.php:2063
+#@ metasliderpro
+msgid "Return to the Dashboard"
+msgstr "Вернуться к настройкам"
+
+#: inc/class-tgm-plugin-activation.php:545
+#, php-format
+#@ metasliderpro
+msgid "The following plugin was activated successfully: %s."
+msgstr "Следующий плагин был успешно активирован: %s."
+
+#: inc/class-tgm-plugin-activation.php:704
+#@ metasliderpro
+msgid "Dismiss this notice"
+msgstr "Скрыть это уведомление"
+
+#: inc/class-tgm-plugin-activation.php:1096
+#@ metasliderpro
+msgid "External Link"
+msgstr "Внешняя ссылка"
+
+#: inc/class-tgm-plugin-activation.php:1101
+#@ metasliderpro
+msgid "Private Repository"
+msgstr "Личный репозиторий"
+
+#: inc/class-tgm-plugin-activation.php:1104
+#@ metasliderpro
+msgid "Pre-Packaged"
+msgstr "Предварительно упакованные"
+
+#: inc/class-tgm-plugin-activation.php:1108
+#@ metasliderpro
+msgid "WordPress Repository"
+msgstr "Репозиторий ВордПресс"
+
+#: inc/class-tgm-plugin-activation.php:1111
+#@ metasliderpro
+msgid "Required"
+msgstr "Необходимый"
+
+#: inc/class-tgm-plugin-activation.php:1111
+#@ metasliderpro
+msgid "Recommended"
+msgstr "Рекомендуемый"
+
+#: inc/class-tgm-plugin-activation.php:1114
+#@ metasliderpro
+msgid "Not Installed"
+msgstr "Не установлен"
+
+#: inc/class-tgm-plugin-activation.php:1116
+#@ metasliderpro
+msgid "Installed But Not Activated"
+msgstr "Установлен, но не активирован"
+
+#: inc/class-tgm-plugin-activation.php:1286
+#, php-format
+#@ metasliderpro
+msgid "No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the Dashboard\">Return to the Dashboard</a>"
+msgstr "Нет плагинов для установки или активации. <a href=\"%1$s\" title=\"Вернуться к настройкам\">Вернуться к настройкам</a>"
+
+#: inc/class-tgm-plugin-activation.php:1302
+#@ metasliderpro
+msgid "Plugin"
+msgstr "Плагин"
+
+#: inc/class-tgm-plugin-activation.php:1303
+#@ metasliderpro
+msgid "Source"
+msgstr "Источник"
+
+#: inc/class-tgm-plugin-activation.php:1304
+#: modules/theme_editor/theme_editor.php:1562
+#@ metasliderpro
+msgid "Type"
+msgstr "Тип"
+
+#: inc/class-tgm-plugin-activation.php:1305
+#@ metasliderpro
+msgid "Status"
+msgstr "Статус"
+
+#: inc/class-tgm-plugin-activation.php:1323
+#@ metasliderpro
+msgid "Install"
+msgstr "Установить"
+
+#: inc/class-tgm-plugin-activation.php:1324
+#@ metasliderpro
+msgid "Activate"
+msgstr "Активировать"
+
+#: inc/class-tgm-plugin-activation.php:1549
+#@ metasliderpro
+msgid "The following plugin was activated successfully:"
+msgid_plural "The following plugins were activated successfully:"
+msgstr[0] "Следующий плагин был успешно активирован:"
+msgstr[1] "Следующие плагины были успешно активированы:"
+msgstr[2] "Следующие плагины были успешно активированы:"
+
+#: inc/class-tgm-plugin-activation.php:1834
+#@ metasliderpro
+msgid "Install package not available."
+msgstr "Установочный пакет не доступен."
+
+#: inc/class-tgm-plugin-activation.php:1835
+#, php-format
+#@ metasliderpro
+msgid "Downloading install package from <span class=\"code\">%s</span>&#8230;"
+msgstr "Загрузка установочного пакета с <span class=\"code\">%s</span>&#8230;"
+
+#: inc/class-tgm-plugin-activation.php:1836
+#@ metasliderpro
+msgid "Unpacking the package&#8230;"
+msgstr "Распаковка пакета&#8230;"
+
+#: inc/class-tgm-plugin-activation.php:1837
+#@ metasliderpro
+msgid "Installing the plugin&#8230;"
+msgstr "Установка плагина&#8230;"
+
+#: inc/class-tgm-plugin-activation.php:1838
+#@ metasliderpro
+msgid "Plugin install failed."
+msgstr "Установка плагина не удалась."
+
+#: inc/class-tgm-plugin-activation.php:1839
+#@ metasliderpro
+msgid "Plugin installed successfully."
+msgstr "Плагин успешно установлен."
+
+#: inc/class-tgm-plugin-activation.php:1850
+#@ metasliderpro
+msgid "Plugin activation failed."
+msgstr "Активация плагина не удалась."
+
+#: inc/class-tgm-plugin-activation.php:1960
+#@ metasliderpro
+msgid "The installation and activation process is starting. This process may take a while on some hosts, so please be patient."
+msgstr "Начинается процесс установки и активации. Это может занять некоторое время, пожалуйста, подождите."
+
+#: inc/class-tgm-plugin-activation.php:1961
+#, php-format
+#@ metasliderpro
+msgid "%1$s installed and activated successfully."
+msgstr "%1$s успешно установлен и активирован."
+
+#: inc/class-tgm-plugin-activation.php:1961
+#: inc/class-tgm-plugin-activation.php:1970
+#@ metasliderpro
+msgid "Show Details"
+msgstr "Показать детали"
+
+#: inc/class-tgm-plugin-activation.php:1961
+#: inc/class-tgm-plugin-activation.php:1970
+#@ metasliderpro
+msgid "Hide Details"
+msgstr "Скрыть детали"
+
+#: inc/class-tgm-plugin-activation.php:1962
+#@ metasliderpro
+msgid "All installations and activations have been completed."
+msgstr "Все установки и активации завершены."
+
+#: inc/class-tgm-plugin-activation.php:1963
+#, php-format
+#@ metasliderpro
+msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
+msgstr "Установка и активация плагина %1$s (%2$d/%3$d)"
+
+#: inc/class-tgm-plugin-activation.php:1967
+#@ metasliderpro
+msgid "The installation process is starting. This process may take a while on some hosts, so please be patient."
+msgstr "Начинается процесс установки. Это может занять некоторое время, пожалуйста, подождите."
+
+#: inc/class-tgm-plugin-activation.php:1968
+#, php-format
+#@ metasliderpro
+msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
+msgstr "Во время установки произошла ошибка %1$s: <strong>%2$s</strong>."
+
+#: inc/class-tgm-plugin-activation.php:1969
+#, php-format
+#@ metasliderpro
+msgid "The installation of %1$s failed."
+msgstr "Установка %1$s не удалась."
+
+#: inc/class-tgm-plugin-activation.php:1970
+#, php-format
+#@ metasliderpro
+msgid "%1$s installed successfully."
+msgstr "%1$s успешно установлен."
+
+#: inc/class-tgm-plugin-activation.php:1971
+#@ metasliderpro
+msgid "All installations have been completed."
+msgstr "Все установки завершены."
+
+#: inc/class-tgm-plugin-activation.php:1972
+#, php-format
+#@ metasliderpro
+msgid "Installing Plugin %1$s (%2$d/%3$d)"
+msgstr "Установка плагина %1$s (%2$d/%3$d)"
+
+#: ml-slider-pro.php:243
+#@ metasliderpro
+msgid "Something went wrong with the plugin API."
+msgstr "Что-то с API плагина пошло не так."
+
+#: ml-slider-pro.php:244
+#, php-format
+#@ metasliderpro
+msgid "Meta Slider (Pro) requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] "Мета Слайдеру (Про) необходим следующий плагин: %1$s."
+msgstr[1] "Мета Слайдеру (Про) необходимы следующие плагины: %1$s."
+msgstr[2] "Мета Слайдеру (Про) необходимы следующие плагины: %1$s."
+
+#: ml-slider-pro.php:256
+#, php-format
+#@ metasliderpro
+msgid "All plugins installed and activated successfully. %s"
+msgstr "Все плагины успешно установлены и активированы. %s"
+
+#: modules/layer/slide.php:42
+#@ metasliderpro
+msgid "Layer Scaling"
+msgstr "Масштабирование слоя"
+
+#: modules/layer/slide.php:44
+#@ metasliderpro
+msgid "Select responsiver layer scaling behaviour"
+msgstr "Выберите режим масштабирования адаптивного слоя"
+
+#: modules/layer/slide.php:46
+#@ metaslider
+msgid "Scale Up & Down"
+msgstr "Увеличение и уменьшение"
+
+#: modules/layer/slide.php:47
+#@ metaslider
+msgid "Scale Down Only"
+msgstr "Только уменьшение"
+
+#: modules/layer/slide.php:62
+#: modules/layer/slide.php:200
+#@ metasliderpro
+msgid "Layer Slide"
+msgstr "Слайд-слой"
+
+#: modules/layer/slide.php:93
+#@ metasliderpro
+msgid "New Layer"
+msgstr "Новый слой"
+
+#: modules/layer/slide.php:94
+#@ metasliderpro
+msgid "Add Layer"
+msgstr "Добавить слой"
+
+#: modules/layer/slide.php:95
+#@ metasliderpro
+msgid "Duplicate Layer"
+msgstr "Дублировать слой"
+
+#: modules/layer/slide.php:97
+#@ metasliderpro
+msgid "Save changes?"
+msgstr "Сохранить изменения?"
+
+#: modules/layer/slide.php:98
+#: modules/layer/slide.php:101
+#@ metasliderpro
+msgid "Animation"
+msgstr "Анимация"
+
+#: modules/layer/slide.php:99
+#@ metasliderpro
+msgid "Styling"
+msgstr "Дизайн"
+
+#: modules/layer/slide.php:100
+#: modules/theme_editor/theme_editor.php:442
+#: modules/theme_editor/theme_editor.php:516
+#: modules/theme_editor/theme_editor.php:520
+#: modules/theme_editor/theme_editor.php:588
+#: modules/theme_editor/theme_editor.php:624
+#: modules/theme_editor/theme_editor.php:628
+#: modules/theme_editor/theme_editor.php:658
+#: modules/theme_editor/theme_editor.php:662
+#: modules/theme_editor/theme_editor.php:666
+#: modules/theme_editor/theme_editor.php:670
+#: modules/thumbnails/thumbnails.php:217
+#: modules/thumbnails/thumbnails.php:230
+#@ metasliderpro
+msgid "px"
+msgstr "пикселей"
+
+#: modules/layer/slide.php:102
+#@ metasliderpro
+msgid "Wait"
+msgstr "Задержка"
+
+#: modules/layer/slide.php:103
+#@ metasliderpro
+msgid "then wait"
+msgstr "затем задержка"
+
+#: modules/layer/slide.php:104
+#@ metasliderpro
+msgid "seconds and"
+msgstr "секунд и"
+
+#: modules/layer/slide.php:105
+#@ metasliderpro
+msgid "Padding"
+msgstr "Отступ"
+
+#: modules/layer/slide.php:106
+#@ metasliderpro
+msgid "Background"
+msgstr "Фон"
+
+#: modules/layer/slide.php:107
+#@ metasliderpro
+msgid "Are you sure?"
+msgstr "Вы уверены?"
+
+#: modules/layer/slide.php:108
+#@ metasliderpro
+msgid "Snap to grid"
+msgstr "Привязка к сетке"
+
+#: modules/layer/slide.php:109
+#@ metasliderpro
+msgid "Link to"
+msgstr "Ссылка на"
+
+#: modules/layer/slide.php:193
+#@ metasliderpro
+msgid "New Window"
+msgstr "Открывать в новом окне"
+
+#: modules/layer/slide.php:194
+#@ metasliderpro
+msgid "URL"
+msgstr "Ссылка (URL)"
+
+#: modules/layer/slide.php:216
+#@ metasliderpro
+msgid "Background Image Title Text"
+msgstr "Title фонового изображения"
+
+#: modules/layer/slide.php:218
+#@ metasliderpro
+msgid "Background Image Alt Text"
+msgstr "Alt фонового изображения"
+
+#: modules/layer/slide.php:222
+#@ metasliderpro
+msgid "Background Image Link"
+msgstr "Ссылка фонового изображения"
+
+#: modules/post_feed/slide.php:100
+#@ metasliderpro
+msgid "Post Feed Slide"
+msgstr "Слайд ленты записей"
+
+#: modules/post_feed/slide.php:106
+#@ metasliderpro
+msgid "Post Types"
+msgstr "Типы контента"
+
+#: modules/post_feed/slide.php:107
+#@ metasliderpro
+msgid "Taxonomies"
+msgstr "Таксономии"
+
+#: modules/post_feed/slide.php:108
+#@ metasliderpro
+msgid "Display Settings"
+msgstr "Настройки отображения"
+
+#: modules/post_feed/slide.php:119
+#@ metasliderpro
+msgid "Select the Post types to include in the feed. Posts must have a Featured Image to appear in the feed."
+msgstr "Выберите типы контента, которые Вы хотите включить в ленту. Чтобы записи отображались в ленте, у них должны быть заданы миниатюры."
+
+#: modules/post_feed/slide.php:120
+#@ metasliderpro
+msgid "Posts must be tagged to at least one of the selected categories to display in the feed."
+msgstr "Чтобы записи отображались в ленте, они должны относиться хотя бы к одной из выбранных категорий."
+
+#: modules/post_feed/slide.php:123
+#@ metasliderpro
+msgid "Slide Link"
+msgstr "Ссылка со слайда"
+
+#: modules/post_feed/slide.php:127
+#@ metasliderpro
+msgid "Order By"
+msgstr "Сортировать по"
+
+#: modules/post_feed/slide.php:131
+#@ metasliderpro
+msgid "Post Limit"
+msgstr "Количество записей"
+
+#: modules/theme_editor/theme_editor.php:429
+#@ metasliderpro
+msgid "Theme Settings"
+msgstr "Настройки темы"
+
+#: modules/theme_editor/theme_editor.php:436
+#@ metasliderpro
+msgid "Slideshow"
+msgstr "Слайд-шоу"
+
+#: modules/theme_editor/theme_editor.php:440
+#@ metasliderpro
+msgid "Outer Border Radius"
+msgstr "Скругление внешних границ"
+
+#: modules/theme_editor/theme_editor.php:446
+#@ metasliderpro
+msgid "CSS3 Shadow"
+msgstr "Тень CSS3"
+
+#: modules/theme_editor/theme_editor.php:447
+#@ metasliderpro
+msgid "Note: Not compatible with 'thumbnail' navigation type"
+msgstr "Заметка: не совместима с типом навигации \"миниатюры\""
+
+#: modules/theme_editor/theme_editor.php:463
+#@ metasliderpro
+msgid "Caption"
+msgstr "Описание"
+
+#: modules/theme_editor/theme_editor.php:473
+#: modules/theme_editor/theme_editor.php:609
+#@ metasliderpro
+msgid "Position"
+msgstr "Позиция"
+
+#: modules/theme_editor/theme_editor.php:476
+#: modules/theme_editor/theme_editor.php:616
+#@ metasliderpro
+msgid "Bottom Left"
+msgstr "Слева внизу"
+
+#: modules/theme_editor/theme_editor.php:477
+#: modules/theme_editor/theme_editor.php:618
+#@ metasliderpro
+msgid "Bottom Right"
+msgstr "Справа внизу"
+
+#: modules/theme_editor/theme_editor.php:478
+#: modules/theme_editor/theme_editor.php:613
+#@ metasliderpro
+msgid "Top Left"
+msgstr "Слева вверху"
+
+#: modules/theme_editor/theme_editor.php:479
+#: modules/theme_editor/theme_editor.php:615
+#@ metasliderpro
+msgid "Top Right"
+msgstr "Справа вверху"
+
+#: modules/theme_editor/theme_editor.php:480
+#@ metasliderpro
+msgid "Underneath"
+msgstr "Под слайдом"
+
+#: modules/theme_editor/theme_editor.php:485
+#@ metasliderpro
+msgid "Width"
+msgstr "Ширина"
+
+#: modules/theme_editor/theme_editor.php:493
+#@ metasliderpro
+msgid "Text Color"
+msgstr "Цвет текста"
+
+#: modules/theme_editor/theme_editor.php:509
+#@ metasliderpro
+msgid "Background Color"
+msgstr "Цвет фона"
+
+#: modules/theme_editor/theme_editor.php:515
+#: modules/theme_editor/theme_editor.php:623
+#@ metasliderpro
+msgid "Vertical Margin"
+msgstr "Отступ по вертикали"
+
+#: modules/theme_editor/theme_editor.php:519
+#: modules/theme_editor/theme_editor.php:627
+#@ metasliderpro
+msgid "Horizontal Margin"
+msgstr "Отступ по горизонтали"
+
+#: modules/theme_editor/theme_editor.php:524
+#@ metasliderpro
+msgid "Arrows"
+msgstr "Стрелочки"
+
+#: modules/theme_editor/theme_editor.php:583
+#@ metasliderpro
+msgid "Opacity"
+msgstr "Прозрачность"
+
+#: modules/theme_editor/theme_editor.php:587
+#@ metasliderpro
+msgid "Distance from edge"
+msgstr "Расстояние от края"
+
+#: modules/theme_editor/theme_editor.php:599
+#: modules/thumbnails/thumbnails.php:195
+#@ metasliderpro
+msgid "Navigation"
+msgstr "Навигация"
+
+#: modules/theme_editor/theme_editor.php:452
+#: modules/theme_editor/theme_editor.php:612
+#@ metasliderpro
+msgid "Default"
+msgstr "По умолчанию"
+
+#: modules/theme_editor/theme_editor.php:614
+#@ metasliderpro
+msgid "Top Center"
+msgstr "Сверху по центру"
+
+#: modules/theme_editor/theme_editor.php:617
+#@ metasliderpro
+msgid "Bottom Center"
+msgstr "Снизу по центру"
+
+#: modules/theme_editor/theme_editor.php:631
+#@ metasliderpro
+msgid "Fill Color"
+msgstr "Цвет заливки"
+
+#: modules/theme_editor/theme_editor.php:638
+#@ metasliderpro
+msgid "Fill Color (Active)"
+msgstr "Цвет заливки в активном состоянии"
+
+#: modules/theme_editor/theme_editor.php:645
+#@ metasliderpro
+msgid "Border Color"
+msgstr "Цвет рамки"
+
+#: modules/theme_editor/theme_editor.php:651
+#@ metasliderpro
+msgid "Border Color (Active)"
+msgstr "Цвет рамки в активном состоянии"
+
+#: modules/theme_editor/theme_editor.php:657
+#@ metasliderpro
+msgid "Size"
+msgstr "Размер"
+
+#: modules/theme_editor/theme_editor.php:661
+#@ metasliderpro
+msgid "Spacing"
+msgstr "Интервал"
+
+#: modules/theme_editor/theme_editor.php:665
+#@ metasliderpro
+msgid "Border Width"
+msgstr "Ширина рамки"
+
+#: modules/theme_editor/theme_editor.php:489
+#: modules/theme_editor/theme_editor.php:669
+#@ metasliderpro
+msgid "Border Radius"
+msgstr "Скругление рамки"
+
+#: modules/thumbnails/thumbnails.php:198
+#@ metasliderpro
+msgid "Show the slide navigation bullets"
+msgstr "Показывать точки навигации"
+
+#: modules/thumbnails/thumbnails.php:200
+#@ metasliderpro
+msgid "Hidden"
+msgstr "Не показывать"
+
+#: modules/thumbnails/thumbnails.php:201
+#@ metasliderpro
+msgid "Dots"
+msgstr "Точки"
+
+#: modules/thumbnails/thumbnails.php:202
+#@ metasliderpro
+msgid "Thumbnails"
+msgstr "Миниатюры"
+
+#: modules/thumbnails/thumbnails.php:203
+#@ metasliderpro
+msgid "Filmstrip"
+msgstr "Диафильм"
+
+#: modules/thumbnails/thumbnails.php:214
+#@ metasliderpro
+msgid "Thumb Width"
+msgstr "Ширина миниатюр"
+
+#: modules/thumbnails/thumbnails.php:216
+#@ metasliderpro
+msgid "Thumb width"
+msgstr "Ширина миниатюр"
+
+#: modules/thumbnails/thumbnails.php:227
+#@ metasliderpro
+msgid "Thumb Height"
+msgstr "Высота миниатюр"
+
+#: modules/thumbnails/thumbnails.php:229
+#@ metasliderpro
+msgid "Thumb height"
+msgstr "Высота миниатюр"
+
+#: modules/vimeo/slide.php:188
+#@ metasliderpro
+msgid "Vimeo"
+msgstr "Видео с Vimeo"
+
+#: modules/layer/slide.php:205
+#: modules/vimeo/slide.php:194
+#: modules/youtube/slide.php:171
+#@ metasliderpro
+msgid "General"
+msgstr "Основное"
+
+#: modules/vimeo/slide.php:199
+#: modules/youtube/slide.php:177
+#@ metasliderpro
+msgid "Show the title on the video"
+msgstr "Показывать название видео"
+
+#: modules/vimeo/slide.php:200
+#@ metasliderpro
+msgid "Show the user badge on the video"
+msgstr "Показывать значок пользователя на видео"
+
+#: modules/vimeo/slide.php:201
+#@ metasliderpro
+msgid "Show the user byline on the video"
+msgstr "Показывать подпись автора на видео"
+
+#: modules/vimeo/slide.php:202
+#@ metasliderpro
+msgid "Show the user portrait on the video"
+msgstr "Показывать изображение пользователя на видео"
+
+#: modules/vimeo/slide.php:203
+#@ metasliderpro
+msgid "Auto play"
+msgstr "Воспроизводить автоматически"
+
+#: modules/youtube/slide.php:165
+#@ metasliderpro
+msgid "YouTube"
+msgstr "Видео с YouTube"
+
+#: modules/youtube/slide.php:172
+#: modules/youtube/slide.php:186
+#@ metasliderpro
+msgid "Theme"
+msgstr "Тема"
+
+#: modules/youtube/slide.php:178
+#@ metasliderpro
+msgid "Enable controls in the player"
+msgstr "Показывать управление плеером"
+
+#: modules/youtube/slide.php:179
+#@ metasliderpro
+msgid "Show related videos"
+msgstr "Показывать похожие видео"
+
+#: modules/youtube/slide.php:180
+#@ metasliderpro
+msgid "Hide video controls after the video begins"
+msgstr "Скрывать управление после начала видео"
+
+#: modules/youtube/slide.php:181
+#@ metasliderpro
+msgid "Auto Play"
+msgstr "Воспроизводить автоматически"
+
+#: modules/youtube/slide.php:188
+#@ metasliderpro
+msgid "Dark"
+msgstr "Тёмный"
+
+#: modules/youtube/slide.php:189
+#@ metasliderpro
+msgid "Light"
+msgstr "Светлый"
+
+#: modules/youtube/slide.php:193
+#@ metasliderpro
+msgid "Color"
+msgstr "Цвет"
+
+#: modules/theme_editor/theme_editor.php:1583
+#: modules/youtube/slide.php:195
+#@ metasliderpro
+msgid "Red"
+msgstr "Красный"
+
+#: modules/theme_editor/theme_editor.php:1584
+#: modules/youtube/slide.php:196
+#@ metasliderpro
+msgid "White"
+msgstr "Белый"
+
+#: inc/wp-updates-plugin.php:73
+#@ default
+msgid "An Unexpected HTTP Error occurred during the API request.</p> <p><a href=\"?\" onclick=\"document.location.reload(); return false;\">Try again</a>"
+msgstr "Во время API запроса произошла неизвестная ошибка HTTP.</p> <p><a href=\"?\" onclick=\"document.location.reload(); return false;\">Попробуйте еще раз</a>"
+
+#: inc/wp-updates-plugin.php:77
+#@ default
+msgid "An unknown error occurred"
+msgstr "Произошла неизвестная ошибка"
+
+#: modules/extra/loop.php:63
+#@ metasliderpro
+msgid "Loop"
+msgstr "Повторять"
+
+#: modules/extra/loop.php:65
+#@ metasliderpro
+msgid "Configure loop"
+msgstr "Настроить повторение"
+
+#: modules/extra/loop.php:68
+#@ metasliderpro
+msgid "Continuously"
+msgstr "Постоянно"
+
+#: modules/extra/loop.php:69
+#@ metasliderpro
+msgid "Stop on Last Slide"
+msgstr "Закончить на последнем слайде"
+
+#: modules/extra/loop.php:70
+#@ metasliderpro
+msgid "Stop on First Slide"
+msgstr "Закончить на первом слайде"
+
+#: modules/layer/slide.php:111
+#@ metasliderpro
+msgid "Please set a width in the slideshow settings"
+msgstr "Пожалуйста, задайте ширину в настройках слайд-шоу"
+
+#: modules/layer/slide.php:112
+#@ metasliderpro
+msgid "Please set a height in the slideshow settings"
+msgstr "Пожалуйста, задайте высоту в настройках слайд-шоу"
+
+#: modules/layer/slide.php:206
+#@ metasliderpro
+msgid "SEO"
+msgstr "СЕО"
+
+#: modules/layer/slide.php:207
+#@ metasliderpro
+msgid "Extra"
+msgstr "Дополнительно"
+
+#: modules/layer/slide.php:208
+#@ metasliderpro
+msgid "Edit Source"
+msgstr "Редактор кода"
+
+#: modules/post_feed/slide.php:105
+#@ metasliderpro
+msgid "Caption Template"
+msgstr "Подпись"
+
+#: modules/post_feed/slide.php:135
+#@ metasliderpro
+msgid "Preserve New Lines"
+msgstr "Сохранять переносы на новую строку"
+
+#: modules/post_feed/slide.php:209
+#: modules/post_feed/slide.php:274
+#@ metasliderpro
+msgid "Post Title"
+msgstr "Заголовок записи"
+
+#: modules/post_feed/slide.php:210
+#: modules/post_feed/slide.php:272
+#@ metasliderpro
+msgid "Post ID"
+msgstr "ID записи"
+
+#: modules/post_feed/slide.php:211
+#@ metasliderpro
+msgid "Post Link"
+msgstr "Ссылка на запись"
+
+#: modules/post_feed/slide.php:212
+#@ metasliderpro
+msgid "Post Excerpt"
+msgstr "Цитата"
+
+#: modules/post_feed/slide.php:213
+#@ metasliderpro
+msgid "Post Date"
+msgstr "Дата публикации"
+
+#: modules/post_feed/slide.php:214
+#@ metasliderpro
+msgid "Post Content"
+msgstr "Содержание записи"
+
+#: modules/post_feed/slide.php:215
+#@ metasliderpro
+msgid "Post Content (with formatting)"
+msgstr "Содержание записи (с форматированием)"
+
+#: modules/post_feed/slide.php:216
+#: modules/post_feed/slide.php:273
+#@ metasliderpro
+msgid "Author"
+msgstr "Автор"
+
+#: modules/post_feed/slide.php:217
+#@ metasliderpro
+msgid "Author Link"
+msgstr "Ссылка на автора"
+
+#: modules/post_feed/slide.php:218
+#@ metasliderpro
+msgid "Tag List"
+msgstr "Метки"
+
+#: modules/post_feed/slide.php:219
+#@ metasliderpro
+msgid "Category List"
+msgstr "Категории"
+
+#: modules/post_feed/slide.php:226
+#@ metasliderpro
+msgid "Woo Commerce - Price (Formatted)"
+msgstr "Woo Commerce - цена (с форматированием)"
+
+#: modules/post_feed/slide.php:227
+#@ metasliderpro
+msgid "Woo Commerce - Price"
+msgstr "Woo Commerce - цена"
+
+#: modules/post_feed/slide.php:228
+#@ metasliderpro
+msgid "Woo Commerce - Sale Price"
+msgstr "Woo Commerce - цена со скидкой"
+
+#: modules/post_feed/slide.php:229
+#@ metasliderpro
+msgid "Woo Commerce - Add to Cart URL"
+msgstr "Woo Commerce - ссылка на добавление в корзину"
+
+#: modules/post_feed/slide.php:230
+#@ metasliderpro
+msgid "Woo Commerce - SKU"
+msgstr "Woo Commerce - артикул"
+
+#: modules/post_feed/slide.php:242
+#@ metasliderpro
+msgid "Insert Tag"
+msgstr "Добавить"
+
+#: modules/post_feed/slide.php:249
+#@ metasliderpro
+msgid "Custom Fields"
+msgstr "Произвольные поля"
+
+#: modules/post_feed/slide.php:369
+#@ metasliderpro
+msgid "Disabled"
+msgstr "Не активно"
+
+#: modules/post_feed/slide.php:370
+#@ metasliderpro
+msgid "Post"
+msgstr "Запись"
+
+#: modules/theme_editor/theme_editor.php:384
+#@ metasliderpro
+msgid "Theme Saved. To apply the theme to a slideshow, edit the slideshow and select this theme from the theme dropdown menu."
+msgstr "Тема сохранена. Чтобы её применить, отредактируйте слайд-шоу и выберите эту тему в выпадающем списке \"Дизайн\"."
+
+#: modules/theme_editor/theme_editor.php:396
+#@ metasliderpro
+msgid "Switch Preview Slider"
+msgstr "Выбрать другой слайдер"
+
+#: modules/layer/slide.php:96
+#: modules/theme_editor/theme_editor.php:430
+#@ metasliderpro
+msgid "Save"
+msgstr "Сохранить"
+
+#: modules/theme_editor/theme_editor.php:451
+#@ metasliderpro
+msgid "None"
+msgstr "Нет"
+
+#: modules/theme_editor/theme_editor.php:453
+#@ metasliderpro
+msgid "Bottom"
+msgstr "Снизу"
+
+#: modules/theme_editor/theme_editor.php:454
+#@ metasliderpro
+msgid "Page Curl"
+msgstr "Приподнятые углы"
+
+#: modules/theme_editor/theme_editor.php:455
+#@ metasliderpro
+msgid "Bottom Curve"
+msgstr "Приподнята снизу"
+
+#: modules/theme_editor/theme_editor.php:456
+#@ metasliderpro
+msgid "Top and Bottom Curve"
+msgstr "Приподнята сверху и снизу"
+
+#: modules/theme_editor/theme_editor.php:457
+#@ metasliderpro
+msgid "Sides"
+msgstr "По краям"
+
+#: modules/theme_editor/theme_editor.php:467
+#@ metasliderpro
+msgid "Enable Custom Caption"
+msgstr "Использовать настраиваемый заголовок"
+
+#: modules/theme_editor/theme_editor.php:499
+#@ metasliderpro
+msgid "Text Align"
+msgstr "Выравнивание текста"
+
+#: modules/theme_editor/theme_editor.php:502
+#@ metasliderpro
+msgid "Left"
+msgstr "По левому краю"
+
+#: modules/theme_editor/theme_editor.php:503
+#@ metasliderpro
+msgid "Center"
+msgstr "По центру"
+
+#: modules/theme_editor/theme_editor.php:504
+#@ metasliderpro
+msgid "Right"
+msgstr "По правому краю"
+
+#: modules/theme_editor/theme_editor.php:528
+#@ metasliderpro
+msgid "Enable Custom Arrows"
+msgstr "Использовать произвольные стрелочки"
+
+#: modules/theme_editor/theme_editor.php:534
+#@ metasliderpro
+msgid "Built In Styles"
+msgstr "Готовые стили"
+
+#: modules/theme_editor/theme_editor.php:541
+#@ metasliderpro
+msgid "Custom Prev Arrow"
+msgstr "Пользовательская стрелочка \"назад\""
+
+#: modules/theme_editor/theme_editor.php:548
+#: modules/theme_editor/theme_editor.php:553
+#: modules/theme_editor/theme_editor.php:569
+#: modules/theme_editor/theme_editor.php:574
+#@ metasliderpro
+msgid "Select"
+msgstr "Выбрать"
+
+#: modules/theme_editor/theme_editor.php:549
+#: modules/theme_editor/theme_editor.php:554
+#: modules/theme_editor/theme_editor.php:570
+#: modules/theme_editor/theme_editor.php:575
+#@ metasliderpro
+msgid "Remove"
+msgstr "Удалить"
+
+#: modules/theme_editor/theme_editor.php:562
+#@ metasliderpro
+msgid "Custom Next Arrow"
+msgstr "Пользовательская стрелочка \"вперед\""
+
+#: modules/theme_editor/theme_editor.php:591
+#@ metasliderpro
+msgid "Always show"
+msgstr "Показывать постоянно"
+
+#: modules/theme_editor/theme_editor.php:603
+#@ metasliderpro
+msgid "Enable Custom Navigation"
+msgstr "Разрешить пользовательскую навигацию"
+
+#: ml-slider-pro.php:188
+#@ metasliderpro
+msgid "Pro"
+msgstr "Про"
+
+#: modules/layer/slide.php:113
+#: modules/post_feed/slide.php:866
+#: modules/vimeo/slide.php:488
+#: modules/youtube/slide.php:459
+#@ metasliderpro
+msgid "Add to slider"
+msgstr "Добавить в слайдер"
+
+#: modules/post_feed/slide.php:271
+#@ metasliderpro
+msgid "Publish Date"
+msgstr "Дата публмкации"
+
+#: modules/post_feed/slide.php:275
+#@ metasliderpro
+msgid "Post Slug"
+msgstr "Слаг записи"
+
+#: modules/post_feed/slide.php:276
+#@ metasliderpro
+msgid "Modified Date"
+msgstr "Дата изменения"
+
+#: modules/post_feed/slide.php:277
+#@ metasliderpro
+msgid "Random"
+msgstr "Случайно"
+
+#: modules/post_feed/slide.php:278
+#@ metasliderpro
+msgid "Menu Order"
+msgstr "Порядковый номер"
+
+#: modules/post_feed/slide.php:385
+#@ metasliderpro
+msgid "DESC"
+msgstr "По убыванию"
+
+#: modules/post_feed/slide.php:386
+#@ metasliderpro
+msgid "ASC"
+msgstr "По возрастанию"
+
+#: modules/post_feed/slide.php:860
+#@ metasliderpro
+msgid "Click 'Add to slider' to create a new post feed slide."
+msgstr "Нажмите \\\"добавить в слайдер\\\", чтобы создать новый слайд ленты записей."
+
+#: modules/theme_editor/theme_editor.php:84
+#@ metasliderpro
+msgid "Theme Editor"
+msgstr "Редактор дизайна"
+
+#: modules/theme_editor/theme_editor.php:674
+#@ metasliderpro
+msgid "Delete Theme"
+msgstr "Удалить тему"
+
+#: modules/theme_editor/theme_editor.php:1577
+#@ metasliderpro
+msgid "Black"
+msgstr "Чёрный"
+
+#: modules/theme_editor/theme_editor.php:1578
+#@ metasliderpro
+msgid "Blue"
+msgstr "Синий"
+
+#: modules/theme_editor/theme_editor.php:1579
+#@ metasliderpro
+msgid "Green"
+msgstr "Зелёный"
+
+#: modules/theme_editor/theme_editor.php:1580
+#@ metasliderpro
+msgid "Grey"
+msgstr "Серый"
+
+#: modules/theme_editor/theme_editor.php:1581
+#@ metasliderpro
+msgid "Navy"
+msgstr "Морская волна"
+
+#: modules/theme_editor/theme_editor.php:1582
+#@ metasliderpro
+msgid "Purple"
+msgstr "Фиолетовый"
+
+#: modules/theme_editor/theme_editor.php:1585
+#@ metasliderpro
+msgid "Yellow"
+msgstr "Жёлтый"
+

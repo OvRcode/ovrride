@@ -1,0 +1,68 @@
+.metaslider .slide.post_feed .thumb.post_feed {
+    background-repeat: no-repeat;
+    background-size: auto auto !important;
+    background-image: url('icon.png'), -moz-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
+    background-image: url('icon.png'), -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e2e2e2), color-stop(50%, #dbdbdb), color-stop(51%, #d1d1d1), color-stop(100%, #fefefe));
+    background-image: url('icon.png'), -webkit-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
+    background-image: url('icon.png'), -o-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
+    background-image: url('icon.png'), -ms-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
+    background-image: url('icon.png'), linear-gradient(to bottom, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
+}
+.metaslider .slide.post_feed .tabs-content .tab-2 li {
+    float: left;
+    margin-right: 20px;
+}
+.metaslider .slide.post_feed .tabs-content .tab-3 ul {
+    float: left;
+    margin-right: 20px;
+}
+.metaslider .slide.post_feed select.multi {
+    width: 100%;
+    height: 120px;
+    margin: 0;
+}
+.metaslider .slide.post_feed .tabs-content .tab-2 .scroll ul {
+    width: 50%;
+    float: left;
+}
+.metaslider .slide.post_feed .tabs-content .tab-2 .scroll ul ul {
+    width: 100%;
+    margin-left: 10px;
+    box-sizing: border-box;
+}
+
+.metaslider .slide.post_feed .tabs-content .tab-2 .scroll ul li {
+    margin-bottom: 3px;
+    display: list-item;
+    float: left;
+    width:100%;
+    clear: both;
+    margin-right: 0;
+}
+.metaslider .slide.post_feed .header {
+    font-weight: bold
+}
+.metaslider .slide.post_feed .row label {
+    width: 125px
+}
+.metaslider .slide.post_feed .row .button {
+    padding: 0 5px;
+    margin-left: 5px;
+    line-height: 19px;
+    font-size: 11px;
+    height: auto;
+}
+.metaslider .slide.post_feed .CodeMirror,
+.metaslider .slide.post_feed .CodeMirror-wrap .CodeMirror-scroll {
+    height: 117px
+}
+.metaslider .slide.post_feed #template_tags {
+    position: absolute;
+    z-index: 4;
+    width: 90px;
+    right: 5px;
+    top: 5px;
+}
+.metaslider .embed-link-settings {
+    background: white
+}

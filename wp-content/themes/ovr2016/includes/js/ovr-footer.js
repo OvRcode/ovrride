@@ -6,6 +6,10 @@
     }
   });
   $(window).on("resize", function(){
+    if ( $(window).width() > 991 ) {
+      featureMain = $(".feature-main").height();
+      $(".feature-right").height(featureMain);
+    }
     $(".footer-square").height($(".footer-square").width());
     //$(".footer-square").width($(".footer-square").width());
     if ( $(".footer-square").width() > 200) {
