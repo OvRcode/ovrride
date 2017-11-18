@@ -17,12 +17,21 @@ class ovr_calendar_widget extends WP_Widget {
     add_action( 'ovr_calendar_refresh', array( $this, "refresh") );
   }
   public function form( $instance ) {
+    $checkboxID = $this->get_field_id('mini');
+    $checkboxName = $this->get_field_name('mini');
+    $checkbox = $instance['mini'];
+    echo <<<CALENDARFORM
+    <p>
+    <label>Mini calendar:<input type="checkbox" name="{$checkboxName}" id="{$checkboxID}" {$checkbox} value="checked"></label>
+    </p>
+CALENDARFORM;
     if ( ! wp_next_scheduled( 'ovr_calendar_refresh' ) ) {
       wp_schedule_event(time(), 'hourly', 'ovr_calendar_refresh');
-      error_log("scheduling calendar refresh");
-    } else {
-      error_log("calendar refresh already scheduled!");
     }
+  }
+  public function update( $new_instance, $old_instance) {
+    $instance['mini'] = ( ! empty( $new_instance['mini'] ) ) ? strip_tags( $new_instance['mini'] ) : '';
+    return $instance;
   }
   public function generate_calendar_ajax() {
 
@@ -239,7 +248,7 @@ class ovr_calendar_widget extends WP_Widget {
     // Calendar has room for six weeks
     for($i = -1 * abs($start_week_offset) + 1; $i <= $adjusted_end_of_month; $i++) {
       if ( $i <= 0 || $i > $lastDay) {
-        $days .= "<li class='calendarInactive'>&nbsp;<br />&nbsp;</li>";
+        $days .= "<li class='calendarInactive'>&nbsp;<span class='no-mini'><br />&nbsp;</span></li>";
       } else if ( $i > 0 && $i <= $lastDay ) {
         $calendar_key = $year ."-".$month."-".str_pad($i, 2, 0, STR_PAD_LEFT);
         $day_class = '';
@@ -274,14 +283,15 @@ class ovr_calendar_widget extends WP_Widget {
         }
         $days .=<<<DAYTEMPLATE
         <li class="{$day_class}" data-placement="auto-bottom" data-content="{$day_content}" aria-hidden="true">
-        {$i}<br />
-        {$icon}
+        {$i}<span class="no-mini"><br />
+        {$icon}</span>
         </li>
 DAYTEMPLATE;
       }
     }
-
-    update_option("ovr_calendar_days_data", $days);
+    if ( $refresh ) {
+      update_option("ovr_calendar_days_data", $days);
+    }
     return $days;
   }
   public function widget( $args, $instance ) {
@@ -297,7 +307,11 @@ DAYTEMPLATE;
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'), false, true);
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
     wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.min.js', array('jquery.webui-popover-js', 'jquery_spin_js'), "1.2.0", true);
-    wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', FALSE, "1.5");
+    if ( $instance["mini"] == "checked" ) {
+      wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget-mini.css', FALSE, FALSE);
+    } else {
+      wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget.min.css', FALSE, "1.5");
+    }
 
     if ( is_ssl() ) {
         $nonced_url = wp_nonce_url( admin_url( 'admin-ajax.php', 'https'), 'ovr_calendar', 'ovr_calendar_shift' );
@@ -321,7 +335,7 @@ DAYTEMPLATE;
                 </li>
               </ul>
             </div>
-            <ul class="weekdays">
+            <ul class="weekdays clearfix">
               <li>S</li>
               <li>M</li>
               <li>T</li>
