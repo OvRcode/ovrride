@@ -833,6 +833,9 @@ li.widget_text {
 	.feature-right {
 		overflow:hidden;
 	}
+	.feature-right .widget_text {
+		margin-bottom: 0;
+	}
 	.kind-wide {
 		display: none;
 	}
