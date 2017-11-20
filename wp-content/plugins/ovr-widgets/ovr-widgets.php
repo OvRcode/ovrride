@@ -4,7 +4,7 @@
 * Description:  Collection of widgets for the ovrride.com site
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
-* Version: 1.5.2
+* Version: 1.6.0
 * License: MIT License
 */
 require('classes/ovr-blog-feature-widget.php');
@@ -38,7 +38,6 @@ function ovr_widgets_admin_setup_menu() {
 }
 
 function ovr_calendar_events() {
-	//delete_option("ovr_calendar_custom_events");
 	wp_enqueue_script('ovr_calendar_add_events', plugin_dir_url( __FILE__ ).'js/ovr_calendar_custom_events.js', array('jquery','jquery-ui-datepicker'), "1.0", true);
 	wp_localize_script( 'ovr_calendar_add_events', 'ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ),
 	 'add_nonce' => wp_create_nonce("ovr_calendar_add_events"),
@@ -57,7 +56,7 @@ function ovr_calendar_events() {
 		<input type="button" value="Add Event" />
 	</form>
 CALADMIN;
-	$events = get_option("ovr_calendar_custom_events");
+	$events = get_option("ovr_custom_events");
 	echo "<hr><h4>Calendar Events</h4><hr>";
 	if ( ! $events ) {
 		echo "No Custom events set";
@@ -97,7 +96,7 @@ function ovr_calendar_add_event() {
 	if ( ! wp_verify_nonce( $nonce, 'ovr_calendar_add_events' ) )
 		die('Nonce verification failed');
 
-	$existing_events = get_option("ovr_calendar_custom_events", array());
+	$existing_events = get_option("ovr_custom_events", array());
 	$event = [ "name" => $_POST['name'], "url"	=> $_POST["url"],
 		"start"	=> $_POST["start"], "end"	=> $_POST["end"], "active" => 0, "season" => "winter" ];
 	if ( preg_match("/^http[s]{0,1}:\/\//", $event["url"]) == false ) {
@@ -113,7 +112,7 @@ function ovr_calendar_add_event() {
 		$events = $existing_events;
 		$events[$id] = $event;
 	}
-	if ( update_option("ovr_calendar_custom_events", $events) )
+	if ( update_option("ovr_custom_events", $events) )
 		echo "true";
 	else
 		echo "false";
@@ -125,11 +124,11 @@ function ovr_calendar_remove_event() {
 		die('Nonce verification failed');
 	}
 
-	$existing_events = maybe_unserialize(get_option("ovr_calendar_custom_events"));
+	$existing_events = maybe_unserialize(get_option("ovr_custom_events"));
 
 	if ( isset($existing_events[$_POST['id']]) ) {
 		unset($existing_events[$_POST['id']]);
-		if ( update_option('ovr_calendar_custom_events', $existing_events) ) {
+		if ( update_option('ovr_custom_events', $existing_events) ) {
 			echo "true";
 		} else {
 			echo "false";
@@ -145,12 +144,12 @@ function ovr_calendar_update_event() {
 		die("Nonce verification failed!");
 	}
 
-	$existing_events = maybe_unserialize( get_option("ovr_calendar_custom_events") );
+	$existing_events = maybe_unserialize( get_option("ovr_custom_events") );
 
 	if ( isset( $existing_events[$_POST['id']] ) ) {
 			$existing_events[$_POST['id']]['active'] = $_POST['active'];
 			$existing_events[$_POST['id']]['season'] = $_POST['season'];
-			if ( update_option("ovr_calendar_custom_events", $existing_events) ) {
+			if ( update_option("ovr_custom_events", $existing_events) ) {
 				do_action("ovr_calendar_refresh");
 				return "true";
 			} else {

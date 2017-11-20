@@ -51,6 +51,7 @@ CALENDARFORM;
     // refresh stored data for current month, will be run hourly by wp cron
     $date = new DateTime('now');
     $this->generate_calendar( new DateTime('now'), true );
+    return TRUE;
   }
   function wpdb_array_shift($data) {
     global $wpdb;
@@ -167,7 +168,7 @@ CALENDARFORM;
       $trips[$start_date][] = $trip_data;
     }
     // Add custom events
-    $custom_events = maybe_unserialize( get_option("ovr_calendar_custom_events", array() ) );
+    $custom_events = maybe_unserialize( get_option("ovr_custom_events", array() ) );
     foreach( $custom_events as $index => $event_data ) {
       if ( $event_data["active"] == 1 ) {
         $event_start_date = new DateTime($event_data["start"]);
