@@ -2,74 +2,402 @@
 # This file is distributed under the same license as the WooCommerce Smart Coupons package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Smart Coupons 3.2\n"
-"Report-Msgid-Bugs-To: http://www.storeapps.org/support/contact-us/\n"
-"POT-Creation-Date: 2017-02-06 07:26:03+00:00\n"
+"Project-Id-Version: WooCommerce Smart Coupons 3.3.8\n"
+"Report-Msgid-Bugs-To: https://www.storeapps.org/support/contact-us/\n"
+"POT-Creation-Date: 2017-10-28 09:15:50+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: Mon, 06 Feb 2017 12:56:03 +0530\n"
+"PO-Revision-Date: Sat, 28 Oct 2017 14:45:50 +0530\n"
 "Last-Translator: Ratnakar Dubey <ratnakar.dubey@storeapps.org>\n"
-"Language-Team: StoreApps <support@storeapps.org>\n"
+"Language-Team: StoreApps <support@storeapps.org>, Icegram <hello@icegram."
+"com>\n"
 
-#: classes/class-sc-admin-welcome.php:34
+#: includes/class-sc-admin-pages.php:112 includes/class-sc-admin-pages.php:375
+#: includes/class-sc-admin-pages.php:380
+#: includes/class-sc-display-coupons.php:506
+#: includes/class-sc-display-coupons.php:543
+#: includes/class-sc-product-fields.php:83
+msgid "Coupons"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:113 includes/class-sc-admin-pages.php:381
+msgid "Bulk Generate / Import Coupons"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:114 includes/class-sc-admin-pages.php:382
+msgid "Send Store Credit"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:142
+msgid "Please enter in decimal (%s) format without thousand separators."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:143
+msgid ""
+"Please enter in monetary decimal (%s) format without thousand separators and "
+"currency symbols."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:144
+msgid "Please enter in country code with two capital letters."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:145
+msgid "Please enter in a value less than the regular price."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:149
+msgid "Import"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:150 woocommerce-smart-coupons.php:1398
+msgid "Export"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:159
+msgid ""
+"Are you sure you want to remove the selected items? If you have previously "
+"reduced this item's stock, or this order was submitted by a customer, you "
+"will need to manually restore the item's stock."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:160
+msgid "Please select some items."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:161
+msgid ""
+"Are you sure you wish to process this refund? This action cannot be undone."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:162
+msgid ""
+"Are you sure you wish to delete this refund? This action cannot be undone."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:163
+msgid ""
+"Are you sure you wish to delete this tax column? This action cannot be "
+"undone."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:164
+msgid "Remove this item meta?"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:165
+msgid "Remove this attribute?"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:166
+msgid "Name"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:167
+msgid "Remove"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:168
+msgid "Click to toggle"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:169
+msgid "Value(s)"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:170
+msgid "Enter some text, or some attributes by pipe (|) separating values."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:171
+msgid "Visible on the product page"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:172
+msgid "Used for variations"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:173
+msgid "Enter a name for the new attribute term:"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:174
+msgid "Calculate totals based on order items, discounts, and shipping?"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:175
+msgid ""
+"Calculate line taxes? This will calculate taxes based on the customers "
+"country. If no billing/shipping is set it will use the store base country."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:176
+msgid ""
+"Copy billing information to shipping information? This will remove any "
+"currently entered shipping information."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:177
+msgid ""
+"Load the customer's billing information? This will remove any currently "
+"entered billing information."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:178
+msgid ""
+"Load the customer's shipping information? This will remove any currently "
+"entered shipping information."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:179
+msgid "Featured"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:182
+msgid "No customer selected"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:206
+msgid ""
+"Could not grant access - the user may already have permission for this file "
+"or billing email is not set. Ensure the billing email is set, and the order "
+"has been saved."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:207
+msgid "Are you sure you want to revoke access to this download?"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:208
+msgid "You cannot add the same tax rate twice!"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:209
+msgid ""
+"Your product has variations! Before changing the product type, it is a good "
+"idea to delete the variations to avoid errors in the stock reports."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:237
+msgid ""
+"Import complete - imported <strong>%1$s</strong>, skipped <strong>%2$s</"
+"strong>"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:274
+msgid "WooCommerce Coupons"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:274
+msgid "Import <strong>coupons</strong> to your store using CSV file."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:354
+msgid "Smart Coupon"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:376
+msgid "Add Coupon"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:387
+msgid "%1$s Please install and enable PHP extension %2$s"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:387
+msgid "Required"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:387
+msgid "Click here"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:387
+msgid "for more details."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:414
+msgid "Bulk Upload / Import Coupons using CSV file"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:415
+msgid ""
+"Upload a CSV file & click 'Import' . Importing requires <code>post_title</"
+"code> column."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:416 includes/class-sc-admin-pages.php:568
+msgid "Import Coupons"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:427
+msgid "Store Credit / Gift Card sent successfully."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:433
+msgid "Send Store Credit / Gift Card"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:434
+msgid ""
+"Click \"Send\" to send Store Credit / Gift Card. *All field are compulsary."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:441
+msgid "Email ID"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:449
+msgid "Invalid email address."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:452
+msgid "Use comma \",\" as separator for multiple e-mail ids"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:458 woocommerce-smart-coupons.php:1691
+msgid "Coupon Amount"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:461
+msgid "0.00"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:466
+msgid "Invalid amount."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:485
+#: includes/class-sc-display-coupons.php:1270
+#: includes/class-sc-display-coupons.php:1301
+#: includes/class-sc-purchase-credit.php:419
+#: includes/class-sc-purchase-credit.php:502
+msgid "Message"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:494
+msgid "Send"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:554
+msgid "Please enter a valid value for Number of Coupons to Generate"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:568
+msgid "Generate Coupons"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:569
+msgid "You can bulk generate coupons using options below."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:587
+msgid "Action"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:593
+msgid "Generate coupons &"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:595
+msgid "Add to store"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:596
+msgid "Adds generated coupons to store."
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:602
+msgid "Export to CSV"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:603
+msgid "Downloads a .CSV file, which can be used for importing"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:609
+msgid "Email to customer"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:610
+msgid "Send generated coupon codes to respective customer via email as well"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:614
+msgid "Number of Coupons to Generate "
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:615
+msgid "10"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:623
+msgid "Coupon Data"
+msgstr ""
+
+#: includes/class-sc-admin-pages.php:630
+msgid "Apply"
+msgstr ""
+
+#: includes/class-sc-admin-welcome.php:55
 msgid "About Smart Coupons"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:35
+#: includes/class-sc-admin-welcome.php:56
 msgid "Welcome to Smart Coupons"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:107
+#: includes/class-sc-admin-welcome.php:128
 msgid "Welcome to Smart Coupons %s"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:109
+#: includes/class-sc-admin-welcome.php:130
 msgid "Thanks for installing! We hope you enjoy using Smart Coupons."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:113
+#: includes/class-sc-admin-welcome.php:134
 msgid "Go To Coupons"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:118
+#: includes/class-sc-admin-welcome.php:139
 msgid "Settings"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:119
+#: includes/class-sc-admin-welcome.php:140
 msgid "Docs"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:126 woocommerce-smart-coupons.php:7112
+#: includes/class-sc-admin-welcome.php:147 woocommerce-smart-coupons.php:1893
 msgid "Know Smart Coupons"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:129
+#: includes/class-sc-admin-welcome.php:150
 msgid "FAQ's"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:155
+#: includes/class-sc-admin-welcome.php:176
 msgid "What is Smart Coupons?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:157
+#: includes/class-sc-admin-welcome.php:178
 msgid ""
 "Smart Coupons is a WooCommerce extension, which adds a new discount type for "
 "WooCommerce Coupons. It's called as \"Store Credit / Gift Certificate\"."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:158
+#: includes/class-sc-admin-welcome.php:179
 msgid ""
 "In addition to this, it also adds more functionality in other discount types "
 "as well. Smart Coupons enables coupons to become an automatic/interactive "
 "system."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:162
+#: includes/class-sc-admin-welcome.php:183
 msgid "What is \"Store Credit / Gift Certificate\"?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:164
+#: includes/class-sc-admin-welcome.php:185
 msgid ""
 "This is a new discount type added by this plugin in WooCommerce Coupons. A "
 "coupon having this discount type can be called as either Smart Coupon or "
@@ -77,11 +405,11 @@ msgid ""
 "balance."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:168
+#: includes/class-sc-admin-welcome.php:189
 msgid "What's new?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:170
+#: includes/class-sc-admin-welcome.php:191
 msgid ""
 "Store Credit is a unique discount type, in which coupon's amount keeps "
 "reducing per usage. It behaves in same way as credit, which can be used "
@@ -89,7 +417,7 @@ msgid ""
 "refered to as balance."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:173
+#: includes/class-sc-admin-welcome.php:194
 msgid ""
 "Since Store Credit's balance keeps reducing per usage, this plugin "
 "restricts, all automatically created store credit to one user. Additionally, "
@@ -97,73 +425,74 @@ msgid ""
 "aware of what it can cause."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:177
+#: includes/class-sc-admin-welcome.php:198
 msgid "What you can achieve using Smart Coupons"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:180
+#: includes/class-sc-admin-welcome.php:201
 msgid "Sell store credit / gift certificate"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:182
+#: includes/class-sc-admin-welcome.php:203
 msgid ""
 "Smart Coupons helps you configure products which can be used to sell store "
-"credit / gift certificate. You can sell store credit in 3 ways: %s, %s & %s."
+"credit / gift certificate. You can sell store credit in 3 ways: %1$s, %2$s & "
+"%3$s."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:182
+#: includes/class-sc-admin-welcome.php:203
 msgid "fixed amount"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:182
+#: includes/class-sc-admin-welcome.php:203
 msgid "variable but fixed amount"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:182
+#: includes/class-sc-admin-welcome.php:203
 msgid "any amount"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:186
+#: includes/class-sc-admin-welcome.php:207
 msgid "Automatically give discounts to your customer for next purchase"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:188
+#: includes/class-sc-admin-welcome.php:209
 msgid ""
 "You can give a coupon to your customer after every purchase, which can "
 "encourage them to purchase again from you."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:192
+#: includes/class-sc-admin-welcome.php:213
 msgid "Bulk create unique coupons & email them"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:194
+#: includes/class-sc-admin-welcome.php:215
 msgid ""
 "If you've a list of email addresses of your customers who haven't purchase "
 "any product for a long time, you can send unique coupons to each of them in "
 "bulk. %s."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:194
-#: classes/class-sc-admin-welcome.php:286
+#: includes/class-sc-admin-welcome.php:215
+#: includes/class-sc-admin-welcome.php:307
 msgid "See how"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:200
+#: includes/class-sc-admin-welcome.php:221
 msgid "Import / export coupons"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:202
+#: includes/class-sc-admin-welcome.php:223
 msgid ""
 "You can import / export coupons. This can be helpful when you are moving "
 "your store or when you want to move coupons from other store to new one."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:206
+#: includes/class-sc-admin-welcome.php:227
 msgid "Automatic payment for subscription renewals"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:208
+#: includes/class-sc-admin-welcome.php:229
 msgid ""
 "If your store is using WooCommerce subscription and your customer has "
 "purchased a subscription using a Store Credit. If that store credit has "
@@ -171,11 +500,11 @@ msgid ""
 "subscription."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:212
+#: includes/class-sc-admin-welcome.php:233
 msgid "Make your customer's coupon usage, easy & simple"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:214
+#: includes/class-sc-admin-welcome.php:235
 msgid ""
 "Smart Coupons makes life of your customer really easy by showing only valid "
 "coupons to your customer (if logged in) on %s, checkout & My Account page. "
@@ -183,51 +512,51 @@ msgid ""
 "So, no need to remember the coupon code or copy-pasting."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:214
+#: includes/class-sc-admin-welcome.php:235
 msgid "cart"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:240
+#: includes/class-sc-admin-welcome.php:261
 msgid "FAQ / Common Problems"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:245
+#: includes/class-sc-admin-welcome.php:266
 msgid "When trying to add Smart Coupon, I get \"Invalid post type\" message."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:246
+#: includes/class-sc-admin-welcome.php:267
 msgid ""
 "Make sure use of coupon is enabled in your store. You can find this setting "
 "%s."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:246
+#: includes/class-sc-admin-welcome.php:267
 msgid "here"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:249
+#: includes/class-sc-admin-welcome.php:270
 msgid "How to translate texts from Smart Coupons?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:250
+#: includes/class-sc-admin-welcome.php:271
 msgid ""
-"Simplest method is by installing %s plugin. If you want to keep, translated "
-"file outside this plugin, refer %s."
+"Simplest method is by installing %1$s plugin. If you want to keep, "
+"translated file outside this plugin, refer %2$s."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:250
+#: includes/class-sc-admin-welcome.php:271
 msgid "Loco Translate"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:250
+#: includes/class-sc-admin-welcome.php:271
 msgid "this article"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:253
+#: includes/class-sc-admin-welcome.php:274
 msgid "Smart Coupon's fields are broken?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:254
+#: includes/class-sc-admin-welcome.php:275
 msgid ""
 "Make sure you are using the latest version of Smart Coupons. If still the "
 "issue persist, deactivate all plugins except WooCommerce & Smart Coupons. "
@@ -236,1386 +565,1119 @@ msgid ""
 "find out which plugin is conflicting. Inform us about this issue."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:257
+#: includes/class-sc-admin-welcome.php:278
 msgid "Do not want to tie store credit to be used by only one customer?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:258
+#: includes/class-sc-admin-welcome.php:279
 msgid ""
 "You'll need to check \"Disable Email Restriction\" setting (in main coupon "
 "which is entered in \"Coupons\" field of the product edit page) under "
 "\"Usage Restrictions\" tab on edit coupon page."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:261
+#: includes/class-sc-admin-welcome.php:282
 msgid ""
 "On WooCommerce 2.6+, getting 'Page Not Found Error' when accessing Coupons "
 "tab from My Account Page?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:262
+#: includes/class-sc-admin-welcome.php:283
 msgid ""
 "Go to WordPress -> Settings -> Permalinks and click on Save Settings once."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:265
+#: includes/class-sc-admin-welcome.php:286
 msgid "Is there any reference file for creating an import file for coupons?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:266
+#: includes/class-sc-admin-welcome.php:287
 msgid ""
-"There is one file which is located inside the plugin. The file name is %s. "
-"If you want to import coupon through file, the file should be like %s"
+"There is one file which is located inside the plugin. The file name is %1$s. "
+"If you want to import coupon through file, the file should be like %2$s"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:269
+#: includes/class-sc-admin-welcome.php:290
 msgid "Is Smart Coupons, WPML compatible?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:270
+#: includes/class-sc-admin-welcome.php:291
 msgid ""
 "All texts used in Smart Coupons are translatable & can be translated using "
-"%s & %s file. Secondly, the texts from this plugin remain in the plugin, it "
-"doesn't get saved in database, only values are getting saved in database, "
+"%1$s & %2$s file. Secondly, the texts from this plugin remain in the plugin, "
+"it doesn't get saved in database, only values are getting saved in database, "
 "which cannot be translated."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:273
+#: includes/class-sc-admin-welcome.php:294
 msgid ""
 "I'm using WPML & WPML provides support for multi-currency, but Smart Coupons "
 "only changes currency symbol & the price value remains same. Can Smart "
 "Coupons change the currency symbol and the price value associated with it?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:274
+#: includes/class-sc-admin-welcome.php:295
 msgid ""
 "Currently, It can only change the currency symbol the price value remains "
 "the same. Smart Coupon is not compatible with multi-currency plugin. You may "
 "find this in some future version."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:277
+#: includes/class-sc-admin-welcome.php:298
 msgid "How to change texts of email, sent from Smart Coupons?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:278
+#: includes/class-sc-admin-welcome.php:299
 msgid ""
 "You can do this by 2 methods, either by changing the texts directly in email "
 "template file or overriding the email template. %s."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:278
+#: includes/class-sc-admin-welcome.php:299
 msgid "How to override email template"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:281
+#: includes/class-sc-admin-welcome.php:302
 msgid "Available coupons are not visible on Cart, Checkout & My Account page?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:282
+#: includes/class-sc-admin-welcome.php:303
 msgid ""
 "Smart Coupons uses hooks of Cart, Checkout & My Account page to display "
 "available coupons. If your theme is not using those hooks in cart, checkout "
 "& my-account template, coupons will not be displayed."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:285
+#: includes/class-sc-admin-welcome.php:306
 msgid "How can I resend gift card coupon bought by customers?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:286
+#: includes/class-sc-admin-welcome.php:307
 msgid "You can resend them from order admin edit page. %s."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:289
+#: includes/class-sc-admin-welcome.php:310
 msgid ""
 "Uncheck \"Auto-generate\" option in Store Credit is not saving? Is it always "
 "checked?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:290
+#: includes/class-sc-admin-welcome.php:311
 msgid ""
 "Store Credit's default behavior is auto-generate because, when using a store "
 "credit, it's balance keeps reducing. Therefore it should be uniquely created "
 "for every user automatically."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:293
+#: includes/class-sc-admin-welcome.php:314
 msgid "Smart Coupons is not sending emails?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:294
+#: includes/class-sc-admin-welcome.php:315
 msgid ""
 "Smart Coupons sends email only after order completion. Make sure all "
 "settings of coupons, products are in place. Check if order complete email is "
 "sending. Also check by switching your theme."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:297
+#: includes/class-sc-admin-welcome.php:318
 msgid "\"Store Credit Receiver detail\" form not appearing on checkout page?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:298
+#: includes/class-sc-admin-welcome.php:319
 msgid ""
 "This form is displayed using a hook which is available in My Account "
 "template. Make sure your theme's my-account template contains all hooks "
 "required for that template."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:301
+#: includes/class-sc-admin-welcome.php:322
 msgid "Is it compatible with WooCommerce Subscription?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:302
+#: includes/class-sc-admin-welcome.php:323
 msgid "Yes, it does work with WooCommerce Subscription."
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:305
+#: includes/class-sc-admin-welcome.php:326
 msgid "Does it allow printing of coupon as Gift Card?"
 msgstr ""
 
-#: classes/class-sc-admin-welcome.php:306
+#: includes/class-sc-admin-welcome.php:327
 msgid ""
 "No, it doesn't provide any feature which enables you to take a printout of "
 "the generated coupon, but if you can take printout from your email, you can "
 "use it as an alternative."
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:323
-#: classes/class-wc-csv-coupon-import.php:375
-#: classes/class-wc-csv-coupon-import.php:387
-msgid "Sorry, there has been an error."
+#: includes/class-sc-ajax.php:163 includes/class-sc-shortcode.php:354
+#: woocommerce-smart-coupons.php:320 woocommerce-smart-coupons.php:484
+msgid "Store Credit"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:324
-msgid "The file does not exist, please try again."
+#: includes/class-sc-ajax.php:168 includes/class-sc-ajax.php:183
+#: includes/class-sc-shortcode.php:359 includes/class-sc-shortcode.php:374
+#: woocommerce-smart-coupons.php:489 woocommerce-smart-coupons.php:504
+msgid "Cart Discount"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:437
-msgid "Map Fields"
+#: includes/class-sc-ajax.php:173 includes/class-sc-ajax.php:178
+#: includes/class-sc-shortcode.php:364 includes/class-sc-shortcode.php:369
+#: woocommerce-smart-coupons.php:494 woocommerce-smart-coupons.php:499
+msgid "Product Discount"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:438
-msgid "Here you can map your imported columns to coupon data fields."
+#: includes/class-sc-ajax.php:183 includes/class-sc-shortcode.php:374
+#: woocommerce-smart-coupons.php:504
+msgid "Percentage Discount"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:443
-msgid "Map to"
+#: includes/class-sc-coupon-fields.php:147
+msgid "Valid for"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:444
-msgid "Column Header"
+#: includes/class-sc-coupon-fields.php:150
+msgid "Days"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:445
-msgid "Column Value"
+#: includes/class-sc-coupon-fields.php:151
+msgid "Weeks"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:457
-msgid "Custom Field: <strong>%s</strong>"
+#: includes/class-sc-coupon-fields.php:152
+msgid "Months"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:462
-msgid "Post data"
+#: includes/class-sc-coupon-fields.php:153
+msgid "Years"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:477
-msgid "Coupon data"
+#: includes/class-sc-coupon-fields.php:156
+msgid "Pick Product's Price?"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:519
-msgid "E-mail imported coupon codes to respective customers/users."
-msgstr ""
-
-#: classes/class-wc-csv-coupon-import.php:523
-msgid "Submit"
-msgstr ""
-
-#: classes/class-wc-csv-coupon-import.php:545
-msgid "Import WooCommerce Coupons"
-msgstr ""
-
-#: classes/class-wc-csv-coupon-import.php:547
-msgid "Choose a CSV (.csv) file to upload, then click Upload file and import."
-msgstr ""
-
-#: classes/class-wc-csv-coupon-import.php:556
+#: includes/class-sc-coupon-fields.php:156
 msgid ""
-"Before you can upload your import file, you will need to fix the following "
-"error:"
+"Check this box to allow overwriting coupon's amount with Product's Price."
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:565
-msgid "Choose a file from your computer:"
+#: includes/class-sc-coupon-fields.php:160
+msgid "Auto Generation of Coupon"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:571
-msgid "Maximum size: %s"
+#: includes/class-sc-coupon-fields.php:160
+msgid "Check this box if the coupon needs to be auto generated"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:576
-msgid "OR enter path to file:"
+#: includes/class-sc-coupon-fields.php:164
+msgid "Prefix for Coupon Title"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:585
-msgid "Upload file and import"
+#: includes/class-sc-coupon-fields.php:164
+msgctxt "placeholder"
+msgid "Prefix"
 msgstr ""
 
-#: classes/class-wc-csv-coupon-import.php:586
-msgid "%s Back to Coupons"
+#: includes/class-sc-coupon-fields.php:164
+msgid "Adding prefix to the coupon title"
 msgstr ""
 
-#: templates/email.php:50
-msgid "To redeem your discount use the following coupon during checkout:"
+#: includes/class-sc-coupon-fields.php:167
+msgid "Suffix for Coupon Title"
 msgstr ""
 
-#: templates/email.php:74
-msgid "Click to visit store. This coupon will be applied automatically."
+#: includes/class-sc-coupon-fields.php:167
+msgctxt "placeholder"
+msgid "Suffix"
 msgstr ""
 
-#: templates/email.php:85 woocommerce-smart-coupons.php:622
-#: woocommerce-smart-coupons.php:698 woocommerce-smart-coupons.php:1036
-#: woocommerce-smart-coupons.php:2269 woocommerce-smart-coupons.php:3162
-msgid " &amp; "
+#: includes/class-sc-coupon-fields.php:167
+msgid "Adding suffix to the coupon title"
 msgstr ""
 
-#: templates/email.php:90 woocommerce-smart-coupons.php:627
-#: woocommerce-smart-coupons.php:703 woocommerce-smart-coupons.php:1041
-#: woocommerce-smart-coupons.php:2275 woocommerce-smart-coupons.php:3167
-msgid "Free Shipping"
+#: includes/class-sc-coupon-fields.php:173
+msgid "Show on cart / checkout?"
 msgstr ""
 
-#: templates/email.php:105 woocommerce-smart-coupons.php:1059
-#: woocommerce-smart-coupons.php:2300
-msgid "Never Expires "
+#: includes/class-sc-coupon-fields.php:173
+msgid ""
+"When checked, this coupon will be visible on cart / checkout page for "
+"everyone."
 msgstr ""
 
-#: templates/email.php:113
-msgid "Visit Store"
+#: includes/class-sc-coupon-fields.php:184
+msgid "Disable Email restriction?"
 msgstr ""
 
-#: templates/email.php:116
-msgid "You got this gift card"
+#: includes/class-sc-coupon-fields.php:184
+msgid "When checked, no e-mail id will be added through Smart Coupons plugin."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:192 woocommerce-smart-coupons.php:4339
+#: includes/class-sc-coupon-fields.php:272 includes/class-sc-settings.php:38
 msgid "Store Credit / Gift Certificate"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:194
+#: includes/class-sc-display-coupons.php:171
+#: includes/class-sc-display-coupons.php:636
+#: includes/class-sc-display-coupons.php:733
+#: includes/class-sc-display-coupons.php:1237
+#: includes/class-sc-shortcode.php:388 templates/email.php:100
+msgid " &amp; "
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:176
+#: includes/class-sc-display-coupons.php:641
+#: includes/class-sc-display-coupons.php:738
+#: includes/class-sc-display-coupons.php:1242
+#: includes/class-sc-shortcode.php:394 templates/email.php:105
+msgid "Free Shipping"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:195
+#: includes/class-sc-display-coupons.php:660
+#: includes/class-sc-display-coupons.php:757
+msgid "Never Expires"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:230
+#: includes/class-sc-display-coupons.php:453
+msgid "Available Coupons (Click on the coupon to use it)"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:281
+msgid "By purchasing this product, you will get following coupon(s):"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:326
+#: includes/class-sc-display-coupons.php:369
+#: includes/class-sc-display-coupons.php:373
+msgid "Store Credit of "
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:379
+#: includes/class-sc-display-coupons.php:391
+msgid " discount on your entire purchase"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:383
+#: includes/class-sc-display-coupons.php:387
+msgid " discount on product"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:397
+msgid "%s coupon of %s"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:404
+msgid "%s Free Shipping"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:404
+msgid " &"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:442
+msgid "Select options"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:464
+#: includes/class-sc-display-coupons.php:572
+msgid "Available Store Credit / Coupons"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:577
+msgid "Sorry, No coupons available for you."
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:581
+msgid "Store Credits"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:673
+msgid "Total Credit Amount: %s"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:680
+msgid "Discount Coupons"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1051
+msgid "Coupon Received"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1082
+#: includes/class-sc-display-coupons.php:1093
+msgid "Less details"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1084
+#: includes/class-sc-display-coupons.php:1096
+#: includes/class-sc-display-coupons.php:1191
+msgid "More details"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1260
+#: includes/class-sc-shortcode.php:419 templates/email.php:120
+msgid "Never Expires "
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1267
+#: includes/class-sc-display-coupons.php:1302
+msgid "Sender"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1268
+#: includes/class-sc-display-coupons.php:1300
+msgid "Receiver"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1298
+msgid "Code"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1299
+msgid "Amount"
+msgstr ""
+
+#: includes/class-sc-display-coupons.php:1384
+msgid "Coupon Sent"
+msgstr ""
+
+#: includes/class-sc-duplicate-coupon.php:92
+msgid "Make a duplicate from this coupon"
+msgstr ""
+
+#: includes/class-sc-duplicate-coupon.php:93
+msgid "Duplicate"
+msgstr ""
+
+#: includes/class-sc-duplicate-coupon.php:162
+msgid "(Copy)"
+msgstr ""
+
+#: includes/class-sc-duplicate-coupon.php:230
+msgid "No coupon to duplicate has been supplied!"
+msgstr ""
+
+#: includes/class-sc-duplicate-coupon.php:249
+msgid "Coupon creation failed, could not find original product:"
+msgstr ""
+
+#: includes/class-sc-order-fields.php:141
+msgid "Store Credit Used"
+msgstr ""
+
+#: includes/class-sc-order-fields.php:141
+msgid "This is the total credit used."
+msgstr ""
+
+#: includes/class-sc-order-fields.php:192
+msgid "Store Credit Used:"
+msgstr ""
+
+#: includes/class-sc-order-fields.php:255
+msgid "Store Credit:"
+msgstr ""
+
+#: includes/class-sc-order-fields.php:404
+msgid "Store Credit / Gift Card Balance"
+msgstr ""
+
+#: includes/class-sc-process.php:167 includes/class-sc-purchase-credit.php:416
+#: includes/class-sc-purchase-credit.php:499
+msgid "Email address"
+msgstr ""
+
+#: includes/class-sc-process.php:173
+msgid "Error: Gift Card Receiver&#146;s E-mail address is invalid."
+msgstr ""
+
+#: includes/class-sc-process.php:365
+msgid "%1$s worth of Store Credit restored to coupon %2$s."
+msgstr ""
+
+#: includes/class-sc-process.php:371
+msgid "%s Because PayPal doesn't accept discount on shipping & tax."
+msgstr ""
+
+#: includes/class-sc-process.php:829
+msgid "Gift Card sent successfully!"
+msgstr ""
+
+#: includes/class-sc-process.php:833
+msgid "You have successfully sent %1$d %2$s to %3$s (%4$s)"
+msgstr ""
+
+#: includes/class-sc-process.php:833 woocommerce-smart-coupons.php:317
+msgid "Gift Card"
+msgid_plural "Gift Cards"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-sc-product-fields.php:87
+#: includes/class-sc-product-fields.php:107
+msgid "Search for a coupon&hellip;"
+msgstr ""
+
+#: includes/class-sc-product-fields.php:99
+#: includes/class-sc-product-fields.php:121
+msgid " ( %1$s: %2$s )"
+msgstr ""
+
+#: includes/class-sc-product-fields.php:99
+#: includes/class-sc-product-fields.php:121
+msgid "Type"
+msgstr ""
+
+#: includes/class-sc-product-fields.php:133
+msgid ""
+"These coupon/s will be given to customers who buy this product. The coupon "
+"code will be automatically sent to their email address on purchase."
+msgstr ""
+
+#: includes/class-sc-product-fields.php:389
+msgid "Send coupons on renewals?"
+msgstr ""
+
+#: includes/class-sc-product-fields.php:389
+msgid "Check this box to send above coupons on each renewal order."
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:124
+msgid "Invalid amount"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:163
+msgid "Purchase Credit worth"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:333
+msgid "Coupon Receiver Details"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:381
+msgid "Your order contains coupons. What would you like to do?"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:383
+msgid "Send coupons to me"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:385
+msgid "Gift coupons to someone else"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:387
+msgid "Send to one person"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:388
+msgid "Send to different people"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:490
+msgid "Free Shipping coupon"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:493
+msgid "coupon"
+msgstr ""
+
+#: includes/class-sc-purchase-credit.php:498
+msgid "Send %1$s of %2$s to"
+msgstr ""
+
+#: includes/class-sc-settings.php:40
 msgid "The following options are specific to Gift / Credit."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:198
+#: includes/class-sc-settings.php:44
 msgid "Default Gift / Credit options"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:199
+#: includes/class-sc-settings.php:45
 msgid "Show Credit on My Account page."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:206
+#: includes/class-sc-settings.php:52
 msgid "Delete Gift / Credit, when credit is used up."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:213
+#: includes/class-sc-settings.php:59
 msgid "Individual use"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:220
+#: includes/class-sc-settings.php:66
 msgid "E-mail subject"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:221
+#: includes/class-sc-settings.php:67
 msgid ""
 "This text will be used as subject for e-mails to be sent to customers. In "
 "case of empty value following message will be displayed <br/"
 "><b>Congratulations! You've received a coupon</b>"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:228
+#: includes/class-sc-settings.php:74
 msgid "Product page text"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:229
+#: includes/class-sc-settings.php:75
 msgid ""
 "Text to display associated coupon details on the product shop page. In case "
 "of empty value following message will be displayed <br/><b>By purchasing "
 "this product, you will get following coupon(s):</b> "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:236
+#: includes/class-sc-settings.php:82
 msgid "Cart/Checkout page text"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:237
+#: includes/class-sc-settings.php:83
 msgid ""
 "Text to display as title of 'Available Coupons List' on Cart and Checkout "
 "page. In case of empty value following message will be displayed <br/"
 "><b>Available Coupons (Click on the coupon to use it)</b> "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:244
+#: includes/class-sc-settings.php:90
 msgid "My Account page text"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:245
+#: includes/class-sc-settings.php:91
 msgid ""
 "Text to display as title of available coupons on My Account page. In case of "
 "empty value following message will be displayed <br/><b>Store Credit "
 "Available</b>"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:252
+#: includes/class-sc-settings.php:98
 msgid "Purchase Credit text"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:253
+#: includes/class-sc-settings.php:99
 msgid ""
 "Text for purchasing 'Store Credit of any amount' product. In case of empty "
 "value following message will be displayed <br/><b>Purchase Credit worth</b>"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:260
+#: includes/class-sc-settings.php:106
 msgid "Title for Store Credit receiver's details form"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:261
+#: includes/class-sc-settings.php:107
 msgid ""
 "Text to display as title of Receiver's details form. In case of empty value "
 "following message will be displayed <br/><b>Store Credit Receiver Details</b>"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:268
+#: includes/class-sc-settings.php:114
 msgid "Additional information about form"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:269
+#: includes/class-sc-settings.php:115
 msgid ""
 "Text to display as additional information below 'Receiver's detail Form "
 "Title'. In case of empty value following message will be displayed <br/"
 "><b>Enter email address and optional message for Gift Card receiver</b>"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:514 woocommerce-smart-coupons.php:551
-#: woocommerce-smart-coupons.php:4399 woocommerce-smart-coupons.php:5920
-#: woocommerce-smart-coupons.php:5925 woocommerce-smart-coupons.php:7095
-msgid "Coupons"
+#: includes/class-sc-settings.php:201
+msgid "Uncheck"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:579 woocommerce-smart-coupons.php:3833
-msgid "Available Store Credit / Coupons"
+#: includes/class-sc-settings.php:201
+msgid "Delete Gift / Credit, when credit is used up"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:584
-msgid "Sorry, No coupons available for you."
+#: includes/class-sc-settings.php:204
+msgid "Important setting"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:588 woocommerce-smart-coupons.php:2241
-#: woocommerce-smart-coupons.php:2397 woocommerce-smart-coupons.php:5193
-msgid "Store Credit"
+#: includes/class-sc-settings.php:207
+msgid ""
+"%1$s: %2$s to avoid issues related to missing data for store credits. %3$s"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:646 woocommerce-smart-coupons.php:722
-#: woocommerce-smart-coupons.php:3186
-msgid "Never Expires"
+#. #-#-#-#-#  woocommerce-smart-coupons.pot (WooCommerce Smart Coupons 3.3.8)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: includes/class-sc-settings.php:207
+msgid "WooCommerce Smart Coupons"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:659
-msgid "Total Credit Amount : %s"
+#: includes/class-sc-settings.php:207
+msgid "Setting"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:666
-msgid "Discount Coupons"
+#: includes/class-sc-settings.php:207
+msgid "Hide this notice"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:787
-msgid "Coupon Sent"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:863
-msgid "Coupon Received"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:895 woocommerce-smart-coupons.php:906
-msgid "Less details"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:897 woocommerce-smart-coupons.php:909
-#: woocommerce-smart-coupons.php:1008
-msgid "More details"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1066 woocommerce-smart-coupons.php:1100
-msgid "Sender"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1067 woocommerce-smart-coupons.php:1098
-msgid "Receiver"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1069 woocommerce-smart-coupons.php:1099
-#: woocommerce-smart-coupons.php:3520 woocommerce-smart-coupons.php:3648
-#: woocommerce-smart-coupons.php:6030
-msgid "Message"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1096
-msgid "Code"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1097
-msgid "Amount"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1303
-msgid "Order paid by store credit."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1619
-msgid "Store Credit:"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1862
-msgid "Expires Today "
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1866
-msgid "Expires in "
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1866
-msgid " days"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:1870
-msgid "Expires on "
-msgstr ""
-
-#: woocommerce-smart-coupons.php:2246 woocommerce-smart-coupons.php:2261
-#: woocommerce-smart-coupons.php:2402 woocommerce-smart-coupons.php:2417
-msgid "Cart Discount"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:2251 woocommerce-smart-coupons.php:2256
-#: woocommerce-smart-coupons.php:2407 woocommerce-smart-coupons.php:2412
-msgid "Product Discount"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:2571 woocommerce-smart-coupons.php:2611
-#: woocommerce-smart-coupons.php:2673
+#: includes/class-sc-shortcode.php:543 includes/class-sc-shortcode.php:583
+#: includes/class-sc-shortcode.php:645
 msgid "No search term specified."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2575
+#: includes/class-sc-shortcode.php:547
 msgid "Enter more than one character to search."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2591
+#: includes/class-sc-shortcode.php:563
 msgid "Click to select coupon code."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2593
+#: includes/class-sc-shortcode.php:565
 msgid "No coupon code found."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2669
+#: includes/class-sc-shortcode.php:641
 msgid "Coupon code"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2669
+#: includes/class-sc-shortcode.php:641
 msgid "Search coupon..."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2679
+#: includes/class-sc-shortcode.php:651
 msgid "Color"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2681
+#: includes/class-sc-shortcode.php:653
 msgid "Light Green"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2682
+#: includes/class-sc-shortcode.php:654
 msgid "Light Blue"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2683
+#: includes/class-sc-shortcode.php:655
 msgid "Light Red"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2684
+#: includes/class-sc-shortcode.php:656
 msgid "Light Yellow"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2689
+#: includes/class-sc-shortcode.php:661
 msgid "Border"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2700
+#: includes/class-sc-shortcode.php:672
 msgid "Size"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2702
+#: includes/class-sc-shortcode.php:674
 msgid "Small"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2703
+#: includes/class-sc-shortcode.php:675
 msgid "Medium"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2704
+#: includes/class-sc-shortcode.php:676
 msgid "Large"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2714
+#: includes/class-sc-shortcode.php:686
 msgid "Preview"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2718
+#: includes/class-sc-shortcode.php:690
 msgid "XX Discount type"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2719
+#: includes/class-sc-shortcode.php:691
 msgid "coupon-code"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2723
+#: includes/class-sc-shortcode.php:695
 msgid "Description"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2726
+#: includes/class-sc-shortcode.php:698
 msgid "Expires on xx date"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2733
+#: includes/class-sc-shortcode.php:705
 msgid "Insert Shortcode"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2736
+#: includes/class-sc-shortcode.php:708
 msgid "Cancel"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2810
-msgid "Select options"
+#: includes/class-wc-csv-coupon-import.php:323
+#: includes/class-wc-csv-coupon-import.php:376
+#: includes/class-wc-csv-coupon-import.php:388
+msgid "Sorry, there has been an error."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2933
-msgid "Invalid amount"
+#: includes/class-wc-csv-coupon-import.php:324
+msgid "The file does not exist, please try again."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:2976
-msgid "Purchase Credit worth"
+#: includes/class-wc-csv-coupon-import.php:440
+msgid "Map Fields"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3007
-msgid "Store Credit / Gift Card Balance"
+#: includes/class-wc-csv-coupon-import.php:441
+msgid "Here you can map your imported columns to coupon data fields."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3019 woocommerce-smart-coupons.php:3030
-msgid "Available Coupons (Click on the coupon to use it)"
+#: includes/class-wc-csv-coupon-import.php:446
+msgid "Map to"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3458 woocommerce-smart-coupons.php:3517
-#: woocommerce-smart-coupons.php:3645
-msgid "Email address"
+#: includes/class-wc-csv-coupon-import.php:447
+msgid "Column Header"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3465 woocommerce-smart-coupons.php:3467
-msgid "Error: Gift Card Receiver&#146;s E-mail address is invalid."
+#: includes/class-wc-csv-coupon-import.php:448
+msgid "Column Value"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3508
-msgid "Free Shipping coupon"
+#: includes/class-wc-csv-coupon-import.php:460
+msgid "Custom Field: <strong>%s</strong>"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3511
-msgid "coupon"
+#: includes/class-wc-csv-coupon-import.php:465
+msgid "Post data"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3516
-msgid "Send %s of %s to"
+#: includes/class-wc-csv-coupon-import.php:481
+msgid "Coupon data"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3556
-msgid "Coupon Receiver Details"
+#: includes/class-wc-csv-coupon-import.php:525
+msgid "E-mail imported coupon codes to respective customers/users."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3607
-msgid "Your order contains coupons. What would you like to do?"
+#: includes/class-wc-csv-coupon-import.php:529
+msgid "Submit"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3609
-msgid "Send coupons to me"
+#: includes/class-wc-csv-coupon-import.php:551
+msgid "Import WooCommerce Coupons"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3611
-msgid "Gift coupons to someone else"
+#: includes/class-wc-csv-coupon-import.php:553
+msgid "Choose a CSV (.csv) file to upload, then click Upload file and import."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:3613
-msgid "Send to one person"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3614
-msgid "Send to different people"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3678
-msgid "By purchasing this product, you will get following coupon(s):"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3710 woocommerce-smart-coupons.php:3753
-#: woocommerce-smart-coupons.php:3758
-msgid "Store Credit of "
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3764 woocommerce-smart-coupons.php:3776
-msgid " discount on your entire purchase"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3768 woocommerce-smart-coupons.php:3772
-msgid " discount on product"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3781
-msgid "%s Free Shipping"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:3781
-msgid " &"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4107
-msgid "Store Credit Used:"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4145
-msgid "Store Credit Used"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4145
-msgid "This is the total credit used."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4322 woocommerce-smart-coupons.php:4324
-msgid "Coupon removed. There is no credit remaining in %s."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4403
-msgid "Search for a coupon&hellip;"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4416 woocommerce-smart-coupons.php:4443
-msgid " ( %s: %s )"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4416 woocommerce-smart-coupons.php:4443
-msgid "Type"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4429
-msgid "Search for a coupon..."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:4456 woocommerce-smart-coupons.php:4459
+#: includes/class-wc-csv-coupon-import.php:561
 msgid ""
-"These coupon/s will be given to customers who buy this product. The coupon "
-"code will be automatically sent to their email address on purchase."
+"Before you can upload your import file, you will need to fix the following "
+"error:"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:4654
-msgid "Send coupons on renewals?"
+#: includes/class-wc-csv-coupon-import.php:570
+msgid "Choose a file from your computer:"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:4654
-msgid "Check this box to send above coupons on each renewal order."
+#: includes/class-wc-csv-coupon-import.php:576
+msgid "Maximum size: %s"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5085
-msgid "Gift Card sent successfully!"
+#: includes/class-wc-csv-coupon-import.php:581
+msgid "OR enter path to file:"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5089
-msgid "You have successfully sent %d %s to %s (%s)"
+#: includes/class-wc-csv-coupon-import.php:590
+msgid "Upload file and import"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5089 woocommerce-smart-coupons.php:5190
-msgid "Gift Card"
-msgid_plural "Gift Cards"
-msgstr[0] ""
-msgstr[1] ""
+#: includes/class-wc-csv-coupon-import.php:591
+msgid "%s Back to Coupons"
+msgstr ""
 
-#: woocommerce-smart-coupons.php:5189
+#: includes/class-wcs-compatibility.php:579
+msgid "Order paid by store credit."
+msgstr ""
+
+#: templates/email.php:51
+msgid ""
+"To redeem your discount use coupon code %s during checkout or click on the "
+"following coupon:"
+msgstr ""
+
+#: templates/email.php:89
+msgid "Click to visit store. This coupon will be applied automatically."
+msgstr ""
+
+#: templates/email.php:128
+msgid "Visit Store"
+msgstr ""
+
+#: templates/email.php:131
+msgid "You got this gift card"
+msgstr ""
+
+#: woocommerce-smart-coupons.php:93 woocommerce-smart-coupons.php:101
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: woocommerce-smart-coupons.php:241
+msgid "Expires Today "
+msgstr ""
+
+#: woocommerce-smart-coupons.php:245
+msgid "Expires in "
+msgstr ""
+
+#: woocommerce-smart-coupons.php:245
+msgid " days"
+msgstr ""
+
+#: woocommerce-smart-coupons.php:249
+msgid "Expires on "
+msgstr ""
+
+#: woocommerce-smart-coupons.php:316
 msgid "from"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5196
+#: woocommerce-smart-coupons.php:323
 msgid "Congratulations! You've received a %s "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5212
-msgid "You have received a %s worth %s "
+#: woocommerce-smart-coupons.php:349
+msgid "You have received a %1$s worth %2$s "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5216
+#: woocommerce-smart-coupons.php:353
 msgid "You have received a coupon worth %s (on entire purchase) "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5220
+#: woocommerce-smart-coupons.php:357
 msgid "You have received a coupon worth %s (for a product) "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5224
-msgid "You have received a coupon worth %s%% (for a product) "
+#: woocommerce-smart-coupons.php:361
+msgid "You have received a coupon worth %1$s%% (for a product) "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5228
-msgid "You have received a coupon worth %s%% (on entire purchase) "
+#: woocommerce-smart-coupons.php:365
+msgid "You have received a coupon worth %1$s%% (on entire purchase) "
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5234
-msgid "%s Free Shipping%s"
+#: woocommerce-smart-coupons.php:372
+msgid "You have received %s coupon of %s"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5234
+#: woocommerce-smart-coupons.php:379
+msgid "%1$s Free Shipping%2$s"
+msgstr ""
+
+#: woocommerce-smart-coupons.php:379
 msgid "&"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5234
+#: woocommerce-smart-coupons.php:379
 msgid "You have received a"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5234
+#: woocommerce-smart-coupons.php:379
 msgid " coupon"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5548
-msgid "Make a duplicate from this coupon"
+#: woocommerce-smart-coupons.php:1012
+msgid "Coupon removed. There is no credit remaining in %s."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:5549
-msgid "Duplicate"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5618
-msgid "(Copy)"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5686
-msgid "No coupon to duplicate has been supplied!"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5705
-msgid "Coupon creation failed, could not find original product:"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5771
-msgid "[%s with email of %s]"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5784
-msgid "WooCommerce Coupons"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5784
-msgid "Import <strong>coupons</strong> to your store using CSV file."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5854
-msgid ""
-"Import complete - imported <strong>%s</strong>, skipped <strong>%s</strong>"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5899
-msgid "Smart Coupon"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5921
-msgid "Add Coupon"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5926 woocommerce-smart-coupons.php:7096
-msgid "Bulk Generate / Import Coupons"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5927 woocommerce-smart-coupons.php:7097
-msgid "Send Store Credit"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5932
-msgid "%s Please install and enable PHP extension %s"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5932
-msgid "Required"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5932
-msgid "Click here"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5932
-msgid "for more details."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5959
-msgid "Bulk Upload / Import Coupons using CSV file"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5960
-msgid ""
-"Upload a CSV file & click 'Import' . Importing requires <code>post_title</"
-"code> column."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5961 woocommerce-smart-coupons.php:6118
-msgid "Import Coupons"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5972
-msgid "Store Credit / Gift Card sent successfully."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5978
-msgid "Send Store Credit / Gift Card"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5979
-msgid ""
-"Click \"Send\" to send Store Credit / Gift Card. *All field are compulsary."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5986
-msgid "Email ID"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5994
-msgid "Invalid email address."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:5997
-msgid "Use comma \",\" as separator for multiple e-mail ids"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6003 woocommerce-smart-coupons.php:6504
-msgid "Coupon Amount"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6006
-msgid "0.00"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6011
-msgid "Invalid amount."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6039
-msgid "Send"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6052
-msgid "This feature is available for WooCommerce 2.1 or later"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6104
-msgid "Please enter a valid value for Number of Coupons to Generate"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6118
-msgid "Generate Coupons"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6119
-msgid "You can bulk generate coupons using options below."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6137
-msgid "Action"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6143
-msgid "Generate coupons &"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6145
-msgid "Add to store"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6146
-msgid "Adds generated coupons to store."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6152
-msgid "Export to CSV"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6153
-msgid "Downloads a .CSV file, which can be used for importing"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6159
-msgid "Email to customer"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6160
-msgid "Send generated coupon codes to respective customer via email as well"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6164
-msgid "Number of Coupons to Generate "
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6165
-msgid "10"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6173
-msgid "Coupon Data"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6180
-msgid "Apply"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6222
-msgid "Export"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6471
+#: woocommerce-smart-coupons.php:1656
 msgid "Coupon Validity"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6472
+#: woocommerce-smart-coupons.php:1657
 msgid "Validity Suffix"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6473
+#: woocommerce-smart-coupons.php:1658
 msgid "Auto Generate Coupon"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6474
+#: woocommerce-smart-coupons.php:1659
 msgid "Coupon Title Prefix"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6475
+#: woocommerce-smart-coupons.php:1660
 msgid "Coupon Title Suffix"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6476
+#: woocommerce-smart-coupons.php:1661
 msgid "Is Pick Price of Product"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6477
+#: woocommerce-smart-coupons.php:1662
 msgid "Disable Email Restriction"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6478
+#: woocommerce-smart-coupons.php:1663
 msgid "Coupon Is Visible Storewide"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6494
+#: woocommerce-smart-coupons.php:1680
 msgid "Coupon Code"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6495
+#: woocommerce-smart-coupons.php:1681
 msgid "Post Excerpt"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6496
+#: woocommerce-smart-coupons.php:1682
 msgid "Post Status"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6497
+#: woocommerce-smart-coupons.php:1683
 msgid "Post Parent"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6498
+#: woocommerce-smart-coupons.php:1684
 msgid "Menu Order"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6499
+#: woocommerce-smart-coupons.php:1685
 msgid "Post Date"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6503
+#: woocommerce-smart-coupons.php:1690
 msgid "Discount Type"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6505
+#: woocommerce-smart-coupons.php:1692
 msgid "Free shipping"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6506
+#: woocommerce-smart-coupons.php:1693
 msgid "Expiry date"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6507
+#: woocommerce-smart-coupons.php:1694
 msgid "Minimum Spend"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6508
+#: woocommerce-smart-coupons.php:1695
 msgid "Maximum Spend"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6509
+#: woocommerce-smart-coupons.php:1696
 msgid "Individual USe"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6510
+#: woocommerce-smart-coupons.php:1697
 msgid "Exclude Sale Items"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6511
+#: woocommerce-smart-coupons.php:1698
 msgid "Product IDs"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6512
+#: woocommerce-smart-coupons.php:1699
 msgid "Exclude product IDs"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6513
+#: woocommerce-smart-coupons.php:1700
 msgid "Product categories"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6514
+#: woocommerce-smart-coupons.php:1701
 msgid "Exclude Product categories"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6515
+#: woocommerce-smart-coupons.php:1702
 msgid "Customer Email"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6516
+#: woocommerce-smart-coupons.php:1703
 msgid "Usage Limit"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6517
+#: woocommerce-smart-coupons.php:1704
 msgid "Usage Limit Per User"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6518
+#: woocommerce-smart-coupons.php:1705
 msgid "Limit Usage to X Items"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6668
-msgid "Valid for"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6671
-msgid "Days"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6672
-msgid "Weeks"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6673
-msgid "Months"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6674
-msgid "Years"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6677
-msgid "Pick Product's Price?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6677
-msgid ""
-"Check this box to allow overwriting coupon's amount with Product's Price."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6681
-msgid "Auto Generation of Coupon"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6681
-msgid "Check this box if the coupon needs to be auto generated"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6685
-msgid "Prefix for Coupon Title"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6685
-msgctxt "placeholder"
-msgid "Prefix"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6685
-msgid "Adding prefix to the coupon title"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6688
-msgid "Suffix for Coupon Title"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6688
-msgctxt "placeholder"
-msgid "Suffix"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6688
-msgid "Adding suffix to the coupon title"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6694
-msgid "Show on cart / checkout?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6694
-msgid ""
-"When checked, this coupon will be visible on cart / checkout page for "
-"everyone."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6699 woocommerce-smart-coupons.php:6709
-msgid "Disable Email restriction?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6699 woocommerce-smart-coupons.php:6709
-msgid "When checked, no e-mail id will be added through Smart Coupons plugin."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6880
+#: woocommerce-smart-coupons.php:1780
 msgctxt "enhanced select"
 msgid "One result is available, press enter to select it."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6881
+#: woocommerce-smart-coupons.php:1781
 msgctxt "enhanced select"
 msgid "%qty% results are available, use up and down arrow keys to navigate."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6882
+#: woocommerce-smart-coupons.php:1782
 msgctxt "enhanced select"
 msgid "No matches found"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6883
+#: woocommerce-smart-coupons.php:1783
 msgctxt "enhanced select"
 msgid "Loading failed"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6884
+#: woocommerce-smart-coupons.php:1784
 msgctxt "enhanced select"
 msgid "Please enter 1 or more characters"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6885
+#: woocommerce-smart-coupons.php:1785
 msgctxt "enhanced select"
 msgid "Please enter %qty% or more characters"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6886
+#: woocommerce-smart-coupons.php:1786
 msgctxt "enhanced select"
 msgid "Please delete 1 character"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6887
+#: woocommerce-smart-coupons.php:1787
 msgctxt "enhanced select"
 msgid "Please delete %qty% characters"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6888
+#: woocommerce-smart-coupons.php:1788
 msgctxt "enhanced select"
 msgid "You can only select 1 item"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6889
+#: woocommerce-smart-coupons.php:1789
 msgctxt "enhanced select"
 msgid "You can only select %qty% items"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6890
+#: woocommerce-smart-coupons.php:1790
 msgctxt "enhanced select"
 msgid "Loading more results&hellip;"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6891
+#: woocommerce-smart-coupons.php:1791
 msgctxt "enhanced select"
 msgid "Searching&hellip;"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:6921
-msgid "Please enter in decimal (%s) format without thousand separators."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6922
-msgid ""
-"Please enter in monetary decimal (%s) format without thousand separators and "
-"currency symbols."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6923
-msgid "Please enter in country code with two capital letters."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6924
-msgid "Please enter in a value less than the regular price."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6930
-msgid ""
-"Are you sure you want to remove the selected items? If you have previously "
-"reduced this item's stock, or this order was submitted by a customer, you "
-"will need to manually restore the item's stock."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6931
-msgid "Please select some items."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6932
-msgid ""
-"Are you sure you wish to process this refund? This action cannot be undone."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6933
-msgid ""
-"Are you sure you wish to delete this refund? This action cannot be undone."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6934
-msgid ""
-"Are you sure you wish to delete this tax column? This action cannot be "
-"undone."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6935
-msgid "Remove this item meta?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6936
-msgid "Remove this attribute?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6937
-msgid "Name"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6938
-msgid "Remove"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6939
-msgid "Click to toggle"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6940
-msgid "Value(s)"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6941
-msgid "Enter some text, or some attributes by pipe (|) separating values."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6942
-msgid "Visible on the product page"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6943
-msgid "Used for variations"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6944
-msgid "Enter a name for the new attribute term:"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6945
-msgid "Calculate totals based on order items, discounts, and shipping?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6946
-msgid ""
-"Calculate line taxes? This will calculate taxes based on the customers "
-"country. If no billing/shipping is set it will use the store base country."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6947
-msgid ""
-"Copy billing information to shipping information? This will remove any "
-"currently entered shipping information."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6948
-msgid ""
-"Load the customer's billing information? This will remove any currently "
-"entered billing information."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6949
-msgid ""
-"Load the customer's shipping information? This will remove any currently "
-"entered shipping information."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6950
-msgid "Featured"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6953
-msgid "No customer selected"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6977
-msgid ""
-"Could not grant access - the user may already have permission for this file "
-"or billing email is not set. Ensure the billing email is set, and the order "
-"has been saved."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6978
-msgid "Are you sure you want to revoke access to this download?"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6979
-msgid "You cannot add the same tax rate twice!"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:6980
-msgid ""
-"Your product has variations! Before changing the product type, it is a good "
-"idea to delete the variations to avoid errors in the stock reports."
-msgstr ""
-
-#: woocommerce-smart-coupons.php:7112
+#: woocommerce-smart-coupons.php:1893
 msgid "About"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:7150
-msgid "Uncheck"
+#: woocommerce-smart-coupons.php:1908
+msgid "%1$s %2$s is active but it will only work with WooCommerce 2.5+. %3$s."
 msgstr ""
 
-#: woocommerce-smart-coupons.php:7150
-msgid "Delete Gift / Credit, when credit is used up"
+#: woocommerce-smart-coupons.php:1908
+msgid "Important"
 msgstr ""
 
-#: woocommerce-smart-coupons.php:7153
-msgid "Important setting"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:7156
-msgid "%s: %s to avoid issues related to missing data for store credits. %s"
-msgstr ""
-
-#. #-#-#-#-#  woocommerce-smart-coupons.pot (WooCommerce Smart Coupons 3.2)  #-#-#-#-#
-#. Plugin Name of the plugin/theme
-#: woocommerce-smart-coupons.php:7156
-msgid "WooCommerce Smart Coupons"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:7156
-msgid "Setting"
-msgstr ""
-
-#: woocommerce-smart-coupons.php:7156
-msgid "Hide this notice"
+#: woocommerce-smart-coupons.php:1908
+msgid "Please update WooCommerce to the latest version"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "http://www.woothemes.com/products/smart-coupons/"
+msgid "https://woocommerce.com/products/smart-coupons/"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -1626,9 +1688,9 @@ msgid ""
 msgstr ""
 
 #. Author of the plugin/theme
-msgid "StoreApps"
+msgid "WooCommerce"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://www.storeapps.org/"
+msgid "https://woocommerce.com/"
 msgstr ""
