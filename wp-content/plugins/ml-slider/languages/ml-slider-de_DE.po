@@ -556,8 +556,8 @@ msgid "Add slider"
 msgstr "Diashow hinzufügen"
 
 #: ../ml-slider.php:1669
-msgid "Insert Meta Slider"
-msgstr "Meta Slider Diashow einfügen"
+msgid "Insert MetaSlider"
+msgstr "MetaSlider Diashow einfügen"
 
 #: ../ml-slider.php:1671
 msgid "Choose slideshow"
@@ -580,8 +580,8 @@ msgid "Upgrade to Pro $39"
 msgstr "Upgrade auf Pro $39"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "Meta Slider"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:108
 msgid "Title:"

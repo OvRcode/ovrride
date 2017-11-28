@@ -61,7 +61,7 @@ class MetaSliderSystemCheck {
         }
 
         if ( !function_exists( 'wp_enqueue_media' ) ) {
-            $error = "Meta Slider requires WordPress 3.5 or above. Please upgrade your WordPress installation.";
+            $error = "MetaSlider requires WordPress 3.5 or above. Please upgrade your WordPress installation.";
             $this->printMessage( $error, 'wordPressVersion' );
         } else {
             $this->options['wordPressVersion'] = false;
@@ -77,7 +77,7 @@ class MetaSliderSystemCheck {
         }
 
         if ( ( !extension_loaded( 'gd' ) || !function_exists( 'gd_info' ) ) && ( !extension_loaded( 'imagick' ) || !class_exists( 'Imagick' ) || !class_exists( 'ImagickPixel' ) ) ) {
-            $error = "Meta Slider requires the GD or ImageMagick PHP extension. Please contact your hosting provider";
+            $error = "MetaSlider requires the GD or ImageMagick PHP extension. Please contact your hosting provider";
             $this->printMessage( $error, 'imageLibrary' );
         } else {
             $this->options['imageLibrary'] = false;

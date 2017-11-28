@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Meta Slider v3.2.1\n"
+"Project-Id-Version: MetaSlider v3.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2015-01-15 17:46:23+0000\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: inc/metaslider.widget.class.php:18
 #: ml-slider.php:0
 #@ metaslider
-msgid "Meta Slider"
+msgid "MetaSlider"
 msgstr "Мета слайдер"
 
 #: inc/metaslider.widget.class.php:108
@@ -722,7 +722,7 @@ msgstr "Добавить слайдер"
 
 #: ml-slider.php:1671
 #@ metaslider
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr "Вставить Мета Слайдер"
 
 #: ml-slider.php:1673

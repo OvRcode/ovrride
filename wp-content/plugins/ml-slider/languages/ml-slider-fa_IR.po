@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-1: ..\n"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "اسلایدر"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:108
 msgid "Title:"
@@ -588,7 +588,7 @@ msgid "Add slider"
 msgstr "قرار دادن اسلایدر"
 
 #: ../ml-slider.php:1499
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr "قرار دادن اسلایدر"
 
 #: ../ml-slider.php:1501

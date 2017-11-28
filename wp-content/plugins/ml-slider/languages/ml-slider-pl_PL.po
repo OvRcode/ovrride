@@ -543,7 +543,7 @@ msgid "Add slider"
 msgstr "Dodaj do slidera"
 
 #: ../ml-slider.php:1258
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr ""
 
 #: ../ml-slider.php:1260
@@ -556,8 +556,8 @@ msgid "No slideshows found"
 msgstr "Nie znaleziono składników pokazu"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "Meta S;lider"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:111
 msgid "Title:"

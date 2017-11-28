@@ -541,7 +541,7 @@ msgid "Add slider"
 msgstr "Legg til lysbildeserie"
 
 #: ../ml-slider.php:1258
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr "Sett inn Meta Lysbildeserie"
 
 #: ../ml-slider.php:1260
@@ -553,8 +553,8 @@ msgid "No slideshows found"
 msgstr "Ingen slideshow funnet"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "Meta Lysbildeserie"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:111
 msgid "Title:"

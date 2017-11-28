@@ -1,11 +1,11 @@
 <?php
 /*
- * Meta Slider. Slideshow plugin for WordPress.
+ * MetaSlider. Slideshow plugin for WordPress.
  *
- * Plugin Name: Meta Slider
+ * Plugin Name: MetaSlider
  * Plugin URI:  https://www.metaslider.com
  * Description: Easy to use slideshow plugin. Create SEO optimised responsive slideshows with Nivo Slider, Flex Slider, Coin Slider and Responsive Slides.
- * Version:     3.5.1
+ * Version:     3.6.6
  * Author:      Team Updraft
  * Author URI:  https://www.metaslider.com
  * License:     GPL-2.0+
@@ -31,8 +31,12 @@ class MetaSliderPlugin {
     /**
      * @var string
      */
-    public $version = '3.5.1';
+    public $version = '3.6.6';
 
+    /**
+     * @var string The lowest tier price for upgrades
+     */
+    public $pro_price = '39';
 
     /**
      * @var MetaSlider
@@ -54,35 +58,32 @@ class MetaSliderPlugin {
      * Constructor
      */
     public function __construct() {
-
         $this->define_constants();
         $this->includes();
         $this->setup_actions();
         $this->setup_filters();
         $this->setup_shortcode();
         $this->register_slide_types();
-
+        $this->admin = new MetaSlider_Admin_Pages($this);
     }
 
 
     /**
-     * Define Meta Slider constants
+     * Define MetaSlider constants
      */
     private function define_constants() {
-
-        define( 'METASLIDER_VERSION',    $this->version );
-        define( 'METASLIDER_BASE_URL',   trailingslashit( plugins_url( 'ml-slider' ) ) );
-        define( 'METASLIDER_ASSETS_URL', trailingslashit( METASLIDER_BASE_URL . 'assets' ) );
-        define( 'METASLIDER_PATH',       plugin_dir_path( __FILE__ ) );
-
+        define('METASLIDER_VERSION',    $this->version);
+        define('METASLIDER_BASE_URL',   trailingslashit(plugins_url('ml-slider')));
+        define('METASLIDER_ASSETS_URL', trailingslashit(METASLIDER_BASE_URL . 'assets'));
+        define('METASLIDER_ADMIN_URL',  trailingslashit(METASLIDER_BASE_URL . 'admin'));
+        define('METASLIDER_PATH',       plugin_dir_path(__FILE__));
+        define('METASLIDER_PRO_PRICE',  $this->pro_price);
     }
 
-
     /**
-     * All Meta Slider classes
+     * All MetaSlider classes
      */
     private function plugin_classes() {
-
         return array(
             'metaslider'             => METASLIDER_PATH . 'inc/slider/metaslider.class.php',
             'metacoinslider'         => METASLIDER_PATH . 'inc/slider/metaslider.coin.class.php',
@@ -94,9 +95,11 @@ class MetaSliderPlugin {
             'metasliderimagehelper'  => METASLIDER_PATH . 'inc/metaslider.imagehelper.class.php',
             'metaslidersystemcheck'  => METASLIDER_PATH . 'inc/metaslider.systemcheck.class.php',
             'metaslider_widget'      => METASLIDER_PATH . 'inc/metaslider.widget.class.php',
-            'simple_html_dom'        => METASLIDER_PATH . 'inc/simple_html_dom.php'
+            'simple_html_dom'        => METASLIDER_PATH . 'inc/simple_html_dom.php',
+            'metaslider_notices'     => METASLIDER_PATH . 'admin/Notices.php',
+            'metaslider_admin_pages' => METASLIDER_PATH . 'admin/Pages.php',
+            'metaslider_tour'        => METASLIDER_PATH . 'admin/Tour.php'
         );
-
     }
 
 
@@ -104,7 +107,7 @@ class MetaSliderPlugin {
      * Load required classes
      */
     private function includes() {
-
+        require_once(METASLIDER_PATH . 'admin/lib/helpers.php');
         $autoload_is_disabled = defined( 'METASLIDER_AUTOLOAD_CLASSES' ) && METASLIDER_AUTOLOAD_CLASSES === false;
 
         if ( function_exists( "spl_autoload_register" ) && ! ( $autoload_is_disabled ) ) {
@@ -131,7 +134,7 @@ class MetaSliderPlugin {
 
 
     /**
-     * Autoload Meta Slider classes to reduce memory consumption
+     * Autoload MetaSlider classes to reduce memory consumption
      */
     public function autoload( $class ) {
 
@@ -158,62 +161,58 @@ class MetaSliderPlugin {
 
 
     /**
-     * Hook Meta Slider into WordPress
+     * Hook MetaSlider into WordPress
      */
     private function setup_actions() {
+        add_action('admin_menu', array($this, 'register_admin_pages'), 9553);
+        add_action('init', array($this, 'register_post_types'));
+        add_action('init', array($this, 'register_taxonomy'));
+        add_action('init', array($this, 'load_plugin_textdomain'));
+        add_action('admin_footer', array($this, 'admin_footer'), 11);
+        add_action('widgets_init', array($this, 'register_metaslider_widget'));
 
-        add_action( 'admin_menu', array( $this, 'register_admin_menu' ), 9553 );
-        add_action( 'init', array( $this, 'register_post_types' ) );
-        add_action( 'init', array( $this, 'register_taxonomy' ) );
-        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
-        add_action( 'admin_footer', array( $this, 'admin_footer' ), 11 );
-        add_action( 'widgets_init', array( $this, 'register_metaslider_widget' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_global_styles'), 11 );
+        add_action('admin_post_metaslider_preview', array($this, 'do_preview'));
+        add_action('admin_post_metaslider_switch_view', array($this, 'switch_view'));
+        add_action('admin_post_metaslider_delete_slide', array($this, 'delete_slide'));
+        add_action('admin_post_metaslider_delete_slider', array($this, 'delete_slider'));
+        add_action('admin_post_metaslider_create_slider', array($this, 'create_slider'));
+        add_action('admin_post_metaslider_update_slider', array($this, 'update_slider'));
 
+        add_action('media_upload_vimeo', array($this, 'upgrade_to_pro_tab'));
+        add_action('media_upload_youtube', array($this, 'upgrade_to_pro_tab'));
+        add_action('media_upload_post_feed', array($this, 'upgrade_to_pro_tab'));
+        add_action('media_upload_layer', array($this, 'upgrade_to_pro_tab'));
 
-        add_action( 'admin_post_metaslider_preview', array( $this, 'do_preview' ) );
-        add_action( 'admin_post_metaslider_hide_go_pro_page', array( $this, 'hide_go_pro_page' ) );
-        add_action( 'admin_post_metaslider_switch_view', array( $this, 'switch_view' ) );
-        add_action( 'admin_post_metaslider_delete_slide', array( $this, 'delete_slide' ) );
-        add_action( 'admin_post_metaslider_delete_slider', array( $this, 'delete_slider' ) );
-        add_action( 'admin_post_metaslider_create_slider', array( $this, 'create_slider' ) );
-        add_action( 'admin_post_metaslider_update_slider', array( $this, 'update_slider' ) );
+        // TODO: Refactor to Slide class object
+        add_action('wp_ajax_delete_slide', array($this, 'ajax_delete_slide'));
+        add_action('wp_ajax_undelete_slide', array($this, 'ajax_undelete_slide'));
 
-        add_action( 'media_upload_vimeo', array( $this, 'upgrade_to_pro_tab' ) );
-        add_action( 'media_upload_youtube', array( $this, 'upgrade_to_pro_tab' ) );
-        add_action( 'media_upload_post_feed', array( $this, 'upgrade_to_pro_tab' ) );
-        add_action( 'media_upload_layer', array( $this, 'upgrade_to_pro_tab' ) );
-
+        // TODO: Make this work
+        // register_activation_hook(plugin_basename(__FILE__), array($this, 'after_activation'));
     }
 
 
     /**
-     * Hook Meta Slider into WordPress
+     * Hook MetaSlider into WordPress
      */
     private function setup_filters() {
-
-        add_filter( 'media_upload_tabs', array( $this, 'custom_media_upload_tab_name' ), 998 );
-        add_filter( 'media_view_strings', array( $this, 'custom_media_uploader_tabs' ), 5 );
-        add_filter( 'media_buttons_context', array( $this, 'insert_metaslider_button' ) );
-
-        // add 'go pro' link to plugin options
-        $plugin = plugin_basename( __FILE__ );
-
-        add_filter( "plugin_action_links_{$plugin}", array( $this, 'upgrade_to_pro_link' ) );
+        add_filter('media_upload_tabs', array($this, 'custom_media_upload_tab_name'), 998);
+        add_filter('media_view_strings', array($this, 'custom_media_uploader_tabs'), 5);
+        add_filter('media_buttons_context', array($this, 'insert_metaslider_button'));
+        add_filter("plugin_row_meta", array($this, 'get_extra_meta_links'), 10, 4);
+        add_action('admin_head', array($this, 'add_star_styles'));
+        add_action('admin_head', array($this, 'add_tour_nonce_to_activation_page'));
 
         // html5 compatibility for stylesheets enqueued within <body>
-        add_filter( 'style_loader_tag', array( $this, 'add_property_attribute_to_stylesheet_links' ), 11, 2 );
-
+        add_filter('style_loader_tag', array($this, 'add_property_attribute_to_stylesheet_links'), 11, 2);
     }
 
 
     /**
-     * Register Meta Slider widget
+     * Register MetaSlider widget
      */
     public function register_metaslider_widget() {
-
-        register_widget( 'MetaSlider_Widget' );
-
+        register_widget('MetaSlider_Widget');
     }
 
 
@@ -239,7 +238,7 @@ class MetaSliderPlugin {
                 'show_in_nav_menus' => false,
                 'show_ui' => $show_ui,
                 'labels' => array(
-                    'name' => 'Meta Slider'
+                    'name' => 'MetaSlider'
                 )
             )
         );
@@ -297,110 +296,20 @@ class MetaSliderPlugin {
 
     }
 
-
     /**
-     * Add the menu page
-     */
-    public function register_admin_menu() {
-        global $user_ID;
-
-        $title = apply_filters( 'metaslider_menu_title', 'Meta Slider' );
-
-        $capability = apply_filters( 'metaslider_capability', 'edit_others_posts' );
-
-        $page = add_menu_page( $title, $title, $capability, 'metaslider', array(
-                $this, 'render_admin_page'
-            ), "", 9501 );
-
-        // ensure our JavaScript is only loaded on the Meta Slider admin page
-        add_action( 'admin_print_scripts-' . $page, array( $this, 'register_admin_scripts' ) );
-        add_action( 'admin_print_styles-' . $page, array( $this, 'register_admin_styles' ) );
-        add_action( 'load-' . $page, array( $this, 'help_tab' ) );
-
-        if ( ! is_plugin_active( 'ml-slider-pro/ml-slider-pro.php' ) && get_user_meta( $user_ID, "metaslider_hide_go_pro", true ) !== 'true' ) {
-
-            $page = add_submenu_page(
-                'metaslider',
-                __( 'Go Pro!', 'ml-slider' ),
-                __( 'Go Pro!', 'ml-slider' ),
-                $capability,
-                'metaslider-go-pro',
-                array( $this, 'go_pro_page' )
-            );
-
-            add_action( 'admin_print_styles-' . $page, array( $this, 'register_admin_styles' ) );
-
+    * Add the menu pages
+    */
+    public function register_admin_pages() {
+        if (metaslider_is_pro_active()) {
+            $this->admin->add_page('MetaSlider Pro', 'metaslider');
+        } else {
+            $this->admin->add_page('MetaSlider');
         }
 
+        if (metaslider_sees_upgrade_page()) {
+            $this->admin->add_page(__('Add-ons', 'ml-slider'), 'upgrade', 'metaslider');
+        }   
     }
-
-    /**
-     * Enqueue CSS for admin menu item font icon
-     *
-     * @since 3.4
-     */
-    public function admin_enqueue_global_styles() {
-        wp_enqueue_style( 'metaslider-global', METASLIDER_ASSETS_URL . 'metaslider/global.css', array(), METASLIDER_VERSION );
-    }
-
-
-    /**
-     * Go Pro page content
-     */
-    public function go_pro_page() {
-
-        $upgrade_link = esc_url( add_query_arg(
-            array(
-                'utm_source' => 'lite',
-                'utm_medium' => 'nag',
-                'utm_campaign' => 'pro'
-            ), 'https://www.metaslider.com/upgrade/' ) );
-
-        $link = apply_filters( 'metaslider_hoplink', $upgrade_link );
-
-        $hide_link = '<a href="' . admin_url( "admin-post.php?action=metaslider_hide_go_pro_page" ) . '">Hide this page</a>';
-        $gopro_link = "<a class='button button-primary' href='{$link}' target='_blank'>Find out more</a>";
-        $support_link = '<a href="https://wordpress.org/support/plugin/ml-slider">Support</a>';
-        $documentation_link = '<a href="https://www.metaslider.com/documentation/">Documentation</a>';
-
-        ?>
-            <h2>Supercharge Your Sliders with Meta Slider Pro!</h2>
-
-            <ul class='metaslider_gopro'>
-                <li>Create <b>animated HTML slides</b> using the drag &amp; drop layer editor (WYSIWYG)</li>
-                <li>Insert <b>YouTube</b> and <b>Vimeo</b> videos into your slideshows</li>
-                <li>Automatically populate your slideshows with your <b>latest blog posts</b> or custom post types</li>
-                <li>Customize the look of your slideshows with the <b>Theme Editor</b> (25+ settings including custom arrow images, dot colors and caption styling)</li>
-                <li>Give your slideshows a gallery feel with <b>thumbnail navigation</b></li>
-                <li>Feature <b>WooCommerce</b> products in your slideshows</li>
-                <li>Show your latest events from <b>The Events Calendar</b> plugin</li>
-                <li><b>Easy to install</B> - Meta Slider Pro installs as a seperate plugin alongside Meta Slider and seamlessly adds in the new functionality</li>
-                <li><b>Easy to update</b> - new updates will be displayed on your plugins page (just like your other plugins!)</li>
-                <li>Upgrade with confidence with our <b>30 day no questions money back guarantee</b></li>
-                <li>Meta Slider Pro users receive <b>priority support</b> from our dedicated team, we’re on hand to help you get the most of Meta Slider</li>
-            </ul>
-
-            <p><?php echo $gopro_link; ?></p>
-            <p><?php echo $support_link; ?> <?php echo $documentation_link; ?></p>
-            <p><em>Don't want to see this? <?php echo $hide_link; ?></em></p>
-        <?php
-
-    }
-
-    /**
-     *  Store the users preference to hide the go pro page.
-     */
-    public function hide_go_pro_page() {
-        global $user_ID;
-
-        if ( ! get_user_meta( $user_ID, "metaslider_hide_go_pro" ) ) {
-            add_user_meta( $user_ID, "metaslider_hide_go_pro", "true" );
-        }
-
-        wp_redirect( admin_url( "admin.php?page=metaslider" ) );
-
-    }
-
 
     /**
      * Shortcode used to display slideshow
@@ -433,7 +342,7 @@ class MetaSliderPlugin {
 
         // check the slider is published and the ID is correct
         if ( ! $slider || $slider->post_status != 'publish' || $slider->post_type != 'ml-slider' ) {
-            return "<!-- meta slider {$atts['id']} not found -->";
+            return "<!-- MetaSlider {$atts['id']} not found -->";
         }
 
         // lets go
@@ -444,6 +353,16 @@ class MetaSliderPlugin {
 
     }
 
+    /**
+     * Set first activation option to database
+     */
+    public function after_activation() {
+
+        // Set date showing the first activation and redirect
+        if (!get_option('ms_was_installed_on')) {
+            update_option('ms_was_installed_on', time());
+        }
+    }
 
     /**
      * Initialise translations
@@ -451,86 +370,6 @@ class MetaSliderPlugin {
     public function load_plugin_textdomain() {
 
         load_plugin_textdomain( 'ml-slider', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
-    }
-
-
-    /**
-     * Add the help tab to the screen.
-     */
-    public function help_tab() {
-
-        $screen = get_current_screen();
-
-        // documentation tab
-        $screen->add_help_tab( array(
-                'id'    => 'documentation',
-                'title' => __( 'Documentation', 'ml-slider' ),
-                'content'   => "<p><a href='https://www.metaslider.com/documentation/' target='blank'>Meta Slider Documentation</a></p>",
-            )
-        );
-
-    }
-
-
-    /**
-     * Rehister admin styles
-     */
-    public function register_admin_styles() {
-
-        wp_enqueue_style( 'metaslider-admin-styles', METASLIDER_ASSETS_URL . 'metaslider/admin.css', false, METASLIDER_VERSION );
-        wp_enqueue_style( 'metaslider-colorbox-styles', METASLIDER_ASSETS_URL . 'colorbox/colorbox.css', false, METASLIDER_VERSION );
-        wp_enqueue_style( 'metaslider-tipsy-styles', METASLIDER_ASSETS_URL . 'tipsy/tipsy.css', false, METASLIDER_VERSION );
-
-        do_action( 'metaslider_register_admin_styles' );
-
-    }
-
-
-    /**
-     * Register admin JavaScript
-     */
-    public function register_admin_scripts() {
-
-        // media library dependencies
-        wp_enqueue_media();
-
-        // plugin dependencies
-        wp_enqueue_script( 'jquery-ui-core' );
-        wp_enqueue_script( 'jquery-ui-sortable' );
-        wp_enqueue_script( 'metaslider-admin-script', METASLIDER_ASSETS_URL . 'metaslider/admin.js', array( 'jquery' ), METASLIDER_VERSION, true );
-        wp_enqueue_script( 'metaslider-colorbox', METASLIDER_ASSETS_URL . 'colorbox/jquery.colorbox-min.js', array( 'jquery' ), METASLIDER_VERSION, true );
-        wp_enqueue_script( 'metaslider-tipsy', METASLIDER_ASSETS_URL . 'tipsy/jquery.tipsy.js', array( 'jquery' ), METASLIDER_VERSION, true );
-
-        wp_dequeue_script( 'link' ); // WP Posts Filter Fix (Advanced Settings not toggling)
-        wp_dequeue_script( 'ai1ec_requirejs' ); // All In One Events Calendar Fix (Advanced Settings not toggling)
-
-        $this->localize_admin_scripts();
-
-        do_action( 'metaslider_register_admin_scripts' );
-
-    }
-
-
-    /**
-     * Localise admin script
-     */
-    public function localize_admin_scripts() {
-
-        wp_localize_script( 'metaslider-admin-script', 'metaslider', array(
-                'url' => __( "URL", "ml-slider" ),
-                'caption' => __( "Caption", "ml-slider" ),
-                'new_window' => __( "New Window", "ml-slider" ),
-                'confirm' => __( "Are you sure?", "ml-slider" ),
-                'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                'change_image' => __( "Select replacement image", "ml-slider"),
-                'resize_nonce' => wp_create_nonce( 'metaslider_resize' ),
-                'addslide_nonce' => wp_create_nonce( 'metaslider_addslide' ),
-                'changeslide_nonce' => wp_create_nonce( 'metaslider_changeslide' ),
-                'iframeurl' => admin_url( 'admin-post.php?action=metaslider_preview' ),
-                'useWithCaution' => __( "Caution: This setting is for advanced developers only. If you're unsure, leave it checked.", "ml-slider" )
-            )
-        );
 
     }
 
@@ -574,7 +413,7 @@ class MetaSliderPlugin {
 
 
     /**
-     * Check our WordPress installation is compatible with Meta Slider
+     * Check our WordPress installation is compatible with MetaSlider
      */
     public function do_system_check() {
 
@@ -592,7 +431,7 @@ class MetaSliderPlugin {
         //update strings
         if ( ( isset( $_GET['page'] ) && $_GET['page'] == 'metaslider' ) ) {
             $strings['insertMediaTitle'] = __( "Image", "ml-slider" );
-            $strings['insertIntoPost'] = __( "Add to slider", "ml-slider" );
+            $strings['insertIntoPost'] = __( "Add to slideshow", "ml-slider" );
             // remove options
 
             $strings_to_remove = array(
@@ -623,7 +462,7 @@ class MetaSliderPlugin {
 
         $metaslider_tabs = array( 'post_feed', 'layer', 'youtube', 'vimeo' );
 
-        // restrict our tab changes to the meta slider plugin page
+        // restrict our tab changes to the MetaSlider plugin page
         if ( ( isset( $_GET['page'] ) && $_GET['page'] == 'metaslider' ) || ( isset( $_GET['tab'] ) && in_array( $_GET['tab'], $metaslider_tabs ) ) ) {
             $newtabs = array();
 
@@ -766,50 +605,118 @@ class MetaSliderPlugin {
 
     }
 
+    /**
+     * Delete a slide via ajax.
+     * @return string Returns the status of the request
+     */
+    public function ajax_undelete_slide() {
+        if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'metaslider_undelete_slide')) {
+			return wp_send_json_error(array(
+					'message' => __('The security check failed. Please refresh the page and try again.', 'ml-slider')
+			), 401);
+        }
+        
+        $result = $this->undelete_slide(absint($_POST['slide_id']), absint($_POST['slider_id']));
+        
+		if (is_wp_error($result)) {
+			return wp_send_json_error(array(
+					'message' => $result->get_error_message()
+			), 409);
+		}
+		
+		return wp_send_json_success(array(
+            'message' => __('The slide was successfully restored', 'ml-slider'),
+        ), 200);
+    }
 
     /**
-     * Delete a slide. This doesn't actually remove the slide from WordPress, simply untags
-     * it from the slide taxonomy.
+     * Undeletes a slide.
+     * @param int $slide_id The ID of the slide
+     * @param int $slider_id The ID of the slider (for legacy purposes)
+     * @return mixed 
      */
-    public function delete_slide() {
-
-        // check nonce
-        check_admin_referer( "metaslider_delete_slide" );
-
-        $capability = apply_filters( 'metaslider_capability', 'edit_others_posts' );
-
-        if ( ! current_user_can( $capability ) ) {
-            return;
+    public function undelete_slide($slide_id, $slider_id) {
+        if ('ml-slide' === get_post_type($slide_id)) {
+            return wp_update_post(array(
+                'ID' => $slide_id,
+                'post_status' => 'publish'
+            ), new WP_Error('update_failed', __('The attempt to restore the slide failed.', 'ml-slider'), array('status' => 409)));
         }
+        
+        // Legacy: This removes the relationship between the slider and slide
+        // This restores the relationship between a slide and slider.
+        // If using a newer version, this relationship is never lost on delete.
 
-        $slide_id = absint( $_GET['slide_id'] );
-        $slider_id = absint( $_GET['slider_id'] );
+        // Get the slider's term and apply it to the slide.
+        $term = get_term_by('name', $slider_id, 'ml-slider');
+        return wp_set_object_terms($slide_id, $term->term_id, 'ml-slider');
+    }
+    
+    /**
+     * Delete a slide via ajax.
+     */
+    public function ajax_delete_slide() {
+        if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'metaslider_delete_slide')) {
+			return wp_send_json_error(array(
+					'message' => __('The security check failed. Please refresh the page and try again.', 'ml-slider')
+			), 401);
+        }
+        
+        $result = $this->delete_slide(absint($_POST['slide_id']), absint($_POST['slider_id']));
+        
+		if (is_wp_error($result)) {
+			return wp_send_json_error(array(
+					'message' => $result->get_error_message()
+			), 409);
+		}
+		
+		return wp_send_json_success(array(
+            'message' => __('The slide was successfully trashed', 'ml-slider'),
+        ), 200);
+    }
 
-        // Get the existing terms and only keep the ones we don't want removed
+    /**
+     * Delete a slide by either trashing it or for 
+     * legacy reasons removing the taxonomy relationship.
+     * @param int $slide_id
+     * @param int $slider_id
+     * @return mixed Will return the terms or WP_Error
+     */
+    public function delete_slide($slide_id, $slider_id) {
+        if ('ml-slide' === get_post_type($slide_id)) {
+            return wp_update_post(array(
+                'ID' => $slide_id,
+                'post_status' => 'trash'
+            ), new WP_Error('update_failed', 'The attempt to delete the slide failed.', array('status' => 409)));
+        }
+        
+        // Legacy: This removes the relationship between the slider and slide
+        /* A slider with ID 216 might have a term_id of 7
+         * A slide with ID 217 could have a term_taxonomy_id of 7
+         * Multiple slides would have this term_taxonomy_id of 7 */
+
+        // This returns the term_taxonomy_id (7 from example)
+        $current_terms = wp_get_object_terms($slide_id, 'ml-slider', array('fields' => 'ids'));
+        
+        // This returns the term object, named after the slider ID
+        // The $term->term_id would be 7 in the example above
+        // It also includes the count of slides attached to the slider
+        $term = get_term_by('name', $slider_id, 'ml-slider');
+        
+        // I'm not sure why this is here. It seems this is only useful if
+        // a slide was attached to multiple sliders. A slide should only
+        // have one $current_terms (7 above)
         $new_terms = array();
-        $current_terms = wp_get_object_terms( $slide_id, 'ml-slider', array( 'fields' => 'ids' ) );
-        $term = get_term_by( 'name', $slider_id, 'ml-slider' );
-
-        foreach ( $current_terms as $current_term ) {
-            if ( $current_term != $term->term_id ) {
-                $new_terms[] = absint( $current_term );
+        foreach ($current_terms as $current_term) {
+            if ($current_term != $term->term_id) {
+                $new_terms[] = absint($current_term);
             }
         }
 
-        // untag slide from slider
-        wp_set_object_terms( $slide_id, $new_terms, 'ml-slider' );
-
-        // For new format slides - also trash the slide
-        if ( get_post_type( $slide_id ) === 'ml-slide' ) {
-            $id = wp_update_post( array(
-                    'ID' => $slide_id,
-                    'post_status' => 'trash'
-                )
-            );
-        }
-
-        wp_redirect( admin_url( "admin.php?page=metaslider&id={$slider_id}" ) );
-
+        // This only works becasue $new_terms is an empty array, 
+        // which deletes the relationship. I'm leaving the loop above
+        // in case it's here for some legacy reason I'm unaware of.
+        return wp_set_object_terms($slide_id, $new_terms, 'ml-slider');
     }
 
 
@@ -941,7 +848,7 @@ class MetaSliderPlugin {
 
         // insert the post
         $id = wp_insert_post( array(
-                'post_title' => __( "New Slider", "ml-slider" ),
+                'post_title' => __("New Slideshow", "ml-slider"),
                 'post_status' => 'publish',
                 'post_type' => 'ml-slider'
             )
@@ -1084,8 +991,9 @@ class MetaSliderPlugin {
             // navigation row
             if ( $row['type'] == 'navigation' ) {
                 $navigation_row = "<tr class='{$row['type']}'><td class='tipsy-tooltip' title=\"{$row['helptext']}\">{$row['label']}</td><td><ul>";
-
+                
                 foreach ( $row['options'] as $k => $v ) {
+                    $tease = isset($v['addon_required']) ? 'disabled' : '';
 
                     if ( $row['value'] === true && $k === 'true' ) {
                         $checked = checked( true, true, false );
@@ -1096,7 +1004,13 @@ class MetaSliderPlugin {
                     }
 
                     $disabled = $k == 'thumbnails' ? 'disabled' : '';
-                    $navigation_row .= "<li><label><input type='radio' name='settings[{$id}]' value='{$k}' {$checked} {$disabled}/>{$v['label']}</label></li>";
+                    $navigation_row .= "<li><label class='{$tease}'><input {$tease} type='radio' name='settings[{$id}]' value='{$k}' {$checked} {$disabled}/>{$v['label']}</label>";
+                    
+                    if (isset($v['addon_required']) && $v['addon_required']) {
+                        $navigation_row .= sprintf(" <a target='_blank' class='get-addon' href='%s' title='%s'>%s</a>", metaslider_get_upgrade_link(), __('Get the add-on pack today!', 'ml-slider'), __('Learn More', 'ml-slider'));
+                    }
+
+                    $navigation_row .= "</li>";
                 }
 
                 $navigation_row .= "</ul></td></tr>";
@@ -1131,7 +1045,7 @@ class MetaSliderPlugin {
                 foreach ( $row['options'] as $k => $v ) {
                     $checked = checked( $k, $row['value'], false );
                     $return .= "<input class='select-slider' id='{$k}' rel='{$k}' type='radio' name='settings[type]' value='{$k}' {$checked} />
-                    <label for='{$k}'>{$v['label']}</label>";
+                    <label tabindex='0' for='{$k}'>{$v['label']}</label>";
                 }
 
                 $return .= "</td></tr>";
@@ -1225,71 +1139,63 @@ class MetaSliderPlugin {
     public function print_slideshow_selector() {
         global $user_ID;
 
-        $add_url = wp_nonce_url( admin_url( "admin-post.php?action=metaslider_create_slider" ), "metaslider_create_slider" );
+        // First check if we have any slideshows yet
+        if ($tabs = $this->all_meta_sliders()) {
 
-        if ( $tabs = $this->all_meta_sliders() ) {
+            // Next check if they have the tabs view selected
+            if ('tabs' == $this->get_view()) {
 
-            if ( $this->get_view() == 'tabs' ) {
-
-                echo "<div style='display: none;' id='screen-options-switch-view-wrap'>
-                <a class='switchview dashicons-before dashicons-randomize tipsy-tooltip' title='" . __("Switch to Dropdown view", "ml-slider") . "' href='" . admin_url( "admin-post.php?action=metaslider_switch_view&view=dropdown") . "'>" . __("Dropdown", "ml-slider") . "</a></div>";
-
-                echo "<h3 class='nav-tab-wrapper'>";
-
-                foreach ( $tabs as $tab ) {
-
-                    if ( $tab['active'] ) {
-                        echo "<div class='nav-tab nav-tab-active'><input type='text' name='title'  value='" . esc_attr( $tab['title'] ) . "' onfocus='this.style.width = ((this.value.length + 1) * 9) + \"px\"' /></div>";
-                    } else {
-                        echo "<a href='?page=metaslider&amp;id={$tab['id']}' class='nav-tab'>" . esc_html( $tab['title'] ) . "</a>";
+                // Render the tabs
+                echo "<div class='nav-tab-wrapper'>";
+                    foreach ($tabs as $tab) {
+                        if ( $tab['active'] ) {
+                            echo "<div class='nav-tab nav-tab-active'><input class='no_last_pass' type='text' name='title'  value='" . esc_attr($tab['title']) . "'></div>";
+                        } else {
+                            echo "<a href='?page=metaslider&amp;id={$tab['id']}' title= '" . esc_attr($tab['title']) . "' class='nav-tab'>" . esc_html( $tab['title'] ) . "</a>";
+                        }
                     }
+                    echo $this->get_add_slideshow_button("New", 'nav-tab');
+                echo "</div>";
 
-                }
-
-                echo "<a href='{$add_url}' id='create_new_tab' class='nav-tab'>+</a>";
-                echo "</h3>";
-
+            // This will render the select dropdown view
+            // TODO make this resemble the WP Nav menu UI perhaps
             } else {
+                echo "<div class='manage-menus'><label for='select-slideshow' class='selected-menu'>" . __("Select Slideshow", "ml-slider") . ": </label>";
+                echo "<select name='select-slideshow' onchange='if (this.value) window.location.href=this.value'>";
 
-                if ( isset( $_GET['add'] ) && $_GET['add'] == 'true' ) {
-
-                    echo "<div id='message' class='updated'><p>" . __( "New slideshow created. Click 'Add Slide' to get started!", "ml-slider" ) . "</p></div>";
-
-                }
-
-                echo "<div style='display: none;' id='screen-options-switch-view-wrap'><a class='switchview dashicons-before dashicons-randomize tipsy-tooltip' title='" . __("Switch to Tab view", "ml-slider") . "' href='" . admin_url( "admin-post.php?action=metaslider_switch_view&view=tabs") . "'>" . __("Tabs", "ml-slider") . "</a></div>";
-
-                echo "<div class='dropdown_container'><label for='select-slider'>" . __("Select Slider", "ml-slider") . ": </label>";
-                echo "<select name='select-slider' onchange='if (this.value) window.location.href=this.value'>";
-
-                $tabs = $this->all_meta_sliders( 'title' );
-
-                foreach ( $tabs as $tab ) {
-
+                $tabs = $this->all_meta_sliders('title');
+                foreach ($tabs as $tab) {
                     $selected = $tab['active'] ? " selected" : "";
-
-                    if ( $tab['active'] ) {
-
+                    if ($tab['active']) {
                         $title = $tab['title'];
-
                     }
-
                     echo "<option value='?page=metaslider&amp;id={$tab['id']}'{$selected}>{$tab['title']}</option>";
-
                 }
-
-                echo "</select> " . __( 'or', "ml-slider" ) . " ";
-                echo "<a href='{$add_url}'>" . __( 'Add New Slideshow', "ml-slider" ) . "</a></div>";
-
+                echo "</select>";
+                echo "<span class='add-new-menu-action'> " . __( 'or', "ml-slider" ) . " ";
+                echo "<a href='". wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider"), "metaslider_create_slider") ."' id='create_new_tab' class='' title='" . __('Create a New Slideshow', 'ml-slider') . "'>create a new slideshow</a>";
+                echo "</span></div>";
             }
+
+        // This section is shown when there are no slideshows
         } else {
-            echo "<h3 class='nav-tab-wrapper'>";
-            echo "<a href='{$add_url}' id='create_new_tab' class='nav-tab'>+</a>";
-            echo "<div class='bubble'>" . __( "Create your first slideshow", "ml-slider" ) . "</div>";
-            echo "</h3>";
+            echo "<div class='nav-tab-wrapper'>";
+                echo "<div class='fake-tabs nav-tab nav-tab-active'><span class='blurred-out'>" . __('New Slideshow', 'ml-slider') ."</span></div>";
+            echo $this->get_add_slideshow_button("New", 'nav-tab');
+            echo "</div>";
         }
     }
 
+    /**
+     * Return a button to sadd a new slideshow.
+     */
+    protected function get_add_slideshow_button($text = '', $classes = '') {
+        $add_url = wp_nonce_url(admin_url("admin-post.php?action=metaslider_create_slider"), "metaslider_create_slider");
+        if ('' == $text) {
+            $text = __('Add a New Slideshow', 'ml-slider');
+        }
+        return "<a href='{$add_url}' id='create_new_tab' class='ml-add-new {$classes}' title='" . __('Add a New Slideshow', 'ml-slider') . "'><i><svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-plus-circle'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='16'/><line x1='8' y1='12' x2='16' y2='12'/></svg></i> {$text}</a>";
+    }
 
     /**
      * Return the users saved view preference.
@@ -1310,25 +1216,32 @@ class MetaSliderPlugin {
      */
     public function render_admin_page() {
 
-        // default to the latest slider
-        $slider_id = $this->find_slider( 'modified', 'DESC' );
+        // Default to the most recently modified slider
+        $slider_id = $this->find_slider('modified', 'DESC');
 
-        // load a slider by ID
-        if ( isset( $_REQUEST['id'] ) ) {
-            $temp_id = absint( $_REQUEST['id'] );
-
-            // check valid post ID
-            if ( get_post( $temp_id ) ) {
-                $slider_id = $temp_id;
+        // If the id parameter exists, verify and use that. 
+        if (isset($_REQUEST['id']) && $id = $_REQUEST['id']) {
+            if (in_array(get_post_status(absint($id)), array('publish', 'inherit'))) {
+                $slider_id = $id;
             }
         }
 
-        // finally, set the slider
-        if ( $slider_id > 0 ) {
-            $this->set_slider( $slider_id );
+        // "Set the slider"
+        // TODO figure out what this does and if it can be better stated
+        // Perhaps maybe "apply_settings()" or something.
+        if ($slider_id) {
+            $this->set_slider($slider_id);
         }
 
-        $this->upgrade_to_pro_cta();
+        echo "<div class='wrap metaslider-ui-top' style='margin-top:0;'>";
+        echo $this->documentation_button();
+        echo $this->toggle_layout_button();
+        
+        if (metaslider_sees_call_to_action()) {
+            echo $this->upgrade_to_pro_top_button();
+        }
+        echo "</div>";
+        
         $this->do_system_check();
 
         $slider_id = $this->slider ? $this->slider->id : 0;
@@ -1339,7 +1252,17 @@ class MetaSliderPlugin {
             var metaslider_slider_id = <?php echo $slider_id; ?>;
         </script>
 
-        <div class="wrap metaslider">
+        <div class="wrap metaslider metaslider-ui">
+            <h1 class="wp-heading-inline metaslider-title">
+                <img width=50 height=50 src="<?php echo METASLIDER_ADMIN_URL ?>images/metaslider_logo_large.png" alt="MetaSlider">
+                MetaSlider
+                <?php if (metaslider_is_pro_active()) {
+                    echo ' Pro';
+                } ?>
+            </h1>
+			<?php if (metaslider_sees_notices($this)) {
+                echo $this->notices->do_notice(false, 'header', true); 
+            } ?>
             <form accept-charset="UTF-8" action="<?php echo admin_url( 'admin-post.php'); ?>" method="post">
                 <input type="hidden" name="action" value="metaslider_update_slider">
                 <input type="hidden" name="slider_id" value="<?php echo $slider_id; ?>">
@@ -1349,7 +1272,7 @@ class MetaSliderPlugin {
 
                 <?php if ( ! $this->slider ) return; ?>
 
-                <div id='poststuff'>
+                <div id='poststuff' class="metaslider-inner wp-clearfix">
                     <div id='post-body' class='metabox-holder columns-2'>
 
                         <div id='post-body-content'>
@@ -1357,19 +1280,31 @@ class MetaSliderPlugin {
 
                                 <?php do_action( "metaslider_admin_table_before", $this->slider->id ); ?>
 
-                                <table class="widefat sortable">
+                                <table class="widefat sortable metaslider-slides-container">
                                     <thead>
                                         <tr>
-                                            <th style="width: 100px;">
-                                                <h3><?php _e( "Slides", "ml-slider" ) ?></h3>
-                                                <?php do_action( "metaslider_admin_table_header_left", $this->slider->id ); ?>
-                                            </th>
-                                            <th>
-                                                <a href='#' class='button alignright add-slide' data-editor='content' title='<?php _e( "Add Slide", "ml-slider" ) ?>'>
-                                                    <span class='wp-media-buttons-icon'></span> <?php _e( "Add Slide", "ml-slider" ) ?>
-                                                </a>
-                                                <?php do_action( "metaslider_admin_table_header_right", $this->slider->id ); ?>
-                                            </th>
+                                            <?php if (metaslider_viewing_trashed_slides($this->slider->id)) { 
+                                                
+                                                // If they are on the trash page, show them?>
+                                                <th class="trashed-header">
+                                                    <h3><i><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></i> <?php _e('Trashed Slides', 'ml-slider'); ?></h3>
+                                                    <small> <?php printf(__('<a href="%s">view active</a>', 'ml-slider'), admin_url("?page=metaslider&id={$this->slider->id}")); ?></small>
+                                                </th>
+                                            <?php } else { ?>
+                                                <th class="slider-title" colspan="2">
+                                                <h3 class="alignleft"><?php echo get_the_title($this->slider->id) ?></h3>
+                                                <input class="metaslider-shortcode" readonly='readonly' onclick="this.select()" type='text' value='[metaslider id=<?php echo $this->slider->id ?>]'>
+                                                <?php if (!metaslider_viewing_trashed_slides($this->slider->id)) { 
+                                                    
+                                                    // Remove the actions on trashed view?>
+                                                    <button class='ml-button ml-has-icon ml-skinless-button alignright add-slide' data-editor='content' title='<?php _e( "Add a New Slide", "ml-slider" ) ?>'>
+                                                        <i style="top:0;"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></i>
+                                                        <span><?php _e("Add Slide", "ml-slider") ?></span>
+                                                    </button>
+                                                <?php } ?>
+                                                    <?php do_action( "metaslider_admin_table_header_right", $this->slider->id ); ?>
+                                                </th>
+                                            <?php } ?>
                                         </tr>
                                     </thead>
 
@@ -1385,15 +1320,31 @@ class MetaSliderPlugin {
                             </div>
                         </div>
 
-                        <div id="postbox-container-1" class="postbox-container">
+                        <div id="postbox-container-1" class="postbox-container ml-sidebar metaslider-settings-area">
                             <div class='right'>
+                            <?php if (metaslider_viewing_trashed_slides($this->slider->id)) { 
+                                
+                                // Show a notice explaining the trash?>
+                                <div class="ms-postbox trashed-notice">
+                                    <div class="notice-info"><?php printf(__('You are viewing slides that have been trashed, which will be automatically deleted in %s days. Click <a href="%s">here</a> to view active slides.', 'ml-slider'), EMPTY_TRASH_DAYS, admin_url("?page=metaslider&id={$this->slider->id}")); ?></div>
+
+                                    <?php // TODO this is a temp fix to avoid a compatability check in pro
+                                        echo "<input type='checkbox' style='display:none;' checked class='select-slider' rel='flex'></inpu>";
+                                    ?>
+                                </div>
+                            <?php } else {?>
                                 <div class="ms-postbox" id="metaslider_configuration">
-                                    <div class='configuration'>
-                                        <input class='alignright button button-primary' type='submit' name='save' id='ms-save' value='<?php _e( "Save", "ml-slider" ) ?>' />
-                                        <input class='alignright button button-primary' type='submit' name='preview' id='ms-preview' value='<?php _e( "Save & Preview", "ml-slider" ) ?>' data-slider_id='<?php echo $this->slider->id ?>' data-slider_width='<?php echo $this->slider->get_setting( 'width' ) ?>' data-slider_height='<?php echo $this->slider->get_setting( 'height' ) ?>' />
+                                    <div class='configuration metaslider-actions'>
+                                        <button class='metaslider-preview ml-button ml-has-icon ml-skinless-button' type='submit' id='ms-preview' title='<?php _e("Preview Slideshow", "ml-slider") ?>' data-slider_id='<?php echo $this->slider->id ?>' data-slider_width='<?php echo $this->slider->get_setting("width"); ?>' data-slider_height='<?php echo $this->slider->get_setting("height") ?>'>
+                                            <i><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></i>
+                                            <span><?php _e("Preview", "ml-slider") ?></span>
+                                        </button>
+                                        <button class='alignright button button-primary' type='submit' name='save' id='ms-save'>
+                                            <?php _e("Save", "ml-slider"); ?>
+                                        </button>
                                         <span class="spinner"></span>
                                     </div>
-                                    <div class="inside">
+                                    <div class="inside wp-clearfix">
                                         <table class="settings">
                                             <tbody>
                                                 <?php
@@ -1401,12 +1352,12 @@ class MetaSliderPlugin {
                                                         'type' => array(
                                                             'priority' => 0,
                                                             'type' => 'slider-lib',
-                                                            'value' => $this->slider->get_setting( 'type' ),
+                                                            'value' => $this->slider->get_setting('type'),
                                                             'options' => array(
-                                                                'flex'       => array( 'label' => __( "Flex Slider", "ml-slider" ) ),
-                                                                'responsive' => array( 'label' => __( "R. Slides", "ml-slider" ) ),
-                                                                'nivo'       => array( 'label' => __( "Nivo Slider", "ml-slider" ) ),
-                                                                'coin'       => array( 'label' => __( "Coin Slider", "ml-slider" ) )
+                                                                'flex' => array('label' => "FlexSlider"),
+                                                                'responsive' => array('label' => "R. Slides"),
+                                                                'nivo' => array('label' => "Nivo Slider"),
+                                                                'coin' => array('label' => "Coin Slider")
                                                             )
                                                         ),
                                                         'width' => array(
@@ -1488,17 +1439,25 @@ class MetaSliderPlugin {
                                                         'navigation' => array(
                                                             'priority' => 60,
                                                             'type' => 'navigation',
-                                                            'label' => __( "Navigation", "ml-slider" ),
+                                                            'label' => __("Navigation", "ml-slider"),
                                                             'class' => 'option coin flex nivo responsive',
-                                                            'value' => $this->slider->get_setting( 'navigation' ),
-                                                            'helptext' => __( "Show the slide navigation bullets", "ml-slider" ),
+                                                            'value' => $this->slider->get_setting('navigation'),
+                                                            'helptext' => __("Show the slide navigation bullets", "ml-slider"),
                                                             'options' => array(
-                                                                'false'      => array( 'label' => __( "Hidden", "ml-slider" ) ),
-                                                                'true'       => array( 'label' => __( "Dots", "ml-slider" ) ),
+                                                                'false' => array('label' => __("Hidden", "ml-slider")),
+                                                                'true' => array('label' => __("Dots", "ml-slider")),
+                                                                'thumbs' => array(
+                                                                    'label' => __("Thumbnail", "ml-slider"),
+                                                                    'addon_required' => true
+                                                                ),
+                                                                'filmstrip' => array(
+                                                                    'label' => __("Filmstrip", "ml-slider"),
+                                                                    'addon_required' => true
+                                                                ),
                                                             )
                                                         ),
                                                     );
-
+                        
                                                     if ( $this->get_view() == 'dropdown' ) {
                                                         $aFields['title'] = array(
                                                             'type' => 'title',
@@ -1516,6 +1475,17 @@ class MetaSliderPlugin {
                                                 ?>
                                             </tbody>
                                         </table>
+
+                                        
+                                        <?php // Show the restore button if there are trashed posts
+                                        // Also, render but hide the link in case we want to show
+                                        // it when the user deletes their first slide
+                                        $count = count(metaslider_has_trashed_slides($this->slider->id));
+                                        if (!metaslider_viewing_trashed_slides($this->slider->id)) { ?>
+                                            <a <?php echo $count ? '' : "style='display:none;'" ?> class="restore-slide-link" title="<?php _e('View trashed slides', 'ml-slider'); ?>" href="<?php echo admin_url("?page=metaslider&id={$this->slider->id}&show_trashed=true"); ?>">
+                                                <i><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></i><?php echo __('Trash', 'ml-slider'); if ($count) echo " <span>({$count})</span>";?>
+                                            </a>
+                                        <?php } ?>
                                     </div>
                                 </div>
 
@@ -1799,56 +1769,11 @@ class MetaSliderPlugin {
                                     </div>
                                 </div>
 
-                                <div class="ms-postbox shortcode ms-toggle" id="metaslider_usage">
-                                    <div class="handlediv" title="Click to toggle"><br></div><h3 class="hndle"><span><?php _e( "Usage", "ml-slider" ) ?></span></h3>
-                                    <div class="inside">
-                                        <ul class='tabs'>
-                                            <li rel='tab-1' class='selected'><?php _e( "Shortcode", "ml-slider" ) ?></li>
-                                            <li rel='tab-2'><?php _e( "Template Include", "ml-slider" ) ?></li>
-                                        </ul>
-                                        <div class='tabs-content'>
-                                            <div class='tab tab-1'>
-                                            <p><?php _e( "Copy & paste the shortcode directly into any WordPress post or page.", "ml-slider" ); ?></p>
-                                            <input readonly='readonly' type='text' value='[metaslider id=<?php echo $this->slider->id ?>]' /></div>
-                                            <div class='tab tab-2' style='display: none'>
-                                            <p><?php _e( "Copy & paste this code into a template file to include the slideshow within your theme.", "ml-slider" ); ?></p>
-                                            <textarea readonly='readonly'>&lt;?php &#13;&#10;    echo do_shortcode("[metaslider id=<?php echo $this->slider->id ?>]"); &#13;&#10;?></textarea></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php $url = wp_nonce_url(admin_url("admin-post.php?action=metaslider_delete_slider&amp;slider_id={$this->slider->id}"), "metaslider_delete_slider"); ?>
 
-                                <?php if ( ! is_plugin_active('ml-slider-pro/ml-slider-pro.php') ) : ?>
-
-                                <div class="ms-postbox social" id="metaslider_social">
-                                    <div class="inside">
-                                        <ul class='info'>
-                                            <li style='width: 33%;'>
-                                                <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://www.metaslider.com" data-text="Check out Meta Slider, an easy to use slideshow plugin for WordPress" data-hashtags="metaslider, wordpress, slideshow">Tweet</a>
-                                                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                                            </li>
-                                            <li style='width: 34%;'>
-                                                <div class="g-plusone" data-size="medium" data-href="https://www.metaslider.com"></div>
-                                                <script type="text/javascript">
-                                                  (function() {
-                                                    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                                                    po.src = 'https://apis.google.com/js/plusone.js';
-                                                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-                                                  })();
-                                                </script>
-                                            </li>
-                                            <li style='width: 33%;'>
-                                                <iframe style='border:none; overflow:hidden; width:80px; height:21px;' src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fwpmetaslider&amp;width=120&amp;layout=button_count&amp;action=like&amp;show_faces=true&amp;share=false&amp;height=21&amp;appId=156668027835524" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <?php endif; ?>
-
-                                <?php $url = wp_nonce_url( admin_url( "admin-post.php?action=metaslider_delete_slider&amp;slider_id={$this->slider->id}" ), "metaslider_delete_slider" ); ?>
-
-                                <a class='delete-slider alignright button-secondary' href='<?php echo $url ?>'><?php _e( "Delete Slider", "ml-slider" ) ?></a>
+                                <a class='delete-slider alignright ml-has-icon ml-button ml-delete-button' href='<?php echo $url ?>'><i><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></i><span><?php _e( "Delete Slideshow", "ml-slider" ) ?></span></a>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -1885,7 +1810,7 @@ class MetaSliderPlugin {
 
 
     /**
-     * Append the 'Choose Meta Slider' thickbox content to the bottom of selected admin pages
+     * Append the 'Choose MetaSlider' thickbox content to the bottom of selected admin pages
      */
     public function admin_footer() {
 
@@ -1910,7 +1835,7 @@ class MetaSliderPlugin {
                 <div class="wrap">
                     <?php
                         if ( count( $sliders ) ) {
-                            echo "<h3 style='margin-bottom: 20px;'>" . __( "Insert Meta Slider", "ml-slider" ) . "</h3>";
+                            echo "<h3 style='margin-bottom: 20px;'>" . __( "Insert MetaSlider", "ml-slider" ) . "</h3>";
                             echo "<select id='metaslider-select'>";
                             echo "<option disabled=disabled>" . __( "Choose slideshow", "ml-slider" ) . "</option>";
                             foreach ( $sliders as $slider ) {
@@ -1931,7 +1856,7 @@ class MetaSliderPlugin {
 
 
     /**
-     * Return the meta slider pro upgrade iFrame
+     * Return the MetaSlider pro upgrade iFrame
      */
     public function upgrade_to_pro_tab() {
 
@@ -1947,8 +1872,8 @@ class MetaSliderPlugin {
      */
     public function upgrade_to_pro_iframe() {
 
-        wp_enqueue_style( 'metaslider-admin-styles', METASLIDER_ASSETS_URL . 'metaslider/admin.css', false, METASLIDER_VERSION );
-        wp_enqueue_script( 'google-font-api', 'http://fonts.googleapis.com/css?family=PT+Sans:400,700' );
+        wp_enqueue_style('metaslider-admin-styles', METASLIDER_ADMIN_URL . 'assets/css/admin.css', false, METASLIDER_VERSION);
+        wp_enqueue_script('google-font-api', 'https://fonts.googleapis.com/css?family=PT+Sans:400,700' , false, METASLIDER_VERSION);
 
         $link = apply_filters( 'metaslider_hoplink', 'https://www.metaslider.com/upgrade/' );
         $link .= '?utm_source=lite&amp;utm_medium=more-slide-types&amp;utm_campaign=pro';
@@ -1964,46 +1889,88 @@ class MetaSliderPlugin {
     }
 
     /**
-     * Add settings link on plugin page
+     * Adds extra links to the plugin activation page
      */
-    public function upgrade_to_pro_link( $links ) {
+    public function get_extra_meta_links($meta, $file, $data, $status) {
 
-        if ( function_exists( 'is_plugin_active' ) && ! is_plugin_active( 'ml-slider-pro/ml-slider-pro.php' ) ) {
-            $links[] = '<a href="https://www.metaslider.com/upgrade/" target="_blank">' . __( "Go Pro", "ml-slider" ) . '</a>';
+        if (plugin_basename(__FILE__) == $file) {
+            $plugin_page = admin_url('admin.php?page=metaslider');
+            $meta[] = "<a href='{$plugin_page}' onclick=\"event.preventDefault();var link = jQuery(this);jQuery.post(ajaxurl, {action: 'reset_tour_status', _wpnonce: metaslider_tour_nonce }, function(data) {window.location = link.attr('href');});\">" . __('Take a tour', 'ml-slider') . "</a>";
+            if (metaslider_is_pro_installed()) {
+                $upgrade_link = apply_filters('metaslider_hoplink', 'https://www.metaslider.com/upgrade/');
+                $meta[] = "<a href='{$upgrade_link}' target='_blank'>" . __('Add-ons', 'ml-slider') . "</a>";
+                $meta[] = "<a href='https://wordpress.org/support/plugin/ml-slider/' target='_blank'>" . __('Support', 'ml-slider') . "</a>";
+            } else {
+                $meta[] = "<a href='https://www.metaslider.com/support/' target='_blank'>" . __('Premium Support', 'ml-slider') . "</a>";
+            }
+            $meta[] = "<a href='https://www.metaslider.com/documentation/' target='_blank'>" . __('Documentation', 'ml-slider') . "</a>";
+            $meta[] = "<a href='https://wordpress.org/support/plugin/ml-slider/reviews#new-post' target='_blank' title='" . __('Leave a review', 'ml-slider') . "'><i class='ml-stars'><svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg><svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg><svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg><svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg><svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg></i></a>";
         }
-
-        return $links;
-
+        return $meta;
     }
 
-
     /**
-     * Upgrade CTA.
-     */
-    public function upgrade_to_pro_cta() {
-
-        if ( function_exists( 'is_plugin_active' ) && ! is_plugin_active( 'ml-slider-pro/ml-slider-pro.php' ) ) {
-
-            $upgrade_link = esc_url( add_query_arg(
-                array(
-                    'utm_source' => 'lite',
-                    'utm_medium' => 'nag',
-                    'utm_campaign' => 'pro'
-                ), 'https://www.metaslider.com/upgrade/' ) );
-
-            $link = apply_filters( 'metaslider_hoplink', $upgrade_link );
-
-            $text = "Meta Slider v" . METASLIDER_VERSION . " - " . __( 'Upgrade to Pro $39', "ml-slider" );
-
-            echo "<div style='display: none;' id='screen-options-link-wrap'><a target='_blank' class='show-settings dashicons-before dashicons-performance' href='{$link}'>{$text}</a></div>";
-
-        }
-
+    * Adds styles to admin head to allow for stars animation and coloring
+    */
+    public function add_star_styles() {
+        if (metaslider_is_on_admin_page('plugins.php')) {?>
+            <style>
+                .ml-stars{display:inline-block;color:#ffb900;position:relative;top:3px}
+                .ml-stars svg{fill:#ffb900}
+                .ml-stars svg:hover{fill:#ffb900}
+                .ml-stars svg:hover ~ svg{fill:none}
+            </style>
+    <?php }
     }
 
+    /**
+    * Add nonce to activation page
+    */
+    public function add_tour_nonce_to_activation_page() {
+        if (metaslider_is_on_admin_page('plugins.php')) {?>
+            <script>
+                var metaslider_tour_nonce = "<?php echo wp_create_nonce('metaslider_tour_nonce'); ?>";
+            </script>
+    <?php }
+    }
 
     /**
-     * Add a 'property=stylesheet' attribute to the Meta Slider CSS links for HTML5 validation
+    * Upgrade To Pro Button.
+     */
+     public function upgrade_to_pro_top_button() {
+        $text = __('Upgrade Now', "ml-slider");
+        $link = metaslider_get_upgrade_link();
+        $upgrade_text = __("Get The Pro Pack Today!", "ml-slider");
+        return "<a target='_blank' title='{$upgrade_text}' class='ml-has-icon ml-hanging-button' href='{$link}'><i class='brand-color'><svg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-star'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg></i><span>{$text}</span></a>";
+    }
+    
+    /**
+     * Toggle Layout Buttons.
+     * TODO: Re work this to allow for a third view style
+     */
+    public function toggle_layout_button() {
+        
+        // Don't show this if there are no slideshows
+        if (!count($this->all_meta_sliders())) {
+            return '';
+        }
+
+        $view = ('tabs' == $this->get_view()) ? 'tabs' : 'dropdown';
+        $view_opposite = ('dropdown' == $this->get_view()) ? 'tabs' : 'dropdown';
+        $view_text = ($this->get_view() == 'tabs') ? __("Switch to Dropdown view", "ml-slider") : __("Switch to Tab view", "ml-slider");
+        return "<a class='ml-has-icon ml-hanging-button' title='" . $view_text . "' 
+        href='" . admin_url( "admin-post.php?action=metaslider_switch_view&view=".$view_opposite) . "'><i><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-shuffle\"><polyline points=\"16 3 21 3 21 8\"/><line x1=\"4\" y1=\"20\" x2=\"21\" y2=\"3\"/><polyline points=\"21 16 21 21 16 21\"/><line x1=\"15\" y1=\"15\" x2=\"21\" y2=\"21\"/><line x1=\"4\" y1=\"4\" x2=\"9\" y2=\"9\"/></svg></i><span>" . __("Layout", "ml-slider") . "</span></a>";
+    }
+
+    /**
+     * Support and Docs Button
+     */
+    public function documentation_button() {
+        return "<a class='ml-has-icon ml-hanging-button' target='_blank' title='" . __('View The Documentation', 'ml-slider') . "' href='https://www.metaslider.com/documentation/'><i><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-book\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg></i><span>" . __("Documentation", "ml-slider") . "</span></a>";
+    }
+
+    /**
+     * Add a 'property=stylesheet' attribute to the MetaSlider CSS links for HTML5 validation
      *
      * @since 3.3.4
      * @param string $tag

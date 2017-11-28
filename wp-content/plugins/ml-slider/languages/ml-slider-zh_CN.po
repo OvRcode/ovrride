@@ -554,7 +554,7 @@ msgid "Add slider"
 msgstr "添加幻灯片"
 
 #: ../ml-slider.php:1672
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr "插入梅塔幻灯片"
 
 #: ../ml-slider.php:1674
@@ -578,8 +578,8 @@ msgid "Upgrade to Pro $39"
 msgstr "升级到专业版（19美金）"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "梅塔幻灯片"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:108
 msgid "Title:"

@@ -20,7 +20,7 @@ class MetaSlide {
      */
     public function __construct() {
 
-        add_action( 'wp_ajax_change_slide_image', array( $this, 'ajax_change_slide_image' ) );
+        add_action( 'wp_ajax_update_slide_image', array( $this, 'ajax_update_slide_image' ) );
 
     }
 
@@ -64,63 +64,66 @@ class MetaSlide {
 
 
     /**
-     * Change the slide image.
+     * Updates the slide meta value to a new image.
      *
-     * This creates a copy of the selected (new) image and assigns the copy to our existing media file/slide.
+     * @param int $slide_id The id of the slide being updated
+     * @param int $image_id The id of the new image to use
+     *
+     * @return array|WP_error The status message and if success, the thumbnail link
      */
-    public function ajax_change_slide_image() {
+    protected function update_slide_image($slide_id, $image_id) {
 
-        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'metaslider_changeslide' ) ) {
-            wp_die( json_encode( array(
-                    'status' => 'fail',
-                    'msg' => __( "Security check failed. Refresh page and try again.", "ml-slider" )
-                )
-            ));
+        /*
+        * Verifies that the $image_id is an actual image
+        */        
+        if (!($image_url = wp_get_attachment_image_url($image_id))) {
+            return new WP_Error('update_failed', __('The requested image does not exist. Please try again.', 'ml-slider'), array('status' => 409));
         }
 
-        $slide_from = absint( $_POST['slide_from'] );
-        $slide_to = absint( $_POST['slide_to'] );
-
-        // find the paths for the image we want to change to
-
-        // Absolute path
-        $abs_path = get_attached_file( $slide_to );
-        $abs_path_parts = pathinfo( $abs_path );
-        $abs_file_directory = $abs_path_parts['dirname'];
-
-        // Relative path
-        $rel_path = get_post_meta( $slide_to, '_wp_attached_file', true );
-        $rel_path_parts = pathinfo( $rel_path );
-        $rel_file_directory = $rel_path_parts['dirname'];
-
-        // old file name
-        $file_name = $abs_path_parts['basename'];
-
-        // new file name
-        $dest_file_name = wp_unique_filename( $abs_file_directory, $file_name );
-
-        // generate absolute and relative paths for the new file name
-        $dest_abs_path = trailingslashit($abs_file_directory) . $dest_file_name;
-        $dest_rel_path = trailingslashit($rel_file_directory) . $dest_file_name;
-
-        // make a copy of the image
-        if ( @ copy( $abs_path, $dest_abs_path ) ) {
-            // update the path on our slide
-            update_post_meta( $slide_from, '_wp_attached_file', $dest_rel_path );
-            wp_update_attachment_metadata( $slide_from, wp_generate_attachment_metadata( $slide_from, $dest_abs_path ) );
-            update_attached_file( $slide_from, $dest_rel_path );
-
-            wp_die( json_encode( array(
-                    'status' => 'success'
-                )
-            ));
+        /*
+        * Verifies that the $slide_id is an actual slide (it currently has an image)
+        */
+        if (!($image_id_old = intval(get_post_meta($slide_id, '_thumbnail_id', true)))) {
+            return new WP_Error('update_failed', __('The requested slide does not exist or something is wrong with the current image. Please try again or remove this slide.', 'ml-slider'), array('status' => 409));
         }
+        
+        /*
+        * Updates and verifies that it worked. Checks that either the image is the same,
+        * or that the update was successful
+        */
+        if (($image_id === $image_id_old) || update_post_meta($slide_id, '_thumbnail_id', $image_id, $image_id_old)) {
+            return array(
+                'message' => __('The image was successfully updated.', 'ml-slider'),
+                'img_url' => $image_url
+            );
+        }
+        
+        return new WP_Error('update_failed', __('There was an error updating the image. Please try again', 'ml-slider'), array('status' => 409));
+    }
 
-        wp_die( json_encode( array(
-                'status' => 'fail',
-                'msg' => __( "File copy failed. Please check upload directory permissions.", "ml-slider" )
-            )
-        ));
+    /**
+     * Ajax wrapper to update the slide image.
+     *
+     * @return String The status message and if success, the thumbnail link (JSON)
+     */
+    public function ajax_update_slide_image() {
+
+        if (!wp_verify_nonce($_REQUEST['_wpnonce'], 'metaslider_update_slide_image')) {
+            return wp_send_json_error(array(
+                'message' => __('The security check failed. Please refresh the page and try again.', 'ml-slider')
+            ), 401);
+        }
+        
+        $result = $this->update_slide_image(
+            absint($_POST['slide_id']), absint($_POST['image_id'])
+        );
+        
+        if (is_wp_error($result)) {
+            return wp_send_json_error(array(
+                'message' => $result->get_error_message()
+            ), 409);
+        }
+        return wp_send_json_success($result, 200);
     }
 
 
@@ -225,43 +228,46 @@ class MetaSlide {
      * Create a new post for a slide. Tag a featured image to it.
      *
      * @since 3.4
-     * @param string $attachment_id - Media File ID to use for the slide
+     * @param string $media_id - Media File ID to use for the slide
      * @param string $type - the slide type identifier
      * @param int $slider_id - the parent slideshow ID
-     * @return int $id - the ID of the newly created slide
+     * @return int $slide_id - the ID of the newly created slide
      */
-    public function insert_slide($attachment_id, $type, $slider_id) {
-
-        $id = wp_insert_post( array(
-                'post_title' => __( "Slider {$slider_id} - {$type}", "ml-slider" ),
+     public function insert_slide($media_id, $type, $slider_id) {
+        
+        // Store the post in the database (without translation)
+        $slide_id = wp_insert_post(
+            array(
+                'post_title' => "Slider {$slider_id} - {$type}",
                 'post_status' => 'publish',
                 'post_type' => 'ml-slide'
             )
         );
 
-        if ( $attachment_id ) {
-            set_post_thumbnail( $id, $attachment_id );
+        // Send back a friendlier error message
+        if (is_wp_error($slide_id)) {
+            return new WP_Error('create_failed', __('There was an error while updating the database. Please try again.', 'ml-slider'), array('status' => 409));
         }
 
-        if ( $type === 'image' ) {
-            // copy across alt text
-            $alt = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
-            add_post_meta( $id, '_wp_attachment_image_alt', $alt );
+        // Set the image to the slide
+        set_post_thumbnail($slide_id, $media_id);
 
-            // copy across caption
-            $caption = get_the_excerpt( $attachment_id );
-
-            wp_update_post( array(
-                'ID' => $id,
+        // Check if the post is an image and add some extra info
+        if ('image' == $type) {
+            $alt = get_post_meta($media_id, '_wp_attachment_image_alt', true);
+            add_post_meta($slide_id, '_wp_attachment_image_alt', $alt);
+            $caption = has_excerpt($media_id) ? get_the_excerpt($media_id) : '';
+            
+            // Update the post and caption
+            wp_update_post(array(
+                'ID' => $slide_id,
                 'post_excerpt' => $caption
-            ) );
+            ));
         }
-
-        $this->add_or_update_or_delete_meta( $id, 'type', $type );
-
-        return $id;
-
+        $this->add_or_update_or_delete_meta($slide_id, 'type', $type);
+        return $slide_id;
     }
+        
 
     /**
      * Tag the slide attachment to the slider tax category
@@ -308,7 +314,7 @@ class MetaSlide {
 
             $selected = $pos == 0 ? "class='selected'" : "";
 
-            $return .= "<li {$selected} rel='tab-{$pos}'>{$tab['title']}</li>";
+            $return .= "<li {$selected} ><a tabindex='0' href='#' data-tab_id='tab-{$pos}'>{$tab['title']}</a></li>";
 
         }
 
@@ -320,23 +326,37 @@ class MetaSlide {
 
     /**
      * Generate the HTML for the delete button
+     * @return string
      */
     public function get_delete_button_html() {
-
-        $url = wp_nonce_url( admin_url( "admin-post.php?action=metaslider_delete_slide&slider_id={$this->slider->ID}&slide_id={$this->slide->ID}" ), "metaslider_delete_slide" );
-
-        return "<a title='" . __("Delete slide", "ml-slider") . "' class='tipsy-tooltip-top delete-slide dashicons dashicons-trash' href='{$url}'>" . __("Delete slide", "ml-slider") . "</a>";
-
+        return "<button class='delete-slide alignright' title='" . __("Delete Slide", "ml-slider") . "' data-slide-id='{$this->slide->ID}'><i><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg></i></button>";
     }
 
     /**
-     * Generate the HTML for the change slide image button
+     * Generate the HTML for the undelete button
+     * @return string
      */
-    public function get_change_image_button_html() {
+    public function get_undelete_button_html() {
+        return "<a href='#' onclick='return false;' class='trash-view-restore' data-slide-id='{$this->slide->ID}'>" . __('Restore', 'default') . "</a>";
+    }
 
-        return apply_filters("metaslider_change_image_button_html", "", $this->slide);
+    /**
+     * Generate the HTML for the perminant button
+     * @return string
+     */
+    public function get_perminant_delete_button_html() {
 
-        //return "<a title='" . __("Change slide image", "ml-slider") . "' class='tipsy-tooltip-top change-image dashicons dashicons-edit' data-button-text='" . __("Change slide image", "ml-slider") . "' data-slide-id='{$this->slide->ID}'>" . __("Change slide image", "ml-slider") . "</a>";
+        // TODO allow for a perminant delete button
+        $url = wp_nonce_url(admin_url("post.php?ml-slide={$this->slide->ID}&action=delete"));
+        return "<a href='{$url}' class='trash-view-perminant-delete' data-slide-id='{$this->slide->ID}'>" . __('Delete Permanently', 'default') . "</a>";
+    }
+
+    /**
+     * Generates the HTML for the update slide image button
+     * @return string The html for the edit button on a slide image
+     */
+    public function get_update_image_button_html() {
+        return "<button class='update-image alignright' data-button-text='" . __("Update slide image", "ml-slider") . "' title='" . __("Update slide image", "ml-slider") . "' data-slide-id='{$this->slide->ID}'><i><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-edit-2'><polygon points='16 3 21 8 8 21 3 21 3 16 16 3'/></svg></i></button>";
     }
 
     /**
