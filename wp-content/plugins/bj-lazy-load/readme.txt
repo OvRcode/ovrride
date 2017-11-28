@@ -1,11 +1,11 @@
 === BJ Lazy Load ===
-Contributors: bjornjohansen, arontornberg
+Contributors: bjornjohansen, arontornberg, angrycreative
 Donate link: http://www.kiva.org/
 Tags: images, iframes, lazy loading, javascript, optimize, performance, bandwidth
 Author URI: http://twitter.com/bjornjohansen
 Requires at least: 3.5
-Tested up to: 4.3
-Stable tag: 1.0.7
+Tested up to: 4.9
+Stable tag: 1.0.9
 
 Lazy loading for images and iframes makes your site load faster and saves bandwidth. Uses no external JS libraries and degrades gracefully for non-js users.
 
@@ -61,6 +61,16 @@ Lazy loading works just fine. The images will still load from your CDN.
 Check your HTML source or see the magic at work in Web Inspector, FireBug or similar.
 
 == Changelog ==
+
+= Version 1.0.9 =
+* Do not generate tiny image size if unless low-res preview image is used
+* Default placeholder image transparency fix
+* Lazy load image sizes attribute to avoid w3c validation error
+* Change activation order of src and srcset to avoid loading both original and responsive version of image (by Lucian Florian)
+
+= Version 1.0.8 =
+* Skip classes regex fix
+* Amp compatibility (by mustafauysal)
 
 = Version 1.0.7 =
 * Update sponsored by Bonnier Tidskrifter
@@ -161,7 +171,7 @@ Check your HTML source or see the magic at work in Web Inspector, FireBug or sim
 * Bugfix: The infinite_scroll option wasn't initialized
 
 = Version 0.6.0 =
-* Optionally serving size optimized images for responsive design/adaptive layout 
+* Optionally serving size optimized images for responsive design/adaptive layout
 * Optionally serving hiDPI images (retina support)
 * Option to disable BJ Lazy Load for WPTouch
 * Fixed issue with infinite scroll (must be enabled on options screen)
@@ -185,7 +195,7 @@ Check your HTML source or see the magic at work in Web Inspector, FireBug or sim
 * Complete rewrite
 * Replaced JAIL with jQuery.sonar to accomodate for iframe lazy loading
 * Added lazy loading for iframes
-* The manual filter code now works as it should, lazy loading all images instead of just the first. 
+* The manual filter code now works as it should, lazy loading all images instead of just the first.
 
 = Version 0.4.0 =
 * Upgraded JAIL to version 0.9.9, fixing some bugs. Note: data-href is now renamed data-src.
