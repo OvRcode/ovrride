@@ -2,14 +2,16 @@
 
 /*
   Plugin Name: WP SES
-  Version: 0.4.9
+  Version: 0.7.21
   Plugin URI: http://wp-ses.com
   Description: Uses Amazon Simple Email Service instead of local mail for all outgoing WP emails.
   Author: Sylvain Deaure
   Author URI: http://www.blog-expert.fr
+ * Text Domain: wpses
+ * Domain Path: /
  */
 
-define('WPSES_VERSION', 0.49);
+define('WPSES_VERSION', 0.721);
 
 // TODO
 // stats cache (beware of directory)
@@ -37,7 +39,10 @@ if (is_admin()) {
     register_activation_hook(__FILE__, 'wpses_install');
     register_deactivation_hook(__FILE__, 'wpses_uninstall');
 }
-require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.0.8.6.php');
+
+//require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.0.8.6.php');
+// May be in wpmu folder, thanks to @positonic
+require_once plugin_dir_path( __FILE__ ) . 'ses.class.0.8.6.php';
 
 function wpses_init() {
     load_plugin_textdomain('wpses', false, basename(dirname(__FILE__)));
@@ -76,9 +81,10 @@ function wpses_install() {
 function wpses_options() {
     global $wpdb, $wpses_options;
     global $current_user;
-    get_currentuserinfo();
+    //get_currentuserinfo();
+    wp_get_current_user(); // Thanks @jmichaelward
     if (!in_array('administrator', $current_user->roles)) {
-        //die('Pas admin');
+        //die('Not admin');
     }
     $authorized = '';
     if (($wpses_options['access_key'] != '') and ( $wpses_options['secret_key'] != '')) {

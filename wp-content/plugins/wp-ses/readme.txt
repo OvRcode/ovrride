@@ -3,7 +3,7 @@ Contributors: SylvainDeaure
 Donate link: http://wp-ses.com/donate.html
 Tags: email,ses,amazon,webservice,deliverability,newsletter,autoresponder,mail,wp_mail,smtp,service
 Requires at least: 3.0.0
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: trunk
 
 WP-SES redirects all outgoing WordPress emails through Amazon Simple Email Service (SES) for maximum email deliverability.
@@ -153,6 +153,18 @@ add_action('wpses_mailsent','myMailSentHook',10,5);
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.7.2.1 =
+* Fix for stats report, thanks to @Ange1Rob0t
+
+= 0.7.2 =
+* Fix for use as "must use plugin" in a wpmu setup, thanks to @positonic
+
+= 0.7.1 =
+* fix deprecated get_currentuserinfo()
+
+= 0.7.0 =
+* PHP 7.0 Compatibility
 
 = 0.4.8 =
 * Experimental support for cc: and Bcc: in custom header
