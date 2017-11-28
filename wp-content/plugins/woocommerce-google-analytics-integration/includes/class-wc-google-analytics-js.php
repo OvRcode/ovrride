@@ -91,9 +91,16 @@ class WC_Google_Analytics_JS {
 		if ( 'yes' === self::get( 'ga_anonymize_enabled' ) ) {
 			$anonymize_enabled = "['_gat._anonymizeIp'],";
 		}
-		
+
+		$track_404_enabled = '';
+		if ( 'yes' === self::get( 'ga_404_tracking_enabled' ) && is_404() ) {
+			// See https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking#_trackevent
+			$track_404_enabled = "['_trackEvent', 'Error', '404 Not Found', 'page: ' + document.location.pathname + document.location.search + ' referrer: ' + document.referrer ],";
+		}
+
+
 		$domainname = self::get( 'ga_set_domain_name' );
-		
+
 		if ( ! empty( $domainname ) ) {
 			$set_domain_name = "['_setDomainName', '" . esc_js( self::get( 'ga_set_domain_name' ) ) . "'],";
 		} else {
@@ -103,12 +110,13 @@ class WC_Google_Analytics_JS {
 		$code = "var _gaq = _gaq || [];
 		_gaq.push(
 			['_setAccount', '" . esc_js( self::get( 'ga_id' ) ) . "'], " . $set_domain_name .
-			$anonymize_enabled . "
+			$anonymize_enabled .
+			$track_404_enabled . "
 			['_setCustomVar', 1, 'logged-in', '" . esc_js( $logged_in ) . "', 1],
 			['_trackPageview']";
 
 		if ( false !== $order ) {
-			$code .= ",['_set', 'currencyCode', '" . esc_js( $order->get_order_currency() ) . "']";
+			$code .= ",['_set', 'currencyCode', '" . esc_js( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() ) . "']";
 		}
 
 		$code .= ");";
@@ -128,11 +136,11 @@ class WC_Google_Analytics_JS {
 
 		wc_enqueue_js( "
 			" . self::tracker_var() . "( 'ec:addImpression', {
-				'id': '" . esc_js( $product->id ) . "',
+				'id': '" . esc_js( $product->get_id() ) . "',
 				'name': '" . esc_js( $product->get_title() ) . "',
 				'category': " . self::product_get_category_line( $product ) . "
 				'list': '" . esc_js( $list ) . "',
-				'position': " . esc_js( $position ) . "
+				'position': '" . esc_js( $position ) . "'
 			} );
 		" );
 	}
@@ -150,16 +158,16 @@ class WC_Google_Analytics_JS {
 		echo( "
 			<script>
 			(function($) {
-				$( '.products .post-" . esc_js( $product->id ) . " a' ).click( function() {
+				$( '.products .post-" . esc_js( $product->get_id() ) . " a' ).click( function() {
 					if ( true === $(this).hasClass( 'add_to_cart_button' ) ) {
 						return;
 					}
 
 					" . self::tracker_var() . "( 'ec:addProduct', {
-						'id': '" . esc_js( $product->id ) . "',
+						'id': '" . esc_js( $product->get_id() ) . "',
 						'name': '" . esc_js( $product->get_title() ) . "',
 						'category': " . self::product_get_category_line( $product ) . "
-						'position': " . esc_js( $position ) . "
+						'position': '" . esc_js( $position ) . "'
 					});
 
 					" . self::tracker_var() . "( 'ec:setAction', 'click', { list: '" . esc_js( $list ) . "' });
@@ -202,9 +210,9 @@ class WC_Google_Analytics_JS {
 	 * @return string Universal Analytics Code
 	 */
 	public static function load_analytics_universal( $logged_in ) {
-		
+
 		$domainname = self::get( 'ga_set_domain_name' );
-		
+
 		if ( ! empty( $domainname ) ) {
 			$set_domain_name = esc_js( self::get( 'ga_set_domain_name' ) );
 		} else {
@@ -216,26 +224,49 @@ class WC_Google_Analytics_JS {
 			$support_display_advertising = "" . self::tracker_var() . "( 'require', 'displayfeatures' );";
 		}
 
+		$support_enhanced_link_attribution = '';
+		if ( 'yes' === self::get( 'ga_support_enhanced_link_attribution' ) ) {
+			$support_enhanced_link_attribution = "" . self::tracker_var() . "( 'require', 'linkid' );";
+		}
+
 		$anonymize_enabled = '';
 		if ( 'yes' === self::get( 'ga_anonymize_enabled' ) ) {
 			$anonymize_enabled = "" . self::tracker_var() . "( 'set', 'anonymizeIp', true );";
 		}
 
-		$code = "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		$track_404_enabled = '';
+		if ( 'yes' === self::get( 'ga_404_tracking_enabled' ) && is_404() ) {
+			// See https://developers.google.com/analytics/devguides/collection/analyticsjs/events for reference
+			$track_404_enabled = "" . self::tracker_var() . "( 'send', 'event', 'Error', '404 Not Found', 'page: ' + document.location.pathname + document.location.search + ' referrer: ' + document.referrer );";
+		}
+
+		$ga_snippet_head = "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','" . self::tracker_var() . "');
+		})(window,document,'script','//www.google-analytics.com/analytics.js','" . self::tracker_var() . "');";
+		
+		$ga_id = self::get( 'ga_id' );
+		$ga_snippet_create = self::tracker_var() . "( 'create', '" . esc_js( $ga_id ) . "', '" . $set_domain_name . "' );";
 
-		" . self::tracker_var() . "( 'create', '" . esc_js( self::get( 'ga_id' ) ) . "', '" . $set_domain_name . "' );" .
+		$ga_snippet_require =
 		$support_display_advertising .
-		$anonymize_enabled . "
+		$support_enhanced_link_attribution .
+		$anonymize_enabled .
+		$track_404_enabled . "
 		" . self::tracker_var() . "( 'set', 'dimension1', '" . $logged_in . "' );\n";
 
 		if ( 'yes' === self::get( 'ga_enhanced_ecommerce_tracking_enabled' ) ) {
-			$code .= "" . self::tracker_var() . "( 'require', 'ec' );";
+			$ga_snippet_require .= "" . self::tracker_var() . "( 'require', 'ec' );";
 		} else {
-			$code .= "" . self::tracker_var() . "( 'require', 'ecommerce', 'ecommerce.js');";
+			$ga_snippet_require .= "" . self::tracker_var() . "( 'require', 'ecommerce', 'ecommerce.js');";
 		}
+
+		$ga_snippet_head = apply_filters( 'woocommerce_ga_snippet_head' , $ga_snippet_head );
+		$ga_snippet_create = apply_filters( 'woocommerce_ga_snippet_create' , $ga_snippet_create, $ga_id );
+		$ga_snippet_require = apply_filters( 'woocommerce_ga_snippet_require' , $ga_snippet_require );
+
+		$code = $ga_snippet_head . $ga_snippet_create . $ga_snippet_require;
+		$code = apply_filters( 'woocommerce_ga_snippet_output', $code );
 
 		return $code;
 	}
@@ -269,9 +300,9 @@ class WC_Google_Analytics_JS {
 			'" . esc_js( $order->get_total() ) . "',   	    	// total - required
 			'" . esc_js( $order->get_total_tax() ) . "',    	// tax
 			'" . esc_js( $order->get_total_shipping() ) . "',	// shipping
-			'" . esc_js( $order->billing_city ) . "',       	// city
-			'" . esc_js( $order->billing_state ) . "',      	// state or province
-			'" . esc_js( $order->billing_country ) . "'     	// country
+			'" . esc_js( version_compare( WC_VERSION, '3.0', '<' ) ? $order->billing_city : $order->get_billing_city() ) . "',       	// city
+			'" . esc_js( version_compare( WC_VERSION, '3.0', '<' ) ? $order->billing_state : $order->get_billing_state() ) . "',      	// state or province
+			'" . esc_js( version_compare( WC_VERSION, '3.0', '<' ) ? $order->billing_country : $order->get_billing_country() ) . "'     	// country
 		]);";
 
 		// Order items
@@ -297,7 +328,7 @@ class WC_Google_Analytics_JS {
 			'revenue': '" . esc_js( $order->get_total() ) . "',           // Grand Total
 			'shipping': '" . esc_js( $order->get_total_shipping() ) . "', // Shipping
 			'tax': '" . esc_js( $order->get_total_tax() ) . "',           // Tax
-			'currency': '" . esc_js( $order->get_order_currency() ) . "'  // Currency
+			'currency': '" . esc_js( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() ) . "'  // Currency
 		});";
 
 		// Order items
@@ -315,7 +346,7 @@ class WC_Google_Analytics_JS {
 	 * Enhanced Ecommerce Universal Analytics transaction tracking
 	 */
 	function add_transaction_enhanced( $order ) {
-		$code = "" . self::tracker_var() . "( 'set', '&cu', '" . esc_js( $order->get_order_currency() ) . "' );";
+		$code = "" . self::tracker_var() . "( 'set', '&cu', '" . esc_js( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() ) . "' );";
 
 		// Order items
 		if ( $order->get_items() ) {
@@ -345,7 +376,7 @@ class WC_Google_Analytics_JS {
 
 		$code = "_gaq.push(['_addItem',";
 		$code .= "'" . esc_js( $order->get_order_number() ) . "',";
-		$code .= "'" . esc_js( $_product->get_sku() ? $_product->get_sku() : $_product->id ) . "',";
+		$code .= "'" . esc_js( $_product->get_sku() ? $_product->get_sku() : $_product->get_id() ) . "',";
 		$code .= "'" . esc_js( $item['name'] ) . "',";
 		$code .= self::product_get_category_line( $_product );
 		$code .= "'" . esc_js( $order->get_item_total( $item ) ) . "',";
@@ -366,7 +397,7 @@ class WC_Google_Analytics_JS {
 		$code = "" . self::tracker_var() . "('ecommerce:addItem', {";
 		$code .= "'id': '" . esc_js( $order->get_order_number() ) . "',";
 		$code .= "'name': '" . esc_js( $item['name'] ) . "',";
-		$code .= "'sku': '" . esc_js( $_product->get_sku() ? $_product->get_sku() : $_product->id ) . "',";
+		$code .= "'sku': '" . esc_js( $_product->get_sku() ? $_product->get_sku() : $_product->get_id() ) . "',";
 		$code .= "'category': " . self::product_get_category_line( $_product );
 		$code .= "'price': '" . esc_js( $order->get_item_total( $item ) ) . "',";
 		$code .= "'quantity': '" . esc_js( $item['qty'] ) . "'";
@@ -384,7 +415,7 @@ class WC_Google_Analytics_JS {
 		$_product = $order->get_product_from_item( $item );
 
 		$code = "" . self::tracker_var() . "( 'ec:addProduct', {";
-		$code .= "'id': '" . esc_js( $_product->get_sku() ? $_product->get_sku() : $_product->id ) . "',";
+		$code .= "'id': '" . esc_js( $_product->get_sku() ? $_product->get_sku() : $_product->get_id() ) . "',";
 		$code .= "'name': '" . esc_js( $item['name'] ) . "',";
 		$code .= "'category': " . self::product_get_category_line( $_product );
 		$code .= "'price': '" . esc_js( $order->get_item_total( $item ) ) . "',";
@@ -400,11 +431,12 @@ class WC_Google_Analytics_JS {
 	 * @return string          Line of JSON
 	 */
 	private static function product_get_category_line( $_product ) {
-		if ( is_array( $_product->variation_data ) && ! empty( $_product->variation_data ) ) {
-			$code = "'" . esc_js( woocommerce_get_formatted_variation( $_product->variation_data, true ) ) . "',";
+		$variation_data = version_compare( WC_VERSION, '3.0', '<' ) ? $_product->variation_data : ( $_product->is_type( 'variation' ) ? wc_get_product_variation_attributes( $_product->get_id() ) : '' );
+		if ( is_array( $variation_data ) && ! empty( $variation_data ) ) {
+			$code = "'" . esc_js( wc_get_formatted_variation( $variation_data, true ) ) . "',";
 		} else {
 			$out = array();
-			$categories = get_the_terms( $_product->id, 'product_cat' );
+			$categories = get_the_terms( $_product->get_id(), 'product_cat' );
 			if ( $categories ) {
 				foreach ( $categories as $category ) {
 					$out[] = $category->name;
@@ -425,7 +457,7 @@ class WC_Google_Analytics_JS {
 			(function($) {
 				$( '.remove' ).click( function() {
 					" . self::tracker_var() . "( 'ec:addProduct', {
-						'id': ($(this).data('product_sku')) ? ('SKU: ' + $(this).data('product_sku')) : ('#' + $(this).data('product_id')),
+						'id': ($(this).data('product_sku')) ? ($(this).data('product_sku')) : ('#' + $(this).data('product_id')),
 						'quantity': $(this).parent().parent().find( '.qty' ).val() ? $(this).parent().parent().find( '.qty' ).val() : '1',
 					} );
 					" . self::tracker_var() . "( 'ec:setAction', 'remove' );
@@ -440,9 +472,13 @@ class WC_Google_Analytics_JS {
 	 * Tracks a product detail view
 	 */
 	function product_detail( $product ) {
+		if ( empty( $product ) ) {
+			return;
+		}
+
 		wc_enqueue_js( "
 			" . self::tracker_var() . "( 'ec:addProduct', {
-				'id': '" . esc_js( $product->get_sku() ? $product->get_sku() : $product->id ) . "',
+				'id': '" . esc_js( $product->get_sku() ? $product->get_sku() : ( '#' . $product->get_id() ) ) . "',
 				'name': '" . esc_js( $product->get_title() ) . "',
 				'category': " . self::product_get_category_line( $product ) . "
 				'price': '" . esc_js( $product->get_price() ) . "',
@@ -460,7 +496,7 @@ class WC_Google_Analytics_JS {
 		foreach ( $cart as $cart_item_key => $cart_item ) {
 			$product     = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
 			$code .= "" . self::tracker_var() . "( 'ec:addProduct', {
-				'id': '" . esc_js( $product->get_sku() ? $product->get_sku() : $product->id ) . "',
+				'id': '" . esc_js( $product->get_sku() ? $product->get_sku() : ( '#' . $product->get_id() ) ) . "',
 				'name': '" . esc_js( $product->get_title() ) . "',
 				'category': " . self::product_get_category_line( $product ) . "
 				'price': '" . esc_js( $product->get_price() ) . "',
