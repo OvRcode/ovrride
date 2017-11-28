@@ -1,13 +1,14 @@
 <?php
 /**
  * Plugin Name: WooCommerce PayPal Pro (Classic and PayFlow Editions) Gateway
- * Plugin URI: http://www.woothemes.com/products/paypal-pro/
+ * Plugin URI: https://woocommerce.com/products/paypal-pro/
  * Description: A payment gateway for PayPal Pro classic and PayFlow edition. A PayPal Pro merchant account, Curl support, and a server with SSL support and an SSL certificate is required (for security reasons) for this gateway to function.
- * Version: 4.4.4
+ * Version: 4.4.10
  * Author: WooCommerce
  * Author URI: https://woocommerce.com/
- *
- * Copyright: © 2009-2016 WooCommerce.
+ * WC requires at least: 2.6
+ * WC tested up to: 3.2
+ * Copyright: © 2009-2017 WooCommerce.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -16,6 +17,8 @@
  *     https://www.paypalobjects.com/webstatic/en_US/developer/docs/pdf/payflowgateway_guide.pdf
  *
  * @package WC_PayPal_Pro
+ *
+ * Woo: 18594:6d23ba7f0e0198937c0029f9e865b40e
  */
 
 /**
@@ -32,15 +35,12 @@ woothemes_queue_update( plugin_basename( __FILE__ ), '6d23ba7f0e0198937c0029f9e8
 
 if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 
+	define( 'WC_PAYPAL_PRO_VERSION', '4.4.10' );
+
 	/**
 	 * PayPal Pro main class.
 	 */
 	class WC_PayPal_Pro {
-
-		/**
-		 * PayPal Pro version
-		 */
-		const VERSION = '4.4.4';
 
 		/**
 		 * Constructor
@@ -50,7 +50,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 
 			if ( is_woocommerce_active() && class_exists( 'WC_Payment_Gateway' ) ) {
 
-				if ( version_compare( get_option( 'woocommerce_paypal_pro_version', 0 ), self::VERSION, '<' ) ) {
+				if ( version_compare( get_option( 'woocommerce_paypal_pro_version', 0 ), WC_PAYPAL_PRO_VERSION, '<' ) ) {
 					$this->update();
 				}
 
@@ -89,7 +89,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 					update_option( 'woocommerce_paypal_pro_cardinal_upgrade_notice', true );
 				}
 			}
-			update_option( 'woocommerce_paypal_pro_version', self::VERSION );
+			update_option( 'woocommerce_paypal_pro_version', WC_PAYPAL_PRO_VERSION );
 		}
 
 		/**
@@ -145,7 +145,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 		 * @return string
 		 */
 		public function woocommerce_missing_notice() {
-			echo '<div class="error"><p>' . sprintf( __( 'WooCommerce PayPal Pro Plugin requires WooCommerce to be installed and active. %s', 'woocommerce-gateway-paypal-pro' ), '<a href="http://www.woothemes.com/woocommerce/" target="_blank">WooCommerce</a>' ) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf( __( 'WooCommerce PayPal Pro Plugin requires WooCommerce to be installed and active. %s', 'woocommerce-gateway-paypal-pro' ), '<a href="http://www.woocommerce.com/" target="_blank">WooCommerce</a>' ) . '</p></div>';
 
 			return true;
 		}
@@ -222,7 +222,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 			$order = wc_get_order( $order_id );
 
 			$captured = false;
-			switch ( $order->payment_method ) {
+			switch ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->payment_method : $order->get_payment_method() ) {
 				case 'paypal_pro':
 					$captured = $this->_capture_payment_paypal_pro( $order );
 					break;
@@ -272,7 +272,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 		protected function _capture_payment_paypal_pro( $order ) {
 			$paypalpro = new WC_Gateway_PayPal_Pro();
 
-			$txn_id = $this->_get_transaction_id( $order->id );
+			$txn_id = $this->_get_transaction_id( version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id() );
 			$url    = $paypalpro->testmode ? $paypalpro->testurl : $paypalpro->liveurl;
 
 			$post_data = array(
@@ -283,7 +283,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 				'METHOD'          => 'DoCapture',
 				'AUTHORIZATIONID' => $txn_id,
 				'AMT'             => $order->get_total(),
-				'CURRENCYCODE'    => $order->get_order_currency(),
+				'CURRENCYCODE'    => ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() ),
 				'COMPLETETYPE'    => 'Complete',
 			);
 
@@ -340,12 +340,13 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 		 * @return void
 		 */
 		protected function _capture_payment_paypal_pro_success( $order, $parsed_response ) {
+			$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
 			$order->add_order_note( sprintf( __( 'PayPal Pro charge complete (Transaction ID: %s)', 'woocommerce-gateway-paypal-pro' ), $parsed_response['TRANSACTIONID'] ) );
 
-			update_post_meta( $order->id, '_paypalpro_charge_captured', 'yes' );
+			update_post_meta( $order_id, '_paypalpro_charge_captured', 'yes' );
 
 			// Update the transaction ID of the capture.
-			update_post_meta( $order->id, '_transaction_id', $parsed_response['TRANSACTIONID'] );
+			update_post_meta( $order_id, '_transaction_id', $parsed_response['TRANSACTIONID'] );
 		}
 
 		/**
@@ -384,7 +385,7 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 		protected function _capture_payment_paypal_pro_payflow( $order ) {
 			$paypalpro_payflow = new WC_Gateway_PayPal_Pro_PayFlow();
 
-			$txn_id = $this->_get_transaction_id( $order->id );
+			$txn_id = $this->_get_transaction_id( version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id() );
 			$url    = $paypalpro_payflow->testmode ? $paypalpro_payflow->testurl : $paypalpro_payflow->liveurl;
 
 			$post_data            = array();
@@ -442,12 +443,14 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 		 * @return void
 		 */
 		protected function _capture_payment_paypal_pro_payflow_success( $order, $parsed_response ) {
+			$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
+
 			$order->add_order_note( sprintf( __( 'PayPal Pro (Payflow) delay charge complete (PNREF: %s)', 'woocommerce-gateway-paypal-pro' ), $parsed_response['PNREF'] ) );
 
-			update_post_meta( $order->id, '_paypalpro_charge_captured', 'yes' );
+			update_post_meta( $order_id, '_paypalpro_charge_captured', 'yes' );
 
 			// update the transaction ID of the capture.
-			update_post_meta( $order->id, '_transaction_id', $parsed_response['PNREF'] );
+			update_post_meta( $order_id, '_transaction_id', $parsed_response['PNREF'] );
 		}
 
 		/**
@@ -477,7 +480,9 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 			$txn_id   = get_post_meta( $order_id, '_transaction_id', true );
 			$captured = get_post_meta( $order_id, '_paypalpro_charge_captured', true );
 
-			if ( 'paypal_pro' === $order->payment_method && $txn_id && 'no' === $captured ) {
+			$payment_method = version_compare( WC_VERSION, '3.0', '<' ) ? $order->payment_method : $order->get_payment_method();
+
+			if ( 'paypal_pro' === $payment_method && $txn_id && 'no' === $captured ) {
 
 				$paypalpro = new WC_Gateway_PayPal_Pro();
 
@@ -511,12 +516,12 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 
 					$order->add_order_note( sprintf( __( 'PayPal Pro void complete (Authorization ID: %s)', 'woocommerce-gateway-paypal-pro' ), $parsed_response['AUTHORIZATIONID'] ) );
 
-					delete_post_meta( $order->id, '_paypalpro_charge_captured' );
-					delete_post_meta( $order->id, '_transaction_id' );
+					delete_post_meta( $order_id, '_paypalpro_charge_captured' );
+					delete_post_meta( $order_id, '_transaction_id' );
 				}
 			}
 
-			if ( 'paypal_pro_payflow' === $order->payment_method && $txn_id && 'no' === $captured ) {
+			if ( 'paypal_pro_payflow' === $payment_method && $txn_id && 'no' === $captured ) {
 
 				$paypalpro_payflow = new WC_Gateway_PayPal_Pro_Payflow();
 
@@ -551,8 +556,8 @@ if ( ! class_exists( 'WC_PayPal_Pro' ) ) :
 				} else {
 					$order->add_order_note( sprintf( __( 'PayPal Pro (Payflow) void complete (PNREF: %s)', 'woocommerce-gateway-paypal-pro' ), $parsed_response['PNREF'] ) );
 
-					delete_post_meta( $order->id, '_paypalpro_charge_captured' );
-					delete_post_meta( $order->id, '_transaction_id' );
+					delete_post_meta( $order_id, '_paypalpro_charge_captured' );
+					delete_post_meta( $order_id, '_transaction_id' );
 				}
 			}
 		}

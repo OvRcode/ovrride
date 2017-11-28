@@ -318,14 +318,18 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 				// check if it is captured or authorization only [transstate 3 is authoriztion only]
 				if ( $details && strtolower( $details['TRANSSTATE'] ) === '3' ) {
 					// Store captured value
-					update_post_meta( $order->id, '_paypalpro_charge_captured', 'no' );
-					add_post_meta( $order->id, '_transaction_id', $txn_id, true );
+					update_post_meta( version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id(), '_paypalpro_charge_captured', 'no' );
+					update_post_meta( version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id(), '_transaction_id', $txn_id );
 
 					// Mark as on-hold
 					$order->update_status( 'on-hold', sprintf( __( 'PayPal Pro (PayFlow) charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-pro' ), $txn_id ) );
 
 					// Reduce stock levels
-					$order->reduce_order_stock();
+					if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+						$order->reduce_order_stock();
+					} else {
+						wc_reduce_stock_levels( $order->get_id() );
+					}
 				} else {
 
 					// Add order note
@@ -371,13 +375,16 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	 * @return bool or array
 	 */
 	public function get_token( $order, $post_data, $force_new_token = false ) {
-		if ( ! $force_new_token && get_post_meta( $order->id, '_SECURETOKENHASH', true ) == md5( json_encode( $post_data ) ) ) {
+		$pre_wc_30 = version_compare( WC_VERSION, '3.0', '<' );
+		$order_id = $pre_wc_30 ? $order->id : $order->get_id();
+
+		if ( ! $force_new_token && get_post_meta( $order_id, '_SECURETOKENHASH', true ) == md5( json_encode( $post_data ) ) ) {
 			return array(
-				'SECURETOKEN'   => get_post_meta( $order->id, '_SECURETOKEN', true ),
-				'SECURETOKENID' => get_post_meta( $order->id, '_SECURETOKENID', true )
+				'SECURETOKEN'   => get_post_meta( $order_id, '_SECURETOKEN', true ),
+				'SECURETOKENID' => get_post_meta( $order_id, '_SECURETOKENID', true )
 			);
 		}
-		$post_data['SECURETOKENID']     = uniqid() . md5( $order->order_key );
+		$post_data['SECURETOKENID']     = uniqid() . md5( $pre_wc_30 ? $order->order_key : $order->get_order_key() );
 		$post_data['CREATESECURETOKEN'] = 'Y';
 		$post_data['SILENTTRAN']        = 'TRUE';
 		$post_data['ERRORURL']          = WC()->api_request_url( get_class() );
@@ -407,9 +414,9 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		if ( isset( $parsed_response['RESULT'] ) && in_array( $parsed_response['RESULT'], array( 160, 161, 162 ) ) ) {
 			return $this->get_token( $order, $post_data, $force_new_token );
 		} elseif ( isset( $parsed_response['RESULT'] ) && $parsed_response['RESULT'] == 0 && ! empty( $parsed_response['SECURETOKEN'] ) ) {
-			update_post_meta( $order->id, '_SECURETOKEN', $parsed_response['SECURETOKEN'] );
-			update_post_meta( $order->id, '_SECURETOKENID', $parsed_response['SECURETOKENID'] );
-			update_post_meta( $order->id, '_SECURETOKENHASH', md5( json_encode( $post_data ) ) );
+			update_post_meta( $order_id, '_SECURETOKEN', $parsed_response['SECURETOKEN'] );
+			update_post_meta( $order_id, '_SECURETOKENID', $parsed_response['SECURETOKENID'] );
+			update_post_meta( $order_id, '_SECURETOKENHASH', md5( json_encode( $post_data ) ) );
 
 			return array(
 				'SECURETOKEN'   => $parsed_response['SECURETOKEN'],
@@ -439,10 +446,12 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		$post_data['PWD']          = $this->paypal_password;
 		$post_data['TENDER']       = 'C'; // Credit card
 		$post_data['TRXTYPE']      = $this->paymentaction; // Sale / Authorize
-		$post_data['AMT']          = $order->get_total(); // Order total
-		$post_data['CURRENCY']     = $order->get_order_currency(); // Currency code
+
+		// Transaction Amount = Total Tax Amount + Total Freight Amount + Total Handling Amount + Total Line Item Amount.
+		$post_data['AMT']          = $order->get_total();
+		$post_data['CURRENCY']     = ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() ); // Currency code
 		$post_data['CUSTIP']       = $this->get_user_ip(); // User IP Address
-		$post_data['EMAIL']        = $order->billing_email;
+		$post_data['EMAIL']        = version_compare( WC_VERSION, '3.0', '<' ) ? $order->billing_email : $order->get_billing_email();
 		$post_data['INVNUM']       = $order->get_order_number();
 		$post_data['BUTTONSOURCE'] = 'WooThemes_Cart';
 
@@ -459,76 +468,75 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 			foreach ( $order->get_items() as $item ) {
 				$_product = $order->get_product_from_item( $item );
+
 				if ( $item['qty'] ) {
 					$post_data[ 'L_NAME' . $item_loop ] = $item['name'];
-					$post_data[ 'L_COST' . $item_loop ] = $order->get_item_total( $item, true );
+					$post_data[ 'L_COST' . $item_loop ] = wc_format_decimal( $order->get_item_total( $item, false ), 2 );
 					$post_data[ 'L_QTY' . $item_loop ]  = $item['qty'];
 
 					if ( $_product->get_sku() ) {
 						$post_data[ 'L_SKU' . $item_loop ] = $_product->get_sku();
 					}
 
-					$ITEMAMT += $order->get_item_total( $item, true ) * $item['qty'];
+					$ITEMAMT += $order->get_item_total( $item, false ) * $item['qty'];
 
 					$item_loop++;
 				}
 			}
 
-			// Shipping.
-			if ( ( $order->get_total_shipping() + $order->get_shipping_tax() ) > 0 ) {
-				$post_data[ 'L_NAME' . $item_loop ] = 'Shipping';
-				$post_data[ 'L_DESC' . $item_loop ] = 'Shipping and shipping taxes';
-				$post_data[ 'L_COST' . $item_loop ] = $order->get_total_shipping() + $order->get_shipping_tax();
+			// Fees
+			foreach ( $order->get_fees() as $fee ) {
+				$post_data[ 'L_NAME' . $item_loop ] = 'Fees';
+				$post_data[ 'L_DESC' . $item_loop ] = trim( substr( $fee['name'], 0, 127 ) );
+				$post_data[ 'L_COST' . $item_loop ] = $fee['line_total'];
 				$post_data[ 'L_QTY' . $item_loop ]  = 1;
 
-				$ITEMAMT += $order->get_total_shipping() + $order->get_shipping_tax();
+				$ITEMAMT += $fee['line_total'];
+				$fee_total += $fee['line_total'];
 
 				$item_loop++;
+			}
+
+			// Shipping.
+			if ( $order->get_total_shipping() > 0 ) {
+				$post_data['FREIGHTAMT'] = wc_format_decimal( $order->get_total_shipping(), 2 );
 			}
 
 			// Discount.
-			if ( $order->get_total_discount( false ) > 0 ) {
-				$post_data[ 'L_NAME' . $item_loop ] = 'Order Discount';
-				$post_data[ 'L_DESC' . $item_loop ] = 'Discounts including tax';
-				$post_data[ 'L_COST' . $item_loop ] = '-' . $order->get_total_discount( false );
-				$post_data[ 'L_QTY' . $item_loop ]  = 1;
-
-				$item_loop++;
+			if ( $order->get_total_discount( true ) > 0 ) {
+				$post_data['DISCOUNT'] = wc_format_decimal( $order->get_total_discount( true ), 2 );
 			}
 
-			$ITEMAMT = round( $ITEMAMT, 2 );
-
-			// Fix rounding.
-			if ( absint( $order->get_total() * 100 ) !== absint( $ITEMAMT * 100 ) ) {
-				$post_data[ 'L_NAME' . $item_loop ] = 'Rounding amendment';
-				$post_data[ 'L_DESC' . $item_loop ] = 'Correction if rounding is off (this can happen with tax inclusive prices)';
-				$post_data[ 'L_COST' . $item_loop ] = ( absint( $order->get_total() * 100 ) - absint( $ITEMAMT * 100 ) ) / 100;
-				$post_data[ 'L_QTY' . $item_loop ]  = 1;
+			// Tax.
+			if ( $order->get_total_tax() > 0 ) {
+				$post_data['TAXAMT'] = wc_format_decimal( $order->get_total_tax(), 2 );
 			}
 
-			$post_data['ITEMAMT'] = $order->get_total();
+			$post_data['ITEMAMT'] = wc_format_decimal( $ITEMAMT, 2 );
 		}
+
+		$pre_wc_30 = version_compare( WC_VERSION, '3.0', '<' );
 
 		$post_data['ORDERDESC']      = 'Order ' . $order->get_order_number() . ' on ' . wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-		$post_data['FIRSTNAME']      = $order->billing_first_name;
-		$post_data['LASTNAME']       = $order->billing_last_name;
-		$post_data['STREET']         = $order->billing_address_1 . ' ' . $order->billing_address_2;
-		$post_data['CITY']           = $order->billing_city;
-		$post_data['STATE']          = $order->billing_state;
-		$post_data['COUNTRY']        = $order->billing_country;
-		$post_data['ZIP']            = $order->billing_postcode;
+		$post_data['FIRSTNAME']      = $pre_wc_30 ? $order->billing_first_name : $order->get_billing_first_name();
+		$post_data['LASTNAME']       = $pre_wc_30 ? $order->billing_last_name : $order->get_billing_last_name();
+		$post_data['STREET']         = $pre_wc_30 ? ( $order->billing_address_1 . ' ' . $order->billing_address_2 ) : ( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() );
+		$post_data['CITY']           = $pre_wc_30 ? $order->billing_city : $order->get_billing_city();
+		$post_data['STATE']          = $pre_wc_30 ? $order->billing_state : $order->get_billing_state();
+		$post_data['COUNTRY']        = $pre_wc_30 ? $order->billing_country : $order->get_billing_country();
+		$post_data['ZIP']            = $pre_wc_30 ? $order->billing_postcode : $order->get_billing_postcode();
 
-		if ( $order->shipping_address_1 ) {
-			$post_data['SHIPTOFIRSTNAME'] = $order->shipping_first_name;
-			$post_data['SHIPTOLASTNAME']  = $order->shipping_last_name;
-			$post_data['SHIPTOSTREET']    = $order->shipping_address_1;
-			$post_data['SHIPTOCITY']      = $order->shipping_city;
-			$post_data['SHIPTOSTATE']     = $order->shipping_state;
-			$post_data['SHIPTOCOUNTRY']   = $order->shipping_country;
-			$post_data['SHIPTOZIP']       = $order->shipping_postcode;
+		if ( $pre_wc_30 ? $order->shipping_address_1 : $order->get_shipping_address_1() ) {
+			$post_data['SHIPTOFIRSTNAME'] = $pre_wc_30 ? $order->shipping_first_name : $order->get_shipping_first_name();
+			$post_data['SHIPTOLASTNAME']  = $pre_wc_30 ? $order->shipping_last_name : $order->get_shipping_last_name();
+			$post_data['SHIPTOSTREET']    = $pre_wc_30 ? $order->shipping_address_1 : $order->get_shipping_address_1();
+			$post_data['SHIPTOCITY']      = $pre_wc_30 ? $order->shipping_city : $order->get_shipping_city();
+			$post_data['SHIPTOSTATE']     = $pre_wc_30 ? $order->shipping_state : $order->get_shipping_state();
+			$post_data['SHIPTOCOUNTRY']   = $pre_wc_30 ? $order->shipping_country : $order->get_shipping_country();
+			$post_data['SHIPTOZIP']       = $pre_wc_30 ? $order->shipping_postcode : $order->get_shipping_postcode();
 		}
 
-		return $post_data;
+		return apply_filters( 'woocommerce_gateway_paypal_pro_payflow_post_data', $post_data );
 	}
 
 	/**
@@ -536,6 +544,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	 *
 	 * @throws Exception If request failed or got unexpected response.
 	 *
+	 * @since 1.0.0
+	 * @version 4.4.8
 	 * @param object $order       Order object.
 	 * @param string $card_number Card number.
 	 * @param string $card_exp    Card expire date.
@@ -595,15 +605,22 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 						// Check if it is captured or authorization only [transstate 3 is authoriztion only].
 						if ( $details && strtolower( $details['TRANSSTATE'] ) === '3' ) {
+							$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
+
 							// Store captured value.
-							update_post_meta( $order->id, '_paypalpro_charge_captured', 'no' );
-							add_post_meta( $order->id, '_transaction_id', $txn_id, true );
+							update_post_meta( $order_id, '_paypalpro_charge_captured', 'no' );
+
+							version_compare( WC_VERSION, '3.0', '<' ) ? update_post_meta( $order_id, '_transaction_id', $txn_id ) : $order->set_transaction_id( $txn_id );
 
 							// Mark as on-hold.
 							$order->update_status( 'on-hold', sprintf( __( 'PayPal Pro (PayFlow) charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-pro' ), $txn_id ) );
 
 							// Reduce stock levels.
-							$order->reduce_order_stock();
+							if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+								$order->reduce_order_stock();
+							} else {
+								wc_reduce_stock_levels( $order_id );
+							}
 						} else {
 
 							// Add order note.
@@ -729,7 +746,7 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 
 		if ( ! is_null( $amount ) ) {
 			$post_data['AMT']          = number_format( $amount, 2, '.', '' );
-			$post_data['CURRENCY'] = $order->get_order_currency();
+			$post_data['CURRENCY'] = ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() );
 		}
 
 		if ( $reason ) {
@@ -777,6 +794,8 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 	 * Payment form on checkout page.
 	 */
 	public function payment_fields() {
+		wp_enqueue_script( 'wc-credit-card-form' );
+
 		if ( $this->description ) {
 			if ( $this->transparent_redirect ) {
 				echo '<p>' . $this->description . '</p>';
@@ -788,17 +807,17 @@ class WC_Gateway_PayPal_Pro_PayFlow extends WC_Payment_Gateway {
 		if ( ! $this->transparent_redirect ) {
 			?>
 			<fieldset>
-				<p class="form-row form-row-first">
+				<p class="form-row form-row-wide">
 					<label for="<?php echo esc_attr( $this->id ); ?>-card-number"><?php  esc_html_e( 'Card Number', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
 					<input id="<?php echo esc_attr( $this->id ); ?>-card-number" class="input-text wc-credit-card-form-card-number" type="text" maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="<?php echo esc_attr( $this->id ); ?>-card-number" />
 				</p>
 
-				<p class="form-row form-row-last">
+				<p class="form-row form-row-first">
 					<label for="<?php echo esc_attr( $this->id ); ?>-card-expiry"><?php esc_html_e( 'Expiry (MM/YY)', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
 					<input id="<?php echo esc_attr( $this->id ); ?>-card-expiry" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="<?php esc_attr_e( 'MM / YY', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-expiry" />
 				</p>
 
-				<p class="form-row form-row-first">
+				<p class="form-row form-row-last">
 					<label for="<?php echo esc_attr( $this->id ); ?>-card-cvc"><?php esc_html_e( 'Card Code', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
 					<input id="<?php echo esc_attr( $this->id ); ?>-card-cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" placeholder="<?php esc_attr_e( 'CVC', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-cvc" />
 				</p>
