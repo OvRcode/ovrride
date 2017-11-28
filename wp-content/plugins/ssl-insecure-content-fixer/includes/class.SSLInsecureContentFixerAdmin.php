@@ -134,11 +134,11 @@ class SSLInsecureContentFixerAdmin {
 				$links[] = sprintf('<a href="%s">%s</a>', esc_url($url), _x('SSL Tests', 'menu link', 'ssl-insecure-content-fixer'));
 			}
 
-			$links[] = sprintf('<a href="https://ssl.webaware.net.au/" target="_blank">%s</a>', _x('Instructions', 'plugin details links', 'ssl-insecure-content-fixer'));
-			$links[] = sprintf('<a href="https://wordpress.org/support/plugin/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Get help', 'plugin details links', 'ssl-insecure-content-fixer'));
-			$links[] = sprintf('<a href="https://wordpress.org/plugins/ssl-insecure-content-fixer/" target="_blank">%s</a>', _x('Rating', 'plugin details links', 'ssl-insecure-content-fixer'));
-			$links[] = sprintf('<a href="https://translate.wordpress.org/projects/wp-plugins/ssl-insecure-content-fixer" target="_blank">%s</a>', _x('Translate', 'plugin details links', 'ssl-insecure-content-fixer'));
-			$links[] = sprintf('<a href="https://shop.webaware.com.au/donations/?donation_for=SSL+Insecure+Content+Fixer" target="_blank">%s</a>', _x('Donate', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://ssl.webaware.net.au/" target="_blank" rel="noopener">%s</a>', _x('Instructions', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://wordpress.org/support/plugin/ssl-insecure-content-fixer" target="_blank" rel="noopener">%s</a>', _x('Get help', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://wordpress.org/plugins/ssl-insecure-content-fixer/" target="_blank" rel="noopener">%s</a>', _x('Rating', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://translate.wordpress.org/projects/wp-plugins/ssl-insecure-content-fixer" target="_blank" rel="noopener">%s</a>', _x('Translate', 'plugin details links', 'ssl-insecure-content-fixer'));
+			$links[] = sprintf('<a href="https://shop.webaware.com.au/donations/?donation_for=SSL+Insecure+Content+Fixer" target="_blank" rel="noopener">%s</a>', _x('Donate', 'plugin details links', 'ssl-insecure-content-fixer'));
 		}
 
 		return $links;
@@ -234,13 +234,14 @@ class SSLInsecureContentFixerAdmin {
 
 		$output['fix_level']		= empty($input['fix_level']) ? '' : $input['fix_level'];
 		$output['proxy_fix']		= empty($input['proxy_fix']) ? '' : $input['proxy_fix'];
+		$output['site_only']		= empty($input['site_only']) ? 0  : 1;
 
 		if (!in_array($output['fix_level'], array('off', 'simple', 'content', 'widgets', 'capture', 'capture_all'))) {
 			add_settings_error(SSLFIX_PLUGIN_OPTIONS, 'sslfix-fix_level', _x('Fix level is invalid', 'settings error', 'ssl-insecure-content-fixer'));
 			$this->has_settings_errors = true;
 		}
 
-		if (!in_array($output['proxy_fix'], array('normal', 'HTTP_X_FORWARDED_PROTO', 'HTTP_CLOUDFRONT_FORWARDED_PROTO', 'HTTP_X_FORWARDED_SSL', 'HTTP_CF_VISITOR', 'detect_fail'))) {
+		if (!in_array($output['proxy_fix'], array('normal', 'HTTP_X_FORWARDED_PROTO', 'HTTP_CLOUDFRONT_FORWARDED_PROTO', 'HTTP_X_FORWARDED_SSL', 'HTTP_CF_VISITOR', 'HTTP_X_ARR_SSL', 'HTTP_X_FORWARDED_SCHEME', 'detect_fail'))) {
 			add_settings_error(SSLFIX_PLUGIN_OPTIONS, 'sslfix-proxy_fix', _x('HTTPS detection setting is invalid', 'settings error', 'ssl-insecure-content-fixer'));
 			$this->has_settings_errors = true;
 		}
