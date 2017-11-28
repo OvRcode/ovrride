@@ -24,7 +24,7 @@ var Arrive = (function(window, $, undefined) {
     return {
       matchesSelector: function(elem, selector) {
         return elem instanceof HTMLElement && matches.call(elem, selector);
-      }, 
+      },
       // to enable function overloading - By John Resig (MIT Licensed)
       addMethod: function (object, name, fn) {
         var old = object[ name ];
@@ -91,17 +91,17 @@ var Arrive = (function(window, $, undefined) {
 
     EventsBucket.prototype.addEvent = function(target, selector, options, callback) {
       var newEvent = {
-        target:             target, 
-        selector:           selector, 
-        options:            options, 
-        callback:           callback, 
+        target:             target,
+        selector:           selector,
+        options:            options,
+        callback:           callback,
         firedElems:         []
       };
 
       if (this._beforeAdding) {
         this._beforeAdding(newEvent);
       }
-      
+
       this._eventsBucket.push(newEvent);
       return newEvent;
     };
@@ -134,7 +134,7 @@ var Arrive = (function(window, $, undefined) {
    * General class for binding/unbinding arrive and leave events
    */
   var MutationEvents = function(getObserverConfig, onMutation) {
-    var eventsBucket    = new EventsBucket(), 
+    var eventsBucket    = new EventsBucket(),
         me              = this;
 
     var defaultOptions = {
@@ -143,10 +143,10 @@ var Arrive = (function(window, $, undefined) {
 
     // actual event registration before adding it to bucket
     eventsBucket.beforeAdding(function(registrationData) {
-      var 
-        target    = registrationData.target, 
-        selector  = registrationData.selector, 
-        callback  = registrationData.callback, 
+      var
+        target    = registrationData.target,
+        selector  = registrationData.selector,
+        callback  = registrationData.callback,
         observer;
 
       // mutation observer does not work on window or document
@@ -159,7 +159,7 @@ var Arrive = (function(window, $, undefined) {
       });
 
       var config = getObserverConfig(registrationData.options);
-      
+
       observer.observe(target, config);
 
       registrationData.observer = observer;
@@ -195,7 +195,7 @@ var Arrive = (function(window, $, undefined) {
 
     this.unbindEventWithSelectorOrCallback = function(selector) {
       var elements = utils.toElementsArray(this),
-          callback = selector, 
+          callback = selector,
           compareFunction;
 
       if (typeof selector === "function") {
@@ -475,7 +475,7 @@ function ewww_load_images(ewww_webp_supported) {
 	(function($) {
 		var attr_prefix = 'data-';
 		function ewww_copy_attrs(ewww_nscript, ewww_img) {
-			var attrs = ['align','alt','border','crossorigin','height','hspace','ismap','longdesc','usemap','vspace','width','accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang','spellcheck','style','tabindex','title','translate','sizes'];
+			var attrs = ['align','alt','border','crossorigin','height','hspace','ismap','longdesc','usemap','vspace','width','accesskey','class','contenteditable','contextmenu','dir','draggable','dropzone','hidden','id','lang','spellcheck','style','tabindex','title','translate','sizes','data-caption','data-attachment-id','data-permalink','data-orig-size','data-comments-opened','data-image-meta','data-image-title','data-image-description','data-event-trigger','data-highlight-color','data-highlight-opacity','data-highlight-border-color','data-highlight-border-width','data-highlight-border-opacity','data-no-lazy','data-lazy','data-large_image_width','data-large_image_height'];
 			for (var i = 0, len = attrs.length; i < len; i++) {
 				var ewww_attr = $(ewww_nscript).attr(attr_prefix + attrs[i]);
 				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
@@ -521,6 +521,12 @@ function ewww_load_images(ewww_webp_supported) {
 					$(this).attr('data-lazyload', ewww_attr);
 				}
 			});
+			$('div.woocommerce-product-gallery__image').each(function() {
+				var ewww_attr = $(this).attr('data-webp-thumb');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(this).attr('data-thumb', ewww_attr);
+				}
+			});
 		}
 		$('img.ewww_webp_lazy_retina').each(function() {
 			if (ewww_webp_supported) {
@@ -535,6 +541,19 @@ function ewww_load_images(ewww_webp_supported) {
 				}
 			}
 			$(this).removeClass('ewww_webp_lazy_retina');
+		});
+		$('video').each(function() {
+			if (ewww_webp_supported) {
+                                var ewww_attr = $(this).attr('data-poster-webp');
+                                if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                        $(this).attr('poster', ewww_attr);
+                                }
+                        } else {
+                                var ewww_attr = $(this).attr('data-poster-image');
+                                if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                        $(this).attr('poster', ewww_attr);
+                                }
+                        }
 		});
 		$('img.ewww_webp_lazy_load').each(function() {
 			if (ewww_webp_supported) {
@@ -551,11 +570,11 @@ function ewww_load_images(ewww_webp_supported) {
 				$(this).attr('data-lazy-src', $(this).attr('data-lazy-img-src'));
 				var ewww_attr = $(this).attr('data-srcset');
 				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
-						$(this).attr('srcset', ewww_attr);
+					$(this).attr('srcset', ewww_attr);
 				}
 				var ewww_attr = $(this).attr('data-lazy-srcset-img');
 				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
-						$(ewww_img).attr('data-lazy-srcset', ewww_attr);
+					$(ewww_img).attr('data-lazy-srcset', ewww_attr);
 				}
 			}
 			$(this).removeClass('ewww_webp_lazy_load');
@@ -588,11 +607,76 @@ function ewww_load_images(ewww_webp_supported) {
 				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
 					$(ewww_img).attr('srcset', ewww_attr);
 				}
+				var ewww_attr = $(this).attr('data-webp-orig-file');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-orig-file', ewww_attr);
+				} else {
+                                        var ewww_attr = $(this).attr('data-orig-file');
+                                        if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                                $(ewww_img).attr('data-orig-file', ewww_attr);
+                                        }
+                                }
+				var ewww_attr = $(this).attr('data-webp-medium-file');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-medium-file', ewww_attr);
+				} else {
+                                        var ewww_attr = $(this).attr('data-medium-file');
+                                        if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                                $(ewww_img).attr('data-medium-file', ewww_attr);
+                                        }
+				}
+				var ewww_attr = $(this).attr('data-webp-large-file');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-large-file', ewww_attr);
+				} else {
+                                        var ewww_attr = $(this).attr('data-large-file');
+                                        if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                                $(ewww_img).attr('data-large-file', ewww_attr);
+                                        }
+				}
+				var ewww_attr = $(this).attr('data-webp-large_image');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-large_image', ewww_attr);
+				} else {
+                                        var ewww_attr = $(this).attr('data-large_image');
+                                        if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                                $(ewww_img).attr('data-large_image', ewww_attr);
+                                        }
+				}
+				var ewww_attr = $(this).attr('data-webp-src');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-src', ewww_attr);
+				} else {
+                                        var ewww_attr = $(this).attr('data-src');
+                                        if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+                                                $(ewww_img).attr('data-src', ewww_attr);
+                                        }
+				}
 			} else {
 				$(ewww_img).attr('src', $(this).attr('data-img'));
 				var ewww_attr = $(this).attr('data-srcset-img');
 				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
 					$(ewww_img).attr('srcset', ewww_attr);
+				}
+				var ewww_attr = $(this).attr('data-orig-file');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-orig-file', ewww_attr);
+				}
+				var ewww_attr = $(this).attr('data-medium-file');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-medium-file', ewww_attr);
+				}
+				var ewww_attr = $(this).attr('data-large-file');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-large-file', ewww_attr);
+				}
+				var ewww_attr = $(this).attr('data-large_image');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-large_image', ewww_attr);
+				}
+				var ewww_attr = $(this).attr('data-src');
+				if (typeof ewww_attr !== typeof undefined && ewww_attr !== false) {
+					$(ewww_img).attr('data-src', ewww_attr);
 				}
 			}
 			ewww_img = ewww_copy_attrs(this, ewww_img);

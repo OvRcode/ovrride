@@ -1,19 +1,19 @@
 <?php
 /**
- * WP Background Process
+ * EWWWIO Background Process
  *
- * @package WP-Background-Processing
+ * @package EWWW_Image_Optimizer
  */
 
-if ( ! class_exists( 'WP_Background_Process' ) ) {
+if ( ! class_exists( 'EWWWIO_Background_Process' ) ) {
 
 	/**
-	 * Abstract WP_Background_Process class.
+	 * Abstract EWWWIO_Background_Process class.
 	 *
 	 * @abstract
 	 * @extends WP_Async_Request
 	 */
-	abstract class WP_Background_Process extends WP_Async_Request {
+	abstract class EWWWIO_Background_Process extends WP_Async_Request {
 
 		/**
 		 * Action
@@ -52,6 +52,22 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		protected $cron_interval_identifier;
 
 		/**
+		 * Either an 'a' or a 'b', depending on which one is currently running.
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $active_queue;
+
+		/**
+		 * Either an 'a' or a 'b', depending on which one is NOT currently running.
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $second_queue;
+
+		/**
 		 * Initiate new background process
 		 */
 		public function __construct() {
@@ -68,7 +84,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * Dispatch
 		 *
 		 * @access public
-		 * @return void
+		 * @return array The wp_remote_post response.
 		 */
 		public function dispatch() {
 			// Schedule the cron healthcheck.
@@ -98,11 +114,15 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 */
 		public function save() {
 			$key = $this->generate_key();
-
+			ewwwio_debug_message( "queue $key will be saved to" );
 			if ( ! empty( $this->data ) ) {
-				update_site_option( $key, $this->data );
+				$existing_data = get_option( $key );
+				if ( ! empty( $existing_data ) ) {
+					$this->data = array_merge( $existing_data, $this->data );
+				}
+				update_option( $key, $this->data, false );
 			}
-
+			$this->data = array();
 			return $this;
 		}
 
@@ -116,7 +136,10 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 */
 		public function update( $key, $data ) {
 			if ( ! empty( $data ) ) {
-				update_site_option( $key, $data );
+				$existing_data = get_option( $key );
+				if ( ! empty( $existing_data ) ) {
+					update_option( $key, $data, false );
+				}
 			}
 
 			return $this;
@@ -130,7 +153,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * @return $this
 		 */
 		public function delete( $key ) {
-			delete_site_option( $key );
+			update_option( $key, '' );
 
 			return $this;
 		}
@@ -146,8 +169,12 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * @return string
 		 */
 		protected function generate_key( $length = 64 ) {
-			$unique  = md5( microtime() . rand() );
-			$prepend = $this->identifier . '_batch_';
+			$unique = 'a';
+			if ( $this->is_queue_active( $unique ) ) {
+				$unique = 'b';
+			}
+			$this->second_queue = $unique;
+			$prepend            = $this->identifier . '_batch_';
 
 			return substr( $prepend . $unique, 0, $length );
 		}
@@ -159,6 +186,8 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * the process is not already running.
 		 */
 		public function maybe_handle() {
+			session_write_close();
+
 			if ( $this->is_process_running() ) {
 				// Background process already running.
 				wp_die();
@@ -184,21 +213,13 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		protected function is_queue_empty() {
 			global $wpdb;
 
-			$table  = $wpdb->options;
-			$column = 'option_name';
-
-			if ( is_multisite() ) {
-				$table  = $wpdb->sitemeta;
-				$column = 'meta_key';
-			}
-
-			$key = $this->identifier . '_batch_%';
+			$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
 			$count = $wpdb->get_var( $wpdb->prepare( "
-			SELECT COUNT(*)
-			FROM {$table}
-			WHERE {$column} LIKE %s
-		", $key ) );
+				SELECT COUNT(*)
+				FROM $wpdb->options
+				WHERE option_name LIKE %s AND option_value != ''
+			", $key ) );
 
 			return ( $count > 0 ) ? false : true;
 		}
@@ -208,15 +229,35 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 *
 		 * Check whether the current process is already running
 		 * in a background process.
+		 *
+		 * @return bool
 		 */
 		protected function is_process_running() {
-			if ( get_site_transient( $this->identifier . '_process_lock' ) ) {
+			if ( get_transient( $this->identifier . '_process_lock' ) ) {
 				// Process already running.
 				return true;
 			}
 
 			return false;
 		}
+
+		/**
+		 * Is a particular queue active and running.
+		 *
+		 * @param string $queue_id The identifier for a background queue.
+		 * @return bool
+		 */
+		protected function is_queue_active( $queue_id ) {
+			global $wpdb;
+			$process_lock_transient = '_transient_' . $this->identifier . '_process_lock';
+			if ( $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name LIKE %s", $process_lock_transient ) ) == $queue_id ) {
+				ewwwio_debug_message( "queue $queue_id is running" );
+				return true;
+			}
+			ewwwio_debug_message( "queue $queue_id is not running, checked with: " . $this->identifier . '_process_lock' );
+			return false;
+		}
+
 
 		/**
 		 * Lock process
@@ -230,8 +271,25 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 
 			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : 60; // 1 minute
 			$lock_duration = apply_filters( $this->identifier . '_queue_lock_time', $lock_duration );
+			if ( empty( $this->active_queue ) ) {
+				$this->active_queue = 'a';
+			}
+		}
 
-			set_site_transient( $this->identifier . '_process_lock', microtime(), $lock_duration );
+		/**
+		 * Update process lock
+		 *
+		 * Update the process lock so that other instances do not spawn.
+		 *
+		 * @return $this
+		 */
+		protected function update_lock() {
+			if ( empty( $this->active_queue ) ) {
+				return;
+			}
+			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : 60; // 1 minute
+			$lock_duration = apply_filters( $this->identifier . '_queue_lock_time', $lock_duration );
+			set_transient( $this->identifier . '_process_lock', $this->active_queue, $lock_duration );
 		}
 
 		/**
@@ -242,7 +300,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * @return $this
 		 */
 		protected function unlock_process() {
-			delete_site_transient( $this->identifier . '_process_lock' );
+			delete_transient( $this->identifier . '_process_lock' );
 
 			return $this;
 		}
@@ -255,32 +313,20 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		protected function get_batch() {
 			global $wpdb;
 
-			$table        = $wpdb->options;
-			$column       = 'option_name';
-			$key_column   = 'option_id';
-			$value_column = 'option_value';
+			$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
-			if ( is_multisite() ) {
-				$table        = $wpdb->sitemeta;
-				$column       = 'meta_key';
-				$key_column   = 'meta_id';
-				$value_column = 'meta_value';
-			}
+			$query = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT * FROM $wpdb->options WHERE option_name LIKE %s AND option_value != '' ORDER BY option_id ASC LIMIT 1",
+					$key
+				)
+			);
 
-			$key = $this->identifier . '_batch_%';
-
-			$query = $wpdb->get_row( $wpdb->prepare( "
-			SELECT *
-			FROM {$table}
-			WHERE {$column} LIKE %s
-			ORDER BY {$key_column} ASC
-			LIMIT 1
-		", $key ) );
-
-			$batch       = new stdClass();
-			$batch->key  = $query->$column;
-			$batch->data = maybe_unserialize( $query->$value_column );
-
+			$batch              = new stdClass();
+			$batch->key         = $query->option_name;
+			$batch->data        = maybe_unserialize( $query->option_value );
+			$this->active_queue = substr( $batch->key, -1 );
+			$this->update_lock();
 			return $batch;
 		}
 
@@ -364,7 +410,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 				$memory_limit = '128M';
 			}
 
-			if ( ! $memory_limit || -1 === $memory_limit ) {
+			if ( ! $memory_limit || -1 === intval( $memory_limit ) ) {
 				// Unlimited, set to 32GB.
 				$memory_limit = '32000M';
 			}
@@ -419,6 +465,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 			// Adds every 5 minutes to the existing schedules.
 			$schedules[ $this->identifier . '_cron_interval' ] = array(
 				'interval' => MINUTE_IN_SECONDS * $interval,
+				/* translators: %d: number of minutes */
 				'display'  => sprintf( __( 'Every %d Minutes' ), $interval ),
 			);
 
@@ -472,7 +519,6 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * Cancel Process
 		 *
 		 * Stop processing queue items, clear cronjob and delete batch.
-		 *
 		 */
 		public function cancel_process() {
 			if ( ! $this->is_queue_empty() ) {
