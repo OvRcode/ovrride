@@ -303,75 +303,64 @@ class Ncr_Settings_Page {
 					<div class="inside">
 						<div style="text-align: center; margin: auto"><?php _e( 'Made with lots of love by', 'ncr-captcha' );?> <br>
 						<?php /* translators: plugin author name */ ?>
-						 <a href="http://w3guy.com"><strong><?php _e( 'Agbonghama Collins', 'ncr-captcha' );?></strong></a></div>
+						 <a target="_blank" href="https://mailoptin.io?utm_source=no_captcha_recaptcha&utm_medium=wp_dashboard&utm_campaign=sidebar-banner"><strong><?php _e( 'MailOptin Team', 'ncr-captcha' );?></strong></a></div>
 					</div>
 				</div>
 
-				<div class="postbox" style="text-align: center">
-					<div class="handlediv"><br></div>
-					<h3 class="hndle ui-sortable-handle"><span>Check out ProfilePress Plugin</span></h3>
+                <div class="postbox">
+                    <div class="handlediv"><br></div>
+                    <h3 class="hndle" style="text-align: center;">
+                        <span><?php _e( 'Support Plugin', 'ncr-captcha' ); ?></span>
+                    </h3><div class="inside">
+                        <div style="text-align: center; margin: auto">
+                            <?php
+                            // escape the URLs properly
+                            $review_url = 'https://wordpress.org/support/view/plugin-reviews/no-captcha-recaptcha';
+                            $twitter_url = 'http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/no-captcha-recaptcha/';
+                            ?>
+                            <ul>
+                                <li><?php printf( wp_kses( __( 'Leave a positive review on the plugin\'s <a href="%s">WordPress listing</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $review_url ) ); ?></li>
+                                <li><?php printf( wp_kses( __( '<a href="%s" target="_blank">Share your thoughts on Twitter</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $twitter_url ) ); ?></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-					<div class="inside">
-						<p>A shortcode based WordPress form builder that makes building custom login, registration and password reset forms stupidly simple.</p>
-						<strong>Features</strong>
-						<ul>
-							<li>Unlimited front-end login forms</li>
-							<li>Unlimited front-end registration forms</li>
-							<li>Unlimited password reset forms.</li>
-							<li>Automatic login after registration.</li>
-							<li>Social Logins.</li>
-							<li>Custom user redirect users after login & logout</li>
-							<li>One-click widget creator.</li>
-							<li>And lots more.</li>
-							<li></li>
-						</ul>
-						<div><a href="https://wordpress.org/plugins/ppress/" target="_blank">
-								<button class="button-primary" type="button">Download for Free</button>
-							</a></div>
-					</div>
-				</div>
+                <div class="postbox" style="text-align: center">
+                    <div class="handlediv"><br></div>
+                    <h3 class="hndle ui-sortable-handle"><span>MailOptin WordPress Plugin</span></h3>
 
-				<div class="postbox" style="text-align: center">
-					<div class="handlediv"><br></div>
-					<h3 class="hndle ui-sortable-handle"><span>OmniPay WordPress</span></h3>
+                    <div class="inside">
+                        <p>Convert your website visitors into email subscribers, nurture & engage them with beautifully designed automated newsletters. All in WordPress.</p>
+                        <div style="margin:10px 0">
+                            <a href="https://mailoptin.io/pricing/?discount=10PERCENTOFF&utm_source=no_captcha_recaptcha&utm_medium=wp_dashboard&utm_campaign=sidebar-banner" target="_blank"><img width="250" src="https://i0.wp.com/mailoptin.io/wp-content/uploads/2016/01/mailoptin10off.jpg">
+                            </a></div>
+                    </div>
+                </div>
 
-					<div class="inside">
-						<p>WordPress payment extension for <strong>Easy Digital Downloads</strong> and <strong>WooCommerce</strong> that bundles several payment gateways together with an intuitive drag-and-drop interface for the gateways set up and management.</p>
-						<div style="margin:10px"><a href="https://omnipay.io/?utm_source=ppress-dashboard" target="_blank">
-								<button class="button-primary" type="button">Get it Now</button>
-							</a></div>
-						<div style="margin:10px"><a href="https://omnipay.io/edd-payment-gateways/?ref=admin-bar-dashboard" target="_blank">
-								<button class="button-primary" type="button">EDD Payment Gateways</button>
-							</a></div>
-						<div style="margin:10px"><a href="https://omnipay.io/woocommerce-payment-gateways/?ref=admin-bar-dashboard" target="_blank">
-								<button class="button-primary" type="button">WooCommerce Payment Gateway</button>
-							</a></div>
-					</div>
-				</div>
+                <div class="postbox" style="text-align: center">
+                    <div class="handlediv"><br></div>
+                    <h3 class="hndle ui-sortable-handle"><span>Check out ProfilePress Plugin</span></h3>
 
-				<div class="postbox">
-					<div class="handlediv"><br></div>
-					<h3 class="hndle" style="text-align: center;">
-						<span><?php _e( 'Support Plugin', 'ncr-captcha' ); ?></span>
-					</h3><div class="inside">
-						<div style="text-align: center; margin: auto">
-							<?php 
-								// escape the URLs properly
-								$flattr_url = 'https://flattr.com/submit/auto?user_id=tech4sky&url=https%3A%2F%2Fwordpress.org%2Fplugins%2Fno-captcha-recaptcha%2F';
-								$review_url = 'https://wordpress.org/support/view/plugin-reviews/no-captcha-recaptcha';
-								$compatibility_url = 'https://wordpress.org/plugins/no-captcha-recaptcha/#compatibility';
-								$twitter_url = 'http://twitter.com/home?status=I%20love%20this%20WordPress%20plugin!%20http://wordpress.org/plugins/no-captcha-recaptcha/';
-							?>
-							<p><?php printf( wp_kses( __( 'Is this plugin useful for you? If so, please help support its ongoing development and improvement with a <a href="%s" target="_blank">donation</a>.', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $flattr_url ) ); ?></p>
-							<p><?php _e( 'Or, if you are short on funds, there are other ways you can help out:', 'ncr-captcha' ); ?></p>
-							<ul>
-								<li><?php printf( wp_kses( __( 'Leave a positive review on the plugin\'s <a href="%s">WordPress listing</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $review_url ) ); ?></li>
-								<li><?php printf( wp_kses( __( 'Vote "Works" on the plugin\'s <a href="%s" target="_blank">WordPress listing</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $compatibility_url ) ); ?></li>
-								<li><?php printf( wp_kses( __( '<a href="%s" target="_blank">Share your thoughts on Twitter</a>', 'ncr-captcha' ), array(  'a' => array( 'href' => array(), 'target' => array('_blank') ) ) ), esc_url( $twitter_url ) ); ?></li>
-							</ul>
-						</div>
-					</div>
-				</div>
+                    <div class="inside">
+                        <p>A shortcode based WordPress form builder that makes building custom login, registration and password reset forms stupidly simple.</p>
+                        <strong>Features</strong>
+                        <ul>
+                            <li>Unlimited front-end login forms</li>
+                            <li>Unlimited front-end registration forms</li>
+                            <li>Unlimited password reset forms.</li>
+                            <li>Automatic login after registration.</li>
+                            <li>Social Logins.</li>
+                            <li>Custom user redirect users after login & logout</li>
+                            <li>One-click widget creator.</li>
+                            <li>And lots more.</li>
+                            <li></li>
+                        </ul>
+                        <div><a href="https://wordpress.org/plugins/ppress/" target="_blank">
+                                <button class="button-primary" type="button">Download for Free</button>
+                            </a></div>
+                    </div>
+                </div>
 			</div>
 		</div>
 		</div>
