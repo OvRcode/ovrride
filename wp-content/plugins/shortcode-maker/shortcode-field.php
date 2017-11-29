@@ -5,6 +5,42 @@ class SM_Shortcode_Field {
     public function __construct() {
         add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ), 10, 2 );
         add_action( 'save_post', array( $this, 'save_shortcode_data' ) );
+        add_filter( 'the_content', array( $this, 'sm_insert_php' ), 9 );
+
+        add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title_note' ) );
+
+    }
+
+    function edit_form_after_title_note() {
+        if( get_post_type() != 'sm_shortcode' ) return;
+        if( !in_array('administrator', get_userdata( get_current_user_id() )->roles ) ) return;
+        ?>
+        <div class="bs-container">
+            <p class="alert alert-info">
+                <?php _e('Insert code in [php_code][/php_code] shortcode, to use code in shortcode definition','sm'); ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    function sm_insert_php($content)
+    {
+        return $content;
+        $sm_content = do_shortcode($content);
+        preg_match_all('!\[php_code[^\]]*\](.*?)\[/php_code[^\]]*\]!is',$sm_content,$will_bontrager_matches);
+        $will_bontrager_nummatches = count($will_bontrager_matches[0]);
+        for( $will_bontrager_i=0; $will_bontrager_i<$will_bontrager_nummatches; $will_bontrager_i++ )
+        {
+            ob_start();
+            eval($will_bontrager_matches[1][$will_bontrager_i]);
+            //eval($will_bontrager_matches[1][$will_bontrager_i]);
+            $will_bontrager_replacement = ob_get_contents();
+            ob_clean();
+            ob_end_flush();
+            $sm_content = preg_replace('/'.preg_quote($will_bontrager_matches[0][$will_bontrager_i],'/').'/',$will_bontrager_replacement,$sm_content,1);
+        }
+        return $sm_content;
+
     }
 
 

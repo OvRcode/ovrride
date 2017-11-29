@@ -30,29 +30,7 @@ class SM_Packaged_Shortcodes {
         //add panel in admin editor page to add the shortcodes buttons
         add_action( 'edit_form_after_title', array( 'SM_Packaged_Shortcodes_Admin', 'shortcode_editor_panel' ) );
         add_action( 'shortcode_maker_activation_task', array( $this, 'set_data_on_activation' ) );
-        add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
-
-        //save meta to post
-        add_action( 'save_post' , array( $this, 'save_post_meta' ) );
         $this->includes();
-    }
-
-    public function show_admin_notices() {
-        global $pagenow;
-
-        if( SHORTCODE_MAKER_VERSION >= 5.0 ) {
-            if( !in_array( $pagenow, array( 'post.php', 'post-new.php' ) ) ) return;
-
-            if( !get_option( 'sm_dismiss_feature_notice' ) ) {
-                require_once SHORTCODE_MAKER_ROOT . '/documentation/documentation.php';
-                ?>
-                <div class="notice notice-info is-dismissible sm_feature_notice">
-                    <p><?php _e( 'Shortcode maker is now more advanced with builtin packages and shortcode editable feature, <a href="javascript:" data-toggle="modal" data-target="#sm_doc_modal" class="sm_doc_link" style="color: #FFFFFF;font-weight: bold;">click here to learn more !</a>', 'sample-text-domain' ); ?></p>
-                </div>
-                <?php
-            }
-        }
-
     }
 
     public function includes() {
@@ -87,7 +65,7 @@ class SM_Packaged_Shortcodes {
                         <div class="row">
                             <?php
                             $package_dirs = apply_filters('smps_package_dir', array(
-                                'simple-light' => 'packages/simple-light'
+                                'simple-light' => SHORTCODE_MAKER_ROOT.'/packaged-shortcodes/packages/simple-light'
                             ));
 
                             foreach ( $package_dirs as  $entry => $package_dir ) {
@@ -99,6 +77,8 @@ class SM_Packaged_Shortcodes {
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
                                             <h6 class="panel-title">
+                                                <?php
+                                                ?>
                                                 <label>
                                                     <input type="checkbox" name="sm_shortcode_packages[<?php echo $entry; ?>]" value="<?php echo $package_dir; ?>" <?php echo in_array( addslashes($package_dir), $sm_get_shortcode_packages )? 'checked' : ''; ?>>
                                                     <?php echo $package_settings['name']; ?>
@@ -107,9 +87,8 @@ class SM_Packaged_Shortcodes {
                                         </div>
                                         <div class="panel panel-body">
                                             <?php
-
-                                            foreach ( $package_settings['items'] as $k => $item ) {
-                                                echo '<div>'.$item['label'].'</div>';
+                                            foreach ( $package_settings['items'] as $item ) {
+                                                echo '<div>'.$item.'</div>';
                                             }
                                             ?>
                                         </div>
@@ -164,29 +143,13 @@ class SM_Packaged_Shortcodes {
             'post-new.php',
             'post.php'
         ) ) ) {
-            //colorpicker
-            wp_enqueue_style('wp-color-picker');
-
             wp_enqueue_style( 'smps-swal-css', SHORTCODE_MAKER_ASSET_PATH.'/css/sweetalert.css' );
             wp_enqueue_style( 'sm-post-css', SHORTCODE_MAKER_ASSET_PATH.'/css/sm-post.css' );
-            //timepicker addon css
-            wp_enqueue_style( 'sm-timepicker-css', SHORTCODE_MAKER_ASSET_PATH.'/css/timepicker-addon.css' );
 
             wp_enqueue_script( 'smps-swal-js', SHORTCODE_MAKER_ASSET_PATH.'/js/sweetalert.min.js', array( 'jquery' ) );
-            wp_enqueue_script( 'sm-post-js', SHORTCODE_MAKER_ASSET_PATH.'/js/sm-post.js', array( 'jquery','sm-vue', 'wp-color-picker','jquery-ui-datepicker' ), false, true );
-            //timepicker addon
-            wp_enqueue_script('sm-timepicker-addon', SHORTCODE_MAKER_ASSET_PATH.'/js/timepicker-addon.js', array('jquery-ui-datepicker'));
-
+            wp_enqueue_script( 'sm-post-js', SHORTCODE_MAKER_ASSET_PATH.'/js/sm-post.js', array( 'jquery','sm-vue' ) );
         }
 
-    }
-
-    /*save necessary meta*/
-    public function save_post_meta( $post_id ) {
-
-        if( isset( $_POST['sm_hide_shortcode_panel'] ) ) {
-            update_post_meta( $post_id, 'sm_hide_shortcode_panel', $_POST['sm_hide_shortcode_panel'] );
-        }
     }
 
     /**
