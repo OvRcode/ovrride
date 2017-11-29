@@ -1,6 +1,6 @@
 <?php
 /**
- * Adds Meta Slider widget.
+ * Adds MetaSlider widget.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,8 +15,8 @@ class MetaSlider_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'metaslider_widget', // Base ID
-			'Meta Slider', // Name
-			array( 'description' => __( 'Meta Slider', 'ml-slider' ) ) // Args
+			'MetaSlider', // Name
+			array( 'description' => __( 'MetaSlider', 'ml-slider' ) ) // Args
 		);
 	}
 

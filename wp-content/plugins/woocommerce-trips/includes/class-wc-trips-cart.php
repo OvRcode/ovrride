@@ -114,7 +114,7 @@ class WC_Trips_Cart {
     }
     public function trigger_package_stock( $instance ) {
         global $woocommerce;
-        $cart = $woocommerce->cart->get_cart();
+        //$cart = $woocommerce->cart->get_cart();
         foreach( $cart as $cart_id => $cart_data ) {
           if ( !in_array($cart_id,$this->orders_processed) ){
             $this->orders_processed[] = $cart_id;
@@ -239,7 +239,7 @@ class WC_Trips_Cart {
                   wc_add_notice('Sorry, not enough seats left on ' . $fromBeachDescription . ' at ' . $fromBeachTime,'error');
                   return FALSE;
                 }
-                // If we've made it this far there are no stock conflicts at the mb_decode_numericentity
+                // If we've made it this far there are no stock conflicts
                 return TRUE;
               }
             }
@@ -257,13 +257,25 @@ class WC_Trips_Cart {
         }
 
     }
-    public function add_costs( $cart_object ) {
+    public function product_price( $product ) {
+      error_log($product->ID);
+
+    }
+    public function add_costs( $cart_obj ) {
       global $woocommerce;
-      foreach ( $cart_object->cart_contents as $key => $value ) {
+      if ( is_admin() && ! defined('DOING_AJAX') ) {
+        return;
+      }
+/*
+      foreach ( $cart_obj->get_cart() as $key => $value ) {
+       $value['data']->set_price( 40 );
+   }  */
+      foreach ( $cart_obj->get_cart() as $key => $value ) {
         if ( "trip" == $value['data']->product_type) {
           if( WC()->session->__isset( $key.'_cost' ) ) {
             $additional_costs = WC()->session->get( $key.'_cost' );
-            $value['data']->price = $additional_costs;
+            error_log($additional_costs);
+            $value['data']->set_price($additional_costs);
           }
         }
       }

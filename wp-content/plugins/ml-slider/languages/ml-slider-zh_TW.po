@@ -540,7 +540,7 @@ msgid "Add slider"
 msgstr "添加到幻燈片"
 
 #: ../ml-slider.php:1258
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr ""
 
 #: ../ml-slider.php:1260
@@ -553,8 +553,8 @@ msgid "No slideshows found"
 msgstr "沒有幻燈片"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "多彩幻燈片"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:111
 msgid "Title:"

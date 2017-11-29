@@ -21,6 +21,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 		$this->method_description   = __( 'PayPal Pro works by adding credit card fields on the checkout and then sending the details to PayPal for verification.', 'woocommerce-gateway-paypal-pro' );
 		$this->icon                 = apply_filters('woocommerce_paypal_pro_icon', plugins_url( '/assets/images/cards.png', plugin_basename( dirname( __FILE__ ) ) ) );
 		$this->has_fields           = true;
+		$this->view_transaction_url = 'https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=%s';
 		$this->supports             = array(
 			'products',
 			'refunds',
@@ -310,29 +311,31 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
      * Payment form on checkout page
      */
 	public function payment_fields() {
+		wp_enqueue_script( 'wc-credit-card-form' );
+
 		if ( $this->description ) {
 			echo '<p>' . wp_kses_post( $this->description ) . ( $this->testmode ? ' ' . __( 'TEST/SANDBOX MODE ENABLED. In test mode, you can use the card number 4007000000027 with any CVC and a valid expiration date.  Note that you will get a faster processing result if you use a card from your developer\'s account.', 'woocommerce-gateway-paypal-pro' ) : '' ) . '</p>';
 		}
 
 		?>
 		<fieldset>
-			<p class="form-row form-row-first">
+			<p class="form-row form-row-wide">
 				<label for="<?php echo esc_attr( $this->id ); ?>-card-number"><?php  esc_html_e( 'Card Number', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
 				<input id="<?php echo esc_attr( $this->id ); ?>-card-number" class="input-text wc-credit-card-form-card-number" type="text" maxlength="20" autocomplete="off" placeholder="•••• •••• •••• ••••" name="<?php echo esc_attr( $this->id ); ?>-card-number" />
 			</p>
 
-			<p class="form-row form-row-last">
+			<p class="form-row form-row-first">
 				<label for="<?php echo esc_attr( $this->id ); ?>-card-expiry"><?php esc_html_e( 'Expiry (MM/YY)', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
 				<input id="<?php echo esc_attr( $this->id ); ?>-card-expiry" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="<?php esc_attr_e( 'MM / YY', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-expiry" />
 			</p>
 
-			<p class="form-row form-row-first">
+			<p class="form-row form-row-last">
 				<label for="<?php echo esc_attr( $this->id ); ?>-card-cvc"><?php esc_html_e( 'Card Code', 'woocommerce-gateway-paypal-pro' ); ?> <span class="required">*</span></label>
 				<input id="<?php echo esc_attr( $this->id ); ?>-card-cvc" class="input-text wc-credit-card-form-card-cvc" type="text" autocomplete="off" placeholder="<?php esc_attr_e( 'CVC', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-cvc" />
 			</p>
 
 			<?php if ( isset( $this->available_card_types[ WC()->countries->get_base_country() ]['Maestro'] ) ) : ?>
-				<p class="form-row form-row-last">
+				<p class="form-row form-row-first">
 					<label for="<?php echo esc_attr( $this->id ); ?>-card-startdate"><?php esc_html_e( 'Start Date (MM/YY)', 'woocommerce-gateway-paypal-pro' ); ?></label>
 					<input id="<?php echo esc_attr( $this->id ); ?>-card-startdate" class="input-text wc-credit-card-form-card-expiry" type="text" autocomplete="off" placeholder="<?php  esc_html_e( 'MM / YY', 'woocommerce-gateway-paypal-pro' ); ?>" name="<?php echo esc_attr( $this->id ); ?>-card-startdate" />
 				</p>
@@ -453,6 +456,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				include_once( 'lib/CentinelClient.php' );
 			}
 
+			$pre_wc_30 = version_compare( WC_VERSION, '3.0', '<' );
+
 			$this->clear_centinel_session();
 
 			$this->centinel_client = new CentinelClient;
@@ -462,32 +467,32 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 			$this->centinel_client->add( 'MerchantId', $this->centinel_mid );
 			$this->centinel_client->add( 'TransactionPwd', $this->centinel_pwd );
 			$this->centinel_client->add( 'TransactionType', 'CC' );
-		    $this->centinel_client->add( 'OrderNumber', $order_id );
-		    $this->centinel_client->add( 'Amount', $order->get_total() * 100 );
-		    $this->centinel_client->add( 'CurrencyCode', $this->iso4217[ $order->get_order_currency() ] );
-		    $this->centinel_client->add( 'TransactionMode', 'S' );
+			$this->centinel_client->add( 'OrderNumber', $order_id );
+			$this->centinel_client->add( 'Amount', $order->get_total() * 100 );
+			$this->centinel_client->add( 'CurrencyCode', $this->iso4217[ ( $pre_wc_30 ? $order->get_order_currency() : $order->get_currency() ) ] );
+			$this->centinel_client->add( 'TransactionMode', 'S' );
 			$this->centinel_client->add( 'ProductCode', 'PHY' );
 			$this->centinel_client->add( 'CardNumber', $card->number );
-		    $this->centinel_client->add( 'CardExpMonth', $card->exp_month );
-		    $this->centinel_client->add( 'CardExpYear', $card->exp_year );
+			$this->centinel_client->add( 'CardExpMonth', $card->exp_month );
+			$this->centinel_client->add( 'CardExpYear', $card->exp_year );
 			$this->centinel_client->add( 'CardCode', $card->cvc );
-			$this->centinel_client->add( 'BillingFirstName', $order->billing_first_name );
-			$this->centinel_client->add( 'BillingLastName', $order->billing_last_name );
-			$this->centinel_client->add( 'BillingAddress1', $order->billing_address_1 );
-			$this->centinel_client->add( 'BillingAddress2', $order->billing_address_2 );
-			$this->centinel_client->add( 'BillingCity', $order->billing_city );
-			$this->centinel_client->add( 'BillingState', $order->billing_state );
-			$this->centinel_client->add( 'BillingPostalCode', $order->billing_postcode );
-			$this->centinel_client->add( 'BillingCountryCode', $order->billing_country );
-			$this->centinel_client->add( 'BillingPhone', $order->billing_phone );
-			$this->centinel_client->add( 'ShippingFirstName', $order->shipping_first_name );
-			$this->centinel_client->add( 'ShippingLastName', $order->shipping_last_name );
-			$this->centinel_client->add( 'ShippingAddress1', $order->shipping_address_1 );
-			$this->centinel_client->add( 'ShippingAddress2', $order->shipping_address_2 );
-			$this->centinel_client->add( 'ShippingCity', $order->shipping_city );
-			$this->centinel_client->add( 'ShippingState', $order->shipping_state );
-			$this->centinel_client->add( 'ShippingPostalCode', $order->shipping_postcode );
-			$this->centinel_client->add( 'ShippingCountryCode', $order->shipping_country );
+			$this->centinel_client->add( 'BillingFirstName', $pre_wc_30 ? $order->billing_first_name : $order->get_billing_first_name() );
+			$this->centinel_client->add( 'BillingLastName', $pre_wc_30 ? $order->billing_last_name : $order->get_billing_last_name() );
+			$this->centinel_client->add( 'BillingAddress1', $pre_wc_30 ? $order->billing_address_1 : $order->get_billing_address_1() );
+			$this->centinel_client->add( 'BillingAddress2', $pre_wc_30 ? $order->billing_address_2 : $order->get_billing_address_2() );
+			$this->centinel_client->add( 'BillingCity', $pre_wc_30 ? $order->billing_city : $order->get_billing_city() );
+			$this->centinel_client->add( 'BillingState', $pre_wc_30 ? $order->billing_state : $order->get_billing_state() );
+			$this->centinel_client->add( 'BillingPostalCode', $pre_wc_30 ? $order->billing_postcode : $order->get_billing_postcode() );
+			$this->centinel_client->add( 'BillingCountryCode', $pre_wc_30 ? $order->billing_country : $order->get_billing_country() );
+			$this->centinel_client->add( 'BillingPhone', $pre_wc_30 ? $order->billing_phone : $order->get_billing_phone() );
+			$this->centinel_client->add( 'ShippingFirstName', $pre_wc_30 ? $order->shipping_first_name : $order->get_shipping_first_name() );
+			$this->centinel_client->add( 'ShippingLastName', $pre_wc_30 ? $order->shipping_last_name : $order->get_shipping_last_name() );
+			$this->centinel_client->add( 'ShippingAddress1', $pre_wc_30 ? $order->shipping_address_1 : $order->get_shipping_address_1() );
+			$this->centinel_client->add( 'ShippingAddress2', $pre_wc_30 ? $order->shipping_address_2 : $order->get_shipping_address_2() );
+			$this->centinel_client->add( 'ShippingCity', $pre_wc_30 ? $order->shipping_city : $order->get_shipping_city() );
+			$this->centinel_client->add( 'ShippingState', $pre_wc_30 ? $order->shipping_state : $order->get_shipping_state() );
+			$this->centinel_client->add( 'ShippingPostalCode', $pre_wc_30 ? $order->shipping_postcode : $order->get_shipping_postcode() );
+			$this->centinel_client->add( 'ShippingCountryCode', $pre_wc_30 ? $order->shipping_country : $order->get_shipping_country() );
 
 			// Items.
 			$item_loop = 0;
@@ -586,7 +591,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 		if ( ! is_null( $amount ) ) {
 			$post_data['AMT']          = number_format( $amount, 2, '.', '' );
-			$post_data['CURRENCYCODE'] = $order->get_order_currency();
+			$post_data['CURRENCYCODE'] = ( version_compare( WC_VERSION, '3.0', '<' ) ? $order->get_order_currency() : $order->get_currency() );
 		}
 
 		if ( $reason ) {
@@ -753,6 +758,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 	 * @param object|bool $centinel Centinel.
 	 */
 	public function do_payment( $order, $card, $centinel = false ) {
+		$pre_wc_30 = version_compare( WC_VERSION, '3.0', '<' );
+
 		try {
 			$post_data = array(
 				'VERSION'           => $this->api_version,
@@ -764,27 +771,27 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				'IPADDRESS'         => $this->get_user_ip(),
 				'AMT'               => number_format( $order->get_total(), 2, '.', ',' ),
 				'INVNUM'            => $order->get_order_number(),
-				'CURRENCYCODE'      => $order->get_order_currency(),
+				'CURRENCYCODE'      => $pre_wc_30 ? $order->get_order_currency() : $order->get_currency(),
 				'CREDITCARDTYPE'    => $card->type,
 				'ACCT'              => $card->number,
 				'EXPDATE'           => $card->exp_month . $card->exp_year,
 				'STARTDATE'         => $card->start_month . $card->start_year,
 				'CVV2'              => $card->cvc,
-				'EMAIL'             => $order->billing_email,
-				'FIRSTNAME'         => $order->billing_first_name,
-				'LASTNAME'          => $order->billing_last_name,
-				'STREET'            => trim( $order->billing_address_1 . ' ' . $order->billing_address_2 ),
-				'CITY'              => $order->billing_city,
-				'STATE'             => $order->billing_state,
-				'ZIP'               => $order->billing_postcode,
-				'COUNTRYCODE'       => $order->billing_country,
-				'SHIPTONAME'        => $order->shipping_first_name . ' ' . $order->shipping_last_name,
-				'SHIPTOSTREET'      => $order->shipping_address_1,
-				'SHIPTOSTREET2'     => $order->shipping_address_2,
-				'SHIPTOCITY'        => $order->shipping_city,
-				'SHIPTOSTATE'       => $order->shipping_state,
-				'SHIPTOCOUNTRYCODE' => $order->shipping_country,
-				'SHIPTOZIP'         => $order->shipping_postcode,
+				'EMAIL'             => $pre_wc_30 ? $order->billing_email : $order->get_billing_email(),
+				'FIRSTNAME'         => $pre_wc_30 ? $order->billing_first_name : $order->get_billing_first_name(),
+				'LASTNAME'          => $pre_wc_30 ? $order->billing_last_name : $order->get_billing_last_name(),
+				'STREET'            => $pre_wc_30 ? trim( $order->billing_address_1 . ' ' . $order->billing_address_2 ) : trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
+				'CITY'              => $pre_wc_30 ? $order->billing_city : $order->get_billing_city(),
+				'STATE'             => $pre_wc_30 ? $order->billing_state : $order->get_billing_state(),
+				'ZIP'               => $pre_wc_30 ? $order->billing_postcode : $order->get_billing_postcode(),
+				'COUNTRYCODE'       => $pre_wc_30 ? $order->billing_country : $order->get_billing_country(),
+				'SHIPTONAME'        => $pre_wc_30 ? ( $order->shipping_first_name . ' ' . $order->shipping_last_name ) : ( $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name() ),
+				'SHIPTOSTREET'      => $pre_wc_30 ? $order->shipping_address_1 : $order->get_shipping_address_1(),
+				'SHIPTOSTREET2'     => $pre_wc_30 ? $order->shipping_address_2 : $order->get_shipping_address_2(),
+				'SHIPTOCITY'        => $pre_wc_30 ? $order->shipping_city : $order->get_shipping_city(),
+				'SHIPTOSTATE'       => $pre_wc_30 ? $order->shipping_state : $order->get_shipping_state(),
+				'SHIPTOCOUNTRYCODE' => $pre_wc_30 ? $order->shipping_country : $order->get_shipping_country(),
+				'SHIPTOZIP'         => $pre_wc_30 ? $order->shipping_postcode : $order->get_shipping_postcode(),
 				'BUTTONSOURCE'      => 'WooThemes_Cart',
 			);
 
@@ -807,10 +814,21 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 
 						if ( $item['qty'] ) {
 							$item_name = $item['name'];
-							$item_meta = new WC_Order_Item_Meta( $item );
 
-							if ( $meta = $item_meta->display( true, true ) ) {
-								$item_name .= ' ( ' . $meta . ' )';
+							if ( $pre_wc_30 ) {
+								$item_meta = new WC_Order_Item_Meta( $item );
+
+								if ( $formatted_meta = $item_meta->display( true, true ) ) {
+									$item_name .= ' ( ' . $formatted_meta . ' )';
+								}
+							} else {
+								$item_meta = new WC_Order_Item_Product( $item );
+
+								if ( $formatted_meta = $item_meta->get_formatted_meta_data() ) {
+									foreach ( $formatted_meta as $meta_key => $meta ) {
+										$item_name .= ' ( ' . $meta->display_key . ': ' . $meta->value . ' )';
+									}
+								}
 							}
 
 							$post_data[ 'L_NUMBER' . $item_loop ] = $item_loop;
@@ -920,6 +938,8 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 				throw new Exception( __( 'Unexpected response from PayPal.', 'woocommerce-gateway-paypal-pro' ) );
 			}
 
+			$order_id = version_compare( WC_VERSION, '3.0', '<' ) ? $order->id : $order->get_id();
+
 			switch ( strtolower( $parsed_response['ACK'] ) ) {
 				case 'success':
 				case 'successwithwarning':
@@ -932,14 +952,18 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 					// Check if it is captured or authorization only.
 					if ( $details && strtolower( $details['PAYMENTSTATUS'] ) === 'pending' && strtolower( $details['PENDINGREASON'] ) === 'authorization' ) {
 						// Store captured value
-						update_post_meta( $order->id, '_paypalpro_charge_captured', 'no' );
-						add_post_meta( $order->id, '_transaction_id', $txn_id, true );
+						update_post_meta( $order_id, '_paypalpro_charge_captured', 'no' );
+						update_post_meta( $order_id, '_transaction_id', $txn_id );
 
 						// Mark as on-hold
 						$order->update_status( 'on-hold', sprintf( __( 'PayPal Pro charge authorized (Charge ID: %s). Process order to take payment, or cancel to remove the pre-authorization.', 'woocommerce-gateway-paypal-pro' ), $txn_id ) );
 
 						// Reduce stock levels
-						$order->reduce_order_stock();
+						if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+							$order->reduce_order_stock();
+						} else {
+							wc_reduce_stock_levels( $order_id );
+						}
 					} else {
 
 						// Add order note
@@ -955,7 +979,7 @@ class WC_Gateway_PayPal_Pro extends WC_Payment_Gateway {
 					if ( method_exists( $order, 'get_checkout_order_received_url' ) ) {
 	                	$redirect = $order->get_checkout_order_received_url();
 	                } else {
-	                	$redirect = add_query_arg( 'key', $order->order_key, add_query_arg( 'order', $order->id, get_permalink( get_option( 'woocommerce_thanks_page_id' ) ) ) );
+	                	$redirect = add_query_arg( 'key', version_compare( WC_VERSION, '3.0', '<' ) ? $order->order_key : $order->get_order_key(), add_query_arg( 'order', $order_id, get_permalink( get_option( 'woocommerce_thanks_page_id' ) ) ) );
 	                }
 
 					// Return thank you page redirect

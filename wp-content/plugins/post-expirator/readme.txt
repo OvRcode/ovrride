@@ -3,23 +3,32 @@ Contributors: axelseaa
 Donate link: http://aaron.axelsen.us/donate
 Tags: expire, posts, pages, schedule
 Requires at least: 4.0
-Tested up to: 4.2
-Stable tag: 2.1.4
+Tested up to: 4.8
+Stable tag: 2.3.1.1
 
 Allows you to add an expiration date to posts which you can configure to either delete the post, change it to a draft, or update the 
 post categories.
 
 == Description ==
 
-The Post Expirator plugin allows the user to set expiration dates for both posts and pages.  There is a configuration option page in the plugins 
-area that will allow you to seperataly control whether or not posts/pages are either deleted or changed to draft status.  Additionally you can
-also choose to have the post categories change at expiration time.  If you choose to change the post category, the default action of changing 
-the status will be ignored.
+The Post Expirator plugin allows the user to set expiration dates for both posts and pages.  There are a number of different ways that the posts can expire:
 
-The plugin hooks into the wp cron processes and runs every minute by default, but can be configured to use any cron schedule (hourly, twicedaily, daily, etc).
+* Draft
+* Delete
+* Trash
+* Private
+* Stick
+* Unstick
+* Categories: Replace
+* Categories: Add
+* Categories: Remove
+
+For each expiration event, a custom cron job will be schedule which will help reduce server overhead for busy sites.
 
 The expiration date can be displayed within the actual post by using the [postexpirator] tag.  The format attribute will override the plugin 
 default display format.  See the [PHP Date Function](http://us2.php.net/manual/en/function.date.php) for valid date/time format options. 
+
+NOTE: This plugin REQUIRES that WP-CRON is setup and functional on your webhost.  Some hosts do not support this, so please check and confirm if you run into issues using the plugin.
 
 Plugin homepage [WordPress Post Expirator](http://postexpirator.tuxdocs.net).
 
@@ -47,6 +56,34 @@ This section describes how to install the plugin and get it working.
 3. Settings screen
 
 == Changelog ==
+
+**Version 2.3.1**
+
+* Fix: Fixed PHP Error that snuck in on some installations.
+
+**Version 2.3.0**
+
+* New: Email notification upon post expiration.  A global email can be set, blog admins can be selected and/or specific users based on post type can be notified.
+* New: Expiration Option Added - Stick/Unstick post is now available.
+* New: Expiration Option Added - Trash post is now available.
+* New: Added custom actions that can be hooked into when expiration events are scheduled / unscheduled.
+* Fix: Minor HTML Code Issues
+
+**Version 2.2.2**
+
+* Fix: Quick Edit did not retain the expire type setting, and defaulted back to "Draft".  This has been resolved.
+
+**Version 2.2.1**
+
+* Fix: Fixed issue with bulk edit not correctly updating the expiration date.
+
+**Version 2.2.0**
+
+* New: Quick Edit - setting expiration date and toggling post expiration status can now be done via quick edit.
+* New: Bulk Edit - changing expiration date on posts that already are configured can now be done via bulk edit.
+* New: Added ability to order by Expiration Date in dashboard.
+* New: Adjusted formatting on defaults page.  Multiple post types are now displayed cleaner.
+* Fix: Minor Code Cleanup
 
 **Version 2.1.4**
 
@@ -204,6 +241,9 @@ NOTE: After upgrading, you may need to reset the cron schedules.  Following onsc
 * Initial Release
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+Quick Edit/Bulk Edit Added. Sortable Expiration Date Fields Added
 
 = 2.1.4 =
 Fixed PHP Strict errors with 5.4+

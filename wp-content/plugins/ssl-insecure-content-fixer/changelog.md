@@ -2,6 +2,22 @@
 
 ## Changelog
 
+### 2.5.0, 2017-11-23
+
+* changed: .htaccess rules file for non-WP test script now supports Apache v2.4; thanks, [Andreas Schneider](https://github.com/cryptomilk)!
+* added: option to only fix content resource links for the current website; thanks, [Luke Driscoll](https://github.com/ldriscoll)!
+* added: support for KeyCDN https detection via the X-Forwarded-Scheme header
+
+### 2.4.0, 2017-05-14
+
+* fixed: don't capture content on admin pages when mode is Capture or Capture All
+* added: filter `ssl_insecure_content_disable_capture` for disabling Capture mode on selected pages / scripts
+
+### 2.3.0, 2017-05-01
+
+* added: support for Windows Azure with ARR
+* added: filter `ssl_insecure_content_domain_exclusions` for domains that can be excluded from content cleaning (ignored for enqueued scripts)
+
 ### 2.2.3, 2017-02-01
 
 * fixed: breaks Visual Composer back end editing due to a regular expression problem (now you have two!)

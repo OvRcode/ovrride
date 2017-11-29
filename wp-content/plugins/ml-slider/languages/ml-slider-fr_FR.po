@@ -550,7 +550,7 @@ msgid "Add slider"
 msgstr "Ajouter au diaporama"
 
 #: ../ml-slider.php:1258
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr ""
 
 #: ../ml-slider.php:1260
@@ -563,8 +563,8 @@ msgid "No slideshows found"
 msgstr ""
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "Meta Slider"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:111
 msgid "Title:"
@@ -655,5 +655,5 @@ msgstr ""
 #~ msgid "More Slide Types"
 #~ msgstr "Autres types de diapositive"
 
-#~ msgid "Support Meta Slider"
-#~ msgstr "Soutenir Meta Slider"
+#~ msgid "Support MetaSlider"
+#~ msgstr "Soutenir MetaSlider"

@@ -23,24 +23,27 @@ class WC_Product_Trip extends WC_Product {
         }
     }
 		public function packages_stock(){
-			if ( "yes" == $this->wc_trip_primary_package_stock ) {
-				$return['primary'] = $this->wc_trip_primary_packages;
+			$primary_stock 		= $this->get_meta( "_wc_trip_primary_package_stock", true, "view" );
+			$secondary_stock 	= $this->get_meta( "_wc_trip_secondary_package_stock", true, "view" );
+			$tertiary_stock 	= $this->get_meta( "_wc_trip_tertiary_package_stock", true, "view" );
+			if ( "yes" == $primary_stock ) {
+				$return['primary'] = $primary_stock;
 			}
-			if ( "yes" == $this->wc_trip_secondary_package_stock ) {
-					$return['secondary'] = $this->wc_trip_secondary_packages;
+			if ( "yes" == $secondary_stock ) {
+					$return['secondary'] = $secondary_stock;
 			}
-			if ( "yes" == $this->wc_trip_tertiary_package_stock ) {
-					$return['tertiary'] = $this->wc_trip_tertiary_packages;
+			if ( "yes" == $tertiary_stock ) {
+					$return['tertiary'] = $tertiary_stock;
 			}
 			return $return;
 		}
 		public function get_packages_stock( $type ) {
-			return $this->{"wc_trip_".$type."_package_stock"};
+			return $this->get_meta( "_wc_trip_" . $type . "_package_stock" );
 		}
 		public function get_package_stock( $type, $description) {
-			$packages = $this->{"wc_trip_".$type."_packages"};
+			$packages = $this->get_meta( "_wc_trip_" . $type . "_packages" );
 
-			if ( "yes" == $this->{"wc_trip_".$type."_package_stock"} ) {
+			if ( "yes" == $this->get_meta( "_wc_trip_" . $type . "_package_stock") ) {
 				foreach( $packages as $key => $values ) {
 					if ( $values['description'] == $description ) {
 						return $values['stock'];
@@ -49,9 +52,9 @@ class WC_Product_Trip extends WC_Product {
 			}
 		}
     public function reduce_package_stock( $type, $description ) {
-        $packages = $this->{"wc_trip_" . $type . "_packages"};
+				$packages = $this->get_meta("_wc_trip_" . $type . "_packages");
 
-        if ( "yes" == $this->{"wc_trip_" . $type . "_package_stock"} ) {
+        if ( "yes" == $this->get_meta("_wc_trip_" . $type . "_package_stock") ) {
             $foundKey = "";
             foreach( $packages as $key => $values ) {
                 if ( $description == $values['description'] ) {
@@ -62,10 +65,10 @@ class WC_Product_Trip extends WC_Product {
 
             if ( "" !== strval($foundKey) ) {
                 if ( "" !== strval($packages[$foundKey]['stock']) ) {
-										$this->{"wc_trip_" . $type . "_packages"}[$foundKey]['stock']--;
-                    if ( update_post_meta( $this->id, '_wc_trip_'.$type."_packages", $this->{"wc_trip_" . $type . "_packages"})) {
-											return true;
-										}
+									$packages[$foundKey]['stock']--;
+									if ( $this->update_meta_data( "_wc_trip_" . $type . "_packages", $packages) ) {
+										return true;
+									}
                 }
             }
 						return false;
@@ -74,11 +77,12 @@ class WC_Product_Trip extends WC_Product {
     }
 
     public function check_package_stock( $type, $description ) {
-        $packages = $this->{"wc_trip_" . $type . "_packages"};
+				$packages = $this->get_meta("_wc_trip_".$type."_packages", true, 'view' );
 				if ( "oneWay" == $description) {
 					return true;
 				}
-        if ( "" == $this->{"wc_trip_" . $type . "_package_stock"} ) {
+
+        if ( "" == $this->get_meta("_wc_trip_".$type."_package_stock", true,'view') ) {
             return true;
         } else {
             foreach( $packages as $key => $values ) {
@@ -95,11 +99,13 @@ class WC_Product_Trip extends WC_Product {
     }
 
     public function check_all_package_stock() {
-        $package_types = array("wc_trip_primary_package", "wc_trip_secondary_package", "wc_trip_tertiary_package");
+        $package_types = array("_wc_trip_primary_package", "_wc_trip_secondary_package", "_wc_trip_tertiary_package");
         foreach( $package_types as $package ) {
-            if ( "yes" == strval($this->{$package . "_stock"}) ) {
+					$stock = $this->get_meta($package . "_stock", true, 'view' );
+            if ( "yes" == strval($stock) ) {
 								$outOfStockCount = 0;
-                foreach( $this->{$package . "s"} as $key => $values ) {
+								$packages = $this->get_meta($package."s", true, 'view' );
+                foreach( $packages as $key => $values ) {
 										if ( "" === strval($values['stock']) || intval($values['stock']) > 0 ) {
                         $outOfStockCount++;
                     }

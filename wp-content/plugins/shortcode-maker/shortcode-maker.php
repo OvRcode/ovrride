@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  * Plugin Name: Shortcode Maker
  * Description: A plugin to to let users make shortcodes of their own and use them in wp editor
@@ -7,7 +7,7 @@
  * Author: Mithu A Quayium
  * Text Domain: shortcode-maker
  * Domain Path: /languages
- * Version: 4.0.3
+ * Version: 5.0.2.4
  * License: GPL2
  */
 /**
@@ -40,6 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+define( 'SHORTCODE_MAKER_VERSION', '5.0.2.4' );
 define( 'SHORTCODE_MAKER_ROOT', dirname(__FILE__) );
 define( 'SHORTCODE_MAKER_ASSET_PATH', plugins_url('assets',__FILE__) );
 
@@ -50,14 +51,12 @@ class shortcode_maker{
     function __construct(){
 
         $this->shorcode_array = get_option('shortcode_list');
+        !is_array( $this->shorcode_array ) ? $this->shorcode_array = array() : '';
 
         add_action('init',array($this,'register_shortcode'));
 		add_action('save_post',array($this,'save_post_func'));
 
         add_action('init',array($this,'shortcode_add'));
-
-        add_action('admin_init', array($this, 'sm_shortcode_button'));
-        add_action('admin_footer', array($this, 'sm_get_shortcodes'));
 		add_action('wp_trash_post',array($this,'remove_shortcode'));
 
         add_action( 'admin_head', array( $this , 'shortcode_array_js' ) );
@@ -70,15 +69,42 @@ class shortcode_maker{
         add_action( 'init', array($this, 'load_textdomain') );
         register_activation_hook( __FILE__, array( $this, 'plugin_activation_task' ) );
 
+        add_filter( 'widget_text', array( $this, 'render_widget_shortcode' ) );
+
+        //add to the custom item panel
+        add_filter( 'simple_light_shortcode_items', array( $this, 'add_in_packaged_shortcode_panel' ) );
 
         $this->includes();
 	}
+
+	public function add_in_packaged_shortcode_panel( $items ) {
+
+	    foreach ( $this->shorcode_array as $id => $shortcode_name ) {
+	        $items[$id] = array(
+	            'section' => 'Custom',
+                'label' => $shortcode_name
+            );
+        }
+
+        return $items;
+    }
+
+	function render_widget_shortcode( $text ) {
+	    return do_shortcode( $text );
+    }
 
 	public function plugin_activation_task() {
 	    do_action( 'shortcode_maker_activation_task' );
     }
 
     function includes(){
+
+        if( file_exists( dirname(__FILE__).'/pro/loader.php' )) {
+            include_once dirname(__FILE__).'/pro/loader.php';
+        }
+
+        require_once dirname(__FILE__).'/ajax-action.php';
+        require_once dirname(__FILE__).'/vote.php';
         require_once dirname(__FILE__).'/sm-functions.php';
         require_once dirname(__FILE__).'/cc-products-page.php';
         require_once dirname(__FILE__).'/shortcode-field.php';
@@ -146,51 +172,17 @@ class shortcode_maker{
      */
     public function get_shortcode_atts_panel() {
         $shortcode_atts = get_post_meta( $_POST['shortcode_id'], 'sm_shortcode_atts' , true );
-        if( !empty( $shortcode_atts ) ) : ?>
 
-        <div id="sm-modal-atts" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close">×</span>
-                <h3><?php _e( 'Attributes for ', 'shortcode-maker' ); ?><?php echo $_POST['tag']; ?></h3>
-                <hr/>
-                <?php
-                echo '<div class="sm_shortcode_atts">';
-                ?>
-                <script>
-                    var shortcode_atts = '<?php echo json_encode( SM_Shortcode_Field::convert_to_js_meta( $shortcode_atts ) );?>';
-                </script>
-                <ul>
-                    <li v-for="( key, attr ) in shortcode_atts">
-                        {{ attr.name }}
-                        <input type="text" v-model="attr.value" name="shortcode_atts[{{ key }}][value]">
-                    </li>
-                </ul>
+        if( !empty( $shortcode_atts ) ) {
 
-                <button class="shortcode_atts_ok "><?php _e( 'Okay', 'shortcode-maker' ) ?></button>
-                <button class="shortcode_atts_cancel "><?php _e( 'Cancel', 'shortcode-maker' ) ?></button>
-                <?php
-                echo '</div>';
-                ?>
-                <script>
-                    var sm_attrs = new Vue({
-                        el: '#wpwrap',
-                        data : {
-                            shortcode_atts : JSON.parse(shortcode_atts)
-                        },
-                        methods : {
-                            add_attr_box : function(){
-                                this.shortcode_atts.push({
-                                    name : 'Attribute name',
-                                    value : 'Attribute value'
-                                });
-                            }
-                        }
-                    });
-                </script>
-            </div>
-        </div>
-        <?php endif; ?>
+            wp_send_json_success( array(
+                'id' => $_POST['shortcode_id'],
+                'shortcode_atts' => $shortcode_atts
+            ) );
+        }
+        wp_send_json_error();
+        ?>
+
         <?php
         exit;
     }
@@ -312,47 +304,9 @@ class shortcode_maker{
 	}
 
 
-	function sm_shortcode_button()
-    {
-        if( current_user_can('edit_posts') &&  current_user_can('edit_pages') )
-        {
-            add_filter( 'mce_external_plugins', array($this, 'sm_add_buttons' ));
-            add_filter( 'mce_buttons', array($this, 'sm_register_buttons' ));
-        }
-    }
-	function sm_add_buttons( $plugin_array )
-    {
-		if(get_bloginfo('version') >= 3.9){
-	        $plugin_array['pushortcodes'] = plugin_dir_url( __FILE__ ) . 'assets/js/shortcode-tinymce-button.js';
-		}else{
-			$plugin_array['pushortcodes'] = plugin_dir_url( __FILE__ ) . 'assets/js/shortcode-tinymce-button-older.js';
-		}
 
 
-        return $plugin_array;
-    }
-	function sm_register_buttons( $buttons )
-    {
-        array_push( $buttons, 'separator', 'pushortcodes' );
-        return $buttons;
-    }
-	function sm_get_shortcodes()
-    {
-        global $shortcode_tags;
 
-        echo '<script type="text/javascript">
-        var shortcodes_button = new Array();';
-
-        $count = 0;
-
-        foreach($shortcode_tags as $tag => $code)
-        {
-            echo "shortcodes_button[{$count}] = '{$tag}';";
-            $count++;
-        }
-
-        echo '</script>';
-    }
 
     /**
      * Add scripts and styles
@@ -366,11 +320,11 @@ class shortcode_maker{
         ))) {
             /*SHORTCODE_MAKER_ASSET_PATH*/
             wp_enqueue_style( 'sm-style', SHORTCODE_MAKER_ASSET_PATH.'/css/style.css' );
-            wp_enqueue_script( 'sm-vue-js', SHORTCODE_MAKER_ASSET_PATH.'/js/vue.js' );
+            wp_enqueue_script( 'sm-vue', SHORTCODE_MAKER_ASSET_PATH.'/js/vue.js' );
         }
 
         if( isset( $post->ID ) && get_post_type( $post->ID ) == 'sm_shortcode' ) {
-            wp_enqueue_script( 'sm-script-js', SHORTCODE_MAKER_ASSET_PATH.'/js/script.js', array( 'sm-vue-js' ) );
+            wp_enqueue_script( 'sm-script-js', SHORTCODE_MAKER_ASSET_PATH.'/js/script.js', array( 'sm-vue' ) );
         }
 
     }

@@ -22,9 +22,13 @@
 	min-width: 200px;
 	box-shadow: inset 2px 2px 4px -2px rgba( 0, 0, 0, 0.1 );
 }
-.metaslider .thumb .vimeo {
-  height: 100%;
-  width: 100%;
-  float: left;
+.metaslider .vimeo .vimeo {
   background: url('icon.png') no-repeat center center;
+  height: 20px;
+  text-indent: -9999px;
+  margin-top: -0.9rem;
+  display: block;
+  width: 65px;
+  background-size: 65px;
+  image-rendering: -webkit-optimize-contrast;
 }

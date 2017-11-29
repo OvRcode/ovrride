@@ -12,28 +12,27 @@ class MetaSliderThumbnails {
      * Constructor
      */
     public function __construct() {
-        add_filter( 'metaslider_nivo_slider_parameters', array( $this, 'nivo_enable_thumbnails' ), 10, 3 );
-        add_filter( 'metaslider_flex_slider_parameters', array( $this, 'flex_enable_thumbnails' ), 10, 3 );
+        add_filter('metaslider_nivo_slider_parameters', array($this, 'nivo_enable_thumbnails'), 10, 3);
+        add_filter('metaslider_flex_slider_parameters', array($this, 'flex_enable_thumbnails'), 10, 3);
 
         // standard thumbnail output
-        add_filter( 'metaslider_image_slide_attributes', array( $this, 'generate_thumbnail_for_slide' ), 10, 3 );
-        add_filter( 'metaslider_flex_slider_li_attributes', array( $this, 'add_flex_data_thumb_attribute' ), 10, 4 );
+        add_filter('metaslider_image_slide_attributes', array($this, 'generate_thumbnail_for_slide'), 10, 3);
+        add_filter('metaslider_flex_slider_li_attributes', array($this, 'add_flex_data_thumb_attribute'), 10, 5);
 
-        add_filter( 'metaslider_nivo_slider_image_attributes', array( $this, 'add_nivo_data_thumb_attribute' ), 10, 3 );
+        add_filter('metaslider_nivo_slider_image_attributes', array($this, 'add_nivo_data_thumb_attribute'), 10, 3);
 
         // add the navigation options to slideshow settings
-        add_filter( 'metaslider_basic_settings', array( $this, 'navigation_options' ), 10, 2 );
+        add_filter('metaslider_basic_settings', array($this, 'navigation_options'), 10, 2);
 
         // filmstrip output
-        add_filter( 'metaslider_flex_slider_javascript_before', array( $this, 'metaslider_flex_filmstrip' ), 11, 2 );
-        add_filter( 'metaslider_flex_slider_html_after', array( $this, 'metaslider_flex_filmstrip_html' ), 10, 3 );
-        add_filter( 'metaslider_css_classes', array( $this, 'remove_bottom_margin' ), 11, 3 );
-        add_filter( 'metaslider_css', array( $this, 'get_filmstrip_css' ), 11, 3 );
+        add_filter('metaslider_flex_slider_javascript_before', array($this, 'metaslider_flex_filmstrip'), 11, 2);
+        add_filter('metaslider_flex_slider_html_after', array($this, 'metaslider_flex_filmstrip_html'), 10, 3);
+        add_filter('metaslider_css_classes', array($this, 'remove_bottom_margin'), 11, 3);
+        add_filter('metaslider_css', array($this, 'get_filmstrip_css'), 11, 3);
 
         // added in Meta Slider 2.10 (image crop positions)
-        add_action( 'metaslider_ajax_resize_image_slide', array( $this, 'ajax_create_thumbnail'), 10, 3 );
+        add_action('metaslider_ajax_resize_image_slide', array($this, 'ajax_create_thumbnail'), 10, 3);
     }
-
 
     /**
      * Create the slide thumbnail image.
@@ -91,28 +90,30 @@ class MetaSliderThumbnails {
 
                     $slides = array();
 
-                    while ( $the_query->have_posts() ) {
+                    while ($the_query->have_posts()) {
                         $the_query->the_post();
-                        $id = get_post_thumbnail_id( $the_query->post->ID );
+                        $image_id = get_post_thumbnail_id($the_query->post->ID);
 
-                        if ( $override_id = get_post_meta( $the_query->post->ID, 'metaslider_post_feed_image', true ) ) {
-                            if ( wp_attachment_is_image( $override_id ) ) {
-                                $id = $override_id;
+                        if ($override_id = get_post_meta($the_query->post->ID, 'metaslider_post_feed_image', true)) {
+                            if (wp_attachment_is_image($override_id)) {
+                                $image_id = $override_id;
                             }
                         }
 
                         $imageHelper = new MetaSliderImageHelper(
-                            $id,
+                            $query->post->ID,
                             $settings['thumb_width'],
                             $settings['thumb_height'],
-                            'true'
+                            'true',
+                            true,
+                            $image_id
                         );
 
                         $url = $imageHelper->get_image_url();
 
                         $list_item = "<li class=\"ms-thumb slide-{$query->post->ID} post-{$the_query->post->ID}\" style=\"display: none;\"><img src=\"{$url}\" /></li>";
 
-                        $list_item = apply_filters( "metaslider_filmstrip_list_item", $list_item, $query->post, $url );
+                        $list_item = apply_filters("metaslider_filmstrip_list_item", $list_item, $query->post, $url);
 
                         $html .= "\n                {$list_item}";
                     }
@@ -377,31 +378,33 @@ class MetaSliderThumbnails {
      * @param integer $slide_id - slide ID
      * @param integer $slider_id - slideshow ID
      * @param array   $settings - slideshow settings
+     * @param integer $image_id - an option image id (used for post type slider)
      *
      * @return array
      */
-    public function add_flex_data_thumb_attribute( $attributes, $slide_id, $slider_id, $settings ) {
-
-        if ( $settings['navigation'] === 'thumbs' ) {
+    public function add_flex_data_thumb_attribute($attributes, $slide_id, $slider_id, $settings, $image_id = null) {
+				
+		if ($settings['navigation'] === 'thumbs') {
+            
             // generate thumbnail
             $imageHelper = new MetaSliderImageHelper(
                 $slide_id,
                 $settings['thumb_width'],
                 $settings['thumb_height'],
-                'false'
+                'false',
+                true,
+                $image_id
             );
 
             $attributes['data-thumb'] = $imageHelper->get_image_url();
 
             // for external slides, just use the external url
-            $type = get_post_meta( $slide_id, 'ml-slider_type', true );
+            $type = get_post_meta($slide_id, 'ml-slider_type', true);
 
-            if ($type == 'external') {
-                $attributes['data-thumb'] = get_post_meta( $slide_id, 'ml-slider_extimgurl', true );
+            if ('external' == $type) {
+                $attributes['data-thumb'] = get_post_meta($slide_id, 'ml-slider_extimgurl', true);
             }
-
         }
-
         return $attributes;
     }
 

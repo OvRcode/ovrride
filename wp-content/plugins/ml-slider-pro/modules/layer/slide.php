@@ -121,7 +121,7 @@ class MetaLayerSlide extends MetaSlide {
                 'ck_editor_colors' => $colors,
                 'setWidth' => __( "Please set a width in the slideshow settings", 'metasliderpro' ),
                 'setHeight' => __( "Please set a height in the slideshow settings", 'metasliderpro' ),
-                'addToSlider' => __( "Add to slider", 'metasliderpro' ),
+                'addToSlider' => __( "Add to slideshow", 'metasliderpro' ),
                 'noLayerSelected' => __( "Warning: No layer selected. Please click on a layer to select it before applying changes.", 'metasliderpro')
             ) );
     }
@@ -196,23 +196,29 @@ class MetaLayerSlide extends MetaSlide {
     protected function get_admin_slide() {
         $thumb       = $this->get_thumb();
 
-        $row  = "<tr class='slide layer_slide flex responsive'>";
+        $row  = "<tr id='slide-{$this->slide->ID}' class='slide layer_slide flex responsive'>";
         $row .= "    <td class='col-1'>";
-        $row .= "        <div class='thumb' style='background-image: url({$thumb})'>";
-
-        if ( method_exists( $this, 'get_delete_button_html' ) ) {
+        $row .= "       <div class='metaslider-ui-controls ui-sortable-handle'>";
+        $row .= "           <h4 class='slide-details'>";
+        $row .=                 __("Layer Slide", 'metasliderpro');
+        $row .= "           </h4>";
+        if (metaslider_this_is_trash($this->slide)) {
+            $row .= '<div class="row-actions trash-btns">';
+            $row .= "<span class='untrash'>{$this->get_undelete_button_html()}</span>";
+            // $row .= ' | ';
+            // $row .= "<span class='delete'>{$this->get_perminant_delete_button_html()}</span>";
+            $row .= '</div>';
+        } else {
             $row .= $this->get_delete_button_html();
         }
-
-        if ( method_exists( $this, 'get_change_image_button_html' ) ) {
-            $row .= $this->get_change_image_button_html();
-        }
-
-        $row .= "            <span class='slide-details'>" . __( "Layer Slide", 'metasliderpro' ) . "</span>";
-        $row .= "        </div>";
+        $row .= "       </div>";
+        $row .= "       <div class='metaslider-ui-inner'>";
+        $row .= "           <div class='thumb' style='background-image: url({$thumb})'></div>";
+        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
-
+        $row .= "       <div class='metaslider-ui-inner'>";
+        
         if ( method_exists( $this, 'get_admin_slide_tabs_html' ) ) {
             $row .= $this->get_admin_slide_tabs_html();
         } else {
@@ -222,6 +228,7 @@ class MetaLayerSlide extends MetaSlide {
         $row .= "        <input type='hidden' name='attachment[{$this->slide->ID}][type]' value='html_overlay' />";
         $row .= "        <input type='hidden' name='attachment[{$this->slide->ID}][menu_order]' class='menu_order' value='{$this->slide->menu_order}' />";
         $row .= "        <input type='hidden' name='resize_slide_id' data-slide_id='{$this->slide->ID}' data-width='{$this->settings['width']}' data-height='{$this->settings['height']}' />";
+        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "</tr>";
 

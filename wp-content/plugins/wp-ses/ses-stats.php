@@ -12,8 +12,8 @@ if ($wpses_options['credentials_ok'] != 1) {
     include ('error.tmpl.php');
 }
 
-require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.0.8.6.php');
-$SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key']);
+require_once plugin_dir_path( __FILE__ ) . 'ses.class.0.8.6.php';
+$SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key'], $wpses_options['endpoint']);
 
 if (!is_object($SES)) {
     $WPSESMSG = __('Error initializing SES. Please check your settings.', 'wpses');

@@ -6,8 +6,8 @@ Author URI: https://shop.webaware.com.au/
 Donate link: https://shop.webaware.com.au/donations/?donation_for=SSL+Insecure+Content+Fixer
 Tags: ssl, https, insecure content, partially encrypted, mixed content
 Requires at least: 4.0
-Tested up to: 4.7.2
-Stable tag: 2.2.3
+Tested up to: 4.9
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,9 +31,11 @@ Many thanks to the generous efforts of our translators:
 * Chinese simplified (zh_CN) -- [the Chinese translation team](https://translate.wordpress.org/locale/zh-cn/default/wp-plugins/ssl-insecure-content-fixer)
 * English (en_CA) -- [the English (Canadian) translation team](https://translate.wordpress.org/locale/en-ca/default/wp-plugins/ssl-insecure-content-fixer)
 * English (en_GB) -- [the English (British) translation team](https://translate.wordpress.org/locale/en-gb/default/wp-plugins/ssl-insecure-content-fixer)
+* Dutch (nl_NL) -- [the Dutch translation team](https://translate.wordpress.org/locale/nl/default/wp-plugins/ssl-insecure-content-fixer)
 * German (de_DE) -- [the German translation team](https://translate.wordpress.org/locale/de/default/wp-plugins/ssl-insecure-content-fixer)
 * French (fr_FR) -- [the French translation team](https://translate.wordpress.org/locale/fr/default/wp-plugins/ssl-insecure-content-fixer)
 * Italian (it_IT) -- [the Italian translation team](https://translate.wordpress.org/locale/it/default/wp-plugins/ssl-insecure-content-fixer)
+* Japanese (ja) -- [the Japanese translation team](https://translate.wordpress.org/locale/ja/default/wp-plugins/ssl-insecure-content-fixer)
 * Russian (ru_RU) -- [the Russian translation team](https://translate.wordpress.org/locale/ru/default/wp-plugins/ssl-insecure-content-fixer)
 * Spanish (es_ES) -- [the Spanish translation team](https://translate.wordpress.org/locale/es/default/wp-plugins/ssl-insecure-content-fixer)
 
@@ -44,7 +46,7 @@ If you'd like to help out by translating this plugin, please [sign up for an acc
 1. Either install automatically through the WordPress admin, or download the .zip file, unzip to a folder, and upload the folder to your /wp-content/plugins/ directory. Read [Installing Plugins](https://codex.wordpress.org/Managing_Plugins#Installing_Plugins) in the WordPress Codex for details.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
-If your browser still reports insecure/mixed content, have a read of the [Cleaning Up page](https://ssl.webaware.net.au/cleaning-up-content/). If that doesn't help, tell me the URL of the problem page in [the support forum](https://wordpress.org/support/plugin/ssl-insecure-content-fixer).
+If your browser still reports insecure/mixed content, have a read of the [Cleaning Up page](https://ssl.webaware.net.au/cleaning-up-content/).
 
 == Frequently Asked Questions ==
 
@@ -96,18 +98,16 @@ Great! Tell me which plugin is yours and how to check for your new version, and 
 
 == Upgrade Notice ==
 
-= 2.2.3 =
+= 2.5.0 =
 
-fix Visual Composer and Theme Fusion Builder crashes; add Capture All mode and stop Capture mode affecting AJAX requests
+support for https detection on KeyCDN; option to only fix content resource links for the current website; .htaccess rules file for non-WP test script now supports Apache v2.4
 
 == Changelog ==
 
 The full changelog can be found [on GitHub](https://github.com/webaware/ssl-insecure-content-fixer/blob/master/changelog.md). Recent entries:
 
-### 2.2.3, 2017-02-01
+### 2.5.0, 2017-11-23
 
-Many thanks to [@jsherk](https://wordpress.org/support/users/jsherk/) without whose help this release could have been weeks away.
-
-* fixed: breaks Visual Composer back end editing due to a regular expression problem (now you have two!)
-* changed: Capture no longer captures AJAX requests; new mode Capture All introduced to capture AJAX requests too
-* added: prerequisites check, to ensure that plugin can run successfully
+* changed: .htaccess rules file for non-WP test script now supports Apache v2.4; thanks, [Andreas Schneider](https://github.com/cryptomilk)!
+* added: option to only fix content resource links for the current website; thanks, [Luke Driscoll](https://github.com/ldriscoll)!
+* added: support for KeyCDN https detection via the X-Forwarded-Scheme header

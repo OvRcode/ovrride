@@ -1,9 +1,9 @@
 === WooCommerce Google Analytics Integration ===
-Contributors: woothemes, claudiosanches
+Contributors: woothemes, claudiosanches, bor0
 Tags: woocommerce, google analytics
 Requires at least: 3.8
 Tested up to: 4.5.2
-Stable tag: 1.4.0
+Stable tag: 1.4.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,7 +64,25 @@ Exact wording depends on the national data privacy laws and should be adjusted.
 
 == Changelog ==
 
-= 1.4.0 - 20-11-2015
+= 1.4.3 - 15/06/2017 =
+* Fix - WC 3.x notice by using proper variation data.
+* Add - Option to track 404 (Not found) errors.
+
+= 1.4.2 - 09/05/2017 =
+* Fix - Missing Google Analytics ID.
+
+= 1.4.1 - 01/05/2017 =
+
+* Add - Filters for GA snippet (woocommerce_ga_snippet_head, woocommerce_ga_snippet_create, woocommerce_ga_snippet_require, woocommerce_ga_snippet_output)
+* Add - Option to toggle on/off Enhanced Link Attribution
+* Fix - JavaScript break by wrapping it in quotes
+* Fix - Use ID and SKU data in a consistent way so that all products are correctly tracked.
+* Fix - Updates for WooCommerce 3.0 compatibility.
+* Add - Settings link to the plugin in the Plugins screen
+* Fix - Fatal error on shortcode usage for empty product
+
+= 1.4.0 - 20/11/2015 =
+
 * Feature - Support for enhanced eCommerce (tracking full store process from view to order)
 * Tweak - Setting up the plugin is now clearer with some helpful links and clearer language
 * Tweak - New filter on the ga global variable
@@ -103,3 +121,8 @@ Exact wording depends on the national data privacy laws and should be adjusted.
 = 1.0 - 22/11/2013 =
 
 * Initial release
+
+
+== Upgrade Notice ==
+= 1.4.0 =
+Adds support for enhanced eCommerce (tracking full store process from view to order)

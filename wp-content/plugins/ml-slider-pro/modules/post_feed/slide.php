@@ -100,18 +100,26 @@ class MetaPostFeedSlide extends MetaSlide {
      */
     protected function get_admin_slide() {
 
-        $row  = "<tr class='slide post_feed flex responsive coin nivo'>";
+        $row  = "<tr id='slide-{$this->slide->ID}' class='slide post_feed flex responsive coin nivo'>";
         $row .= "    <td class='col-1'>";
-        $row .= "        <div class='thumb post_feed'>";
-
-        if ( method_exists( $this, 'get_delete_button_html' ) ) {
+        $row .= "       <div class='metaslider-ui-controls ui-sortable-handle'>";
+        $row .= "           <h4 class='slide-details'>" . __( "Post Feed Slide", "metasliderpro" ) . "</h4>";
+        if (metaslider_this_is_trash($this->slide)) {
+            $row .= '<div class="row-actions trash-btns">';
+            $row .= "<span class='untrash'>{$this->get_undelete_button_html()}</span>";
+            // $row .= ' | ';
+            // $row .= "<span class='delete'>{$this->get_perminant_delete_button_html()}</span>";
+            $row .= '</div>';
+        } else {
             $row .= $this->get_delete_button_html();
         }
-
-        $row .= "            <span class='slide-details'>" . __( "Post Feed Slide", "metasliderpro" ) . "</span>";
-        $row .= "        </div>";
+        $row .= "       </div>";
+        $row .= "       <div class='metaslider-ui-inner'>";
+        $row .= "           <div class='thumb post_feed'></div>";
+        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
+        $row .= "       <div class='metaslider-ui-inner'>";
 
         if ( method_exists( $this, 'get_admin_slide_tabs_html' ) ) {
             $row .= $this->get_admin_slide_tabs_html();
@@ -121,6 +129,7 @@ class MetaPostFeedSlide extends MetaSlide {
 
         $row .= "        <input type='hidden' name='attachment[{$this->slide->ID}][type]' value='post_feed' />";
         $row .= "        <input type='hidden' class='menu_order' name='attachment[{$this->slide->ID}][menu_order]' value='{$this->slide->menu_order}' />";
+        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "</tr>";
 
@@ -1117,13 +1126,13 @@ class MetaPostFeedSlide extends MetaSlide {
 
         echo "<div class='metaslider'>
                     <div class='media-embed'>
-                        <div class='embed-link-settings'>" . __("Click 'Add to slider' to create a new post feed slide.", "metasliderpro") . "</div>
+                        <div class='embed-link-settings'>" . __("Click 'Add to slideshow' to create a new post feed slide.", "metasliderpro") . "</div>
                     </div>
             </div>
             <div class='media-frame-toolbar'>
                 <div class='media-toolbar'>
                     <div class='media-toolbar-primary'>
-                        <a href='#' class='button media-button button-primary button-large'>" . __("Add to slider", "metasliderpro") . "</a>
+                        <a href='#' class='button media-button button-primary button-large'>" . __("Add to slideshow", "metasliderpro") . "</a>
                     </div>
                 </div>
             </div>";

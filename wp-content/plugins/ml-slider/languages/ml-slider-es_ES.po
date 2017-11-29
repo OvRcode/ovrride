@@ -547,7 +547,7 @@ msgid "Add slider"
 msgstr "Añadir al pase"
 
 #: ../ml-slider.php:1258
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr ""
 
 #: ../ml-slider.php:1260
@@ -560,8 +560,8 @@ msgid "No slideshows found"
 msgstr "No se han encontrado pases de diapositiva"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "Meta Slider"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:111
 msgid "Title:"
