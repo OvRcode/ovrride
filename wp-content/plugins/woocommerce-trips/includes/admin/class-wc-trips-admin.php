@@ -52,29 +52,28 @@ class WC_Trips_Admin {
 
     public function general_tab() {
         global $post;
-        $post_id = $post->ID;
         $args = array('post_type' => 'destinations',
                       'posts_per_page' => '-1',
                       'post_status' => 'publish',
                       'orderby' => 'title',
                       'order' => 'ASC');
         $destinations       = get_posts( $args );
-
-        $stock              = get_post_meta( $post_id, '_stock', true );
-        $base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
-        $saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );
-        $trip_type          = get_post_meta( $post_id, '_wc_trip_type', true );
-        $start_date         = get_post_meta( $post_id, '_wc_trip_start_date', true );
-        $end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
-        $stock_status       = get_post_meta( $post_id, '_stock_status', true);
+        $product            = wc_get_product($post->ID);
+        $stock              = $product->get_stock_quantity('view');
+        $base_price         = $product->get_meta( '_wc_trip_base_price', true, 'view' );
+        $saved_destination  = $product->get_meta( '_wc_trip_destination', true, 'view' );
+        $trip_type          = $product->get_meta( '_wc_trip_type', true, 'view' );
+        $start_date         = $product->get_meta( '_wc_trip_start_date', true, 'view' );
+        $end_date           = $product->get_meta( '_wc_trip_end_date', true, 'view' );
+        $stock_status       = $product->get_stock_status();
         include( 'views/html-trip-general.php' );
     }
 
     public function save_product_data() {
-        global $wpdb;
-        global $post;
+        global $wpdb, $post;
         $post_id = $post->ID;
         $product_type = empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
+        $product = wc_get_product($post->ID);
 
         if ( 'trip' !== $product_type ) {
             return;
@@ -150,9 +149,8 @@ class WC_Trips_Admin {
                 $primary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_primary_package_stock'][$i] );
             }
         }
-        update_post_meta( $post_id, '_wc_trip_primary_package_label', $primary_label);
-        update_post_meta( $post_id, '_wc_trip_primary_package_stock', $_POST['_wc_trip_primary_package_stock']);
-        update_post_meta( $post_id, '_wc_trip_primary_packages', $primary_packages );
+
+        $product->set_meta_data(array('_wc_trip_primary_package_stock' => $_POST['_wc_trip_primary_package_stock'], '_wc_trip_primary_packages' => $primary_packages,'_wc_trip_primary_package_label' => $primary_label));
 
         // Secondary packages
         $secondary_packages = array();
