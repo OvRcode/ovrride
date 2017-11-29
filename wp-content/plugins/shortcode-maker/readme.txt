@@ -2,8 +2,8 @@
 Contributors: mithublue,cybercraftit
 Tags: shortcode, shortcode maker, shortcode generator, custom shortcode, shortcode-maker,shortcode tinymce, easy shortcode, shortcode builder, unlimited shortcode , self made shortcode, quick shortcode, generate shortcode, nice shortcode, fast shortcode,shortcode listing, multiple shortcode
 Requires at least: 3.0.1
-Tested up to: 4.7.1
-Stable tag: 4.0.3
+Tested up to: 4.8
+Stable tag: 4.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,7 +42,7 @@ The plugin to help you make shortcode by yourself and get them listed in the wp 
 * you can write PHP code in definition. To use code, use [php_code][/php_code] in your shortcode definition and place code inside it.
 
 
-[youtube https://www.youtube.com/watch?v=WpVpTKAWPuE]
+[youtube https://www.youtube.com/watch?v=H_dSHHiou9Q&feature=youtu.be]
 
 == Installation ==
 
@@ -69,6 +69,32 @@ e.g.
 
 
 == Changelog ==
+
+== 4.0.9 ==
+
+1. [fix] Issue with typing left arrow in editor and title field fixed
+
+== 4.0.8 ==
+
+1. [new] Shortcode enabled in widget content
+
+== 4.0.7 ==
+
+1. [fix] Icon path fixed
+
+== 4.0.6 ==
+
+1. [fix] Issue with including package file fixed
+
+== 4.0.5 ==
+
+1. [new] Improved UI/UX with clean HTML structure
+2. [new] New action added
+
+== 4.0.4 ==
+
+1. [modification] Shortcode processor changed
+
 
 == 4.0.3 ==
 

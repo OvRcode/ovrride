@@ -6,9 +6,9 @@ Tags: shortcode, shortcode maker, shortcode generator, custom shortcode, shortco
 
 Requires at least: 3.0.1
 
-Tested up to: 4.7
+Tested up to: 4.8
 
-Stable tag: 3.0.1
+Stable tag: 4.0.9
 
 License: GPLv2 or later
 
@@ -42,6 +42,40 @@ The plugin to help you make shortcode by yourself and get them listed in the wp 
 
 
 ## Changelog ##
+
+## 4.0.8 ##
+
+1. [new] Shortcode enabled in widget content
+
+## 4.0.7 ##
+
+1. [fix] Icon path fixed
+
+
+## 4.0.6 ##
+
+1. [fix] Issue with including package file fixed
+
+
+## 4.0.5 ##
+
+1. [new] Improved UI/UX with clean HTML structure
+2. [new] New action added
+
+
+## 4.0.4 ##
+
+1. [modification] Shortcode processor changed
+
+
+## 4.0.3 ##
+
+1. [fix] "unexpected T_PAAMAYIM_NEKUDOTAYIM" error fixed
+
+## 4.0.2 ##
+
+1. [new] Button shortcode added to 'Simple light' package
+2. [fix] Issue with rendering shortcode without parameter fixed.
 
 ## 4.0.1 ##
 

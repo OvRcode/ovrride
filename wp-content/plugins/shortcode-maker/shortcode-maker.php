@@ -7,7 +7,7 @@
  * Author: Mithu A Quayium
  * Text Domain: shortcode-maker
  * Domain Path: /languages
- * Version: 4.0.3
+ * Version: 4.0.9
  * License: GPL2
  */
 /**
@@ -70,15 +70,21 @@ class shortcode_maker{
         add_action( 'init', array($this, 'load_textdomain') );
         register_activation_hook( __FILE__, array( $this, 'plugin_activation_task' ) );
 
+        add_filter( 'widget_text', array( $this, 'render_widget_shortcode' ) );
 
         $this->includes();
 	}
+
+	function render_widget_shortcode( $text ) {
+	    return do_shortcode( $text );
+    }
 
 	public function plugin_activation_task() {
 	    do_action( 'shortcode_maker_activation_task' );
     }
 
     function includes(){
+        require_once dirname(__FILE__).'/vote.php';
         require_once dirname(__FILE__).'/sm-functions.php';
         require_once dirname(__FILE__).'/cc-products-page.php';
         require_once dirname(__FILE__).'/shortcode-field.php';
@@ -366,11 +372,11 @@ class shortcode_maker{
         ))) {
             /*SHORTCODE_MAKER_ASSET_PATH*/
             wp_enqueue_style( 'sm-style', SHORTCODE_MAKER_ASSET_PATH.'/css/style.css' );
-            wp_enqueue_script( 'sm-vue-js', SHORTCODE_MAKER_ASSET_PATH.'/js/vue.js' );
+            wp_enqueue_script( 'sm-vue', SHORTCODE_MAKER_ASSET_PATH.'/js/vue.js' );
         }
 
         if( isset( $post->ID ) && get_post_type( $post->ID ) == 'sm_shortcode' ) {
-            wp_enqueue_script( 'sm-script-js', SHORTCODE_MAKER_ASSET_PATH.'/js/script.js', array( 'sm-vue-js' ) );
+            wp_enqueue_script( 'sm-script-js', SHORTCODE_MAKER_ASSET_PATH.'/js/script.js', array( 'sm-vue' ) );
         }
 
     }

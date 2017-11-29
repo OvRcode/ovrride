@@ -113,6 +113,7 @@ class Ncr_No_Captcha_Recaptcha {
 					#login {
 					width: 350px !important;
 					}
+					div.g-recaptcha {margin-bottom: 10px}
 				</style>' . "\r\n";
 	}
 
@@ -162,7 +163,7 @@ class Ncr_No_Captcha_Recaptcha {
 			'captcha_registration_bp' => 'no',
 			'captcha_comment'      => 'yes',
 			'theme'                => 'light',
-			'error_message'        => wp_kses( __( '<strong>ERROR</strong>: Please retry CAPTCHA', 'ncr-catpcha' ), array(  'strong' => array() ) ),
+			'error_message'        => wp_kses( __( '<strong>ERROR</strong>: Please confirm you are not a robot', 'ncr-catpcha' ), array(  'strong' => array() ) ),
 		);
 
 		add_option( 'ncr_options', $default_options );

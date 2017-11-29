@@ -21,7 +21,7 @@ class Smps_Simple_Light {
 
     public static function settings() {
         return array(
-            'name' => 'Simple Light',
+            'name' => 'Packaged shortcodes',
             'items' => apply_filters('simple_light_shortcode_items',array(
                 'tabs' => 'Tabs',
                 'accordion' => 'Accordion',

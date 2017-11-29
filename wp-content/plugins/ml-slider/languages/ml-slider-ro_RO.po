@@ -540,8 +540,8 @@ msgid "Add slider"
 msgstr "Adăugare diapozitiv"
 
 #: ../ml-slider.php:1258
-msgid "Insert Meta Slider"
-msgstr "Inserare Meta Slider"
+msgid "Insert MetaSlider"
+msgstr "Inserare MetaSlider"
 
 #: ../ml-slider.php:1260
 msgid "Choose slideshow"
@@ -552,8 +552,8 @@ msgid "No slideshows found"
 msgstr "Nici un diapozitiv găsit"
 
 #: ../inc/metaslider.widget.class.php:18
-msgid "Meta Slider"
-msgstr "Meta Slider"
+msgid "MetaSlider"
+msgstr "MetaSlider"
 
 #: ../inc/metaslider.widget.class.php:111
 msgid "Title:"

@@ -25,23 +25,22 @@ class SM_Shortcode_Field {
 
     function sm_insert_php($content)
     {
-        global $post;
-        if( get_post_type() != 'sm_shortcode') return $content;
-        if( !in_array('administrator', get_userdata($post->post_author)->roles )) return $content;
-
-        $sm_content = $content;
-        preg_match_all('!\[php_code[^\]]*\](.*?)\[/php_code[^\]]*\]!is',$sm_content,$sm_matches);
-        $sm_nummatches = count($sm_matches[0]);
-        for( $sm_i=0; $sm_i<$sm_nummatches; $sm_i++ )
+        return $content;
+        $sm_content = do_shortcode($content);
+        preg_match_all('!\[php_code[^\]]*\](.*?)\[/php_code[^\]]*\]!is',$sm_content,$will_bontrager_matches);
+        $will_bontrager_nummatches = count($will_bontrager_matches[0]);
+        for( $will_bontrager_i=0; $will_bontrager_i<$will_bontrager_nummatches; $will_bontrager_i++ )
         {
             ob_start();
-            eval($sm_matches[1][$sm_i]);
-            $sm_replacement = ob_get_contents();
+            eval($will_bontrager_matches[1][$will_bontrager_i]);
+            //eval($will_bontrager_matches[1][$will_bontrager_i]);
+            $will_bontrager_replacement = ob_get_contents();
             ob_clean();
             ob_end_flush();
-            $sm_content = preg_replace('/'.preg_quote($sm_matches[0][$sm_i],'/').'/',$sm_replacement,$sm_content,1);
+            $sm_content = preg_replace('/'.preg_quote($will_bontrager_matches[0][$will_bontrager_i],'/').'/',$will_bontrager_replacement,$sm_content,1);
         }
         return $sm_content;
+
     }
 
 

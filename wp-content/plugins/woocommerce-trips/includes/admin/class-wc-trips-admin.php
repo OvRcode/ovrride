@@ -52,30 +52,29 @@ class WC_Trips_Admin {
 
     public function general_tab() {
         global $post;
-        $post_id = $post->ID;
         $args = array('post_type' => 'destinations',
                       'posts_per_page' => '-1',
                       'post_status' => 'publish',
                       'orderby' => 'title',
                       'order' => 'ASC');
         $destinations       = get_posts( $args );
-
-        $stock              = get_post_meta( $post_id, '_stock', true );
-        $base_price         = get_post_meta( $post_id, '_wc_trip_base_price', true );
-        $saved_destination  = get_post_meta( $post_id, '_wc_trip_destination', true );
-        $trip_type          = get_post_meta( $post_id, '_wc_trip_type', true );
-        $start_date         = get_post_meta( $post_id, '_wc_trip_start_date', true );
-        $end_date           = get_post_meta( $post_id, '_wc_trip_end_date', true );
-        $stock_status       = get_post_meta( $post_id, '_stock_status', true);
+        $product            = wc_get_product($post->ID);
+        $stock              = $product->get_stock_quantity('view');
+        $base_price         = $product->get_meta( '_wc_trip_base_price', true, 'view' );
+        $saved_destination  = $product->get_meta( '_wc_trip_destination', true, 'view' );
+        $trip_type          = $product->get_meta( '_wc_trip_type', true, 'view' );
+        $start_date         = $product->get_meta( '_wc_trip_start_date', true, 'view' );
+        $end_date           = $product->get_meta( '_wc_trip_end_date', true, 'view' );
+        $stock_status       = $product->get_stock_status();
         include( 'views/html-trip-general.php' );
     }
 
     public function save_product_data() {
-        global $wpdb;
         global $post;
         $post_id = $post->ID;
         $product_type = empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
-
+        $product = wc_get_product($post->ID);
+        $meta = array();
         if ( 'trip' !== $product_type ) {
             return;
         }
@@ -122,16 +121,17 @@ class WC_Trips_Admin {
                     $value = sanitize_text_field( $value );
             }
             if ( "_wc_trip_stock" == $meta_key ) {
-                update_post_meta( $post_id, "_stock", $value );
+              $product->set_stock_quantity( $value );
+              error_log($value);
             } else if ( "_wc_trip_stock_status" == $meta_key ) {
-                update_post_meta( $post_id, "_stock_status", $value );
+              $product->set_stock_status( $value );
             } else if ( "_wc_trip_start_date" == $meta_key ) {
-              update_post_meta( $post_id, "_wc_trip_start_date", $value);
+              $meta["_wc_trip_start_date"] = $value;
               $sort_date = new DateTime($value, new DateTimeZone("EST"));
-              $sort_date = $sort_date->format('Ymd');
-              update_post_meta( $post_id, "_wc_trip_sort_date", $sort_date);
+              $meta["sort_date"] = $sort_date->format('Ymd');
+
             } else {
-                update_post_meta( $post_id, $meta_key, $value );
+              $meta[$meta_key] = $value;
             }
 
             unset($_POST[ $meta_key ]);
@@ -150,9 +150,9 @@ class WC_Trips_Admin {
                 $primary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_primary_package_stock'][$i] );
             }
         }
-        update_post_meta( $post_id, '_wc_trip_primary_package_label', $primary_label);
-        update_post_meta( $post_id, '_wc_trip_primary_package_stock', $_POST['_wc_trip_primary_package_stock']);
-        update_post_meta( $post_id, '_wc_trip_primary_packages', $primary_packages );
+        $meta["_wc_trip_primary_package_stock"] = $_POST['_wc_trip_primary_package_stock'];
+        $meta["_wc_trip_primary_packages"] = $primary_packages;
+        $meta["_wc_trip_primary_package_label"] = $primary_label;
 
         // Secondary packages
         $secondary_packages = array();
@@ -165,9 +165,9 @@ class WC_Trips_Admin {
                 $secondary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_secondary_package_stock'][$i] );
             }
         }
-        update_post_meta( $post_id, '_wc_trip_secondary_package_label', $secondary_label );
-        update_post_meta( $post_id, '_wc_trip_secondary_package_stock', $_POST['_wc_trip_secondary_package_stock']);
-        update_post_meta( $post_id, '_wc_trip_secondary_packages', $secondary_packages );
+        $meta["_wc_trip_secondary_package_label"] = $secondary_label;
+        $meta["_wc_trip_secondary_package_stock"] = $_POST['_wc_trip_secondary_package_stock'];
+        $meta["_wc_trip_secondary_packages"]      = $secondary_packages;
 
         // Tertiary packages
         $tertiary_packages = array();
@@ -180,9 +180,9 @@ class WC_Trips_Admin {
                 $tertiary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_tertiary_package_stock'][$i] );
             }
         }
-        update_post_meta( $post_id, '_wc_trip_tertiary_package_label', $tertiary_label);
-        update_post_meta( $post_id, '_wc_trip_tertiary_package_stock', $_POST['_wc_trip_tertiary_package_stock']);
-        update_post_meta( $post_id, '_wc_trip_tertiary_packages', $tertiary_packages );
+        $meta["_wc_trip_tertiary_package_label"] = $tertiary_label;
+        $meta["_wc_trip_tertiary_package_stock"] = $_POST['_wc_trip_tertiary_package_stock'];
+        $meta["_wc_trip_tertiary_packages"] = $tertiary_packages;
 
         if ( "beach_bus" === $trip_type ) {
           $packages = ( isset($_POST['wc_trips_package_description']) ? sizeof($_POST['wc_trips_package_description']) : 0 );
@@ -190,9 +190,9 @@ class WC_Trips_Admin {
             $packages_packages[$i]['description'] = wc_clean( $_POST['wc_trips_package_description'][$i] );
             $packages_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_package_cost'][$i] );
           }
-          update_post_meta( $post_id, '_wc_trip_primary_package_label', "Package" );
-          update_post_meta( $post_id, '_wc_trip_primary_package_stock', "no" );
-          update_post_meta( $post_id, '_wc_trip_primary_packages', $packages_packages);
+          $meta["_wc_trip_primary_package_label"] = "Package";
+          $meta["_wc_trip_primary_package_stock"] = "no";
+          $meta["_wc_trip_primary_packages"] = $packages_packages;
 
           $packages = ( isset($_POST['wc_trips_to_from_beach_description']) ? sizeof($_POST['wc_trips_to_from_beach_description']) : 0 );
           for( $i = 0; $i < $packages; $i++ ){
@@ -200,10 +200,18 @@ class WC_Trips_Admin {
             $to_from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_to_from_beach_cost'][$i] );
             $to_from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_to_from_beach_stock'][$i] );
           }
-          update_post_meta( $post_id, '_wc_trip_secondary_package_label', "To/From Beach" );
-          update_post_meta( $post_id, '_wc_trip_secondary_package_stock', "yes" );
-          update_post_meta( $post_id, '_wc_trip_secondary_packages', $to_from_beach_packages);
+          $meta["_wc_trip_secondary_package_label"] = "To/From Beach";
+          $meta["_wc_trip_secondary_package_stock"] = "yes";
+          $meta["_wc_trip_secondary_packages"] = $to_from_beach_packages;
         }
+      foreach( $meta as $key => $value ) {
+        if ( $product->meta_exists($key) ) {
+          $product->update_meta_data($key, $value);
+        } else {
+          $product->add_meta_data($key, $value, true);
+        }
+      }
+      $product->save();
     }
 
     public function trip_panels() {

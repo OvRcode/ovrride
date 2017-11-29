@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: Meta Slider 2.9\n"
+"Project-Id-Version: MetaSlider 2.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahrale <contact@atar4u.com>\n"
@@ -103,7 +103,7 @@ msgstr "הוספת תמונה"
 msgid "Slides"
 msgstr "תמונות"
 
-# $goPro = "<div style='display: none;' id='screen-options-link-wrap'><a target='_blank' class='show-settings' href='{$link}'>Meta Slider v" . METASLIDER_VERSION . " - " .
+# $goPro = "<div style='display: none;' id='screen-options-link-wrap'><a target='_blank' class='show-settings' href='{$link}'>MetaSlider v" . METASLIDER_VERSION . " - " .
 # __( 'Upgrade to Pro $39', "metaslider" ) .
 # "</a></div>";
 # wpml-name: 6cc60379c4000862e626d36dced83abc
@@ -125,10 +125,10 @@ msgid "Choose slideshow"
 msgstr "בחר מצגת"
 
 # if ( count( $sliders ) ) {
-# echo "<h3 style='margin-bottom: 20px;'>" . __( "Insert Meta Slider", "metaslider" ) . "</h3>";
+# echo "<h3 style='margin-bottom: 20px;'>" . __( "Insert MetaSlider", "metaslider" ) . "</h3>";
 # echo "<select id='metaslider-select'>";
 # wpml-name: e43f681fefa2d68c5d924b83d1e478a8
-msgid "Insert Meta Slider"
+msgid "Insert MetaSlider"
 msgstr "הוסף מצגת"
 
 # '/metaslider/matchalabs.png); background-repeat: no-repeat; background-position: left bottom;"></span> ' .
@@ -926,7 +926,7 @@ msgstr "בטוח?"
 
 # 'id'    => 'documentation',
 # 'title' => __( 'Documentation', 'metaslider' ),
-# 'content'   => "<p><a href='http://www.metaslider.com/documentation/' target='blank'>Meta Slider Documentation</a></p>",
+# 'content'   => "<p><a href='http://www.metaslider.com/documentation/' target='blank'>MetaSlider Documentation</a></p>",
 # wpml-name: 5b6cf869265c13af8566f192b4ab3d2a
 msgid "Documentation"
 msgstr "תיעוד"
@@ -1036,9 +1036,9 @@ msgstr "בחירת מצגת:"
 msgid "Title:"
 msgstr "כותרת:"
 
-# 'Meta Slider', // Name
-# array( 'description' => __( 'Meta Slider', 'metaslider' ) ) // Args
+# 'MetaSlider', // Name
+# array( 'description' => __( 'MetaSlider', 'metaslider' ) ) // Args
 # );
 # wpml-name: 94a7bae84ef2816494be4af66c577bfc
-msgid "Meta Slider"
+msgid "MetaSlider"
 msgstr "מצגת שקופיות"

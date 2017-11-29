@@ -95,7 +95,7 @@ class MetaSliderThemeEditor {
      * Admin styles
      */
     public function register_theme_editor_styles() {
-        wp_enqueue_style( 'metaslider-admin-styles', METASLIDER_ASSETS_URL . 'metaslider/admin.css', false, METASLIDER_VERSION );
+        wp_enqueue_style( 'metaslider-admin-styles', METASLIDER_ADMIN_URL . 'assets/css/admin.css', false, METASLIDER_VERSION );
         wp_enqueue_style( 'metasliderpro-theme-editor-styles', plugins_url( 'assets/style.css' , __FILE__ ), false, METASLIDERPRO_VERSION );
         wp_enqueue_style( 'metasliderpro-spectrum-style', plugins_url( 'assets/spectrum/spectrum.css' , __FILE__ ), false, METASLIDERPRO_VERSION );
     }
@@ -380,7 +380,7 @@ class MetaSliderThemeEditor {
 
         ?>
 
-        <div class='metaslider metaslider_themeEditor'>
+        <div class='metaslider-ui metaslider metaslider_themeEditor'>
 
             <?php
                 if ( isset( $_REQUEST['save_theme'] ) ) {
@@ -388,7 +388,7 @@ class MetaSliderThemeEditor {
                 }
 
                 if ( $sliders = $this->get_sliders_for_preview() ) {
-                    echo "<form style='position: absolute; right: 20px; top: 27px;' accept-charset='UTF-8' action='?page=metaslider-theme-editor' method='post'>";
+                    echo "<form style='position: absolute; right: 20px; top: 0;' accept-charset='UTF-8' action='?page=metaslider-theme-editor' method='post'>";
                     echo "<input type='hidden' name='theme_slug' value='{$this->theme_slug}' />";
                     echo "<select name='slider_id'>";
                     foreach ( $sliders as $slider ) {
@@ -402,7 +402,7 @@ class MetaSliderThemeEditor {
 
             <form accept-charset='UTF-8' action='?page=metaslider-theme-editor' method='post'>
 
-                <h3 class="nav-tab-wrapper">
+                <h3 class="nav-tab-wrapper" style='margin-bottom:2rem;'>
                     <?php
                         if ( $this->themes_available() ) {
                             foreach ( $this->get_themes() as $slug => $theme ) {

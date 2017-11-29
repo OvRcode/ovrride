@@ -10,6 +10,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         var smps_app = new Vue({
             el : '.smps_app',
             data : {
+                show_packaged_shortcode_panel : false,
                 target_class : '',
                 target_item : '',
                 settings_modal_label : ''
@@ -23,6 +24,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             }
         });
 
-    })
+        //datepicker
+        //var picker = new Pikaday({ field: document.getElementsByClassName('datepicker') });
+    });
 }(jQuery));
 //# sourceMappingURL=sm-post.js.map

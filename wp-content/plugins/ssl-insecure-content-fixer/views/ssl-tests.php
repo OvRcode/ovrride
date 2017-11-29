@@ -32,8 +32,16 @@ if (!defined('ABSPATH')) {
 		<p><?php printf(esc_html__('It looks like your server is behind a reverse proxy. The recommended setting for HTTPS detection is %s.', 'ssl-insecure-content-fixer'), '<strong>HTTP_X_FORWARDED_SSL</strong>'); ?></p>
 	</div>
 
+	<div class="sslfix-test-result" id="sslfix-HTTP_X_FORWARDED_SCHEME" aria-hidden="true">
+		<p><?php printf(esc_html__('It looks like your server is behind a reverse proxy. The recommended setting for HTTPS detection is %s.', 'ssl-insecure-content-fixer'), '<strong>HTTP_X_FORWARDED_SCHEME</strong>'); ?></p>
+	</div>
+
 	<div class="sslfix-test-result" id="sslfix-HTTP_CLOUDFRONT_FORWARDED_PROTO" aria-hidden="true">
 		<p><?php printf(esc_html__('It looks like your server is behind Amazon CloudFront, not configured to send HTTP_X_FORWARDED_PROTO. The recommended setting for HTTPS detection is %s.', 'ssl-insecure-content-fixer'), '<strong>HTTP_CLOUDFRONT_FORWARDED_PROTO</strong>'); ?></p>
+	</div>
+
+	<div class="sslfix-test-result" id="sslfix-HTTP_X_ARR_SSL" aria-hidden="true">
+		<p><?php printf(esc_html__('It looks like your server is behind Windows Azure ARR. The recommended setting for HTTPS detection is %s.', 'ssl-insecure-content-fixer'), '<strong>HTTP_X_ARR_SSL</strong>'); ?></p>
 	</div>
 
 	<?php /* TODO: remove this when removing deprecated HTTP_CF_VISITOR setting */ ?>
@@ -43,7 +51,7 @@ if (!defined('ABSPATH')) {
 
 	<div class="sslfix-test-result" id="sslfix-detect_fail" aria-hidden="true">
 		<p><?php printf(esc_html__('Your server cannot detect HTTPS. The recommended setting for HTTPS detection is %s.', 'ssl-insecure-content-fixer'), sprintf('<strong>%s</strong>', _x('unable to detect HTTPS', 'proxy settings', 'ssl-insecure-content-fixer'))); ?></p>
-		<p><?php printf(__('If you know of a way to detect HTTPS on your server, please <a href="%s" target="_blank">tell me about it</a>.', 'ssl-insecure-content-fixer'), 'https://shop.webaware.com.au/support/'); ?></p>
+		<p><?php printf(__('If you know of a way to detect HTTPS on your server, please <a href="%s" target="_blank" rel="noopener">tell me about it</a>.', 'ssl-insecure-content-fixer'), 'https://shop.webaware.com.au/support/'); ?></p>
 	</div>
 
 	<div class="sslfix-test-result" id="sslfix-environment" aria-hidden="true">

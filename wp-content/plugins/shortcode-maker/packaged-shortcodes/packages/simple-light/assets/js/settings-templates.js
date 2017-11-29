@@ -26,11 +26,8 @@
                     Vue.set(this.tab_data,'tab_' + new Date().getTime(),JSON.parse(JSON.stringify(this.tab_template)));
                 },
                 insert_shortcode : function () {
-                    var tab_data_str = '';
-                    for( k in this.tab_data ){
-                        tab_data_str = tab_data_str + k + ':' + this.tab_data[k]['title'] + '|' + this.tab_data[k]['content'] + ',,';
-                    }
-                    var shortcode = '[smps_sl_tabs tab_data="' + tab_data_str + '" type="' + this.type + '" ]';
+                    var tab_data = JSON.stringify(this.tab_data).replace(/"/g, '\\"');
+                    var shortcode = "[smps_sl_tabs tab_data='" + tab_data + "' type='" + this.type + "' ]";
                     tinyMCE.activeEditor.selection.setContent( shortcode );
                 },
                 remove_tab : function ( tab_key ) {
@@ -60,11 +57,8 @@
                     Vue.set(this.acc_data,'acc_' + new Date().getTime(),JSON.parse(JSON.stringify(this.acc_template)));
                 },
                 insert_shortcode : function () {
-                    var acc_data_str = '';
-                    for( k in this.acc_data ){
-                        acc_data_str = acc_data_str + k + ':' + this.acc_data[k]['title'] + '|' + this.acc_data[k]['content'] + ',,';
-                    }
-                    var shortcode = '[smps_sl_accordion acc_data="' + acc_data_str + '"]';
+                    var acc_data = JSON.stringify(this.acc_data).replace(/"/g, '\\"');
+                    var shortcode = "[smps_sl_accordion acc_data='" + acc_data + "']";
                     tinyMCE.activeEditor.selection.setContent( shortcode );
                 },
                 remove_accordion : function (key) {
@@ -123,17 +117,8 @@
                     }
                 },
                 insert_shortcode : function () {
-
-                    var table_data_str = '';
-                    for( var tr_key in this.table_data ) {
-                        table_data_str = table_data_str + tr_key + ':' ;
-                        for ( var td_key in this.table_data[tr_key] ) {
-                            table_data_str = table_data_str /*+ td_key + '|'*/ + this.table_data[tr_key][td_key] + ',';
-                        }
-                        table_data_str = table_data_str + ';';
-                    }
-
-                    var shortcode = '[smps_sl_table table_data="' + table_data_str + '"]';
+                    var table_data = JSON.stringify(this.table_data).replace(/"/g, '\\"');
+                    var shortcode = "[smps_sl_table table_data='" + table_data + "']";
                     tinyMCE.activeEditor.selection.setContent( shortcode );
                 }
             },

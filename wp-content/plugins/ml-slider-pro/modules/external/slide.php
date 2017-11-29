@@ -76,13 +76,13 @@ class MetaExternalSlide extends MetaSlide {
 
         echo "<div class='metaslider'>
                     <div class='media-embed'>
-                        <div class='embed-link-settings'>Click 'Add to slider' to create a new {$this->name} slide.</div>
+                        <div class='embed-link-settings'>".sprintf(__("Press 'Add to slideshow' to create a new %s slide.", 'ml-slider'), $this->name)."</div>
                     </div>
             </div>
             <div class='media-frame-toolbar'>
                 <div class='media-toolbar'>
                     <div class='media-toolbar-primary'>
-                        <a href='#' class='button media-button button-primary button-large'>Add to slider</a>
+                        <a href='#' class='button media-button button-primary button-large'>".__('Add to slideshow', 'ml-slider')."</a>
                     </div>
                 </div>
             </div>";
@@ -137,7 +137,7 @@ class MetaExternalSlide extends MetaSlide {
         $this->add_or_update_or_delete_meta($this->slide->ID, 'extimgurl', $fields['extimgurl']);
         $this->add_or_update_or_delete_meta($this->slide->ID, 'title', $fields['title']);
         $this->add_or_update_or_delete_meta($this->slide->ID, 'alt', $fields['alt']);
-        $this->add_or_update_or_delete_meta($this->slide->ID, 'settings', $fields['settings']);
+        // $this->add_or_update_or_delete_meta($this->slide->ID, 'settings', $fields['settings']);
         // store the 'new window' setting
         $new_window = isset($fields['new_window']) && $fields['new_window'] == 'on' ? 'true' : 'false';
 
@@ -159,17 +159,26 @@ class MetaExternalSlide extends MetaSlide {
 
 
         // slide row HTML
-        $row  = "<tr class='slide external flex responsive nivo coin'>";
+        $row  = "<tr id='slide-{$this->slide->ID}' class='slide external flex responsive nivo coin'>";
         $row .= "    <td class='col-1'>";
-        $row .= "        <div class='thumb' style='background-image: url({$extimgurl});'>";
-
-        if ( method_exists( $this, 'get_delete_button_html' ) ) {
+        $row .= "       <div class='metaslider-ui-controls ui-sortable-handle'>";
+        $row .= "           <h4 class='slide-details'>". __('External URL', 'metasliderpro') ."</h4>";
+        if (metaslider_this_is_trash($this->slide)) {
+            $row .= '<div class="row-actions trash-btns">';
+            $row .= "<span class='untrash'>{$this->get_undelete_button_html()}</span>";
+            // $row .= ' | ';
+            // $row .= "<span class='delete'>{$this->get_perminant_delete_button_html()}</span>";
+            $row .= '</div>';
+        } else {
             $row .= $this->get_delete_button_html();
         }
-                $row .= "            <span class='slide-details'>External URL</span>";
-        $row .= "        </div>";
+        $row .= "       </div>";
+        $row .= "       <div class='metaslider-ui-inner'>";
+        $row .= "           <div class='thumb' style='background-image: url({$extimgurl})'></div>";
+        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
+        $row .= "    <div class='metaslider-ui-inner'>";
         $row .= "        <ul class='tabs'>";
         $row .= "            <li class='selected' rel='tab-1'>" . __("General", "metasliderpro") . "</li>";
         $row .= "            <li rel='tab-2'>" . __("SEO", "metaslider") . "</li>";
@@ -199,6 +208,7 @@ class MetaExternalSlide extends MetaSlide {
         $row .= "        </div>";
         $row .= "        <input type='hidden' name='attachment[{$this->slide->ID}][type]' value='{$this->identifier}' />";
         $row .= "        <input type='hidden' class='menu_order' name='attachment[{$this->slide->ID}][menu_order]' value='{$this->slide->menu_order}' />";
+        $row .= "    </div>";
         $row .= "    </td>";
         $row .= "</tr>";
 

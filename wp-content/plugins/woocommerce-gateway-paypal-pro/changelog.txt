@@ -1,5 +1,27 @@
 *** PayPal Pro Changelog ***
 
+2017-11-21 - version 4.4.10
+* Fix - Regression issue after adding tax and frieght line items causing mismatched errors.
+
+2017-11-13 - version 4.4.9
+* Add - "woocommerce_gateway_paypal_pro_payflow_post_data" filter.
+* Fix - Tax and shipping amounts not passed for Payflow.
+* Tweak - Credit card field was too narrow.
+
+2017-08-17 - version 4.4.8
+* Fix - Credit Card fields not validating invalid inputs.
+* Fix - Payflow delay capture not working.
+
+2017-05-02 - version 4.4.7
+* Fix - Changing order status on authorized transaction not capturing.
+* Fix - WC_Order_Item_Meta deprecated notice.
+
+2017-04-06 - version 4.4.6
+* Fix - Additional updates for WC 3.0 compatibility.
+
+2017-04-03 - version 4.4.5
+* Fix - Update for WC 3.0 compatibility.
+
 2016-12-26 - version 4.4.4
 * Fix - Deprecated notice for the checkout form.
 * Fix - Notice for using functions that are deprecated in PHP 7.

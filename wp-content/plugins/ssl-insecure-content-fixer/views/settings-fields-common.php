@@ -90,6 +90,19 @@ if (!defined('ABSPATH')) {
 </tr>
 
 <tr valign="top">
+	<th scope="row"><?php echo esc_html_x('Ignore external sites', 'ignore external settings', 'ssl-insecure-content-fixer'); ?></th>
+	<td>
+		<p><em><?php echo esc_html_x('Select only if you wish to leave content pointing to external sites as http', 'ignore external settings', 'ssl-insecure-content-fixer'); ?></em></p>
+		<ul>
+			<li>
+				<input type="checkbox" name="ssl_insecure_content_fixer[site_only]" id="site_only" value="1" <?php checked(!empty($options['site_only'])); ?> />
+				<label for="site_only"><?php echo esc_html_x('Only fix content pointing to this WordPress site', 'ignore external settings', 'ssl-insecure-content-fixer'); ?></label>
+			</li>
+		</ul>
+	</td>
+</tr>
+
+<tr valign="top">
 	<th scope="row"><?php echo esc_html_x('HTTPS detection', 'proxy settings', 'ssl-insecure-content-fixer'); ?><i id="sslfix-https-detection" aria-hidden="true"></i></th>
 	<td>
 		<p><em><?php echo esc_html_x('Select how WordPress should detect that a page is loaded via HTTPS', 'proxy settings', 'ssl-insecure-content-fixer'); ?></em></p>
@@ -100,6 +113,8 @@ if (!defined('ABSPATH')) {
 			'HTTP_X_FORWARDED_PROTO'			=> _x('HTTP_X_FORWARDED_PROTO (e.g. load balancer, reverse proxy, NginX)', 'proxy settings', 'ssl-insecure-content-fixer'),
 			'HTTP_X_FORWARDED_SSL'				=> _x('HTTP_X_FORWARDED_SSL (e.g. reverse proxy)', 'proxy settings', 'ssl-insecure-content-fixer'),
 			'HTTP_CLOUDFRONT_FORWARDED_PROTO'	=> _x('HTTP_CLOUDFRONT_FORWARDED_PROTO (Amazon CloudFront HTTPS cached content)', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'HTTP_X_FORWARDED_SCHEME'			=> _x('HTTP_X_FORWARDED_SCHEME (e.g. KeyCDN)', 'proxy settings', 'ssl-insecure-content-fixer'),
+			'HTTP_X_ARR_SSL'					=> _x('HTTP_X_ARR_SSL (Windows Azure ARR)', 'proxy settings', 'ssl-insecure-content-fixer'),
 			'HTTP_CF_VISITOR'					=> _x('HTTP_CF_VISITOR (Cloudflare Flexible SSL); deprecated, since Cloudflare sends HTTP_X_FORWARDED_PROTO now', 'proxy settings', 'ssl-insecure-content-fixer'),
 			'detect_fail'						=> _x('unable to detect HTTPS', 'proxy settings', 'ssl-insecure-content-fixer'),
 		);

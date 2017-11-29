@@ -134,7 +134,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('listVerifiedEmailAddresses', $rest->error);
+            $this->triggerError('listVerifiedEmailAddresses', $rest->error);
             return false;
         }
 
@@ -169,7 +169,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('ListIdentities', $rest->error);
+            $this->triggerError('ListIdentities', $rest->error);
             return false;
         }
 
@@ -213,7 +213,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('verifyEmailAddress', $rest->error);
+            $this->triggerError('verifyEmailAddress', $rest->error);
             return false;
         }
 
@@ -242,7 +242,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('VerifyEmailIdentity', $rest->error);
+            $this->triggerError('VerifyEmailIdentity', $rest->error);
             return false;
         }
 
@@ -269,7 +269,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('deleteVerifiedEmailAddress', $rest->error);
+            $this->triggerError('deleteVerifiedEmailAddress', $rest->error);
             return false;
         }
 
@@ -292,7 +292,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('deleteIdentity', $rest->error);
+            $this->triggerError('deleteIdentity', $rest->error);
             return false;
         }
 
@@ -315,7 +315,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('getSendQuota', $rest->error);
+            $this->triggerError('getSendQuota', $rest->error);
             return false;
         }
 
@@ -347,7 +347,7 @@ class SimpleEmailService {
             $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
         }
         if ($rest->error !== false) {
-            $this->__triggerError('getSendStatistics', $rest->error);
+            $this->triggerError('getSendStatistics', $rest->error);
             return false;
         }
 
@@ -460,7 +460,7 @@ class SimpleEmailService {
         if ($rest->error !== false) {
             echo("Error:\n");
             print_r($rest->error);
-            $this->__triggerError('sendEmail', $rest->error);
+            $this->triggerError('sendEmail', $rest->error);
             return false;
         }
 
@@ -481,7 +481,7 @@ class SimpleEmailService {
      * @param array $error Array containing error information
      * @return  void
      */
-    public function __triggerError($functionname, $error) {
+    public function triggerError($functionname, $error) {
         if ($error == false) {
             trigger_error(sprintf("SimpleEmailService::%s(): Encountered an error, but no description given", $functionname), E_USER_WARNING);
         } else if (isset($error['curl']) && $error['curl']) {
@@ -554,10 +554,10 @@ final class SimpleEmailServiceRequest {
         foreach ($this->parameters as $var => $value) {
             if (is_array($value)) {
                 foreach ($value as $v) {
-                    $params[] = $var . '=' . $this->__customUrlEncode($v);
+                    $params[] = $var . '=' . $this->customUrlEncode($v);
                 }
             } else {
-                $params[] = $var . '=' . $this->__customUrlEncode($value);
+                $params[] = $var . '=' . $this->customUrlEncode($value);
             }
         }
 
@@ -573,7 +573,7 @@ final class SimpleEmailServiceRequest {
         $headers[] = 'Host: ' . $this->ses->getHost();
 
         $auth = 'AWS3-HTTPS AWSAccessKeyId=' . $this->ses->getAccessKey();
-        $auth .= ',Algorithm=HmacSHA256,Signature=' . $this->__getSignature($date);
+        $auth .= ',Algorithm=HmacSHA256,Signature=' . $this->getSignature($date);
         $headers[] = 'X-Amzn-Authorization: ' . $auth;
 
         $url = 'https://' . $this->ses->getHost() . '/';
@@ -606,7 +606,7 @@ final class SimpleEmailServiceRequest {
 
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
-        curl_setopt($curl, CURLOPT_WRITEFUNCTION, array(&$this, '__responseWriteCallback'));
+        curl_setopt($curl, CURLOPT_WRITEFUNCTION, array(&$this, 'responseWriteCallback'));
         @ curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         foreach (self::$curlOptions as $option => $value) {
@@ -660,7 +660,7 @@ final class SimpleEmailServiceRequest {
      * @param string $data Data
      * @return integer
      */
-    private function __responseWriteCallback(&$curl, &$data) {
+    private function responseWriteCallback(&$curl, &$data) {
         $this->response->body .= $data;
         return strlen($data);
     }
@@ -674,7 +674,7 @@ final class SimpleEmailServiceRequest {
      * @param string $var String to encode
      * @return string
      */
-    private function __customUrlEncode($var) {
+    private function customUrlEncode($var) {
         return str_replace('%7E', '~', rawurlencode($var));
     }
 
@@ -685,7 +685,7 @@ final class SimpleEmailServiceRequest {
      * @param string $string String to sign
      * @return string
      */
-    private function __getSignature($string) {
+    private function getSignature($string) {
         return base64_encode(hash_hmac('sha256', $string, $this->ses->getSecretKey(), true));
     }
 

@@ -3,9 +3,9 @@
  * Plugin Name: WooCommerce Google Analytics Integration
  * Plugin URI: http://wordpress.org/plugins/woocommerce-google-analytics-integration/
  * Description: Allows Google Analytics tracking code to be inserted into WooCommerce store pages.
- * Author: WooThemes
- * Author URI: http://woothemes.com
- * Version: 1.4.0
+ * Author: WooCommerce
+ * Author URI: https://woocommerce.com
+ * Version: 1.4.3
  * License: GPLv2 or later
  * Text Domain: woocommerce-google-analytics-integration
  * Domain Path: languages/
@@ -27,7 +27,7 @@ class WC_Google_Analytics_Integration {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.4.0';
+	const VERSION = '1.4.3';
 
 	/**
 	 * Instance of this class.
@@ -52,6 +52,25 @@ class WC_Google_Analytics_Integration {
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 		}
+
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_links' ) );
+	}
+
+	public function plugin_links( $links ) {
+		$settings_url = add_query_arg(
+			array(
+				'page' => 'wc-settings',
+				'tab' => 'integration',
+			),
+			admin_url( 'admin.php' )
+		);
+
+		$plugin_links = array(
+			'<a href="' . esc_url( $settings_url ) . '">' . __( 'Settings', 'woocommerce-google-analytics-integration' ) . '</a>',
+			'<a href="https://wordpress.org/support/plugin/woocommerce-google-analytics-integration">' . __( 'Support', 'woocommerce-google-analytics-integration' ) . '</a>',
+		);
+
+		return array_merge( $plugin_links, $links );
 	}
 
 	/**

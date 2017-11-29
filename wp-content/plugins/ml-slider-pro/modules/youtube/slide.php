@@ -151,23 +151,29 @@ class MetaYouTubeSlide extends MetaSlide {
             $thumb = $this->get_thumb();
         }
 
-        $row  = "<tr class='slide {$this->identifier} flex responsive'>";
+        $row  = "<tr id='slide-{$this->slide->ID}' class='slide {$this->identifier} flex responsive'>";
         $row .= "    <td class='col-1'>";
-        $row .= "        <div class='thumb' style='background-image: url({$thumb})'>";
-
-        if ( method_exists( $this, 'get_delete_button_html' ) ) {
+        $row .= "        <div class='metaslider-ui-controls ui-sortable-handle'>";
+        $row .= "           <h4 class='slide-details'><span class='youtube'>YouTube Slide</span></h4>";
+        if (metaslider_this_is_trash($this->slide)) {
+            $row .= '<div class="row-actions trash-btns">';
+            $row .= "<span class='untrash'>{$this->get_undelete_button_html()}</span>";
+            // $row .= ' | ';
+            // $row .= "<span class='delete'>{$this->get_perminant_delete_button_html()}</span>";
+            $row .= '</div>';
+        } else {
             $row .= $this->get_delete_button_html();
+            $row .= $this->get_update_image_button_html();
         }
-
-        if ( method_exists( $this, 'get_change_image_button_html' ) ) {
-            $row .= $this->get_change_image_button_html();
-        }
-
-        $row .= "            <span class='slide-details'>" . __( "YouTube", 'metasliderpro' ) . "</span>";
-        $row .= "            <span class='youtube'></span>";
+        $row .= "        </div>";
+        $row .= "        <div class='metaslider-ui-inner'>";
+        $row .= "           <button class='update-image image-button' data-button-text='" . __("Update slide image", "ml-slider") . "' title='" . __("Update Slide Image", "ml-slider") . "' data-slide-id='{$this->slide->ID}'>";
+        $row .= "           <div class='thumb' style='background-image: url({$thumb})'></div>";
+        $row .= "           </button>";
         $row .= "        </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
+        $row .= "       <div class='metaslider-ui-inner'>";
 
         if ( method_exists( $this, 'get_admin_slide_tabs_html' ) ) {
             $row .= $this->get_admin_slide_tabs_html();
@@ -177,6 +183,7 @@ class MetaYouTubeSlide extends MetaSlide {
 
         $row .= "        <input type='hidden' name='attachment[{$this->slide->ID}][type]' value='youtube' />";
         $row .= "        <input type='hidden' class='menu_order' name='attachment[{$this->slide->ID}][menu_order]' value='{$this->slide->menu_order}' />";
+        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "</tr>";
 
@@ -321,7 +328,7 @@ class MetaYouTubeSlide extends MetaSlide {
             $html .= " " . $k . '="' . $v . '"';
         }
 
-        $html .= "></div>";
+        $html .= "></td>";
 
         return $html;
     }
@@ -524,7 +531,7 @@ class MetaYouTubeSlide extends MetaSlide {
             <div class='media-frame-toolbar'>
                 <div class='media-toolbar'>
                     <div class='media-toolbar-primary'>
-                        <a href='#' class='button media-button button-primary button-large' disabled='disabled'>" . __("Add to slider", "metasliderpro") . "</a>
+                        <a href='#' class='button media-button button-primary button-large' disabled='disabled'>" . __("Add to slideshow", "metasliderpro") . "</a>
                     </div>
                 </div>
             </div>";

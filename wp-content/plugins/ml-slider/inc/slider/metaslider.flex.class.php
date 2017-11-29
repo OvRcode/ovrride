@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class MetaFlexSlider extends MetaSlider {
 
     protected $js_function = 'flexslider';
-    protected $js_path = 'sliders/flexslider/jquery.flexslider-min.js';
+    protected $js_path = 'sliders/flexslider/jquery.flexslider.min.js';
     protected $css_path = 'sliders/flexslider/flexslider.css';
 
     /**
@@ -169,7 +169,7 @@ class MetaFlexSlider extends MetaSlider {
         $return_value .= "\n            <ul class=\"slides\">";
 
         foreach ( $this->slides as $slide ) {
-            // backwards compatibility with older versions of Meta Slider Pro (< v2.0)
+            // backwards compatibility with older versions of MetaSlider Pro (< v2.0)
             // MS Pro < 2.0 does not include the <li>
             // MS Pro 2.0+ returns the <li>
             if ( strpos( $slide, '<li' ) === 0 ) {

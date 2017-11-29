@@ -11,26 +11,28 @@
             </div>
             <!-- Nav tabs -->
             <ul class="nav nav-{{ type }}">
-                <li v-for="(tab_key, tab_object) in tab_data" @dblclick="tab_target = tab_key">
+                <li v-for="(tab_key, tab_object) in tab_data">
                     <a href="#{{ tab_key }}" data-toggle="tab">
                         <template v-if="tab_target != tab_key">
                             {{ tab_object.title }}
-                            <a href="javascript:" class="btn btn-xs btn-danger br0" @click="remove_tab(tab_key)"><i class="glyphicon glyphicon-minus"></i></a>
+                            <a href="javascript:" class="btn btn-xs" @click="tab_target = tab_key"><i class="fa fa-edit"></i></a>
+                            <a href="javascript:" class="btn btn-xs br0" @click="remove_tab(tab_key)"><i class="fa fa-remove"></i></a>
                         </template>
                         <input type="text" v-model="tab_object.title" v-if="tab_target == tab_key">
-                        <a href="javascript:" class="btn btn-default br0 btn-xs" v-if="tab_target == tab_key" @click="tab_target = ''"><?php _e( 'Save', 'sm' ); ?></a>
+                        <a href="javascript:" class="btn br0 btn-xs" v-if="tab_target == tab_key" @click="tab_target = ''"><strong><?php _e( 'Save', 'sm' ); ?></strong></a>
                     </a>
                 </li>
-                <li><a href="javascript:" @click="add_tab()">+</a></li>
+                <li><a href="javascript:" @click="add_tab()"><i class="fa fa-plus"></i></a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content mt20 mb20">
-                <div v-for="(tab_key, tab_object) in tab_data" class="tab-pane fade" :id="tab_key" @dblclick="content_target = tab_key">
+                <div v-for="(tab_key, tab_object) in tab_data" class="tab-pane fade" :id="tab_key">
                     <template v-if="content_target != tab_key">
                         {{ tab_object.content }}
+                        <a href="javascript:" class="btn pull-right btn-default" @click="content_target = tab_key"><i class="fa fa-edit"></i></a>
                     </template>
-                    <textarea class="form-control mb20" v-model="tab_object.content" cols="30" rows="10" v-if="content_target == tab_key"></textarea>
-                    <a href="javascript:" class="btn btn-default br0" v-if="content_target == tab_key" @click="content_target = ''"><?php _e( 'Save', 'sm' ); ?></a>
+                    <textarea class="form-control" v-model="tab_object.content" cols="30" rows="10" v-if="content_target == tab_key"></textarea>
+                    <a href="javascript:" class="btn btn-default br3 mt20" v-if="content_target == tab_key" @click="content_target = ''"><?php _e( 'Save', 'sm' ); ?></a>
                 </div>
             </div>
         </div>
@@ -45,23 +47,26 @@
             </div>
             <div class="panel-group" id="accordion">
                 <div class="panel panel-default"  v-for="(key, each_acc) in acc_data">
-                    <div class="panel-heading" @dblclick="target_acc = key">
+                    <div class="panel-heading">
                         <h4 class="panel-title">
                             <template v-if="target_acc != key">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#{{ key }}">{{ each_acc.title }}</a>
-                                <a href="javascript:" class="btn btn-xs btn-danger br0 pull-right" @click="remove_accordion(key)" style="color: #FFFFFF;"><?php _e('Remove','sm'); ?></a>
+                                <a href="javascript:" class="btn btn-xs btn-default br0 " @click="target_acc = key"><i class="fa fa-edit"></i></a>
+                                <a href="javascript:" class="btn btn-xs btn-default br0 " @click="remove_accordion(key)"><i class="fa fa-remove"></i></a>
                             </template>
                             <input type="text" v-model="each_acc.title" v-if="target_acc == key" class="form-control">
-                            <a href="javascript:" class="btn btn-default br0 mt10" v-if="target_acc == key" @click="target_acc = ''"><?php _e( 'Save', 'sm' ); ?></a>
+                            <a href="javascript:" class="btn btn-default br3 mt10" v-if="target_acc == key" @click="target_acc = ''"><?php _e( 'Save', 'sm' ); ?></a>
                         </h4>
                     </div>
                     <div :id="key" class="panel-collapse collapse">
                         <div class="panel-body" @dblclick="target_content = key">
                             <template v-if="target_content != key">
                                 {{ each_acc.content }}
+                                <a href="javascript:" class="btn btn-default br3 mt10 pull-right" @click="target_content = key"><i class="fa fa-edit"></i></a>
                             </template>
                             <textarea v-model="each_acc.content" cols="30" rows="10" class="form-control" v-if="target_content == key"></textarea>
-                            <a href="javascript:" class="btn btn-default br0 mt10" v-if="target_content == key" @click="target_content = ''"><?php _e( 'Save', 'sm' ); ?></a>
+
+                            <a href="javascript:" class="btn btn-default br3 mt10" v-if="target_content == key" @click="target_content = ''"><?php _e( 'Save', 'sm' ); ?></a>
                         </div>
                     </div>
                 </div>
@@ -81,15 +86,15 @@
                 <table class="table table-striped table-bordered table-hover">
                     <tr>
                         <td v-for="col_number in col_tracker">
-                            <a href="javascript:" class="btn btn-danger pull-right" @click="remove_col(col_number)"><i class="glyphicon glyphicon-minus"></i></a>
+                            <a href="javascript:" class="btn btn-xs btn-default br3 pull-right" @click="remove_col(col_number)"><i class="fa fa-remove"></i></a>
                         </td>
                     </tr>
                     <tr v-for="( t_key, t_val ) in table_data">
                         <td v-for="( c_key, c_val) in t_val ">
-                            <input type="text" v-model="c_val">
+                            <input type="text" class="form-control" v-model="c_val">
                             <!--<a href="javascript:" class="btn btn-danger br0" @click="remove_td(t_key, c_key)"><i class="glyphicon glyphicon-minus"></i></a>-->
                         </td>
-                        <td><a href="javascript:" class="btn btn-danger pull-right btn-xs" @click="remove_row(t_key)" data-val="{{ t_key }}">Remove</a></td>
+                        <td><a href="javascript:" class="btn btn-default pull-right btn-xs" @click="remove_row(t_key)" data-val="{{ t_key }}"><i class="fa fa-remove"></i></a></td>
                     </tr>
                 </table>
             </div>

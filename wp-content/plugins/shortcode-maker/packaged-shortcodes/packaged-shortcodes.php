@@ -35,11 +35,10 @@ class SM_Packaged_Shortcodes {
 
     public function includes() {
         $sm_get_shortcode_packages = sm_get_shortcode_packages();
-        foreach ( $sm_get_shortcode_packages as $key => $package_name ) {
-            include_once 'packages/'.$package_name.'/'.$package_name.'.php';
+        foreach ( $sm_get_shortcode_packages as $package_name => $package_dir ) {
+            include_once $package_dir.'/'.$package_name.'.php';
         }
 
-        include_once 'ajax-actions.php';
         include_once 'packaged-shortcodes-admin.php';
     }
 
@@ -65,9 +64,12 @@ class SM_Packaged_Shortcodes {
                     <div class="container-fluid">
                         <div class="row">
                             <?php
-                            while (false !== ($entry = readdir($handle))) {
-                                if( $entry == '.' || $entry == '..' ) continue;
-                                include_once 'packages/'.$entry.'/'.$entry.'.php';
+                            $package_dirs = apply_filters('smps_package_dir', array(
+                                'simple-light' => SHORTCODE_MAKER_ROOT.'/packaged-shortcodes/packages/simple-light'
+                            ));
+
+                            foreach ( $package_dirs as  $entry => $package_dir ) {
+                                include_once $package_dir.'/'.$entry.'.php';
                                 ?>
                                 <div class="col-sm-3">
                                     <label></label>
@@ -75,8 +77,10 @@ class SM_Packaged_Shortcodes {
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
                                             <h6 class="panel-title">
+                                                <?php
+                                                ?>
                                                 <label>
-                                                    <input type="checkbox" name="sm_shortcode_packages[<?php echo $entry; ?>]" value="<?php echo $entry; ?>" <?php echo in_array( $entry, $sm_get_shortcode_packages )? 'checked' : ''; ?>>
+                                                    <input type="checkbox" name="sm_shortcode_packages[<?php echo $entry; ?>]" value="<?php echo $package_dir; ?>" <?php echo in_array( addslashes($package_dir), $sm_get_shortcode_packages )? 'checked' : ''; ?>>
                                                     <?php echo $package_settings['name']; ?>
                                                 </label>
                                             </h6>
@@ -143,7 +147,7 @@ class SM_Packaged_Shortcodes {
             wp_enqueue_style( 'sm-post-css', SHORTCODE_MAKER_ASSET_PATH.'/css/sm-post.css' );
 
             wp_enqueue_script( 'smps-swal-js', SHORTCODE_MAKER_ASSET_PATH.'/js/sweetalert.min.js', array( 'jquery' ) );
-            wp_enqueue_script( 'sm-post-js', SHORTCODE_MAKER_ASSET_PATH.'/js/sm-post.js', array( 'jquery','sm-vue-js' ) );
+            wp_enqueue_script( 'sm-post-js', SHORTCODE_MAKER_ASSET_PATH.'/js/sm-post.js', array( 'jquery','sm-vue' ) );
         }
 
     }
@@ -155,7 +159,7 @@ class SM_Packaged_Shortcodes {
         $sm_shortcode_packages = sm_get_shortcode_packages();
         if( empty( $sm_shortcode_packages ) ) {
             sm_save_shortcode_packages( array(
-                'simple-light' => 'simple-light'
+                'simple-light' => 'packages/simple-light'
             ) );
         }
     }

@@ -7,26 +7,11 @@ foreach ( $items as $item => $label ) {
 class Smps_Simple_Light_Shortcodes {
 
     public static function render_tabs( $atts, $content, $tag ) {
-        $tab_data = array();
+
         if( isset( $atts['tab_data'] ) ) {
-
-
-            $first_level = explode(',,',$atts['tab_data']);
-
-            foreach ( $first_level as $k => $tab_string ) {
-
-                if( empty( $tab_string ) ) continue;
-                $tab_split = explode(':',$tab_string);
-                $titlecontent = explode('|',$tab_split[1]);
-                $tab_data[$tab_split[0]]['title'] = $titlecontent[0];
-                $tab_data[$tab_split[0]]['content'] = $titlecontent[1];
-
-                //$tab_data[$tab_split[0]] = explode('|',$tab_split[1]);
-
-            }
-
+            $atts['tab_data'] = json_decode(stripslashes($atts['tab_data']),true);
         }
-        $atts['tab_data'] = $tab_data;
+
 
         $atts = shortcode_atts( array(
             'type' => 'tabs', //tabs ,pills
@@ -76,25 +61,10 @@ class Smps_Simple_Light_Shortcodes {
     }
 
     public static function render_accordion( $atts, $content, $tag ) {
-        $tab_data = array();
+
         if( isset( $atts['acc_data'] ) ) {
-
-
-            $first_level = explode(',,',$atts['acc_data']);
-
-            foreach ( $first_level as $k => $tab_string ) {
-                if( empty( $tab_string ) ) continue;
-                $tab_split = explode(':',$tab_string);
-                $titlecontent = explode('|',$tab_split[1]);
-                $tab_data[$tab_split[0]]['title'] = $titlecontent[0];
-                $tab_data[$tab_split[0]]['content'] = $titlecontent[1];
-
-                //$tab_data[$tab_split[0]] = explode('|',$tab_split[1]);
-
-            }
-
+            $atts['acc_data'] = json_decode(stripslashes($atts['acc_data']),true);
         }
-        $atts['acc_data'] = $tab_data;
 
         $atts = shortcode_atts( array(
             'opened_tab' => 1,
@@ -145,18 +115,7 @@ class Smps_Simple_Light_Shortcodes {
      * @param $tag
      */
     public static function render_table( $atts, $content, $tag ) {
-        $first_level = explode( ';', $atts['table_data'] );
-        $table_data = array();
-
-        foreach ( $first_level as $key => $data ) {
-            //pri($data);
-            $second_level = explode( ':', trim($data,',') );
-            if( count( $second_level ) == 1 ) continue;
-            $td_data = explode(',',$second_level[1]);
-            $table_data[$second_level[0]] = $td_data;
-        }
-        $atts['table_data'] = $table_data;
-
+        $atts['table_data'] = json_decode(stripslashes($atts['table_data']),true);
         $atts = shortcode_atts( array(
             'table_data' => array(
                 'thead' => array( 'Name', 'Email' ),
@@ -330,5 +289,10 @@ class Smps_Simple_Light_Shortcodes {
             </a>
         </div>
         <?php
+    }
+
+    public static function __callStatic ($method, $args) {
+        do_action( 'smps_reder_shortcode', $method, $args);
+        return false;
     }
 }
