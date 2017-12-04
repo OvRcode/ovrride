@@ -21,7 +21,7 @@ public function refresh( $post_id ) {
       $this->buildHTML($widgets[$this->number]);
       return;
     break;
-    default
+    default:
       return;
   }
 }
