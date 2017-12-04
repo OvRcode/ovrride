@@ -11,7 +11,20 @@ class ovr_events_widget extends WP_Widget {
     // Widget description
     array( 'description' => __( 'Widget to display upcoming events', 'ovr_events_domain' ), )
     );
+    add_action( "save_post", array( $this, "refresh") );
   }
+public function refresh( $post_id ) {
+  switch( get_post_type($post_id) ){
+    case "shop_order":
+    case "product":
+      $widgets = maybe_unserialize(get_option($this->widget_options['classname']));
+      $this->buildHTML($widgets[$this->number]);
+      return;
+    break;
+    default
+      return;
+  }
+}
 public function form($instance) {
   // Widget Admin Form
   $eventsID = $this->get_field_id( 'events' );
