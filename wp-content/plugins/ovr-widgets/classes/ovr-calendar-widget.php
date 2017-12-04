@@ -14,8 +14,9 @@ class ovr_calendar_widget extends WP_Widget {
     add_action( 'wp_ajax_nopriv_ovr_calendar', array( $this, "generate_calendar_ajax") );
     add_action( 'wp_ajax_ovr_calendar', array( $this, "generate_calendar_ajax") );
     add_action( 'init', array( $this, 'register_archive') );
-    add_action( 'ovr_calendar_refresh', array( $this, "refresh") );
+    add_action( 'save_post', array( $this, "product_refresh") );
   }
+
   public function form( $instance ) {
     $checkboxID = $this->get_field_id('mini');
     $checkboxName = $this->get_field_name('mini');
@@ -25,8 +26,9 @@ class ovr_calendar_widget extends WP_Widget {
     <label>Mini calendar:<input type="checkbox" name="{$checkboxName}" id="{$checkboxID}" {$checkbox} value="checked"></label>
     </p>
 CALENDARFORM;
-    if ( ! wp_next_scheduled( 'ovr_calendar_refresh' ) ) {
-      wp_schedule_event(time(), 'hourly', 'ovr_calendar_refresh');
+    $refresh_event = wp_next_scheduled( 'ovr_calendar_refresh' );
+    if ( $refresh_event ) {
+      wp_unschedule_event( $refresh_event, 'ovr_calendar_refresh');
     }
   }
   public function update( $new_instance, $old_instance) {
@@ -47,11 +49,16 @@ CALENDARFORM;
 
     wp_send_json( array("html" => $this->generate_calendar($date, false), "month_year" => $date->format('F Y') ) );
   }
-  public function refresh() {
-    // refresh stored data for current month, will be run hourly by wp cron
-    $date = new DateTime('now');
-    $this->generate_calendar( new DateTime('now'), true );
+  public function product_refresh( $post_id ) {
+    if ( get_post_type($post_id) !== 'product' ) {
+      return;
+    } else {
+      $date = new DateTime('now');
+      $this->generate_calendar( new DateTime('now'), true );
+      return;
+    }
   }
+
   function wpdb_array_shift($data) {
     global $wpdb;
 
