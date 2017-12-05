@@ -15,6 +15,7 @@ class ovr_calendar_widget extends WP_Widget {
     add_action( 'wp_ajax_ovr_calendar', array( $this, "generate_calendar_ajax") );
     add_action( 'init', array( $this, 'register_archive') );
     add_action( 'save_post', array( $this, "product_refresh") );
+    add_action( 'ovr_calendar_refresh', array( $this, "refresh") );
   }
 
   public function form( $instance ) {
@@ -48,6 +49,10 @@ CALENDARFORM;
     $date = new DateTime($_POST['calendarDate'], new DateTimeZone('EST'));
 
     wp_send_json( array("html" => $this->generate_calendar($date, false), "month_year" => $date->format('F Y') ) );
+  }
+  public function refresh() {
+    $date = new DateTime('now');
+    $this->generate_calendar( new DateTime('now'), true );
   }
   public function product_refresh( $post_id ) {
     if ( get_post_type($post_id) !== 'product' ) {
@@ -313,7 +318,7 @@ DAYTEMPLATE;
     wp_enqueue_script( 'jquery.webui-popover-js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.webui-popover.min.js', array('jquery'), false, true);
     wp_enqueue_script( 'jquery_spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/jquery.spin.js', array('jquery','spin_js'), false, true);
     wp_enqueue_script( 'spin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/spin.min.js');
-    wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.min.js', array('jquery.webui-popover-js', 'jquery_spin_js'), "1.2.0", true);
+    wp_enqueue_script( 'ovr_calendar_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-calendar-widget.min.js', array('jquery.webui-popover-js', 'jquery_spin_js', 'jquery'), "1.2.0", true);
     if ( $instance["mini"] == "checked" ) {
       wp_enqueue_style('ovr_calendar_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-calendar-widget-mini.min.css', FALSE, "1.5");
     } else {

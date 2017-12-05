@@ -5,7 +5,7 @@
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
 <<<<<<< HEAD
-* Version: 1.6.0
+* Version: 1.6.1
 =======
 * Version: 1.5.4
 >>>>>>> development
