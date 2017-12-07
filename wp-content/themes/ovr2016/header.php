@@ -46,7 +46,10 @@ if ( "" == $ogDescription ) {
 
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
-
+	<!-- Event snippet for Booked conversion page -->
+<script>
+  gtag('event', 'conversion', {'send_to': 'AW-828851634/W6_DCIf6oHoQsoudiwM'});
+</script>
 	<?php wp_head(); ?>
 </head>
 
