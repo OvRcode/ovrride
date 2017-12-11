@@ -25,3 +25,8 @@ ovrride.sql
 ovrride_*.sql.gz
 node_modules/
 BBB/
+wp-content/cache
+wp-content/advanced-cache.php
+wp-content/object-cache.php
+wp-content/w3tc-config
+
