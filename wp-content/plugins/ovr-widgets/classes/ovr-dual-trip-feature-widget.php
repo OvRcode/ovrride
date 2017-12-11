@@ -81,7 +81,7 @@ ADMINFORM;
   public function update( $new_instance, $old_instance ) {
     global $wpdb;
 
-    $instance = '';
+    $instance = array();
     $instance['widgetTitle'] = ( ! empty( $new_instance['widgetTitle'] ) ) ? strip_tags( $new_instance['widgetTitle'] ) : '';
     $instance['widgetExcerpt'] = ( ! empty( $new_instance['widgetExcerpt'] ) ) ? strip_tags( $new_instance['widgetExcerpt'] ) : '';
     $instance['widgetImage'] = ( ! empty( $new_instance['widgetImage'] ) ) ? strip_tags( $new_instance['widgetImage'] ) : '';

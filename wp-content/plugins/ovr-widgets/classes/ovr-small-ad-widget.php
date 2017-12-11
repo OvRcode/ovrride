@@ -37,7 +37,7 @@ class ovr_small_ad_widget extends WP_Widget {
 WIDGETADMIN;
   }
   public function update( $new_instance, $old_instance ) {
-    $instance = '';
+    $instance = array();
     $instance['ad'] = ( ! empty( $new_instance['ad'] ) ) ? strip_tags( $new_instance['ad'] ) : '';
     $instance['link'] = esc_url(( ! empty( $new_instance['link'] ) ) ? strip_tags( $new_instance['link'] ) : '');
 

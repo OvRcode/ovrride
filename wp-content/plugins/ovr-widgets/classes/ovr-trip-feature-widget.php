@@ -53,7 +53,7 @@ ADMINFORM;
   public function update( $new_instance, $old_instance ) {
     global $wpdb;
 
-    $instance = '';
+    $instance = array();
     $instance['trip'] = ( ! empty( $new_instance['trip'] ) ) ? strip_tags( $new_instance['trip'] ) : '';
     $instance['primaryImage'] = ( ! empty( $new_instance['primaryImage'] ) ) ? $new_instance['primaryImage'] : '';
     $instance['secondaryImage'] = ( ! empty( $new_instance['secondaryImage'] ) ) ? $new_instance['secondaryImage'] : '';

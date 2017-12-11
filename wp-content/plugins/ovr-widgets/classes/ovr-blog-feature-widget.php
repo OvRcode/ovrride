@@ -51,7 +51,7 @@ class ovr_blog_feature_widget extends WP_Widget {
 ADMINFORM;
   }
   public function update( $new_instance, $old_instance ) {
-    $instance = '';
+    $instance = array();
     $instance['post'] = ( ! empty( $new_instance['post'] ) ) ? strip_tags( $new_instance['post'] ) : '';
     $instance['primaryImage'] = ( ! empty( $new_instance['primaryImage'] ) ) ? $new_instance['primaryImage'] : '';
     $instance['secondaryImage'] = ( ! empty( $new_instance['secondaryImage'] ) ) ? $new_instance['secondaryImage'] : '';
