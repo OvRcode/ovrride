@@ -815,31 +815,17 @@ li.widget_text {
 	max-height:560px;
 	overflow:hidden;
 }
-
+.feature-right .widget_custom_html {
+	text-align:center;
+	background: black;
+}
 @media only screen and (max-width: 991px ) {
 	.feature-right {
 		max-height: none;
-	}
-	.kind-wide {
-		display: block;
-		text-align: center;
-		margin: 2% auto 0 auto;
-	}
-	.kind-small {
-		display: none;
 	}
 }
 @media only screen and (min-width: 992px ) {
 	.feature-right {
 		overflow:hidden;
-	}
-	.feature-right .widget_text {
-		margin-bottom: 0;
-	}
-	.kind-wide {
-		display: none;
-	}
-	.kind-small {
-		display: block;
 	}
 }
