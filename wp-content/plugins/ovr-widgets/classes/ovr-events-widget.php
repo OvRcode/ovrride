@@ -42,7 +42,7 @@ public function form($instance) {
     $events = 10;
   }
   if ( isset($instance['menu_order']) ) {
-    $menuOrder = checked;
+    $menuOrder = "checked";
   } else {
     $menuOrder = "";
   }
