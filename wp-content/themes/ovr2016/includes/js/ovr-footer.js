@@ -5,16 +5,8 @@
       $(value).hide();
     }
   });
-  function featureMainSize() {
-    if ( $(window).width() > 991 ) {
-      featureMain = $(".feature-main").height();
-      $(".feature-right").height(featureMain);
-    }
-  }
-  featureMainSize();
-  
+
   $(window).on("resize", function(){
-    featureMainSize();
     $(".footer-square").height($(".footer-square").width());
     //$(".footer-square").width($(".footer-square").width());
     if ( $(".footer-square").width() > 200) {
