@@ -367,7 +367,7 @@ function ovr_add_postmeta_ordering_args( $sort_args ) {
 			// Sort by meta_value because we're using alphabetic sorting
 			$sort_args['order']    = 'asc';
       //$sort_args['meta_type'] = 'DATETIME';
-			$sort_args['meta_key'] = '_wc_trip_sort_date';
+			$sort_args['meta_key'] = 'sort_date';
 			// use the meta key you've set for your custom field, i.e., something like "location" or "_wholesale_price"
 			break;
 	}
@@ -547,3 +547,17 @@ function parallelize_hostnames($url, $id) {
   return $url;
 }
 add_filter('wp_get_attachment_url', 'parallelize_hostnames', 10, 2);
+
+/* Add sort date to non-trip products */
+add_action( 'save_post',  "ovr_product_sort_date");
+function ovr_product_sort_date( $post_id ) {
+  $post_type = get_post_type($post_id);
+  if ( $post_type == "product" ) {
+    error_log($post_id);
+    $product = new WC_Product($post_id);
+    // Add only one sort date, with high value to push to end of trip sort
+    add_post_meta($post_id, "sort_date", "30000000" , TRUE);
+  } else {
+    return;
+  }
+}
