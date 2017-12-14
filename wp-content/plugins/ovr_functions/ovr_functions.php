@@ -216,86 +216,6 @@ add_filter( 'widget_text', 'shortcode_unautop');
 // Enable shortcode in the text widgets
 add_filter('widget_text', 'do_shortcode');
 
-// Temporarily disabling auto GF data clearing
-// Remove Gravity Form Data on submit ( Excludes contact form info )
-//add_action( 'gform_after_submission', 'ovr_remove_gf_data' );
-/**
- * Prevents Gravity Form entries from being stored in the database.
- * From: https://thomasgriffin.io/prevent-gravity-forms-storing-entries-wordpress/
- * @global object $wpdb The WP database object.
- * @param array $entry  Array of entry data.
- */
-function ovr_remove_gf_data( $entry ) {
-
-    // Skip entries from contact form in case of email issues, also skip constant contact
-    if ( $entry["form_id"] != "10" || $entry["form_id"] != "4" ||
-        strpos($entry["source_url"], "ovrride.com/contact-us") === false) {
-            ovr_delete_gf_entry($entry["id"]);
-    }
-}
-/**
- * Delete Gravity Forms entry specified
- * @global object $wpdb
- *@param string $lead_id, id of gravity form entry to remove
- */
-function ovr_delete_gf_entry( $lead_id ){
-
-    global $wpdb;
-    // Prepare variables.
-    $lead_table             = RGFormsModel::get_lead_table_name();
-    $lead_notes_table       = RGFormsModel::get_lead_notes_table_name();
-    $lead_detail_table      = RGFormsModel::get_lead_details_table_name();
-    $lead_detail_long_table = RGFormsModel::get_lead_details_long_table_name();
-
-    // Delete from lead detail long.
-    $sql = $wpdb->prepare( "DELETE FROM $lead_detail_long_table WHERE lead_detail_id IN(SELECT id FROM $lead_detail_table WHERE lead_id = %d)", $lead_id );
-    $wpdb->query( $sql );
-
-    // Delete from lead details.
-    $sql = $wpdb->prepare( "DELETE FROM $lead_detail_table WHERE lead_id = %d", $lead_id );
-    $wpdb->query( $sql );
-
-    // Delete from lead notes.
-    $sql = $wpdb->prepare( "DELETE FROM $lead_notes_table WHERE lead_id = %d", $lead_id );
-    $wpdb->query( $sql );
-
-    // Delete from lead.
-    $sql = $wpdb->prepare( "DELETE FROM $lead_table WHERE id = %d", $lead_id );
-    $wpdb->query( $sql );
-
-    // Finally, ensure everything is deleted (like stuff from Addons).
-    GFAPI::delete_entry( $lead_id );
-}
-/**
- * Finds Gravity forms data over 1 week old and submits it to ovr_delete_gf_entry to be removed
- * To be scheduled by a wp_cron task
- * @global object $wpdb
- */
-function ovr_delete_old_gf_data(){
-    global $wpdb;
-
-    $lead_table = RGFormsModel::get_lead_table_name();
-    $now = new DateTime();
-    // subtract 1 week from current date
-    $date = $now->sub(new DateInterval('P1W'));
-    $sql = $wpdb->prepare( "SELECT id FROM $lead_table WHERE date_created <= %s", $date->format('Y-m-d 00:00:00'));
-    $results = $wpdb->get_results($sql);
-
-    foreach ( $results as $result ) {
-        ovr_delete_gf_entry($result->id);
-    }
-}
-
-//register_activation_hook(__FILE__, 'ovr_delete_old_gf_data_schedule');
-function ovr_delete_old_gf_data_schedule(){
-    $timestamp = wp_next_scheduled('daily_ovr_delete_old_gf_data');
-
-    if ( $timestamp == false ) {
-        wp_schedule_event( time(), 'daily', 'daily_ovr_delete_old_gf_data');
-    }
-}
-//add_action('daily_ovr_delete_old_gf_data', 'ovr_delete_old_gf_data');
-
 function ovr_get_coupon_url($code) {
     global $wpdb;
     $ID = $wpdb->get_var( $wpdb->prepare("SELECT `ID` from {$wpdb->prefix}posts WHERE post_title =%s", $code) );
@@ -311,5 +231,12 @@ function am_woocommerce_catalog_orderby( $args ) {
 	$args['meta_key'] = '_sku';
     return $args;
 }
+
+function clear_cart_on_logout() {
+    if( function_exists('WC') ){
+        WC()->cart->empty_cart();
+    }
+}
+add_action('wp_logout', 'clear_cart_on_logout');
 /* Place custom code above this line. */
 ?>
