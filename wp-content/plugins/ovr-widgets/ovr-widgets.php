@@ -4,11 +4,7 @@
 * Description:  Collection of widgets for the ovrride.com site
 * Author: Mike Barnard
 * Author URI: http://github.com/barnardm
-<<<<<<< HEAD
-* Version: 1.7.0
-=======
-* Version: 1.5.4
->>>>>>> development
+* Version: 1.7.1
 * License: MIT License
 */
 require('classes/ovr-blog-feature-widget.php');

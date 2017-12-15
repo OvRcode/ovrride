@@ -273,6 +273,7 @@ CALENDARFORM;
             if ( strpos( $day_class, $event["season"]) === FALSE ) {
                 $day_class .= $event["season"] . " ";
             }
+            $event["name"] = str_replace("\\","", htmlspecialchars($event["name"], ENT_QUOTES) );
             if ( $calendar_key < $currentDay->format('Y-m-d') ) {
                 if ( strpos( $day_class, "past") === FALSE ) {
                   $day_class .= "past ";
@@ -281,6 +282,7 @@ CALENDARFORM;
             } else {
               $day_content .="<a href='{$event["url"]}'>{$event["name"]}</a><br />";
             }
+            error_log($day_content);
           }
         }
         if ( $calendar_key == $currentDay->format('Y-m-d') ) {
