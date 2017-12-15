@@ -15,39 +15,39 @@ class WC_Customer_Note_Email extends WC_Email {
   * @since 0.1
   */
   public function __construct() {
-    
+
     // set ID
     $this->id = 'wc_customer_note_order';
-    
+
     // this is the title in WooCommerce Email Settings
     $this->title = 'Customer Note Order';
-    
+
     // this is the description in WooCommerce email settings
     $this->description = 'Customer Note Emails are sent to admin email when a customer adds a note to an order';
-    
+
     // these are the default heading and subject lines, can be overridden using settings
     $this->heading = 'Customer Order Note';
     $this->subject = 'Customer Note on Order:';
-    
+
     // template for email, using existing emails as stand-in
     $this->template_html = 'emails/admin-customer-note.php';
     $this->template_plain = 'email/plain/admin-new-order.php';
-    
+
     // Trigger on completed orders
     #add_action( 'woocommerce_order_status_pending_to_completed_notification', array( $this, 'trigger' ) );
     add_action( 'woocommerce_order_status_pending_to_completed', array( $this, 'trigger' ) );
-    
+
     // Call parent constructor, just in case any defaults were missed
     parent::__construct();
-    
+
     // this sets the recipient to the settings defined below in init_form_fields()
     $this->recipient = $this->get_option( 'recipient' );
-    
+
     // if none was entered, just use the WP admin email as a fallback
     if ( ! $this->recipient )
       $this->recipient = get_option( 'admin_email' );
   }
-  
+
   /**
    * Determine if the email should be sent and setup email merge variables
    *
@@ -55,23 +55,24 @@ class WC_Customer_Note_Email extends WC_Email {
    * @param int $order_id
    */
   public function trigger( $order_id ) {
-    
+
     // bail if no order ID is present
     if ( ! $order_id )
       return;
-    
+
     // setup order object
-    $this->object = new WC_Order( $order_id );
+    //$this->object = new WC_Order( $order_id );
+    $this->object = new WC_Order_Factory( $order_id);
     // bail if order has no customer note or if the email is not enabled
     if ( ! $this->is_enabled() || empty($this->object->customer_note) )
       return;
-    
+
     // Add order # to subject
     $this->subject .= $this->object->get_order_number();
     // Send note email
     $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
   }
-  
+
   /**
    * get_content_html function.
    *
@@ -86,7 +87,7 @@ class WC_Customer_Note_Email extends WC_Email {
     ) );
     return ob_get_clean();
   }
-  
+
   /**
    * get_content_plain function.
    *
@@ -97,18 +98,18 @@ class WC_Customer_Note_Email extends WC_Email {
     ob_start();
     woocommerce_get_template( $this->template_plain, array(
       'order'          => $this->object,
-      'email_heading'  => $this->get_heading()      
+      'email_heading'  => $this->get_heading()
     ) );
     return ob_get_clean();
   }
-  
+
   /**
    * Initialize Settings Form Fields
    *
    * @since 0.1
    */
   public function init_form_fields() {
- 
+
       $this->form_fields = array(
           'enabled'    => array(
               'title'   => 'Enable/Disable',
