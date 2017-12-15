@@ -50,6 +50,15 @@ if ( "" == $ogDescription ) {
 <script>
   gtag('event', 'conversion', {'send_to': 'AW-828851634/W6_DCIf6oHoQsoudiwM'});
 </script>
+<!-- Global site tag (gtag.js) - Google AdWords: 828851634 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-828851634"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-828851634');
+</script>
 	<?php wp_head(); ?>
 </head>
 
