@@ -40,7 +40,7 @@ $version = file_get_contents('lists.version');
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="OvR Lists">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- favicon and apple-touch-icon --> 
+    <!-- favicon and apple-touch-icon -->
     <link rel="icon" type="image/png" href="https://ovrride.com/favicon.ico">
     <link rel="apple-touch-icon" href="images/ios/iconset/Icon-60@2x.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/ios/iconset/Icon-60@3x.png" />
@@ -53,7 +53,7 @@ $version = file_get_contents('lists.version');
       media="(device-width: 320px) and (device-height: 480px)
         and (-webkit-device-pixel-ratio: 1)"
       rel="apple-touch-startup-image" />
-    
+
 
     <link href="css/application.min.css" rel="stylesheet">
 
@@ -164,6 +164,7 @@ $version = file_get_contents('lists.version');
                                 <label class="input-lg"><input type="checkbox" value="wc-balance-due" id="balance">Balance Due</label><br />
                                 <label class="input-lg"><input type="checkbox" value="wc-cancelled"  id="cancelled">Cancelled</label><br />
                                 <label class="input-lg"><input type="checkbox" value="wc-completed"  id="completed" checked>Completed</label><br />
+                                <label lcass="input-lg"><input type="checkbox" value="wc-modified" id="modified" checked>Completed, Modified</label><br />
                                 <label class="input-lg"><input type=checkbox value="wc-failed"  id="failed">Failed</label><br />
                                 <label class="input-lg"><input type="checkbox" value="wc-finalized" id="finalized">Finalized</label><br />
                                 <label class="input-lg"><input type="checkbox" value="wc-no-show" id="no-show">No Show</label><br />
@@ -174,7 +175,7 @@ $version = file_get_contents('lists.version');
                                 <label class="input-lg"><input type="checkbox" value="wc-pending" id="pending"> Pending</label><br />
                                 <label class="input-lg"><input type="checkbox" value="wc-refunded" id="refunded">Refunded</label><br />
                                 <label class="input-lg"><input type="checkbox" value="walk-on" id="walk-on" checked>Walk On</label><br />
-                            </div> 
+                            </div>
                           </div>
                         </div>
                         <div class="row">

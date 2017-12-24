@@ -22,17 +22,18 @@ $(function(){
     }
     // All Checkboxes on settings page w/selectors
     window.checkBoxes = {
-        "balance":    $("#balance"),
-        "cancelled":  $("#cancelled"),
-        "completed":  $("#completed"),
-        "failed":     $("#failed"),
-        "finalized":  $("#finalized"),
-        "no-show":    $("#no-show"),
-        "on-hold":    $("#on-hold"),
-        "processing": $("#processing"),
-        "pending":    $("#pending"),
-        "refunded":   $("#refunded"),
-        "walk-on":    $("#walk-on")
+        "balance":            $("#balance"),
+        "cancelled":          $("#cancelled"),
+        "completed":          $("#completed"),
+        "completed-modified": $("#modified"),
+        "failed":             $("#failed"),
+        "finalized":          $("#finalized"),
+        "no-show":            $("#no-show"),
+        "on-hold":            $("#on-hold"),
+        "processing":         $("#processing"),
+        "pending":            $("#pending"),
+        "refunded":           $("#refunded"),
+        "walk-on":            $("#walk-on")
     };
     $('#default').click(function(){ resetStatuses("Default"); });
     $('#clear').click(function(){ resetStatuses("All"); });
