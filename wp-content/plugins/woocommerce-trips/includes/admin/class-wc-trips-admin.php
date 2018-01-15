@@ -123,6 +123,7 @@ class WC_Trips_Admin {
             if ( "_wc_trip_stock" == $meta_key ) {
               $product->set_stock_quantity( $value );
               error_log($value);
+              $product->save();
             } else if ( "_wc_trip_stock_status" == $meta_key ) {
               $product->set_stock_status( $value );
             } else if ( "_wc_trip_start_date" == $meta_key ) {

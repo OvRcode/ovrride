@@ -66,7 +66,7 @@ class WC_Trips_Cart {
           }
           return $error;
         }
-        if ( "trip" === $_product->product_type && "beach_bus" === $_product->wc_trip_type ) {
+        if ( "trip" === $_product->product_type && "beach_bus" === $_product->get_meta("_wc_trip_type", true, 'view') ) {
           $stock_total[$_product->id]['count'] += 1;
             if ( WC()->session->__isset($cart_item_key."_to_beach_route") ) {
               $toRoute = WC()->session->get($cart_item_key."_to_beach_route");
@@ -81,7 +81,7 @@ class WC_Trips_Cart {
 
         }
       }
-      if ("trip" === $_product->product_type && "beach_bus" === $_product->wc_trip_type) {
+      if ("trip" === $_product->product_type && "beach_bus" === $_product->get_meta("_wc_trip_type", true, 'view')) {
         foreach( $stock_total as $product_id => $data) {
           $product = wc_get_product( $product_id );
 
@@ -274,7 +274,6 @@ class WC_Trips_Cart {
         if ( "trip" == $value['data']->product_type) {
           if( WC()->session->__isset( $key.'_cost' ) ) {
             $additional_costs = WC()->session->get( $key.'_cost' );
-            error_log($additional_costs);
             $value['data']->set_price($additional_costs);
           }
         }
