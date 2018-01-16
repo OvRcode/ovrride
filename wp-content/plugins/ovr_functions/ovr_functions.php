@@ -48,11 +48,11 @@ add_filter( 'woocommerce_payment_complete_order_status', 'ovr_update_order_statu
 function ovr_update_order_status( $order_status, $order_id ) {
 
  $order = new WC_Order( $order_id );
-
- if ( 'processing' == $order_status && ( 'on-hold' == $order->status || 'pending' == $order->status || 'failed' == $order->status ) ) {
+ $original_status = $order->get_status('view');
+ if ( 'processing' == $order_status && ( 'on-hold' == $original_status || 'pending' == $original_status || 'failed' == $original_status ) ) {
 
  return 'completed';
-
+  //$order->set_status( 'completed', '', false);
  }
 
  return $order_status;
