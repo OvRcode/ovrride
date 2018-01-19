@@ -549,32 +549,32 @@ class Lists {
         }
         if ( $data == "" ){
             $statusClass = " bg-none";
-            $statusIcon = "fa-square-o";
+            $statusIcon = "far fa-square";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "AM" ) {
             $statusClass = " bg-am";
-            $statusIcon = "fa-sun-o";
+            $statusIcon = "far fa-sun";
             $pickupVisible = " visible-md visible-lg";
             $packageVisible = "";
         } else if ( $data == "Waiver" ) {
             $statusClass = " bg-waiver";
-            $statusIcon = "fa-file-word-o";
+            $statusIcon = "far fa-file-alt";
             $pickupVisible = " visible-md visible-lg";
             $packageVisible = "";
         } else if ( $data == "Product" ) {
             $statusClass = " bg-productrec";
-            $statusIcon = "fa-ticket";
+            $statusIcon = "fas fa-ticket-alt";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "PM" ) {
             $statusClass = " bg-pm";
-            $statusIcon = "fa-moon-o";
+            $statusIcon = "far fa-moon";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "NoShow" ) {
             $statusClass = " bg-noshow";
-            $statusIcon = "fa-times-circle-o";
+            $statusIcon = "far fa-times-circle";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         }
@@ -647,16 +647,22 @@ class Lists {
         if ( isset($orderData['Crew']) ){
           switch( $orderData['Crew']) {
             case 'burton':
-              $crew = "images/burton.png";
+              $crew = "<img src='images/burton.png' />";
               break;
             case 'patagonia':
-              $crew = "images/patagonia.png";
+              $crew = "<img src='images/patagonia.png' />";
               break;
             case 'ovr':
-              $crew = "images/ovr.png";
+              $crew = "<img src='images/ovr.png' />";
+              break;
+            case 'ovr1':
+              $crew = "<img src='images/ovr.png' /><i class='far fa-hand-point-up fa-2x' aria-hidden='true'></i>";
+              break;
+            case 'ovr2':
+              $crew = "<img src='images/ovr.png' /><i class='far fa-hand-peace fa-2x' aria-hidden='true'></i>";
               break;
             case 'arcteryx':
-              $crew = "images/arcteryx.png";
+              $crew = "<img src='images/arcteryx.png' />";
               break;
             default:
               if ( isset($crew) ) {

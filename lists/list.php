@@ -67,21 +67,21 @@ $version = file_get_contents('lists.version');
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <button class="btn btn-black" id="status"><i class="fa fa-signal"></i> Online</button>
+                    <button class="btn btn-black" id="status"><i class="fas fa-signal"></i> Online</button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-warning" id="btn-hide">
-                        <i class="fa fa-arrow-left"></i>&nbsp;Hide Menu
+                        <i class="fas fa-arrow-left"></i>&nbsp;Hide Menu
                     </button>
                 </li>
                 <li>
                     <button class="btn btn-primary" id="btn-settings">
-                      <i class="fa fa-sliders"></i>&nbsp;Settings
+                      <i class="fas fa-sliders-h"></i>&nbsp;Settings
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary btn-list disabled" id="menuList">
-                      <i class="fa fa-list"></i>&nbsp;List
+                      <i class="fas fa-list"></i>&nbsp;List
                     </button>
                 </li>
                 <li class="half">
@@ -92,53 +92,55 @@ $version = file_get_contents('lists.version');
                                         <input type='text' class='form-control' id='first' placeholder='Enter Fist Name'><br />
                                         <input type='text' class='form-control' id='last' placeholder='Enter Last Name'><br />
                                         <input type='text' class='form-control' id='phone' placeholder='Enter Phone Number'><br />
-                                        <div class='walkonPickups'></div><br /><br />
-                                        <div class='walkonPackages'></div>
                                         <select class='input-sm' id='walkonCrew'>
                                           <option value='none'>Normal customer</option>
                                           <option value='burton'>Burton Employee</option>
+                                          <option value='ovr1'>OvR Trip Leader</option>
+                                          <option value='ovr2'>OvR Second</option>
                                           <option value='ovr'>OvR Crew</option>
                                           <option value='patagonia'>Patagonia Employee</option>
                                           <option value='arcteryx'>Arc'Teryx Employee</option>
                                         </select>
+                                        <div class='walkonPickups'></div>
+                                        <div class='walkonPackages'></div>
                                         <br />
                                         <button type='button' class='btn btn-success disabled' id='saveWalkOn'>
-                                          <i class='fa fa-plus'></i>&nbsp<i class='fa fa-list'></i>&nbsp;Add to list
+                                          <i class='fas fa-plus'></i>&nbsp<i class='fas fa-list'></i>&nbsp;Add to list
                                        </button>
                                    </div>"
                         title="Walk-on Order"
                         data-placement="bottom">
-                        <i class="fa fa-plus"></i>&nbsp;<i class="fa fa-male"></i>&nbsp;Add Walk On
+                        <i class="fas fa-plus"></i>&nbsp;<i class="fas fa-male"></i>&nbsp;Add Walk On
                     </button>
                 </li>
                 <li class="half">
                     <button type="button" class="btn btn-success saveList" id="menuSave">
-                        <i class="fa fa-floppy-o"></i>&nbsp;Save List
+                        <i class="fas fa-save"></i>&nbsp;Save List
                     </button><br />
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
-                        <i class="fa fa-table"></i>&nbsp;Summary
+                        <i class="fas fa-table"></i>&nbsp;Summary
                     </button>
                 </li>
-                <li>
+                <!--<li>
                     <button type="button" class="btn btn-primary btn-reports" id="reportsMenu">
-                        <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
+                        <i class="fas fa-edit"></i>&nbsp;Reports
                     </button>
-                </li>
+                </li>-->
                 <li>
                     <button type="button" class="btn btn-primary" id="btn-message">
-                        <i class="fa fa-exclamation-triangle"></i>&nbsp;Message
+                        <i class="fas fa-exclamation-triangle"></i>&nbsp;Message
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary" id="btn-admin">
-                        <i class="fa fa-tachometer"></i>&nbsp;Admin
+                        <i class="fas fa-tachometer-alt"></i>&nbsp;Admin
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-danger" id="btn-logout">
-                        <i class="fa fa-power-off"></i>&nbsp;Log Out
+                        <i class="fas fa-power-off"></i>&nbsp;Log Out
                     </button>
                 </li>
                 <li>
@@ -153,7 +155,7 @@ $version = file_get_contents('lists.version');
           <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
             <div class="container-fluid">
                 <button class="btn btn-link navbar-brand" id="brand">OvR Trip Lists</button>
-              <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
+              <button class="btn btn-default" id="menu-toggle"><i class="fas fa-cogs"></i>&nbsp;Menu</button>
             </div>
           </nav>
             <div class="container-fluid pad">
@@ -166,23 +168,23 @@ $version = file_get_contents('lists.version');
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <button class="btn btn-default" id="AMPM" value="AM">
-                            <i class="fa fa-sun-o fa-lg"></i>&nbsp;
-                            <i class="fa fa-toggle-off fa-lg"></i>&nbsp;
-                            <i class="fa fa-moon-o fa-lg"></i>
+                            <i class="far fa-sun fa-lg"></i>&nbsp;
+                            <i class="fas fa-toggle-off fa-lg"></i>&nbsp;
+                            <i class="far fa-moon fa-lg"></i>
                         </button>
                     </div>
                     <div class="col-xs-12 mobileButtons hidden">
                         <button class="btn btn-primary secondaryWalkOn">
-                            <i class="fa fa-plus"></i>&nbsp;<i class="fa fa-male"></i>&nbsp;Add Walk On
+                            <i class="fas fa-plus"></i>&nbsp;<i class="fas fa-male"></i>&nbsp;Add Walk On
                         </button>
                         <button type="button" class="btn btn-primary btn-reports">
-                            <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
+                            <i class="fas fa-edit"></i>&nbsp;Reports
                         </button>
                         <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
-                            <i class="fa fa-table"></i>&nbsp;Summary
+                            <i class="fas fa-table"></i>&nbsp;Summary
                         </button>
                         <button type="button" class="btn btn-success saveList">
-                            <i class="fa fa-floppy-o"></i>&nbsp;Save List
+                            <i class="fas fa-save"></i>&nbsp;Save List
                         </button>
                     </div>
                     <div class="col-xs-4 col-md-3">

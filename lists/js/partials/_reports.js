@@ -100,7 +100,7 @@ function loadReports() {
 
   $.each(onlineKeys, function(key, value){
     var onlineReport = reports.get(value);
-    onlineOutput = onlineOutput.concat("<p class='report' data-bus='" + onlineReport.bus + "' data-time='" + value + "'>Bus " + onlineReport.bus + " <i class='fa fa-globe fa-lg'></i> " + value + "<br />" + onlineReport.report + "</p>");
+    onlineOutput = onlineOutput.concat("<p class='report' data-bus='" + onlineReport.bus + "' data-time='" + value + "'>Bus " + onlineReport.bus + " <i class='fas fa-globe fa-lg'></i> " + value + "<br />" + onlineReport.report + "</p>");
   });
 
   $("#reportsContent").append(onlineOutput);
@@ -109,7 +109,7 @@ function loadReports() {
   var offlineKeys = unsavedReports.keys();
   $.each(offlineKeys, function(key, value){
     var offlineReport = unsavedReports.get(value);
-    offlineOutput = offlineOutput.concat("<p class='report' data-bus='" + offlineReport.bus + "' data-time='" + value + "'>Bus " +offlineReport.bus + " <i class='fa fa-thumb-tack fa-lg'></i> " + value + "<br />" + offlineReport.report + "</p>");
+    offlineOutput = offlineOutput.concat("<p class='report' data-bus='" + offlineReport.bus + "' data-time='" + value + "'>Bus " +offlineReport.bus + " <i class='fas fa-thumb-tack fa-lg'></i> " + value + "<br />" + offlineReport.report + "</p>");
   });
   $("#reportsContent").append(offlineOutput);
 
