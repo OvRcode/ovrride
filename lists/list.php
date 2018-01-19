@@ -29,7 +29,6 @@ $version = file_get_contents('lists.version');
 ?>
 <!DOCTYPE html>
 <html lang="en"  manifest="manifest.appcache">
-
 <head>
 
     <meta charset="utf-8">
@@ -100,6 +99,7 @@ $version = file_get_contents('lists.version');
                                           <option value='burton'>Burton Employee</option>
                                           <option value='ovr'>OvR Crew</option>
                                           <option value='patagonia'>Patagonia Employee</option>
+                                          <option value='arcteryx'>Arc'Teryx Employee</option>
                                         </select>
                                         <br />
                                         <button type='button' class='btn btn-success disabled' id='saveWalkOn'>

@@ -135,7 +135,6 @@ $(function() {
         $.each(fields, function( key,value){
           // Check that field exists before checking value
           if ( 0 === value.length) {
-            console.log(value);
             return true;// Skip this iteration if field doesn't exist
           }
           if ( "" === value.val() || null === value.val()) {
@@ -302,12 +301,14 @@ $(function() {
         var crewLabel = '';
         if ( typeof(order.Crew) !== 'undefined' && "none" !== order.Crew) {
           crewHTML = "<span class='crew'>";
-          if ( "ovr" === order.Crew ) {
+          if ( "ovr" == order.Crew ) {
             crewHTML = crewHTML.concat("<img src='images/ovr.png' />");
-          } else if ( "patagonia" === order.Crew ) {
+          } else if ( "patagonia" == order.Crew ) {
             crewHTML = crewHTML.concat("<img src='images/patagonia.png' />");
-          } else if ( "burton" === order.Crew ) {
+          } else if ( "burton" == order.Crew ) {
             crewHTML = crewHTML.concat("<img src='images/burton.png' />");
+            } else if ( "arcteryx" == order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/arcteryx.png' />");
           }
           crewHTML = crewHTML.concat("</span>");
         }
@@ -501,7 +502,6 @@ $(function() {
                   walkonData[value].RBB = true;
                 }
             });
-            console.log(walkonData);
             $.post("api/save/walkon", {walkon: walkonData}, function(){
                 newWalkon.removeAll();
             });
@@ -528,7 +528,7 @@ $(function() {
                       Last: $("#last").val(),
                       Phone: $("#phone").val(),
                       Package: $("#walkonPackage").val(),
-                      Crew: $("#walkonCrew").val(),};
+                      Crew: $("#walkonCrew").val()};
         if ( "Rockaway Beach" == settings.get('destination') ) {
           walkOn["To Beach"] = $("#walkonPickupTo").val();
           walkOn["To Beach Route"] = $("#walkonPickupTo :selected").data("route");

@@ -655,6 +655,9 @@ class Lists {
             case 'ovr':
               $crew = "images/ovr.png";
               break;
+            case 'arcteryx':
+              $crew = "images/arcteryx.png";
+              break;
             default:
               if ( isset($crew) ) {
                 unset($crew);
