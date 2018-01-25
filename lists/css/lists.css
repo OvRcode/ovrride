@@ -203,12 +203,13 @@
 }
 #walkon select {
   float: left;
-  max-width: 100%;
-}
-#walkonCrew {
   margin-bottom: 10px;
+  max-width: 100%;
 }
 .crew img {
   height: 40px;
   width: 40px;
+}
+#crewTable {
+  text-transform:capitalize;
 }

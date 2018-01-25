@@ -15,11 +15,6 @@ module.exports = function(grunt){
         options:{
           basePath: "lists/",
           network:["/api", "/login","*"],
-          fallback: [ 'fonts/fontawesome-webfont.woff fonts/fontawesome-webfont.woff',
-                    'fonts/fontawesome-webfont.eot fonts/fontawesome-webfont.eot',
-                    'fonts/fontawesome-webfont.svg fonts/fontawesome-webfont.svg',
-                    'fonts/fontawesome-webfont.ttf fonts/fontawesome-webfont.ttf',
-                    'fonts/FontAwesome.otf fonts/FontAwesome.otf'],
           timestamp: true,
           verbose: true,
           hash: true,
@@ -90,7 +85,7 @@ module.exports = function(grunt){
     },
     concat: {
       css: {
-        src: ['lists/css/bootstrap.css','lists/css/font-awesome.min.css','lists/css/simple-sidebar.css','lists/css/lists.css'],
+        src: ['lists/css/bootstrap.css','lists/css/fontawesome-all.css','lists/css/simple-sidebar.css','lists/css/lists.css'],
         dest: 'lists/css/application.css',
       },
       vendor: {

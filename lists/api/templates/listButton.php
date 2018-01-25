@@ -1,17 +1,17 @@
 <div class="row listButton<?php echo $statusClass; ?>" id="<?php echo $id; ?>">
   <div class="row primary">
     <div class="buttonCell col-xs-3 col-md-1">
-      <span class="icon"><i class="fa <?php echo $statusIcon; ?> fa-3x"></i></span>
+      <span class="icon"><i class="<?php echo $statusIcon; ?> fa-3x"></i></span>
     </div>
     <div class="buttonCell name col-xs-9 col-md-3">
       <?php if ( $underAge ): ?>
       <span class="underage">
-        <i class='fa fa-child fa-3x'></i>
+        <i class='fas fa-child fa-3x'></i>
       </span>
       <?php endif; ?>
       <?php if ( isset($crew) ): ?>
       <span class="crew">
-        <img src="<?php echo $crew;?>" />
+        <?php echo $crew;?>
       </span>
     <?php endif; ?>
       <span class="first"><?php echo $first; ?>&nbsp;</span>
@@ -33,7 +33,7 @@
       <?php echo $package; ?>
     </div>
     <div class="buttonCell col-xs-3 col-md-offset-0 col-md-1 expand">
-      <i class="fa fa-bars fa-3x"></i>
+      <i class="fas fa-bars fa-3x"></i>
     </div>
   </div>
   <div class="row">
@@ -84,7 +84,7 @@
       <?php endif; ?>
       <?php if ( isset($crew) ) : ?>
       <div class="buttonCell col-xs-12 col-md-6">
-          <img src="<?php echo $crew; ?>">
+          <?php echo $crew; ?>
       </div>
       <?php endif; ?>
     </div>

@@ -49,7 +49,7 @@ $(function() {
             if ( statusIcon.hasClass('btn-danger') ) {
                 statusIcon.removeClass('btn-danger')
                     .addClass('btn-black')
-                    .html('<i class="fa fa-signal"></i> Online');
+                    .html('<i class="fas fa-signal"></i> Online');
             }
         } else if (!window.navigator.onLine) {
             toggleMenuButtons("offline");
@@ -57,7 +57,7 @@ $(function() {
             if ( statusIcon.hasClass('btn-black') ) {
                 statusIcon.removeClass('btn-black')
                     .addClass('btn-danger')
-                    .html('<i class="fa fa-plane"></i> Offline');
+                    .html('<i class="fas fa-plane"></i> Offline');
             }
         }
     }, 250);

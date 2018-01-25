@@ -107,52 +107,126 @@ class Lists {
         }
         echo $options;
     }
-    function csv($type,$trip,$status){
-        $orders = $this->tripData("All",$trip,$status);
-        $output = "";
+    function csv($type,$trip,$status, $tripName ){
+      $fileName = date("m-d-Y") . " - " . $tripName . " - " . $type . ".csv";
+      //Gets CSV data from POST and returns file download
+      header("Content-type: text/csv");
+      header("Content-Disposition: attachment; filename=".$fileName);
+      header("Pragma: no-cache");
+      header("Expires: 0");
+      // Setup trip/order data
+      $this->getTripInfo($trip);
+      $orders = $this->tripData("All",$trip,$status);
 
-        if ( $type == "list" ){
-            if ( $this->pickup ) {
-                $header = "First, Last, Phone, Pickup, Package, Order, AM, Waiver, Product Rec, PM\n";
-            } else {
-                $header = "First, Last, Phone, Package, Order, AM, Waiver, Product Rec, PM\n";
+      $output = fopen("php://output", "w");
+
+      $headers = array("First", "Last", "Phone","Crew","Pickup","Package","Order","AM","Waiver","Product Recieved", "PM");
+
+      if ( $type === "list") {
+        if ( !$this->pickup ) {
+          unset($headers[4]);
+        }
+        fputcsv($output, $headers);
+
+        foreach( $orders as $ID => $data ) {
+          $order = array();
+          $order[0] = ( isset( $data['Data']['First'] ) ? $data['Data']['First'] : '' );
+          $order[1] = ( isset( $data['Data']['Last'] ) ? $data['Data']['Last'] : '' );
+          $order[2] = ( isset( $data['Data']['Phone'] ) ? $data['Data']['Phone'] : '' );
+          if ( isset($data['Data']['Crew']) ) {
+            switch( $data['Data']['Crew'] ) {
+              case 'ovr1':
+                $order[3] = "Trip Leader";
+                break;
+              case 'ovr2':
+                $order[3] = "Second";
+                break;
+              default:
+                $order[3] = $data['Data']['Crew'];
             }
-            $output .= $header;
+          } else {
+            $order[3] = "";
+          }
 
-            foreach ( $orders as $ID => $data ) {
-                $first      = ( isset( $data['Data']['First'] ) ? $data['Data']['First'] : '' );
-                $last       = ( isset( $data['Data']['Last'] ) ? $data['Data']['Last'] : '' );
-                $phone      = ( isset( $data['Data']['Phone'] ) ? $data['Data']['Phone'] : '' );
-                $pickup     = ( isset( $data['Data']['Pickup'] ) ? $data['Data']['Pickup'] : 'X' );
-                $package    = ( isset( $data['Data']['Package'] ) ? $data['Data']['Package'] : '' );
+          $orderNum = preg_split("/:/",$ID);
 
-                $order = preg_split("/:/",$ID);
-                $order = $order[0];
-                $row = "\"" . $first . "\",\"" . $last . "\",\"" . $phone . "\"";
-                $row .= ",\"" . $pickup . "\"";
-                $row .= ",\"" . $package . "\",\"" . $order . "\"";
+          if ( $this->pickup ) {
+            $order[4] = ( isset( $data['Data']['Pickup'] ) ? $data['Data']['Pickup'] : '' );
+            $order[5] = ( isset( $data['Data']['Package'] ) ? $data['Data']['Package'] : '' );
+            $order[6] = $orderNum[0];
+          } else {
+            $order[4] = ( isset( $data['Data']['Package'] ) ? $data['Data']['Package'] : '' );
+            $order[5] = $orderNum[0];
+          }
+          $index = count($order);
+          switch( $data['State'] ) {
+            case "AM":
+              $order[$index + 1] = "X";
+              $order[$index + 2] = "";
+              $order[$index + 3] = "";
+              $order[$index + 4] = "";
+              break;
+            case "Waiver":
+              $order[$index + 1] = "X";
+              $order[$index + 2] = "X";
+              $order[$index + 3] = "";
+              $order[$index + 4] = "";
+              break;
+            case "Product":
+              $order[$index + 1] = "X";
+              $order[$index + 2] = "X";
+              $order[$index + 3] = "X";
+              $order[$index + 4] = "";
+              break;
+            case "PM":
+              $order[$index + 1] = "X";
+              $order[$index + 2] = "X";
+              $order[$index + 3] = "X";
+              $order[$index + 4] = "X";
+              break;
+            case "NoShow":
+              $order[$index + 1] = "NS";
+              $order[$index + 2] = "NS";
+              $order[$index + 3] = "NS";
+              $order[$index + 4] = "NS";
+              break;
+            default:
+            $order[$index + 1] = "";
+            $order[$index + 2] = "";
+            $order[$index + 3] = "";
+            $order[$index + 4] = "";
+            break;
+          }
+        fputcsv($output, $order);
+        }
+        fclose($output);
+      } else if ( "email" == $type ) {
+        array_unshift($headers, "Email");
+        unset($headers[3],$headers[4],$headers[7], $headers[8], $headers[9], $headers[10], $headers[11]);
+        if ( !$this->pickup ) {
+          unset($headers[5]);
+        }
+        fputcsv($output, $headers);
 
-                if ( $data['State'] == "AM" ) {
-                    $state = ",\"X\",\"\",\"\",\"\"\n";
-                } else if ( $data['State'] == "Waiver" ) {
-                    $state = ",\"X\",\"X\",\"\",\"\"\n";
-                } else if ( $data['State'] == "Product" ) {
-                    $state = ",\"X\",\"X\",\"X\",\"\"\n";
-                } else if ( $data['State'] == "PM" ) {
-                    $state = ",\"X\",\"X\",\"X\",\"X\"\n";
-                } else {
-                    $state = ",\"\",\"\",\"\",\"\"\n";
-                }
-                $row .= $state;
-                $output .= $row;
-            }
-        } else if ( $type = "email" ) {
-            if ( $this->pickup ){
-                $header ="Email, First, Last, Package, Pickup\n";
-            } else {
-                $header ="Email, First, Last, Package\n";
-            }
-            $output .= $header;
+        foreach( $orders as $ID => $data ) {
+          $order = array();
+          $order[0] = ( isset($data['Data']['Email']) ? $data['Data']['Email'] : '');
+          if ( $order[0] === '' ) {
+            continue;
+          }
+          $order[1] = (isset($data['Data']['First']) ? $data['Data']['First'] : '');
+          $order[2] = (isset($data['Data']['Last']) ? $data['Data']['Last'] : '');
+          if ( $this->pickup ) {
+            $order[3] = (isset($data['Data']['Pickup']) ? $data['Data']['Pickup'] : '');
+            $order[4] = (isset($data['Data']['Package']) ? $data['Data']['Package'] : '');
+          } else {
+            $order[3] = (isset($data['Data']['Package']) ? $data['Data']['Package'] : '');
+          }
+          fputcsv($output, $order);
+        }
+        fclose($output);
+      }
+      /*
 
             foreach( $orders as $ID => $data ) {
                 $first = (isset($data['Data']['First']) ? $data['Data']['First'] : '');
@@ -174,7 +248,7 @@ class Lists {
 
         if ( $output !== "" ){
             return $output;
-        }
+        }*/
     }
     function getTripName($trip){
         $sql = "select post_title from wp_posts where ID = '" . $trip . "'";
@@ -549,32 +623,32 @@ class Lists {
         }
         if ( $data == "" ){
             $statusClass = " bg-none";
-            $statusIcon = "fa-square-o";
+            $statusIcon = "far fa-square";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "AM" ) {
             $statusClass = " bg-am";
-            $statusIcon = "fa-sun-o";
+            $statusIcon = "far fa-sun";
             $pickupVisible = " visible-md visible-lg";
             $packageVisible = "";
         } else if ( $data == "Waiver" ) {
             $statusClass = " bg-waiver";
-            $statusIcon = "fa-file-word-o";
+            $statusIcon = "far fa-file-alt";
             $pickupVisible = " visible-md visible-lg";
             $packageVisible = "";
         } else if ( $data == "Product" ) {
             $statusClass = " bg-productrec";
-            $statusIcon = "fa-ticket";
+            $statusIcon = "fas fa-ticket-alt";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "PM" ) {
             $statusClass = " bg-pm";
-            $statusIcon = "fa-moon-o";
+            $statusIcon = "far fa-moon";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         } else if ( $data == "NoShow" ) {
             $statusClass = " bg-noshow";
-            $statusIcon = "fa-times-circle-o";
+            $statusIcon = "far fa-times-circle";
             $pickupVisible = "";
             $packageVisible = " visible-md visible-lg";
         }
@@ -647,13 +721,22 @@ class Lists {
         if ( isset($orderData['Crew']) ){
           switch( $orderData['Crew']) {
             case 'burton':
-              $crew = "images/burton.png";
+              $crew = "<img src='images/burton.png' />";
               break;
             case 'patagonia':
-              $crew = "images/patagonia.png";
+              $crew = "<img src='images/patagonia.png' />";
               break;
             case 'ovr':
-              $crew = "images/ovr.png";
+              $crew = "<img src='images/ovr.png' />";
+              break;
+            case 'ovr1':
+              $crew = "<img src='images/ovr.png' /><i class='far fa-hand-point-up fa-2x' aria-hidden='true'></i>";
+              break;
+            case 'ovr2':
+              $crew = "<img src='images/ovr.png' /><i class='far fa-hand-peace fa-2x' aria-hidden='true'></i>";
+              break;
+            case 'arcteryx':
+              $crew = "<img src='images/arcteryx.png' />";
               break;
             default:
               if ( isset($crew) ) {
@@ -781,13 +864,7 @@ Flight::route('POST /report/add', function(){
 Flight::route('/csv/@type/@trip/@status', function($type,$trip,$status){
         $list = Flight::Lists();
         $tripName = $list->getTripName($trip);
-        $fileName = date("m-d-Y") . " - " . $tripName . " - " . $type . ".csv";
-        //Gets CSV data from POST and returns file download
-        header("Content-type: text/csv");
-        header("Content-Disposition: attachment; filename=".$fileName);
-        header("Pragma: no-cache");
-        header("Expires: 0");
-        echo $list->csv($type,$trip,$status);;
+        $list->csv($type,$trip,$status, $tripName);
     }
 );
 Flight::route('/message', function(){

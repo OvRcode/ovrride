@@ -17,6 +17,7 @@ $(function(){
     if ( tripData.keys() !== '' ) {
         outputPackages();
     }
+    outputCrew();
     getContactInfo();
 });
 function addPackage(packageName){
@@ -81,14 +82,53 @@ function outputPickups(){
     output = output.concat("</tbody></table>");
     $("div.pickupTotals").append(output);
 }
+function outputCrew() {
+  var output = "<h3>Crew Count</h3>\
+                <table id='crewTable' class='summary'>\
+                  <thead>\
+                    <tr> \
+                      <th style='text-transform:capitalize;'>Crew</th><th>Count</th>\
+                    </tr>\
+                  </thead>\
+                  <tbody>";
+  if ( typeof window.crew.leader !== "undefined" ) {
+    output = output.concat("<tr><td>Leader</td><td>" + window.crew.leader + "</td></tr>");
+    delete crew.leader;
+  }
+  if ( typeof window.crew.second !== "undefined" ) {
+    output = output.concat("<tr><td>Second</td><td>" + window.crew.second + "</td></tr>");
+    delete crew.second;
+  }
+  $.each( crew, function(crewName, count){
+    output = output.concat("<tr><td>" + crewName + "</td><td>" + count + "</td></tr>");
+  });
+  output = output.concat("</tbody></table>");
+  $("div.crewTotals").append(output);
+}
 function parseData(){
     window.packages = {};
-    window.pickups = {};
+    window.pickups  = {};
+    window.crew     = {};
     jQuery.each(orders.keys(), function(key, value){
         var currentOrder = orders.get(value);
+        if ( typeof currentOrder.Crew !== "undefined"){
+          if ( "ovr1" == currentOrder.Crew ) {
+            crew.leader = currentOrder.First + " " + currentOrder.Last;
+          } else if ( "ovr2" == currentOrder.Crew ) {
+            crew.second = currentOrder.First + " " + currentOrder.Last;
+          } else {
+            if ( typeof crew[currentOrder.Crew] === "undefined" ) {
+              crew[currentOrder.Crew] = 0;
+            }
+            crew[currentOrder.Crew] += 1;
+          }
+        }
         // Check for pickup and save data
-        if ( typeof currentOrder.Pickup != 'undefined' ) {
+        if ( typeof currentOrder.Pickup !== 'undefined' ) {
                var pickup = currentOrder.Pickup.trim();
+               if ( "" === pickup ) {
+                 pickup = "Leaders";
+               }
                if ( typeof pickups[pickup] == 'undefined' ) {
                    // Define pickup location object if not set
                    pickups[pickup] = {};
@@ -178,7 +218,7 @@ function parsePackages(custPackage){
     if ( ski.test(custPackage) && !lts.test(custPackage) ) {
         addPackage("Ski Rental");
     } else if ( brd.test(custPackage) && !ltr.test(custPackage) ) {
-        addPackage("Board Rental");        
+        addPackage("Board Rental");
     }
   // REI Lunch Vouchers
     if ( lunch.test(custPackage) ) {

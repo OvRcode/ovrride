@@ -68,46 +68,46 @@ $version = file_get_contents('lists.version');
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
-                    <button class="btn btn-black" id="status"><i class="fa fa-signal"></i> Online</button>
+                    <button class="btn btn-black" id="status"><i class="fas fa-signal"></i> Online</button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-warning" id="btn-hide">
-                        <i class="fa fa-arrow-left"></i>&nbsp;Hide Menu
+                        <i class="fas fa-arrow-left"></i>&nbsp;Hide Menu
                     </button>
                 </li>
                 <li>
                     <button class="btn btn-primary" id="btn-settings">
-                      <i class="fa fa-sliders"></i>&nbsp;Settings
+                      <i class="fas fa-sliders-h"></i>&nbsp;Settings
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary btn-list" id="menuList">
-                      <i class="fa fa-list"></i>&nbsp;List
+                      <i class="fas fa-list"></i>&nbsp;List
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary btn-summary" id="menuSummary">
-                        <i class="fa fa-table"></i>&nbsp;Summary
+                        <i class="fas fa-table"></i>&nbsp;Summary
                     </button>
                 </li>
-                <li>
+                <!--<li>
                     <button type="button" class="btn btn-primary btn-reports" id="reportsMenu">
-                        <i class="fa fa-pencil-square-o"></i>&nbsp;Reports
+                        <i class="fas fa-edit"></i>&nbsp;Reports
                     </button>
-                </li>
+                </li>-->
                 <li>
                     <button type="button" class="btn btn-primary disabled" id="btn-message">
-                        <i class="fa fa-exclamation-triangle"></i>&nbsp;Message
+                        <i class="fas fa-exclamation-triangle"></i>&nbsp;Message
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary" id="btn-admin">
-                        <i class="fa fa-tachometer"></i>&nbsp;Admin
+                        <i class="fas fa-tachometer-alt"></i>&nbsp;Admin
                     </button>
                 </li>
                 <li>
                     <button type="button" class="btn btn-danger" id="btn-logout">
-                        <i class="fa fa-power-off"></i>&nbsp;Log Out
+                        <i class="fas fa-power-off"></i>&nbsp;Log Out
                     </button>
                 </li>
                 <li>
@@ -122,7 +122,7 @@ $version = file_get_contents('lists.version');
           <nav class="navbar navbar-default navbar-static-top ovr" role="navigation">
             <div class="container-fluid">
                 <button class="btn btn-link navbar-brand" id="brand">OvR Trip Lists</button>
-              <button class="btn btn-default" id="menu-toggle"><i class="fa fa-cogs"></i>&nbsp;Menu</button>
+              <button class="btn btn-default" id="menu-toggle"><i class="fas fa-cogs"></i>&nbsp;Menu</button>
             </div>
           </nav>
             <div class="container-fluid pad">
@@ -159,7 +159,7 @@ $version = file_get_contents('lists.version');
                     <div class="col-xs-12">
                         <br />
                         <button type="button" class="btn btn-success" id="sendMessage">
-                            <i class="fa fa-mobile fa-lg"></i>&nbsp;Send Message
+                            <i class="fas fa-mobile fa-lg"></i>&nbsp;Send Message
                         </button>
                     </div>
                 </div>

@@ -28,7 +28,7 @@ $(function() {
 
         // WalkOn Order listeners
         $("#first, #last, #phone, #walkonPrimaryPackage, #walkonSecondaryPackage,"+
-        "#walkonTertiaryPackage, #walkonPickup, #walkonPickupTo, #walkonPickupFrom").on("change", function(){
+        "#walkonTertiaryPackage, #walkonPickup, #walkonPickupTo, #walkonPickupFrom, #walkonCrew").on("change", function(){
           addWalkonButton();
         });
 
@@ -53,9 +53,9 @@ $(function() {
             if ( $(this).val() == "AM") {
                 $('.listButton.bg-none').addClass('hidden');
                 $('.listButton.bg-noshow').addClass('hidden');
-                html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
-                            <i class="fa fa-toggle-on fa-lg"></i>&nbsp;\
-                      <i class="fa fa-moon-o fa-lg"></i>';
+                html = '<i class="far fa-sun fa-lg"></i>&nbsp;\
+                            <i class="fas fa-toggle-on fa-lg"></i>&nbsp;\
+                      <i class="far fa-moon fa-lg"></i>';
                 $(this).val("PM");
                 $(this).html(html);
                 $(this).addClass('btn-black').removeClass('btn-default');
@@ -63,9 +63,9 @@ $(function() {
                 $('.listButton.bg-none').removeClass('hidden');
                 $('.listButton.bg-noshow').removeClass('hidden');
                 $(this).val("AM");
-                html = '<i class="fa fa-sun-o fa-lg"></i>&nbsp;\
-                            <i class="fa fa-toggle-off fa-lg"></i>&nbsp;\
-                        <i class="fa fa-moon-o fa-lg"></i>';
+                html = '<i class="far fa-sun fa-lg"></i>&nbsp;\
+                            <i class="fas fa-toggle-off fa-lg"></i>&nbsp;\
+                        <i class="far fa-moon fa-lg"></i>';
                 $(this).html(html);
                 $(this).addClass('btn-default').removeClass('btn-black');
             }
@@ -131,11 +131,17 @@ $(function() {
                       $("#walkonTertiaryPackage"), $("#walkonPickupTo"),
                       $("#walkonPickupFrom")
                     ];
+        if ( ( "ovr1" == $("#walkonCrew").val() || "ovr2" == $("#walkonCrew").val() ) &&
+          $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").is(":visible") ) {
+          $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").hide();
+        } else if ( "ovr1" !== $("#walkonCrew").val() && "ovr2" !== $("#walkonCrew").val() &&
+        $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").is(":hidden") ) {
+          $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").show();
+        }
 
         $.each(fields, function( key,value){
           // Check that field exists before checking value
-          if ( 0 === value.length) {
-            console.log(value);
+          if ( 0 === value.length || value.is(":hidden") ) {
             return true;// Skip this iteration if field doesn't exist
           }
           if ( "" === value.val() || null === value.val()) {
@@ -165,24 +171,24 @@ $(function() {
       if ( "PM" == $("#AMPM").val() ) {
         if ( ! button.hasClass("bg-pm") ) {
           button.removeClass("bg-none bg-am bg-waiver bg-productrec").addClass('bg-pm');
-          icon.removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket").addClass("fa-moon-o");
+          icon.removeClass("fas fa-square fa-sun fa-file-alt fa-ticket-alt").addClass("far fa-moon");
           tripData.set(id + ":PM", 1);
         }
       }
 
       if ( button.hasClass("bg-none") ) {
         button.removeClass("bg-none").addClass("bg-am");
-        icon.removeClass("fa-square-o").addClass("fa-sun-o");
+        icon.removeClass("fa-square").addClass("fa-sun");
         flexPickup.addClass('visible-md visible-lg');
         flexPackage.removeClass('visible-md visible-lg');
         tripData.set(id + ':AM', 1);
       } else if ( button.hasClass("bg-am") ) {
         button.removeClass("bg-am").addClass("bg-waiver");
-        icon.removeClass("fa-sun-o").addClass("fa-file-word-o");
+        icon.removeClass("fa-sun").addClass("fa-file-alt");
         tripData.set(id + ':Waiver', 1);
       } else if ( button.hasClass("bg-waiver") ) {
         button.removeClass("bg-waiver").addClass("bg-productrec");
-        icon.removeClass("fa-file-word-o").addClass("fa-ticket");
+        icon.removeClass("far fa-file-alt").addClass("fas fa-ticket-alt");
         flexPackage.addClass('visible-md visible-lg');
         flexPickup.removeClass('visible-md visible-lg');
         tripData.set(id + ':Product', 1);
@@ -296,25 +302,32 @@ $(function() {
         var split = ID.split(":");
         var underAge = "";
         if ( order['Is this guest at least 21 years of age?'] == "No" ) {
-          underAge = "<span class='underAge'><i class='fa fa-child fa-3x'></i></span>";
+          underAge = "<span class='underAge'><i class='far fa-child fa-3x'></i></span>";
         }
         var crewHTML = '';
         var crewLabel = '';
         if ( typeof(order.Crew) !== 'undefined' && "none" !== order.Crew) {
           crewHTML = "<span class='crew'>";
-          if ( "ovr" === order.Crew ) {
+          if ( "ovr" == order.Crew || "ovr1" == order.Crew || "ovr2" == order.Crew) {
             crewHTML = crewHTML.concat("<img src='images/ovr.png' />");
-          } else if ( "patagonia" === order.Crew ) {
+            if ( "ovr1" == order.Crew ) {
+              crewHTML = crewHTML.concat("<i class='far fa-hand-point-up fa-2x' aria-hidden='true'></i>");
+            } else if ( "ovr2" == order.Crew ) {
+              crewHTML = crewHTML.concat("<i class='far fa-hand-peace fa-2x' aria-hidden='true'></i>");
+            }
+          } else if ( "patagonia" == order.Crew ) {
             crewHTML = crewHTML.concat("<img src='images/patagonia.png' />");
-          } else if ( "burton" === order.Crew ) {
+          } else if ( "burton" == order.Crew ) {
             crewHTML = crewHTML.concat("<img src='images/burton.png' />");
+            } else if ( "arcteryx" == order.Crew ) {
+            crewHTML = crewHTML.concat("<img src='images/arcteryx.png' />");
           }
           crewHTML = crewHTML.concat("</span>");
         }
         var output = "<div class='row listButton bg-none ' id='" + ID + "'>\
                           <div class='row primary'>\
                               <div class='buttonCell col-xs-3 col-md-1'>\
-                                <span class='icon'><i class='fa fa-square-o fa-3x'></i></span>\
+                                <span class='icon'><i class='far fa-square fa-3x'></i></span>\
                               </div>\
                               <div class='buttonCell name col-xs-9 col-md-3'>\
                                   " + crewHTML + "\
@@ -341,7 +354,7 @@ $(function() {
         var packageHTML = "<div class='buttonCell col-xs-9 col-md-3 flexPackage visible-md visible-lg'>\
                             " + combinedPackages + "</div>\
                             <div class='buttonCell col-xs-3 col-md-offset-0 col-md-1 expand'>\
-                              <i class='fa fa-bars fa-3x'></i>\
+                              <i class='fas fa-bars fa-3x'></i>\
                             </div>\
                         </div>";
         if ( "Rockaway Beach" == settings.get('destination') ) {
@@ -420,7 +433,7 @@ $(function() {
       tripData.set(id+":NoShow", 1);
       var element = $("#" + id.replace(":","\\\:"));
       element.removeClass('bg-none bg-am bg-waiver bg-productrec bg-pm').addClass('bg-noshow');
-      element.find("span.icon i").removeClass('fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o').addClass('fa-times-circle-o');
+      element.find("span.icon i").removeClass('fa-square fa-sun fa-file-alt fa-ticket fa-moon').addClass('fa-times-circle-o');
     }
     function packageList(){
         var output = "";
@@ -461,7 +474,7 @@ $(function() {
       var clearVars = [ id + ":AM", id + ":PM", id + ":Waiver", id + ":Product", id + ":NoShow", id + ":Bus" ];
       var selector = $("#"+id.replace(":","\\\:"));
       selector.removeClass("bg-am bg-pm bg-waiver bg-productrec bg-pm bg-none bg-noshow").addClass("bg-none");
-      selector.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o").addClass("fa-square-o");
+      selector.find("span.icon i").removeClass("fa-square fa-sun fa-file-alt fa-ticket fa-moon").addClass("fa-square");
 
       jQuery.each(clearVars, function(key,value){
         tripData.remove(value);
@@ -501,7 +514,6 @@ $(function() {
                   walkonData[value].RBB = true;
                 }
             });
-            console.log(walkonData);
             $.post("api/save/walkon", {walkon: walkonData}, function(){
                 newWalkon.removeAll();
             });
@@ -518,6 +530,8 @@ $(function() {
         }
     }
     function saveWalkOn(){
+        // Reset show/hide on potentially hidden fields
+        $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").show();
         // Saves to local storage
         var orderNum = Math.floor((Math.random() * 99999) + 1);
         orderNum = "WO" + String(orderNum.pad(4));
@@ -528,7 +542,7 @@ $(function() {
                       Last: $("#last").val(),
                       Phone: $("#phone").val(),
                       Package: $("#walkonPackage").val(),
-                      Crew: $("#walkonCrew").val(),};
+                      Crew: $("#walkonCrew").val()};
         if ( "Rockaway Beach" == settings.get('destination') ) {
           walkOn["To Beach"] = $("#walkonPickupTo").val();
           walkOn["To Beach Route"] = $("#walkonPickupTo :selected").data("route");
@@ -587,21 +601,21 @@ $(function() {
     }
     function setState(element, state){
       element.removeClass("bg-am bg-waiver bg-productrec bg-pm");
-      element.find("span.icon i").removeClass("fa-square-o fa-sun-o fa-file-word-o fa-ticket fa-moon-o");
+      element.find("span.icon i").removeClass("fa-square fa-sun fa-file-alt fa-ticket fa-moon");
       var bg = "";
       var icon = "";
       if ( state == 'AM' ){
         bg = "bg-am";
-        icon = "fa-sun-o";
+        icon = "fa-sun";
       } else if ( state == 'Waiver' ) {
         bg = "bg-waiver";
-        icon = "fa-file-word-o";
+        icon = "fa-file-alt";
       } else if ( state == 'Product' ) {
         bg = "bg-productrec";
         icon = "fa-ticket";
       } else if ( state == 'PM' ) {
         bg = "bg-pm";
-        icon = "fa-moon-o";
+        icon = "fa-moon";
         element.find('.flexPackage').addClass('visible-md visible-lg');
         element.find('.flexPickup').removeClass('visible-md visible-lg');
         } else if ( state == 'NoShow' ){
@@ -609,7 +623,7 @@ $(function() {
           icon = "fa-times-circle-o";
         } else {
           bg = "bg-none";
-          icon = "fa-square-o";
+          icon = "fa-square";
         }
 
         element.addClass(bg);
