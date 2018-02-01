@@ -44,7 +44,6 @@ include("_noscript.php");
 PICKUPS;
         }
         include("_dob-check.php");
-        include("_dob.php");
         include("_add-to-cart.php");
      endif;
 do_action( 'woocommerce_after_add_to_cart_form' );
