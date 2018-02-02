@@ -101,6 +101,24 @@ jQuery(document).ready(function($){
         }
       }
     });
+    // Check for lessons and age
+    if ( $("#wc_trip_dob_field").val() !== "" ) {
+      today = new Date();
+      birthDate = new Date( $("#wc_trip_dob_field").val() );
+      age = today.getFullYear() - birthDate.getFullYear();
+      monthCheck = today.getMonth() - birthDate.getMonth();
+      lesson = new RegExp(/lesson/i);
+      primary_package = $("#wc_trip_primary_package").val();
+      secondary_package = $("#wc_trip_secondary_package").val();
+      tertiary_package = $("#wc_trip_tertiary_package").val();
+      if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
+        age--;
+      }
+
+      if ( age < 13 && ( lesson.test(primary_package) || lesson.test(secondary_package) || lesson.test(tertiary_package) ) ) {
+        errors[age] = "Sorry, we cannot accomodate lessons for guests " + age + " years of age. Please select a different package.";
+      }
+    }
     if ( !jQuery.isEmptyObject(errors) ) {
       $("#errors").html('');
       $("#errors").append("<strong>Please correct the following errors to complete your reservation</strong><br />");
@@ -180,7 +198,7 @@ jQuery(document).ready(function($){
     } else {
       $(".dobError .day").text("");
     }
-    if ( e.currentTarget.id == "wc_trip_dob_year" && year.length !== 4) {
+    if ( e.currentTarget.id == "wc_trip_dob_year" && year.length > 0 && year.length < 4) {
       $(".dobError .year").text("Please provide a 4 digit year for birthdate");
       $("input[name=wc_trip_dob_year]").val("").focus();
       return;
@@ -188,7 +206,7 @@ jQuery(document).ready(function($){
       $(".dobError .year").text("");
       $(".wc_trip_add").prop("disabled",false);
     }
-    
+
     if ( year.length > 0 && year.length <= 4 && ( isNaN(parseInt(year)) || year <=0 ) ) {
       $(".dobError .year").text("Please enter a valid year for date of birth");
       $("input[name=wc_trip_dob_year]").val("").focus();
@@ -228,8 +246,28 @@ jQuery(document).ready(function($){
         $(".dobError .day").text("");
       }
     }
+    // Check that DOB is under 18
+    if ( month.legth !== 0 && day.length !== 0 && year.length == 4 ) {
+      today = new Date();
+      birthDate = new Date(month + "/" + day + "/" + year);
+      age = today.getFullYear() - birthDate.getFullYear();
+      monthCheck = today.getMonth() - birthDate.getMonth();
+      if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
+        age--;
+      }
 
-    $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
+      if ( age >= 18 ) {
+        alert("Guest is 18 or over, no need to enter a date of birth");
+        $("#wc_trip_dob_field").val("");
+        $("input[name=wc_trip_dob_month]").val("");
+        $("input[name=wc_trip_dob_day]").val("");
+        $("input[name=wc_trip_dob_year]").val("");
+        $('input:radio[name=wc_trip_age_check]:first').trigger("click");
+      } else {
+        $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
+      }
+
+    }
   });
 
   $("#wc_trip_primary_package").on("change", function(){
