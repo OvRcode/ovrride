@@ -101,22 +101,32 @@ jQuery(document).ready(function($){
         }
       }
     });
+    month = $("input[name=wc_trip_dob_month]").val();
+    day = $("input[name=wc_trip_dob_day]").val();
+    year = $("input[name=wc_trip_dob_year]").val();
+    if ( month !== "" && day !== "" && year !== "" ) {
+      $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
+    }
     // Check for lessons and age
     if ( $("#wc_trip_dob_field").val() !== "" ) {
-      today = new Date();
-      birthDate = new Date( $("#wc_trip_dob_field").val() );
-      age = today.getFullYear() - birthDate.getFullYear();
-      monthCheck = today.getMonth() - birthDate.getMonth();
-      lesson = new RegExp(/lesson/i);
-      primary_package = $("#wc_trip_primary_package").val();
-      secondary_package = $("#wc_trip_secondary_package").val();
-      tertiary_package = $("#wc_trip_tertiary_package").val();
-      if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
-        age--;
-      }
+      lesson_age = parseInt( $("#wc_trip_lesson_restriction").val() );
+      if ( lesson_age > 0 ) {
+        today = new Date();
+        birthDate = new Date( $("#wc_trip_dob_field").val() );
+        age = today.getFullYear() - birthDate.getFullYear();
+        monthCheck = today.getMonth() - birthDate.getMonth();
+        lesson = new RegExp(/lesson/i);
+        primary_package = $("#wc_trip_primary_package").val();
+        secondary_package = $("#wc_trip_secondary_package").val();
+        tertiary_package = $("#wc_trip_tertiary_package").val();
 
-      if ( age < 13 && ( lesson.test(primary_package) || lesson.test(secondary_package) || lesson.test(tertiary_package) ) ) {
-        errors[age] = "Sorry, we cannot accomodate lessons for guests " + age + " years of age. Please select a different package.";
+        if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
+          age--;
+        }
+
+        if ( age < lesson_age && ( lesson.test(primary_package) || lesson.test(secondary_package) || lesson.test(tertiary_package) ) ) {
+          errors[age] = "Sorry, we cannot accomodate lessons for guests " + age + " years of age. Please select a different package.";
+        }
       }
     }
     if ( !jQuery.isEmptyObject(errors) ) {
@@ -175,46 +185,48 @@ jQuery(document).ready(function($){
     $("#wc_trip_dob_year").show();
   }
 
-  $("input[name^=wc_trip_dob_]").on( "focusout", function(e){
+  $("input[name^=wc_trip_dob_]").on( "keyup change", function(e){
     var month = $("input[name=wc_trip_dob_month]").val();
     var day = $("input[name=wc_trip_dob_day]").val();
     var year = $("input[name=wc_trip_dob_year]").val();
     $(".wc_trip_add").prop("disabled",false);
+    if ( e.type == "change" && e.currentTarget.id !== "wc_trip_dob_year" ) {
+      if ( month.length > 0 && month.length <= 2 && ( month <= 0 || month > 12 || isNaN(parseInt(month)) ) )  {
+        $(".dobError .month").text("Please enter a valid month for date of birth");
+        $("input[name=wc_trip_dob_month]").val("").focus();
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .month").text("");
+      }
 
-    if ( month.length > 0 && month.length <= 2 && ( month <= 0 || month > 12 || isNaN(parseInt(month)) ) )  {
-      $(".dobError .month").text("Please enter a valid month for date of birth");
-      $("input[name=wc_trip_dob_month]").val("").focus();
-      $(".wc_trip_add").prop("disabled",true);
-      return;
+      if ( day.length > 0 && day.length <= 2 && ( isNaN(parseInt(day)) || day <=0 || day > 31 ) ) {
+        $(".dobError .day").text("Please enter a valid day for date of birth");
+        $("input[name=wc_trip_dob_day]").val("").focus();
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .day").text("");
+      }
     } else {
-      $(".dobError .month").text("");
-    }
+      if ( year.length > 0 && year.length < 4) {
+        $(".dobError .year").text("Please provide a 4 digit year for birthdate");
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .year").text("");
+        $(".wc_trip_add").prop("disabled",false);
+      }
 
-    if ( day.length > 0 && day.length <= 2 && ( isNaN(parseInt(day)) || day <=0 || day > 31 ) ) {
-      $(".dobError .day").text("Please enter a valid day for date of birth");
-      $("input[name=wc_trip_dob_day]").val("").focus();
-      $(".wc_trip_add").prop("disabled",true);
-      return;
-    } else {
-      $(".dobError .day").text("");
-    }
-    if ( e.currentTarget.id == "wc_trip_dob_year" && year.length > 0 && year.length < 4) {
-      $(".dobError .year").text("Please provide a 4 digit year for birthdate");
-      $("input[name=wc_trip_dob_year]").val("").focus();
-      return;
-    } else {
-      $(".dobError .year").text("");
-      $(".wc_trip_add").prop("disabled",false);
-    }
-
-    if ( year.length > 0 && year.length <= 4 && ( isNaN(parseInt(year)) || year <=0 ) ) {
-      $(".dobError .year").text("Please enter a valid year for date of birth");
-      $("input[name=wc_trip_dob_year]").val("").focus();
-      $(".wc_trip_add").prop("disabled",true);
-      return;
-    } else {
-      $(".dobError .year").text("");
-      $(".wc_trip_add").prop("disabled",false);
+      if ( year.length > 0 && year.length <= 4 && ( isNaN(parseInt(year)) || year <=0 ) ) {
+        $(".dobError .year").text("Please enter a valid year for date of birth");
+        $("input[name=wc_trip_dob_year]").val("").focus();
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .year").text("");
+        $(".wc_trip_add").prop("disabled",false);
+      }
     }
 
     if ( month == 2 ) {
@@ -263,8 +275,6 @@ jQuery(document).ready(function($){
         $("input[name=wc_trip_dob_day]").val("");
         $("input[name=wc_trip_dob_year]").val("");
         $('input:radio[name=wc_trip_age_check]:first').trigger("click");
-      } else {
-        $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
       }
 
     }

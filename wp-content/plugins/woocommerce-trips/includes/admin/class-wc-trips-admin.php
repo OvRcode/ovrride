@@ -338,7 +338,7 @@ META;
             if ( !current_user_can( 'edit_post', $post_id ) ) {
                 return $post_id;
             }
-            error_log($_POST['upload_trail_map']);
+            update_post_meta( $post_id, '_lesson_age', intval( $_POST['_lesson_age']) );
             update_post_meta( $post_id, '_trail_map', sanitize_text_field( $_POST['upload_trail_map'] ) );
             update_post_meta( $post_id, '_trail_map_2', sanitize_text_field( $_POST['upload_trail_map_2'] ) );
             update_post_meta( $post_id, '_trail_map_3', sanitize_text_field( $_POST['upload_trail_map_3'] ) );
@@ -360,6 +360,10 @@ META;
         wp_enqueue_script('thickbox');
         wp_enqueue_script('destinations_upload', WC_TRIPS_PLUGIN_URL . '/assets/js/destinations.js', array('jquery','media-upload','thickbox'));
         wp_nonce_field(plugin_basename(__FILE__), 'destination_attachment_nonce');
+        $lessonAge = get_post_meta( $post->ID, '_lesson_age', true);
+        if ( $lessonAge === '' ) {
+          $lessonAge = 0;
+        }
         $map = get_post_meta( $post->ID, '_trail_map', true);
         $map_two = get_post_meta( $post->ID, '_trail_map_2', true);
         $map_three = get_post_meta( $post->ID, '_trail_map_3', true);
@@ -383,6 +387,8 @@ META;
         $html = <<<DESTFIELDS
             <label>Type:</label>{$type_drop_down}<br />
              <label>Automated Report Email:</label><input type="text" size="36" name="_report_email" value="{$reportEmail}" />
+             <br />
+             <label>Lesson Age Restriction ( 0 for no restriction ) : </label><input type="number" name="_lesson_age" min="0" max="100" value="{$lessonAge}"/>
              <br />
              <label>Contact: </label><input type="text" size="36" name="_contact" value="{$contact}" />
              <br />

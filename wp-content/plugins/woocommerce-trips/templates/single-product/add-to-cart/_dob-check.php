@@ -22,7 +22,8 @@
       <label for="wc_trip_dob_year">YYYY</label>
       <input type="hidden" id="wc_trip_dob_field" name="wc_trip_dob_field" value="" />
     </div>
-    <div class="dobError">
+    <br /><br />
+    <div class="dobError" style="float:left; clear: left;">
       <p class="month"></p>
       <p class="day"></p>
       <p class="year"></p>
