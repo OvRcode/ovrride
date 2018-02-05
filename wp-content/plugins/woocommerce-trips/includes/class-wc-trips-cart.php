@@ -421,6 +421,13 @@ CARTMETA;
         } else {
           $stock_text = "";
         }
+        $destination_name = get_post_meta( $product->id, '_wc_trip_destination', true);
+        $destination = get_page_by_title( $destination_name, "ARRAY_A", "destinations");
+        $destination_lesson_restriction = get_post_meta( $destination['ID'], '_lesson_age', true);
+        /*if ( $destination_lesson_restriction === "" ) {
+          update_post_meta( $destination->ID, '_lesson_age', "0");
+          $destination_lesson_restriction = 0;
+        }*/
         $template_data = [
           "trip_type" => get_post_meta( $product->id, '_wc_trip_type', true),
           "pickups"   => $this->pickupField( $product->id ),
@@ -430,7 +437,8 @@ CARTMETA;
         		"tertiary"  => $product->output_packages("tertiary")
           ],
           "base_price"  => floatval( get_post_meta( $product->id, '_wc_trip_base_price', true ) ),
-          "stock"       => $stock_text
+          "stock"       => $stock_text,
+          "lesson_age"  => $destination_lesson_restriction
         ];
 
         $template = "";

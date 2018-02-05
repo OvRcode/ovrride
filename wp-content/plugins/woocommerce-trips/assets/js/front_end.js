@@ -101,6 +101,34 @@ jQuery(document).ready(function($){
         }
       }
     });
+    month = $("input[name=wc_trip_dob_month]").val();
+    day = $("input[name=wc_trip_dob_day]").val();
+    year = $("input[name=wc_trip_dob_year]").val();
+    if ( month !== "" && day !== "" && year !== "" ) {
+      $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
+    }
+    // Check for lessons and age
+    if ( $("#wc_trip_dob_field").val() !== "" ) {
+      lesson_age = parseInt( $("#wc_trip_lesson_restriction").val() );
+      if ( lesson_age > 0 ) {
+        today = new Date();
+        birthDate = new Date( $("#wc_trip_dob_field").val() );
+        age = today.getFullYear() - birthDate.getFullYear();
+        monthCheck = today.getMonth() - birthDate.getMonth();
+        lesson = new RegExp(/lesson/i);
+        primary_package = $("#wc_trip_primary_package").val();
+        secondary_package = $("#wc_trip_secondary_package").val();
+        tertiary_package = $("#wc_trip_tertiary_package").val();
+
+        if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
+          age--;
+        }
+
+        if ( age < lesson_age && ( lesson.test(primary_package) || lesson.test(secondary_package) || lesson.test(tertiary_package) ) ) {
+          errors[age] = "Sorry, we cannot accomodate lessons for guests " + age + " years of age. Please select a different package.";
+        }
+      }
+    }
     if ( !jQuery.isEmptyObject(errors) ) {
       $("#errors").html('');
       $("#errors").append("<strong>Please correct the following errors to complete your reservation</strong><br />");
@@ -157,12 +185,101 @@ jQuery(document).ready(function($){
     $("#wc_trip_dob_year").show();
   }
 
-  $("input[name^=wc_trip_dob_]").on("keyup", function(){
+  $("input[name^=wc_trip_dob_]").on( "keyup change", function(e){
     var month = $("input[name=wc_trip_dob_month]").val();
     var day = $("input[name=wc_trip_dob_day]").val();
     var year = $("input[name=wc_trip_dob_year]").val();
-    $("#wc_trip_dob_field").val(month + "/" + day + "/" + year);
+    $(".wc_trip_add").prop("disabled",false);
+    if ( e.type == "change" && e.currentTarget.id !== "wc_trip_dob_year" ) {
+      if ( month.length > 0 && month.length <= 2 && ( month <= 0 || month > 12 || isNaN(parseInt(month)) ) )  {
+        $(".dobError .month").text("Please enter a valid month for date of birth");
+        $("input[name=wc_trip_dob_month]").val("").focus();
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .month").text("");
+      }
+
+      if ( day.length > 0 && day.length <= 2 && ( isNaN(parseInt(day)) || day <=0 || day > 31 ) ) {
+        $(".dobError .day").text("Please enter a valid day for date of birth");
+        $("input[name=wc_trip_dob_day]").val("").focus();
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .day").text("");
+      }
+    } else {
+      if ( year.length > 0 && year.length < 4) {
+        $(".dobError .year").text("Please provide a 4 digit year for birthdate");
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .year").text("");
+        $(".wc_trip_add").prop("disabled",false);
+      }
+
+      if ( year.length > 0 && year.length <= 4 && ( isNaN(parseInt(year)) || year <=0 ) ) {
+        $(".dobError .year").text("Please enter a valid year for date of birth");
+        $("input[name=wc_trip_dob_year]").val("").focus();
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .year").text("");
+        $(".wc_trip_add").prop("disabled",false);
+      }
+    }
+
+    if ( month == 2 ) {
+      if ( ( year%4 == 0 && year%100 !== 0 ) || year%400 == 0 ) {
+        //leap year
+        if ( day > 29 ) {
+          $(".dobError .day").text("Invalid day for February of a leap year, please fix day in birthday");
+          $(".wc_trip_add").prop("disabled",true);
+          return;
+        } else {
+          $(".dobError .day").text("");
+        }
+      } else {
+        // normal year
+        if ( day > 28 ) {
+          $(".dobError .day").text("Invalid day for February, please fix day in birthday");
+          $(".wc_trip_add").prop("disabled",true);
+          return;
+        } else {
+          $(".dobError .day").text("");
+        }
+      }
+    } else if ( month == 4 || month == 6 || month == 9 || month == 11 ) {
+      if ( day > 30 ) {
+        $(".dobError .day").text("Invalid day for month, please fix day in birthday");
+        $(".wc_trip_add").prop("disabled",true);
+        return;
+      } else {
+        $(".dobError .day").text("");
+      }
+    }
+    // Check that DOB is under 18
+    if ( month.legth !== 0 && day.length !== 0 && year.length == 4 ) {
+      today = new Date();
+      birthDate = new Date(month + "/" + day + "/" + year);
+      age = today.getFullYear() - birthDate.getFullYear();
+      monthCheck = today.getMonth() - birthDate.getMonth();
+      if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
+        age--;
+      }
+
+      if ( age >= 18 ) {
+        alert("Guest is 18 or over, no need to enter a date of birth");
+        $("#wc_trip_dob_field").val("");
+        $("input[name=wc_trip_dob_month]").val("");
+        $("input[name=wc_trip_dob_day]").val("");
+        $("input[name=wc_trip_dob_year]").val("");
+        $('input:radio[name=wc_trip_age_check]:first').trigger("click");
+      }
+
+    }
   });
+
   $("#wc_trip_primary_package").on("change", function(){
     if ( "beach_bus" === $("#wc_trip_type").val() ) {
       // Re-enable all dropdowns
