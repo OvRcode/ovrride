@@ -268,7 +268,7 @@ jQuery(document).ready(function($){
         age--;
       }
 
-      if ( age >= 18 ) {
+      if ( age >= 18 && $("#wc_trip_age_check").length > 0 ) {
         alert("Guest is 18 or over, no need to enter a date of birth");
         $("#wc_trip_dob_field").val("");
         $("input[name=wc_trip_dob_month]").val("");
