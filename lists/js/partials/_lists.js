@@ -132,11 +132,11 @@ $(function() {
                       $("#walkonPickupFrom")
                     ];
         if ( ( "ovr1" == $("#walkonCrew").val() || "ovr2" == $("#walkonCrew").val() ) &&
-          $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").is(":visible") ) {
-          $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").hide();
+          $("#walkonPickup").is(":visible") ) {
+          $("#walkonPickup").hide();
         } else if ( "ovr1" !== $("#walkonCrew").val() && "ovr2" !== $("#walkonCrew").val() &&
-        $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").is(":hidden") ) {
-          $("#walkonPrimaryPackage, #walkonSecondaryPackage, #walkonTertiaryPackage, #walkonPickup").show();
+        $("#walkonPickup").is(":hidden") ) {
+          $("#walkonPickup").show();
         }
 
         $.each(fields, function( key,value){
