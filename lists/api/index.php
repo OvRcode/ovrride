@@ -349,12 +349,16 @@ class Lists {
                 $sql = "SELECT * FROM `ovr_lists_manual_orders` WHERE `Trip` = '" . $tripId . "'";
                 $result = $this->dbQuery($sql);
                 while($row = $result->fetch_assoc()){
-                  $bus_check = preg_grep("/" . $bus. "/", $row);
-
+                  /*$bus_check = preg_grep("/" . $bus. "/", $row);
                     if ( $bus == "All" || count($bus_check) > 0 ||
                         array_search($row['ID'], $busData[$bus]) !== FALSE ||
-                        array_search($row['ID'], $busData['Other']) === FALSE) {
+                        array_search($row['ID'], $busData['Other']) === FALSE) {*/
                         $walkOnOrder = [];
+                        $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
+                        // Make sure walkons are either unclaimed or on the selected bus
+                        if ( $walkOnOrder['Bus'] !== "" && $walkOnOrder['Bus'] !== $bus ) {
+                          continue;
+                        }
                         $split = preg_split("/:/", $row['ID']);
                         $walkOnOrder['num']      = $split[0];
                         $walkOnOrder['item_num'] = $split[1];
@@ -365,11 +369,12 @@ class Lists {
                         }
                         $walkOnOrder['Phone'] = $row['Phone'];
                         $walkOnOrder['Package'] = $row['Package'];
-                        $walkOnOrder['Bus'] = (isset($row['Bus']) ? $row['Bus'] : "");
                         $walkOnOrder['Crew'] = $row['Crew'];
-                        $this->listHTML($walkOnOrder);
-                        $this->customerData($walkOnOrder);
-                    }
+
+                          $this->listHTML($walkOnOrder);
+                          $this->customerData($walkOnOrder);
+
+                    //}
                 }
             } else {
                 $sql = "SELECT `wp_posts`.`ID`, `wp_woocommerce_order_items`.`order_item_id`, `wp_posts`.`post_status`
