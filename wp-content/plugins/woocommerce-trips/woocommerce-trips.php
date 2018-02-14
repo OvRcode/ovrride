@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.5.0
+Version: 1.5.1
 Author: Mike Barnard
 Author URI: http://github.com/barnardm
 Text Domain: woocommerce-trips
@@ -25,7 +25,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
 
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '1.3.10' );
+        define( 'WC_TRIPS_VERSION', '1.5.1' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -36,12 +36,13 @@ class WC_Trips {
         add_filter('woocommerce_product_description_heading',array( $this, 'remove_description_header'));
 
         // Email report hook
-        add_action( 'wc_trips_email_report', array($this, "email_report"), 10, 2);
+        add_action( 'wc_trips_email_report', array($this, "email_report"), 10,2 );
         // Email report scheduling hook
         add_action( 'wc_check_auto_reports', array($this, 'check_auto_reports') );
+
         // Make sure trip email scheduling is Setup
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
-          wp_schedule_event(strtotime('+1day 05:00:00', strtotime(date('m/d/y'))), 'daily', 'wc_check_auto_reports');
+          wp_schedule_event(1518674400000, 'daily', 'wc_check_auto_reports');
           error_log("Scheduled auto report check");
           do_action('wc_check_auto_reports');
         }
@@ -231,7 +232,7 @@ STYLE;
       $headers = array();
       $headers[] = 'From: OvrRide <info@ovrride.com>';
       wp_mail("devops@ovrride.com", $emailTitle, $emailBody, $headers);
-
+      error_log("SENT EMAIL!");
       remove_filter('wp_mail_content_type', function(){ return "text/html"; });
     }
     private function checkCron($time, $hook, $args) {
@@ -244,47 +245,81 @@ STYLE;
       }
     }
     function check_auto_reports(){
-      global $wpdb;
-      error_log("checking auto reports");
-      $sql = "SELECT `post_title` as `destination`, `ID`, `meta_value` as `email`
-      FROM `wp_posts`
-      JOIN `wp_postmeta` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
-      WHERE `meta_key` = '_report_email'
-      AND `meta_value` != ''
-      AND `post_status` = 'publish'";
-      $results = $wpdb->get_results($sql);
-      foreach($results as $key => $value) {
-        $destination = $value->destination;
-        $recipient = $value->email;
-        $tripSql = "SELECT `ID`, `post_status`,
-        ( SELECT `meta_value` FROM `wp_postmeta` WHERE meta_key = '_wc_trip_start_date' AND `post_id` = `ID`) as 'date'
-        FROM `wp_postmeta`
-        JOIN `wp_posts` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
-        WHERE `meta_key` = '_wc_trip_destination'
-        AND `meta_value` = '{$destination}'";
-        $tripResults = $wpdb->get_results($tripSql);
+      date_default_timezone_set("America/New_York");
+      $destinations = get_posts(array(
+        'numberposts' => -1,
+        'category' => 0, 'orderby' => 'date',
+        'order' => 'DESC', 'include' => array(),
+        'exclude' => array(), 'meta_key' => '_report_active',
+        'meta_value' =>'active', 'post_type' => 'destinations',
+        'suppress_filters' => true
+      ));
+      foreach( $destinations as $index => $data ) {
+        $trips = get_posts(array(
+          'numberposts' => -1,
+          'category' => 0, 'orderby' => 'ID',
+          'order' => 'DESC', 'include' => array(),
+          'exclude' => array(), 'meta_key' => '_wc_trip_destination',
+          'meta_value' =>$data->post_title, 'post_type' => 'product',
+          'suppress_filters' => true
+        ));
 
-        foreach($tripResults as $id => $data) {
-          $times[0] = date('U', strtotime('last Thursday 13:00:00', strtotime($data->date)));
-          $times[1] = date('U', strtotime('last Friday 13:00:00', strtotime($data->date)));
-          foreach($times as $index => $time ) {
-            if ( "publish" == $data->post_status && ! $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
-              // Setup cronjob for a published event that has not been scheduled
-              if ( $time > time() ) { // Don't schedule email for past events
-                wp_schedule_single_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
-                error_log("scheduled " . $data->ID . " at " . date('m/d/Y H:i:s', $time));
-              } else {
-                error_log("Event " . $data->ID . " has passed, not scheduling event");
-              }
-            } else if ( "publish" !== $data->post_status && $this->checkCron($time,"wc_trips_email_report",array($recipient, $data->ID)) ) {
-              // Remove cronjob for event that has switched to draft or cancelled
-              wp_unschedule_event( $time, "wc_trips_email_report", array($recipient, $data->ID));
-              error_log("unscheduled " . $data->ID);
-            }
+        $firstReportDay     = get_post_meta( $data->ID, '_report_one_days', true);
+        $secondReportDay    = get_post_meta( $data->ID, '_report_two_days', true);
+        $firstReportHour    = get_post_meta( $data->ID, '_report_one_hour', true);
+        $firstReportMinute  = get_post_meta( $data->ID, '_report_one_minutes', true);
+        $secondReportHour   = get_post_meta( $data->ID, '_report_two_hour', true);
+        $secondReportMinute = get_post_meta( $data->ID, '_report_two_minutes', true);
+        $emailAddress       = get_post_meta( $data->ID, '_report_email', true);
+
+        if ( intval($firstReportDay) >= 1 && "" !== $firstReportHour && "" !== $firstReportMinute ) {
+            $firstReportTime = strtotime(date("m/d/y") . " " . $firstReportHour.":".$firstReportMinute);
+        }
+        if ( intval($secondReportDay) >= 1 && "" !== $secondReportHour && "" !== $secondReportMinute ) {
+            $secondReportTime = strtotime(date("m/d/y") . " " . $secondReportHour . ":" . $secondReportMinute);
+        }
+        // Skip destination if no times are set for either report
+        if ( !isset($firstReportTime) && !isset($secondReportTime) ) {
+          error_log("Skipping auto report check for " . $data->post_title . ", no report times set");
+          continue;
+        }
+        // Skip destination if no email address is set
+        if ( "" == $emailAddress ) {
+          error_log("Skipping auto report check for " . $data->post_title . ", no report email set");
+          continue;
+        }
+        foreach( $trips as $tripIndex => $tripData ) {
+          $tripDateString = get_post_meta($tripData->ID, '_wc_trip_start_date',true);
+
+          // create time to compare vs report time for this trip and store in array
+          // time created with -X Days to get difference from trip day using report offset day
+          if ( isset($firstReportTime) ) {
+            $tripDate[0] = strtotime( "-" . $firstReportDay . " Days " . $tripDateString . " " . $firstReportHour.":".$firstReportMinute );
           }
+          if ( isset($secondReportTime) ) {
+            $tripDate[1] = strtotime( "-" . $secondReportDay . " Days " . $tripDateString . " " . $secondReportHour . ":" . $secondReportMinute );
+          }
+
+          if ( isset($tripDate[0]) && $tripDate[0] == $firstReportTime ) {
+            if ( $firstReportTime > time() ) {
+              if ( wp_next_scheduled("wc_trips_email_report", array($emailAddress, $tripData->ID) ) ) {
+                error_log("Email already scheduled for " . $tripData->post_title);
+              } else {
+                error_log("Scheduling first email for " . $tripData->post_title . " at " . date("m/d/y h:i", $firstReportTime));
+                error_log($tripData->ID);
+                wp_schedule_single_event( $firstReportTime, 'wc_trips_email_report',array($emailAddress, $tripData->ID));
+              }
+          } else if ( isset($tripDate[1]) && $tripDate[1] == $secondReportTime ) {
+            error_log("MATCH!");
+            error_log("Second Report: " . date("m/d/y h:i", $secondReportTime));
+            error_log("Trip Time 1: " . date("m/d/y h:i",$tripDate[1]));
+          }
+
+
         }
       }
     }
+  }
     public function beach_bus_api() {
       global $wpdb;
       // Find all beach bus trips
