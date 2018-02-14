@@ -349,6 +349,13 @@ META;
             update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
             update_post_meta( $post_id, '_report_email', sanitize_text_field( $_POST['_report_email'] ) );
             update_post_meta( $post_id, '_type', sanitize_text_field( $_POST['_type'] ) );
+            update_post_meta( $post_id, '_report_active', sanitize_text_field( $_POST['_report_active']) );
+            update_post_meta( $post_id, '_report_one_days', intval( $_POST['_report_one_days']) );
+            update_post_meta( $post_id, '_report_one_hour', intval( $_POST['_report_one_hour']) );
+            update_post_meta( $post_id, '_report_one_minutes', intval( $_POST['_report_one_minutes']) );
+            update_post_meta( $post_id, '_report_two_days', intval( $_POST['_report_two_days']) );
+            update_post_meta( $post_id, '_report_two_hour', intval( $_POST['_report_two_hour']) );
+            update_post_meta( $post_id, '_report_two_minutes', intval( $_POST['_report_two_minutes']) );
 
         } else {
             return $post_id;
@@ -364,17 +371,35 @@ META;
         if ( $lessonAge === '' ) {
           $lessonAge = 0;
         }
-        $map = get_post_meta( $post->ID, '_trail_map', true);
-        $map_two = get_post_meta( $post->ID, '_trail_map_2', true);
-        $map_three = get_post_meta( $post->ID, '_trail_map_3', true);
-        $map_four = get_post_meta( $post->ID, '_trail_map_4', true);
-        $contact = get_post_meta( $post->ID, '_contact', true);
-        $contactPhone = get_post_meta( $post->ID, '_contact_phone', true);
-        $rep = get_post_meta( $post->ID, '_rep', true);
-        $repPhone = get_post_meta( $post->ID, '_rep_phone', true);
-        $reportEmail = get_post_meta( $post->ID, '_report_email', true);
-        $type = get_post_meta( $post->ID, '_type', true);
-        $types = array("winter" => "Winter", "summer" => "Summer", "summer_snow" => "Summer Snow");
+        $map              = get_post_meta( $post->ID, '_trail_map', true);
+        $map_two          = get_post_meta( $post->ID, '_trail_map_2', true);
+        $map_three        = get_post_meta( $post->ID, '_trail_map_3', true);
+        $map_four         = get_post_meta( $post->ID, '_trail_map_4', true);
+        $contact          = get_post_meta( $post->ID, '_contact', true);
+        $contactPhone     = get_post_meta( $post->ID, '_contact_phone', true);
+        $rep              = get_post_meta( $post->ID, '_rep', true);
+        $repPhone         = get_post_meta( $post->ID, '_rep_phone', true);
+        $reportEmail      = get_post_meta( $post->ID, '_report_email', true);
+        $reportOneDays    = get_post_meta( $post->ID, '_report_one_days', true);
+        $reportOneHour    = get_post_meta( $post->ID, '_report_one_hour', true);
+        $reportOneMinutes = get_post_meta( $post->ID, '_report_one_minutes', true);
+        $reportTwoDays    = get_post_meta( $post->ID, '_report_two_days', true);
+        $reportTwoHour    = get_post_meta( $post->ID, '_report_two_hour', true);
+        $reportTwoMinutes = get_post_meta( $post->ID, '_report_two_minutes', true);
+        $type         = get_post_meta( $post->ID, '_type', true);
+        $types        = array("winter" => "Winter", "summer" => "Summer", "summer_snow" => "Summer Snow");
+        $reportActiveValue = get_post_meta( $post->ID, '_report_active', true);
+
+        if ( "" === $reportActiveValue ) {
+          $reportActive = "";
+          $reportInActive = "checked";
+        } else if ("active" == $reportActiveValue ) {
+          $reportActive = "checked";
+          $reportInActive = "";
+        } else {
+          $reportActive = "";
+          $reportInActive = "checked";
+        }
         $type_drop_down = "<select name='_type'>";
         foreach( $types as $value => $label ) {
           $type_drop_down .= "<option value='{$value}'";
@@ -384,33 +409,11 @@ META;
           $type_drop_down .= "> {$label}</option>";
         }
         $type_drop_down .= "</select>";
-        $html = <<<DESTFIELDS
-            <label>Type:</label>{$type_drop_down}<br />
-             <label>Automated Report Email:</label><input type="text" size="36" name="_report_email" value="{$reportEmail}" />
-             <br />
-             <label>Lesson Age Restriction ( 0 for no restriction ) : </label><input type="number" name="_lesson_age" min="0" max="100" value="{$lessonAge}"/>
-             <br />
-             <label>Contact: </label><input type="text" size="36" name="_contact" value="{$contact}" />
-             <br />
-             <label>Contact Phone: </label><input type="text" size="20" name="_contact_phone" value="{$contactPhone}" />
-             <br />
-             <label>Rep: </label><input type="text" size="36" name="_rep" value="{$rep}" />
-             <br />
-             <label>Rep Phone: </label><input type="text" size="20" name="_rep_phone" value="{$repPhone}" />
-             <br />
-             <label>Trail Map</label><input id="upload_trail_map" type="text" size="36" name="upload_trail_map" value="{$map}" />
-             <input id="upload_trail_map_button" type="button" value="Select Trail Map" />
-             <br />
-             <label>Trail Map Two</label><input id="upload_trail_map_2" type="text" size="36" name="upload_trail_map_2" value="{$map_two}" />
-             <input id="upload_trail_map_2_button" type="button" value="Select Trail Map Two" />
-             <br />
-             <label>Trail Map Three</label><input id="upload_trail_map_3" type="text" size="36" name="upload_trail_map_3" value="{$map_three}" />
-             <input id="upload_trail_map_3_button" type="button" value="Select Trail Map Three" />
-             <br />
-             <label>Trail Map Four</label><input id="upload_trail_map_4" type="text" size="36" name="upload_trail_map_4" value="{$map_four}" />
-             <input id="upload_trail_map_4_button" type="button" value="Select Trail Map Four" />
-             <br />
-DESTFIELDS;
+
+        ob_start();
+        include("views/html-destination-admin.php");
+        $html = ob_get_contents();
+        ob_end_clean();
         echo $html;
     }
 
