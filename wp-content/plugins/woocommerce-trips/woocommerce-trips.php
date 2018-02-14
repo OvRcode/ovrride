@@ -42,9 +42,8 @@ class WC_Trips {
 
         // Make sure trip email scheduling is Setup
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
-          wp_schedule_event(1518674400000, 'daily', 'wc_check_auto_reports');
+          wp_schedule_single_event( strtotime("midnight tomorrow"), 'wc_check_auto_reports');
           error_log("Scheduled auto report check");
-          do_action('wc_check_auto_reports');
         }
 
         if ( is_admin() ) {
