@@ -41,13 +41,14 @@ class WC_Trips {
         add_action( 'wc_check_auto_reports', array($this, 'check_auto_reports') );
 
         // Make sure trip email scheduling is Setup
-        if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
+        //if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
           $checkTime = new DateTime("now", new DateTimeZone("America/New_York"));
           $checkTime->setTime(0,0);
           $checkTime->modify("tomorrow");
-          wp_schedule_single_event( $checkTime->format('U'), 'wc_check_auto_reports');
+          //wp_schedule_single_event( $checkTime->format('U'), 'wc_check_auto_reports');
           error_log("Scheduled auto report check");
-        }
+          do_action('wc_check_auto_reports');
+        //}
 
         if ( is_admin() ) {
             include( 'includes/admin/class-wc-trips-admin.php' );
@@ -306,9 +307,9 @@ STYLE;
             $tripDate[1]->setTime($secondReportHour,$secondReportMinute);
             $tripDate[1]->modify("-" . $secondReportDay . " Days");
           }
-
+          $currentTime = new DateTime("now", $timeZone);
           if ( isset($tripDate[0]) && $tripDate[0] == $firstReportTime ) {
-            if ( $firstReportTime > time() ) {
+            if ( $firstReportTime > $currentTime ) {
               if ( wp_next_scheduled("wc_trips_email_report", array($emailAddress, $tripData->ID) ) ) {
                 error_log("Email already scheduled for " . $tripData->post_title);
               } else {
@@ -320,7 +321,7 @@ STYLE;
               error_log("Time has passed to send email for " . $tripData->post_title . " at " . $firstReportTime->format("m/d/y h:i"));
             }
           } else if ( isset($tripDate[1]) && $tripDate[1] == $secondReportTime ) {
-            if ( $secondReportTime > time() ) {
+            if ( $secondReportTime > $currentTime ) {
               if ( wp_next_scheduled("wc_trips_email_report", array($emailAddress, $tripData->ID) ) ) {
                 error_log("Email already scheduled for " . $tripData->post_title);
               } else {
