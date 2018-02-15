@@ -42,7 +42,10 @@ class WC_Trips {
 
         // Make sure trip email scheduling is Setup
         if ( ! wp_next_scheduled("wc_check_auto_reports") ) {
-          wp_schedule_single_event( strtotime("midnight tomorrow"), 'wc_check_auto_reports');
+          $checkTime = new DateTime("now", new DateTimeZone("America/New_York"));
+          $checkTime->setTime(0,0);
+          $checkTime->modify("tomorrow");
+          wp_schedule_single_event( $checkTime->format('U'), 'wc_check_auto_reports');
           error_log("Scheduled auto report check");
         }
 
@@ -244,7 +247,6 @@ STYLE;
       }
     }
     function check_auto_reports(){
-      date_default_timezone_set("America/New_York");
       $destinations = get_posts(array(
         'numberposts' => -1,
         'category' => 0, 'orderby' => 'date',
@@ -270,12 +272,14 @@ STYLE;
         $secondReportHour   = get_post_meta( $data->ID, '_report_two_hour', true);
         $secondReportMinute = get_post_meta( $data->ID, '_report_two_minutes', true);
         $emailAddress       = get_post_meta( $data->ID, '_report_email', true);
-
+        $timeZone           = new DateTimeZone("America/New_York");
         if ( intval($firstReportDay) >= 1 && "" !== $firstReportHour && "" !== $firstReportMinute ) {
-            $firstReportTime = strtotime(date("m/d/y") . " " . $firstReportHour.":".$firstReportMinute);
+            $firstReportTime = new DateTime( "now", $timeZone);
+            $firstReportTime->setTime($firstReportHour, $firstReportMinute);
         }
         if ( intval($secondReportDay) >= 1 && "" !== $secondReportHour && "" !== $secondReportMinute ) {
-            $secondReportTime = strtotime(date("m/d/y") . " " . $secondReportHour . ":" . $secondReportMinute);
+            $secondReportTime = new DateTime( "now", $timeZone);
+            $secondReportTime->setTime($secondReportHour,$secondReportMinute);
         }
         // Skip destination if no times are set for either report
         if ( !isset($firstReportTime) && !isset($secondReportTime) ) {
@@ -293,10 +297,14 @@ STYLE;
           // create time to compare vs report time for this trip and store in array
           // time created with -X Days to get difference from trip day using report offset day
           if ( isset($firstReportTime) ) {
-            $tripDate[0] = strtotime( "-" . $firstReportDay . " Days " . $tripDateString . " " . $firstReportHour.":".$firstReportMinute );
+            $tripDate[0] = new DateTime( $tripDateString, $timeZone);
+            $tripDate[0]->setTime($firstReportHour,$firstReportMinute);
+            $tripDate[0]->modify( "-" . $firstReportDay . " Days");
           }
           if ( isset($secondReportTime) ) {
-            $tripDate[1] = strtotime( "-" . $secondReportDay . " Days " . $tripDateString . " " . $secondReportHour . ":" . $secondReportMinute );
+            $tripDate[1] = new DateTime( $tripDateString, $timeZone);
+            $tripDate[1]->setTime($secondReportHour,$secondReportMinute);
+            $tripDate[1]->modify("-" . $secondReportDay . " Days");
           }
 
           if ( isset($tripDate[0]) && $tripDate[0] == $firstReportTime ) {
@@ -304,18 +312,29 @@ STYLE;
               if ( wp_next_scheduled("wc_trips_email_report", array($emailAddress, $tripData->ID) ) ) {
                 error_log("Email already scheduled for " . $tripData->post_title);
               } else {
-                error_log("Scheduling first email for " . $tripData->post_title . " at " . date("m/d/y h:i", $firstReportTime));
+                error_log("Scheduling first email for " . $tripData->post_title . " at " . $firstReportTime->format("m/d/y h:i"));
                 error_log($tripData->ID);
-                wp_schedule_single_event( $firstReportTime, 'wc_trips_email_report',array($emailAddress, $tripData->ID));
+                wp_schedule_single_event( $firstReportTime->format('U'), 'wc_trips_email_report',array($emailAddress, $tripData->ID));
               }
+            } else {
+              error_log("Time has passed to send email for " . $tripData->post_title . " at " . $firstReportTime->format("m/d/y h:i"));
+            }
           } else if ( isset($tripDate[1]) && $tripDate[1] == $secondReportTime ) {
-            error_log("MATCH!");
-            error_log("Second Report: " . date("m/d/y h:i", $secondReportTime));
-            error_log("Trip Time 1: " . date("m/d/y h:i",$tripDate[1]));
+            if ( $secondReportTime > time() ) {
+              if ( wp_next_scheduled("wc_trips_email_report", array($emailAddress, $tripData->ID) ) ) {
+                error_log("Email already scheduled for " . $tripData->post_title);
+              } else {
+                error_log("Scheduling first email for " . $tripData->post_title . " at " . $secondReportTime->format("m/d/y h:i"));
+                error_log($tripData->ID);
+                wp_schedule_single_event( $secondReportTime->format('U'), 'wc_trips_email_report',array($emailAddress, $tripData->ID));
+              }
+            } else {
+              error_log("Time has passed to send email for " . $tripData->post_title . " at " . $secondReportTime->format("m/d/y h:i"));
+            }
           }
 
 
-        }
+
       }
     }
   }
