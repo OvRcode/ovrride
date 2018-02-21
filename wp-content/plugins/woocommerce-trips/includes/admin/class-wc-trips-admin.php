@@ -347,15 +347,29 @@ META;
             update_post_meta( $post_id, '_contact_phone', sanitize_text_field( $_POST['_contact_phone'] ) );
             update_post_meta( $post_id, '_rep', sanitize_text_field( $_POST['_rep'] ) );
             update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
-            update_post_meta( $post_id, '_report_email', sanitize_text_field( $_POST['_report_email'] ) );
             update_post_meta( $post_id, '_type', sanitize_text_field( $_POST['_type'] ) );
-            update_post_meta( $post_id, '_report_active', sanitize_text_field( $_POST['_report_active']) );
-            update_post_meta( $post_id, '_report_one_days', intval( $_POST['_report_one_days']) );
-            update_post_meta( $post_id, '_report_one_hour', intval( $_POST['_report_one_hour']) );
-            update_post_meta( $post_id, '_report_one_minutes', intval( $_POST['_report_one_minutes']) );
-            update_post_meta( $post_id, '_report_two_days', intval( $_POST['_report_two_days']) );
-            update_post_meta( $post_id, '_report_two_hour', intval( $_POST['_report_two_hour']) );
-            update_post_meta( $post_id, '_report_two_minutes', intval( $_POST['_report_two_minutes']) );
+            $reportSettings = array( 'active' => sanitize_text_field( $_POST['_report_active']),
+              'email' => sanitize_text_field( $_POST['_report_email'] ),
+              'reports' => array());
+            foreach( $_POST['_report_day'] as $index => $day ) {
+              $reportSettings['reports'][$index]['day'] = $day;
+              if ( isset($_POST['_report_hour'][$index]) ) {
+                $reportSettings['reports'][$index]['hour'] = $_POST['_report_hour'][$index];
+              }
+              if ( isset($_POST['_report_minute'][$index]) ) {
+                $reportSettings['reports'][$index]['minute'] = $_POST['_report_minute'][$index];
+              }
+            }
+            update_post_meta( $post_id, 'reports', maybe_serialize($reportSettings) );
+            delete_post_meta( $post_id, '_report_email');
+            delete_post_meta( $post_id, '_report_active' );
+            delete_post_meta( $post_id, '_report_one_days');
+            delete_post_meta( $post_id, '_report_one_hour');
+            delete_post_meta( $post_id, '_report_one_minutes');
+            delete_post_meta( $post_id, '_report_two_days');
+            delete_post_meta( $post_id, '_report_two_hour');
+            delete_post_meta( $post_id, '_report_two_minutes');
+
 
         } else {
             return $post_id;

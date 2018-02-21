@@ -31,13 +31,13 @@
 <label>Report Enabled: </label>
 <input type="radio" name="_report_active" value="active" <?php echo $reportActive; ?> > Yes</input>
 <input type="radio" name="_report_active" value="inactive" <?php echo $reportInActive; ?> > No</input><br />
-<label>First Report Days before trip (1-7): </label><input type="number" name="_report_one_days" min="1" max="7" value="<?php echo $reportOneDays; ?>">
-<br/>
-<label>First Report Time to send report (24hr EST): </label><input type="number" name="_report_one_hour" min="0" max="24" value="<?php echo $reportOneHour; ?>">:<input type="number" name="_report_one_minutes" min="0" max="59" value="<?php echo $reportOneMinutes; ?>" >
-<br/>
-<label>Second Report Days before trip (1-7): </label><input type="number" name="_report_two_days" min="1" max="7" value="<?php echo $reportTwoDays; ?>">
-<br/>
-<label>Second Report Time to send report (24hr EST): </label><input type="number" name="_report_two_hour" min="0" max="24" value="<?php echo $reportTwoHour; ?>">:<input type="number" name="_report_two_minutes" min="0" max="59" value="<?php echo $reportTwoMinutes; ?>" >
-<br/>
 <label>Report Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportEmail; ?>" />
 <br />
+<label>First Report Days before trip (1-7): </label><input type="number" name="_report_day[]" min="1" max="7" value="<?php echo $reportOneDays; ?>">
+<br/>
+<label>First Report Time to send report (24hr EST): </label><input type="number" name="_report_hour[]" min="0" max="24" value="<?php echo $reportOneHour; ?>">:<input type="number" name="_report_minute[]" min="0" max="59" value="<?php echo $reportOneMinutes; ?>" >
+<br/>
+<label>Second Report Days before trip (1-7): </label><input type="number" name="_report_day[]" min="1" max="7" value="<?php echo $reportTwoDays; ?>">
+<br/>
+<label>Second Report Time to send report (24hr EST): </label><input type="number" name="_report_hour[]" min="0" max="24" value="<?php echo $reportTwoHour; ?>">:<input type="number" name="_report_minute[]" min="0" max="59" value="<?php echo $reportTwoMinutes; ?>" >
+<br/>
