@@ -347,15 +347,32 @@ META;
             update_post_meta( $post_id, '_contact_phone', sanitize_text_field( $_POST['_contact_phone'] ) );
             update_post_meta( $post_id, '_rep', sanitize_text_field( $_POST['_rep'] ) );
             update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
-            update_post_meta( $post_id, '_report_email', sanitize_text_field( $_POST['_report_email'] ) );
             update_post_meta( $post_id, '_type', sanitize_text_field( $_POST['_type'] ) );
-            update_post_meta( $post_id, '_report_active', sanitize_text_field( $_POST['_report_active']) );
-            update_post_meta( $post_id, '_report_one_days', intval( $_POST['_report_one_days']) );
-            update_post_meta( $post_id, '_report_one_hour', intval( $_POST['_report_one_hour']) );
-            update_post_meta( $post_id, '_report_one_minutes', intval( $_POST['_report_one_minutes']) );
-            update_post_meta( $post_id, '_report_two_days', intval( $_POST['_report_two_days']) );
-            update_post_meta( $post_id, '_report_two_hour', intval( $_POST['_report_two_hour']) );
-            update_post_meta( $post_id, '_report_two_minutes', intval( $_POST['_report_two_minutes']) );
+            $reportSettings = array( 'active' => sanitize_text_field( $_POST['_report_active']),
+              'email' => sanitize_text_field( $_POST['_report_email'] ),
+              'reports' => array());
+            foreach( $_POST['_report_day'] as $index => $day ) {
+              $reportSettings['reports'][$index]['day'] = $day;
+              if ( isset($_POST['_report_hour'][$index]) ) {
+                $reportSettings['reports'][$index]['hour'] = $_POST['_report_hour'][$index];
+              }
+              if ( isset($_POST['_report_minute'][$index]) ) {
+                $reportSettings['reports'][$index]['minute'] = $_POST['_report_minute'][$index];
+              }
+            }
+            update_post_meta( $post_id, '_reports', maybe_serialize($reportSettings) );
+
+
+
+            delete_post_meta( $post_id, '_report_email');
+            delete_post_meta( $post_id, '_report_active' );
+            delete_post_meta( $post_id, '_report_one_days');
+            delete_post_meta( $post_id, '_report_one_hour');
+            delete_post_meta( $post_id, '_report_one_minutes');
+            delete_post_meta( $post_id, '_report_two_days');
+            delete_post_meta( $post_id, '_report_two_hour');
+            delete_post_meta( $post_id, '_report_two_minutes');
+
 
         } else {
             return $post_id;
@@ -366,6 +383,7 @@ META;
         wp_enqueue_script('media-upload');
         wp_enqueue_script('thickbox');
         wp_enqueue_script('destinations_upload', WC_TRIPS_PLUGIN_URL . '/assets/js/destinations.js', array('jquery','media-upload','thickbox'));
+        wp_enqueue_script("destination_js", WC_TRIPS_PLUGIN_URL."/includes/admin/js/destinations.js",array('jquery'), false, true);
         wp_nonce_field(plugin_basename(__FILE__), 'destination_attachment_nonce');
         $lessonAge = get_post_meta( $post->ID, '_lesson_age', true);
         if ( $lessonAge === '' ) {
@@ -379,21 +397,15 @@ META;
         $contactPhone     = get_post_meta( $post->ID, '_contact_phone', true);
         $rep              = get_post_meta( $post->ID, '_rep', true);
         $repPhone         = get_post_meta( $post->ID, '_rep_phone', true);
-        $reportEmail      = get_post_meta( $post->ID, '_report_email', true);
-        $reportOneDays    = get_post_meta( $post->ID, '_report_one_days', true);
-        $reportOneHour    = get_post_meta( $post->ID, '_report_one_hour', true);
-        $reportOneMinutes = get_post_meta( $post->ID, '_report_one_minutes', true);
-        $reportTwoDays    = get_post_meta( $post->ID, '_report_two_days', true);
-        $reportTwoHour    = get_post_meta( $post->ID, '_report_two_hour', true);
-        $reportTwoMinutes = get_post_meta( $post->ID, '_report_two_minutes', true);
+        $reportSettings   = maybe_unserialize(get_post_meta( $post->ID, '_reports', true));
         $type         = get_post_meta( $post->ID, '_type', true);
         $types        = array("winter" => "Winter", "summer" => "Summer", "summer_snow" => "Summer Snow");
-        $reportActiveValue = get_post_meta( $post->ID, '_report_active', true);
+        error_log(print_r($reportSettings,true));
 
-        if ( "" === $reportActiveValue ) {
+        if ( "" === $reportSettings['active'] ) {
           $reportActive = "";
           $reportInActive = "checked";
-        } else if ("active" == $reportActiveValue ) {
+        } else if ("active" == $reportSettings['active'] ) {
           $reportActive = "checked";
           $reportInActive = "";
         } else {
