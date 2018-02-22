@@ -31,13 +31,34 @@
 <label>Report Enabled: </label>
 <input type="radio" name="_report_active" value="active" <?php echo $reportActive; ?> > Yes</input>
 <input type="radio" name="_report_active" value="inactive" <?php echo $reportInActive; ?> > No</input><br />
-<label>Report Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportEmail; ?>" />
+<label>Report Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportSettings['email']; ?>" />
 <br />
-<label>First Report Days before trip (1-7): </label><input type="number" name="_report_day[]" min="1" max="7" value="<?php echo $reportOneDays; ?>">
-<br/>
-<label>First Report Time to send report (24hr EST): </label><input type="number" name="_report_hour[]" min="0" max="24" value="<?php echo $reportOneHour; ?>">:<input type="number" name="_report_minute[]" min="0" max="59" value="<?php echo $reportOneMinutes; ?>" >
-<br/>
-<label>Second Report Days before trip (1-7): </label><input type="number" name="_report_day[]" min="1" max="7" value="<?php echo $reportTwoDays; ?>">
-<br/>
-<label>Second Report Time to send report (24hr EST): </label><input type="number" name="_report_hour[]" min="0" max="24" value="<?php echo $reportTwoHour; ?>">:<input type="number" name="_report_minute[]" min="0" max="59" value="<?php echo $reportTwoMinutes; ?>" >
-<br/>
+<div class="reportSettings">
+<?php foreach( $reportSettings['reports'] as $index => $array ): ?>
+  <?php
+    $number = $index + 1;
+    switch( intVal( substr($number,-1,1) ) ) {
+      case 1:
+        $postFix = "st";
+        break;
+      case 2:
+        $postFix = "nd";
+        break;
+      case 3:
+        $postFix = "rd";
+        break;
+      default:
+        $postFix = "th";
+    }
+    $number .= $postFix;
+  ?>
+<div class="reportSetting">
+  <i class="fa fa-2x fa-times reportDelete" ></i><br />
+  <label><?php echo $number; ?> Report Days before trip (0-7): </label><input type="number" name="_report_day[]" min="0" max="7" value="<?php echo $array['day']; ?>">
+  <br/>
+  <label><?php echo $number; ?> Report Time to send report (24hr EST): </label><input type="number" name="_report_hour[]" min="0" max="24" value="<?php echo $array['hour']; ?>">:<input type="number" name="_report_minute[]" min="0" max="59" value="<?php echo $array['minute']; ?>" >
+  <br/>
+</div>
+<?php endforeach; ?>
+</div>
+<button id="addReport">Add new report</button>

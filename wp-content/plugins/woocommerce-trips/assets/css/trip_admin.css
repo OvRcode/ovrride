@@ -50,3 +50,10 @@
 .deleteButton:hover {
   background: url(../images/close.png) no-repeat center;
 }
+.reportDelete {
+  color: red;
+  cursor: pointer;
+}
+.reportSetting:hover {
+  background: #efeff5;
+}
