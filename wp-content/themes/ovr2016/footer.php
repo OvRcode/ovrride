@@ -111,7 +111,7 @@
 </div>
 <footer id="colophon" class="footer" role="contentinfo">
 	<div class="row ovr-sponsors">
-		<div class="col-xs-4 col-sm-2">
+		<div class="col-xs-4 col-sm-2 col-xs-offset-1">
 			<a href="http://www.arcteryx.com" class="ovr_sponsor" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/arcteryx.png"; ?>">
 			</a>
@@ -136,12 +136,34 @@
 				<img src="<?php echo $theme_dir . "/includes/images/salomon.png"; ?>">
 			</a>
 		</div>
-		<div class="col-xs-4 col-sm-2">
+	</div>
+  <div class="row ovr-sponsors">
+    <div class="col-xs-4 col-sm-2 col-xs-offset-1">
 			<a href="https://www.thenorthface.com/" class="ovr_sponsor" target="_blank">
 				<img src="<?php echo $theme_dir ."/includes/images/tnf.png"; ?>">
 			</a>
 		</div>
-	</div>
+    <div class="col-xs-4 col-sm-2">
+      <a href="http://www.clifbar.com/" class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/cliffBar.png"; ?>">
+      </a>
+    </div>
+    <div class="col-xs-4 col-sm-2">
+      <a href="https://www.highbrewcoffee.com/" class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/highBrew.png"; ?>">
+      </a>
+    </div>
+    <div class="col-xs-4 col-sm-2">
+      <a href="https://www.hobokenbrewing.beer/"  class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/HobokenBrewing.png"; ?>" >
+      </a>
+    </div>
+    <div class="col-xs-4 col-sm-2">
+      <a href="https://austineastciders.com/" class="ovr_sponsor" target="_blank" >
+        <img src="<?php echo $theme_dir . "/includes/images/austinEastCiders.png"; ?>" >
+      </a>
+    </div>
+  </div>
 	<div class="row ovr-footer-links">
 		<div class="col-xs-10 col-xs-offset-1">
 				<a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/waiver/">Waiver</a> |
