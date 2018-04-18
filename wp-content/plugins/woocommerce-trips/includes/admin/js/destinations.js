@@ -32,7 +32,7 @@
       $(this).parent("div").remove();
     });
   });
-  $(".reportDelete").on("click", function(){
+  $(".reportDelete, .emailDelete").on("click", function(){
     $(this).parent("div").remove();
   });
 })( jQuery );

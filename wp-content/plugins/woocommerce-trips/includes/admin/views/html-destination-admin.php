@@ -53,8 +53,10 @@ function generatePostFix($index) {
 <input type="radio" name="_report_active" value="inactive" <?php echo $reportInActive; ?> > No</input><br />
 <?php foreach($reportSettings['email'] as $emailIndex => $reportEmail): ?>
   <?php $emailNumber = generatePostFix($emailIndex); ?>
-<label>Report <?php echo $emailNumber; ?> Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportEmail; ?>" /><i class="fa fa-2x fa-times emailDelete" ></i>
-<br />
+  <div class="emailContainer">
+    <label>Report <?php echo $emailNumber; ?> Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportEmail; ?>" /><i class="fa fa-2x fa-times emailDelete" ></i>
+    <br />
+  </div>
 <?php endforeach; ?>
 <div class="reportSettings">
 <?php foreach( $reportSettings['reports'] as $index => $array ): ?>
