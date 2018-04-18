@@ -1,3 +1,23 @@
+<?php
+function generatePostFix($index) {
+  //take index integer, add 1 and firgure out correct post fix
+  $number = $index + 1;
+  switch( intVal( substr($number,-1,1) ) ) {
+    case 1:
+      $postFix = "st";
+      break;
+    case 2:
+      $postFix = "nd";
+      break;
+    case 3:
+      $postFix = "rd";
+      break;
+    default:
+      $postFix = "th";
+  }
+  return $number .= $postFix;
+}
+ ?>
 <label>Type:</label><?php echo $type_drop_down; ?><hr />
 <h4>Contact Information</h4>
 <label>Contact: </label><input type="text" size="36" name="_contact" value="<?php echo $contact; ?>" />
@@ -31,27 +51,14 @@
 <label>Report Enabled: </label>
 <input type="radio" name="_report_active" value="active" <?php echo $reportActive; ?> > Yes</input>
 <input type="radio" name="_report_active" value="inactive" <?php echo $reportInActive; ?> > No</input><br />
-<label>Report Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportSettings['email']; ?>" />
+<?php foreach($reportSettings['email'] as $emailIndex => $reportEmail): ?>
+  <?php $emailNumber = generatePostFix($emailIndex); ?>
+<label>Report <?php echo $emailNumber; ?> Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportEmail; ?>" /><i class="fa fa-2x fa-times emailDelete" ></i>
 <br />
+<?php endforeach; ?>
 <div class="reportSettings">
 <?php foreach( $reportSettings['reports'] as $index => $array ): ?>
-  <?php
-    $number = $index + 1;
-    switch( intVal( substr($number,-1,1) ) ) {
-      case 1:
-        $postFix = "st";
-        break;
-      case 2:
-        $postFix = "nd";
-        break;
-      case 3:
-        $postFix = "rd";
-        break;
-      default:
-        $postFix = "th";
-    }
-    $number .= $postFix;
-  ?>
+  <?php $number = generatePostFix($index); ?>
 <div class="reportSetting">
   <i class="fa fa-2x fa-times reportDelete" ></i><br />
   <label><?php echo $number; ?> Report Days before trip (0-7): </label><input type="number" name="_report_day[]" min="0" max="7" value="<?php echo $array['day']; ?>">
