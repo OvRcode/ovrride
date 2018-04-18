@@ -90,11 +90,11 @@ $version = file_get_contents('lists.version');
                         <i class="fas fa-table"></i>&nbsp;Summary
                     </button>
                 </li>
-                <!--<li>
+                <li>
                     <button type="button" class="btn btn-primary btn-reports" id="reportsMenu">
                         <i class="fas fa-edit"></i>&nbsp;Reports
                     </button>
-                </li>-->
+                </li>
                 <li>
                     <button type="button" class="btn btn-primary disabled" id="btn-message">
                         <i class="fas fa-exclamation-triangle"></i>&nbsp;Message
