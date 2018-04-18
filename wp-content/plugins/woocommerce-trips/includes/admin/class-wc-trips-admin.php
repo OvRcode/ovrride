@@ -349,8 +349,11 @@ META;
             update_post_meta( $post_id, '_rep_phone', sanitize_text_field( $_POST['_rep_phone'] ) );
             update_post_meta( $post_id, '_type', sanitize_text_field( $_POST['_type'] ) );
             $reportSettings = array( 'active' => sanitize_text_field( $_POST['_report_active']),
-              'email' => sanitize_text_field( $_POST['_report_email'] ),
+              'email' => array(),
               'reports' => array());
+            foreach( $_POST['_report_email'] as $index => $email ) {
+              $reportSettings['email'][] = sanitize_text_field($email);
+            }
             foreach( $_POST['_report_day'] as $index => $day ) {
               $reportSettings['reports'][$index]['day'] = $day;
               if ( isset($_POST['_report_hour'][$index]) ) {
@@ -383,7 +386,7 @@ META;
         wp_enqueue_script('media-upload');
         wp_enqueue_script('thickbox');
         wp_enqueue_script('destinations_upload', WC_TRIPS_PLUGIN_URL . '/assets/js/destinations.js', array('jquery','media-upload','thickbox'));
-        wp_enqueue_script("destination_js", WC_TRIPS_PLUGIN_URL."/includes/admin/js/destinations.js",array('jquery'), false, true);
+        wp_enqueue_script("destination_js", WC_TRIPS_PLUGIN_URL."/includes/admin/js/destinations.js",array('jquery'), '1.2', true);
         wp_nonce_field(plugin_basename(__FILE__), 'destination_attachment_nonce');
         $lessonAge = get_post_meta( $post->ID, '_lesson_age', true);
         if ( $lessonAge === '' ) {

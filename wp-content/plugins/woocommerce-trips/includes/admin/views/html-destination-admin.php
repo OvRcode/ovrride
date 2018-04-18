@@ -51,23 +51,32 @@ function generatePostFix($index) {
 <label>Report Enabled: </label>
 <input type="radio" name="_report_active" value="active" <?php echo $reportActive; ?> > Yes</input>
 <input type="radio" name="_report_active" value="inactive" <?php echo $reportInActive; ?> > No</input><br />
+<div class="reportEmails">
 <?php foreach($reportSettings['email'] as $emailIndex => $reportEmail): ?>
   <?php $emailNumber = generatePostFix($emailIndex); ?>
-  <div class="emailContainer">
-    <label>Report <?php echo $emailNumber; ?> Email: </label><input type="text" size="36" name="_report_email" value="<?php echo $reportEmail; ?>" /><i class="fa fa-2x fa-times emailDelete" ></i>
-    <br />
+  <div class="emailSetting" style="display:inline-block; width:100%;">
+    <div style="float:left; margin-right:5px;">
+      <i class="fa fa-2x fa-times emailDelete"></i>
+    </div>
+    <div style="float:left;">
+      <label>Report <?php echo $emailNumber; ?> Email: </label><input type="text" size="36" name="_report_email[]" value="<?php echo $reportEmail; ?>" /></i>
+      <br />
+    </div>
   </div>
 <?php endforeach; ?>
+</div>
 <div class="reportSettings">
 <?php foreach( $reportSettings['reports'] as $index => $array ): ?>
   <?php $number = generatePostFix($index); ?>
-<div class="reportSetting">
-  <i class="fa fa-2x fa-times reportDelete" ></i><br />
+<div class="reportSetting" style="display:inline-block; width:100%;">
+  <div style="float:left; margin-right:5px;"><i class="fa fa-2x fa-times reportDelete" ></i></div>
+  <div style="float:left;">
   <label><?php echo $number; ?> Report Days before trip (0-7): </label><input type="number" name="_report_day[]" min="0" max="7" value="<?php echo $array['day']; ?>">
   <br/>
   <label><?php echo $number; ?> Report Time to send report (24hr EST): </label><input type="number" name="_report_hour[]" min="0" max="24" value="<?php echo $array['hour']; ?>">:<input type="number" name="_report_minute[]" min="0" max="59" value="<?php echo $array['minute']; ?>" >
   <br/>
 </div>
+</div>
 <?php endforeach; ?>
 </div>
-<button id="addReport">Add new report</button>
+<button id="addReport">Add new report</button>&nbsp;&nbsp;&nbsp;<button id="addEmail">Add new report email</button>
