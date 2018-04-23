@@ -1,8 +1,0 @@
-{
-  // MySQL Connection info, these values are only for development and not used in production
-  "id": "config",
-  "MYSQL_DB": "ovrride",
-  "MYSQL_USER": "root",
-  "MYSQL_PASS": "iloverandompasswordsbutthiswilldo",
-  "MYSQL_HOST":"192.168.50.7"
-}

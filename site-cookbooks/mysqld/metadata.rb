@@ -1,2 +1,0 @@
-name 'mysqld'
-depends 'mysqld'
