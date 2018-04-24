@@ -50,7 +50,7 @@
 .deleteButton:hover {
   background: url(../images/close.png) no-repeat center;
 }
-.reportDelete {
+.reportDelete, .emailDelete {
   color: red;
   cursor: pointer;
 }

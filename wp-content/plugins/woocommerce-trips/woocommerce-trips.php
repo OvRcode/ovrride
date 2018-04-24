@@ -225,17 +225,12 @@ STYLE;
       $emailBody = ob_get_contents();
       ob_end_clean();
       add_filter('wp_mail_content_type', function(){ return "text/html"; });
-      $headers[] = 'From: OvRride <info@ovrride.com>';
-      $emailTitle = "OvRride Count on " .date('l') . ": " . get_post_meta( $trip, "_wc_trip_destination", true) . " " . date('m/d/y', get_post_meta($trip, "_wc_trip_start_date", true));
-      wp_mail($email, $emailTitle, $emailBody, $headers);
-      /*  Send a copy to info@ovrride.com also, needs to be a seprate message for Amazon SES */
-      $headers = array();
-      $headers[] = 'From: OvRride <info@ovrride.com>';
-      wp_mail("info@ovrride.com", $emailTitle, $emailBody, $headers);
-      $headers = array();
-      $headers[] = 'From: OvrRide <info@ovrride.com>';
-      wp_mail("devops@ovrride.com", $emailTitle, $emailBody, $headers);
-      error_log("SENT EMAIL!");
+      foreach( $email as $index => $recipient ) {
+          $headers[] = 'From: OvRride <info@ovrride.com>';
+          $emailTitle = "OvRride Count on " .date('l') . ": " . get_post_meta( $trip, "_wc_trip_destination", true) . " " . date('m/d/y', get_post_meta($trip, "_wc_trip_start_date", true));
+          wp_mail($recipient, $emailTitle, $emailBody, $headers);
+          error_log("SENT EMAIL!");
+      }
       remove_filter('wp_mail_content_type', function(){ return "text/html"; });
     }
     private function checkCron($time, $hook, $args) {
