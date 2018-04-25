@@ -124,11 +124,11 @@
   background: rgb(59, 59, 59);
   color: white !important;
 }
-li.winter, li.summer {
+li.winter, li.summer, li.summer_snow {
   cursor:pointer;
 }
 
-.days li.winter.summer {
+.days li.winter.summer, li.summer.summer_snow {
   color: rgb(0, 0, 0);
 }
 .days li.winter {
@@ -139,8 +139,9 @@ li.winter, li.summer {
   background-color: rgb(59, 59, 59);
   color: rgb(255, 255, 255);
 }
-.days li.summer {
-  color: rgb(254, 210, 8);
+.days li.summer, li.summer_snow {
+  background-color: rgb(255,255,77);
+  font-weight: 700;
 }
 .webui-popover-content a:hover {
   background: none;
