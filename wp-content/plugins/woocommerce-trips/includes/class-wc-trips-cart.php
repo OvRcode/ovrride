@@ -425,7 +425,9 @@ CARTMETA;
         $destination                    = get_page_by_title( $destination_name, "ARRAY_A", "destinations");
         $destination_lesson_restriction = get_post_meta( $destination['ID'], '_lesson_age', true);
         $age_check                      = $product->get_meta( '_wc_trip_age_check', true, 'view');
-
+        if ( "" == $age_check ) {
+          $age_check = 18;
+        }
         $template_data = [
           "trip_type" => get_post_meta( $product->id, '_wc_trip_type', true),
           "pickups"   => $this->pickupField( $product->id ),
