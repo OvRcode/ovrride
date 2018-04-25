@@ -144,8 +144,8 @@
 			</a>
 		</div>
     <div class="col-xs-4 col-sm-2">
-      <a href="http://www.clifbar.com/" class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/cliffBar.png"; ?>">
+      <a href="https://www.onepercentfortheplanet.org/" class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/one_percent.png"; ?>">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
