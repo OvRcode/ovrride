@@ -66,6 +66,7 @@ class WC_Trips_Admin {
         $start_date         = $product->get_meta( '_wc_trip_start_date', true, 'view' );
         $end_date           = $product->get_meta( '_wc_trip_end_date', true, 'view' );
         $stock_status       = $product->get_stock_status();
+        $age_check          = $product->get_meta( '_wc_trip_age_check', true, 'view');
         include( 'views/html-trip-general.php' );
     }
 
@@ -89,6 +90,7 @@ class WC_Trips_Admin {
             '_wc_trip_start_date'               => 'date',
             '_wc_trip_end_date'                 => 'date',
             '_wc_trip_stock'                    => 'int',
+            '_wc_trip_age_check'                => 'int',
             '_wc_trip_stock_status'             => 'stockStatus',
             '_wc_trip_includes'                 => 'html',
             '_wc_trip_rates'                    => 'html',
