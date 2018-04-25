@@ -52,6 +52,17 @@ if ( ! defined( 'ABSPATH' ) ) {
             ?>
         </select>
     </p>
+		<p class="form-field">
+			<label for="_wc_trip_age_check">Age check</label>
+			<select id="_wc_trip_age_check" name="_wc_trip_age_check">
+				<option value="18" default>18</option>
+				<?php if (21 == $age_check):?>
+					<option value="21" selected>21</option>
+				<?php else: ?>
+					<option value="21">21</option>
+			<?php endif;?>
+			</select>
+		</p>
     <p class="form-field">
         <label for="_wc_trip_start_date">Start date</label>
         <input type="text" name="_wc_trip_start_date" id="_wc_trip_start_date" value="<?php echo $start_date; ?>"></input>

@@ -25,7 +25,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
 
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '1.5.1' );
+        define( 'WC_TRIPS_VERSION', '1.5.1.1' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );

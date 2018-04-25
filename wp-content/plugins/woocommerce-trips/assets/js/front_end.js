@@ -167,9 +167,15 @@ jQuery(document).ready(function($){
 
   if ( "domestic_flight" !== $("#wc_trip_type").val() && "international_flight" !== $("#wc_trip_type").val()){
     $("input[name=wc_trip_age_check]").on("change", function(){
+      ageLimit = $("#wc_trip_age_limit").val();
       if ( "yes" == $(this).val() ) {
         $(".dob, .dobLabel").hide();
         $("#wc_trip_dob_year, #wc_trip_dob_day, #wc_trip_dob_month").data('required', false);
+        if ( ageLimit == 21 ) {
+          $(".wc_trip_add").prop("disabled",false);
+        }
+      } else if ( ageLimit == 21 && "no" == $(this).val() ) {
+        $(".wc_trip_add").prop("disabled",true);
       } else {
         $(".dob, .dobLabel").show();
         $("#wc_trip_dob_year, #wc_trip_dob_day, #wc_trip_dob_month").data('required', true);
