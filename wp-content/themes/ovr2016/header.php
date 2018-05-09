@@ -6,9 +6,14 @@
  *
  * @package _tk
  */
+global $post;
 
 $title = wp_title( '|', false, 'right' );
-$ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_og.png');
+if ( has_post_thumbnail( $post->ID ) ) {
+	$ogImage = wp_get_attachment_url( get_post_thumbnail_id($post->ID), 'thumbnail' );
+} else {
+	$ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_og.png');
+}
 if (  is_front_page() || is_archive() || is_home() ) {
 	$ogDescription = esc_attr(wp_strip_all_tags(get_option("about_ovr", "OvRride"), true));
 	} else {
