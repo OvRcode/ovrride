@@ -25,7 +25,7 @@ if (  is_front_page() || is_archive() || is_home() ) {
 	} else {
 		$ogDescription = $title;
 	}
-	$ogDescription = substr($ogDescription, 0, 200);
+	$ogDescription = substr($ogDescription, 0, 300);
 }
 
 ?><!DOCTYPE html>
