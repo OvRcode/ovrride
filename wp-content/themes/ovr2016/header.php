@@ -17,21 +17,17 @@ if ( has_post_thumbnail( $post->ID ) ) {
 if (  is_front_page() || is_archive() || is_home() ) {
 	$ogDescription = esc_attr(wp_strip_all_tags(get_option("about_ovr", "OvRride"), true));
 	} else {
-	global $post;
-	$ogDescription = wp_strip_all_tags(do_shortcode($post->post_content));
+	$ogDescription = get_post($post, 'OBJECT', 'display');
 	if ( is_woocommerce() ) {
-		$ogDescription = esc_attr( preg_replace("/(.* Description:\W{0,4})/", "", $ogDescription) );
+		$ogDescription = htmlentities(wp_strip_all_tags( do_shortcode($ogDescription->post_content ) ) );
+	} else if ( isset( $ogDescription->post_excerpt ) && "" !== $ogDescription->post_excerpt) {
+		$ogDescription = htmlentities( wp_strip_all_tags( do_shortcode( $ogDescription->post_excerpt ) ) );
 	} else {
-		$ogDescription = esc_attr( get_the_excerpt($post) );
+		$ogDescription = $title;
 	}
+	$ogDescription = substr($ogDescription, 0, 200);
 }
 
-if ( "" == $ogDescription ) {
-	$ogDescription = $title;
-} else {
-	$description = $ogDescription;
-	$ogDescription = substr($ogDescription, 0, 300);
-}
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
