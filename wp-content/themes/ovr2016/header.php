@@ -9,7 +9,7 @@
 global $post;
 
 $title = wp_title( '|', false, 'right' );
-if ( has_post_thumbnail( $post->ID ) ) {
+if ( has_post_thumbnail( $post->ID ) || ! is_woocommerce()) {
 	$ogImage = wp_get_attachment_url( get_post_thumbnail_id($post->ID), 'thumbnail' );
 } else {
 	$ogImage = get_site_url( null, 'wp-content/themes/ovr2016/includes/images/ovr_og.png');
