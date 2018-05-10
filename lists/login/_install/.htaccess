@@ -1,4 +1,0 @@
-<Files ~ "\.(htaccess|php|txt|sql)$">
-order allow,deny
-deny from all
-</Files>
