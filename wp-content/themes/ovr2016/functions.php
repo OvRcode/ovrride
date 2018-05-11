@@ -482,6 +482,9 @@ function ovr_menu_mods($items, $args) {
   $loginoutlink = ob_get_contents();
   ob_end_clean();
   $items .= '<li class="hidden-sm hidden-xs"><a>|</a></li><li><a href="/cart" title="Cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>';
+  if ( is_user_logged_in() ) {
+    $items .= '<li><a href="' . get_site_url(null, '/my-account', 'https') . '">Account</li>';
+  }
   $items .= '<li>'. $loginoutlink .'</li>';
   return $items;
 }
