@@ -28,13 +28,13 @@ class WC_Product_Trip extends WC_Product {
 			$secondary_stock 	= $this->get_meta( "_wc_trip_secondary_package_stock", true, "view" );
 			$tertiary_stock 	= $this->get_meta( "_wc_trip_tertiary_package_stock", true, "view" );
 			if ( "yes" == $primary_stock ) {
-				$return['primary'] = $primary_stock;
+				$return['primary'] = $this->get_meta("_wc_trip_primary_packages", true, "view");
 			}
 			if ( "yes" == $secondary_stock ) {
-					$return['secondary'] = $secondary_stock;
+					$return['secondary'] = $this->get_meta("_wc_trip_secondary_packages", true, "view");
 			}
 			if ( "yes" == $tertiary_stock ) {
-					$return['tertiary'] = $tertiary_stock;
+					$return['tertiary'] = $his->get_meta("_wc_trip_tertiary_packages", true, "view");
 			}
 			return $return;
 		}
