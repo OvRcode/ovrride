@@ -178,7 +178,6 @@ class WC_Product_Trip extends WC_Product {
 					{$fromBeach}
 					</select>
 				</div>
-				<p><strong>Pickups BEFORE 6:50pm stop in Brooklyn ONLY.</strong></p>
 			</div>
 OUTPUT;
 		}
