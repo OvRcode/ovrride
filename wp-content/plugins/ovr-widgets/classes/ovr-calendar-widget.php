@@ -282,7 +282,6 @@ CALENDARFORM;
             } else {
               $day_content .="<a href='{$event["url"]}'>{$event["name"]}</a><br />";
             }
-            error_log($day_content);
           }
         }
         if ( $calendar_key == $currentDay->format('Y-m-d') ) {
