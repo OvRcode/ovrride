@@ -181,12 +181,17 @@ CALENDARFORM;
     // Add custom events
     $custom_events = maybe_unserialize( get_option("ovr_custom_events", array() ) );
     foreach( $custom_events as $index => $event_data ) {
+      error_log($event_data['name']);
+      // Only process active events
       if ( $event_data["active"] == 1 ) {
+        // Setup DateTime Objects for event dates and month start/end
         $event_start_date = new DateTime($event_data["start"]);
         $event_end_date = new DateTime($event_data["end"]);
         $start_month_date = new DateTime($year."-".$month."-01");
         $end_month_date = new DateTime($year."-".$month."-".$lastDay);
         unset($event_data["active"]);
+        error_log($event_end_date->format('m'));
+        error_log($month);
         if ( $event_data["start"] == $event_data["end"] &&
         $event_end_date->format('m') == $month) {
           unset($event_data["end"]);
@@ -195,7 +200,7 @@ CALENDARFORM;
           $trips[$event_start][] = $event_data;
         } else {
           if ( $event_end_date->format('m') == $month || $event_start_date->format('m') == $month ){
-            if ( $event_start_date < $start_month_date && $event_end_date->format('m') == $month){
+            if ( $event_start_date <= $start_month_date && $event_end_date->format('m') == $month){
               $event_start_date = $start_month_date->format('Y-m-d');
               if ( $event_start_date !== $event_data["end"] ) {
                 $event_data["Date"] = $event_data["end"];
