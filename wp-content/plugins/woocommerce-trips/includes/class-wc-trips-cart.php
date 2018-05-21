@@ -428,7 +428,7 @@ CARTMETA;
         if ( "" == $age_check ) {
           $age_check = 18;
         }
-        if ( substr( $age_checl, -1) === "+" ) {
+        if ( substr( $age_check, -1) === "+" ) {
           $age_label = substr($age_check, 0 , -1);
         } else {
           $age_label = $age_check;
