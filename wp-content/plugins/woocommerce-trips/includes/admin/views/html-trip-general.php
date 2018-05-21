@@ -55,17 +55,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="form-field">
 			<label for="_wc_trip_age_check">Age check</label>
 			<select id="_wc_trip_age_check" name="_wc_trip_age_check">
-				<option value="18" default>18</option>
-				<?php if (21 == $age_check):?>
-					<option value="21" selected>21</option>
-				<?php else: ?>
-					<option value="21">21</option>
-			<?php endif;?>
-			<?php if ( "21+" == $age_check ): ?>
-				<option value="21+" selected>21+</option>
-			<?php else:?>
-				<option value="21+">21+</option>
-			<?php endif;?>
+				<option value="18" default<?php echo ($age_check == "18" ? ' selected': '');?>>18</option>
+				<option value="18+"<?php echo ($age_check == "18+" ? ' selected': '');?>>18+</option>
+				<option value="21"<?php echo ($age_check == "21" ? ' selected': '');?>>21</option>
+				<option value="21+"<?php echo ($age_check == "21+" ? ' selected': '');?>>21+</option>
 			</select>
 		</p>
     <p class="form-field">
