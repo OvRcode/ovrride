@@ -428,6 +428,11 @@ CARTMETA;
         if ( "" == $age_check ) {
           $age_check = 18;
         }
+        if ( substr( $age_checl, -1) === "+" ) {
+          $age_label = substr($age_check, 0 , -1);
+        } else {
+          $age_label = $age_check;
+        }
         $template_data = [
           "trip_type" => get_post_meta( $product->id, '_wc_trip_type', true),
           "pickups"   => $this->pickupField( $product->id ),
@@ -439,7 +444,8 @@ CARTMETA;
           "base_price"  => floatval( get_post_meta( $product->id, '_wc_trip_base_price', true ) ),
           "stock"       => $stock_text,
           "lesson_age"  => $destination_lesson_restriction,
-          "age_limit"   => $age_check
+          "age_limit"   => $age_check,
+          "age_label"   => $age_label
         ];
 
         $template = "";

@@ -1,7 +1,7 @@
 
 <div class="dobCheck">
   <input type="hidden" value="<?php echo $age_limit; ?>" id="wc_trip_age_limit"></input>
-  <label for="wc_trip_age_check"><strong>Is this guest at least <?php echo $age_limit; ?> years of age?</strong><span class="required"> *</span></label>
+  <label for="wc_trip_age_check"><strong>Is this guest at least <?php echo $age_label; ?> years of age?</strong><span class="required"> *</span></label>
   <br />
   <input type="radio" id="wc_trip_age_check" name="wc_trip_age_check" value="yes" data-required="true"> Yes
   <br />
