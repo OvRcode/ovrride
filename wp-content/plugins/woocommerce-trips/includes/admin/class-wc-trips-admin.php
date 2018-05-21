@@ -90,7 +90,7 @@ class WC_Trips_Admin {
             '_wc_trip_start_date'               => 'date',
             '_wc_trip_end_date'                 => 'date',
             '_wc_trip_stock'                    => 'int',
-            '_wc_trip_age_check'                => 'int',
+            '_wc_trip_age_check'                => 'string',
             '_wc_trip_stock_status'             => 'stockStatus',
             '_wc_trip_includes'                 => 'html',
             '_wc_trip_rates'                    => 'html',
