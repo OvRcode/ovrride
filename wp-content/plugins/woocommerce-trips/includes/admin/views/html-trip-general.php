@@ -61,6 +61,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php else: ?>
 					<option value="21">21</option>
 			<?php endif;?>
+			<?php if ( "21+" == $age_check ): ?>
+				<option value="21+" selected>21+</option>
+			<?php else:?>
+				<option value="21+">21+</option>
+			<?php endif;?>
 			</select>
 		</p>
     <p class="form-field">
