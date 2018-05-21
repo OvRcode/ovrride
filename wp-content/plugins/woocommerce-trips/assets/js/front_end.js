@@ -168,14 +168,23 @@ jQuery(document).ready(function($){
   if ( "domestic_flight" !== $("#wc_trip_type").val() && "international_flight" !== $("#wc_trip_type").val()){
     $("input[name=wc_trip_age_check]").on("change", function(){
       ageLimit = $("#wc_trip_age_limit").val();
+      if ( ageLimit.substr( ageLimit.length - 1 ) == "+" ) {
+        ageStrict = true;
+        ageLabel = ageLimit.substr(0, ageLimit.length - 1 );
+      } else {
+        ageStrict = false;
+      }
+
       if ( "yes" == $(this).val() ) {
         $(".dob, .dobLabel").hide();
         $("#wc_trip_dob_year, #wc_trip_dob_day, #wc_trip_dob_month").data('required', false);
-        if ( ageLimit == 21 ) {
+        if ( ageStrict ) {
           $(".wc_trip_add").prop("disabled",false);
         }
-      } else if ( ageLimit == 21 && "no" == $(this).val() ) {
+
+      } else if ( ageStrict && "no" == $(this).val() ) {
         $(".wc_trip_add").prop("disabled",true);
+        alert( "Sorry, you need to be over " + ageLabel + " for this trip." );
       } else {
         $(".dob, .dobLabel").show();
         $("#wc_trip_dob_year, #wc_trip_dob_day, #wc_trip_dob_month").data('required', true);
@@ -273,16 +282,18 @@ jQuery(document).ready(function($){
       if ( monthCheck < 0 || ( monthCheck == 0 && today.getDate() < birthDate.getDate() ) ) {
         age--;
       }
+      if ( $("#wc_trip_age_limit").length > 0 ) {
+        ageCheck = $("#wc_trip_age_limit").val();
 
-      if ( age >= 18 && $("#wc_trip_age_check").length > 0 ) {
-        alert("Guest is 18 or over, no need to enter a date of birth");
-        $("#wc_trip_dob_field").val("");
-        $("input[name=wc_trip_dob_month]").val("");
-        $("input[name=wc_trip_dob_day]").val("");
-        $("input[name=wc_trip_dob_year]").val("");
-        $('input:radio[name=wc_trip_age_check]:first').trigger("click");
+        if ( parseInt(age) >= parseInt(ageCheck) ) {
+          alert( "No need to enter a birthday, you're over " + ageCheck +"!");
+          $("#wc_trip_dob_field").val("");
+          $("input[name=wc_trip_dob_month]").val("");
+          $("input[name=wc_trip_dob_day]").val("");
+          $("input[name=wc_trip_dob_year]").val("");
+          $('input:radio[name=wc_trip_age_check]:first').trigger("click");
+        }
       }
-
     }
   });
 
