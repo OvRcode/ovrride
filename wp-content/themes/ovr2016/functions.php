@@ -475,7 +475,7 @@ function ovr_menu_mods($items, $args) {
     $items .= '<li><a href="' . get_site_url(null, '/my-account', 'https') . '" title="Account"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a></li>';
     $items .= '<li><a href="'. wp_logout_url() .'" title="Logout"><i class="fa fa-sign-out" aria-hidden="true"></a></i></li>';
   } else {
-    $items .= '<li><a href="'. wp_login_url() .'" title="Sign In"><i class="fa fa-sign-in" aria-hidden="true"></i></li>';
+    $items .= '<li><a href="'. wp_login_url() .'" title="Sign In"><i class="fa fa-sign-in" aria-hidden="true"></a></i></li>';
   }
   return $items;
 }
