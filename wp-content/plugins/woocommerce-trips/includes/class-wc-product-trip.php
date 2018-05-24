@@ -55,7 +55,7 @@ class WC_Product_Trip extends WC_Product {
     public function reduce_package_stock( $type, $description ) {
 				$packages = $this->get_meta("_wc_trip_" . $type . "_packages");
 
-        if ( "yes" == $this->get_meta("_wc_trip_" . $type . "_package_stock") ) {
+				if ( "yes" == $this->get_meta("_wc_trip_" . $type . "_package_stock") ) {
             $foundKey = "";
             foreach( $packages as $key => $values ) {
                 if ( $description == $values['description'] ) {
@@ -67,9 +67,9 @@ class WC_Product_Trip extends WC_Product {
             if ( "" !== strval($foundKey) ) {
                 if ( "" !== strval($packages[$foundKey]['stock']) ) {
 									$packages[$foundKey]['stock']--;
-									if ( $this->update_meta_data( "_wc_trip_" . $type . "_packages", $packages) ) {
-										return true;
-									}
+									$this->update_meta_data( "_wc_trip_" . $type . "_packages", $packages);
+									$this->save_meta_data();
+									return true;
                 }
             }
 						return false;
