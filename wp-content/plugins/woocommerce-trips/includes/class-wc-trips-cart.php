@@ -67,16 +67,16 @@ class WC_Trips_Cart {
           return $error;
         }
         if ( "trip" === $_product->product_type && "beach_bus" === $_product->get_meta("_wc_trip_type", true, 'view') ) {
-          $stock_total[$_product->id]['count'] += 1;
+          $stock_total[$_product->get_id()]['count'] += 1;
             if ( WC()->session->__isset($cart_item_key."_to_beach_route") ) {
               $toRoute = WC()->session->get($cart_item_key."_to_beach_route");
-              $stock_total[$_product->id]['secondary'][$toRoute]['count'] += 1;
-              $stock_total[$_product->id]['secondary'][$toRoute]['names'][] = WC()->session->get($cart_item_key."_wc_trip_to_beach");
+              $stock_total[$_product->get_id()]['secondary'][$toRoute]['count'] += 1;
+              $stock_total[$_product->get_id()]['secondary'][$toRoute]['names'][] = WC()->session->get($cart_item_key."_wc_trip_to_beach");
             }
             if ( WC()->session->__isset($cart_item_key."_from_beach_route") ) {
               $fromRoute = WC()->session->get($cart_item_key."_from_beach_route");
-              $stock_total[$_product->id]['secondary'][$fromRoute]['count'] += 1;
-              $stock_total[$_product->id]['secondary'][$fromRoute]['names'][] = WC()->session->get($cart_item_key."_wc_trip_from_beach");
+              $stock_total[$_product->get_id()]['secondary'][$fromRoute]['count'] += 1;
+              $stock_total[$_product->get_id()]['secondary'][$fromRoute]['names'][] = WC()->session->get($cart_item_key."_wc_trip_from_beach");
             }
 
         }
@@ -85,7 +85,7 @@ class WC_Trips_Cart {
         foreach( $stock_total as $product_id => $data) {
           $product = wc_get_product( $product_id );
 
-          if ( $product->stock < $data['count'] ) {
+          if ( $product->get_stock_quantity() < $data['count'] ) {
             $error->add('Sorry, we don\'t have enough seats available for ' . $product->get_title() . ' only ' . $product->stock . ' left');
             return $error;
           }
@@ -114,7 +114,8 @@ class WC_Trips_Cart {
     }
     public function trigger_package_stock( $instance ) {
         global $woocommerce;
-        //$cart = $woocommerce->cart->get_cart();
+        $cart = $woocommerce->cart->get_cart();
+
         foreach( $cart as $cart_id => $cart_data ) {
           if ( !in_array($cart_id,$this->orders_processed) ){
             $this->orders_processed[] = $cart_id;
