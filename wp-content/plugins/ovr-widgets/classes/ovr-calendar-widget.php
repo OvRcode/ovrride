@@ -16,6 +16,13 @@ class ovr_calendar_widget extends WP_Widget {
     add_action( 'init', array( $this, 'register_archive') );
     add_action( 'save_post', array( $this, "product_refresh") );
     add_action( 'ovr_calendar_refresh', array( $this, "refresh") );
+
+    // Make sure calendar refreshes every day
+    if ( ! wp_next_scheduled( 'ovr_calendar_refresh' ) ) {
+      $refreshTime = new DateTime('now', new DateTimeZone('America/New_York'));
+      $refreshTime->modify('Tomorrow 12:01am');
+      wp_schedule_single_event( $refreshTime->format('U'), 'ovr_calendar_refresh' );
+    }
   }
 
   public function form( $instance ) {
@@ -27,10 +34,6 @@ class ovr_calendar_widget extends WP_Widget {
     <label>Mini calendar:<input type="checkbox" name="{$checkboxName}" id="{$checkboxID}" {$checkbox} value="checked"></label>
     </p>
 CALENDARFORM;
-    $refresh_event = wp_next_scheduled( 'ovr_calendar_refresh' );
-    if ( $refresh_event ) {
-      wp_unschedule_event( $refresh_event, 'ovr_calendar_refresh');
-    }
   }
   public function update( $new_instance, $old_instance) {
     $instance['mini'] = ( ! empty( $new_instance['mini'] ) ) ? strip_tags( $new_instance['mini'] ) : '';
