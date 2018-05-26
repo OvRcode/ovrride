@@ -29,4 +29,4 @@ wp-content/cache
 wp-content/advanced-cache.php
 wp-content/object-cache.php
 wp-content/w3tc-config
-
+wp-content/plugins/wp-ses/wpses.log
