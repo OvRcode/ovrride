@@ -4,6 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="options_group show_if_trip">
+		<p class="form-field">
+			<label for="_wc_trip_stock_management">Manage product stock:</label>
+			<input type="radio" value="yes" name="_wc_trip_stock_management" id="_wc_trip_stock_management" <?php echo $stock_management_yes; ?>> Yes </input>
+			<input type="radio" value="no" name="_wc_trip_stock_management" id="_wc_trip_stock_management" <?php echo $stock_management_no; ?>> No </input>
+		</p>
     <p class="form-field">
        <label for="_wc_trip_stock_status">Stock Status</label>
        <select name="_wc_trip_stock_status" id="_wc_trip_stock_status">
