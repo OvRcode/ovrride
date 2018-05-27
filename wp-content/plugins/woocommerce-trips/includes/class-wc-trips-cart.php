@@ -25,7 +25,7 @@ class WC_Trips_Cart {
        add_action( 'woocommerce_before_calculate_totals', array($this, 'add_costs'), 1, 1 );
        add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_add_cart_item' ), 10, 3 );
        add_action( 'woocommerce_check_cart_items', array( $this, 'check_cart_items' ), 1 );
-       add_action( 'woocommerce_product_set_stock', array( $this, 'trigger_package_stock'), 10, 4);
+       add_action( 'woocommerce_reduce_order_stock', array( $this, 'trigger_package_stock'), 1, 4);
     }
     public function check_cart_items(){
       global $woocommerce;
