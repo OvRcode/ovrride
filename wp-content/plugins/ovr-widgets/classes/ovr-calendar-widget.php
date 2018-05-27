@@ -184,7 +184,6 @@ CALENDARFORM;
     // Add custom events
     $custom_events = maybe_unserialize( get_option("ovr_custom_events", array() ) );
     foreach( $custom_events as $index => $event_data ) {
-      error_log($event_data['name']);
       // Only process active events
       if ( $event_data["active"] == 1 ) {
         // Setup DateTime Objects for event dates and month start/end
@@ -193,8 +192,6 @@ CALENDARFORM;
         $start_month_date = new DateTime($year."-".$month."-01");
         $end_month_date = new DateTime($year."-".$month."-".$lastDay);
         unset($event_data["active"]);
-        error_log($event_end_date->format('m'));
-        error_log($month);
         if ( $event_data["start"] == $event_data["end"] &&
         $event_end_date->format('m') == $month) {
           unset($event_data["end"]);
