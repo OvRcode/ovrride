@@ -57,14 +57,16 @@ class WC_Trips_Admin {
                       'post_status' => 'publish',
                       'orderby' => 'title',
                       'order' => 'ASC');
-        $destinations       = get_posts( $args );
-        $product            = wc_get_product($post->ID);
-        $stock              = $product->get_stock_quantity('view');
-        $base_price         = $product->get_meta( '_wc_trip_base_price', true, 'view' );
-        $saved_destination  = $product->get_meta( '_wc_trip_destination', true, 'view' );
-        $trip_type          = $product->get_meta( '_wc_trip_type', true, 'view' );
-        $start_date         = $product->get_meta( '_wc_trip_start_date', true, 'view' );
-        $end_date           = $product->get_meta( '_wc_trip_end_date', true, 'view' );
+        $destinations         = get_posts( $args );
+        $product              = wc_get_product($post->ID);
+        $stock                = $product->get_stock_quantity('view');
+        $base_price           = $product->get_meta( '_wc_trip_base_price', true, 'view' );
+        $saved_destination    = $product->get_meta( '_wc_trip_destination', true, 'view' );
+        $trip_type            = $product->get_meta( '_wc_trip_type', true, 'view' );
+        $start_date           = $product->get_meta( '_wc_trip_start_date', true, 'view' );
+        $end_date             = $product->get_meta( '_wc_trip_end_date', true, 'view' );
+        $stock_management_yes = ( $product->get_manage_stock( 'view' ) ? 'checked' : '');
+        $stock_management_no = ( $product->get_manage_stock( 'view' ) ? '' : 'checked');
         $stock_status       = $product->get_stock_status();
         $age_check          = $product->get_meta( '_wc_trip_age_check', true, 'view');
         include( 'views/html-trip-general.php' );
@@ -91,6 +93,7 @@ class WC_Trips_Admin {
             '_wc_trip_end_date'                 => 'date',
             '_wc_trip_stock'                    => 'int',
             '_wc_trip_age_check'                => 'string',
+            '_wc_trip_stock_management'         => 'stockManagement',
             '_wc_trip_stock_status'             => 'stockStatus',
             '_wc_trip_includes'                 => 'html',
             '_wc_trip_rates'                    => 'html',
@@ -116,15 +119,19 @@ class WC_Trips_Admin {
                 case 'stockStatus':
                     $value = ( $value == "instock" || $value == "outofstock" ? $value : '');
                     break;
+                case 'stockManagement':
+                    $value = ( $value == "yes" ? TRUE : FALSE);
+                    break;
                 case 'html':
                     $value = $value;
                     break;
                 default :
                     $value = sanitize_text_field( $value );
             }
-            if ( "_wc_trip_stock" == $meta_key ) {
+            if ( "_wc_trip_stock_management" == $meta_key ) {
+              $product->set_manage_stock($value);
+            } else if ( "_wc_trip_stock" == $meta_key ) {
               $product->set_stock_quantity( $value );
-              error_log($value);
               $product->save();
             } else if ( "_wc_trip_stock_status" == $meta_key ) {
               $product->set_stock_status( $value );
