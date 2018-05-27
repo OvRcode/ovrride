@@ -114,7 +114,9 @@ class WC_Trips_Cart {
     }
     public function trigger_package_stock( $instance ) {
         global $woocommerce;
-        $cart = $woocommerce->cart->get_cart();
+        if ( isset( $woocommerce->cart ) ){
+          $cart = $woocommerce->cart->get_cart();
+        }
 
         foreach( $cart as $cart_id => $cart_data ) {
           if ( !in_array($cart_id,$this->orders_processed) ){
