@@ -7,8 +7,6 @@ class WC_Product_Trip extends WC_Product {
 
     public function __construct( $product ) {
         $this->product_type = 'trip';
-        //$this->manage_stock = 'yes';
-				$this->set_manage_stock(TRUE);
         parent::__construct( $product );
     }
 
