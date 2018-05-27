@@ -132,14 +132,12 @@ class WC_Trips_Admin {
               $product->set_manage_stock($value);
             } else if ( "_wc_trip_stock" == $meta_key ) {
               $product->set_stock_quantity( $value );
-              $product->save();
             } else if ( "_wc_trip_stock_status" == $meta_key ) {
               $product->set_stock_status( $value );
             } else if ( "_wc_trip_start_date" == $meta_key ) {
               $meta["_wc_trip_start_date"] = $value;
               $sort_date = new DateTime($value, new DateTimeZone("EST"));
               $meta["sort_date"] = $sort_date->format('Ymd');
-
             } else {
               $meta[$meta_key] = $value;
             }
