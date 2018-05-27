@@ -85,8 +85,8 @@ class WC_Trips_Cart {
         foreach( $stock_total as $product_id => $data) {
           $product = wc_get_product( $product_id );
 
-          if ( $product->get_stock_quantity() < $data['count'] ) {
-            $error->add('Sorry, we don\'t have enough seats available for ' . $product->get_title() . ' only ' . $product->stock . ' left');
+          if ( $product->get_manage_stock('view') && $product->get_stock_quantity() < $data['count'] ) {
+            $error->add('error','Sorry, we don\'t have enough seats available for ' . $product->get_title() . ' only ' . $product->get_stock_quantity('view') . ' left');
             return $error;
           }
           $package_stock = $product->packages_stock();
@@ -142,9 +142,10 @@ class WC_Trips_Cart {
         global $woocommerce;
         $cart = $woocommerce->cart->get_cart();
         $product      = get_product( $product_id );
+        $stock_management = $product->get_manage_stock('view');
 
         if ( $product->product_type == "trip"){
-          if ( "instock" == $product->stock_status && $product->stock >= 1 ) {
+          if ( ( $stock_management && "instock" == $product->get_stock_status('view') && $product->get_stock_quantity('view') >= 1 ) || ! $stock_management ) {
             // Product is in stock and potentially has enough stock to add item
             $packageStock = $product->packages_stock();
             if ( "beach_bus" === $product->wc_trip_type ) {
@@ -199,13 +200,14 @@ class WC_Trips_Cart {
                 $cart_master_stock=0;
                 $cart_to_stock=0;
                 $cart_from_stock=0;
+
                 foreach( $cart as $cart_id => $entry_data ) {
                   if ( $product_id == $entry_data['product_id'] ) {
-                    if ( WC()->session->__isset($cart_id."_wc_trip_primary_package") ) {
+                    if ( $stock_management && WC()->session->__isset($cart_id."_wc_trip_primary_package") ) {
                       if ( WC()->session->get($cart_id."_wc_trip_primary_package") == "Round Trip" ) {
                         $cart_master_stock += 2;
                       }
-                    } else {
+                    } else if ( $stock_management ) {
                         $cart_master_stock++;
                     }
 
