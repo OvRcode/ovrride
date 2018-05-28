@@ -90,8 +90,9 @@ function buildHTML($instance) {
   $html .= "<div class='eventScroll'>";
   $trip = $this->returnTrips($instance['events'], $instance['menu_order']);
   foreach($trip as $id => $data ) {
-
-    if ( strcmp($data->stock_status, "outofstock") === 0 ) {
+    if ( $data->stock_management == "no" ) {
+      $label ="<span class='available'>AVAILABLE</span>";
+    } else if ( strcmp($data->stock_status, "outofstock") === 0 ) {
       $label = "<span class='soldOut'>SOLD OUT</span>";
     } else if ( $data->stock <= intval($instance['seat_count']) ) {
       $label = "<span class='spots'>" . $data->stock . " Spots Remaining</span>";
@@ -125,23 +126,17 @@ function returnTrips($numberOfTrips, $menu_order){
   ", OBJECT_K);
   // Attach Meta data with dates and stock info
   foreach( $trip as $id => $data) {
-    $meta_query = $wpdb->prepare(
-      "SELECT `post_id`,
-      MAX(CASE WHEN `wp_postmeta`.`meta_key` = '_stock' THEN `wp_postmeta`.`meta_value` END) as 'stock',
-      MAX(CASE WHEN `wp_postmeta`.`meta_key` = '_stock_status' THEN `wp_postmeta`.`meta_value` END) as 'stock_status',
-      MAX(CASE WHEN `wp_postmeta`.`meta_key` = '_wc_trip_start_date' THEN `wp_postmeta`.`meta_value` END) as 'date',
-      MAX(CASE WHEN `wp_postmeta`.`meta_key` = '_wc_trip_end_date' THEN `wp_postmeta`.`meta_value` END) as 'end_date'
-      FROM `wp_postmeta`
-      WHERE `post_id` = '%d'", intval($id)
-    );
-    $meta = $wpdb->get_results($meta_query, OBJECT_K);
+    $product = new WC_Product($id);
     unset($trip[$id]->ID);
-    $trip[$id]->stock = $meta[$id]->stock;
-    $trip[$id]->stock_status = $meta[$id]->stock_status;
-    $trip[$id]->date = $meta[$id]->date;
+    $trip[$id]->stock_management = ( $product->get_manage_stock( 'view' ) ? 'yes' : 'no');
+    $trip[$id]->stock = $product->get_stock_quantity( 'view' );
+    $trip[$id]->stock_status = $product->get_stock_status( 'view' );
+    $trip[$id]->date = $product->get_meta( '_wc_trip_start_date', true, 'view' );
+    $trip[$id]->end_date = $product->get_meta( '_wc_trip_end_date', true, 'view' );
     $trip[$id]->link = get_permalink($id);
-    if ( strtotime($meta[$id]->end_date) > strtotime($meta[$id]->date) ) {
-      $trip[$id]->dateLabel = date('F jS - ', strtotime($trip[$id]->date)) . date('jS, Y', strtotime($meta[$id]->end_date));
+    error_log(print_r( $trip[$id], true) );
+    if ( strtotime($trip[$id]->end_date) > strtotime($trip[$id]->date) ) {
+      $trip[$id]->dateLabel = date('F jS - ', strtotime($trip[$id]->date)) . date('jS, Y', strtotime($trip[$id]->end_date));
     } else {
       $trip[$id]->dateLabel = date('F jS, Y', strtotime($trip[$id]->date));
     }
