@@ -134,7 +134,7 @@ function returnTrips($numberOfTrips, $menu_order){
     $trip[$id]->date = $product->get_meta( '_wc_trip_start_date', true, 'view' );
     $trip[$id]->end_date = $product->get_meta( '_wc_trip_end_date', true, 'view' );
     $trip[$id]->link = get_permalink($id);
-    error_log(print_r( $trip[$id], true) );
+    
     if ( strtotime($trip[$id]->end_date) > strtotime($trip[$id]->date) ) {
       $trip[$id]->dateLabel = date('F jS - ', strtotime($trip[$id]->date)) . date('jS, Y', strtotime($trip[$id]->end_date));
     } else {
