@@ -165,6 +165,10 @@ CALENDARFORM;
     $trips = [];
     // Trips that end in this month
     foreach($end_trips as $id => $trip_data) {
+      $product = new WC_Product($id);
+      if ( "visible" !== $product->get_catalog_visibility() ) {
+        continue;
+      }
       if ( isset($start_trips[$id]) ) {
         if( $start_trips[$id]['Date'] == $end_trips[$id]['Date'] ) {
           unset($trip_data['Date']);
@@ -177,6 +181,10 @@ CALENDARFORM;
     }
     // Trips that do not end in this month
     foreach($start_trips as $id => $trip_data) {
+      $product = new WC_Product($id);
+      if ( "visible" !== $product->get_catalog_visibility() ) {
+        continue;
+      }
       $start_date = $trip_data['Date'];
       $trip_data['Date'] = $year."-".$month."-".$lastDay;
       $trips[$start_date][] = $trip_data;

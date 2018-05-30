@@ -128,13 +128,17 @@ function returnTrips($numberOfTrips, $menu_order){
   foreach( $trip as $id => $data) {
     $product = new WC_Product($id);
     unset($trip[$id]->ID);
+    if ( "visible" !== $product->get_catalog_visibility() ) {
+      unset($trip[$id]);
+      continue;
+    }
     $trip[$id]->stock_management = ( $product->get_manage_stock( 'view' ) ? 'yes' : 'no');
     $trip[$id]->stock = $product->get_stock_quantity( 'view' );
     $trip[$id]->stock_status = $product->get_stock_status( 'view' );
     $trip[$id]->date = $product->get_meta( '_wc_trip_start_date', true, 'view' );
     $trip[$id]->end_date = $product->get_meta( '_wc_trip_end_date', true, 'view' );
     $trip[$id]->link = get_permalink($id);
-    
+
     if ( strtotime($trip[$id]->end_date) > strtotime($trip[$id]->date) ) {
       $trip[$id]->dateLabel = date('F jS - ', strtotime($trip[$id]->date)) . date('jS, Y', strtotime($trip[$id]->end_date));
     } else {
