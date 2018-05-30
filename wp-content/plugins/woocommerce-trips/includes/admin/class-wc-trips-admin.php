@@ -66,9 +66,10 @@ class WC_Trips_Admin {
         $start_date           = $product->get_meta( '_wc_trip_start_date', true, 'view' );
         $end_date             = $product->get_meta( '_wc_trip_end_date', true, 'view' );
         $stock_management_yes = ( $product->get_manage_stock( 'view' ) ? 'checked' : '');
-        $stock_management_no = ( $product->get_manage_stock( 'view' ) ? '' : 'checked');
-        $stock_status       = $product->get_stock_status();
-        $age_check          = $product->get_meta( '_wc_trip_age_check', true, 'view');
+        $stock_management_no  = ( $product->get_manage_stock( 'view' ) ? '' : 'checked');
+        $stock_status         = $product->get_stock_status();
+        $age_check            = $product->get_meta( '_wc_trip_age_check', true, 'view');
+        $sku                  = $product->get_sku( 'view' );
         include( 'views/html-trip-general.php' );
     }
 
@@ -103,7 +104,8 @@ class WC_Trips_Admin {
             '_wc_trip_pics'                     => 'html',
             '_wc_trip_videos'                   => 'html',
             '_wc_trip_itinerary'                => 'html',
-            '_wc_trip_lodging'                  => 'html'
+            '_wc_trip_lodging'                  => 'html',
+            '_wc_trip_sku'                      => 'string'
             );
         foreach ( $meta_to_save as $meta_key => $sanitize ) {
             $value = ! empty( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '';
@@ -128,6 +130,7 @@ class WC_Trips_Admin {
                 default :
                     $value = sanitize_text_field( $value );
             }
+
             if ( "_wc_trip_stock_management" == $meta_key ) {
               $product->set_manage_stock($value);
             } else if ( "_wc_trip_stock" == $meta_key ) {
@@ -138,6 +141,15 @@ class WC_Trips_Admin {
               $meta["_wc_trip_start_date"] = $value;
               $sort_date = new DateTime($value, new DateTimeZone("EST"));
               $meta["sort_date"] = $sort_date->format('Ymd');
+            } else if ( "_wc_trip_sku" == $meta_key ) {
+              $errorMessage = new WC_Admin_Notices();
+              try {
+                $product->set_sku( $value );
+                $errorMessage->remove_notice("wc_trips_admin_error");
+              } catch ( Exception $error ) {
+                $error_html = "<p>" . $error->getMessage() . "</p>";
+                  $errorMessage->add_custom_notice("wc_trips_admin_error", $error_html);
+              }
             } else {
               $meta[$meta_key] = $value;
             }
