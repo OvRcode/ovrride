@@ -5,6 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <div class="options_group show_if_trip">
 		<p class="form-field">
+			<label for="_wc_trip_sku">SKU</label>
+			<input type="text" value="<?php echo $sku;?>" name="_wc_trip_sku" id="_wc_trip_sku" >
+		</p>
+		<p class="form-field">
 			<label for="_wc_trip_stock_management">Manage product stock:</label>
 			<input type="radio" value="yes" name="_wc_trip_stock_management" id="_wc_trip_stock_management" <?php echo $stock_management_yes; ?>> Yes </input>
 			<input type="radio" value="no" name="_wc_trip_stock_management" id="_wc_trip_stock_management" <?php echo $stock_management_no; ?>> No </input>
