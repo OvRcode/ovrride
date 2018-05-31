@@ -18,6 +18,7 @@ require('classes/ovr-medium-trip-feature-widget.php');
 require('classes/ovr-small-ad-widget.php');
 require('classes/ovr-trip-feature-widget.php');
 require('classes/ovr-calendar-widget.php');
+require('classes/ovr-wide-ad-widget.php');
 
 function ovr_load_widgets() {
 	register_widget( 'ovr_blog_feature_widget' );
@@ -29,6 +30,7 @@ function ovr_load_widgets() {
 	register_widget( 'ovr_jumbotron_widget' );
 	register_widget( 'ovr_medium_trip_feature_widget' );
 	register_widget( 'ovr_small_ad_widget' );
+	register_widget( 'ovr_wide_ad_widget' );
 	register_widget( 'ovr_trip_feature_widget' );
 	register_widget( 'ovr_calendar_widget' );
 }
