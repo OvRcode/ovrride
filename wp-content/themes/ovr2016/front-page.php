@@ -78,7 +78,7 @@ get_header();
 </div><!-- Grey Background-->
 <?php if ( is_active_sidebar( 'ovr-bottom-banner-ad' ) ):?>
   <div class="row">
-    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-2">
+    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-2 bottom-banner-ads">
       <?php dynamic_sidebar( 'ovr-bottom-banner-ad' ); ?>
     </div>
   </div>

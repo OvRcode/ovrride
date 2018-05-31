@@ -15,7 +15,7 @@ class ovr_wide_ad_widget extends WP_Widget {
   public function form($instance) {
     wp_enqueue_script('media-upload');
     wp_enqueue_media();
-    wp_enqueue_script('ovr_wide_ad_widget_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-wide-ad-widget-admin.min.js', array('jquery') );
+    wp_enqueue_script('ovr_wide_ad_widget_admin_js', plugin_dir_url( dirname(__FILE__) ) . 'js/ovr-wide-ad-widget-admin.min.js', array('jquery'), false );
 
     $adID       = $this->get_field_id('ad');
     $adLinkID   = $this->get_field_id('link');
@@ -44,14 +44,12 @@ WIDGETADMIN;
     return $instance;
   }
   public function widget($args, $instance) {
-    wp_enqueue_style('ovr_wide_ad_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-wide-ad-widget.min.css');
+    wp_enqueue_style('ovr_wide_ad_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-wide-ad-widget.min.css', false);
     echo <<<WIDGET
       <div class="ovr_wide_ad_widget">
-        <div class="ovr_wide_ad_inner">
           <a href="{$instance['link']}" target="_blank">
             <img class="ovr_wide_ad_img" src="{$instance['ad']}">
           </a>
-        </div>
       </div>
 WIDGET;
   }
