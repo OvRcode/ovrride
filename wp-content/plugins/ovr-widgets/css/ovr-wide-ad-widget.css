@@ -7,8 +7,8 @@
   height: 100%;
 }
 .bottom-banner-ads div:first-child {
-  max-width: 75%;
+  max-width: 70%;
 }
 .bottom-banner-ads div:nth-child(2) {
-  max-width: 25%;
+  max-width: 30%;
 }
