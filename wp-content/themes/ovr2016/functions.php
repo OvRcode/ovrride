@@ -180,6 +180,11 @@ function woocommerce_support() {
 		'description'   => 'Banner Ad at top of home page',
 	) );
   register_sidebar( array(
+    'name'          =>  'Bottom Banner Ad',
+    'id'            =>  'ovr-bottom-banner-ad',
+    'description'   =>  'Banner Ad at bottom of the home page',
+  ) );
+  register_sidebar( array(
 		'name'          => 'Upcoming Events',
 		'id'            => 'events',
 		'description'   => 'Spot for upcoming events widget (on every page)',
