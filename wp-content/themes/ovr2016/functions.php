@@ -180,9 +180,14 @@ function woocommerce_support() {
 		'description'   => 'Banner Ad at top of home page',
 	) );
   register_sidebar( array(
-    'name'          =>  'Bottom Banner Ad',
-    'id'            =>  'ovr-bottom-banner-ad',
-    'description'   =>  'Banner Ad at bottom of the home page',
+    'name'          =>  'Bottom Banner Ad Left',
+    'id'            =>  'ovr-bottom-banner-ad-left',
+    'description'   =>  'Banner Ad at bottom of the home page on the left',
+  ) );
+  register_sidebar( array(
+    'name'          =>  'Bottom Banner Ad Right',
+    'id'            =>  'ovr-bottom-banner-ad-right',
+    'description'   =>  'Banner Ad at bottom of the home page on the right',
   ) );
   register_sidebar( array(
 		'name'          => 'Upcoming Events',

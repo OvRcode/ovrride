@@ -76,11 +76,16 @@ get_header();
     </div>
   <?php endif; ?>
 </div><!-- Grey Background-->
-<?php if ( is_active_sidebar( 'ovr-bottom-banner-ad' ) ):?>
-  <div class="row">
-    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 bottom-banner-ads">
-      <?php dynamic_sidebar( 'ovr-bottom-banner-ad' ); ?>
+<div class="row">
+<?php if ( is_active_sidebar( 'ovr-bottom-banner-ad-left' ) ):?>
+    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+      <?php dynamic_sidebar( 'ovr-bottom-banner-ad-left' ); ?>
     </div>
-  </div>
 <?php endif;?>
+<?php if ( is_active_sidebar( 'ovr-bottom-banner-ad-right' ) ):?>
+    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+      <?php dynamic_sidebar( 'ovr-bottom-banner-ad-right' ); ?>
+    </div>
+<?php endif;?>
+</div>
 <?php get_footer(); ?>
