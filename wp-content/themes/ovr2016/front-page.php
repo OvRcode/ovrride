@@ -78,12 +78,12 @@ get_header();
 </div><!-- Grey Background-->
 <div class="row">
 <?php if ( is_active_sidebar( 'ovr-bottom-banner-ad-left' ) ):?>
-    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+    <div class="col-lg-6 col-md-6 col-sm-10 col-lg-offset-0 col-md-offset-0 col-sm-offset-1">
       <?php dynamic_sidebar( 'ovr-bottom-banner-ad-left' ); ?>
     </div>
 <?php endif;?>
 <?php if ( is_active_sidebar( 'ovr-bottom-banner-ad-right' ) ):?>
-    <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+    <div class="col-lg-6 col-md-6 col-sm-10 col-lg-offset-0 col-md-offset-0 col-sm-offset-1">
       <?php dynamic_sidebar( 'ovr-bottom-banner-ad-right' ); ?>
     </div>
 <?php endif;?>
