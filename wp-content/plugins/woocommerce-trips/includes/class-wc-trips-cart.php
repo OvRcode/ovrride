@@ -349,8 +349,8 @@ class WC_Trips_Cart {
                     $packages = get_post_meta($product_id, '_' . $key ."s", true);
                     $cost = $this->get_package_cost( $_REQUEST[$key], $packages );
                     WC()->session->set( $cart_item_key . "_" . $key . "_label", $_REQUEST[$key . "_label"]);
-                    $stored_cost = WC()->session->get( $cart_item_key . "_cost" );
-                    $stored_cost += $cost;
+                    $stored_cost = floatval( WC()->session->get( $cart_item_key . "_cost" ) );
+                    $stored_cost += floatval( $cost );
                     WC()->session->set( $cart_item_key . "_" . $key, $_REQUEST[$key] );
                     WC()->session->set( $cart_item_key . "_cost", $stored_cost );
                 } else if ( "wc_trip_pickup_location" == $key ) {
