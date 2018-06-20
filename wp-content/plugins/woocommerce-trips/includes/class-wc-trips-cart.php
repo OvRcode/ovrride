@@ -271,10 +271,7 @@ class WC_Trips_Cart {
       if ( is_admin() && ! defined('DOING_AJAX') ) {
         return;
       }
-/*
-      foreach ( $cart_obj->get_cart() as $key => $value ) {
-       $value['data']->set_price( 40 );
-   }  */
+
       foreach ( $cart_obj->get_cart() as $key => $value ) {
         if ( "trip" == $value['data']->product_type) {
           if( WC()->session->__isset( $key.'_cost' ) ) {
