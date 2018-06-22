@@ -829,3 +829,29 @@ li.widget_text {
 		overflow:hidden;
 	}
 }
+
+#add_payment_method .wc-proceed-to-checkout a.checkout-button,
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button,
+.woocommerce-checkout .wc-proceed-to-checkout a.checkout-button {
+	padding: 0;
+}
+
+.woocommerce #payment .terms, .woocommerce #payment .wc-terms-and-conditions,
+.woocommerce-page #payment .terms, .woocommerce-page #payment .wc-terms-and-conditions {
+	padding: 0 1em 0 2%;
+}
+
+.woocommerce form .form-row .input-checkbox {
+	display: inline-block;
+	margin: 0;
+	float: left;
+	top: 8px;
+	left: -5px;
+}
+.checkbox input[type=checkbox] {
+	position: inherit;
+}
+
+a.checkout-button.button.alt.wc-forward {
+	padding-bottom: 3%;
+}
