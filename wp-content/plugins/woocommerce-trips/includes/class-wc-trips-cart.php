@@ -22,7 +22,6 @@ class WC_Trips_Cart {
        add_action( "woocommerce_add_to_cart", array( $this, "save_trip_fields" ), 1, 5 );
        add_filter( "woocommerce_cart_item_name", array( $this, "render_meta_on_cart_item"), 1, 3 );
        add_filter( "woocommerce_add_cart_item_data",array($this, "force_individual_cart_items" ), 10, 2 );
-       //add_action( "woocommerce_add_order_item_meta", array( $this, "order_item_meta" ), 10, 3 );
        add_action( "woocommerce_checkout_create_order_line_item", array( $this, "order_item_meta" ), 20, 4 );
        add_action( "woocommerce_before_calculate_totals", array( $this, "add_costs" ), 1, 1 );
        add_filter( "woocommerce_add_to_cart_validation", array( $this , "validate_add_cart_item" ), 10, 3 );
