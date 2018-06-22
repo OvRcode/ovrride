@@ -1,5 +1,5 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( "ABSPATH" ) ) {
     exit;
 }
 
@@ -11,9 +11,9 @@ class WC_Trips_Cart {
       "wc_trip_age_check" => "Is this guest at least 18 years of age?", "wc_trip_primary_package" => "primary",
       "wc_trip_secondary_package" => "secondary", "wc_trip_tertiary_package" => "tertiary",
       "wc_trip_pickup_location" => "Pickup Location", "wc_trip_to_beach" => "To Beach",
-      "wc_trip_from_beach" => "From Beach");
+      "wc_trip_from_beach" => "From Beach" );
 
-    public $package_types = array("primary", "secondary", "tertiary");
+    public $package_types = array( "primary", "secondary", "tertiary" );
     public $orders_processed = array();
 
     public function __construct() {
@@ -22,7 +22,8 @@ class WC_Trips_Cart {
        add_action( "woocommerce_add_to_cart", array( $this, "save_trip_fields" ), 1, 5 );
        add_filter( "woocommerce_cart_item_name", array( $this, "render_meta_on_cart_item"), 1, 3 );
        add_filter( "woocommerce_add_cart_item_data",array($this, "force_individual_cart_items" ), 10, 2 );
-       add_action( "woocommerce_add_order_item_meta", array( $this, "order_item_meta" ), 10, 3 );
+       //add_action( "woocommerce_add_order_item_meta", array( $this, "order_item_meta" ), 10, 3 );
+       add_action( "woocommerce_checkout_create_order_line_item", array( $this, "order_item_meta" ), 20, 4 );
        add_action( "woocommerce_before_calculate_totals", array( $this, "add_costs" ), 1, 1 );
        add_filter( "woocommerce_add_to_cart_validation", array( $this , "validate_add_cart_item" ), 10, 3 );
        add_action( "woocommerce_check_cart_items", array( $this, "check_cart_items" ), 1 );
@@ -289,39 +290,39 @@ class WC_Trips_Cart {
     private function get_pickup_cost( $id ) {
         return get_post_meta( $id, "_pickup_location_cost", true);
     }
-    public function order_item_meta( $item_id, $values, $cart_item_key ) {
-        global $woocommerce;
-        foreach ( $this->fields as $key => $value ) {
-            if ( WC()->session->__isset( "{$cart_item_key}_{$key}" ) ) {
+    public function order_item_meta( $item, $cart_item_key, $values, $order ) {
+      foreach ( $this->fields as $key => $value ) {
+        if ( WC()->session->__isset( "{$cart_item_key}_{$key}" ) ) {
+          if ( "primary" == $value || "secondary" == $value || "tertiary" == $value ) {
+            $label = WC()->session->get( "{$cart_item_key}_{$key}_label" );
+            $value = WC()->session->get( "{$cart_item_key}_{$key}" );
+            $item->add_meta_data( $label, $value, true );
+          } else if( "Pickup Location" == $value ){
+            $location_id     = WC()->session->get( "{$cart_item_key}_pickup_id");
+            $location_string = WC()->session->get( "{$cart_item_key}_{$key}" );
+            $item->add_meta_data( $value, $location_string, true );
+            $item->add_meta_data( "_pickup_id", $location_id );
+          } else if( "To Beach" == $value) {
+            $toBeachId = WC()->session->get( "{$cart_item_key}_to_beach_id" );
+            $toBeachRoute = WC()->session->get( "{$cart_item_key}_to_beach_route" );
+            $toBeachString = WC()->session->get( "{$cart_item_key}_{$key}" );
+            $item->add_meta_data( $value, $toBeachString );
+            $item->add_meta_data( "_to_beach_id", $toBeachId );
+            $item->add_meta_data( "_to_beach_route", $toBeachRoute );
+          } else if( "From Beach" == $value) {
+            $fromBeachId = WC()->session->get( "{$cart_item_key}_from_beach_id" );
+            $fromBeachRoute = WC()->session->get( "{$cart_item_key}_from_beach_route" );
+            $fromBeachString = WC()->session->get( "{$cart_item_key}_{$key}" );
+            $item->add_meta_data( $value, $fromBeachString, true );
+            $item->add_meta_data( "_from_beach_id", $fromBeachId, true );
+            $item->add_meta_data( "_from_beach_route", $fromBeachRoute, true );
+          } else {
+            $item->add_meta_data( $value, WC()->session->get( "{$cart_item_key}_{$key}" ) );
 
-                if ( "primary" == $value || "secondary" == $value || "tertiary" == $value ) {
-                    $label = WC()->session->get( "{$cart_item_key}_{$key}_label" );
-                    $value = WC()->session->get( "{$cart_item_key}_{$key}" );
-                    wc_add_order_item_meta( $item_id, $label, $value );
-                } else if( "Pickup Location" == $value ){
-                    $location_id     = WC()->session->get( "{$cart_item_key}_pickup_id");
-                    $location_string = WC()->session->get( "{$cart_item_key}_{$key}" );
-                    wc_add_order_item_meta( $item_id, $value, $location_string );
-                    wc_add_order_item_meta( $item_id, "_pickup_id", $location_id );
-                } else if( "To Beach" == $value) {
-                  $toBeachId = WC()->session->get( "{$cart_item_key}_to_beach_id" );
-                  $toBeachRoute = WC()->session->get( "{$cart_item_key}_to_beach_route" );
-                  $toBeachString = WC()->session->get( "{$cart_item_key}_{$key}" );
-                  wc_add_order_item_meta( $item_id, $value, $toBeachString );
-                  wc_add_order_item_meta( $item_id, "_to_beach_id", $toBeachId );
-                  wc_add_order_item_meta( $item_id, "_to_beach_route", $toBeachRoute );
-                } else if( "From Beach" == $value) {
-                  $fromBeachId = WC()->session->get( "{$cart_item_key}_from_beach_id" );
-                  $fromBeachRoute = WC()->session->get( "{$cart_item_key}_from_beach_route" );
-                  $fromBeachString = WC()->session->get( "{$cart_item_key}_{$key}" );
-                  wc_add_order_item_meta( $item_id, $value, $fromBeachString );
-                  wc_add_order_item_meta( $item_id, "_from_beach_id", $fromBeachId );
-                  wc_add_order_item_meta( $item_id, "_from_beach_route", $fromBeachRoute );
-                } else {
-                    wc_add_order_item_meta( $item_id, $value, WC()->session->get( "{$cart_item_key}_{$key}" ));
-                }
-            }
+          }
+          $item->save_meta_data();
         }
+      }
     }
     public function force_individual_cart_items( $cart_item_data, $product_id ) {
         $unique_cart_item_key = md5( microtime().rand() );
