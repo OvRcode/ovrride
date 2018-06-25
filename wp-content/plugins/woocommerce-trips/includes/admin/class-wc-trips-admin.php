@@ -173,6 +173,7 @@ class WC_Trips_Admin {
         $meta["_wc_trip_primary_package_stock"] = $_POST['_wc_trip_primary_package_stock'];
         $meta["_wc_trip_primary_packages"] = $primary_packages;
         $meta["_wc_trip_primary_package_label"] = $primary_label;
+        $meta["_wc_trip_primary_package_optional"] = ( $_POST['_wc_trip_primary_package_optional'] == "yes" ? "checked" : ""); 
 
         // Secondary packages
         $secondary_packages = array();

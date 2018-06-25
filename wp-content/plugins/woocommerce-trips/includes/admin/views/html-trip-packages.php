@@ -4,10 +4,15 @@
             <h3>Packages</h3>
             <br />
         </div>
-
         <div class="woocommerce_trip_primary_packages wc-metaboxes">
             <input type="hidden" name="_wc_trip_package_stock" id="_wc_trip_package_stock" value="no" />
             <input type="hidden" name="_wc_trip_package_label" id="_wc_trip_package_label" value="Package" />
+            <?php
+              $optional = get_post_meta($post_id, "_wc_trip_primary_package_optional", true);
+            ?>
+            Optional Package? <input type="checkbox" name="_wc_trip_primary_package_optional" id="wc_trip_package_optional" value="yes" <?php echo $optional; ?>>
+
+
             <table class="woocommerce_trip_packages">
                 <thead>
                         <th class="sorting">&nbsp;</th>
