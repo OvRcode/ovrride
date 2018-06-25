@@ -170,10 +170,10 @@ class WC_Trips_Admin {
                 $primary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_primary_package_stock'][$i] );
             }
         }
-        $meta["_wc_trip_primary_package_stock"] = $_POST['_wc_trip_primary_package_stock'];
-        $meta["_wc_trip_primary_packages"] = $primary_packages;
-        $meta["_wc_trip_primary_package_label"] = $primary_label;
-        $meta["_wc_trip_primary_package_optional"] = ( $_POST['_wc_trip_primary_package_optional'] == "yes" ? "checked" : ""); 
+        $meta["_wc_trip_primary_package_stock"]     = $_POST['_wc_trip_primary_package_stock'];
+        $meta["_wc_trip_primary_packages"]          = $primary_packages;
+        $meta["_wc_trip_primary_package_label"]     = $primary_label;
+        $meta["_wc_trip_primary_package_optional"]  = ( $_POST['_wc_trip_primary_package_optional'] == "yes" ? "checked" : "");
 
         // Secondary packages
         $secondary_packages = array();
@@ -186,9 +186,10 @@ class WC_Trips_Admin {
                 $secondary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_secondary_package_stock'][$i] );
             }
         }
-        $meta["_wc_trip_secondary_package_label"] = $secondary_label;
-        $meta["_wc_trip_secondary_package_stock"] = $_POST['_wc_trip_secondary_package_stock'];
-        $meta["_wc_trip_secondary_packages"]      = $secondary_packages;
+        $meta["_wc_trip_secondary_package_label"]     = $secondary_label;
+        $meta["_wc_trip_secondary_package_stock"]     = $_POST['_wc_trip_secondary_package_stock'];
+        $meta["_wc_trip_secondary_packages"]          = $secondary_packages;
+        $meta["_wc_trip_secondary_package_optional"]  = ( $_POST['_wc_trip_secondary_package_optional'] == "yes" ? "checked" : "" );
 
         // Tertiary packages
         $tertiary_packages = array();
@@ -204,7 +205,8 @@ class WC_Trips_Admin {
         $meta["_wc_trip_tertiary_package_label"] = $tertiary_label;
         $meta["_wc_trip_tertiary_package_stock"] = $_POST['_wc_trip_tertiary_package_stock'];
         $meta["_wc_trip_tertiary_packages"] = $tertiary_packages;
-
+        $meta["_wc_trip_tertiary_package_optional"]  = ( $_POST['_wc_trip_tertiary_package_optional'] == "yes" ? "checked" : "" );
+        
         if ( "beach_bus" === $trip_type ) {
           $packages = ( isset($_POST['wc_trips_package_description']) ? sizeof($_POST['wc_trips_package_description']) : 0 );
           for( $i = 0; $i < $packages; $i++ ){

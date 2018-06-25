@@ -3,8 +3,15 @@
        <?php woocommerce_wp_checkbox( array( 'id' => "_wc_trip_".$type."_package_stock", 'label' => 'Enable package stock', 'description' => "Enable this option to manage stock on some or all $type packages", 'desc_tip' => true, 'value' => get_post_meta( $post_id, "_wc_trip_".$type."_package_stock", true ) ) ); ?>
        <p>Stock on packages is limited by the stock of the product. Leaving a stock field blank will not impose an addition restriction on the package</p>
     </div>
+    <div class="options_group" id="<?php echo $type;?>-packages-optional">
+       <?php
+        $optional = get_post_meta( $post_id, "_wc_trip_{$type}_package_optional", true);
+       ?>
+        Optional Package <input type="checkbox" id="_wc_trip_<?php echo $type; ?>_package_optional" value="yes" <?php echo $optional; ?>>
+       <p>Optional Packages will have a selectable default and require no change from the guest when booking.</p>
+    </div>
     <div class="options_group" id="<?php echo $type;?>-packages">
-        <?php woocommerce_wp_text_input( array( 'id' => "_wc_trip_".$type."_package_label", 'label' => "$type Package label", 'description' => 'Label to be shown on product page', 'desc_tip' => false, 'value' => get_post_meta( $post_id, "_wc_trip_".$type."_package_label", true ) ) );?>
+        <?php woocommerce_wp_text_input( array( 'id' => "_wc_trip_" . $type . "_package_label", 'label' => ucwords($type) . " Package label", 'description' => 'Label to be shown on product page', 'desc_tip' => false, 'value' => get_post_meta( $post_id, "_wc_trip_".$type."_package_label", true ) ) );?>
         <div class="toolbar">
             <h3><?php echo ucwords($type);?> Packages</h3>
             <br />
