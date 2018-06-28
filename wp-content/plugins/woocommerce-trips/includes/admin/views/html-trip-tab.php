@@ -1,6 +1,3 @@
-<li class="trips_tab trips_package_tab attribute_options show_if_trip">
-  <a href="#trips_packages">Packages</a>
-</li>
 <li class="trips_tab trips_to_from_beach_tab attribute_options show_if_trip">
   <a href="#trips_to_from_beach">To/From Beach</a>
 </li>
