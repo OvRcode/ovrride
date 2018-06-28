@@ -1,8 +1,13 @@
 <?php
+if ( isset( $info['optional'] ) && "yes" == $info['optional'] ) {
+  $required = "";
+} else {
+  $required = "<span class='required'>*</span>";
+}
 echo <<<PACKAGE
 <br />
     <div class='packages'>
-        <label for="wc_trip_{$type}_package" ><strong>{$info['label']}</strong> <span class="required">*</span></label>
+        <label for="wc_trip_{$type}_package" ><strong>{$info['label']}</strong> {$required}</label>
         <select name="wc_trip_{$type}_package" id="wc_trip_{$type}_package" data-required="true">
         <option value="">Select option</option>
 PACKAGE;
