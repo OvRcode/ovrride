@@ -81,6 +81,7 @@ PPMessage;
                 <td class='package_description'><input type='text' name='wc_trips_<?php echo $type; ?>_package_description[]'></input></td>
                 <td class='cost'><input type='text' name='wc_trips_<?php echo $type; ?>_package_cost[]'></input></td>
                 <td class='<?php echo $type; ?>_package_stock stock'><input type='number' name='wc_trips_<?php echo $type; ?>_package_stock[]'></input></td>
+                <td class='<?php echo $type; ?>_default'><input type='radio' name='wc_trips_<?php echo $type; ?>_package_default'  value='<?php echo $package_count; ?>' <?php echo $default; ?>></td>
                 <td class='deleteButton'>&nbsp;</td>
             </tr>">Add <?php echo $type; ?> package</button>
         </p>
