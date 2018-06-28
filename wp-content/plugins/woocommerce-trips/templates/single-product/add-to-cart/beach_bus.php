@@ -33,9 +33,14 @@ include("_noscript.php");
 
         	foreach ( $packages as $type => $info ) {
             	if ( $info ) include("_package.php");
+
+							if ( $type == "primary" ) {
+								echo $product->beach_bus_pickups();
+							}
         	}
-        echo $product->beach_bus_pickups();
+
 				include("_dob-check.php");
+				echo "<p><strong>* required items</strong></p>";
         include("_add-to-cart.php");
       endif;
       do_action( 'woocommerce_after_add_to_cart_form' );

@@ -315,7 +315,8 @@ jQuery(document).ready(function($){
 
     }
   });
-  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package, #wc_trip_pickup_location").on("change", function(){
+  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package, #wc_trip_pickup_location").on("change", addCosts);
+  function addCosts(){
     var base      = Number($("#base_price").val()) || 0;
     var primary   = Number( $("#wc_trip_primary_package :selected").data('cost') ) || 0;
     var secondary = Number( $("#wc_trip_secondary_package :selected").data('cost') ) || 0;
@@ -324,7 +325,8 @@ jQuery(document).ready(function($){
     var total = base + primary + secondary + tertiary + pickup;
 
     $("#trip_price").text( "$" + total.toFixed(2) );
-  });
+  }
+  addCosts();
   function enableDisableCart() {
     var fieldsOK = true;
     var fields = $("input[name^=wc_trip_], select[name^=wc_trip_]");

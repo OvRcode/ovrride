@@ -202,10 +202,11 @@ OUTPUT;
 			return false;
 		}
     public function output_packages( $type ) {
-        $packages = get_post_meta( $this->id, "_wc_trip_" . $type . "_packages", true );
-        $stock = get_post_meta( $this->id, "_wc_trip_" . $type . "_package_stock", true );
-        $stock = ( $stock == "yes" ? true : false);
-        $label = get_post_meta( $this->id, "_wc_trip_" . $type . "_package_label", true );
+        $packages 	= get_post_meta( $this->id, "_wc_trip_{$type}_packages", true );
+        $stock 			= get_post_meta( $this->id, "_wc_trip_{$type}_package_stock", true );
+        $stock 			= ( $stock == "yes" ? true : false);
+        $label 			= get_post_meta( $this->id, "_wc_trip_{$type}_package_label", true );
+				$optional 	= get_post_meta( $this->id, "_wc_trip_{$type}_package_optional", true);
         if ( "" === strval($label) ) {
             $label = $type;
         }
@@ -226,12 +227,23 @@ OUTPUT;
                 $costLabel = " " . substr_replace(floatval($values['cost']), "$", 1, 0);
             }
 
-            $htmlOutput .= '<option value="' . $values['description'] . '" ' . $dataCost . ' ' . $disabled . '>' .$outOfStock . $values['description'] . $costLabel . '</option>';
+						if ( "yes" == $values['default'] ) {
+							$default = "selected";
+						} else {
+							$default = "";
+						}
+            //$htmlOutput .= '<option value="' . $values['description'] . '" ' . $dataCost . ' ' . $disabled . '>' .$outOfStock . $values['description'] . $costLabel . '</option>';
+						$htmlOutput .= "<option value='{$values['description']}' {$dataCost} {$disabled} {$default}> {$outOfStock} {$values['description']} {$costLabel} </option>";
 
 
         }
         if ( count($packages) > 0 ) {
-            return array("label" => $label, "html" => $htmlOutput);
+					if ( "checked" == $optional ) {
+						$optional = "yes";
+					} else {
+						$optional = "no";
+					}
+            return array("label" => $label, "html" => $htmlOutput, "optional" => $optional);
         } else {
             return false;
         }

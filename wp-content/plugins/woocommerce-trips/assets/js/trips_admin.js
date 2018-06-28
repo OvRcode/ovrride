@@ -2,6 +2,7 @@ jQuery(document).ready(function($){
   // show/hide flight times tab based on trip type selection
   showHideTabs();
   showHideRoute();
+
   $("select[name=_wc_trip_type]").on("change", showHideTabs);
   $("select[name=_wc_trip_type]").on("change", showHideRoute);
 
@@ -40,6 +41,18 @@ jQuery(document).ready(function($){
   });
   $("#_wc_trip_tertiary_package_stock").change(function(){
       showHideStock("tertiary");
+  });
+  showHideDefault("primary");
+  showHideDefault("secondary");
+  showHideDefault("tertiary");
+  $("#_wc_trip_primary_package_optional").change(function(){
+    showHideDefault("primary");
+  });
+  $("#_wc_trip_secondary_package_optional").change(function(){
+    showHideDefault("secondary");
+  });
+  $("#_wc_trip_tertiary_package_optional").change(function(){
+    showHideDefault("tertiary");
   });
   // Add package buttons
   $( '.add_package' ).click(function(){
@@ -210,6 +223,15 @@ jQuery(document).ready(function($){
   if ( $(".sorter:visible").size() <= 1 ) {
     $(".sorter:visible").css("visibility", "hidden");
   }
+  function showHideDefault( type ) {
+    selector = $("#_wc_trip_" + type + "_package_optional");
+    cssElement = $("." + type + "_default");
+    if ( selector.prop("checked") ) {
+      cssElement.show();
+    } else {
+      cssElement.hide();
+    }
+  }
   function showHideRoute() {
     if ("beach_bus" == $("select[name=_wc_trip_type] :selected").val() ) {
       $('.route').show();
@@ -230,13 +252,12 @@ jQuery(document).ready(function($){
         trips_partners_tab: false,
         trips_flight_times_tab: false,
         trips_pics_tab: true,
-        trips_package_tab: false,
         trips_to_from_beach_tab: false,
         trips_videos_tab: true
       },
       beach_bus: {
         trips_pickup_location: true,
-        trips_primary_packages_tab: false,
+        trips_primary_packages_tab: true,
         trips_secondary_packages_tab: false,
         trips_tertiary_packages_tab: true,
         trips_includes_tab: true,
@@ -245,7 +266,6 @@ jQuery(document).ready(function($){
         trips_partners_tab: true,
         trips_flight_times_tab: false,
         trips_pics_tab: true,
-        trips_package_tab: true,
         trips_to_from_beach_tab: true,
         trips_videos_tab: true
       },
@@ -260,7 +280,6 @@ jQuery(document).ready(function($){
         trips_partners_tab: false,
         trips_flight_times_tab: true,
         trips_pics_tab: true,
-        trips_package_tab: false,
         trips_to_from_beach_tab: false,
         trips_videos_tab: true
       },
@@ -275,7 +294,6 @@ jQuery(document).ready(function($){
         trips_partners_tab: false,
         trips_flight_times_tab: true,
         trips_pics_tab: true,
-        trips_package_tab: false,
         trips_to_from_beach_tab: false,
         trips_videos_tab: true
       }
