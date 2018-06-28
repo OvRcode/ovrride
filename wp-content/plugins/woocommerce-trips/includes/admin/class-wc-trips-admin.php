@@ -163,14 +163,19 @@ class WC_Trips_Admin {
           $packages       = ( isset( $_POST["wc_trips_{$type}_package_description"] ) ? sizeof( $_POST["wc_trips_{$type}_package_description"] ) : 0 );
 
           for ( $i = 0; $i < $packages; $i++ ) {
-              $temp_packages[$i]['description'] = wc_clean( $_POST["wc_trips_{$type}_package_description"][$i] );
-              $temp_packages[$i]['cost'] = wc_clean( $_POST["wc_trips_{$type}_package_cost"][$i] );
-              if ( FALSE !== strpos($temp_packages[$i]['cost'], "$") ) {
-                  $temp_packages[$i]['cost'] = str_replace( "$", "", $temp_packages[$i]['cost'] );
-              }
-              if ( isset($_POST["_wc_trip_{$type}_package_stock"]) && $_POST["_wc_trip_{$type}_package_stock"] ) {
-                  $temp_packages[$i]['stock'] = wc_clean( $_POST["wc_trips_{$type}_package_stock"][$i] );
-              }
+            if ( isset( $_POST["wc_trips_{$type}_package_default"] ) &&  $i == $_POST["wc_trips_{$type}_package_default"] ) {
+              $temp_packages[$i]['default'] = "yes";
+            } else {
+              $temp_packages[$i]['default'] = "no";
+            }
+            $temp_packages[$i]['description'] = wc_clean( $_POST["wc_trips_{$type}_package_description"][$i] );
+            $temp_packages[$i]['cost'] = wc_clean( $_POST["wc_trips_{$type}_package_cost"][$i] );
+            if ( FALSE !== strpos($temp_packages[$i]['cost'], "$") ) {
+                $temp_packages[$i]['cost'] = str_replace( "$", "", $temp_packages[$i]['cost'] );
+            }
+            if ( isset($_POST["_wc_trip_{$type}_package_stock"]) && $_POST["_wc_trip_{$type}_package_stock"] ) {
+                $temp_packages[$i]['stock'] = wc_clean( $_POST["wc_trips_{$type}_package_stock"][$i] );
+            }
           }
           $meta["_wc_trip_{$type}_package_stock"]     = $_POST["_wc_trip_{$type}_package_stock"];
           $meta["_wc_trip_{$type}_packages"]          = $temp_packages;
@@ -184,6 +189,11 @@ class WC_Trips_Admin {
           for( $i = 0; $i < $packages; $i++ ){
             $packages_packages[$i]['description'] = wc_clean( $_POST['wc_trips_primary_package_description'][$i] );
             $packages_packages[$i]['cost']        = wc_clean( $_POST['wc_trips_primary_package_cost'][$i] );
+            if ( isset( $_POST["wc_trips_primary_package_default"] ) &&  $i == $_POST["wc_trips_primary_package_default"] ) {
+              $packages_packages[$i]['default'] = "yes";
+            } else {
+              $packages_packages[$i]['default'] = "no";
+            }
           }
           $meta["_wc_trip_primary_package_label"] = "Package";
           $meta["_wc_trip_primary_package_stock"] = "no";
