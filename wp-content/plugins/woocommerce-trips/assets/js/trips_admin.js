@@ -230,13 +230,12 @@ jQuery(document).ready(function($){
         trips_partners_tab: false,
         trips_flight_times_tab: false,
         trips_pics_tab: true,
-        trips_package_tab: false,
         trips_to_from_beach_tab: false,
         trips_videos_tab: true
       },
       beach_bus: {
         trips_pickup_location: true,
-        trips_primary_packages_tab: false,
+        trips_primary_packages_tab: true,
         trips_secondary_packages_tab: false,
         trips_tertiary_packages_tab: true,
         trips_includes_tab: true,
@@ -245,7 +244,6 @@ jQuery(document).ready(function($){
         trips_partners_tab: true,
         trips_flight_times_tab: false,
         trips_pics_tab: true,
-        trips_package_tab: true,
         trips_to_from_beach_tab: true,
         trips_videos_tab: true
       },
@@ -260,7 +258,6 @@ jQuery(document).ready(function($){
         trips_partners_tab: false,
         trips_flight_times_tab: true,
         trips_pics_tab: true,
-        trips_package_tab: false,
         trips_to_from_beach_tab: false,
         trips_videos_tab: true
       },
@@ -275,7 +272,6 @@ jQuery(document).ready(function($){
         trips_partners_tab: false,
         trips_flight_times_tab: true,
         trips_pics_tab: true,
-        trips_package_tab: false,
         trips_to_from_beach_tab: false,
         trips_videos_tab: true
       }

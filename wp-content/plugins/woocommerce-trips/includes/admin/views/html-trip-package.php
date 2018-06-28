@@ -7,7 +7,7 @@
        <?php
         $optional = get_post_meta( $post_id, "_wc_trip_{$type}_package_optional", true);
        ?>
-        Optional Package <input type="checkbox" id="_wc_trip_<?php echo $type; ?>_package_optional" value="yes" <?php echo $optional; ?>>
+        Optional Package <input type="checkbox" id="_wc_trip_<?php echo $type; ?>_package_optional" name="_wc_trip_<?php echo $type; ?>_package_optional" value="yes" <?php echo $optional; ?>>
        <p>Optional Packages will have a selectable default and require no change from the guest when booking.</p>
     </div>
     <div class="options_group" id="<?php echo $type;?>-packages">

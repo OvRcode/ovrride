@@ -156,76 +156,48 @@ class WC_Trips_Admin {
 
             unset($_POST[ $meta_key ]);
         }
-        // Primary packages
-        $primary_packages = array();
-        $primary_label = ( isset($_POST['_wc_trip_primary_package_label']) ? wc_clean($_POST['_wc_trip_primary_package_label']) : '');
-        $packages = ( isset($_POST['wc_trips_primary_package_description']) ? sizeof($_POST['wc_trips_primary_package_description']) : 0 );
-        for ( $i = 0; $i < $packages; $i++ ) {
-            $primary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_primary_package_description'][$i] );
-            $primary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_primary_package_cost'][$i] );
-            if ( FALSE !== strpos($primary_packages[$i]['cost'], "$") ) {
-                $primary_packages[$i]['cost'] = str_replace("$","",$primary_packages[$i]['cost']);
-            }
-            if ( isset($_POST['_wc_trip_primary_package_stock']) && $_POST['_wc_trip_primary_package_stock'] ) {
-                $primary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_primary_package_stock'][$i] );
-            }
-        }
-        $meta["_wc_trip_primary_package_stock"]     = $_POST['_wc_trip_primary_package_stock'];
-        $meta["_wc_trip_primary_packages"]          = $primary_packages;
-        $meta["_wc_trip_primary_package_label"]     = $primary_label;
-        $meta["_wc_trip_primary_package_optional"]  = ( $_POST['_wc_trip_primary_package_optional'] == "yes" ? "checked" : "");
 
-        // Secondary packages
-        $secondary_packages = array();
-        $secondary_label = ( isset($_POST['_wc_trip_secondary_package_label']) ? wc_clean($_POST['_wc_trip_secondary_package_label']) : '');
-        $packages = ( isset($_POST['wc_trips_secondary_package_description']) ? sizeof($_POST['wc_trips_secondary_package_description']) : 0 );
-        for ( $i = 0; $i < $packages; $i++ ) {
-            $secondary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_secondary_package_description'][$i] );
-            $secondary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_secondary_package_cost'][$i] );
-            if ( isset($_POST['_wc_trip_secondary_package_stock']) && $_POST['_wc_trip_secondary_package_stock'] ) {
-                $secondary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_secondary_package_stock'][$i] );
-            }
-        }
-        $meta["_wc_trip_secondary_package_label"]     = $secondary_label;
-        $meta["_wc_trip_secondary_package_stock"]     = $_POST['_wc_trip_secondary_package_stock'];
-        $meta["_wc_trip_secondary_packages"]          = $secondary_packages;
-        $meta["_wc_trip_secondary_package_optional"]  = ( $_POST['_wc_trip_secondary_package_optional'] == "yes" ? "checked" : "" );
+        foreach( array("primary", "secondary", "tertiary") as $type ) {
+          $temp_packages  = array();
+          $label          = ( isset( $_POST["_wc_trip_{$type}_package_label"] ) ? wc_clean( $_POST["_wc_trip_{$type}_package_label"] ) : '' );
+          $packages       = ( isset( $_POST["wc_trips_{$type}_package_description"] ) ? sizeof( $_POST["wc_trips_{$type}_package_description"] ) : 0 );
 
-        // Tertiary packages
-        $tertiary_packages = array();
-        $tertiary_label = ( isset($_POST['_wc_trip_tertiary_package_label']) ? wc_clean($_POST['_wc_trip_tertiary_package_label']) : '');
-        $packages = ( isset($_POST['wc_trips_tertiary_package_description']) ? sizeof($_POST['wc_trips_tertiary_package_description']) : 0 );
-        for ( $i = 0; $i < $packages; $i++ ) {
-            $tertiary_packages[$i]['description'] = wc_clean( $_POST['wc_trips_tertiary_package_description'][$i] );
-            $tertiary_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_tertiary_package_cost'][$i] );
-            if ( isset($_POST['_wc_trip_tertiary_package_stock']) && $_POST['_wc_trip_tertiary_package_stock'] ) {
-                $tertiary_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_tertiary_package_stock'][$i] );
-            }
+          for ( $i = 0; $i < $packages; $i++ ) {
+              $temp_packages[$i]['description'] = wc_clean( $_POST["wc_trips_{$type}_package_description"][$i] );
+              $temp_packages[$i]['cost'] = wc_clean( $_POST["wc_trips_{$type}_package_cost"][$i] );
+              if ( FALSE !== strpos($temp_packages[$i]['cost'], "$") ) {
+                  $temp_packages[$i]['cost'] = str_replace( "$", "", $temp_packages[$i]['cost'] );
+              }
+              if ( isset($_POST["_wc_trip_{$type}_package_stock"]) && $_POST["_wc_trip_{$type}_package_stock"] ) {
+                  $temp_packages[$i]['stock'] = wc_clean( $_POST["wc_trips_{$type}_package_stock"][$i] );
+              }
+          }
+          $meta["_wc_trip_{$type}_package_stock"]     = $_POST["_wc_trip_{$type}_package_stock"];
+          $meta["_wc_trip_{$type}_packages"]          = $temp_packages;
+          $meta["_wc_trip_{$type}_package_label"]     = $label;
+          $meta["_wc_trip_{$type}_package_optional"]  = ( $_POST["_wc_trip_{$type}_package_optional"] == "yes" ? "checked" : "" );
         }
-        $meta["_wc_trip_tertiary_package_label"] = $tertiary_label;
-        $meta["_wc_trip_tertiary_package_stock"] = $_POST['_wc_trip_tertiary_package_stock'];
-        $meta["_wc_trip_tertiary_packages"] = $tertiary_packages;
-        $meta["_wc_trip_tertiary_package_optional"]  = ( $_POST['_wc_trip_tertiary_package_optional'] == "yes" ? "checked" : "" );
-        
+
         if ( "beach_bus" === $trip_type ) {
-          $packages = ( isset($_POST['wc_trips_package_description']) ? sizeof($_POST['wc_trips_package_description']) : 0 );
+          $packages = ( isset($_POST['wc_trips_primary_package_description']) ? sizeof( $_POST['wc_trips_primary_package_description'] ) : 0 );
+
           for( $i = 0; $i < $packages; $i++ ){
-            $packages_packages[$i]['description'] = wc_clean( $_POST['wc_trips_package_description'][$i] );
-            $packages_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_package_cost'][$i] );
+            $packages_packages[$i]['description'] = wc_clean( $_POST['wc_trips_primary_package_description'][$i] );
+            $packages_packages[$i]['cost']        = wc_clean( $_POST['wc_trips_primary_package_cost'][$i] );
           }
           $meta["_wc_trip_primary_package_label"] = "Package";
           $meta["_wc_trip_primary_package_stock"] = "no";
-          $meta["_wc_trip_primary_packages"] = $packages_packages;
+          $meta["_wc_trip_primary_packages"]      = $packages_packages;
 
           $packages = ( isset($_POST['wc_trips_to_from_beach_description']) ? sizeof($_POST['wc_trips_to_from_beach_description']) : 0 );
           for( $i = 0; $i < $packages; $i++ ){
-            $to_from_beach_packages[$i]['description'] = wc_clean( $_POST['wc_trips_to_from_beach_description'][$i] );
-            $to_from_beach_packages[$i]['cost'] = wc_clean( $_POST['wc_trips_to_from_beach_cost'][$i] );
-            $to_from_beach_packages[$i]['stock'] = wc_clean( $_POST['wc_trips_to_from_beach_stock'][$i] );
+            $to_from_beach_packages[$i]['description']  = wc_clean( $_POST['wc_trips_to_from_beach_description'][$i] );
+            $to_from_beach_packages[$i]['cost']         = wc_clean( $_POST['wc_trips_to_from_beach_cost'][$i] );
+            $to_from_beach_packages[$i]['stock']        = wc_clean( $_POST['wc_trips_to_from_beach_stock'][$i] );
           }
           $meta["_wc_trip_secondary_package_label"] = "To/From Beach";
           $meta["_wc_trip_secondary_package_stock"] = "yes";
-          $meta["_wc_trip_secondary_packages"] = $to_from_beach_packages;
+          $meta["_wc_trip_secondary_packages"]      = $to_from_beach_packages;
         }
       foreach( $meta as $key => $value ) {
         if ( $product->meta_exists($key) ) {
@@ -242,7 +214,6 @@ class WC_Trips_Admin {
         $post_id = $post->ID;
         wp_enqueue_script( 'wc_trips_admin_js' );
         include( 'views/html-trip-pickup-locations.php' );
-        include( 'views/html-trip-packages.php' );
         include( 'views/html-trip-to_beach.php' );
         foreach( array("primary", "secondary", "tertiary") as $index => $type ) {
           include('views/html-trip-package.php');
