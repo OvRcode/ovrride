@@ -5,18 +5,15 @@
  * The WooCommerce cart class stores cart data and active coupons as well as handling customer sessions and some cart related urls.
  * The cart class also has a price calculation function which calls upon other classes to calculate totals.
  *
- * @version		2.1.0
- * @package		WooCommerce/Classes
- * @category	Class
- * @author 		WooThemes
+ * @package WooCommerce/Classes
+ * @version 2.1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
-include_once( WC_ABSPATH . 'includes/legacy/class-wc-legacy-cart.php' );
-include_once( WC_ABSPATH . 'includes/class-wc-cart-session.php' );
+require_once WC_ABSPATH . 'includes/legacy/class-wc-legacy-cart.php';
+require_once WC_ABSPATH . 'includes/class-wc-cart-fees.php';
+require_once WC_ABSPATH . 'includes/class-wc-cart-session.php';
 
 /**
  * WC_Cart class.
@@ -45,11 +42,11 @@ class WC_Cart extends WC_Legacy_Cart {
 	public $applied_coupons = array();
 
 	/**
-	 * Are prices in the cart displayed inc or excl tax.
+	 * Are prices in the cart displayed inc or excl tax?
 	 *
 	 * @var string
 	 */
-	public $tax_display_cart;
+	public $tax_display_cart = 'incl';
 
 	/**
 	 * This stores the chosen shipping methods for the cart item packages.
@@ -109,6 +106,9 @@ class WC_Cart extends WC_Legacy_Cart {
 		$this->fees_api         = new WC_Cart_Fees( $this );
 		$this->tax_display_cart = get_option( 'woocommerce_tax_display_cart' );
 
+		// Register hooks for the objects.
+		$this->session->init();
+
 		add_action( 'woocommerce_add_to_cart', array( $this, 'calculate_totals' ), 20, 0 );
 		add_action( 'woocommerce_applied_coupon', array( $this, 'calculate_totals' ), 20, 0 );
 		add_action( 'woocommerce_cart_item_removed', array( $this, 'calculate_totals' ), 20, 0 );
@@ -116,6 +116,16 @@ class WC_Cart extends WC_Legacy_Cart {
 		add_action( 'woocommerce_check_cart_items', array( $this, 'check_cart_items' ), 1 );
 		add_action( 'woocommerce_check_cart_items', array( $this, 'check_cart_coupons' ), 1 );
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'check_customer_coupons' ), 1 );
+	}
+
+	/**
+	 * When cloning, ensure object properties are handled.
+	 *
+	 * These properties store a reference to the cart, so we use new instead of clone.
+	 */
+	public function __clone() {
+		$this->session  = clone $this->session;
+		$this->fees_api = clone $this->fees_api;
 	}
 
 	/*
@@ -344,6 +354,16 @@ class WC_Cart extends WC_Legacy_Cart {
 		return apply_filters( 'woocommerce_cart_' . __FUNCTION__, $this->get_totals_var( 'fee_taxes' ) );
 	}
 
+	/**
+	 * Return whether or not the cart is displaying prices including tax, rather than excluding tax.
+	 *
+	 * @since 3.3.0
+	 * @return bool
+	 */
+	public function display_prices_including_tax() {
+		return apply_filters( 'woocommerce_cart_' . __FUNCTION__, 'incl' === $this->tax_display_cart );
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Setters.
@@ -416,7 +436,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $value Value to set.
 	 */
 	public function set_subtotal( $value ) {
-		$this->totals['subtotal'] = wc_format_decimal( $value );
+		$this->totals['subtotal'] = wc_format_decimal( $value, wc_get_price_decimals() );
 	}
 
 	/**
@@ -446,7 +466,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $value Value to set.
 	 */
 	public function set_discount_tax( $value ) {
-		$this->totals['discount_tax'] = wc_format_decimal( $value );
+		$this->totals['discount_tax'] = wc_round_tax_total( $value );
 	}
 
 	/**
@@ -456,7 +476,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $value Value to set.
 	 */
 	public function set_shipping_total( $value ) {
-		$this->totals['shipping_total'] = wc_format_decimal( $value );
+		$this->totals['shipping_total'] = wc_format_decimal( $value, wc_get_price_decimals() );
 	}
 
 	/**
@@ -476,7 +496,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $value Value to set.
 	 */
 	public function set_cart_contents_total( $value ) {
-		$this->totals['cart_contents_total'] = wc_format_decimal( $value );
+		$this->totals['cart_contents_total'] = wc_format_decimal( $value, wc_get_price_decimals() );
 	}
 
 	/**
@@ -496,7 +516,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $value Value to set.
 	 */
 	public function set_total( $value ) {
-		$this->totals['total'] = wc_format_decimal( $value );
+		$this->totals['total'] = wc_format_decimal( $value, wc_get_price_decimals() );
 	}
 
 	/**
@@ -516,7 +536,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $value Value to set.
 	 */
 	public function set_fee_total( $value ) {
-		$this->totals['fee_total'] = wc_format_decimal( $value );
+		$this->totals['fee_total'] = wc_format_decimal( $value, wc_get_price_decimals() );
 	}
 
 	/**
@@ -626,6 +646,8 @@ class WC_Cart extends WC_Legacy_Cart {
 			$this->session->persistent_cart_destroy();
 		}
 
+		$this->fees_api->remove_all_fees();
+
 		do_action( 'woocommerce_cart_emptied' );
 	}
 
@@ -648,7 +670,9 @@ class WC_Cart extends WC_Legacy_Cart {
 		$weight = 0;
 
 		foreach ( $this->get_cart() as $cart_item_key => $values ) {
-			$weight += (float) $values['data']->get_weight() * $values['quantity'];
+			if ( $values['data']->has_weight() ) {
+				$weight += (float) $values['data']->get_weight() * $values['quantity'];
+			}
 		}
 
 		return apply_filters( 'woocommerce_cart_contents_weight', $weight );
@@ -769,7 +793,8 @@ class WC_Cart extends WC_Legacy_Cart {
 			if ( get_option( 'woocommerce_hold_stock_minutes' ) > 0 && ! $product->backorders_allowed() ) {
 				$order_id   = isset( WC()->session->order_awaiting_payment ) ? absint( WC()->session->order_awaiting_payment ) : 0;
 				$held_stock = $wpdb->get_var(
-					$wpdb->prepare( "
+					$wpdb->prepare(
+						"
 						SELECT SUM( order_item_meta.meta_value ) AS held_qty
 						FROM {$wpdb->posts} AS posts
 						LEFT JOIN {$wpdb->prefix}woocommerce_order_items as order_items ON posts.ID = order_items.order_id
@@ -784,7 +809,7 @@ class WC_Cart extends WC_Legacy_Cart {
 						$product->get_stock_managed_by_id(),
 						$order_id
 					)
-				);
+				); // WPCS: unprepared SQL ok.
 
 				if ( $product->get_stock_quantity() < ( $held_stock + $product_qty_in_cart[ $product->get_stock_managed_by_id() ] ) ) {
 					/* translators: 1: product name 2: minutes */
@@ -805,69 +830,9 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return string
 	 */
 	public function get_item_data( $cart_item, $flat = false ) {
-		$item_data = array();
+		wc_deprecated_function( 'WC_Cart::get_item_data', '3.3', 'wc_get_formatted_cart_item_data' );
 
-		// Variation values are shown only if they are not found in the title as of 3.0.
-		// This is because variation titles display the attributes.
-		if ( $cart_item['data']->is_type( 'variation' ) && is_array( $cart_item['variation'] ) ) {
-			foreach ( $cart_item['variation'] as $name => $value ) {
-				$taxonomy = wc_attribute_taxonomy_name( str_replace( 'attribute_pa_', '', urldecode( $name ) ) );
-
-				if ( taxonomy_exists( $taxonomy ) ) {
-					// If this is a term slug, get the term's nice name.
-					$term = get_term_by( 'slug', $value, $taxonomy );
-					if ( ! is_wp_error( $term ) && $term && $term->name ) {
-						$value = $term->name;
-					}
-					$label = wc_attribute_label( $taxonomy );
-				} else {
-					// If this is a custom option slug, get the options name.
-					$value = apply_filters( 'woocommerce_variation_option_name', $value );
-					$label = wc_attribute_label( str_replace( 'attribute_', '', $name ), $cart_item['data'] );
-				}
-
-				// Check the nicename against the title.
-				if ( '' === $value || wc_is_attribute_in_product_name( $value, $cart_item['data']->get_name() ) ) {
-					continue;
-				}
-
-				$item_data[] = array(
-					'key'   => $label,
-					'value' => $value,
-				);
-			}
-		}
-
-		// Filter item data to allow 3rd parties to add more to the array.
-		$item_data = apply_filters( 'woocommerce_get_item_data', $item_data, $cart_item );
-
-		// Format item data ready to display.
-		foreach ( $item_data as $key => $data ) {
-			// Set hidden to true to not display meta on cart.
-			if ( ! empty( $data['hidden'] ) ) {
-				unset( $item_data[ $key ] );
-				continue;
-			}
-			$item_data[ $key ]['key']     = ! empty( $data['key'] ) ? $data['key'] : $data['name'];
-			$item_data[ $key ]['display'] = ! empty( $data['display'] ) ? $data['display'] : $data['value'];
-		}
-
-		// Output flat or in list format.
-		if ( count( $item_data ) > 0 ) {
-			ob_start();
-
-			if ( $flat ) {
-				foreach ( $item_data as $data ) {
-					echo esc_html( $data['key'] ) . ': ' . wp_kses_post( $data['display'] ) . "\n";
-				}
-			} else {
-				wc_get_template( 'cart/cart-item-data.php', array( 'item_data' => $item_data ) );
-			}
-
-			return ob_get_clean();
-		}
-
-		return '';
+		return wc_get_formatted_cart_item_data( $cart_item, $flat );
 	}
 
 	/**
@@ -897,8 +862,9 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return string url to page
 	 */
 	public function get_remove_url( $cart_item_key ) {
-		$cart_page_url = wc_get_page_permalink( 'cart' );
-		return apply_filters( 'woocommerce_get_remove_url', $cart_page_url ? wp_nonce_url( add_query_arg( 'remove_item', $cart_item_key, $cart_page_url ), 'woocommerce-cart' ) : '' );
+		wc_deprecated_function( 'WC_Cart::get_remove_url', '3.3', 'wc_get_cart_remove_url' );
+
+		return wc_get_cart_remove_url( $cart_item_key );
 	}
 
 	/**
@@ -908,13 +874,9 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return string url to page
 	 */
 	public function get_undo_url( $cart_item_key ) {
-		$cart_page_url = wc_get_page_permalink( 'cart' );
+		wc_deprecated_function( 'WC_Cart::get_undo_url', '3.3', 'wc_get_cart_undo_url' );
 
-		$query_args = array(
-			'undo_item' => $cart_item_key,
-		);
-
-		return apply_filters( 'woocommerce_get_undo_url', $cart_page_url ? wp_nonce_url( add_query_arg( $query_args, $cart_page_url ), 'woocommerce-cart' ) : '', $cart_item_key );
+		return wc_get_cart_undo_url( $cart_item_key );
 	}
 
 	/**
@@ -929,16 +891,16 @@ class WC_Cart extends WC_Legacy_Cart {
 		foreach ( $taxes as $key => $tax ) {
 			$code = WC_Tax::get_rate_code( $key );
 
-			if ( $code || $key === apply_filters( 'woocommerce_cart_remove_taxes_zero_rate_id', 'zero-rated' ) ) {
+			if ( $code || apply_filters( 'woocommerce_cart_remove_taxes_zero_rate_id', 'zero-rated' ) === $key ) {
 				if ( ! isset( $tax_totals[ $code ] ) ) {
-					$tax_totals[ $code ] = new stdClass();
+					$tax_totals[ $code ]         = new stdClass();
 					$tax_totals[ $code ]->amount = 0;
 				}
-				$tax_totals[ $code ]->tax_rate_id       = $key;
-				$tax_totals[ $code ]->is_compound       = WC_Tax::is_compound( $key );
-				$tax_totals[ $code ]->label             = WC_Tax::get_rate_label( $key );
-				$tax_totals[ $code ]->amount           += wc_round_tax_total( $tax );
-				$tax_totals[ $code ]->formatted_amount  = wc_price( wc_round_tax_total( $tax_totals[ $code ]->amount ) );
+				$tax_totals[ $code ]->tax_rate_id      = $key;
+				$tax_totals[ $code ]->is_compound      = WC_Tax::is_compound( $key );
+				$tax_totals[ $code ]->label            = WC_Tax::get_rate_label( $key );
+				$tax_totals[ $code ]->amount          += wc_round_tax_total( $tax );
+				$tax_totals[ $code ]->formatted_amount = wc_price( wc_round_tax_total( $tax_totals[ $code ]->amount ) );
 			}
 		}
 
@@ -968,6 +930,23 @@ class WC_Cart extends WC_Legacy_Cart {
 	}
 
 	/**
+	 * Get all tax classes for shipping based on the items in the cart.
+	 *
+	 * @return array
+	 */
+	public function get_cart_item_tax_classes_for_shipping() {
+		$found_tax_classes = array();
+
+		foreach ( WC()->cart->get_cart() as $item ) {
+			if ( $item['data'] && ( $item['data']->is_shipping_taxable() ) ) {
+				$found_tax_classes[] = $item['data']->get_tax_class();
+			}
+		}
+
+		return array_unique( $found_tax_classes );
+	}
+
+	/**
 	 * Determines the value that the customer spent and the subtotal
 	 * displayed, used for things like coupon validation.
 	 *
@@ -982,7 +961,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return string
 	 */
 	public function get_displayed_subtotal() {
-		return 'incl' === $this->tax_display_cart ? $this->get_subtotal() + $this->get_subtotal_tax() : $this->get_subtotal();
+		return $this->display_prices_including_tax() ? $this->get_subtotal() + $this->get_subtotal_tax() : $this->get_subtotal();
 	}
 
 	/**
@@ -1071,13 +1050,13 @@ class WC_Cart extends WC_Legacy_Cart {
 			}
 
 			// Load cart item data - may be added by other plugins.
-			$cart_item_data = (array) apply_filters( 'woocommerce_add_cart_item_data', $cart_item_data, $product_id, $variation_id );
+			$cart_item_data = (array) apply_filters( 'woocommerce_add_cart_item_data', $cart_item_data, $product_id, $variation_id, $quantity );
 
 			// Generate a ID based on product ID, variation ID, variation data, and other cart item data.
-			$cart_id        = $this->generate_cart_id( $product_id, $variation_id, $variation, $cart_item_data );
+			$cart_id = $this->generate_cart_id( $product_id, $variation_id, $variation, $cart_item_data );
 
 			// Find the cart item key in the existing cart.
-			$cart_item_key  = $this->find_product_in_cart( $cart_id );
+			$cart_item_key = $this->find_product_in_cart( $cart_id );
 
 			// Force quantity to 1 if sold individually and check for existing item in cart.
 			if ( $product_data->is_sold_individually() ) {
@@ -1096,6 +1075,7 @@ class WC_Cart extends WC_Legacy_Cart {
 
 			// Stock check - only check if we're managing stock and backorders are not allowed.
 			if ( ! $product_data->is_in_stock() ) {
+				/* translators: %s: product name */
 				throw new Exception( sprintf( __( 'You cannot add &quot;%s&quot; to the cart because the product is out of stock.', 'woocommerce' ), $product_data->get_name() ) );
 			}
 
@@ -1109,12 +1089,15 @@ class WC_Cart extends WC_Legacy_Cart {
 				$products_qty_in_cart = $this->get_cart_item_quantities();
 
 				if ( isset( $products_qty_in_cart[ $product_data->get_stock_managed_by_id() ] ) && ! $product_data->has_enough_stock( $products_qty_in_cart[ $product_data->get_stock_managed_by_id() ] + $quantity ) ) {
-					throw new Exception( sprintf(
-						'<a href="%s" class="button wc-forward">%s</a> %s',
-						wc_get_cart_url(),
-						__( 'View Cart', 'woocommerce' ),
-						sprintf( __( 'You cannot add that amount to the cart &mdash; we have %1$s in stock and you already have %2$s in your cart.', 'woocommerce' ), wc_format_stock_quantity_for_display( $product_data->get_stock_quantity(), $product_data ), wc_format_stock_quantity_for_display( $products_qty_in_cart[ $product_data->get_stock_managed_by_id() ], $product_data ) )
-					) );
+					throw new Exception(
+						sprintf(
+							'<a href="%s" class="button wc-forward">%s</a> %s',
+							wc_get_cart_url(),
+							__( 'View Cart', 'woocommerce' ),
+							/* translators: 1: quantity in stock 2: current quantity */
+							sprintf( __( 'You cannot add that amount to the cart &mdash; we have %1$s in stock and you already have %2$s in your cart.', 'woocommerce' ), wc_format_stock_quantity_for_display( $product_data->get_stock_quantity(), $product_data ), wc_format_stock_quantity_for_display( $products_qty_in_cart[ $product_data->get_stock_managed_by_id() ], $product_data ) )
+						)
+					);
 				}
 			}
 
@@ -1126,14 +1109,19 @@ class WC_Cart extends WC_Legacy_Cart {
 				$cart_item_key = $cart_id;
 
 				// Add item after merging with $cart_item_data - hook to allow plugins to modify cart item.
-				$this->cart_contents[ $cart_item_key ] = apply_filters( 'woocommerce_add_cart_item', array_merge( $cart_item_data, array(
-					'key'          => $cart_item_key,
-					'product_id'   => $product_id,
-					'variation_id' => $variation_id,
-					'variation'    => $variation,
-					'quantity'     => $quantity,
-					'data'         => $product_data,
-				) ), $cart_item_key );
+				$this->cart_contents[ $cart_item_key ] = apply_filters(
+					'woocommerce_add_cart_item', array_merge(
+						$cart_item_data, array(
+							'key'          => $cart_item_key,
+							'product_id'   => $product_id,
+							'variation_id' => $variation_id,
+							'variation'    => $variation,
+							'quantity'     => $quantity,
+							'data'         => $product_data,
+							'data_hash'    => wc_get_cart_item_data_hash( $product_data ),
+						)
+					), $cart_item_key
+				);
 			}
 
 			do_action( 'woocommerce_add_to_cart', $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data );
@@ -1198,7 +1186,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	/**
 	 * Set the quantity for an item in the cart.
 	 *
-	 * @param string $cart_item_key	contains the id of the cart item.
+	 * @param string $cart_item_key contains the id of the cart item.
 	 * @param int    $quantity contains the quantity of the item.
 	 * @param bool   $refresh_totals whether or not to calculate totals after setting the new qty.
 	 * @return bool
@@ -1208,7 +1196,7 @@ class WC_Cart extends WC_Legacy_Cart {
 			do_action( 'woocommerce_before_cart_item_quantity_zero', $cart_item_key, $this );
 			unset( $this->cart_contents[ $cart_item_key ] );
 		} else {
-			$old_quantity = $this->cart_contents[ $cart_item_key ]['quantity'];
+			$old_quantity                                      = $this->cart_contents[ $cart_item_key ]['quantity'];
 			$this->cart_contents[ $cart_item_key ]['quantity'] = $quantity;
 			do_action( 'woocommerce_after_cart_item_quantity_update', $cart_item_key, $quantity, $old_quantity, $this );
 		}
@@ -1270,7 +1258,7 @@ class WC_Cart extends WC_Legacy_Cart {
 		$this->shipping_methods = $this->needs_shipping() ? $this->get_chosen_shipping_methods( WC()->shipping->calculate_shipping( $this->get_shipping_packages() ) ) : array();
 
 		$shipping_taxes = wp_list_pluck( $this->shipping_methods, 'taxes' );
-		$merged_taxes = array();
+		$merged_taxes   = array();
 		foreach ( $shipping_taxes as $taxes ) {
 			foreach ( $taxes as $tax_id => $tax_amount ) {
 				if ( ! isset( $merged_taxes[ $tax_id ] ) ) {
@@ -1298,7 +1286,7 @@ class WC_Cart extends WC_Legacy_Cart {
 		$chosen_methods = array();
 		// Get chosen methods for each package to get our totals.
 		foreach ( $calculated_shipping_packages as $key => $package ) {
-			$chosen_method          = wc_get_chosen_shipping_method_for_package( $key, $package );
+			$chosen_method = wc_get_chosen_shipping_method_for_package( $key, $package );
 			if ( $chosen_method ) {
 				$chosen_methods[ $key ] = $package['rates'][ $chosen_method ];
 			}
@@ -1342,7 +1330,8 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return array of cart items
 	 */
 	public function get_shipping_packages() {
-		return apply_filters( 'woocommerce_cart_shipping_packages',
+		return apply_filters(
+			'woocommerce_cart_shipping_packages',
 			array(
 				array(
 					'contents'        => $this->get_items_needing_shipping(),
@@ -1359,7 +1348,7 @@ class WC_Cart extends WC_Legacy_Cart {
 						'address'   => $this->get_customer()->get_shipping_address(),
 						'address_2' => $this->get_customer()->get_shipping_address_2(),
 					),
-					'cart_subtotal'       => $this->get_displayed_subtotal(),
+					'cart_subtotal'   => $this->get_displayed_subtotal(),
 				),
 			)
 		);
@@ -1424,19 +1413,19 @@ class WC_Cart extends WC_Legacy_Cart {
 	public function get_cart_shipping_total() {
 		if ( 0 < $this->get_shipping_total() ) {
 
-			if ( 'excl' === $this->tax_display_cart ) {
-				$return = wc_price( $this->shipping_total );
-
-				if ( $this->shipping_tax_total > 0 && wc_prices_include_tax() ) {
-					$return .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
-				}
-
-				return $return;
-			} else {
+			if ( $this->display_prices_including_tax() ) {
 				$return = wc_price( $this->shipping_total + $this->shipping_tax_total );
 
 				if ( $this->shipping_tax_total > 0 && ! wc_prices_include_tax() ) {
 					$return .= ' <small class="tax_label">' . WC()->countries->inc_tax_or_vat() . '</small>';
+				}
+
+				return $return;
+			} else {
+				$return = wc_price( $this->shipping_total );
+
+				if ( $this->shipping_tax_total > 0 && wc_prices_include_tax() ) {
+					$return .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
 				}
 
 				return $return;
@@ -1463,15 +1452,23 @@ class WC_Cart extends WC_Legacy_Cart {
 
 				// Get user and posted emails to compare.
 				$current_user = wp_get_current_user();
-				$check_emails = array_unique( array_filter( array_map( 'strtolower', array_map( 'sanitize_email', array(
-					$posted['billing_email'],
-					$current_user->user_email,
-				) ) ) ) );
+				$check_emails = array_unique(
+					array_filter(
+						array_map(
+							'strtolower', array_map(
+								'sanitize_email', array(
+									$posted['billing_email'],
+									$current_user->user_email,
+								)
+							)
+						)
+					)
+				);
 
 				// Limit to defined email addresses.
 				$restrictions = $coupon->get_email_restrictions();
 
-				if ( is_array( $restrictions ) && 0 < count( $restrictions ) && 0 === count( array_intersect( $check_emails, $restrictions ) ) ) {
+				if ( is_array( $restrictions ) && 0 < count( $restrictions ) && ! $this->is_coupon_emails_allowed( $check_emails, $restrictions ) ) {
 					$coupon->add_coupon_message( WC_Coupon::E_WC_COUPON_NOT_YOURS_REMOVED );
 					$this->remove_coupon( $code );
 				}
@@ -1492,21 +1489,23 @@ class WC_Cart extends WC_Legacy_Cart {
 					}
 
 					// Check against billing emails of existing users.
-					$users_query = new WP_User_Query( array(
-						'fields'       => 'ID',
-						'meta_query'   => array(
-							array(
-								'key'      => '_billing_email',
-								'value'    => $check_emails,
-								'compare'  => 'IN',
+					$users_query = new WP_User_Query(
+						array(
+							'fields'     => 'ID',
+							'meta_query' => array(
+								array(
+									'key'     => '_billing_email',
+									'value'   => $check_emails,
+									'compare' => 'IN',
+								),
 							),
-						),
-					) );
+						)
+					); // WPCS: slow query ok.
 
 					$user_id_matches = array_unique( array_filter( array_merge( $user_id_matches, $users_query->get_results() ) ) );
 
 					foreach ( $user_id_matches as $user_id ) {
-						$usage_count += count( array_keys( $used_by, $user_id ) );
+						$usage_count += count( array_keys( $used_by, (string) $user_id, true ) );
 					}
 
 					if ( $usage_count >= $coupon->get_usage_limit_per_user() ) {
@@ -1517,6 +1516,37 @@ class WC_Cart extends WC_Legacy_Cart {
 			}
 		}
 	}
+
+	/**
+	 * Checks if the given email address(es) matches the ones specified on the coupon.
+	 *
+	 * @param array $check_emails Array of customer email addresses.
+	 * @param array $restrictions Array of allowed email addresses.
+	 * @return bool
+	 */
+	public function is_coupon_emails_allowed( $check_emails, $restrictions ) {
+
+		foreach ( $check_emails as $check_email ) {
+			// With a direct match we return true.
+			if ( in_array( $check_email, $restrictions, true ) ) {
+				return true;
+			}
+
+			// Go through the allowed emails and return true if the email matches a wildcard.
+			foreach ( $restrictions as $restriction ) {
+				// Convert to PHP-regex syntax.
+				$regex = '/' . str_replace( '*', '(.+)?', $restriction ) . '/';
+				preg_match( $regex, $check_email, $match );
+				if ( ! empty( $match ) ) {
+					return true;
+				}
+			}
+		}
+
+		// No matches, this one isn't allowed.
+		return false;
+	}
+
 
 	/**
 	 * Returns whether or not a discount has been applied.
@@ -1532,7 +1562,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * Applies a coupon code passed to the method.
 	 *
 	 * @param string $coupon_code - The code to apply.
-	 * @return bool	True if the coupon is applied, false if it does not exist or cannot be applied.
+	 * @return bool True if the coupon is applied, false if it does not exist or cannot be applied.
 	 */
 	public function apply_coupon( $coupon_code ) {
 		// Coupons are globally disabled.
@@ -1602,7 +1632,7 @@ class WC_Cart extends WC_Legacy_Cart {
 
 		// Choose free shipping.
 		if ( $the_coupon->get_free_shipping() ) {
-			$packages = WC()->shipping->get_packages();
+			$packages                = WC()->shipping->get_packages();
 			$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
 
 			foreach ( $packages as $i => $package ) {
@@ -1633,7 +1663,7 @@ class WC_Cart extends WC_Legacy_Cart {
 		}
 
 		foreach ( $this->get_applied_coupons() as $code ) {
-			$coupon = new WC_Coupon( $code );
+			$coupon           = new WC_Coupon( $code );
 			$coupons[ $code ] = $coupon;
 		}
 
@@ -1649,7 +1679,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 */
 	public function get_coupon_discount_amount( $code, $ex_tax = true ) {
 		$totals          = $this->get_coupon_discount_totals();
-		$discount_amount = isset( $totals[ $code ] ) ? $totals[ $code ]: 0;
+		$discount_amount = isset( $totals[ $code ] ) ? $totals[ $code ] : 0;
 
 		if ( ! $ex_tax ) {
 			$discount_amount += $this->get_coupon_discount_tax_amount( $code );
@@ -1688,8 +1718,8 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return bool
 	 */
 	public function remove_coupon( $coupon_code ) {
-		$coupon_code  = wc_format_coupon_code( $coupon_code );
-		$position     = array_search( $coupon_code, $this->get_applied_coupons(), true );
+		$coupon_code = wc_format_coupon_code( $coupon_code );
+		$position    = array_search( $coupon_code, $this->get_applied_coupons(), true );
 
 		if ( false !== $position ) {
 			unset( $this->applied_coupons[ $position ] );
@@ -1735,12 +1765,14 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @param string $tax_class The tax class for the fee if taxable. A blank string is standard tax class. (default: '').
 	 */
 	public function add_fee( $name, $amount, $taxable = false, $tax_class = '' ) {
-		$this->fees_api()->add_fee( array(
-			'name'      => $name,
-			'amount'    => (float) $amount,
-			'taxable'   => $taxable,
-			'tax_class' => $tax_class,
-		) );
+		$this->fees_api()->add_fee(
+			array(
+				'name'      => $name,
+				'amount'    => (float) $amount,
+				'taxable'   => $taxable,
+				'tax_class' => $tax_class,
+			)
+		);
 	}
 
 	/**
@@ -1789,17 +1821,17 @@ class WC_Cart extends WC_Legacy_Cart {
 		if ( $compound ) {
 			$cart_subtotal = wc_price( $this->get_cart_contents_total() + $this->get_shipping_total() + $this->get_taxes_total( false, false ) );
 
-		} elseif ( 'excl' === $this->tax_display_cart ) {
-			$cart_subtotal = wc_price( $this->get_subtotal() );
-
-			if ( $this->get_subtotal_tax() > 0 && wc_prices_include_tax() ) {
-				$cart_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
-			}
-		} else {
+		} elseif ( $this->display_prices_including_tax() ) {
 			$cart_subtotal = wc_price( $this->get_subtotal() + $this->get_subtotal_tax() );
 
 			if ( $this->get_subtotal_tax() > 0 && ! wc_prices_include_tax() ) {
 				$cart_subtotal .= ' <small class="tax_label">' . WC()->countries->inc_tax_or_vat() . '</small>';
+			}
+		} else {
+			$cart_subtotal = wc_price( $this->get_subtotal() );
+
+			if ( $this->get_subtotal_tax() > 0 && wc_prices_include_tax() ) {
+				$cart_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
 			}
 		}
 
@@ -1813,10 +1845,10 @@ class WC_Cart extends WC_Legacy_Cart {
 	 * @return string formatted price
 	 */
 	public function get_product_price( $product ) {
-		if ( 'excl' === $this->tax_display_cart ) {
-			$product_price = wc_get_price_excluding_tax( $product );
-		} else {
+		if ( $this->display_prices_including_tax() ) {
 			$product_price = wc_get_price_including_tax( $product );
+		} else {
+			$product_price = wc_get_price_excluding_tax( $product );
 		}
 		return apply_filters( 'woocommerce_cart_product_price', wc_price( $product_price ), $product );
 	}
@@ -1837,21 +1869,19 @@ class WC_Cart extends WC_Legacy_Cart {
 
 		if ( $product->is_taxable() ) {
 
-			if ( 'excl' === $this->tax_display_cart ) {
-
-				$row_price        = wc_get_price_excluding_tax( $product, array( 'qty' => $quantity ) );
-				$product_subtotal = wc_price( $row_price );
-
-				if ( wc_prices_include_tax() && $this->get_subtotal_tax() > 0 ) {
-					$product_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
-				}
-			} else {
-
+			if ( $this->display_prices_including_tax() ) {
 				$row_price        = wc_get_price_including_tax( $product, array( 'qty' => $quantity ) );
 				$product_subtotal = wc_price( $row_price );
 
 				if ( ! wc_prices_include_tax() && $this->get_subtotal_tax() > 0 ) {
 					$product_subtotal .= ' <small class="tax_label">' . WC()->countries->inc_tax_or_vat() . '</small>';
+				}
+			} else {
+				$row_price        = wc_get_price_excluding_tax( $product, array( 'qty' => $quantity ) );
+				$product_subtotal = wc_price( $row_price );
+
+				if ( wc_prices_include_tax() && $this->get_subtotal_tax() > 0 ) {
+					$product_subtotal .= ' <small class="tax_label">' . WC()->countries->ex_tax_or_vat() . '</small>';
 				}
 			}
 		} else {
@@ -1933,6 +1963,7 @@ class WC_Cart extends WC_Legacy_Cart {
 	 */
 	private function reset_totals() {
 		$this->totals = $this->default_totals;
+		$this->fees_api->remove_all_fees();
 		do_action( 'woocommerce_cart_reset', $this, false );
 	}
 }

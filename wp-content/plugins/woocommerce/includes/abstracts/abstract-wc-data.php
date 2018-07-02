@@ -1,4 +1,15 @@
 <?php
+/**
+ * Abstract Data.
+ *
+ * Handles generic data interaction which is implemented by
+ * the different data store classes.
+ *
+ * @class       WC_Data
+ * @version     3.0.0
+ * @package     WooCommerce/Classes
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -10,8 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @version  2.6.0
  * @package  WooCommerce/Abstracts
- * @category Abstract Class
- * @author   WooThemes
  */
 abstract class WC_Data {
 
@@ -172,7 +181,7 @@ abstract class WC_Data {
 	 * Delete an object, set the ID to 0, and return result.
 	 *
 	 * @since  2.6.0
-	 * @param  bool $force_delete
+	 * @param  bool $force_delete Should the date be deleted permanently.
 	 * @return bool result
 	 */
 	public function delete( $force_delete = false ) {
@@ -263,32 +272,40 @@ abstract class WC_Data {
 	 */
 	public function get_meta_data() {
 		$this->maybe_read_meta_data();
-		return array_filter( $this->meta_data, array( $this, 'filter_null_meta' ) );
+		return array_values( array_filter( $this->meta_data, array( $this, 'filter_null_meta' ) ) );
 	}
 
 	/**
 	 * Check if the key is an internal one.
 	 *
 	 * @since  3.2.0
-	 * @param  string $key
+	 * @param  string $key Key to check.
 	 * @return bool   true if it's an internal key, false otherwise
 	 */
 	protected function is_internal_meta_key( $key ) {
-		if ( $this->data_store && ! empty( $key ) && in_array( $key, $this->data_store->get_internal_meta_keys() ) ) {
-			wc_doing_it_wrong( __FUNCTION__, sprintf( __( 'Generic add/update/get meta methods should not be used for internal meta data, including "%s". Use getters and setters.', 'woocommerce' ), $key ), '3.2.0' );
+		$internal_meta_key = ! empty( $key ) && $this->data_store && in_array( $key, $this->data_store->get_internal_meta_keys() );
 
-			return true;
+		if ( ! $internal_meta_key ) {
+			return false;
 		}
 
-		return false;
+		$has_setter_or_getter = is_callable( array( $this, 'set_' . $key ) ) || is_callable( array( $this, 'get_' . $key ) );
+
+		if ( ! $has_setter_or_getter ) {
+			return false;
+		}
+		/* translators: %s: $key Key to check */
+		wc_doing_it_wrong( __FUNCTION__, sprintf( __( 'Generic add/update/get meta methods should not be used for internal meta data, including "%s". Use getters and setters.', 'woocommerce' ), $key ), '3.2.0' );
+
+		return true;
 	}
 
 	/**
 	 * Get Meta Data by Key.
 	 *
 	 * @since  2.6.0
-	 * @param  string $key
-	 * @param  bool $single return first found meta with key, or all with $key
+	 * @param  string $key Meta Key.
+	 * @param  bool   $single return first found meta with key, or all with $key.
 	 * @param  string $context What the value is for. Valid values are view and edit.
 	 * @return mixed
 	 */
@@ -307,7 +324,7 @@ abstract class WC_Data {
 		$value      = $single ? '' : array();
 
 		if ( ! empty( $array_keys ) ) {
-			// We don't use the $this->meta_data property directly here because we don't want meta with a null value (i.e. meta which has been deleted via $this->delete_meta_data())
+			// We don't use the $this->meta_data property directly here because we don't want meta with a null value (i.e. meta which has been deleted via $this->delete_meta_data()).
 			if ( $single ) {
 				$value = $meta_data[ current( $array_keys ) ]->value;
 			} else {
@@ -326,7 +343,7 @@ abstract class WC_Data {
 	 * See if meta data exists, since get_meta always returns a '' or array().
 	 *
 	 * @since  3.0.0
-	 * @param  string $key
+	 * @param  string $key Meta Key.
 	 * @return boolean
 	 */
 	public function meta_exists( $key = '' ) {
@@ -339,7 +356,7 @@ abstract class WC_Data {
 	 * Set all meta data from array.
 	 *
 	 * @since 2.6.0
-	 * @param array $data Key/Value pairs
+	 * @param array $data Key/Value pairs.
 	 */
 	public function set_meta_data( $data ) {
 		if ( ! empty( $data ) && is_array( $data ) ) {
@@ -361,9 +378,9 @@ abstract class WC_Data {
 	 * Add meta data.
 	 *
 	 * @since 2.6.0
-	 * @param string $key Meta key
-	 * @param string $value Meta value
-	 * @param bool $unique Should this be a unique key?
+	 * @param string $key Meta key.
+	 * @param string $value Meta value.
+	 * @param bool   $unique Should this be a unique key?.
 	 */
 	public function add_meta_data( $key, $value, $unique = false ) {
 		if ( $this->is_internal_meta_key( $key ) ) {
@@ -386,13 +403,13 @@ abstract class WC_Data {
 
 	/**
 	 * Update meta data by key or ID, if provided.
-	 * @since  2.6.0
 	 *
-	 * @param  string $key
-	 * @param  string $value
-	 * @param  int $meta_id
+	 * @since  2.6.0
+	 * @param  string $key Meta key.
+	 * @param  string $value Meta value.
+	 * @param  int    $meta_id Meta ID.
 	 */
-	public function update_meta_data( $key, $value, $meta_id = '' ) {
+	public function update_meta_data( $key, $value, $meta_id = 0 ) {
 		if ( $this->is_internal_meta_key( $key ) ) {
 			$function = 'set_' . $key;
 
@@ -418,7 +435,7 @@ abstract class WC_Data {
 	 * Delete meta data.
 	 *
 	 * @since 2.6.0
-	 * @param string $key Meta key
+	 * @param string $key Meta key.
 	 */
 	public function delete_meta_data( $key ) {
 		$this->maybe_read_meta_data();
@@ -435,7 +452,7 @@ abstract class WC_Data {
 	 * Delete meta data.
 	 *
 	 * @since 2.6.0
-	 * @param int $mid Meta ID
+	 * @param int $mid Meta ID.
 	 */
 	public function delete_meta_data_by_mid( $mid ) {
 		$this->maybe_read_meta_data();
@@ -541,7 +558,7 @@ abstract class WC_Data {
 	 * Set ID.
 	 *
 	 * @since 3.0.0
-	 * @param int $id
+	 * @param int $id ID.
 	 */
 	public function set_id( $id ) {
 		$this->id = absint( $id );
@@ -562,7 +579,7 @@ abstract class WC_Data {
 	 * Set object read property.
 	 *
 	 * @since 3.0.0
-	 * @param boolean $read
+	 * @param boolean $read Should read?.
 	 */
 	public function set_object_read( $read = true ) {
 		$this->object_read = (bool) $read;
@@ -584,8 +601,8 @@ abstract class WC_Data {
 	 *
 	 * @since  3.0.0
 	 *
-	 * @param  array $props Key value pairs to set. Key is the prop and should map to a setter function name.
-	 * @param string $context
+	 * @param array  $props Key value pairs to set. Key is the prop and should map to a setter function name.
+	 * @param string $context In what context to run this.
 	 *
 	 * @return bool|WP_Error
 	 */
@@ -610,7 +627,7 @@ abstract class WC_Data {
 			}
 		}
 
-		return sizeof( $errors->get_error_codes() ) ? $errors : true;
+		return count( $errors->get_error_codes() ) ? $errors : true;
 	}
 
 	/**
@@ -651,7 +668,7 @@ abstract class WC_Data {
 	 * @since 3.0.0
 	 */
 	public function apply_changes() {
-		$this->data    = array_replace_recursive( $this->data, $this->changes );
+		$this->data    = array_replace_recursive( $this->data, $this->changes ); // @codingStandardsIgnoreLine
 		$this->changes = array();
 	}
 
@@ -694,7 +711,7 @@ abstract class WC_Data {
 	 * Sets a date prop whilst handling formatting and datetime objects.
 	 *
 	 * @since 3.0.0
-	 * @param string $prop Name of prop to set.
+	 * @param string         $prop Name of prop to set.
 	 * @param string|integer $value Value of the prop.
 	 */
 	protected function set_date_prop( $prop, $value ) {
@@ -728,13 +745,13 @@ abstract class WC_Data {
 			}
 
 			$this->set_prop( $prop, $datetime );
-		} catch ( Exception $e ) {}
+		} catch ( Exception $e ) {} // @codingStandardsIgnoreLine.
 	}
 
 	/**
 	 * When invalid data is found, throw an exception unless reading from the DB.
 	 *
-	 * @throws WC_Data_Exception
+	 * @throws WC_Data_Exception Data Exception.
 	 * @since 3.0.0
 	 * @param string $code             Error code.
 	 * @param string $message          Error message.
