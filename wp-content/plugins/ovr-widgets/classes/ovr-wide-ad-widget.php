@@ -44,7 +44,7 @@ WIDGETADMIN;
     return $instance;
   }
   public function widget($args, $instance) {
-    wp_enqueue_style('ovr_wide_ad_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-wide-ad-widget.min.css', false);
+    wp_enqueue_style('ovr_wide_ad_widget_style', plugin_dir_url( dirname(__FILE__) ) . 'css/ovr-wide-ad-widget.min.css', false, "1.0");
     echo <<<WIDGET
       <div class="ovr_wide_ad_widget">
           <a href="{$instance['link']}" target="_blank">

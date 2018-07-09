@@ -2,6 +2,14 @@
   margin: 20px 8px 0 8px;
   display: inline-block;
 }
+
+#bannerLeft > .ovr_wide_ad_widget {
+  float: right;
+}
+
+#bannerRight > .ovr_wide_ad_widget {
+  float:left;
+}
 .ovr_wide_ad_widget img {
   width: 100%;
   height: 100%;
