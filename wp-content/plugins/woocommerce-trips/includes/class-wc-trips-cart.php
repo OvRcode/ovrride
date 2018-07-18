@@ -224,10 +224,10 @@ class WC_Trips_Cart {
                   }
                 }
                 // Make sure cart stock + form doesn't go over inventory
-                if ( "Round Trip" === $package && ( $cart_master_stock + 2 ) > $product->stock ) {
+                if ( "Round Trip" === $package && ( ( ( $cart_master_stock + 2 ) > $product->stock ) && $stock_management ) ) {
                   wc_add_notice( "Sorry, this trip is now booked to capacity", "error" );
                   return FALSE;
-                } elseif ( ( $cart_master_stock + 1 ) >  $product->stock ) {
+                } elseif ( ( ( $cart_master_stock + 1 ) >  $product->stock ) && $stock_management ) {
                   wc_add_notice( "Sorry, this trip is now booked to capacity", "error" );
                   return FALSE;
                 }
