@@ -1,3 +1,69 @@
+// parseQuery: Originally from StackOverflow of: https://stackoverflow.com/a/13419367/2529423
+function parseQuery(qstr) {
+    var query = {};
+    var a = (qstr[0] === '?' ? qstr.substr(1) : qstr).split('&');
+    for (var i = 0; i < a.length; i++) {
+        var b = a[i].split('=');
+        query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || '');
+    }
+    return query;
+}
+
+// encodeQuery originally from StackOverflow: https://stackoverflow.com/a/1714899/2529423
+function encodeQuery(obj) {
+  var str = [];
+  for(var p in obj)
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+  return str.join("&");
+}
+
+function addQueryParameterToDomain(key, value, conditionDomain) {
+    var links = document.querySelectorAll('a[href]'),
+        linksLength = links.length,
+        index,
+        queryIndex,
+        queryString,
+        query,
+        url,
+        domain,
+        colonSlashSlash;
+
+    // Iterate through and add query paramter
+    for(index = 0; index < linksLength; ++index) {
+        url = links[index].href,
+        queryIndex = url.indexOf('?'),
+        colonSlashSlash = url.indexOf('://');
+
+        domain = url.substring(colonSlashSlash + 3);
+        domain = domain.substring(0, domain.indexOf('/'));
+
+        if(domain !== conditionDomain) {
+            continue;
+        }
+
+        if(queryIndex === -1) {
+            url += '?' + key + '=' + value;
+        } else {
+            queryString = url.substring(queryIndex);
+            url = url.substring(0, queryIndex);
+            query = parseQuery(queryString);
+
+            query[key] = value;
+
+            url += '?' + encodeQuery(query);
+        }
+
+        links[index].href = url;
+    }
+}
+
+// jQuery(function() {
+    
+//     addQueryParameterToDomain('lkid', '12345678', 'www.example.com');
+// });
+
 jQuery(document).ready(function($){
   var vars = window.location.search.replace("?","");
   if ( vars.indexOf("bb=1") >= 0 ){
@@ -351,4 +417,96 @@ jQuery(document).ready(function($){
       $(".single_add_to_cart_button").prop("disabled", "disabled");
     }
   }
+  
+
+  /*---------------------------------------------------------------------------------------------------------------------
+    WeWork Trip
+  -----------------------------------------------------------------------------------------------------------------------*/
+
+  if ( vars.indexOf("wework=1") >= 0 ){
+      $(".navbar-inverse").css({
+        "background":"url(https://lh3.googleusercontent.com/EyHauB03faA07sgKthv3zkmNTVUf5hWTaXgEi61gGEroaUFGrhb2OhQYgI28TILNPAnDKlK2YQ=w1191) no-repeat center center",
+        "min-height": 298
+      });
+      
+      // Transform logo and logo placement
+      var title_logo = $("a[title='Home']");
+      var title_li = title_logo.parent('li');
+      title_logo.attr('href','https://weworkskitrip.squarespace.com/');
+
+      //title_logo.css({'width':'','height':''});
+      title_li.css({'background':'url(https://static1.squarespace.com/static/5bd9e871d274cb8403963a2a/t/5c33b664562fa726f24d77b9/1547686652380/?format=1500w)'});
+      title_li.css({'background-repeat':'no-repeat'});
+      title_li.css({'background-size': 'contain'});
+      title_logo.css({'width':'170px'});
+      title_logo.css({'height':'140px'});
+      title_li.css({'margin-top':'10px'});
+      title_li.css({'left':'40%'});
+
+      $('.main-content, .mainBackground, #main-no-collapse li:first-of-type a').css({
+        "background": "none"
+      });
+
+
+      // Remove and Replace menu items
+      $("a[title='Book A Trip']").remove();
+      var main_collapse = $("ul#main-collapse");
+      main_collapse.html('');
+
+      //Hide upcoming events list
+      $("div.events").parent().parent('div.row').remove();
+      
+      //Hide product image
+      $("div.images").remove();
+      
+      // Remove footer squares
+      $("div.footer-square-container").remove();
+      
+      //Remove ovr footer sponsors
+      $("div.ovr-sponsors").remove();
+      
+      // Remove footer links
+      $("div.ovr-footer-links").remove();
+      
+      // Remove Woocommerce breadcrumb links
+      $("nav.woocommerce-breadcrumb").remove();
+      
+      // Change stock and price color
+      $("p.stock, span#trip_price").css({'color':'#A4366D'});
+      
+      // Change Add to cart button color
+      $("button.wc_trip_add").css({'background':'#A4366D'});
+      
+      //Change header link colors
+      $(".navbar-inverse .navbar-nav>li>a:link, .navbar-inverse .navbar-nav>li>a:visited").css({'color':'#FFF'});
+      
+      // Had to setup JS events for :hover due to jquery hardcoding new link color onto links
+      $(".navbar-inverse .navbar-nav>li>a").on('mouseenter',function() {
+        $(this).css("color", "#ED665E");
+      });
+
+      $(".navbar-inverse .navbar-nav>li>a").on('mouseleave',function() {
+        $(this).css("color", "#FFF");
+      });
+      
+      //Modify Shop links on page
+      //$("a.woocommerce-LoopProduct-link").attr("href", $(this).attr("href") + "?bb=1");
+      function modifyShopLink(e) {
+        e.preventDefault();
+        var url = jQuery(this).attr("href").concat("?wework=1");
+        window.location.href=url;
+      }
+      // Keep BB referal on links
+      jQuery('[href*="https://ovrride.com/cart/"]').attr('href','https://ovrride.com/cart/?wework=1');
+      jQuery('[href*="https://ovrride.com/checkout/"]').attr('href','https://ovrride.com/checkout/?wework=1');
+
+      $("a.button.wc-forward").click( jQuery(this), modifyShopLink );
+      $("a.woocommerce-LoopProduct-link").click( jQuery(this), modifyShopLink );
+      $("a.woocommerce-LoopProduct-link").siblings('a').click( jQuery(this), modifyShopLink );
+      
+      $('p.stock').text("Space Available");
+      $('.dobCheck p').html("For this trip guests need to be at least 21 years of age. <br>We are unable to accomodate guests under 21 years of age.");
+    
+      addQueryParameterToDomain('wework=1');
+    }  
 });
