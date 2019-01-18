@@ -496,9 +496,6 @@ jQuery(document).ready(function($){
         var url = jQuery(this).attr("href").concat("?wework=1");
         window.location.href=url;
       }
-      // Keep BB referal on links
-      jQuery('[href*="https://ovrride.com/cart/"]').attr('href','https://ovrride.com/cart/?wework=1');
-      jQuery('[href*="https://ovrride.com/checkout/"]').attr('href','https://ovrride.com/checkout/?wework=1');
 
       $("a.button.wc-forward").click( jQuery(this), modifyShopLink );
       $("a.woocommerce-LoopProduct-link").click( jQuery(this), modifyShopLink );
