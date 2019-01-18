@@ -503,7 +503,8 @@ jQuery(document).ready(function($){
       
       $('p.stock').text("Space Available");
       $('.trail_map_tab a').text('Maps');
-      $('.pickups_tab a').text('To the Mountain');
+      $('.pics_tab a').text('To the Resort');
+      $('.pickups_tab a').text('From the Resort');
       $('.pickups strong').text('Depart from Mountain');
       $('.dobCheck p').html("For this trip guests need to be at least 21 years of age. <br>We are unable to accomodate guests under 21 years of age.");
     
