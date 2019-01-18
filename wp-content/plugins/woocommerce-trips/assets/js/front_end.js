@@ -507,7 +507,10 @@ jQuery(document).ready(function($){
       $('.pickups_tab a').text('From the Resort');
       $('.pickups strong').text('Depart from Mountain');
       $('.dobCheck p').html("For this trip guests need to be at least 21 years of age. <br>We are unable to accomodate guests under 21 years of age.");
-    
+
+      $('.woocommerce-additional-fields h3').text('Please enter your Roommate(s) Name(s), if applicable.');
+      $('#order_comments_field label').text("By making this reservation you agree that if your unit doesn't fill to the occupancy expected to take responsibility for the unused portion of reservation.");    
+      
       addQueryParameterToDomain('wework=1');
     }  
 });
