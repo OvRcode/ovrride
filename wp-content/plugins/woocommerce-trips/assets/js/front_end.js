@@ -502,6 +502,9 @@ jQuery(document).ready(function($){
       $("a.woocommerce-LoopProduct-link").siblings('a').click( jQuery(this), modifyShopLink );
       
       $('p.stock').text("Space Available");
+      $('.trail_map_tab a').text('Maps');
+      $('.pickups_tab a').text('To the Mountain');
+      $('.pickups strong').text('Depart from Mountain');
       $('.dobCheck p').html("For this trip guests need to be at least 21 years of age. <br>We are unable to accomodate guests under 21 years of age.");
     
       addQueryParameterToDomain('wework=1');
