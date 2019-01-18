@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo, Mike Barnard
  * Author URI: http://ajacevedo.com
- * Version: 0.6.1
+ * Version: 0.6.2
  * License: MIT License
  */
 
@@ -238,5 +238,33 @@ function clear_cart_on_logout() {
     }
 }
 add_action('wp_logout', 'clear_cart_on_logout');
+
+
+
+
+/**
+ * Redirect users after add to cart.
+ */
+function wework_add_to_cart_redirect( $url ) {
+
+  if ( ! isset( $_REQUEST['add-to-cart'] ) || ! is_numeric( $_REQUEST['add-to-cart'] ) ) {
+    return $url;
+  }
+
+  $product_id = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_REQUEST['add-to-cart'] ) );
+
+  // Only redirect products that have the 'wework' category
+  if ( has_term( 'wework', 'product_cat', $product_id ) ) {
+    $url = get_permalink( 38 );
+    $url .= '?wework=1';
+  }
+
+  return $url;
+}
+add_filter( 'woocommerce_add_to_cart_redirect', 'wework_add_to_cart_redirect' );
+
+
+
+
 /* Place custom code above this line. */
 ?>
