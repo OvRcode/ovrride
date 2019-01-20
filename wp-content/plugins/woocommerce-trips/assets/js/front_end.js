@@ -121,7 +121,7 @@ jQuery(document).ready(function($){
     $("button.wc_trip_add").css({'background':'#A4366D'});
     //Change header link colors
     $(".navbar-inverse .navbar-nav>li>a:link, .navbar-inverse .navbar-nav>li>a:visited").css({'color':'#FFF'});
-	  // Had to setup JS events for :hover due to jquery hardcoding new link color onto links
+    // Had to setup JS events for :hover due to jquery hardcoding new link color onto links
     $(".navbar-inverse .navbar-nav>li>a").on('mouseenter',function() {
       $(this).css("color", "#ED665E");
     });
@@ -381,18 +381,211 @@ jQuery(document).ready(function($){
 
     }
   });
-  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package, #wc_trip_pickup_location").on("change", addCosts);
+  
+  $("#wc_trip_primary_package, #wc_trip_secondary_package, #wc_trip_tertiary_package, #wc_trip_pickup_location, #learning_package, #additional_day, #equipment_rental, #helmet_rental, .wc-pao-addon-select").on("change", addCosts);
+  
   function addCosts(){
     var base      = Number($("#base_price").val()) || 0;
     var primary   = Number( $("#wc_trip_primary_package :selected").data('cost') ) || 0;
     var secondary = Number( $("#wc_trip_secondary_package :selected").data('cost') ) || 0;
     var tertiary  = Number( $("#wc_trip_tertiary_package :selected").data('cost') ) || 0;
     var pickup    = Number( $("#wc_trip_pickup_location :selected").data('cost') ) || 0;
+    
+    var selected_option_price = jQuery("option:selected", this).attr('data-price');
+    var checked_option_price = jQuery(this).attr('data-price');
+    
     var total = base + primary + secondary + tertiary + pickup;
+
+    var options_price_added = [];
+    
+    var PPOMWrapper = jQuery(".ppom-wrapper");
+
+    PPOMWrapper.find('select,input:checkbox,input:radio').each(function(i, input){
+        
+        // if fixedprice (addon) then return
+        if( jQuery("option:selected", this).attr('data-unitprice') !== undefined ) return;
+        
+        var selected_option_price = jQuery("option:selected", this).attr('data-price');
+        var selected_option_label = jQuery("option:selected", this).attr('data-label');
+        var selected_option_title = jQuery("option:selected", this).attr('data-title');
+        var selected_option_apply = jQuery("option:selected", this).attr('data-onetime') !== 'on' ? 'variable' : 'onetime';
+        var selected_option_taxable = jQuery("option:selected", this).attr('data-taxable');
+        var selected_option_without_tax = jQuery("option:selected", this).attr('data-without_tax');
+        var selected_option_optionid = jQuery("option:selected", this).attr('data-optionid');
+        var selected_option_data_name = jQuery("option:selected", this).attr('data-data_name');
+        
+        var checked_option_price = jQuery(this).attr('data-price');
+        var checked_option_label = jQuery(this).attr('data-label');
+        var checked_option_title = jQuery(this).attr('data-title');
+        var checked_option_apply = jQuery(this).attr('data-onetime') !== 'on' ? 'variable' : 'onetime';
+        var checked_option_taxable = jQuery(this).attr('data-taxable');
+        var checked_option_without_tax = jQuery(this).attr('data-without_tax');
+        var checked_option_optionid = jQuery(this).attr('data-optionid');
+        var checked_option_data_name = jQuery(this).attr('data-data_name');
+        
+        // apply now being added from data-attribute for new prices
+        if( jQuery(this).attr('data-apply') !== undefined ) {
+            checked_option_apply = jQuery(this).attr('data-apply');
+            selected_option_apply = jQuery(this).attr('data-apply');
+        }
+        
+            
+        var does_option_has_price = true;
+        
+        if( (checked_option_price == undefined || checked_option_price == '') && 
+            (selected_option_price == undefined || selected_option_price == '') ) {
+            return;
+        }
+            
+        var option_price = {};
+        if( jQuery(this).prop("checked") ){
+            
+            if( checked_option_title !== undefined ) {
+                option_price.label = checked_option_title+' '+checked_option_label;
+            } else {
+                option_price.label = checked_option_label;
+            }
+            option_price.price = Number(checked_option_price);
+            option_price.apply = checked_option_apply;
+            
+total = total + option_price.price;
+
+            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.taxable        = checked_option_taxable;
+            option_price.without_tax    = checked_option_without_tax;
+            option_price.option_id      = checked_option_optionid;
+            option_price.data_name      = checked_option_data_name;
+            
+            // More data attributes
+            if( checked_option_apply === 'measure' ) {
+                option_price.qty = jQuery(this).attr('data-qty');
+                option_price.use_units = jQuery(this).attr('data-use_units');
+            }
+            
+            options_price_added.push( option_price );
+            
+      } else if(selected_option_price !== undefined && is_option_calculatable(this) ) {
+          
+          if( selected_option_title !== undefined ) {
+                option_price.label = selected_option_title+' '+selected_option_label;
+            } else {
+                option_price.label = selected_option_label;
+            }
+          option_price.price = Number(selected_option_price);
+
+total = total + option_price.price;
+
+            option_price.apply = selected_option_apply;
+            
+            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.taxable        = selected_option_taxable;
+            option_price.without_tax    = selected_option_without_tax;
+            option_price.option_id      = selected_option_optionid;
+            option_price.data_name      = selected_option_data_name;
+            
+            options_price_added.push( option_price );
+      }
+      
+    });
+
+
+
+
+    $('.wc-pao-addon').find('select,input:checkbox,input:radio').each(function(i, input){
+        
+        // if fixedprice (addon) then return
+        if( jQuery("option:selected", this).attr('data-unitprice') !== undefined ) return;
+        
+        var selected_option_price = jQuery("option:selected", this).attr('data-price');
+        var selected_option_label = jQuery("option:selected", this).attr('data-label');
+        var selected_option_title = jQuery("option:selected", this).attr('data-title');
+        var selected_option_apply = jQuery("option:selected", this).attr('data-onetime') !== 'on' ? 'variable' : 'onetime';
+        var selected_option_taxable = jQuery("option:selected", this).attr('data-taxable');
+        var selected_option_without_tax = jQuery("option:selected", this).attr('data-without_tax');
+        var selected_option_optionid = jQuery("option:selected", this).attr('data-optionid');
+        var selected_option_data_name = jQuery("option:selected", this).attr('data-data_name');
+        
+        var checked_option_price = jQuery(this).attr('data-price');
+        var checked_option_label = jQuery(this).attr('data-label');
+        var checked_option_title = jQuery(this).attr('data-title');
+        var checked_option_apply = jQuery(this).attr('data-onetime') !== 'on' ? 'variable' : 'onetime';
+        var checked_option_taxable = jQuery(this).attr('data-taxable');
+        var checked_option_without_tax = jQuery(this).attr('data-without_tax');
+        var checked_option_optionid = jQuery(this).attr('data-optionid');
+        var checked_option_data_name = jQuery(this).attr('data-data_name');
+        
+        // apply now being added from data-attribute for new prices
+        if( jQuery(this).attr('data-apply') !== undefined ) {
+            checked_option_apply = jQuery(this).attr('data-apply');
+            selected_option_apply = jQuery(this).attr('data-apply');
+        }
+        
+            
+        var does_option_has_price = true;
+        
+        if( (checked_option_price == undefined || checked_option_price == '') && 
+            (selected_option_price == undefined || selected_option_price == '') ) {
+            return;
+        }
+            
+        var option_price = {};
+        if( jQuery(this).prop("checked") ){
+            
+            if( checked_option_title !== undefined ) {
+                option_price.label = checked_option_title+' '+checked_option_label;
+            } else {
+                option_price.label = checked_option_label;
+            }
+            option_price.price = Number(checked_option_price);
+            option_price.apply = checked_option_apply;
+            
+total = total + option_price.price;
+
+            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.taxable        = checked_option_taxable;
+            option_price.without_tax    = checked_option_without_tax;
+            option_price.option_id      = checked_option_optionid;
+            option_price.data_name      = checked_option_data_name;
+            
+            // More data attributes
+            if( checked_option_apply === 'measure' ) {
+                option_price.qty = jQuery(this).attr('data-qty');
+                option_price.use_units = jQuery(this).attr('data-use_units');
+            }
+            
+            options_price_added.push( option_price );
+            
+      } else if(selected_option_price !== undefined && is_option_calculatable(this) ) {
+          
+          if( selected_option_title !== undefined ) {
+                option_price.label = selected_option_title+' '+selected_option_label;
+            } else {
+                option_price.label = selected_option_label;
+            }
+          option_price.price = Number(selected_option_price);
+
+total = total + option_price.price;
+
+            option_price.apply = selected_option_apply;
+            
+            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.taxable        = selected_option_taxable;
+            option_price.without_tax    = selected_option_without_tax;
+            option_price.option_id      = selected_option_optionid;
+            option_price.data_name      = selected_option_data_name;
+            
+            options_price_added.push( option_price );
+      }
+      
+    });
+
+    // var total = total + checked_option_price + selected_option_price;
 
     $("#trip_price").text( "$" + total.toFixed(2) );
   }
+
   addCosts();
+  
   function enableDisableCart() {
     var fieldsOK = true;
     var fields = $("input[name^=wc_trip_], select[name^=wc_trip_]");
