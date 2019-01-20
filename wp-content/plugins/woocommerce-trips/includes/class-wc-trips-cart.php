@@ -31,25 +31,25 @@ class WC_Trips_Cart {
     public function check_cart_items(){
       global $woocommerce;
       // Result
-			$return = true;
+      $return = true;
 
-			// Check cart item validity
-			$result = $woocommerce->cart->check_cart_item_validity();
+      // Check cart item validity
+      $result = $woocommerce->cart->check_cart_item_validity();
 
-			if ( is_wp_error( $result ) ) {
-				wc_add_notice( $result->get_error_message(), "error" );
-				$return = false;
-			}
+      if ( is_wp_error( $result ) ) {
+        wc_add_notice( $result->get_error_message(), "error" );
+        $return = false;
+      }
 
-			// Check item stock
-			$result = $this->check_cart_item_stock();
+      // Check item stock
+      $result = $this->check_cart_item_stock();
 
-			if ( is_wp_error( $result ) ) {
-				wc_add_notice( $result->get_error_message(), "error" );
-				$return = false;
-			}
+      if ( is_wp_error( $result ) ) {
+        wc_add_notice( $result->get_error_message(), "error" );
+        $return = false;
+      }
 
-			return $return;
+      return $return;
 
     }
     public function check_cart_item_stock() {
@@ -268,8 +268,24 @@ class WC_Trips_Cart {
 
       foreach ( $cart_obj->get_cart() as $key => $value ) {
         if ( "trip" == $value['data']->product_type ) {
+
+          if(!empty( $value['addons'] )){
+            $addons_price = 0;
+            foreach ($value['addons'] as $addon_key => $addon_value) {
+                $addons_price = $addons_price + $addon_value['price'];
+            }
+          }
+
+
           if( WC()->session->__isset( "{$key}_cost" ) ) {
+
             $additional_costs = WC()->session->get( "{$key}_cost" );
+
+
+            if(isset($addons_price)){
+              $additional_costs = $additional_costs + $addons_price;  
+            }
+
             $value['data']->set_price( $additional_costs );
           }
         }
@@ -323,12 +339,13 @@ class WC_Trips_Cart {
         }
       }
     }
+
     public function force_individual_cart_items( $cart_item_data, $product_id ) {
         $unique_cart_item_key = md5( microtime().rand() );
         $cart_item_data['unique_key'] = $unique_cart_item_key;
-
         return $cart_item_data;
     }
+
     public function save_trip_fields( $cart_item_key, $product_id = null, $quantity= null, $variation_id= null, $variation= null) {
         if ( ! WC()->session->__isset( "{$cart_item_key}_cost" ) ) {
             $base_price = get_post_meta($product_id, "_wc_trip_base_price", true);
@@ -434,8 +451,8 @@ CARTMETA;
           "pickups"   => $this->pickupField( $product->id ),
           "packages"  => [
             "primary"   => $product->output_packages( "primary" ),
-        		"secondary" => $product->output_packages( "secondary" ),
-        		"tertiary"  => $product->output_packages( "tertiary" )
+            "secondary" => $product->output_packages( "secondary" ),
+            "tertiary"  => $product->output_packages( "tertiary" )
           ],
           "base_price"  => floatval( get_post_meta( $product->id, "_wc_trip_base_price", true ) ),
           "stock"       => $stock_text,
