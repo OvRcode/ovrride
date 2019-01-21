@@ -699,6 +699,8 @@ total = total + option_price.price;
       $('.pics_tab a').text('To the Resort');
       $('.pickups_tab a').text('From the Resort');
       $('.pickups strong').text('Depart from Mountain');
+      
+      $('.dobCheck').css({"float":"none"});
       $('.dobCheck p').html("For this trip guests need to be at least 21 years of age. <br>We are unable to accomodate guests under 21 years of age.");
 
       $('.woocommerce-additional-fields h3').text('Please enter your Roommate(s) Name(s), if applicable.');
