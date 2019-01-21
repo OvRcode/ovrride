@@ -186,14 +186,14 @@ add_role('staff', 'OvR Staff', array(
 
 // Adds the Manning avatar to Settings > Discussion
 if ( !function_exists('fb_addgravatar') ) {
-	function fb_addgravatar( $avatar_defaults ) {
-		$manning_avatar = get_bloginfo('template_directory') . '/images/default_avatar.png';
-		$avatar_defaults[$manning_avatar] = 'Manning';
+  function fb_addgravatar( $avatar_defaults ) {
+    $manning_avatar = get_bloginfo('template_directory') . '/images/default_avatar.png';
+    $avatar_defaults[$manning_avatar] = 'Manning';
 
-		return $avatar_defaults;
-	}
+    return $avatar_defaults;
+  }
 
-	add_filter( 'avatar_defaults', 'fb_addgravatar' );
+  add_filter( 'avatar_defaults', 'fb_addgravatar' );
 }
 
 ///////////////////
@@ -226,9 +226,9 @@ function ovr_get_coupon_url($code) {
 /* sort woocommerce categories by SKU */
 add_filter('woocommerce_get_catalog_ordering_args', 'am_woocommerce_catalog_orderby');
 function am_woocommerce_catalog_orderby( $args ) {
-	$args['orderby'] = 'meta_value';
-	$args['order'] = 'asc';
-	$args['meta_key'] = '_sku';
+  $args['orderby'] = 'meta_value';
+  $args['order'] = 'asc';
+  $args['meta_key'] = '_sku';
     return $args;
 }
 
@@ -242,26 +242,145 @@ add_action('wp_logout', 'clear_cart_on_logout');
 
 
 
-/**
- * Redirect users after add to cart.
- */
-function wework_add_to_cart_redirect( $url ) {
+/*--------------------------------------------------------
+ * Redirect WeWork Orders to cart after adding + Add WeWork Query Param
+ ---------------------------------------------------------*/
 
-  if ( ! isset( $_REQUEST['add-to-cart'] ) || ! is_numeric( $_REQUEST['add-to-cart'] ) ) {
+if(!function_exists('wework_add_to_cart_redirect')) :
+  function wework_add_to_cart_redirect( $url ) {
+
+    if ( ! isset( $_REQUEST['add-to-cart'] ) || ! is_numeric( $_REQUEST['add-to-cart'] ) ) {
+      return $url;
+    }
+
+    $product_id = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_REQUEST['add-to-cart'] ) );
+
+    // Only redirect products that have the 'wework' category
+    if ( has_term( 'wework', 'product_cat', $product_id ) ) {
+      $url = get_permalink( 6 );
+      $url .= '?wework=1';
+    }
+
     return $url;
   }
+  add_filter( 'woocommerce_add_to_cart_redirect', 'wework_add_to_cart_redirect' );
+endif;
 
-  $product_id = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_REQUEST['add-to-cart'] ) );
 
-  // Only redirect products that have the 'wework' category
-  if ( has_term( 'wework', 'product_cat', $product_id ) ) {
-    $url = get_permalink( 38 );
-    $url .= '?wework=1';
+/*--------------------------------------------------------
+ * Add WeWork Query Param to Checkout Confirmation Page 
+ ---------------------------------------------------------*/
+
+add_filter('woocommerce_get_return_url','wework_override_return_url',10,2);
+
+function wework_override_return_url( $return_url, $order ){
+
+  $modified_url = $return_url . '&wework=1';
+  
+  if( isset($order) && !empty($order) ) {
+    foreach($order->get_items() as $key => $item) {
+      if ( has_term( 'wework', 'product_cat', $item['product_id'] ) ) {
+        return $modified_url;      
+      }
+    }    
   }
-
-  return $url;
+  return $return_url;
 }
-add_filter( 'woocommerce_add_to_cart_redirect', 'wework_add_to_cart_redirect' );
+
+
+if(!function_exists('_log')){
+  function _log( $message ) {
+    if( WP_DEBUG === true )
+      ( is_array( $message ) || is_object( $message ) ) ? error_log( print_r( $message, true ) ) : error_log( $message );
+  }
+}
+// _log('Testing the error message logging');
+// _log(array('it' => 'works'));
+
+
+
+/*-------------------------------------------
+ * CUSTOM WEWORK SUBJECT
+ --------------------------------------------*/
+ 
+//telling WooCommerce to run our custom function on the email subject
+add_filter('woocommerce_email_subject_customer_completed_order', 'uiwc_change_email_subject', 1, 2);
+ 
+function uiwc_change_email_subject( $subject, $order ) {
+  $wework = false;
+
+  // getting the order products
+  $items = $order->get_items();
+
+  // let's loop through each of them
+  foreach ( $items as $item ) {      
+    // checking if the ordered product is a VIP product
+    if ( has_term( 'wework', 'product_cat', $item['product_id'] ) ) {
+      $wework = true;
+    }
+  }
+  
+  // creating our new subject line
+  if($wework ){
+    $subject = sprintf( 'WeWork Ski Trip 2019 - Order # %s', $order->get_id() );   
+    add_filter( 'woocommerce_email_from_name', 'wework_from_name', 1, 2);
+    add_filter( 'woocommerce_email_from_address', 'wework_from_email', 1, 2);
+  }
+ 
+  // sending our custom subject back to WooCommerce
+  return $subject;
+}
+
+
+function wework_from_name($name, $order){
+  $name = 'WeWork Ski Trip 2019'; 
+  return $name;
+}
+
+function wework_from_email($email, $order){
+  $email = 'skitrip@wework.com'; 
+  return $email;
+}
+
+
+
+/*---------------------------------------------------------------
+  DIFFERENT MESSAGES FOR DIFFERENT PRODUCTS
+-----------------------------------------------------------------*/
+ 
+//hook our function to the new order email
+add_action('woocommerce_email_order_details', 'uiwc_email_order_details_products', 1, 4);
+ 
+function uiwc_email_order_details_products($order, $admin, $plain, $email) {
+  $status = $order->get_status();
+  
+  // checking if it's the order status we want
+  if ( $status == "completed" ) {
+ 
+    // the IDs of our wework products
+    $prod_arr = array( 136 );  
+    
+    // getting the order products
+    $items = $order->get_items();
+    
+    // starting the bought products variable
+    $bought = false;
+    
+    // let's loop through each of them
+    foreach ( $items as $item ) {      
+      // checking if the ordered product is a VIP product
+      if ( in_array( $item['product_id'], $prod_arr ) ) {
+        $bought = true;
+      }
+    }
+    
+    if ( $bought ) {      
+      //using WP's function for localization
+      echo __( '<strong>Premium offer:</strong> Your ordered products puts you in our VIP list. 
+        You can <a href="#">sign up for it here</a>.', 'uiwc' );
+    }
+  }  
+}
 
 
 
