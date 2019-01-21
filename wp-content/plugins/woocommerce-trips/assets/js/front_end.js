@@ -699,9 +699,18 @@ total = total + option_price.price;
       $('.pics_tab a').text('To the Resort');
       $('.pickups_tab a').text('From the Resort');
       $('.pickups strong').text('Depart from Mountain');
-      
+
       $('.dobCheck').css({"float":"none"});
       $('.dobCheck p').html("For this trip guests need to be at least 21 years of age. <br>We are unable to accomodate guests under 21 years of age.");
+
+  
+      $('.wc-pao-addon-off-the-slope-activity-rsvp > label').css({"text-decoration":"underline", "font-size":"16px"});
+      $('b, strong').css({"font-family":"inherit", "font-size":"16px;"})
+
+      $('<h2>Guest 1 Info</h2>').insertBefore('#wc-trips-form .name');
+      $('<h2>Guest 2 Info</h2>').insertBefore('.wc-pao-addon-guest-name label');
+      $('.wc-pao-addon-guest-name h2').css({"border-top":"1px dashed #eeeeee", "padding":"20px 0", "margin-top":"30px"});
+      
 
       $('.woocommerce-additional-fields h3').text('Please enter your Roommate(s) Name(s), if applicable.');
       $('#order_comments_field label').text("By making this reservation you agree that if your unit doesn't fill to the occupancy expected to take responsibility for the unused portion of reservation.");    
