@@ -4,14 +4,25 @@ if ( ! defined( "ABSPATH" ) ) {
 }
 
 class WC_Trips_Cart {
-    public $fields = array( "wc_trip_first" => "First", "wc_trip_middle" => "Middle",
-      "wc_trip_last" => "Last", "wc_trip_gender"  => "Gender", "wc_trip_email" => "Email",
-      "wc_trip_phone" => "Phone", "wc_trip_passport_num" => "Passport Number",
-      "wc_trip_passport_country" => "Passport Country", "wc_trip_dob_field" => "Date of Birth",
-      "wc_trip_age_check" => "Is this guest at least 18 years of age?", "wc_trip_primary_package" => "primary",
-      "wc_trip_secondary_package" => "secondary", "wc_trip_tertiary_package" => "tertiary",
-      "wc_trip_pickup_location" => "Pickup Location", "wc_trip_to_beach" => "To Beach",
-      "wc_trip_from_beach" => "From Beach" );
+
+    public $fields = array( 
+      "wc_trip_first" => "First",
+      "wc_trip_middle" => "Middle",
+      "wc_trip_last" => "Last",
+      "wc_trip_gender"  => "Gender",
+      "wc_trip_email" => "Email",
+      "wc_trip_phone" => "Phone",
+      "wc_trip_passport_num" => "Passport Number",
+      "wc_trip_passport_country" => "Passport Country",
+      "wc_trip_dob_field" => "Date of Birth",
+      "wc_trip_age_check" => "Is this guest at least 21 years of age?",
+      "wc_trip_primary_package" => "primary",
+      "wc_trip_secondary_package" => "secondary",
+      "wc_trip_tertiary_package" => "tertiary",
+      "wc_trip_pickup_location" => "Pickup Location",
+      "wc_trip_to_beach" => "To Beach",
+      "wc_trip_from_beach" => "From Beach"
+    );
 
     public $package_types = array( "primary", "secondary", "tertiary" );
     public $orders_processed = array();
@@ -423,8 +434,10 @@ CARTMETA;
         echo "</dl>";
     }
     public function add_to_cart( $cart_item_key ) {
+
         global $product;
         $stock_count = $product->get_stock_quantity();
+
         if ( !$product->is_in_stock() ) {
           $stock_text = "Sold Out";
         } else if ( $stock_count > 30 ) {
@@ -438,6 +451,8 @@ CARTMETA;
         $destination                    = get_page_by_title( $destination_name, "ARRAY_A", "destinations" );
         $destination_lesson_restriction = get_post_meta( $destination['ID'], "_lesson_age", true );
         $age_check                      = $product->get_meta( "_wc_trip_age_check", true, "view" );
+
+
         if ( "" == $age_check ) {
           $age_check = 18;
         }
@@ -446,6 +461,8 @@ CARTMETA;
         } else {
           $age_label = $age_check;
         }
+
+
         $template_data = [
           "trip_type" => get_post_meta( $product->id, "_wc_trip_type", true ),
           "pickups"   => $this->pickupField( $product->id ),
