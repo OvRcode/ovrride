@@ -287,6 +287,19 @@ function wework_override_return_url( $return_url, $order ){
   return $return_url;
 }
 
+add_filter('woocommerce_get_checkout_order_received_url','wework_checkout_order_received_url',10,2);
+
+function wework_checkout_order_received_url($return_url,$order){
+  if( isset($order) && !empty($order) ) {
+    foreach($order->get_items() as $key => $item) {
+      if ( has_term( 'wework', 'product_cat', $item['product_id'] ) ) {
+        return add_query_arg('wework', 1, $return_url);      
+      }
+    }    
+  }
+  return $return_url;
+}
+
 
 if(!function_exists('_log')){
   function _log( $message ) {
