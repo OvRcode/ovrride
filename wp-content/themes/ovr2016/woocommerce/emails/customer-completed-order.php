@@ -24,8 +24,16 @@ $toBeach 				= array();
 $fromBeach			= array();
 $has_trip 		 	= false;
 $has_beach_bus	= false;
+$wework         = false;
 
 foreach($order->get_items() as $order_item_id ) {
+  
+    if ( has_term( 'wework', 'product_cat', $order_item_id['product_id'] ) ) {
+      $wework = true;
+      $email_heading = '<img src="https://lh3.googleusercontent.com/EyHauB03faA07sgKthv3zkmNTVUf5hWTaXgEi61gGEroaUFGrhb2OhQYgI28TILNPAnDKlK2YQ=w600"/>'.$email_heading;
+    }
+  
+
     $product = wc_get_product( $order_item_id['product_id']);
 		$subType = $product->get_meta( '_wc_trip_type', true, 'view');
 		if ( "beach_bus" == $subType ) {
@@ -64,7 +72,7 @@ foreach($order->get_items() as $order_item_id ) {
  * @hooked WC_Emails::email_header() Output the email header
  */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
-<?php if ($has_trip && !$has_beach_bus): ?>
+<?php if ($has_trip && !$has_beach_bus && !$wework): ?>
 <p><?php echo "Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:"; ?></p>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -84,7 +92,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
         </table>
     <p>For a smooth and prompt departure on the day of your trip, please download and print out a copy of our waiver. If you bring this 2 sided filled out and signed copy to the trip, we’ll surely appreciate it, as it will speed up our check-in process.  If you don’t have access to a printer, additional waivers will be available on the bus.</p>
 <?php elseif ($has_flight): ?>
-	echo "Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:"; ?></p>
+	<p>Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:"; ?></p>
 	        <table width="100%" border="0" cellspacing="0" cellpadding="0">
 	            <tr>
 	                <td>
@@ -103,6 +111,12 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 	            </tr>
 	        </table>
 	    <p>Since we'll be flying please print, sign scan and email your completed waiver to <a href="mailto:info@ovrride.com">info@ovrride.com</a> . Please send in your waiver as soon as possible, at least 48 hours before your scheduled departure.</p>
+<?php elseif ($wework): ?>
+
+	<p>If you booked a Private Room for multiple roommates be sure to send your roommates this confirmation email, prompting them to make their reservation. Balances will be charged to your account on file for any empty space in your unit equal to the cost for that package at the rate for the number of guests it was reserved for. As long as all your roommates sign on and pay, you’re set! We will send a notification before we take off to confirm the roommates on board.</p>
+
+	<p>If you have any questions about your reservation, or if you need to make updates to your reservation please call (347) 559-1787.</p>
+
 <?php else: ?>
 <p><?php printf( __( "Hi there. Your recent order on %s has been completed. Your order details are shown below for your reference:", 'woocommerce' ), get_option( 'blogname' ) ); ?></p>
 <?php endif; ?>
@@ -169,3 +183,13 @@ do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_
  * @hooked WC_Emails::email_footer() Output the email footer
  */
 do_action( 'woocommerce_email_footer', $email );
+
+if($wework) : ?>
+<style>
+	#wrapper { background-color: #ffffff;  }
+	#template_header { background:#fafafa; }
+	#template_header h1 { color: #111111; }
+	#template_header_image { display: none; }
+</style>
+<?php
+endif;

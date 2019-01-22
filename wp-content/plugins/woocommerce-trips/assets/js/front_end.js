@@ -618,8 +618,12 @@ total = total + option_price.price;
 
   if ( vars.indexOf("wework=1") >= 0 ){
       $(".navbar-inverse").css({
-        "background":"url(https://lh3.googleusercontent.com/EyHauB03faA07sgKthv3zkmNTVUf5hWTaXgEi61gGEroaUFGrhb2OhQYgI28TILNPAnDKlK2YQ=w1191) no-repeat center center",
-        "min-height": 298
+        // "background":"url(https://lh3.googleusercontent.com/EyHauB03faA07sgKthv3zkmNTVUf5hWTaXgEi61gGEroaUFGrhb2OhQYgI28TILNPAnDKlK2YQ=w1191) no-repeat center center",
+        // "min-height": 298;
+        "background": "url(https://res.cloudinary.com/dyyecpgty/image/upload/v1548123479/wework-ski-trip-b-v2_teinos.jpg) no-repeat",
+        "min-height": 432,
+        "background-size": "cover",
+        "background-position": "center 41%"
       });
       
       // Transform logo and logo placement
@@ -690,6 +694,13 @@ total = total + option_price.price;
         window.location.href=url;
       }
 
+      /* Trigger Click on first age option (Yes 21) */
+      $('input:radio[name=wc_trip_age_check]:first').trigger("click");
+      $('#wc_trip_dob_month').val('3');
+      $('#wc_trip_dob_day').val('8');
+      $('#wc_trip_dob_year').val('1998');
+
+
       $("a.button.wc-forward").click( jQuery(this), modifyShopLink );
       $("a.woocommerce-LoopProduct-link").click( jQuery(this), modifyShopLink );
       $("a.woocommerce-LoopProduct-link").siblings('a').click( jQuery(this), modifyShopLink );
@@ -711,6 +722,9 @@ total = total + option_price.price;
       $('<h2>Guest 2 Info</h2>').insertBefore('.wc-pao-addon-guest-name label');
       $('.wc-pao-addon-guest-name h2').css({"border-top":"1px dashed #eeeeee", "padding":"20px 0", "margin-top":"30px"});
       $('.wc-pao-addon-existing-order').insertBefore('.packages:eq(0)');
+
+      // $('.wc-pao-addon').css({"margin-top": "8px", "background": "#f4f4f4", "padding": "20px", "border-radius":"10px", "margin-top":"20px", "width":"57%", });
+      // $('.ppom-wrapper').css({"background":"#f4f4f4", "padding":"20px !important", "border-radius":"10px", "margin-top":"20px", "width":"57%", });
 
       $('.woocommerce-additional-fields h3').text('Please enter your Roommate(s) Name(s), if applicable.');
       $('#order_comments_field label').text("By making this reservation you agree that if your unit doesn't fill to the occupancy expected to take responsibility for the unused portion of reservation.");    
