@@ -632,7 +632,7 @@ total = total + option_price.price;
       title_logo.attr('href','https://weworkskitrip.squarespace.com/');
 
       //title_logo.css({'width':'','height':''});
-      title_li.css({'background':'url(https://static1.squarespace.com/static/5bd9e871d274cb8403963a2a/t/5c33b664562fa726f24d77b9/1547686652380/?format=1500w)'});
+      // title_li.css({'background':'url(https://static1.squarespace.com/static/5bd9e871d274cb8403963a2a/t/5c33b664562fa726f24d77b9/1547686652380/?format=1500w)'});
       title_li.css({'background-repeat':'no-repeat'});
       title_li.css({'background-size': 'contain'});
       title_logo.css({'width':'170px'});
