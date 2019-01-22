@@ -257,7 +257,7 @@ if(!function_exists('wework_add_to_cart_redirect')) :
 
     // Only redirect products that have the 'wework' category
     if ( has_term( 'wework', 'product_cat', $product_id ) ) {
-      $url = get_permalink( 6 );
+      $url = get_permalink( 38 );
       $url .= '?wework=1';
     }
 
@@ -349,7 +349,7 @@ function wework_from_email($email, $order){
 -----------------------------------------------------------------*/
  
 //hook our function to the new order email
-add_action('woocommerce_email_order_details', 'uiwc_email_order_details_products', 1, 4);
+// add_action('woocommerce_email_order_details', 'uiwc_email_order_details_products', 1, 4);
  
 function uiwc_email_order_details_products($order, $admin, $plain, $email) {
   $status = $order->get_status();
