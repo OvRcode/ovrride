@@ -729,6 +729,8 @@ total = total + option_price.price;
       $('.woocommerce-additional-fields h3').text('Please enter your Roommate(s) Name(s), if applicable.');
       $('#order_comments_field label').text("By making this reservation you agree that if your unit doesn't fill to the occupancy expected to take responsibility for the unused portion of reservation.");    
       
+      $(".woocommerce-terms-and-conditions-wrapper").append('<p class="form-row "><label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox"><input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" name="wework-terms" id="wework-terms"><span class="woocommerce-wework-terms-and-conditions-checkbox-text">I agree to <a target="_blank" href="https://static1.squarespace.com/static/5bd9e871d274cb8403963a2a/t/5c478a7d4ae23759d4d4106f/1548192381923/Ski+Trip+2019+Terms+and+Conditions.pdf">WeWork’s Term’s of Service</a>, and acknowledge that I have read and understood WeWork’s <a target="_blank" href="https://www.wework.com/legal/privacy">Privacy Policy</a>.<span class="required">*</span></label><input type="hidden" name="wework-terms-field" value="1"></p>');
+
       addQueryParameterToDomain('wework=1');
     }  
 });
