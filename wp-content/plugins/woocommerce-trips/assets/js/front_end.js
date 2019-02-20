@@ -555,7 +555,7 @@ total = total + option_price.price;
             
             options_price_added.push( option_price );
             
-      } else if(selected_option_price !== undefined && is_option_calculatable(this) ) {
+      } else if(selected_option_price !== undefined ) {
           
           if( selected_option_title !== undefined ) {
                 option_price.label = selected_option_title+' '+selected_option_label;
