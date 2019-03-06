@@ -450,7 +450,7 @@ jQuery(document).ready(function($){
             
 total = total + option_price.price;
 
-            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.product_title  = checked_option_title;
             option_price.taxable        = checked_option_taxable;
             option_price.without_tax    = checked_option_without_tax;
             option_price.option_id      = checked_option_optionid;
@@ -541,7 +541,7 @@ total = total + option_price.price;
             
 total = total + option_price.price;
 
-            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.product_title  = checked_option_title;
             option_price.taxable        = checked_option_taxable;
             option_price.without_tax    = checked_option_without_tax;
             option_price.option_id      = checked_option_optionid;
@@ -555,7 +555,7 @@ total = total + option_price.price;
             
             options_price_added.push( option_price );
             
-      } else if(selected_option_price !== undefined && is_option_calculatable(this) ) {
+      } else if(selected_option_price !== undefined ) {
           
           if( selected_option_title !== undefined ) {
                 option_price.label = selected_option_title+' '+selected_option_label;
@@ -568,7 +568,7 @@ total = total + option_price.price;
 
             option_price.apply = selected_option_apply;
             
-            option_price.product_title  = ppom_input_vars.product_title;
+            option_price.product_title  = selected_option_title;
             option_price.taxable        = selected_option_taxable;
             option_price.without_tax    = selected_option_without_tax;
             option_price.option_id      = selected_option_optionid;
