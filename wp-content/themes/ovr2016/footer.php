@@ -117,8 +117,8 @@
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="https://www.atomic.com/en-us" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/atomic.png"; ?>">
+			<a href="https://www.bluepointbrewing.com/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/bluepoint-logo.jpg"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
@@ -154,8 +154,8 @@
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://www.hobokenbrewing.beer/"  class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/HobokenBrewing.png"; ?>" >
+      <a href="https://www.juneshine.co/"  class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/juneshine.jpg"; ?>" >
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
