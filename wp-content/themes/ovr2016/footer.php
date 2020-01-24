@@ -149,8 +149,8 @@
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://www.highbrewcoffee.com/" class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/highBrew.png"; ?>">
+      <a href="https://hitbalm.com/" class="ovr_sponsor" target="_blank">
+        <img src="https://res.cloudinary.com/dyyecpgty/image/upload/v1579851286/hit-cbd_g7rhf1.jpg">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
