@@ -1,0 +1,56 @@
+// sass-lint:disable class-name-format no-qualifying-elements id-name-format
+//--------------------------------------------------------------
+//   Layout helpers
+//--------------------------------------------------------------
+.ctct-form-wrapper {
+
+	.ctct-form-field {
+		margin: 0 0 1rem;
+	}
+
+	.ctct-field-inline {
+		display: inline-block;
+	}
+
+	.ctct-field-half {
+
+		@include wider-than( 'medium' ) {
+			float: left;
+			margin-right: 2%;
+			width: 48%;
+
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+
+	}
+
+	.ctct-field-third {
+
+		@include wider-than( 'medium' ) {
+			float: left;
+			margin-right: 2%;
+			width: 32%;
+
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+
+	}
+
+	.ctct-field-fourth {
+
+		@include wider-than('medium') {
+			float: left;
+			margin-right: 2%;
+			width: 24%;
+
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+
+	}
+}

@@ -1,0 +1,28 @@
+.cb-spotlight-spn-gallery{
+  .cb-spotlight-column-one, .cb-spotlight-column-two{
+    width:100%; 
+  }
+  .cb-spotlight-spn-image{
+		padding:5px;
+    float:left;
+  }
+  .cb-spotlight-spn-links{
+		padding:5px;
+    float:left;
+    .cb-spotlight-spn-link{
+      text-decoration:none;
+      display:block;
+      cursor:pointer;
+      padding:10px;
+      background:rgba(0,0,0, 0);
+			transition: background 500ms ease;
+      margin-bottom:1rem;
+      &:hover{
+        background:rgba(0,0,0, 0.1);
+      }
+      &.active{
+        background:rgba(0,0,0, 0.1);
+      }
+    }
+  }
+}

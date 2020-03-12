@@ -1,0 +1,49 @@
+{
+	"name": "webdevstudios/constant-contact-woocommerce",
+	"description": "Integrate Constant Contact and WooCommerce",
+	"type": "wordpress-plugin",
+	"autoload": {
+		"psr-4": {
+			"WebDevStudios\\CCForWoo\\": "src/"
+		}
+	},
+	"scripts": {
+		"test": [ "./vendor/bin/phpunit" ],
+		"generate-fixtures": [ "@php ./tests/cypress/bin/generate-cypress-fixtures.php" ],
+		"dist": [
+			"rm -rf ./vendor",
+			"rm -rf ./CODEOWNERS",
+			"npm install",
+			"npm run build",
+			"rm -rf ./node_modules",
+			"@composer install --no-dev -a",
+			"@composer archive --format=zip --file constant-contact-woocommerce",
+			"mv constant-contact-woocommerce.zip $HOME/Desktop"
+		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"WebDevStudios\\CCForWoo\\Tests\\": "tests/"
+		}
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^7",
+		"10up/wp_mock": "dev-master"
+	},
+	"require": {
+		"webdevstudios/oops-wp": "^0.1",
+		"composer/installers": "^1.6"
+	},
+	"archive": {
+		"exclude": [
+			".gitignore",
+			"!vendor/*",
+			"node_modules",
+			"tests",
+			"cypress.*",
+			"phpunit.xml",
+			"README.md",
+			"tags"
+		]
+	}
+}

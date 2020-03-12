@@ -1,0 +1,65 @@
+
+@-webkit-keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse {
+  animation-name: pulse;
+}
+
+.cb-shade-boxes{
+//	background:rgba(0,0,0,0.8);
+	.cb-shade-box-wrapper{
+		min-height:420px;
+		.cb-shade-box-overlay{
+//			background : rgba(0,0,0,0.3);
+			padding:5px;
+			display:block;
+			width:100%;
+			min-height:420px;
+		  text-decoration:none;
+			transition: background 500ms ease;
+			overflow:hidden;
+			.cb-shade-box-inner{
+				min-height:420px;
+				display:flex;
+			  justify-content: center;
+				flex-direction: column;
+				* {
+					color:whitesmoke;
+				}
+			}
+			&:hover {
+//				background : rgba(0,0,0,0.8);
+				.cb-shade-box-inner{
+					animation: pulse 1s;
+				}
+			}
+		}
+	}
+}
+		

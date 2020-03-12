@@ -1,0 +1,65 @@
+
+.featured-category-cta .cta-block {
+	display:block;
+	text-align:center;
+}
+.featured-category-cta .cta-block:hover,
+.featured-category-cta .cta-block:focus,
+.featured-category-cta .cta-block.hover {
+	text-decoration: none;	
+}
+.featured-category-cta .cta-block .feat-cat-overlay {
+	display:inline-block;
+	overflow:hidden;
+	position: relative;
+}
+.featured-category-cta .cta-block .feat-cat-hover {
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transition:0.3s;
+}
+.featured-category-cta .cta-block:hover .feat-cat-hover,
+.featured-category-cta .cta-block:focus .feat-cat-hover,
+.featured-category-cta .cta-block.hover .feat-cat-hover {
+	opacity: 1;
+}
+.featured-category-cta .cta-block .feat-cat-hover .cat-subheading {
+	margin-bottom: 0;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	transform:translateY(-50%);
+}
+.featured-category-cta .cta-block .feat-cat-overlay .title-overlay {
+	position: absolute;
+	left: 0;
+	right: 0;
+	padding: 0 0 0 0;
+	transition: 0.3s;
+	transition: background 0.3s;
+}
+.featured-category-cta .cta-block .feat-cat-overlay .title-overlay.overlay-top {
+	top:0;
+}
+.featured-category-cta .cta-block .feat-cat-overlay .title-overlay.overlay-middle {
+	top:50%;
+	transform:translateY(-50%);
+}
+.featured-category-cta .cta-block .feat-cat-overlay .title-overlay.overlay-bottom {
+	bottom:0;
+}
+.featured-category-cta .cat-heading {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	transition: color 0.3s;
+}
+.featured-category-cta .cat-subheading {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	transition: color 0.3s;
+}

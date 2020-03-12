@@ -1,0 +1,187 @@
+/**
+* Pricing Table Columns
+*
+* Column layouts for pricing table
+*/
+.fl-pricing-table:before,
+.fl-pricing-table:after {
+	display: table;
+	content: " ";
+}
+.fl-pricing-table:after {
+	clear: both;
+}
+.fl-pricing-table {
+	margin-left: auto;
+	margin-right: auto;
+	zoom:1;
+}
+.fl-pricing-table [class^='fl-pricing-table-col-'] {
+	float: left;
+	position: relative;
+	min-height: 1px;
+}
+.fl-pricing-table .fl-pricing-table-col-8 { width: 12.5%; }
+.fl-pricing-table .fl-pricing-table-col-7 { width: 14.28%; }
+.fl-pricing-table .fl-pricing-table-col-6 { width: 16.66%; }
+.fl-pricing-table .fl-pricing-table-col-5 { width: 20%; }
+.fl-pricing-table .fl-pricing-table-col-4 { width: 25%; }
+.fl-pricing-table .fl-pricing-table-col-3 { width: 33.33%; }
+.fl-pricing-table .fl-pricing-table-col-2 { width: 50%; }
+.fl-pricing-table .fl-pricing-table-col-1 { width: 100%; }
+
+
+/**
+* Pricing Box Spacing
+*
+* medium, large, and None
+*/
+
+/*medium*/
+.fl-pricing-table.fl-pricing-table-spacing-tight,
+.fl-pricing-table.fl-pricing-table-spacing-medium {
+	margin-left: -6px;
+	margin-right: -6px;
+}
+.fl-pricing-table.fl-pricing-table-spacing-tight [class^='fl-pricing-table-col-'],
+.fl-pricing-table.fl-pricing-table-spacing-medium [class^='fl-pricing-table-col-'] {
+	padding-right: 6px;
+	padding-left: 6px;
+}
+
+/*large*/
+.fl-pricing-table.fl-pricing-table-spacing-wide,
+.fl-pricing-table.fl-pricing-table-spacing-large {
+	margin-left: -12px;
+	margin-right: -12px;
+}
+.fl-pricing-table.fl-pricing-table-spacing-wide [class^='fl-pricing-table-col-'],
+.fl-pricing-table.fl-pricing-table-spacing-large [class^='fl-pricing-table-col-'] {
+	padding-right: 12px;
+	padding-left: 12px;
+}
+
+/*None*/
+.fl-pricing-table.fl-pricing-table-spacing-none {
+	margin-left: 0;
+	margin-right: 0;
+}
+.fl-pricing-table.fl-pricing-table-spacing-none [class^='fl-pricing-table-col-'] {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+/*Fix noneing borders*/
+.fl-pricing-table.fl-pricing-table-spacing-none.fl-pricing-table-border-large [class^='fl-pricing-table-col-'] .fl-pricing-table-column,
+.fl-pricing-table.fl-pricing-table-spacing-none.fl-pricing-table-border-medium [class^='fl-pricing-table-col-'] .fl-pricing-table-column {
+	border-right-width: 0 !important;
+}
+.fl-pricing-table.fl-pricing-table-spacing-none.fl-pricing-table-border-large [class^='fl-pricing-table-col-']:last-child .fl-pricing-table-column,
+.fl-pricing-table.fl-pricing-table-spacing-none.fl-pricing-table-border-medium [class^='fl-pricing-table-col-']:last-child .fl-pricing-table-column {
+	border-right-width: 1px !important;
+}
+.fl-pricing-table.fl-pricing-table-spacing-none.fl-pricing-table-border-small [class^='fl-pricing-table-col-'] .fl-pricing-table-inner-wrap {
+	/*border-right-width: 0 !important;*/
+	margin-right: -1px !important;
+}
+.fl-pricing-table.fl-pricing-table-spacing-none.fl-pricing-table-border-small [class^='fl-pricing-table-col-']:last-child .fl-pricing-table-inner-wrap {
+	/*border-right-width: 1px !important;*/
+	margin-right: 0 !important;
+}
+
+
+/**
+* Pricing Boxes
+*
+* The actual pricing boxes
+*/
+
+.fl-pricing-table .fl-pricing-table-column {
+	text-align: center;
+}
+.fl-pricing-table .fl-pricing-table-inner-wrap {
+	margin: 12px;
+}
+.fl-pricing-table .fl-pricing-table-column .fl-pricing-table-price {
+	padding: 13px 0;
+	position: relative;
+	z-index: 2;
+	letter-spacing: -2px;
+}
+.fl-pricing-table .fl-pricing-table-column h2 {
+	margin: 0;
+	padding: 20px;
+}
+.fl-pricing-table .fl-pricing-table-column .fl-pricing-table-duration {
+	font-size: .44em;
+	display: inline-block;
+	position: relative;
+	bottom: 4px;
+	letter-spacing: 0px;
+	opacity: 0.85;
+}
+.fl-pricing-table .fl-pricing-table-features {
+	margin: 20px 15px;
+	list-style-type: none;
+	padding: 0;
+}
+.fl-pricing-table .fl-pricing-table-features li {
+	border-bottom: 1px solid rgba(0,0,0,0.15);
+	text-align: left;
+	padding: 13px 4px;
+	list-style-type: none;
+}
+.fl-pricing-table .fl-pricing-table-features li:last-child {
+	border-bottom: 0;
+}
+.fl-pricing-table a.fl-button {
+	margin: 0 15px;
+}
+.fl-pricing-table a.fl-button .fl-button-text {
+	line-height: 18px;
+}
+/*Curvy Boxes*/
+.fl-pricing-table.fl-pricing-table-rounded .fl-pricing-table-column {
+	border-radius: 6px;
+}
+.fl-pricing-table.fl-pricing-table-rounded .fl-pricing-table-inner-wrap {
+	border-radius: 3px;
+}
+
+
+/**
+* Pricing Box Borders
+*
+* Large, Medium, Small
+*/
+
+/*Large*/
+.fl-pricing-table.fl-pricing-table-border-large .fl-pricing-table-inner-wrap {
+	margin: 12px;
+}
+.fl-pricing-table.fl-pricing-table-border-large .fl-pricing-table-column .fl-pricing-table-price {
+	margin: 0 -15px;
+}
+/*adjust for no spacing*/
+.fl-pricing-table.fl-pricing-table-border-large.fl-pricing-table-spacing-none .fl-pricing-table-column .fl-pricing-table-price {
+	margin: 0 -14px;
+}
+
+/*Medium*/
+.fl-pricing-table.fl-pricing-table-border-medium .fl-pricing-table-inner-wrap {
+	margin: 6px;
+}
+.fl-pricing-table.fl-pricing-table-border-medium .fl-pricing-table-column .fl-pricing-table-price {
+	margin: 0 -10px;
+}
+
+/*Small Border*/
+.fl-pricing-table.fl-pricing-table-border-small .fl-pricing-table-column {
+	border: 0 !important;
+}
+.fl-pricing-table.fl-pricing-table-border-small .fl-pricing-table-inner-wrap {
+	margin: 0px;
+}
+.fl-pricing-table.fl-pricing-table-border-small .fl-pricing-table-column .fl-pricing-table-price {
+	margin: 0 -1px;
+}

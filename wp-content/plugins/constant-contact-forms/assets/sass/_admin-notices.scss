@@ -1,0 +1,51 @@
+// sass-lint:disable class-name-format no-qualifying-elements id-name-format
+.updated.ctct-admin-notice,
+.error.ctct-admin-notice {
+	padding: 1rem 38px 1rem 1rem;
+	position: relative;
+}
+
+a.ctct-notice-dismiss {
+	text-decoration: none;
+}
+
+#ctct-admin-notice-activation {
+	padding: 1rem 1rem 0 1rem;
+
+	.ctct-notice-intro {
+		line-height: 1.5rem;
+		max-width: 600px;
+	}
+
+	.ctct-notice-button,
+	.ctct-notice-button:active {
+		margin: 0.5rem;
+		vertical-align: middle;
+	}
+}
+
+.ctct-admin-notice {
+	overflow: hidden;
+
+	&.updated {
+		border-left-color: $color-cc-blue;
+	}
+
+	> div {
+		float: left;
+	}
+
+	.admin-notice-message {
+		margin-left: 15px;
+		width: 80%;
+
+		h4 {
+			color: $color-cc-blue;
+			margin: 0 0 10px;
+		}
+
+		> div {
+			float: left;
+		}
+	}
+}

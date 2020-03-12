@@ -1,0 +1,12 @@
+.fl-pricing-table .fl-pricing-table-col-8,
+.fl-pricing-table .fl-pricing-table-col-7,
+.fl-pricing-table .fl-pricing-table-col-6,
+.fl-pricing-table .fl-pricing-table-col-5,
+.fl-pricing-table .fl-pricing-table-col-4,
+.fl-pricing-table .fl-pricing-table-col-3,
+.fl-pricing-table .fl-pricing-table-col-2,
+.fl-pricing-table .fl-pricing-table-col-1 {
+	width: 90%;
+	float: none;
+	margin: 35px auto;
+}

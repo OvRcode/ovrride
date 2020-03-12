@@ -1,0 +1,9 @@
+/* Help Button
+----------------------------------------------------------- */
+
+.fl-help-button-settings,
+.fl-help-video-embed,
+.fl-knowledge-base-url,
+.fl-forums-url {
+	display: none;
+}

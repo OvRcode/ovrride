@@ -1,0 +1,20 @@
+.fl-icon-group .fl-icon {
+	display: inline-block;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+/* Left */
+.fl-icon-group-left {
+	text-align: left;
+}
+
+/* Center */
+.fl-icon-group-center {
+	text-align: center;
+}
+
+/* Right */
+.fl-icon-group-right {
+	text-align: right;
+}
