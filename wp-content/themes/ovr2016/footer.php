@@ -117,7 +117,7 @@
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="https://www.tworobbers.com/" class="ovr_sponsor" target="_blank">
+			<a href="https://tworobbers.com/" class="ovr_sponsor" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/two-robbers-white-80x80.png"; ?>">
 			</a>
 		</div>
