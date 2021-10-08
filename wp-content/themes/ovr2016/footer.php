@@ -117,8 +117,8 @@
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="https://www.bluepointbrewing.com/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/bluepoint-logo.jpg"; ?>">
+			<a href="https://tworobbers.com/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/two-robbers-white-80x80.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
@@ -132,8 +132,8 @@
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="http://www.salomon.com/us/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/salomon.png"; ?>">
+			<a href="https://discoverpacifico.com/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/pacifico-80x80.png"; ?>">
 			</a>
 		</div>
 	</div>
