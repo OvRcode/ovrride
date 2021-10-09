@@ -167,7 +167,7 @@
 	<div class="row ovr-footer-links">
 		<div class="col-xs-10 col-xs-offset-1">
 				<a href="/">Home</a> | <a href="/blog">Blog</a> | <a href="/waiver/">Waiver</a> |
-				<a href="/terms-and-conditions">Terms &amp; Conditions</a> | <a href="/faq">FAQ</a>
+				<a href="/terms-and-conditions">Terms &amp; Conditions</a> | <a href="https://ovrride.zendesk.com/hc/en-us">FAQ</a>
 		</div>
 	</div>
 	<div class="row">
