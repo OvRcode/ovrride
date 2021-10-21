@@ -1,0 +1,25 @@
+{
+  "name": "ovrride",
+  "version": "1.0.0",
+  "description": "This is a server designed to locally serve up the site to test changes before pushing to github.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OvRcode/ovrride.git"
+  },
+  "keywords": [
+    "server"
+  ],
+  "author": "jd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OvRcode/ovrride/issues"
+  },
+  "homepage": "https://github.com/OvRcode/ovrride#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

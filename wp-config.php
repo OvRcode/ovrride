@@ -2,9 +2,6 @@
 /** Enable W3 Total Cache */
 define('WP_CACHE', true); // Added by W3 Total Cache
 
-// Fix SSL with HAPROXY Termination
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
-    $_SERVER['HTTPS'] = 'on';
 
 
 /**
@@ -29,16 +26,16 @@ if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 }
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', getenv('MYSQL_DB') );
+define('DB_NAME', 'ovrride' );
 
 /** MySQL database username */
-define('DB_USER', getenv('MYSQL_USER') );
+define('DB_USER', 'root' );
 
 /** MySQL database password */
-define('DB_PASSWORD', getenv('MYSQL_PASS') );
+define('DB_PASSWORD', 'root' );
 
 /** MySQL hostname */
-define('DB_HOST', getenv('MYSQL_HOST') );
+define('DB_HOST', 'localhost:8889' );
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -59,14 +56,14 @@ define('DISABLE_WP_CRON', true);
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         getenv('WP_AUTH_KEY') );
-define('SECURE_AUTH_KEY',  getenv('WP_SECURE_AUTH_KEY') );
-define('LOGGED_IN_KEY',    getenv('WP_LOGGED_IN_KEY') );
-define('NONCE_KEY',        getenv('WP_NONCE_KEY') );
-define('AUTH_SALT',        getenv('WP_AUTH_SALT') );
-define('SECURE_AUTH_SALT', getenv('WP_SECURE_AUTH_SALT') );
-define('LOGGED_IN_SALT',   getenv('WP_LOGGED_IN_SALT') );
-define('NONCE_SALT',       getenv('WP_NONCE_SALT') );
+define('AUTH_KEY',         '.H*Sg8+8_F)pNryoah_%_grbC:NOyS%an_-WCfat=Y2E*v)6XA-[<m.a_Xi5xBv]');
+define('SECURE_AUTH_KEY',  '8TAkM6i_M+?+*@&*{|x]jN~Xbg!%C,vbDKU%Vk3gdKe_a>%UmUTkBe9n-hhm)-do');
+define('LOGGED_IN_KEY',    '-ES3.)ifQl8=6);C%a=(24-2G5E}cD<4Y8G:.HLyo5R6q+=L[[]bs~~6v5+|YTG0');
+define('NONCE_KEY',        '-r<q.<Xg)#{|)lSxuUgf4rH|)Z5w#%$zW!-}G_<7/l&$= Z5)L3vA+Mez9lGRO_+');
+define('AUTH_SALT',        '>p{{:]c?;ye8MWiyfoU^~1[e#~&2L{.]&r|^c;y7H}dCb+c$10-|+@^.-qdHka]_');
+define('SECURE_AUTH_SALT', 'w)&1+>pJ(nn[{_^I%LC)uzbk+Exyk=g.A<PS 4hZ3`}!N=7of ayz0;O71,J|h~;');
+define('LOGGED_IN_SALT',   'i3t(-S@-xyHy-#sDW_-dyy5,$t2tJoXvv+n^TS5[8@q.F5ql)@QV2aM-M<.WY)5:');
+define('NONCE_SALT',       'D`PRmRjODw=J#?7TK;cg6jMyP:=G8-Q-pQ!TQdHjztg^nZ*t]iJSq-,{g+4|m|?v');
 
 /**#@-*/
 
@@ -96,10 +93,6 @@ define('WPLANG', '');
  * in their development environments.
  */
 define('WP_DEBUG', false);
-
-// Force Login page and Admin Dashboard to require SSL
-define('FORCE_SSL_LOGIN', true);
-define('FORCE_SSL_ADMIN', true);
 
 /* That's all, stop editing! Happy blogging. */
 
