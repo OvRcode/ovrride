@@ -1,5 +1,6 @@
 /* This is a small security for too long strings titles */
 body {
+	background: rgb(0,0,0);
 	word-wrap: break-word;
 }
 
