@@ -1,0 +1,3 @@
+user_login,user_email,display_name,role,first_name,last_name,billing_first_name,billing_last_name,billing_company,billing_email,billing_phone,billing_country,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,shipping_first_name,shipping_last_name,shipping_company,shipping_country,shipping_address_1,shipping_address_2,shipping_city,shipping_state,shipping_postcode
+javier,carazo@correo.es,Javier Carazo,customer,Javier,Carazo,Javier,Carazo,,carazo@correo.es,600000000,ES,c/ Islas,,Córdoba,CO,14001,Javier,Carazo,,ES,c/ Islas,,Córdoba,CO,14001
+inma,inma@email.com,Inma Pérez,subscriber,Inma,Pérez,,,,,,,,,,,,,,,,,,,,
