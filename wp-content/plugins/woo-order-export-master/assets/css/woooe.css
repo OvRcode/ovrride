@@ -1,0 +1,14 @@
+.reorder-row { background: #FFF; display: flex; padding: 10px 5px; margin-top: 20px }
+    .reorder-row .rename { flex-grow: 3 }
+    .reorder-row .reorder { flex-grow: 1 }
+    .reorder-row input[type="text"] { width: 80% !important; }
+
+.woooe-cf { display: table; width: 95%; }
+.woooe-cf-row {display: table-row; background: #FFF; }
+    .woooe-cf-row-head {background: none;display: table-row;}
+    .woooe-cf-key, .woooe-cf-name, .woooe-cf-action {display: table-cell; padding: 10px;}
+    
+#woooe-error-msg { padding: 10px; font-size: 1.1em; }
+#wooe-fields-filter li { display: inline-block; }
+#wooe-fields-filter li .current { background: #0085ba; color: #FFFFFF; border: none; outline: none; transition: background 1s; }
+.woooe-reorder-section { border: 1px solid #aaaaaa; max-height: 500px; overflow-y: scroll; padding: 0px 5px; }

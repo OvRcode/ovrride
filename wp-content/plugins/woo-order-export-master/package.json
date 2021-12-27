@@ -1,0 +1,30 @@
+{
+  "name": "woo-order-export",
+  "version": "3.0.0",
+  "description": "Export WooCommerce Order related information in csv format.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankitrox/woo-order-export.git"
+  },
+  "author": "Ankit Gade",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ankitrox/woo-order-export/issues"
+  },
+  "homepage": "https://github.com/ankitrox/woo-order-export#readme",
+  "devDependencies": {
+    "grunt": "^1.0.4",
+    "grunt-contrib-cssmin": "^3.0.0",
+    "grunt-contrib-jshint": "^2.0.0",
+    "grunt-contrib-uglify": "^4.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-wp-i18n": "^1.0.3"
+  }
+}
