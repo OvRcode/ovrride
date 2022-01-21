@@ -1,0 +1,9 @@
+<wpml-config>
+  <admin-texts>
+    <key name="acui_mail_subject"/>
+    <key name="acui_mail_body"/>
+  </admin-texts>
+  <custom-types>
+	<custom-type translate="1">acui_email_template</custom-type>
+</custom-types>
+</wpml-config>

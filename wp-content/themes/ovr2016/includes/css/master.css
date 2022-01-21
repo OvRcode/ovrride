@@ -1,7 +1,12 @@
 /* This is a small security for too long strings titles */
 body {
-	background: rgb(0,0,0);
+	background-image: url('https://firebasestorage.googleapis.com/v0/b/ovrride-2adb5.appspot.com/o/Background%2Fbkg-snow.jpg?alt=media&token=bcb8179d-9a94-4de1-a03f-210fb9379518');
 	word-wrap: break-word;
+}
+
+.ovr_wide_ad_img {
+	width: 1px;
+	height: 1px;
 }
 
 /* Alignment */
@@ -265,7 +270,7 @@ nav .form-control {
 	*/
 .mainBackground {
 	background-color: #E8E8E8;
-	margin-top:20px;
+	margin-top: 40px;
 	padding-top: 10px;
 }
 /**
@@ -312,8 +317,8 @@ nav .form-control {
 	background-color: #1645e1;
 }
 .main-content {
-	background: url('../images/bkg.png');
-	background-repeat: repeat-x;
+	/* background: url('../images/bkg.png');
+	background-repeat: repeat-x; */
 }
 .leftCol {
 	padding-right: 0;
@@ -387,7 +392,6 @@ nav .form-control {
 }
 .footer {
 	display: block;
-	background: rgb(0,0,0);
 	text-align: center;
 	font-size: 1.3em;
 	color: rgb(219, 220, 221);
