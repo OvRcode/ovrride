@@ -123,7 +123,7 @@
 		</div>
 		<div class="col-xs-4 col-sm-2">
 			<a href="http://www.burton.com" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/burton.png"; ?>">
+				<img src="<?php echo $theme_dir . "/includes/images/Burton_Site.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
@@ -133,7 +133,7 @@
 		</div>
 		<div class="col-xs-4 col-sm-2">
 			<a href="https://discoverpacifico.com/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/pacifico-80x80.png"; ?>">
+				<img src="<?php echo $theme_dir . "/includes/images/Pacifico_Site.png"; ?>">
 			</a>
 		</div>
 	</div>
