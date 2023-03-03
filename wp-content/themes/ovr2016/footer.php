@@ -118,7 +118,7 @@
 		</div>
 		<div class="col-xs-4 col-sm-2">
 			<a href="https://www.dangshades.com/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/DangShades_logo_OvR_footer.png"; ?>">
+				<img src="<?php echo $theme_dir . "/includes/images/DangShades_logo_OvR_footer-80x80.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
@@ -150,12 +150,12 @@
     </div>
     <div class="col-xs-4 col-sm-2">
       <a href="https://www.cutwaterspirits.com/" class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/Cutwater_logo_OvR_footer.png"; ?>">
+        <img src="<?php echo $theme_dir . "/includes/images/Cutwater-Spirits-Logo-80x80.png"; ?>">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
       <a href="https://nutrlusa.com/"  class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/Nutrl_logo_OvR_footer.png"; ?>" >
+        <img src="<?php echo $theme_dir . "/includes/images/Nutrl_logo_OvR_footer-80x80.png"; ?>" >
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
