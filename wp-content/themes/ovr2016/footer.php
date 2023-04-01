@@ -117,8 +117,8 @@
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="https://tworobbers.com/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/two-robbers-white-80x80.png"; ?>">
+			<a href="https://www.dangshades.com/" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/DangShades_logo_OvR_footer-80x80.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
@@ -149,13 +149,13 @@
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://hitbalm.com/" class="ovr_sponsor" target="_blank">
-        <img src="https://res.cloudinary.com/dyyecpgty/image/upload/v1579851286/hit-cbd_g7rhf1.jpg">
+      <a href="https://www.cutwaterspirits.com/" class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/Cutwater-Spirits-Logo-80x80.png"; ?>">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://www.juneshine.co/"  class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/juneshine.jpg"; ?>" >
+      <a href="https://nutrlusa.com/"  class="ovr_sponsor" target="_blank">
+        <img src="<?php echo $theme_dir . "/includes/images/Nutrl_logo_OvR_footer-80x80.png"; ?>" >
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
