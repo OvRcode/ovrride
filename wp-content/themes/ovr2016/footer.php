@@ -150,7 +150,7 @@
     </div>
     <div class="col-xs-4 col-sm-2">
       <a href="https://www.cutwaterspirits.com/" class="ovr_sponsor" target="_blank">
-        <img src="<?php echo $theme_dir . "/includes/images/Cutwater-Spirits-Logo-80x80.png"; ?>">
+        <img src="<?php echo $theme_dir . "/includes/images/Cutwater-Spirits-Logo-80x80.jpg"; ?>">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
