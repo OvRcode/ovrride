@@ -2,7 +2,7 @@
 /**
  * Recent Products Widget.
  *
- * @package WooCommerce/Widgets
+ * @package WooCommerce\Widgets
  * @version 3.3.0
  */
 
@@ -20,7 +20,7 @@ class WC_Widget_Recently_Viewed extends WC_Widget {
 		$this->widget_cssclass    = 'woocommerce widget_recently_viewed_products';
 		$this->widget_description = __( "Display a list of a customer's recently viewed products.", 'woocommerce' );
 		$this->widget_id          = 'woocommerce_recently_viewed_products';
-		$this->widget_name        = __( 'Recent Viewed Products', 'woocommerce' );
+		$this->widget_name        = __( 'Recently Viewed Products list', 'woocommerce' );
 		$this->settings           = array(
 			'title'  => array(
 				'type'  => 'text',
@@ -88,7 +88,7 @@ class WC_Widget_Recently_Viewed extends WC_Widget {
 			echo wp_kses_post( apply_filters( 'woocommerce_before_widget_product_list', '<ul class="product_list_widget">' ) );
 
 			$template_args = array(
-				'widget_id' => $args['widget_id'],
+				'widget_id' => isset( $args['widget_id'] ) ? $args['widget_id'] : $this->widget_id,
 			);
 
 			while ( $r->have_posts() ) {

@@ -5,7 +5,7 @@
  * Loads payment gateways via hooks for use in the store.
  *
  * @version 2.2.0
- * @package WooCommerce/Classes/Payment
+ * @package WooCommerce\Classes\Payment
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -78,22 +78,10 @@ class WC_Payment_Gateways {
 			'WC_Gateway_BACS',
 			'WC_Gateway_Cheque',
 			'WC_Gateway_COD',
-			'WC_Gateway_Paypal',
 		);
 
-		/**
-		 * Simplify Commerce is @deprecated in 2.6.0. Only load when enabled.
-		 */
-		if ( ! class_exists( 'WC_Gateway_Simplify_Commerce_Loader' ) && in_array( WC()->countries->get_base_country(), apply_filters( 'woocommerce_gateway_simplify_commerce_supported_countries', array( 'US', 'IE' ) ), true ) ) {
-			$simplify_options = get_option( 'woocommerce_simplify_commerce_settings', array() );
-
-			if ( ! empty( $simplify_options['enabled'] ) && 'yes' === $simplify_options['enabled'] ) {
-				if ( function_exists( 'wcs_create_renewal_order' ) ) {
-					$load_gateways[] = 'WC_Addons_Gateway_Simplify_Commerce';
-				} else {
-					$load_gateways[] = 'WC_Gateway_Simplify_Commerce';
-				}
-			}
+		if ( $this->should_load_paypal_standard() ) {
+			$load_gateways[] = 'WC_Gateway_Paypal';
 		}
 
 		// Filter.
@@ -105,14 +93,21 @@ class WC_Payment_Gateways {
 
 		// Load gateways in order.
 		foreach ( $load_gateways as $gateway ) {
-			$load_gateway = is_string( $gateway ) ? new $gateway() : $gateway;
+			if ( is_string( $gateway ) && class_exists( $gateway ) ) {
+				$gateway = new $gateway();
+			}
 
-			if ( isset( $ordering[ $load_gateway->id ] ) && is_numeric( $ordering[ $load_gateway->id ] ) ) {
+			// Gateways need to be valid and extend WC_Payment_Gateway.
+			if ( ! is_a( $gateway, 'WC_Payment_Gateway' ) ) {
+				continue;
+			}
+
+			if ( isset( $ordering[ $gateway->id ] ) && is_numeric( $ordering[ $gateway->id ] ) ) {
 				// Add in position.
-				$this->payment_gateways[ $ordering[ $load_gateway->id ] ] = $load_gateway;
+				$this->payment_gateways[ $ordering[ $gateway->id ] ] = $gateway;
 			} else {
 				// Add to end of the array.
-				$this->payment_gateways[ $order_end ] = $load_gateway;
+				$this->payment_gateways[ $order_end ] = $gateway;
 				$order_end++;
 			}
 		}
@@ -165,7 +160,18 @@ class WC_Payment_Gateways {
 			}
 		}
 
-		return apply_filters( 'woocommerce_available_payment_gateways', $_available_gateways );
+		return array_filter( (array) apply_filters( 'woocommerce_available_payment_gateways', $_available_gateways ), array( $this, 'filter_valid_gateway_class' ) );
+	}
+
+	/**
+	 * Callback for array filter. Returns true if gateway is of correct type.
+	 *
+	 * @since 3.6.0
+	 * @param object $gateway Gateway to check.
+	 * @return bool
+	 */
+	protected function filter_valid_gateway_class( $gateway ) {
+		return $gateway && is_a( $gateway, 'WC_Payment_Gateway' );
 	}
 
 	/**
@@ -179,19 +185,17 @@ class WC_Payment_Gateways {
 			return;
 		}
 
-		if ( is_user_logged_in() ) {
-			$default_token = WC_Payment_Tokens::get_customer_default_token( get_current_user_id() );
-			if ( ! is_null( $default_token ) ) {
-				$default_token_gateway = $default_token->get_gateway_id();
+		$current_gateway = false;
+
+		if ( WC()->session ) {
+			$current = WC()->session->get( 'chosen_payment_method' );
+
+			if ( $current && isset( $gateways[ $current ] ) ) {
+				$current_gateway = $gateways[ $current ];
 			}
 		}
 
-		$current = ( isset( $default_token_gateway ) ? $default_token_gateway : WC()->session->get( 'chosen_payment_method' ) );
-
-		if ( $current && isset( $gateways[ $current ] ) ) {
-			$current_gateway = $gateways[ $current ];
-
-		} else {
+		if ( ! $current_gateway ) {
 			$current_gateway = current( $gateways );
 		}
 
@@ -217,5 +221,16 @@ class WC_Payment_Gateways {
 		}
 
 		update_option( 'woocommerce_gateway_order', $order );
+	}
+
+	/**
+	 * Determines if PayPal Standard should be loaded.
+	 *
+	 * @since 5.5.0
+	 * @return bool Whether PayPal Standard should be loaded or not.
+	 */
+	protected function should_load_paypal_standard() {
+		$paypal = new WC_Gateway_Paypal();
+		return $paypal->should_load();
 	}
 }

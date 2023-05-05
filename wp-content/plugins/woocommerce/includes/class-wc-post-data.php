@@ -4,9 +4,14 @@
  *
  * Standardises certain post data on save.
  *
- * @package WooCommerce/Classes/Data
+ * @package WooCommerce\Classes\Data
  * @version 2.2.0
  */
+
+use Automattic\WooCommerce\Internal\DataStores\Orders\DataSynchronizer;
+use Automattic\WooCommerce\Internal\ProductAttributesLookup\LookupDataStore as ProductAttributesLookupDataStore;
+use Automattic\WooCommerce\Proxies\LegacyProxy;
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,10 +33,9 @@ class WC_Post_Data {
 	public static function init() {
 		add_filter( 'post_type_link', array( __CLASS__, 'variation_post_link' ), 10, 2 );
 		add_action( 'shutdown', array( __CLASS__, 'do_deferred_product_sync' ), 10 );
-		add_action( 'set_object_terms', array( __CLASS__, 'set_object_terms' ), 10, 6 );
 		add_action( 'set_object_terms', array( __CLASS__, 'force_default_term' ), 10, 5 );
-
-		add_action( 'transition_post_status', array( __CLASS__, 'transition_post_status' ), 10, 3 );
+		add_action( 'set_object_terms', array( __CLASS__, 'delete_product_query_transients' ) );
+		add_action( 'deleted_term_relationships', array( __CLASS__, 'delete_product_query_transients' ) );
 		add_action( 'woocommerce_product_set_stock_status', array( __CLASS__, 'delete_product_query_transients' ) );
 		add_action( 'woocommerce_product_set_visibility', array( __CLASS__, 'delete_product_query_transients' ) );
 		add_action( 'woocommerce_product_type_changed', array( __CLASS__, 'product_type_changed' ), 10, 3 );
@@ -42,12 +46,15 @@ class WC_Post_Data {
 		add_filter( 'update_post_metadata', array( __CLASS__, 'update_post_metadata' ), 10, 5 );
 		add_filter( 'wp_insert_post_data', array( __CLASS__, 'wp_insert_post_data' ) );
 		add_filter( 'oembed_response_data', array( __CLASS__, 'filter_oembed_response_data' ), 10, 2 );
+		add_filter( 'wp_untrash_post_status', array( __CLASS__, 'wp_untrash_post_status' ), 10, 3 );
 
 		// Status transitions.
+		add_action( 'transition_post_status', array( __CLASS__, 'transition_post_status' ), 10, 3 );
 		add_action( 'delete_post', array( __CLASS__, 'delete_post' ) );
 		add_action( 'wp_trash_post', array( __CLASS__, 'trash_post' ) );
 		add_action( 'untrashed_post', array( __CLASS__, 'untrash_post' ) );
 		add_action( 'before_delete_post', array( __CLASS__, 'before_delete_order' ) );
+		add_action( 'woocommerce_before_delete_order', array( __CLASS__, 'before_delete_order' ) );
 
 		// Meta cache flushing.
 		add_action( 'updated_post_meta', array( __CLASS__, 'flush_object_meta_cache' ), 10, 4 );
@@ -99,25 +106,6 @@ class WC_Post_Data {
 	}
 
 	/**
-	 * Delete transients when terms are set.
-	 *
-	 * @param int    $object_id  Object ID.
-	 * @param mixed  $terms      An array of object terms.
-	 * @param array  $tt_ids     An array of term taxonomy IDs.
-	 * @param string $taxonomy   Taxonomy slug.
-	 * @param mixed  $append     Whether to append new terms to the old terms.
-	 * @param array  $old_tt_ids Old array of term taxonomy IDs.
-	 */
-	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
-		foreach ( array_merge( $tt_ids, $old_tt_ids ) as $id ) {
-			delete_transient( 'wc_ln_count_' . md5( sanitize_key( $taxonomy ) . sanitize_key( $id ) ) );
-		}
-		if ( in_array( get_post_type( $object_id ), array( 'product', 'product_variation' ), true ) ) {
-			self::delete_product_query_transients();
-		}
-	}
-
-	/**
 	 * When a post status changes.
 	 *
 	 * @param string  $new_status New status.
@@ -134,38 +122,33 @@ class WC_Post_Data {
 	 * Delete product view transients when needed e.g. when post status changes, or visibility/stock status is modified.
 	 */
 	public static function delete_product_query_transients() {
-		// Increments the transient version to invalidate cache.
 		WC_Cache_Helper::get_transient_version( 'product_query', true );
-
-		// If not using an external caching system, we can clear the transients out manually and avoid filling our DB.
-		if ( ! wp_using_ext_object_cache() ) {
-			global $wpdb;
-
-			$wpdb->query(
-				"
-				DELETE FROM `$wpdb->options`
-				WHERE `option_name` LIKE ('\_transient\_wc\_uf\_pid\_%')
-				OR `option_name` LIKE ('\_transient\_timeout\_wc\_uf\_pid\_%')
-				OR `option_name` LIKE ('\_transient\_wc\_products\_will\_display\_%')
-				OR `option_name` LIKE ('\_transient\_timeout\_wc\_products\_will\_display\_%')
-			"
-			);
-		}
 	}
 
 	/**
 	 * Handle type changes.
 	 *
 	 * @since 3.0.0
+	 *
 	 * @param WC_Product $product Product data.
 	 * @param string     $from    Origin type.
 	 * @param string     $to      New type.
 	 */
 	public static function product_type_changed( $product, $from, $to ) {
-		if ( 'variable' === $from && 'variable' !== $to ) {
+		/**
+		 * Filter to prevent variations from being deleted while switching from a variable product type to a variable product type.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param bool       A boolean value of true will delete the variations.
+		 * @param WC_Product $product Product data.
+		 * @return string    $from    Origin type.
+		 * @param string     $to      New type.
+		 */
+		if ( apply_filters( 'woocommerce_delete_variations_on_product_type_change', 'variable' === $from && 'variable' !== $to, $product, $from, $to ) ) {
 			// If the product is no longer variable, we should ensure all variations are removed.
 			$data_store = WC_Data_Store::load( 'product-variable' );
-			$data_store->delete_variations( $product->get_id() );
+			$data_store->delete_variations( $product->get_id(), true );
 		}
 	}
 
@@ -199,6 +182,14 @@ class WC_Post_Data {
 				global $wpdb;
 
 				$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE meta_key = %s AND meta_value = %s;", $edited_term->slug, 'attribute_' . sanitize_title( $taxonomy ), self::$editing_term->slug ) );
+
+				$wpdb->query(
+					$wpdb->prepare(
+						"UPDATE {$wpdb->postmeta} SET meta_value = REPLACE( meta_value, %s, %s ) WHERE meta_key = '_default_attributes'",
+						serialize( self::$editing_term->taxonomy ) . serialize( self::$editing_term->slug ),
+						serialize( $edited_term->taxonomy ) . serialize( $edited_term->slug )
+					)
+				);
 			}
 		} else {
 			self::$editing_term = null;
@@ -245,7 +236,7 @@ class WC_Post_Data {
 			wp_cache_delete( 'product-' . $object_id, 'products' );
 		}
 
-		if ( ! empty( $meta_value ) && is_float( $meta_value ) && in_array( get_post_type( $object_id ), array_merge( wc_get_order_types(), array( 'shop_coupon', 'product', 'product_variation' ) ), true ) ) {
+		if ( ! empty( $meta_value ) && is_float( $meta_value ) && ! registered_meta_key_exists( 'post', $meta_key ) && in_array( get_post_type( $object_id ), array_merge( wc_get_order_types(), array( 'shop_coupon', 'product', 'product_variation' ) ), true ) ) {
 
 			// Convert float to string.
 			$meta_value = wc_float_to_string( $meta_value );
@@ -257,17 +248,6 @@ class WC_Post_Data {
 		}
 		return $check;
 	}
-
-	/**
-	 * When setting stock level, ensure the stock status is kept in sync.
-	 *
-	 * @param  int    $meta_id    Meta ID.
-	 * @param  int    $object_id  Object ID.
-	 * @param  string $meta_key   Meta key.
-	 * @param  mixed  $meta_value Meta value.
-	 * @deprecated
-	 */
-	public static function sync_product_stock_status( $meta_id, $object_id, $meta_key, $meta_value ) {}
 
 	/**
 	 * Forces the order posts to have a title in a certain format (containing the date).
@@ -293,6 +273,9 @@ class WC_Post_Data {
 			}
 		} elseif ( 'product' === $data['post_type'] && 'auto-draft' === $data['post_status'] ) {
 			$data['post_title'] = 'AUTO-DRAFT';
+		} elseif ( 'shop_coupon' === $data['post_type'] ) {
+			// Coupons should never allow unfiltered HTML.
+			$data['post_title'] = wp_filter_kses( $data['post_title'] );
 		}
 
 		return $data;
@@ -319,26 +302,34 @@ class WC_Post_Data {
 	 * @param mixed $id ID of post being deleted.
 	 */
 	public static function delete_post( $id ) {
-		if ( ! current_user_can( 'delete_posts' ) || ! $id ) {
+		$container = wc_get_container();
+		if ( ! $container->get( LegacyProxy::class )->call_function( 'current_user_can', 'delete_posts' ) || ! $id ) {
 			return;
 		}
 
-		$post_type = get_post_type( $id );
-
+		$post_type = self::get_post_type( $id );
 		switch ( $post_type ) {
 			case 'product':
 				$data_store = WC_Data_Store::load( 'product-variable' );
 				$data_store->delete_variations( $id, true );
-				$parent_id = wp_get_post_parent_id( $id );
+				$data_store->delete_from_lookup_table( $id, 'wc_product_meta_lookup' );
+				$container->get( ProductAttributesLookupDataStore::class )->on_product_deleted( $id );
 
+				$parent_id = wp_get_post_parent_id( $id );
 				if ( $parent_id ) {
 					wc_delete_product_transients( $parent_id );
 				}
+
 				break;
 			case 'product_variation':
+				$data_store = WC_Data_Store::load( 'product' );
+				$data_store->delete_from_lookup_table( $id, 'wc_product_meta_lookup' );
 				wc_delete_product_transients( wp_get_post_parent_id( $id ) );
+				$container->get( ProductAttributesLookupDataStore::class )->on_product_deleted( $id );
+
 				break;
 			case 'shop_order':
+			case DataSynchronizer::PLACEHOLDER_ORDER_POST_TYPE:
 				global $wpdb;
 
 				$refunds = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type = 'shop_order_refund' AND post_parent = %d", $id ) );
@@ -362,7 +353,7 @@ class WC_Post_Data {
 			return;
 		}
 
-		$post_type = get_post_type( $id );
+		$post_type = self::get_post_type( $id );
 
 		// If this is an order, trash any refunds too.
 		if ( in_array( $post_type, wc_get_order_types( 'order-count' ), true ) ) {
@@ -380,6 +371,9 @@ class WC_Post_Data {
 		} elseif ( 'product' === $post_type ) {
 			$data_store = WC_Data_Store::load( 'product-variable' );
 			$data_store->delete_variations( $id, false );
+			wc_get_container()->get( ProductAttributesLookupDataStore::class )->on_product_deleted( $id );
+		} elseif ( 'product_variation' === $post_type ) {
+			wc_get_container()->get( ProductAttributesLookupDataStore::class )->on_product_deleted( $id );
 		}
 	}
 
@@ -393,7 +387,7 @@ class WC_Post_Data {
 			return;
 		}
 
-		$post_type = get_post_type( $id );
+		$post_type = self::get_post_type( $id );
 
 		if ( in_array( $post_type, wc_get_order_types( 'order-count' ), true ) ) {
 			global $wpdb;
@@ -411,7 +405,21 @@ class WC_Post_Data {
 			$data_store->untrash_variations( $id );
 
 			wc_product_force_unique_sku( $id );
+
+			wc_get_container()->get( ProductAttributesLookupDataStore::class )->on_product_changed( $id );
+		} elseif ( 'product_variation' === $post_type ) {
+			wc_get_container()->get( ProductAttributesLookupDataStore::class )->on_product_changed( $id );
 		}
+	}
+
+	/**
+	 * Get the post type for a given post.
+	 *
+	 * @param int $id The post id.
+	 * @return string The post type.
+	 */
+	private static function get_post_type( $id ) {
+		return wc_get_container()->get( LegacyProxy::class )->call_function( 'get_post_type', $id );
 	}
 
 	/**
@@ -421,7 +429,7 @@ class WC_Post_Data {
 	 * @param int $order_id Order ID.
 	 */
 	public static function before_delete_order( $order_id ) {
-		if ( in_array( get_post_type( $order_id ), wc_get_order_types(), true ) ) {
+		if ( OrderUtil::is_order( $order_id, wc_get_order_types() ) ) {
 			// Clean up user.
 			$order = wc_get_order( $order_id );
 
@@ -438,8 +446,9 @@ class WC_Post_Data {
 					$customer->save();
 				}
 
-				// Delete order count meta.
+				// Delete order count and last order meta.
 				delete_user_meta( $customer_id, '_order_count' );
+				delete_user_meta( $customer_id, '_last_order' );
 			}
 
 			// Clean up items.
@@ -456,7 +465,7 @@ class WC_Post_Data {
 	public static function delete_order_items( $postid ) {
 		global $wpdb;
 
-		if ( in_array( get_post_type( $postid ), wc_get_order_types(), true ) ) {
+		if ( OrderUtil::is_order( $postid, wc_get_order_types() ) ) {
 			do_action( 'woocommerce_delete_order_items', $postid );
 
 			$wpdb->query(
@@ -478,7 +487,7 @@ class WC_Post_Data {
 	 * @param int $postid Post ID.
 	 */
 	public static function delete_order_downloadable_permissions( $postid ) {
-		if ( in_array( get_post_type( $postid ), wc_get_order_types(), true ) ) {
+		if ( OrderUtil::is_order( $postid, wc_get_order_types() ) ) {
 			do_action( 'woocommerce_delete_order_downloadable_permissions', $postid );
 
 			$data_store = WC_Data_Store::load( 'customer-download' );
@@ -489,27 +498,15 @@ class WC_Post_Data {
 	}
 
 	/**
-	 * Update changed downloads.
-	 *
-	 * @deprecated 3.3.0 No action is necessary on changes to download paths since download_id is no longer based on file hash.
-	 * @param int   $product_id   Product ID.
-	 * @param int   $variation_id Variation ID. Optional product variation identifier.
-	 * @param array $downloads    Newly set files.
-	 */
-	public static function process_product_file_download_paths( $product_id, $variation_id, $downloads ) {
-		wc_deprecated_function( __FUNCTION__, '3.3' );
-	}
-
-	/**
 	 * Flush meta cache for CRUD objects on direct update.
 	 *
 	 * @param  int    $meta_id    Meta ID.
 	 * @param  int    $object_id  Object ID.
 	 * @param  string $meta_key   Meta key.
-	 * @param  string $meta_value Meta value.
+	 * @param  mixed  $meta_value Meta value.
 	 */
 	public static function flush_object_meta_cache( $meta_id, $object_id, $meta_key, $meta_value ) {
-		WC_Cache_Helper::incr_cache_prefix( 'object_' . $object_id );
+		WC_Cache_Helper::invalidate_cache_group( 'object_' . $object_id );
 	}
 
 	/**
@@ -530,6 +527,64 @@ class WC_Post_Data {
 			if ( $default_term && ! in_array( $default_term, $tt_ids, true ) ) {
 				wp_set_post_terms( $object_id, array( $default_term ), 'product_cat', true );
 			}
+		}
+	}
+
+	/**
+	 * Ensure statuses are correctly reassigned when restoring orders and products.
+	 *
+	 * @param string $new_status      The new status of the post being restored.
+	 * @param int    $post_id         The ID of the post being restored.
+	 * @param string $previous_status The status of the post at the point where it was trashed.
+	 * @return string
+	 */
+	public static function wp_untrash_post_status( $new_status, $post_id, $previous_status ) {
+		$post_types = array( 'shop_order', 'shop_coupon', 'product', 'product_variation' );
+
+		if ( in_array( get_post_type( $post_id ), $post_types, true ) ) {
+			$new_status = $previous_status;
+		}
+
+		return $new_status;
+	}
+
+	/**
+	 * When setting stock level, ensure the stock status is kept in sync.
+	 *
+	 * @param  int    $meta_id    Meta ID.
+	 * @param  int    $object_id  Object ID.
+	 * @param  string $meta_key   Meta key.
+	 * @param  mixed  $meta_value Meta value.
+	 * @deprecated    3.3
+	 */
+	public static function sync_product_stock_status( $meta_id, $object_id, $meta_key, $meta_value ) {}
+
+	/**
+	 * Update changed downloads.
+	 *
+	 * @deprecated  3.3.0 No action is necessary on changes to download paths since download_id is no longer based on file hash.
+	 * @param int   $product_id   Product ID.
+	 * @param int   $variation_id Variation ID. Optional product variation identifier.
+	 * @param array $downloads    Newly set files.
+	 */
+	public static function process_product_file_download_paths( $product_id, $variation_id, $downloads ) {
+		wc_deprecated_function( __FUNCTION__, '3.3' );
+	}
+
+	/**
+	 * Delete transients when terms are set.
+	 *
+	 * @deprecated   3.6
+	 * @param int    $object_id  Object ID.
+	 * @param mixed  $terms      An array of object terms.
+	 * @param array  $tt_ids     An array of term taxonomy IDs.
+	 * @param string $taxonomy   Taxonomy slug.
+	 * @param mixed  $append     Whether to append new terms to the old terms.
+	 * @param array  $old_tt_ids Old array of term taxonomy IDs.
+	 */
+	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
+		if ( in_array( get_post_type( $object_id ), array( 'product', 'product_variation' ), true ) ) {
+			self::delete_product_query_transients();
 		}
 	}
 }

@@ -4,8 +4,10 @@
  *
  * @class          WC_Logger
  * @version        2.0.0
- * @package        WooCommerce/Classes
+ * @package        WooCommerce\Classes
  */
+
+use Automattic\Jetpack\Constants;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -61,12 +63,16 @@ class WC_Logger implements WC_Logger_Interface {
 			}
 		}
 
+		// Support the constant as long as a valid log level has been set for it.
+		if ( null === $threshold ) {
+			$threshold = Constants::get_constant( 'WC_LOG_THRESHOLD' );
+			if ( null !== $threshold && ! WC_Log_Levels::is_valid_level( $threshold ) ) {
+				$threshold = null;
+			}
+		}
+
 		if ( null !== $threshold ) {
 			$threshold = WC_Log_Levels::get_level_severity( $threshold );
-		} elseif ( defined( 'WC_LOG_THRESHOLD' ) && WC_Log_Levels::is_valid_level( WC_LOG_THRESHOLD ) ) {
-			$threshold = WC_Log_Levels::get_level_severity( WC_LOG_THRESHOLD );
-		} else {
-			$threshold = null;
 		}
 
 		$this->handlers  = $register_handlers;
@@ -99,10 +105,14 @@ class WC_Logger implements WC_Logger_Interface {
 	 */
 	public function add( $handle, $message, $level = WC_Log_Levels::NOTICE ) {
 		$message = apply_filters( 'woocommerce_logger_add_message', $message, $handle );
-		$this->log( $level, $message, array(
-			'source'  => $handle,
-			'_legacy' => true,
-		) );
+		$this->log(
+			$level,
+			$message,
+			array(
+				'source'  => $handle,
+				'_legacy' => true,
+			)
+		);
 		wc_do_deprecated_action( 'woocommerce_log_add', array( $handle, $message ), '3.0', 'This action has been deprecated with no alternative.' );
 		return true;
 	}
@@ -129,11 +139,23 @@ class WC_Logger implements WC_Logger_Interface {
 		}
 
 		if ( $this->should_handle( $level ) ) {
-			$timestamp = current_time( 'timestamp' );
-			$message   = apply_filters( 'woocommerce_logger_log_message', $message, $level, $context );
+			$timestamp = time();
 
 			foreach ( $this->handlers as $handler ) {
-				$handler->handle( $timestamp, $level, $message, $context );
+				/**
+				 * Filter the logging message. Returning null will prevent logging from occurring since 5.3.
+				 *
+				 * @since 3.1
+				 * @param string $message Log message.
+				 * @param string $level   One of: emergency, alert, critical, error, warning, notice, info, or debug.
+				 * @param array  $context Additional information for log handlers.
+				 * @param object $handler The handler object, such as WC_Log_Handler_File. Available since 5.3.
+				 */
+				$message = apply_filters( 'woocommerce_logger_log_message', $message, $level, $context, $handler );
+
+				if ( null !== $message ) {
+					$handler->handle( $timestamp, $level, $message, $context );
+				}
 			}
 		}
 	}

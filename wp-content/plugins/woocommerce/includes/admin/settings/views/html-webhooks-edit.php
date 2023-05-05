@@ -2,7 +2,7 @@
 /**
  * Admin View: Edit Webhooks
  *
- * @package WooCommerce/Admin/Webhooks/Views
+ * @package WooCommerce\Admin\Webhooks\Views
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php esc_html_e( 'Name', 'woocommerce' ); ?>
 						<?php
 						/* translators: %s: date */
-						echo wc_help_tip( sprintf( __( 'Friendly name for identifying this webhook, defaults to Webhook created on %s.', 'woocommerce' ), strftime( _x( '%b %d, %Y @ %I:%M %p', 'Webhook created on date parsed by strftime', 'woocommerce' ) ) ) ); // @codingStandardsIgnoreLine
+						echo wc_help_tip( sprintf( __( 'Friendly name for identifying this webhook, defaults to Webhook created on %s.', 'woocommerce' ), (new DateTime('now'))->format( _x( 'M d, Y @ h:i A', 'Webhook created on date parsed by DateTime::format', 'woocommerce' ) ) ) ); // @codingStandardsIgnoreLine
 						?>
 					</label>
 				</th>
@@ -63,7 +63,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 							$topic_data = WC_Admin_Webhooks::get_topic_data( $webhook );
 
 							$topics = apply_filters(
-								'woocommerce_webhook_topics', array(
+								'woocommerce_webhook_topics',
+								array(
 									''                 => __( 'Select an option&hellip;', 'woocommerce' ),
 									'coupon.created'   => __( 'Coupon created', 'woocommerce' ),
 									'coupon.updated'   => __( 'Coupon updated', 'woocommerce' ),
@@ -136,8 +137,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</th>
 				<td class="forminp">
 					<select name="webhook_api_version" id="webhook_api_version">
-						<option value="wp_api_v2" <?php selected( 'wp_api_v2', $webhook->get_api_version(), true ); ?>><?php esc_html_e( 'WP REST API Integration v2', 'woocommerce' ); ?></option>
-						<option value="wp_api_v1" <?php selected( 'wp_api_v1', $webhook->get_api_version(), true ); ?>><?php esc_html_e( 'WP REST API Integration v1', 'woocommerce' ); ?></option>
+						<?php foreach ( array_reverse( wc_get_webhook_rest_api_versions() ) as $version ) : ?>
+							<option value="<?php echo esc_attr( $version ); ?>" <?php selected( $version, $webhook->get_api_version(), true ); ?>>
+								<?php
+									/* translators: %d: rest api version number */
+									echo esc_html( sprintf( __( 'WP REST API Integration v%d', 'woocommerce' ), str_replace( 'wp_api_v', '', $version ) ) );
+								?>
+							</option>
+						<?php endforeach; ?>
 						<option value="legacy_v3" <?php selected( 'legacy_v3', $webhook->get_api_version(), true ); ?>><?php esc_html_e( 'Legacy API v3 (deprecated)', 'woocommerce' ); ?></option>
 					</select>
 				</td>
@@ -145,7 +152,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</tbody>
 	</table>
 
-	<?php do_action( 'woocommerce_webhook_options' ); ?>
+	<?php
+	/**
+	 * Fires within the webhook editor, after the Webhook Data fields have rendered.
+	 *
+	 * @param WC_Webhook $webhook
+	 */
+	do_action( 'woocommerce_webhook_options', $webhook );
+	?>
 </div>
 
 <div id="webhook-actions" class="settings-panel">
@@ -191,8 +205,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 								add_query_arg(
 									array(
 										'delete' => $webhook->get_id(),
-									), admin_url( 'admin.php?page=wc-settings&tab=advanced&section=webhooks' )
-								), 'delete-webhook'
+									),
+									admin_url( 'admin.php?page=wc-settings&tab=advanced&section=webhooks' )
+								),
+								'delete-webhook'
 							);
 							?>
 							<a style="color: #a00; text-decoration: none; margin-left: 10px;" href="<?php echo esc_url( $delete_url ); ?>"><?php esc_html_e( 'Delete permanently', 'woocommerce' ); ?></a>
@@ -215,6 +231,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 			if ( 'action' === current ) {
 				action_event_field.show();
 			}
-		}).change();
+		}).trigger( 'change' );
 	});
 </script>

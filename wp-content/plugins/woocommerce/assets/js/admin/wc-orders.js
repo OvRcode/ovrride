@@ -10,7 +10,11 @@ jQuery( function( $ ) {
 	 */
 	var WCOrdersTable = function() {
 		$( document )
-			.on( 'click', '.post-type-shop_order .wp-list-table tbody td', this.onRowClick )
+			.on(
+				'click',
+				'.post-type-shop_order .wp-list-table tbody td, .woocommerce_page_wc-orders .wp-list-table.orders tbody td',
+				this.onRowClick
+			)
 			.on( 'click', '.order-preview:not(.disabled)', this.onPreview );
 	};
 
@@ -18,7 +22,7 @@ jQuery( function( $ ) {
 	 * Click a row.
 	 */
 	WCOrdersTable.prototype.onRowClick = function( e ) {
-		if ( $( e.target ).filter( 'a, a *, .no-link, .no-link *' ).length ) {
+		if ( $( e.target ).filter( 'a, a *, .no-link, .no-link *, button, button *' ).length ) {
 			return true;
 		}
 
@@ -45,12 +49,12 @@ jQuery( function( $ ) {
 	 */
 	WCOrdersTable.prototype.onPreview = function() {
 		var $previewButton    = $( this ),
-			$order_id         = $previewButton.data( 'order-id' );
+			$order_id         = $previewButton.data( 'orderId' );
 
 		if ( $previewButton.data( 'order-data' ) ) {
 			$( this ).WCBackboneModal({
 				template: 'wc-modal-view-order',
-				variable : $previewButton.data( 'order-data' )
+				variable : $previewButton.data( 'orderData' )
 			});
 		} else {
 			$previewButton.addClass( 'disabled' );
@@ -67,7 +71,7 @@ jQuery( function( $ ) {
 					$( '.order-preview' ).removeClass( 'disabled' );
 
 					if ( response.success ) {
-						$previewButton.data( 'order-data', response.data );
+						$previewButton.data( 'orderData', response.data );
 
 						$( this ).WCBackboneModal({
 							template: 'wc-modal-view-order',

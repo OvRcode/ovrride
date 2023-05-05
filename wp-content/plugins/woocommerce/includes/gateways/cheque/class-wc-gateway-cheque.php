@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @class       WC_Gateway_Cheque
  * @extends     WC_Payment_Gateway
  * @version     2.1.0
- * @package     WooCommerce/Classes/Payment
+ * @package     WooCommerce\Classes\Payment
  */
 class WC_Gateway_Cheque extends WC_Payment_Gateway {
 
@@ -62,7 +62,7 @@ class WC_Gateway_Cheque extends WC_Payment_Gateway {
 			),
 			'title'        => array(
 				'title'       => __( 'Title', 'woocommerce' ),
-				'type'        => 'text',
+				'type'        => 'safe_text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
 				'default'     => _x( 'Check payments', 'Check payment method', 'woocommerce' ),
 				'desc_tip'    => true,
@@ -102,7 +102,14 @@ class WC_Gateway_Cheque extends WC_Payment_Gateway {
 	 * @param bool     $plain_text Email format: plain text or HTML.
 	 */
 	public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-		if ( $this->instructions && ! $sent_to_admin && 'cheque' === $order->get_payment_method() && $order->has_status( 'on-hold' ) ) {
+		/**
+		 * Filter the email instructions order status.
+		 *
+		 * @since 7.4
+		 * @param string $terms The order status.
+		 * @param object $order The order object.
+		 */
+		if ( $this->instructions && ! $sent_to_admin && 'cheque' === $order->get_payment_method() && $order->has_status( apply_filters( 'woocommerce_cheque_email_instructions_order_status', 'on-hold', $order ) ) ) {
 			echo wp_kses_post( wpautop( wptexturize( $this->instructions ) ) . PHP_EOL );
 		}
 	}
@@ -119,13 +126,10 @@ class WC_Gateway_Cheque extends WC_Payment_Gateway {
 
 		if ( $order->get_total() > 0 ) {
 			// Mark as on-hold (we're awaiting the cheque).
-			$order->update_status( 'on-hold', _x( 'Awaiting check payment', 'Check payment method', 'woocommerce' ) );
+			$order->update_status( apply_filters( 'woocommerce_cheque_process_payment_order_status', 'on-hold', $order ), _x( 'Awaiting check payment', 'Check payment method', 'woocommerce' ) );
 		} else {
 			$order->payment_complete();
 		}
-
-		// Reduce stock levels.
-		wc_reduce_stock_levels( $order_id );
 
 		// Remove cart.
 		WC()->cart->empty_cart();

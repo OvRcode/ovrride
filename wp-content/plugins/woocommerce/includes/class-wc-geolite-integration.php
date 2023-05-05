@@ -8,12 +8,15 @@
  *
  * @package WooCommerce\Classes
  * @since   3.4.0
+ * @deprecated 3.9.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Geolite integration class.
+ *
+ * @deprecated 3.9.0
  */
 class WC_Geolite_Integration {
 
@@ -38,26 +41,28 @@ class WC_Geolite_Integration {
 	 */
 	public function __construct( $database ) {
 		$this->database = $database;
-
-		if ( ! class_exists( 'MaxMind\\Db\\Reader', false ) ) {
-			$this->require_geolite_library();
-		}
 	}
 
 	/**
 	 * Get country 2-letters ISO by IP address.
-	 * Retuns empty string when not able to find any ISO code.
+	 * Returns empty string when not able to find any ISO code.
 	 *
 	 * @param string $ip_address User IP address.
 	 * @return string
+	 * @deprecated 3.9.0
 	 */
 	public function get_country_iso( $ip_address ) {
+		wc_deprecated_function( 'get_country_iso', '3.9.0' );
+
 		$iso_code = '';
 
 		try {
-			$reader   = new MaxMind\Db\Reader( $this->database ); // phpcs:ignore PHPCompatibility.PHP.NewLanguageConstructs.t_ns_separatorFound
-			$data     = $reader->get( $ip_address );
-			$iso_code = $data['country']['iso_code'];
+			$reader = new MaxMind\Db\Reader( $this->database ); // phpcs:ignore PHPCompatibility.LanguageConstructs.NewLanguageConstructs.t_ns_separatorFound
+			$data   = $reader->get( $ip_address );
+
+			if ( isset( $data['country']['iso_code'] ) ) {
+				$iso_code = $data['country']['iso_code'];
+			}
 
 			$reader->close();
 		} catch ( Exception $e ) {
@@ -83,16 +88,5 @@ class WC_Geolite_Integration {
 		}
 
 		$this->log->log( $level, $message, array( 'source' => 'geoip' ) );
-	}
-
-	/**
-	 * Require geolite library.
-	 */
-	private function require_geolite_library() {
-		require_once WC_ABSPATH . 'includes/libraries/geolite2/Reader/Decoder.php';
-		require_once WC_ABSPATH . 'includes/libraries/geolite2/Reader/InvalidDatabaseException.php';
-		require_once WC_ABSPATH . 'includes/libraries/geolite2/Reader/Metadata.php';
-		require_once WC_ABSPATH . 'includes/libraries/geolite2/Reader/Util.php';
-		require_once WC_ABSPATH . 'includes/libraries/geolite2/Reader.php';
 	}
 }

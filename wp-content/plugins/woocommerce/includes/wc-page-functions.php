@@ -21,7 +21,8 @@ function wc_page_endpoint_title( $title ) {
 
 	if ( ! is_null( $wp_query ) && ! is_admin() && is_main_query() && in_the_loop() && is_page() && is_wc_endpoint_url() ) {
 		$endpoint       = WC()->query->get_current_endpoint();
-		$endpoint_title = WC()->query->get_endpoint_title( $endpoint );
+		$action         = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+		$endpoint_title = WC()->query->get_endpoint_title( $endpoint, $action );
 		$title          = $endpoint_title ? $endpoint_title : $title;
 
 		remove_filter( 'the_title', 'wc_page_endpoint_title' );
@@ -101,10 +102,12 @@ function wc_get_endpoint_url( $endpoint, $value = '', $permalink = '' ) {
 		} else {
 			$query_string = '';
 		}
-		$url = trailingslashit( $permalink ) . trailingslashit( $endpoint );
+		$url = trailingslashit( $permalink );
 
 		if ( $value ) {
-			$url .= trailingslashit( $value );
+			$url .= trailingslashit( $endpoint ) . user_trailingslashit( $value );
+		} else {
+			$url .= user_trailingslashit( $endpoint );
 		}
 
 		$url .= $query_string;
@@ -204,21 +207,21 @@ add_filter( 'wp_nav_menu_objects', 'wc_nav_menu_item_classes', 2 );
  * @return string
  */
 function wc_list_pages( $pages ) {
-	if ( is_woocommerce() ) {
-		// Remove current_page_parent class from any item.
-		$pages = str_replace( 'current_page_parent', '', $pages );
-		// Find shop_page_id through woocommerce options.
-		$shop_page = 'page-item-' . wc_get_page_id( 'shop' );
-
-		if ( is_shop() ) {
-			// Add current_page_item class to shop page.
-			$pages = str_replace( $shop_page, $shop_page . ' current_page_item', $pages );
-		} else {
-			// Add current_page_parent class to shop page.
-			$pages = str_replace( $shop_page, $shop_page . ' current_page_parent', $pages );
-		}
+	if ( ! is_woocommerce() ) {
+		return $pages;
 	}
 
-	return $pages;
+	// Remove current_page_parent class from any item.
+	$pages = str_replace( 'current_page_parent', '', $pages );
+	// Find shop_page_id through woocommerce options.
+	$shop_page = 'page-item-' . wc_get_page_id( 'shop' );
+
+	if ( is_shop() ) {
+		// Add current_page_item class to shop page.
+		return str_replace( $shop_page, $shop_page . ' current_page_item', $pages );
+	}
+
+	// Add current_page_parent class to shop page.
+	return str_replace( $shop_page, $shop_page . ' current_page_parent', $pages );
 }
 add_filter( 'wp_list_pages', 'wc_list_pages' );

@@ -3,7 +3,7 @@
  * Tax importer class file
  *
  * @version 2.3.0
- * @package WooCommerce/Admin
+ * @package WooCommerce\Admin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! class_exists( 'WP_Importer' ) ) {
 /**
  * Tax Rates importer - import tax rates and local tax rates into WooCommerce.
  *
- * @package     WooCommerce/Admin/Importers
+ * @package     WooCommerce\Admin\Importers
  * @version     2.3.0
  */
 class WC_Tax_Rate_Importer extends WP_Importer {
@@ -49,6 +49,13 @@ class WC_Tax_Rate_Importer extends WP_Importer {
 	 * @var string
 	 */
 	public $delimiter;
+
+	/**
+	 * Error message for import.
+	 *
+	 * @var string
+	 */
+	public $import_error_message;
 
 	/**
 	 * Constructor.
@@ -89,6 +96,8 @@ class WC_Tax_Rate_Importer extends WP_Importer {
 					add_filter( 'http_request_timeout', array( $this, 'bump_request_timeout' ) );
 
 					$this->import( $file );
+				} else {
+					$this->import_error( $this->import_error_message );
 				}
 				break;
 		}
@@ -101,12 +110,11 @@ class WC_Tax_Rate_Importer extends WP_Importer {
 	 */
 	private function import_start() {
 		if ( function_exists( 'gc_enable' ) ) {
-			gc_enable(); // phpcs:ignore PHPCompatibility.PHP.NewFunctions.gc_enableFound
+			gc_enable(); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.gc_enableFound
 		}
 		wc_set_time_limit( 0 );
 		@ob_flush();
 		@flush();
-		@ini_set( 'auto_detect_line_endings', '1' );
 	}
 
 	/**
@@ -194,29 +202,56 @@ class WC_Tax_Rate_Importer extends WP_Importer {
 	}
 
 	/**
+	 * Set the import error message.
+	 *
+	 * @param string $message Error message.
+	 */
+	protected function set_import_error_message( $message ) {
+		$this->import_error_message = $message;
+	}
+
+	/**
 	 * Handles the CSV upload and initial parsing of the file to prepare for.
 	 * displaying author import options.
 	 *
 	 * @return bool False if error uploading or invalid file, true otherwise
 	 */
 	public function handle_upload() {
-		// phpcs:disable WordPress.CSRF.NonceVerification.NoNonceVerification -- Nonce already verified in WC_Tax_Rate_Importer::dispatch()
-		$file_url = isset( $_POST['file_url'] ) ? esc_url_raw( wp_unslash( $_POST['file_url'] ) ) : '';
+		$file_url = isset( $_POST['file_url'] ) ? wc_clean( wp_unslash( $_POST['file_url'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce already verified in WC_Tax_Rate_Importer::dispatch()
 
 		if ( empty( $file_url ) ) {
 			$file = wp_import_handle_upload();
 
 			if ( isset( $file['error'] ) ) {
-				$this->import_error( $file['error'] );
+				$this->set_import_error_message( $file['error'] );
+
+				return false;
+			}
+
+			if ( ! wc_is_file_valid_csv( $file['file'], false ) ) {
+				// Remove file if not valid.
+				wp_delete_attachment( $file['id'], true );
+
+				$this->set_import_error_message( __( 'Invalid file type. The importer supports CSV and TXT file formats.', 'woocommerce' ) );
+
+				return false;
 			}
 
 			$this->id = absint( $file['id'] );
-		} elseif ( file_exists( ABSPATH . $file_url ) ) {
+		} elseif (
+			( 0 === stripos( realpath( ABSPATH . $file_url ), ABSPATH ) ) &&
+			file_exists( ABSPATH . $file_url )
+		) {
+			if ( ! wc_is_file_valid_csv( ABSPATH . $file_url ) ) {
+				$this->set_import_error_message( __( 'Invalid file type. The importer supports CSV and TXT file formats.', 'woocommerce' ) );
+
+				return false;
+			}
+
 			$this->file_url = esc_attr( $file_url );
 		} else {
-			$this->import_error();
+			return false;
 		}
-		// phpcs:enable
 
 		return true;
 	}

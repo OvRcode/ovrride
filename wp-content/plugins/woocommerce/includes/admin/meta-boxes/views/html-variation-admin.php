@@ -2,19 +2,22 @@
 /**
  * Outputs a variation for editing.
  *
+ * @package WooCommerce\Admin
  * @var int $variation_id
  * @var WP_POST $variation
  * @var WC_Product_Variation $variation_object
- * @var array $variation_data array of variation data @deprecated.
+ * @var array $variation_data array of variation data @deprecated 4.4.0.
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+
+use Automattic\WooCommerce\Utilities\I18nUtil;
+
+defined( 'ABSPATH' ) || exit;
+
 ?>
 <div class="woocommerce_variation wc-metabox closed">
 	<h3>
+		<a href="javascript:void(0)" class="edit_variation edit"><?php esc_html_e( 'Edit', 'woocommerce' ); ?></a>
 		<a href="#" class="remove_variation delete" rel="<?php echo esc_attr( $variation_id ); ?>"><?php esc_html_e( 'Remove', 'woocommerce' ); ?></a>
-		<div class="handlediv" aria-label="<?php esc_attr_e( 'Click to toggle', 'woocommerce' ); ?>"></div>
 		<div class="tips sort" data-tip="<?php esc_attr_e( 'Drag and drop, or click to set admin variation order', 'woocommerce' ); ?>"></div>
 		<strong>#<?php echo esc_html( $variation_id ); ?> </strong>
 		<?php
@@ -26,28 +29,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 			$selected_value = isset( $attribute_values[ sanitize_title( $attribute->get_name() ) ] ) ? $attribute_values[ sanitize_title( $attribute->get_name() ) ] : '';
 			?>
-			<select name="attribute_<?php echo sanitize_title( $attribute->get_name() ) . "[{$loop}]"; ?>">
+			<select name="attribute_<?php echo esc_attr( sanitize_title( $attribute->get_name() ) . "[{$loop}]" ); ?>">
 				<option value="">
 					<?php
 					/* translators: %s: attribute label */
-					printf( esc_html__( 'Any %s&hellip;', 'woocommerce' ), wc_attribute_label( $attribute->get_name() ) );
+					printf( esc_html__( 'Any %s&hellip;', 'woocommerce' ), wc_attribute_label( $attribute->get_name() ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 				</option>
 				<?php if ( $attribute->is_taxonomy() ) : ?>
 					<?php foreach ( $attribute->get_terms() as $option ) : ?>
-						<option <?php selected( $selected_value, $option->slug ); ?> value="<?php echo esc_attr( $option->slug ); ?>"><?php echo esc_html( apply_filters( 'woocommerce_variation_option_name', $option->name ) ); ?></option>
+						<?php /* phpcs:disable WooCommerce.Commenting.CommentHooks.MissingHookComment */ ?>
+						<option <?php selected( $selected_value, $option->slug ); ?> value="<?php echo esc_attr( $option->slug ); ?>"><?php echo esc_html( apply_filters( 'woocommerce_variation_option_name', $option->name, $option, $attribute->get_name(), $product_object ) ); ?></option>
+						<?php /* phpcs:enable */ ?>
 					<?php endforeach; ?>
 				<?php else : ?>
 					<?php foreach ( $attribute->get_options() as $option ) : ?>
-						<option <?php selected( $selected_value, $option ); ?> value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( apply_filters( 'woocommerce_variation_option_name', $option ) ); ?></option>
+						<?php /* phpcs:disable WooCommerce.Commenting.CommentHooks.MissingHookComment */ ?>
+						<option <?php selected( $selected_value, $option ); ?> value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( apply_filters( 'woocommerce_variation_option_name', $option, null, $attribute->get_name(), $product_object ) ); ?></option>
+						<?php /* phpcs:enable */ ?>
 					<?php endforeach; ?>
 				<?php endif; ?>
 			</select>
 			<?php
 		}
 		?>
-		<input type="hidden" name="variable_post_id[<?php echo esc_attr( $loop ); ?>]" value="<?php echo esc_attr( $variation_id ); ?>" />
+		<input type="hidden" class="variable_post_id" name="variable_post_id[<?php echo esc_attr( $loop ); ?>]" value="<?php echo esc_attr( $variation_id ); ?>" />
 		<input type="hidden" class="variation_menu_order" name="variation_menu_order[<?php echo esc_attr( $loop ); ?>]" value="<?php echo esc_attr( $variation_object->get_menu_order( 'edit' ) ); ?>" />
+
+		<?php
+		/**
+		 * Variations header action.
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param WP_Post $variation Post data.
+		 * @param int     $loop      Position in the loop.
+		 */
+		do_action( 'woocommerce_variation_header', $variation, $loop );
+		?>
 	</h3>
 	<div class="woocommerce_variable_attributes wc-metabox-content" style="display: none;">
 		<div class="data">
@@ -74,26 +93,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 			<p class="form-row form-row-full options">
 				<label>
-					<?php esc_html_e( 'Enabled', 'woocommerce' ); ?>:
-					<input type="checkbox" class="checkbox" name="variable_enabled[<?php echo $loop; ?>]" <?php checked( in_array( $variation_object->get_status( 'edit' ), array( 'publish', false ), true ), true ); ?> />
+					<?php esc_html_e( 'Enabled', 'woocommerce' ); ?>
+					<input type="checkbox" class="checkbox" name="variable_enabled[<?php echo esc_attr( $loop ); ?>]" <?php checked( in_array( $variation_object->get_status( 'edit' ), array( 'publish', false ), true ), true ); ?> />
 				</label>
-				<label class="tips" data-tip="<?php esc_html_e( 'Enable this option if access is given to a downloadable file upon purchase of a product', 'woocommerce' ); ?>">
-					<?php esc_html_e( 'Downloadable', 'woocommerce' ); ?>:
+				<label class="tips" data-tip="<?php esc_attr_e( 'Enable this option if access is given to a downloadable file upon purchase of a product', 'woocommerce' ); ?>">
+					<?php esc_html_e( 'Downloadable', 'woocommerce' ); ?>
 					<input type="checkbox" class="checkbox variable_is_downloadable" name="variable_is_downloadable[<?php echo esc_attr( $loop ); ?>]" <?php checked( $variation_object->get_downloadable( 'edit' ), true ); ?> />
 				</label>
-				<label class="tips" data-tip="<?php esc_html_e( 'Enable this option if a product is not shipped or there is no shipping cost', 'woocommerce' ); ?>">
-					<?php esc_html_e( 'Virtual', 'woocommerce' ); ?>:
+				<label class="tips" data-tip="<?php esc_attr_e( 'Enable this option if a product is not shipped or there is no shipping cost', 'woocommerce' ); ?>">
+					<?php esc_html_e( 'Virtual', 'woocommerce' ); ?>
 					<input type="checkbox" class="checkbox variable_is_virtual" name="variable_is_virtual[<?php echo esc_attr( $loop ); ?>]" <?php checked( $variation_object->get_virtual( 'edit' ), true ); ?> />
 				</label>
 
 				<?php if ( 'yes' === get_option( 'woocommerce_manage_stock' ) ) : ?>
-					<label class="tips" data-tip="<?php esc_html_e( 'Enable this option to enable stock management at variation level', 'woocommerce' ); ?>">
+					<label class="tips" data-tip="<?php esc_attr_e( 'Enable this option to enable stock management at variation level', 'woocommerce' ); ?>">
 						<?php esc_html_e( 'Manage stock?', 'woocommerce' ); ?>
-						<input type="checkbox" class="checkbox variable_manage_stock" name="variable_manage_stock[<?php echo esc_attr( $loop ); ?>]" <?php checked( $variation_object->get_manage_stock( 'edit' ), true ); ?> />
+						<input type="checkbox" class="checkbox variable_manage_stock" name="variable_manage_stock[<?php echo esc_attr( $loop ); ?>]" <?php checked( $variation_object->get_manage_stock(), true ); // Use view context so 'parent' is considered. ?> />
 					</label>
 				<?php endif; ?>
 
+				<?php /* phpcs:disable WooCommerce.Commenting.CommentHooks.MissingHookComment */ ?>
 				<?php do_action( 'woocommerce_variation_options', $loop, $variation_data, $variation ); ?>
+				<?php /* phpcs:enable */ ?>
 			</p>
 
 			<div class="variable_pricing">
@@ -133,28 +154,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 					)
 				);
 
-				$sale_price_dates_from = $variation_object->get_date_on_sale_from( 'edit' ) && ( $date = $variation_object->get_date_on_sale_from( 'edit' )->getOffsetTimestamp() ) ? date_i18n( 'Y-m-d', $date ) : '';
-				$sale_price_dates_to   = $variation_object->get_date_on_sale_to( 'edit' ) && ( $date = $variation_object->get_date_on_sale_to( 'edit' )->getOffsetTimestamp() ) ? date_i18n( 'Y-m-d', $date ) : '';
+				$sale_price_dates_from_timestamp = $variation_object->get_date_on_sale_from( 'edit' ) ? $variation_object->get_date_on_sale_from( 'edit' )->getOffsetTimestamp() : false;
+				$sale_price_dates_to_timestamp   = $variation_object->get_date_on_sale_to( 'edit' ) ? $variation_object->get_date_on_sale_to( 'edit' )->getOffsetTimestamp() : false;
 
+				$sale_price_dates_from = $sale_price_dates_from_timestamp ? date_i18n( 'Y-m-d', $sale_price_dates_from_timestamp ) : '';
+				$sale_price_dates_to   = $sale_price_dates_to_timestamp ? date_i18n( 'Y-m-d', $sale_price_dates_to_timestamp ) : '';
+
+				/* phpcs:disable WooCommerce.Commenting.CommentHooks.MissingHookComment */
 				echo '<div class="form-field sale_price_dates_fields hidden">
 					<p class="form-row form-row-first">
-						<label>' . __( 'Sale start date', 'woocommerce' ) . '</label>
-						<input type="text" class="sale_price_dates_from" name="variable_sale_price_dates_from[' . $loop . ']" value="' . esc_attr( $sale_price_dates_from ) . '" placeholder="' . _x( 'From&hellip;', 'placeholder', 'woocommerce' ) . ' YYYY-MM-DD" maxlength="10" pattern="' . esc_attr( apply_filters( 'woocommerce_date_input_html_pattern', '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])' ) ) . '" />
+						<label>' . esc_html__( 'Sale start date', 'woocommerce' ) . '</label>
+						<input type="text" class="sale_price_dates_from" name="variable_sale_price_dates_from[' . esc_attr( $loop ) . ']" value="' . esc_attr( $sale_price_dates_from ) . '" placeholder="' . esc_attr_x( 'From&hellip;', 'placeholder', 'woocommerce' ) . ' YYYY-MM-DD" maxlength="10" pattern="' . esc_attr( apply_filters( 'woocommerce_date_input_html_pattern', '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])' ) ) . '" />
 					</p>
 					<p class="form-row form-row-last">
-						<label>' . __( 'Sale end date', 'woocommerce' ) . '</label>
-						<input type="text" class="sale_price_dates_to" name="variable_sale_price_dates_to[' . esc_attr( $loop ) . ']" value="' . esc_attr( $sale_price_dates_to ) . '" placeholder="' . esc_html_x( 'To&hellip;', 'placeholder', 'woocommerce' ) . '  YYYY-MM-DD" maxlength="10" pattern="' . esc_attr( apply_filters( 'woocommerce_date_input_html_pattern', '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])' ) ) . '" />
+						<label>' . esc_html__( 'Sale end date', 'woocommerce' ) . '</label>
+						<input type="text" class="sale_price_dates_to" name="variable_sale_price_dates_to[' . esc_attr( $loop ) . ']" value="' . esc_attr( $sale_price_dates_to ) . '" placeholder="' . esc_attr_x( 'To&hellip;', 'placeholder', 'woocommerce' ) . '  YYYY-MM-DD" maxlength="10" pattern="' . esc_attr( apply_filters( 'woocommerce_date_input_html_pattern', '[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])' ) ) . '" />
 					</p>
 				</div>';
+				/* phpcs: enable */
 
 				/**
-				 * woocommerce_variation_options_pricing action.
+				 * Variation options pricing action.
 				 *
 				 * @since 2.5.0
 				 *
-				 * @param int     $loop
-				 * @param array   $variation_data
-				 * @param WP_Post $variation
+				 * @param int     $loop           Position in the loop.
+				 * @param array   $variation_data Variation data.
+				 * @param WP_Post $variation      Post data.
 				 */
 				do_action( 'woocommerce_variation_options_pricing', $loop, $variation_data, $variation );
 				?>
@@ -170,7 +196,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'value'             => wc_stock_amount( $variation_object->get_stock_quantity( 'edit' ) ),
 							'label'             => __( 'Stock quantity', 'woocommerce' ),
 							'desc_tip'          => true,
-							'description'       => __( "Enter a quantity to enable stock management at variation level, or leave blank to use the parent product's options.", 'woocommerce' ),
+							'description'       => __( "Enter a number to set stock quantity at the variation level. Use a variation's 'Manage stock?' check box above to enable/disable stock management at the variation level.", 'woocommerce' ),
 							'type'              => 'number',
 							'custom_attributes' => array(
 								'step' => 'any',
@@ -195,14 +221,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 						)
 					);
 
+					$low_stock_placeholder = ( $product_object->get_manage_stock() && '' !== $product_object->get_low_stock_amount() )
+						? sprintf(
+							/* translators: %d: Amount of stock left */
+							esc_attr__( 'Parent product\'s threshold (%d)', 'woocommerce' ),
+							esc_attr( $product_object->get_low_stock_amount() )
+						)
+						: sprintf(
+							/* translators: %d: Amount of stock left */
+							esc_attr__( 'Store-wide threshold (%d)', 'woocommerce' ),
+							esc_attr( get_option( 'woocommerce_notify_low_stock_amount' ) )
+						);
+
+					woocommerce_wp_text_input(
+						array(
+							'id'                => "variable_low_stock_amount{$loop}",
+							'name'              => "variable_low_stock_amount[{$loop}]",
+							'value'             => $variation_object->get_low_stock_amount( 'edit' ),
+							'placeholder'       => $low_stock_placeholder,
+							'label'             => __( 'Low stock threshold', 'woocommerce' ),
+							'desc_tip'          => true,
+							'description'       => __( 'When variation stock reaches this amount you will be notified by email. The default value for all variations can be set in the product Inventory tab. The shop default value can be set in Settings > Products > Inventory.', 'woocommerce' ),
+							'type'              => 'number',
+							'custom_attributes' => array(
+								'step' => 'any',
+							),
+							'wrapper_class'     => 'form-row',
+						)
+					);
+
 					/**
-					 * woocommerce_variation_options_inventory action.
+					 * Variation options inventory action.
 					 *
 					 * @since 2.5.0
 					 *
-					 * @param int     $loop
-					 * @param array   $variation_data
-					 * @param WP_Post $variation
+					 * @param int     $loop           Position in the loop.
+					 * @param array   $variation_data Variation data.
+					 * @param WP_Post $variation      Post data.
 					 */
 					do_action( 'woocommerce_variation_options_inventory', $loop, $variation_data, $variation );
 					?>
@@ -220,15 +275,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 						'options'       => wc_get_product_stock_status_options(),
 						'desc_tip'      => true,
 						'description'   => __( 'Controls whether or not the product is listed as "in stock" or "out of stock" on the frontend.', 'woocommerce' ),
-						'wrapper_class' => 'form-row form-row-full hide_if_variation_manage_stock',
+						'wrapper_class' => 'form-row form-row-full variable_stock_status',
 					)
 				);
 
 				if ( wc_product_weight_enabled() ) {
 					$label = sprintf(
-						/* translators: %s: weight unit */
+						/* translators: %s: Weight unit */
 						__( 'Weight (%s)', 'woocommerce' ),
-						esc_html( get_option( 'woocommerce_weight_unit' ) )
+						I18nUtil::get_weight_unit_label( get_option( 'woocommerce_weight_unit', 'kg' ) )
 					);
 
 					woocommerce_wp_text_input(
@@ -257,9 +312,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<label for="product_length">
 							<?php
 							printf(
-								/* translators: %s: dimension unit */
+								/* translators: %s dimension unit */
 								esc_html__( 'Dimensions (L&times;W&times;H) (%s)', 'woocommerce' ),
-								get_option( 'woocommerce_dimension_unit' )
+								esc_html( I18nUtil::get_dimensions_unit_label( get_option( 'woocommerce_dimension_unit' ) ) )
 							);
 							?>
 						</label>
@@ -274,13 +329,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 				}
 
 				/**
-				 * woocommerce_variation_options_dimensions action.
+				 * Variation options dimensions action.
 				 *
 				 * @since 2.5.0
 				 *
-				 * @param int     $loop
-				 * @param array   $variation_data
-				 * @param WP_Post $variation
+				 * @param int     $loop           Position in the loop.
+				 * @param array   $variation_data Variation data.
+				 * @param WP_Post $variation      Post data.
 				 */
 				do_action( 'woocommerce_variation_options_dimensions', $loop, $variation_data, $variation );
 				?>
@@ -311,7 +366,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'name'          => "variable_tax_class[{$loop}]",
 							'value'         => $variation_object->get_tax_class( 'edit' ),
 							'label'         => __( 'Tax class', 'woocommerce' ),
-							'options'       => array_merge( array( 'parent' => __( 'Same as parent', 'woocommerce' ) ), wc_get_product_tax_class_options() ),
+							'options'       => array( 'parent' => __( 'Same as parent', 'woocommerce' ) ) + wc_get_product_tax_class_options(),
 							'desc_tip'      => 'true',
 							'description'   => __( 'Choose a tax class for this product. Tax classes are used to apply different tax rates specific to certain types of product.', 'woocommerce' ),
 							'wrapper_class' => 'form-row form-row-full',
@@ -319,13 +374,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 					);
 
 					/**
-					 * woocommerce_variation_options_tax action.
+					 * Variation options tax action.
 					 *
 					 * @since 2.5.0
 					 *
-					 * @param int     $loop
-					 * @param array   $variation_data
-					 * @param WP_Post $variation
+					 * @param int     $loop           Position in the loop.
+					 * @param array   $variation_data Variation data.
+					 * @param WP_Post $variation      Post data.
 					 */
 					do_action( 'woocommerce_variation_options_tax', $loop, $variation_data, $variation );
 				}
@@ -359,28 +414,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</thead>
 						<tbody>
 							<?php
-							if ( $downloads = $variation_object->get_downloads( 'edit' ) ) {
-								foreach ( $downloads as $key => $file ) {
-									include 'html-product-variation-download.php';
+							$downloadable_files       = $variation_object->get_downloads( 'edit' );
+							$disabled_downloads_count = 0;
+
+							if ( $downloadable_files ) {
+								foreach ( $downloadable_files as $key => $file ) {
+									$disabled_download         = isset( $file['enabled'] ) && false === $file['enabled'];
+									$disabled_downloads_count += (int) $disabled_download;
+									include __DIR__ . '/html-product-variation-download.php';
 								}
 							}
 							?>
 						</tbody>
 						<tfoot>
 							<div>
-								<th colspan="4">
+								<th colspan="1">
 									<a href="#" class="button insert" data-row="
 									<?php
-									$key  = '';
-									$file = array(
+									$key               = '';
+									$file              = array(
 										'file' => '',
 										'name' => '',
 									);
+									$disabled_download = false;
 									ob_start();
-									require 'html-product-variation-download.php';
+									require __DIR__ . '/html-product-variation-download.php';
 									echo esc_attr( ob_get_clean() );
 									?>
 									"><?php esc_html_e( 'Add file', 'woocommerce' ); ?></a>
+								</th>
+								<th colspan="3">
+									<?php if ( $disabled_downloads_count ) : ?>
+										<span class="disabled">*</span>
+										<?php
+										printf(
+											/* translators: 1: opening link tag, 2: closing link tag. */
+											esc_html__( 'The indicated downloads have been disabled (invalid location or filetype&mdash;%1$slearn more%2$s).', 'woocommerce' ),
+											'<a href="https://woocommerce.com/document/approved-download-directories" target="_blank">',
+											'</a>'
+										);
+										?>
+									<?php endif; ?>
 								</th>
 							</div>
 						</tfoot>
@@ -426,18 +500,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 				);
 
 				/**
-				 * woocommerce_variation_options_download action.
+				 * Variation options download action.
 				 *
 				 * @since 2.5.0
 				 *
-				 * @param int     $loop
-				 * @param array   $variation_data
-				 * @param WP_Post $variation
+				 * @param int     $loop           Position in the loop.
+				 * @param array   $variation_data Variation data.
+				 * @param WP_Post $variation      Post data.
 				 */
 				do_action( 'woocommerce_variation_options_download', $loop, $variation_data, $variation );
 				?>
 			</div>
+			<?php /* phpcs:disable WooCommerce.Commenting.CommentHooks.MissingHookComment */ ?>
 			<?php do_action( 'woocommerce_product_after_variable_attributes', $loop, $variation_data, $variation ); ?>
+			<?php /* phpcs:enable */ ?>
 		</div>
 	</div>
 </div>

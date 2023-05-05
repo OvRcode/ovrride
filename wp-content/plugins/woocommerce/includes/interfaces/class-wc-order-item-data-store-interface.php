@@ -3,12 +3,8 @@
  * Order Item Data Store Interface
  *
  * @version 3.0.0
- * @package WooCommerce/Interface
+ * @package WooCommerce\Interface
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
 /**
  * WC Order Item Data Store Interface
@@ -72,7 +68,7 @@ interface WC_Order_Item_Data_Store_Interface {
 	 *
 	 * @param  int    $item_id Item ID.
 	 * @param  string $meta_key Meta key.
-	 * @param  string $meta_value Meta value (default: '').
+	 * @param  mixed  $meta_value Meta value (default: '').
 	 * @param  bool   $delete_all Delete all matching entries? (default: false).
 	 * @return bool
 	 */

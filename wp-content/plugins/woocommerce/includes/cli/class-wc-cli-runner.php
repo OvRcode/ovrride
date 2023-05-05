@@ -113,11 +113,12 @@ class WC_CLI_Runner {
 			'refund_id'    => __( 'Refund ID.', 'woocommerce' ),
 			'attribute_id' => __( 'Attribute ID.', 'woocommerce' ),
 			'zone_id'      => __( 'Zone ID.', 'woocommerce' ),
-			'id'           => __( 'ID.', 'woocommerce' ),
+			'instance_id'  => __( 'Instance ID.', 'woocommerce' ),
+			'id'           => __( 'The ID for the resource.', 'woocommerce' ),
+			'slug'         => __( 'The slug for the resource.', 'woocommerce' ),
 		);
 		$rest_command->set_supported_ids( $supported_ids );
 		$positional_args = array_keys( $supported_ids );
-
 		$parent             = "wc {$route_data['schema']['title']}";
 		$supported_commands = array();
 
@@ -126,7 +127,7 @@ class WC_CLI_Runner {
 			preg_match_all( '#\([^\)]+\)#', $route, $matches );
 			$resource_id   = ! empty( $matches[0] ) ? array_pop( $matches[0] ) : null;
 			$trimmed_route = rtrim( $route );
-			$is_singular   = substr( $trimmed_route, - strlen( $resource_id ) ) === $resource_id;
+			$is_singular   = substr( $trimmed_route, - strlen( $resource_id ?? '' ) ) === $resource_id;
 
 			// List a collection.
 			if ( array( 'GET' ) === $endpoint['methods'] && ! $is_singular ) {
@@ -165,14 +166,6 @@ class WC_CLI_Runner {
 					);
 					$ids[]      = $id_name;
 				}
-			}
-			if ( in_array( $command, array( 'delete', 'get', 'update' ), true ) && ! in_array( 'id', $ids, true ) ) {
-				$synopsis[] = array(
-					'name'        => 'id',
-					'type'        => 'positional',
-					'description' => __( 'The id for the resource.', 'woocommerce' ),
-					'optional'    => false,
-				);
 			}
 
 			foreach ( $endpoint_args as $name => $args ) {

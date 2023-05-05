@@ -3,7 +3,7 @@
  * Parameter-based Order querying
  * Args and usage: https://github.com/woocommerce/woocommerce/wiki/wc_get_orders-and-WC_Order_Query
  *
- * @package WooCommerce/Classes
+ * @package WooCommerce\Classes
  * @version 3.1.0
  * @since   3.1.0
  */
@@ -63,6 +63,7 @@ class WC_Order_Query extends WC_Object_Query {
 				'shipping_state'       => '',
 				'shipping_postcode'    => '',
 				'shipping_country'     => '',
+				'shipping_phone'       => '',
 				'payment_method'       => '',
 				'payment_method_title' => '',
 				'transaction_id'       => '',
@@ -78,6 +79,8 @@ class WC_Order_Query extends WC_Object_Query {
 	 * Get orders matching the current query vars.
 	 *
 	 * @return array|object of WC_Order objects
+	 *
+	 * @throws Exception When WC_Data_Store validation fails.
 	 */
 	public function get_orders() {
 		$args    = apply_filters( 'woocommerce_order_query_args', $this->get_query_vars() );
