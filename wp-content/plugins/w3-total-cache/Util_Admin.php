@@ -14,7 +14,7 @@ class Util_Admin {
 		$page_url = Util_Request::get_string( 'page' );
 		if ( $url == '' ) {
 			if ( $check_referrer && !empty( $_SERVER['HTTP_REFERER'] ) ) {
-				$url = $_SERVER['HTTP_REFERER'];
+				$url = isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
 			} else {
 				$url = 'admin.php';
 				if ( empty( $page ) )
@@ -101,11 +101,11 @@ class Util_Admin {
 	}
 
 	/*
-     * Checks if contains single message item
-     *
-     * @param $a array
-     * @return boolean
-     */
+	 * Checks if contains single message item
+	 *
+	 * @param $a array
+	 * @return boolean
+	 */
 	static public function single_system_item( $a ) {
 		if ( !is_array( $a ) || count( $a ) != 1 )
 			return false;
@@ -313,8 +313,6 @@ class Util_Admin {
 						'cdn.azure.ssl',
 						'cdn.mirror.domain',
 						'cdn.mirror.ssl',
-						'cdn.netdna.domain',
-						'cdn.netdna.ssl',
 						'cdn.cotendo.domain',
 						'cdn.cotendo.ssl',
 						'cdn.edgecast.domain',
@@ -382,7 +380,7 @@ class Util_Admin {
 			if ( $new_config->get_boolean( 'minify.css.enable' ) && ( $new_config->get_boolean( 'minify.auto' ) || count( $new_config->get_array( 'minify.css.groups' ) ) ) ) {
 				$minify_dependencies = array_merge( $minify_dependencies, array(
 						'minify.css.engine',
-						'minify.css.combine',
+						'minify.css.method',
 						'minify.css.strip.comments',
 						'minify.css.strip.crlf',
 						'minify.css.imports',
@@ -413,6 +411,7 @@ class Util_Admin {
 			if ( $new_config->get_boolean( 'minify.js.enable' ) && ( $new_config->get_boolean( 'minify.auto' ) || count( $new_config->get_array( 'minify.js.groups' ) ) ) ) {
 				$minify_dependencies = array_merge( $minify_dependencies, array(
 						'minify.js.engine',
+						'minify.js.method',
 						'minify.js.combine.header',
 						'minify.js.combine.body',
 						'minify.js.combine.footer',
@@ -596,8 +595,6 @@ class Util_Admin {
 		/**
 		 * Update CloudFront CNAMEs
 		 */
-		$update_cf_cnames = false;
-
 		if ( $new_config->get_boolean( 'cdn.enabled' ) && in_array( $new_config->get_string( 'cdn.engine' ), array( 'cf', 'cf2' ) ) ) {
 			if ( $new_config->get_string( 'cdn.engine' ) == 'cf' ) {
 				$old_cnames = $old_config->get_array( 'cdn.cf.cname' );
@@ -605,10 +602,6 @@ class Util_Admin {
 			} else {
 				$old_cnames = $old_config->get_array( 'cdn.cf2.cname' );
 				$new_cnames = $new_config->get_array( 'cdn.cf2.cname' );
-			}
-
-			if ( count( $old_cnames ) != count( $new_cnames ) || count( array_diff( $old_cnames, $new_cnames ) ) ) {
-				$update_cf_cnames = true;
 			}
 		}
 
@@ -624,24 +617,11 @@ class Util_Admin {
 		$environment->fix_on_event( $new_config, 'config_change', $old_config );
 
 		/**
-		 * Update support us option
-		 */
-		Generic_AdminLinks::link_update( $current_config );
-
-		/**
 		 * Auto upload browsercache files to CDN
 		 */
 		if ( $new_config->get_boolean( 'cdn.enabled' ) && $new_config->get_string( 'cdn.engine' ) == 'ftp' ) {
 			Util_Admin::cdn_delete_browsercache( $current_config );
 			Util_Admin::cdn_upload_browsercache( $current_config );
-		}
-
-		/**
-		 * Update CloudFront CNAMEs
-		 */
-		if ( $update_cf_cnames ) {
-			$error = null;
-			$w3_plugin_cdn->update_cnames( $error );
 		}
 
 		return true;
@@ -733,39 +713,19 @@ class Util_Admin {
 			return $parse_url['host'];
 		}
 
-		return $_SERVER['HTTP_HOST'];
+		return isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
 	}
 
 	/*
-     * Returns current w3tc admin page
-     */
+	 * Returns current w3tc admin page
+	 */
 	static public function get_current_page() {
 		$page = Util_Request::get_string( 'page' );
 
-		switch ( true ) {
-		case ( $page == 'w3tc_dashboard' ):
-		case ( $page == 'w3tc_general' ):
-		case ( $page == 'w3tc_pgcache' ):
-		case ( $page == 'w3tc_minify' ):
-		case ( $page == 'w3tc_dbcache' ):
-		case ( $page == 'w3tc_objectcache' ):
-		case ( $page == 'w3tc_fragmentcache' ):
-		case ( $page == 'w3tc_browsercache' ):
-		case ( $page == 'w3tc_mobile' ):
-		case ( $page == 'w3tc_referrer' ):
-		case ( $page == 'w3tc_cdn' ):
-		case ( $page == 'w3tc_extensions' ):
-		case ( $page == 'w3tc_install' ):
-		case ( $page == 'w3tc_faq' ):
-		case ( $page == 'w3tc_about' ):
-		case ( $page == 'w3tc_support' ):
-			break;
+		if ( substr( $page, 0, 5 ) == 'w3tc_' )
+			return $page;
 
-		default:
-			$page = 'w3tc_dashboard';
-		}
-
-		return $page;
+		return 'w3tc_dashboard';
 	}
 
 	/**
@@ -774,24 +734,19 @@ class Util_Admin {
 	 * @return bool
 	 */
 	static public function is_w3tc_admin_page() {
-		if ( isset( $_GET['page'] ) && substr( $_GET['page'], 0, 5 ) == 'w3tc_' )
+		$page_val = Util_Request::get_string( 'page' );
+		if ( ! empty( $page_val ) && 'w3tc_' === substr( $page_val, 0, 5 ) ) {
 			return true;
-		if ( isset( $_REQUEST['action'] ) && substr( $_REQUEST['action'], 0, 5 ) == 'w3tc_' )
+		}
+
+		$action_val = Util_Request::get_string( 'action' );
+		if ( ! empty( $action_val ) && 'w3tc_' === substr( $action_val, 0, 5 ) ) {
 			return true;
+		}
 
 		return false;
 	}
 
-
-	static public function make_track_call( $params ) {
-		wp_remote_post( W3TC_TRACK_URL, array(
-				'timeout' => 45,
-				'redirection' => 5,
-				'blocking' => false,
-				'headers' => array(),
-				'body' => array_merge( $params, array( 'id' => md5( home_url() ) ) )
-			) );
-	}
 
 	/**
 	 * Returns current WordPress page

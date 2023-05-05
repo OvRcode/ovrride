@@ -90,10 +90,15 @@ class CdnEngine_Azure extends CdnEngine_Base {
 		}
 
 		foreach ( $files as $file ) {
-			if ( !is_null( $timeout_time ) && time() > $timeout_time )
-				break;
-
 			$remote_path = $file['remote_path'];
+			$local_path = $file['local_path'];
+
+			// process at least one item before timeout so that progress goes on
+			if ( !empty( $results ) ) {
+				if ( !is_null( $timeout_time ) && time() > $timeout_time ) {
+					return 'timeout';
+				}
+			}
 
 			$results[] = $this->_upload( $file, $force_rewrite );
 		}
@@ -137,20 +142,14 @@ class CdnEngine_Azure extends CdnEngine_Base {
 			}
 		}
 
-		$headers = $this->_get_headers( $file );
+		$headers = $this->get_headers_for_file( $file );
 
 		try {
 			// $headers
 			$options = new \MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions();
 			$options->setBlobContentMD5( $content_md5 );
-			if ( isset( $headers['Content-Length'] ) )
-				$options->setBlobContentLength( $headers['Content-Length'] );
 			if ( isset( $headers['Content-Type'] ) )
 				$options->setBlobContentType( $headers['Content-Type'] );
-			if ( isset( $headers['Content-Encoding'] ) )
-				$options->setBlobContentEncoding( $headers['Content-Encoding'] );
-			if ( isset( $headers['Content-Language'] ) )
-				$options->setBlobContentLanguage( $headers['Content-Language'] );
 			if ( isset( $headers['Cache-Control'] ) )
 				$options->setBlobCacheControl( $headers['Cache-Control'] );
 
@@ -331,42 +330,36 @@ class CdnEngine_Azure extends CdnEngine_Base {
 	/**
 	 * Creates bucket
 	 *
-	 * @param string  $container_id
 	 * @param string  $error
 	 * @return boolean
 	 */
-	function create_container( &$container_id, &$error ) {
+	function create_container() {
 		if ( !$this->_init( $error ) ) {
-			return false;
+			throw new \Exception( $error );
 		}
 
 		try {
 			$containers = $this->_client->listContainers();
 		} catch ( \Exception $exception ) {
 			$error = sprintf( 'Unable to list containers (%s).', $exception->getMessage() );
-
-			return false;
+			throw new \Exception( $error );
 		}
 
 		if ( in_array( $this->_config['container'], (array) $containers ) ) {
 			$error = sprintf( 'Container already exists: %s.', $this->_config['container'] );
-
-			return false;
+			throw new \Exception( $error );
 		}
 
 		try {
-    		$createContainerOptions = new \MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions();
-    		$createContainerOptions->setPublicAccess(
-    			\MicrosoftAzure\Storage\Blob\Models\PublicAccessType::CONTAINER_AND_BLOBS );
+			$createContainerOptions = new \MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions();
+			$createContainerOptions->setPublicAccess(
+				\MicrosoftAzure\Storage\Blob\Models\PublicAccessType::CONTAINER_AND_BLOBS );
 
 			$this->_client->createContainer( $this->_config['container'], $createContainerOptions );
 		} catch ( \Exception $exception ) {
 			$error = sprintf( 'Unable to create container: %s (%s)', $this->_config['container'], $exception->getMessage() );
-
-			return false;
+			throw new \Exception( $error );
 		}
-
-		return true;
 	}
 
 	/**

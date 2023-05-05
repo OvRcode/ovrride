@@ -1,17 +1,18 @@
 <?php
+namespace W3TCL\Minify;
 /**
- * Class Minify_YUICompressor 
+ * Class Minify_YUICompressor
  * @package Minify
  */
 
 /**
  * Compress Javascript/CSS using the YUI Compressor
- * 
+ *
  * You must set $jarFile and $tempDir before calling the minify functions.
  * Also, depending on your shell's environment, you may need to specify
  * the full path to java in $javaExecutable or use putenv() to setup the
  * Java environment.
- * 
+ *
  * <code>
  * Minify_YUICompressor::$jarFile = '/path/to/yuicompressor-2.4.6.jar';
  * Minify_YUICompressor::$tempDir = '/tmp';
@@ -25,167 +26,173 @@
  *   array('stack-size' => '2048k')
  *
  * @todo unit tests, $options docs
- * 
+ *
  * @package Minify
  * @author Stephen Clay <steve@mrclay.org>
  */
 class Minify_YUICompressor {
 
-    /**
-     * Filepath of the YUI Compressor jar file. This must be set before
-     * calling minifyJs() or minifyCss().
-     *
-     * @var string
-     */
-    public static $jarFile = null;
-    
-    /**
-     * Writable temp directory. This must be set before calling minifyJs()
-     * or minifyCss().
-     *
-     * @var string
-     */
-    public static $tempDir = null;
-    
-    /**
-     * Filepath of "java" executable (may be needed if not in shell's PATH)
-     *
-     * @var string
-     */
-    public static $javaExecutable = 'java';
-    
-    /**
-     * Minify a Javascript string
-     * 
-     * @param string $js
-     * 
-     * @param array $options (verbose is ignored)
-     * 
-     * @see http://www.julienlecomte.net/yuicompressor/README
-     * 
-     * @return string 
-     */
-    public static function minifyJs($js, $options = array())
-    {
-        return self::_minify('js', $js, $options);
-    }
-    
-    /**
-     * Minify a CSS string
-     * 
-     * @param string $css
-     * 
-     * @param array $options (verbose is ignored)
-     * 
-     * @see http://www.julienlecomte.net/yuicompressor/README
-     * 
-     * @return string 
-     */
-    public static function minifyCss($css, $options = array())
-    {
-        $css = self::_minify('css', $css, $options);
-        $css = Minify_CSS_UriRewriter::rewrite($css, $options);
+	/**
+	 * Filepath of the YUI Compressor jar file. This must be set before
+	 * calling minifyJs() or minifyCss().
+	 *
+	 * @var string
+	 */
+	public static $jarFile = null;
 
-        return $css;
-    }
-    
-    private static function _minify($type, $content, $options)
-    {
-        self::_prepare();
-        if (! ($tmpFile = tempnam(self::$tempDir, 'yuic_'))) {
-            throw new Exception('Minify_YUICompressor : could not create temp file.');
-        }
-        file_put_contents($tmpFile, $content);
-        exec(self::_getCmd($options, $type, $tmpFile), $output, $result_code);
-        unlink($tmpFile);
-        if ($result_code != 0) {
-            throw new Exception('Minify_YUICompressor : YUI compressor execution failed.');
-        }
-        return implode("\n", $output);
-    }
-    
-    private static function _getCmd($userOptions, $type, $tmpFile)
-    {
-        if (!is_file(self::$javaExecutable)) {
-            throw new Exception(sprintf('JAVA executable (%s) is not a valid file.', self::$javaExecutable));
-        }
+	/**
+	 * Writable temp directory. This must be set before calling minifyJs()
+	 * or minifyCss().
+	 *
+	 * @var string
+	 */
+	public static $tempDir = null;
 
-        if (!is_file(self::$jarFile)) {
-            throw new Exception(sprintf('JAR file (%s) is not a valid file.', self::$jarFile));
-        }
-        $o = array_merge(
-            array(
-                'charset' => ''
-                ,'line-break' => 5000
-                ,'type' => $type
-                ,'nomunge' => false
-                ,'preserve-semi' => false
-                ,'disable-optimizations' => false
-	            ,'stack-size' => ''
-            )
-            ,$userOptions
-        );
-        $cmd = self::$javaExecutable
-	         . (!empty($o['stack-size'])
-	            ? ' -Xss' . $o['stack-size']
-	            : '')
-	         . ' -jar ' . escapeshellarg(self::$jarFile)
-             . " --type {$type}"
-             . (preg_match('/^[\\da-zA-Z0-9\\-]+$/', $o['charset'])
-                ? " --charset {$o['charset']}" 
-                : '')
-             . (is_numeric($o['line-break']) && $o['line-break'] >= 0
-                ? ' --line-break ' . (int)$o['line-break']
-                : '');
-        if ($type === 'js') {
-            foreach (array('nomunge', 'preserve-semi', 'disable-optimizations') as $opt) {
-                $cmd .= $o[$opt] 
-                    ? " --{$opt}"
-                    : '';
-            }
-        }
-        return $cmd . ' ' . escapeshellarg($tmpFile);
-    }
-    
-    private static function _prepare()
-    {
-        if (! is_file(self::$jarFile)) {
-            throw new Exception('Minify_YUICompressor : $jarFile('.self::$jarFile.') is not a valid file.');
-        }
-        if (! is_readable(self::$jarFile)) {
-            throw new Exception('Minify_YUICompressor : $jarFile('.self::$jarFile.') is not readable.');
-        }
-        if (! is_dir(self::$tempDir)) {
-            throw new Exception('Minify_YUICompressor : $tempDir('.self::$tempDir.') is not a valid direcotry.');
-        }
-        if (! is_writable(self::$tempDir)) {
-            throw new Exception('Minify_YUICompressor : $tempDir('.self::$tempDir.') is not writable.');
-        }
-    }
+	/**
+	 * Filepath of "java" executable (may be needed if not in shell's PATH)
+	 *
+	 * @var string
+	 */
+	public static $javaExecutable = 'java';
 
-    public static function testJs(&$error) {
-        try {
-            Minify_YUICompressor::minifyJs('alert("ok");');
-            $error = 'OK';
+	/**
+	 * Minify a Javascript string
+	 *
+	 * @param string $js
+	 *
+	 * @param array $options (verbose is ignored)
+	 *
+	 * @see http://www.julienlecomte.net/yuicompressor/README
+	 *
+	 * @return string
+	 */
+	public static function minifyJs($js, $options = array())
+	{
+		return self::_minify('js', $js, $options);
+	}
 
-            return true;
-        } catch (Exception $exception) {
-            $error = $exception->getMessage();
+	/**
+	 * Minify a CSS string
+	 *
+	 * @param string $css
+	 *
+	 * @param array $options (verbose is ignored)
+	 *
+	 * @see http://www.julienlecomte.net/yuicompressor/README
+	 *
+	 * @return string
+	 */
+	public static function minifyCss($css, $options = array())
+	{
+		$css = self::_minify('css', $css, $options);
+		$css = Minify_CSS_UriRewriter::rewrite($css, $options);
 
-            return false;
-        }
-    }
+		return $css;
+	}
 
-    public static function testCss(&$error) {
-        try {
-            Minify_YUICompressor::minifyCss('p{color:red}');
-            $error = 'OK';
+	private static function _minify($type, $content, $options)
+	{
+		self::_prepare();
+		if (! ($tmpFile = tempnam(self::$tempDir, 'yuic_'))) {
+			throw new \Exception('Minify_YUICompressor : could not create temp file.');
+		}
+		file_put_contents($tmpFile, $content);
+		exec(self::_getCmd($options, $type, $tmpFile), $output, $result_code);
+		unlink($tmpFile);
+		if ($result_code != 0) {
+			throw new \Exception('Minify_YUICompressor : YUI compressor execution failed.');
+		}
+		return implode("\n", $output);
+	}
 
-            return true;
-        } catch (Exception $exception) {
-            $error = $exception->getMessage();
+	private static function _getCmd($userOptions, $type, $tmpFile)
+	{
+		if (!is_file(self::$javaExecutable)) {
+			throw new \Exception(sprintf('JAVA executable (%s) is not a valid file.', self::$javaExecutable));
+		}
 
-            return false;
-        }
-    }
+		if (!is_file(self::$jarFile)) {
+			throw new \Exception(sprintf('JAR file (%s) is not a valid file.', self::$jarFile));
+		}
+		$o = array_merge(
+			array(
+				'charset' => ''
+				,'line-break' => 5000
+				,'type' => $type
+				,'nomunge' => false
+				,'preserve-semi' => false
+				,'disable-optimizations' => false
+				,'stack-size' => ''
+			)
+			,$userOptions
+		);
+
+		$javaExecutable = self::$javaExecutable;
+		if ( false !== strpos(trim($javaExecutable), ' ') ) {
+			 $javaExecutable = '"'. $javaExecutable . '"';
+		}
+
+		$cmd = $javaExecutable
+			 . (!empty($o['stack-size'])
+				? ' -Xss' . $o['stack-size']
+				: '')
+			 . ' -jar ' . escapeshellarg(self::$jarFile)
+			 . " --type {$type}"
+			 . (preg_match('/^[\\da-zA-Z0-9\\-]+$/', $o['charset'])
+				? " --charset {$o['charset']}"
+				: '')
+			 . (is_numeric($o['line-break']) && $o['line-break'] >= 0
+				? ' --line-break ' . (int)$o['line-break']
+				: '');
+		if ($type === 'js') {
+			foreach (array('nomunge', 'preserve-semi', 'disable-optimizations') as $opt) {
+				$cmd .= $o[$opt]
+					? " --{$opt}"
+					: '';
+			}
+		}
+		return $cmd . ' ' . escapeshellarg($tmpFile);
+	}
+
+	private static function _prepare()
+	{
+		if (! is_file(self::$jarFile)) {
+			throw new \Exception('Minify_YUICompressor : $jarFile('.self::$jarFile.') is not a valid file.');
+		}
+		if (! is_readable(self::$jarFile)) {
+			throw new \Exception('Minify_YUICompressor : $jarFile('.self::$jarFile.') is not readable.');
+		}
+		if (! is_dir(self::$tempDir)) {
+			throw new \Exception('Minify_YUICompressor : $tempDir('.self::$tempDir.') is not a valid direcotry.');
+		}
+		if (! is_writable(self::$tempDir)) {
+			throw new \Exception('Minify_YUICompressor : $tempDir('.self::$tempDir.') is not writable.');
+		}
+	}
+
+	public static function testJs(&$error) {
+		try {
+			Minify_YUICompressor::minifyJs('alert("ok");');
+			$error = 'OK';
+
+			return true;
+		} catch (\Exception $exception) {
+			$error = $exception->getMessage();
+
+			return false;
+		}
+	}
+
+	public static function testCss(&$error) {
+		try {
+			Minify_YUICompressor::minifyCss('p{color:red}');
+			$error = 'OK';
+
+			return true;
+		} catch (\Exception $exception) {
+			$error = $exception->getMessage();
+
+			return false;
+		}
+	}
 }

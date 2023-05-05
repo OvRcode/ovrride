@@ -114,12 +114,10 @@ class Extension_FragmentCache_WpObjectCache {
 	 * PHP5 style constructor
 	 */
 	function __construct() {
-		global $_wp_using_ext_object_cache;
-
 		$this->_config = Dispatcher::config();
 		$this->_lifetime = $this->_config->get_integer( array( 'fragmentcache', 'lifetime' ) );
 		$this->_debug = $this->_config->get_boolean( array( 'fragmentcache', 'debug' ) );
-		$this->_caching = $_wp_using_ext_object_cache = $this->_can_cache();
+		$this->_caching = $this->_can_cache();
 
 		$this->_blog_id = Util_Environment::blog_id();
 		$this->_core = Dispatcher::component( 'Extension_FragmentCache_Core' );
@@ -303,9 +301,7 @@ class Extension_FragmentCache_WpObjectCache {
 	 * @return boolean
 	 */
 	function reset() {
-		global $_wp_using_ext_object_cache;
-
-		$_wp_using_ext_object_cache = $this->_caching;
+		$this->cache = array();
 
 		return true;
 	}
@@ -432,50 +428,6 @@ class Extension_FragmentCache_WpObjectCache {
 	}
 
 	/**
-	 * Print Fragment Cache stats
-	 *
-	 * @return void
-	 */
-	function stats() {
-		echo '<h2>Summary</h2>';
-		echo '<p>';
-		echo '<strong>Engine</strong>: ' . Cache::engine_name( $this->_config->get_string( array( 'fragmentcache', 'engine' ) ) ) . '<br />';
-		echo '<strong>Caching</strong>: ' . ( $this->_caching ? 'enabled' : 'disabled' ) . '<br />';
-
-		if ( !$this->_caching ) {
-			echo '<strong>Reject reason</strong>: ' . $this->cache_reject_reason . '<br />';
-		}
-
-		echo '<strong>Total calls</strong>: ' . $this->cache_total . '<br />';
-		echo '<strong>Cache hits</strong>: ' . $this->cache_hits . '<br />';
-		echo '<strong>Cache misses</strong>: ' . $this->cache_misses . '<br />';
-		echo '<strong>Total time</strong>: '. round( $this->time_total, 4 ) . 's';
-		echo '</p>';
-
-		echo '<h2>Cache info</h2>';
-
-		if ( $this->_debug ) {
-			echo '<table cellpadding="0" cellspacing="3" border="1">';
-			echo '<tr><td>#</td><td>Status</td><td>Source</td><td>Data size (b)</td><td>Query time (s)</td><td>ID:Group</td></tr>';
-
-			foreach ( $this->debug_info as $index => $debug ) {
-				echo '<tr>';
-				echo '<td>' . ( $index + 1 ) . '</td>';
-				echo '<td>' . ( $debug['cached'] ? 'cached' : 'not cached' ) . '</td>';
-				echo '<td>' . ( $debug['internal'] ? 'internal' : 'persistent' ) . '</td>';
-				echo '<td>' . $debug['data_size'] . '</td>';
-				echo '<td>' . round( $debug['time'], 4 ) . '</td>';
-				echo '<td>' . sprintf( '%s:%s', $debug['id'], $debug['group'] ) . '</td>';
-				echo '</tr>';
-			}
-
-			echo '</table>';
-		} else {
-			echo '<p>Enable debug mode.</p>';
-		}
-	}
-
-	/**
 	 * Switches context to another blog
 	 *
 	 * @param integer $blog_id
@@ -528,7 +480,11 @@ class Extension_FragmentCache_WpObjectCache {
 			case 'redis':
 				$engineConfig = array(
 					'servers' => $this->_config->get_array( array( 'fragmentcache', 'redis.servers' ) ),
+					'verify_tls_certificates' => $this->_config->get_boolean( array( 'fragmentcache', 'redis.verify_tls_certificates' ) ),
 					'persistent' => $this->_config->get_boolean( array( 'fragmentcache', 'redis.persistent' ) ),
+					'timeout' => $this->_config->get_integer( array( 'fragmentcache', 'redis.timeout' ) ),
+					'retry_interval' => $this->_config->get_integer( array( 'fragmentcache', 'redis.retry_interval' ) ),
+					'read_timeout' => $this->_config->get_integer( array( 'fragmentcache', 'redis.read_timeout' ) ),
 					'dbid' => $this->_config->get_integer( array( 'fragmentcache', 'redis.dbid' ) ),
 					'password' => $this->_config->get_string( array( 'fragmentcache', 'redis.password' ) )
 				);
@@ -571,14 +527,19 @@ class Extension_FragmentCache_WpObjectCache {
 	 * @return string
 	 */
 	public function w3tc_footer_comment( $strings ) {
-		if ( $this->_config->get_boolean( array( 'fragmentcache', 'debug' ) ) ) {
-			$strings[] = "Fragment Cache debug info:";
-			$strings[] = sprintf( "%s%s", str_pad( 'Engine: ', 20 ), Cache::engine_name( $this->_config->get_string( array( 'fragmentcache', 'engine' ) ) ) );
-			$strings[] = sprintf( "%s%s", str_pad( 'Caching: ', 20 ), ( $this->_caching ? 'enabled' : 'disabled' ) );
+		$append = ( $this->cache_reject_reason != '' ?
+			sprintf( ' (%s)', $this->cache_reject_reason ) :'' );
 
-			if ( !$this->_caching ) {
-				$strings[] = sprintf( "%s%s", str_pad( 'Reject reason: ', 20 ), $this->cache_reject_reason );
-			}
+		$strings[] = sprintf(
+			__( 'Fragment Caching %d/%d fragments using %s%s', 'w3-total-cache' ),
+			$this->cache_hits, $this->cache_total,
+			Cache::engine_name( $this->_config->get_string( array( 'fragmentcache', 'engine' ) ) ),
+			$append );
+
+		if ( $this->_config->get_boolean( array( 'fragmentcache', 'debug' ) ) ) {
+			$strings[] = '';
+			$strings[] = 'Fragment Cache debug info:';
+			$strings[] = sprintf( "%s%s", str_pad( 'Caching: ', 20 ), ( $this->_caching ? 'enabled' : 'disabled' ) );
 
 			$strings[] = sprintf( "%s%d", str_pad( 'Total calls: ', 20 ), $this->cache_total );
 			$strings[] = sprintf( "%s%d", str_pad( 'Cache hits: ', 20 ), $this->cache_hits );
@@ -609,15 +570,7 @@ class Extension_FragmentCache_WpObjectCache {
 					str_pad( ( $debug['group'] == 'transient' ? 'site' : 'network' ), 10, ' ', STR_PAD_LEFT ),
 					$debug['id'] );
 			}
-		} else {
-			$append = ( $this->cache_reject_reason != '' ?
-				sprintf( ' (%s)', $this->cache_reject_reason ) :'' );
-
-			$strings[] = sprintf(
-				__( 'Fragment Caching %d/%d fragments using %s%s', 'w3-total-cache' ),
-				$this->cache_hits, $this->cache_total,
-				Cache::engine_name( $this->_config->get_string( array( 'fragmentcache', 'engine' ) ) ),
-				$append );
+			$strings[] = '';
 		}
 
 		return $strings;
@@ -632,7 +585,7 @@ class Extension_FragmentCache_WpObjectCache {
 	 */
 	private function _fragment_group( $id, $group ) {
 		if ( empty( $id ) )
-			return array( 'nogroup', 0 );
+			return array( 'nogroup', 0, false );
 		$groups = $this->_core->get_registered_fragment_groups();
 		$use_group = '';
 		$length = 0;

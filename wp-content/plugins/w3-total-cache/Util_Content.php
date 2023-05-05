@@ -10,7 +10,7 @@ class Util_Content {
 	 */
 	static public function is_html( $content ) {
 		$content = Util_Content::_is_html_prepare( $content );
-		return stripos( $content, '<html' ) === 0 || 
+		return stripos( $content, '<html' ) === 0 ||
 			stripos( $content, '<!DOCTYPE' ) === 0;
 	}
 
@@ -22,8 +22,8 @@ class Util_Content {
 	 */
 	static public function is_html_xml( $content ) {
 		$content = Util_Content::_is_html_prepare( $content );
-		return stripos( $content, '<?xml' ) === 0 || 
-			stripos( $content, '<html' ) === 0 || 
+		return stripos( $content, '<?xml' ) === 0 ||
+			stripos( $content, '<html' ) === 0 ||
 			stripos( $content, '<!DOCTYPE' ) === 0;
 	}
 
@@ -52,18 +52,6 @@ class Util_Content {
 		return Util_Content::is_html_xml( $buffer ) && !defined( 'DOING_AJAX' );
 	}
 
-
-
-	/**
-	 * Check if there was database error
-	 *
-	 * @param string  $content
-	 * @return boolean
-	 */
-	static public function is_database_error( &$content ) {
-		return stristr( $content, '<title>Database Error</title>' ) !== false;
-	}
-
 	/**
 	 * Returns GMT date
 	 *
@@ -86,5 +74,37 @@ class Util_Content {
 		}
 
 		return $comment;
+	}
+
+
+
+	/**
+	 * Deprecated. Added to prevent loading-order errors during upgrades
+	 * from older w3tc plugin versions
+	 **/
+	static public function is_database_error() {
+		return false;
+	}
+
+
+
+	/**
+	 * Converts
+	 * 127.0.0.1:1234 to ( '123.0.0.1', 1234 )
+	 * tls://127.0.0.1:1234 to ( 'tls://123.0.0.1', 1234 )
+	 * unix:/my/pipe to ( 'unix:/my/pipe', 0 )
+	 *
+	 * Doesnt fit to that class perfectly but selected due to common usage
+	 * of loaded classes
+	 */
+	static public function endpoint_to_host_port( $server, $port_default = 0 ) {
+		$p = strrpos( $server, ':' );
+		if ( substr( $server, 0, 5 ) == 'unix:' || $p === false ) {
+			return array( trim( $server ), $port_default );
+		}
+
+		return array(
+			trim( substr( $server, 0, $p ) ),
+			(int)substr( $server, $p + 1 ) );
 	}
 }

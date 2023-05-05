@@ -41,15 +41,14 @@ class Extension_NewRelic_Service {
 		$verified = array();
 		$version = explode( '.', PHP_VERSION );
 		$php_version = sprintf( '%s.%s.%s', $version[0], $version[1], $version[2] );
-		$php_version_ok = ( version_compare( $php_version, '5.2', '>' ) &&
-			version_compare( $php_version, '5.5', '<' ) );
+		$php_version_ok = version_compare( $php_version, '5.2', '>' );
 
 		$supported_string = __( 'Supported', 'w3-total-cache' );
 
 		$verified[__( 'PHP version', 'w3-total-cache' )] =
 			( $php_version_ok ? $supported_string :
-			sprintf( __( 'Not supported: %s. Supported versions are %s.', 'w3-total-cache' ),
-				$php_version, implode( ', ', $php_versions ) ) );
+			sprintf( __( 'Not supported: %s.', 'w3-total-cache' ),
+				$php_version ) );
 
 		$os_name = php_uname( 's' );
 		switch ( $os_name ) {
@@ -94,20 +93,28 @@ class Extension_NewRelic_Service {
 			$os_version = '';
 		}
 
-		$verified[__( 'Operating System', 'w3-total-cache' )] = ( $os_check ) ? $supported_string :
-		sprintf( __( 'Not Supported. (%s %s See %s page.)', 'w3-total-cache' ),
-			$os_name, $os_version,
-			'<a href="https://newrelic.com/docs/php/new-relic-for-php#requirements" target="_blank">
-            NewRelic Requirements</a>'
-		);
+		$verified[ __( 'Operating System', 'w3-total-cache' ) ] = ( $os_check ) ?
+			$supported_string :
+			sprintf(
+				// translators: 1 OS name, 2 OS version, 3 opening HTML a tag to NewRelic for PHP requirments, 4 closing HTML a tag.
+				__(
+					'Not Supported. (%1$s %2$s See %3$sNewRelic Requirements%4$s page.)',
+					'w3-total-cache'
+				),
+				$os_name,
+				$os_version,
+				'<a href="https://docs.newrelic.com/docs/apm/agents/php-agent/getting-started/php-agent-compatibility-requirements/" target="_blank">',
+				'</a>'
+			);
 
 		/**
 		 * Apache 2.2 or 2.4 via mod_php
 		 * Or any web server that supports FastCGI using php-fpm
 		 */
-		$server = explode( '/', $_SERVER['SERVER_SOFTWARE'] );
+		$server_software = isset( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : '';
+		$server = explode( '/', $server_software );
 		$ws_check = false;
-		$ws_name = $_SERVER['SERVER_SOFTWARE'];
+		$ws_name = $server_software;
 		$ws_version = '';
 
 		if ( sizeof( $server ) > 1 ) {
@@ -119,7 +126,7 @@ class Extension_NewRelic_Service {
 		switch ( true ) {
 		case Util_Environment::is_apache():
 			if ( $ws_version )
-				$ws_check = version_compare( $ws_version, '2.2', '>=' ) || version_compare( $ws_version, '2.4', '>=' );
+				$ws_check = version_compare( $ws_version, '2.2', '>=' );
 			break;
 		case Util_Environment::is_nginx():
 			$ws_check = php_sapi_name() == 'fpm-fcgi';
@@ -127,15 +134,22 @@ class Extension_NewRelic_Service {
 			break;
 		default:
 			$ws_check = php_sapi_name() == 'fpm-fcgi';
-			$ws_name = $_SERVER['SERVER_SOFTWARE'];
+			$ws_name = $server_software;
 			$ws_version = '';
 		}
-		$verified[__( 'Web Server', 'w3-total-cache' )] = $ws_check ? $supported_string :
-		sprintf( __( 'Not Supported. (%s %s See %s page.)', 'w3-total-cache' ),
-			$ws_name, $ws_version,
-			'<a href="https://newrelic.com/docs/php/new-relic-for-php#requirements" target="_blank">
-                                        NewRelic Requirements</a>'
-		);
+		$verified[ __( 'Web Server', 'w3-total-cache' ) ] = $ws_check ?
+			$supported_string :
+			sprintf(
+				// translators: 1 Web Server name, 2 Web Server version, 3 opening HTML a tag to NewRelic requirments for php, 4 closing HTML a tag.
+				__(
+					'Not Supported. (%1$s %2$s See %3$sNewRelic Requirements%4$s page.)',
+					'w3-total-cache'
+				),
+				$ws_name,
+				$ws_version,
+				'<a href="https://docs.newrelic.com/docs/apm/agents/php-agent/getting-started/php-agent-compatibility-requirements/" target="_blank">',
+				'</a>'
+			);
 		return $verified;
 	}
 

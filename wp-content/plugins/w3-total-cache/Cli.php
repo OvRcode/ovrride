@@ -133,7 +133,7 @@ class W3TotalCache_Command extends \WP_CLI_Command {
 				if ( isset( $vars['post_id'] ) ) {
 					if ( is_numeric( $vars['post_id'] ) ) {
 						try {
-							w3tc_flush_post( $vars['post_id'] );
+							w3tc_flush_post( $vars['post_id'], true );
 						}
 						catch ( \Exception $e ) {
 							\WP_CLI::error( __( 'Flushing the page from cache failed.', 'w3-total-cache' ) );
@@ -252,7 +252,7 @@ class W3TotalCache_Command extends \WP_CLI_Command {
 				return;
 			}
 
-			echo $v . "\n";
+			echo esc_html( $v ) . "\n";
 		} elseif ( $op == 'set' ) {
 			$type =( isset( $vars['type'] ) ? $vars['type'] : 'string' );
 
@@ -297,6 +297,32 @@ class W3TotalCache_Command extends \WP_CLI_Command {
 	}
 
 	/**
+	 * Imports configuration file
+	 *
+	 * ## OPTIONS
+	 * <filename>
+	 * : Filename to import
+	 */
+	function import( $args = array(), $vars = array() ) {
+		$filename = array_shift( $args );
+
+		try {
+			$config = new Config();
+			if ( !file_exists( $filename ) || !is_readable( $filename ) ) {
+				throw new \Exception( 'Cant read file: ' . $filename );
+			}
+			if ( !$config->import( $filename ) ) {
+				throw new \Exception( 'import failed' );
+			}
+			$config->save();
+		} catch ( \Exception $e ) {
+			\WP_CLI::error( __( 'Config import failed: ' . $e->getMessage(), 'w3-total-cache' ) );
+		}
+
+		\WP_CLI::success( __( 'Configuration successfully imported.', 'w3-total-cache' ) );
+	}
+
+	/**
 	 * Update query string for all static files
 	 */
 	function querystring() {
@@ -316,12 +342,18 @@ class W3TotalCache_Command extends \WP_CLI_Command {
 
 	/**
 	 * Purges URL's from cdn and varnish if enabled
+	 *
+	 * @param array $args List if files to be purged, absolute path or relative to wordpress installation path
 	 */
 	function cdn_purge( $args = array() ) {
 		$purgeitems = array();
 		foreach ( $args as $file ) {
 			$cdncommon = Dispatcher::component( 'Cdn_Core' );
-			$local_path = WP_ROOT . $file;
+			if (file_exists($file)) {
+				$local_path = $file;
+			} else {
+				$local_path = ABSPATH . $file;
+			}
 			$remote_path = $file;
 			$purgeitems[] = $cdncommon->build_file_descriptor( $local_path, $remote_path );
 		}
@@ -338,105 +370,51 @@ class W3TotalCache_Command extends \WP_CLI_Command {
 	}
 
 	/**
-	 * Tell opcache to reload PHP files
-	 *
-	 * @param array   $args
-	 */
-	function opcache_flush_file( $args = array() ) {
-		try {
-			$method = array_shift( $args );
-			if ( !in_array( $method, array( 'SNS', 'local' ) ) )
-				\WP_CLI::error( $method . __( ' is not supported. Change to SNS or local to reload opcache files', 'w3-total-cache' ) );
-			if ( $method == 'SNS' ) {
-				$w3_cache = Dispatcher::component( 'CacheFlush' );
-				$w3_cache->opcache_flush_file( $args[0] );
-			} else {
-				$url = WP_PLUGIN_URL . '/' . dirname( W3TC_FILE ) . '/pub/opcache.php';
-				$path = parse_url( $url, PHP_URL_PATH );
-				$post = array(
-					'method' => 'POST',
-					'timeout' => 45,
-					'redirection' => 5,
-					'httpversion' => '1.0',
-					'blocking' => true,
-					'body' => array(
-						'nonce' => wp_hash( $path ),
-						'command' => 'flush_file',
-						'file' => $args[0]
-					),
-				);
-				$result = wp_remote_post( $url, $post );
-				if ( is_wp_error( $result ) ) {
-					\WP_CLI::error( __( 'Files did not successfully reload with error %s', 'w3-total-cache' ), $result );
-				} elseif ( $result['response']['code'] != '200' ) {
-					\WP_CLI::error( __( 'Files did not successfully reload with message: ', 'w3-total-cache' ) . $result['body'] );
-				}
-			}
-		}
-		catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'Files did not successfully reload with error %s', 'w3-total-cache' ), $e );
-		}
-		\WP_CLI::success( __( 'Files reloaded successfully.', 'w3-total-cache' ) );
-
-	}
-
-	/**
-	 * SNS/local file.php Tells opcache to compile files
-	 *
-	 * @param array   $args
-	 */
-	function opcache_flush( $args = array() ) {
-		try {
-			$method = array_shift( $args );
-			if ( !in_array( $method, array( 'SNS', 'local' ) ) )
-				\WP_CLI::error( $method . __( ' is not supported. Change to SNS or local to delete opcache files', 'w3-total-cache' ) );
-
-			if ( $method == 'SNS' ) {
-				$w3_cache = Dispatcher::component( 'CacheFlush' );
-				$w3_cache->opcache_flush();
-			} else {
-				$url = WP_PLUGIN_URL . '/' . dirname( W3TC_FILE ) . '/pub/opcache.php';
-				$path = parse_url( $url, PHP_URL_PATH );
-				$post = array(
-					'method' => 'POST',
-					'timeout' => 45,
-					'redirection' => 5,
-					'httpversion' => '1.0',
-					'blocking' => true,
-					'body' => array(
-						'nonce' => wp_hash( $path ),
-						'command' => 'flush'
-					),
-				);
-				$result = wp_remote_post( $url, $post );
-				if ( is_wp_error( $result ) ) {
-					\WP_CLI::error( __( 'Files did not successfully delete with error %s', 'w3-total-cache' ), $result );
-				} elseif ( $result['response']['code'] != '200' ) {
-					\WP_CLI::error( __( 'Files did not successfully delete with message: ', 'w3-total-cache' ). $result['body'] );
-				}
-			}
-		}
-		catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'Files did not successfully delete with error %s', 'w3-total-cache' ), $e );
-		}
-		\WP_CLI::success( __( 'Files deleted successfully.', 'w3-total-cache' ) );
-
-	}
-
-	/**
-	 * Generally triggered from a cronjob, allows for manual Garbage collection of page cache to be triggered
+	 * Generally triggered from a cronjob, performs manual page cache Garbage collection
 	 */
 	function pgcache_cleanup() {
 		try {
-			$pgcache_cleanup = Dispatcher::component( 'PgCache_Plugin_Admin' );
-			$pgcache_cleanup->cleanup();
+			$o = Dispatcher::component( 'PgCache_Plugin_Admin' );
+			$o->cleanup();
 		} catch ( \Exception $e ) {
-			\WP_CLI::error( __( 'PageCache Garbage cleanup did not start with error %s',
-					'w3-total-cache' ), $e );
+			\WP_CLI::error( __( 'PageCache Garbage cleanup failed: %s',
+				'w3-total-cache' ), $e );
 		}
 
 		\WP_CLI::success( __( 'PageCache Garbage cleanup triggered successfully.',
-				'w3-total-cache' ) );
+			'w3-total-cache' ) );
+	}
+
+
+
+	/**
+	 * Generally triggered from a cronjob, performs manual page cache priming
+	 * ## OPTIONS
+	 * [--start=<start>]
+	 * : Start since <start> entry of sitemap
+	 *
+	 * [--limit=<limit>]
+	 * : load no more than <limit> pages
+	 *
+	 */
+	function pgcache_prime( $args = array(), $vars = array() ) {
+		try {
+			$log_callback = function($m) {
+				\WP_CLI::log($m);
+			};
+
+			$o = Dispatcher::component( 'PgCache_Plugin_Admin' );
+			$o->prime( ( isset( $vars['start'] ) ? $vars['start'] - 1 : null ),
+				( isset( $vars['limit'] ) ? $vars['limit'] : null ),
+				$log_callback );
+
+		} catch ( \Exception $e ) {
+			\WP_CLI::error( __( 'PageCache Priming did failed: %s',
+				'w3-total-cache' ), $e );
+		}
+
+		\WP_CLI::success( __( 'PageCache Priming triggered successfully.',
+			'w3-total-cache' ) );
 	}
 }
 

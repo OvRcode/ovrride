@@ -103,7 +103,7 @@ class Extension_CloudFlare_Plugin {
 				$api->purge();
 			} catch ( \Exception $ex ) {
 				$action_made['error'] =
-					'Failed to purge CloudFlare cache: ' . $ex->getMessage();
+					'CloudFlare cache: ' . $ex->getMessage();
 			}
 
 			$this->flush_operation_requested = false;
@@ -134,7 +134,7 @@ class Extension_CloudFlare_Plugin {
 						array( 'cloudflare', 'timelimit.api_request' ) )
 				)
 			);
-			
+
 			try {
 				$api->external_event( 'WP_SPAM', json_encode( $value ) );
 			} catch ( \Exception $ex ) {
@@ -178,25 +178,37 @@ class Extension_CloudFlare_Plugin {
 	 * Fix client's IP-address
 	 */
 	private function fix_remote_addr() {
-		if ( empty( $_SERVER['HTTP_CF_CONNECTING_IP'] ) )
-			return;
+		$remote_addr           = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$http_cf_connecting_ip = isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : '';
 
-		if ( strpos( $_SERVER["REMOTE_ADDR"], ":" ) === FALSE ) {
-			$ip4_ranges = $this->_config->get_array( array(
-					'cloudflare', 'ips.ip4' ) );
+		if ( empty( $http_cf_connecting_ip ) ) {
+			return;
+		}
+
+		if ( strpos( $remote_addr, ':' ) === false ) {
+			$ip4_ranges = $this->_config->get_array(
+				array(
+					'cloudflare',
+					'ips.ip4',
+				)
+			);
 			foreach ( $ip4_ranges as $range ) {
-				if ( $this->ipv4_in_range( $_SERVER['REMOTE_ADDR'], $range ) ) {
-					$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+				if ( $this->ipv4_in_range( $remote_addr, $range ) ) {
+					$_SERVER['REMOTE_ADDR'] = $http_cf_connecting_ip;
 					break;
 				}
 			}
-		} elseif ( !empty( $_SERVER["REMOTE_ADDR"] ) ) {
-			$ip6_ranges = $this->_config->get_array( array(
-					'cloudflare', 'ips.ip6' ) );
-			$ip6 = $this->get_ipv6_full( $_SERVER["REMOTE_ADDR"] );
+		} elseif ( ! empty( $remote_addr ) ) {
+			$ip6_ranges = $this->_config->get_array(
+				array(
+					'cloudflare',
+					'ips.ip6',
+				)
+			);
+			$ip6        = $this->get_ipv6_full( $remote_addr );
 			foreach ( $ip6_ranges as $range ) {
 				if ( $this->ipv6_in_range( $ip6, $range ) ) {
-					$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+					$_SERVER['REMOTE_ADDR'] = $http_cf_connecting_ip;
 					break;
 				}
 			}
@@ -321,7 +333,6 @@ class Extension_CloudFlare_Plugin {
 			return 0;
 
 		$left_piece = $pieces[0];
-		$right_piece = $pieces[1];
 
 		// Extract out the main IP pieces
 		$ip_pieces = explode( "::", $left_piece, 2 );
@@ -338,7 +349,6 @@ class Extension_CloudFlare_Plugin {
 		}
 
 		// Check to see if the last IP block (part after ::) is set
-		$last_piece = "";
 		$size = count( $main_ip_pieces );
 		if ( trim( $last_ip_piece ) != "" ) {
 			$last_piece = str_pad( $last_ip_piece, 4, "0", STR_PAD_LEFT );
@@ -373,7 +383,6 @@ class Extension_CloudFlare_Plugin {
 	private function ipv6_in_range( $ip, $range_ip ) {
 		$pieces = explode( "/", $range_ip, 2 );
 		$left_piece = $pieces[0];
-		$right_piece = $pieces[1];
 
 		// Extract out the main IP pieces
 		$ip_pieces = explode( "::", $left_piece, 2 );

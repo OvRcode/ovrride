@@ -15,6 +15,11 @@
     margin-bottom: 15px;
 }
 
+#w3tc-dashboard-widgets ul.w3tc-visible-ul li {
+	list-style-type: disc;
+	margin-bottom: 0;
+}
+
 #w3tc-dashboard-widgets #normal-sortables #w3tc_spreadtheword label{
     display: block;
     width: 70px;
@@ -59,6 +64,14 @@
     border-radius: 0;
 }
 
+#w3tc-dashboard-widgets .handle-actions {
+	display: none; /* WP 5.5 - Dashboard widget reordering not working, so disable. */
+}
+
+#w3tc-dashboard-widgets .hndle {
+	display: block; /* WP 5.5 */
+}
+
 #postbox-container-right {
     width: 196px;
     white-space: nowrap;
@@ -81,67 +94,4 @@
 
 #normal-sortables  #w3tc_new_relic {
     width: 360px;
-}
-.maxcdn-netdna-widget-base h4 {
-    text-align: center;
-}
-.maxcdn-netdna-widget-base .summary h4 {
-    color: #8F8F8F;
-    text-align: left;
-}
-.maxcdn-netdna-widget-base .status,.maxcdn-netdna-widget-base .summary {
-    border-bottom: 1px solid #d2d2d2;
-}
-
-.maxcdn-netdna-widget-base .wrapper {
-    margin-left: -10px;
-    margin-right: -10px;
-}
-.maxcdn-netdna-widget-base  .area {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-
-.maxcdn-netdna-widget-base .tools {
-    margin-top:15px;
-}
-.maxcdn-netdna-widget-base .tools li {
-    display:inline-block;
-    margin-right:10px;
-}
-.maxcdn-netdna-widget-base .summary li.large span {
-    width: 210px;
-}
-.maxcdn-netdna-widget-base  ul.file_hits li {
-    line-height: 12px;
-    font-size:10px;
-}
-.maxcdn-netdna-widget-base  ul.file_hits li span{
-    color: #fff;
-    padding-top: 2px;
-    padding-left: 5px;
-}
-.maxcdn-netdna-widget-base .status p,  .maxcdn-netdna-widget-base .charts p{
-    color:#8F8F8F
-}
-.maxcdn-netdna-widget-base .account_status  {
-    font-weight: bold;
-    color: #000;
-}
-.maxcdn-netdna-widget-base .content-zone {
-    color: #c0d9e4
-}
-.maxcdn-netdna-widget-base.sign-up h4 {
-    text-align: left;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-.maxcdn-netdna-widget-base.sign-up p{
-    margin-top: 4px;
-    padding-top: 0;
-
-}
-.maxcdn-netdna-widget-base.sign-up p span.desc {
-    color:#8F8F8F;
 }

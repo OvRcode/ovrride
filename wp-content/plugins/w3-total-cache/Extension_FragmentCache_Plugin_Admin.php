@@ -12,8 +12,6 @@ class Extension_FragmentCache_Plugin_Admin {
 	 */
 	static public function w3tc_extensions( $extensions, $config ) {
 		$requirements = array();
-		if ( !Util_Environment::is_w3tc_pro( $config ) )
-			$requirements[] = 'Available after <a href="#" class="button-buy-plugin">upgrade</a>';
 
 		$extensions['fragmentcache'] = array (
 			'name' => 'Fragment Cache',
@@ -22,6 +20,12 @@ class Extension_FragmentCache_Plugin_Admin {
 			'author_uri' => 'https://www.w3-edge.com/',
 			'extension_uri' => 'https://www.w3-edge.com/',
 			'extension_id' => 'fragmentcache',
+			'pro_feature' => true,
+			'pro_excerpt' => __( 'Increase the performance of dynamic sites that cannot benefit from the caching of entire pages.', 'w3-total-cache' ),
+			'pro_description' => array(
+				__( 'Fragment caching extends the core functionality of WordPress by enabling caching policies to be set on groups of objects that are cached. This allows you to optimize various elements in themes and plugins to use caching to save resources and reduce response times. You can also use caching methods like Memcached or Redis (for example) to scale. Instructions for use are available in the FAQ available under the help menu. This feature also gives you control over the caching policies by the group as well as visibility into the configuration by extending the WordPress Object API with additional functionality.', 'w3-total-cache' ),
+				__( 'Fragment caching is a powerful, but advanced feature. If you need help, take a look at our premium support, customization and audit services.', 'w3-total-cache' ),
+			),
 			'settings_exists' => true,
 			'version' => '1.0',
 			'enabled' => empty( $requirements ),
@@ -71,8 +75,9 @@ class Extension_FragmentCache_Plugin_Admin {
 
 
 	public function w3tc_objectcache_addin_required( $addin_required ) {
-		if ( $this->_config->is_extension_active_frontend( 'fragmentcache' ) )
+		if ( $this->_config->is_extension_active_frontend( 'fragmentcache' ) ) {
 			return true;
+		}
 
 		return $addin_required;
 	}
@@ -92,14 +97,13 @@ class Extension_FragmentCache_Plugin_Admin {
 
 
 	public function w3tc_admin_menu( $menu ) {
-		$menu = array_merge( $menu, array(
-				'w3tc_fragmentcache' => array(
-					'page_title' => __( 'Fragment Cache', 'w3-total-cache' ),
-					'menu_text' => '<span class="w3tc_menu_item_pro">' .
-					__( 'Fragment Cache', 'w3-total-cache' ) . '</span>',
-					'visible_always' => false
-				)
-			) );
+		$menu['w3tc_fragmentcache'] = array(
+			'page_title' => __( 'Fragment Cache', 'w3-total-cache' ),
+			'menu_text' => '<span class="w3tc_menu_item_pro">' .
+			__( 'Fragment Cache', 'w3-total-cache' ) . '</span>',
+			'visible_always' => false,
+			'order' => 1100
+		);
 
 		return $menu;
 	}
@@ -112,7 +116,7 @@ class Extension_FragmentCache_Plugin_Admin {
 				'id' => 'w3tc_flush_fragmentcache',
 				'parent' => 'w3tc_flush',
 				'title' => __( 'Fragment Cache: All Fragments', 'w3-total-cache' ),
-				'href' => wp_nonce_url( network_admin_url(
+				'href' => wp_nonce_url( admin_url(
 						'admin.php?page=w3tc_dashboard&amp;w3tc_flush_fragmentcache' ), 'w3tc' )
 			);
 		}
@@ -143,6 +147,10 @@ class Extension_FragmentCache_Plugin_Admin {
 
 
 	public function w3tc_usage_statistics_summary_from_history( $summary, $history ) {
+		if ( !$this->_config->is_extension_active_frontend( 'fragmentcache' ) ) {
+			return $summary;
+		}
+
 		// memcached servers
 		$c = Dispatcher::config();
 		if ( $c->get_string( array( 'fragmentcache', 'engine' ) ) == 'memcached' ) {

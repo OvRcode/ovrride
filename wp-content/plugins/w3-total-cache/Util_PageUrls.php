@@ -24,7 +24,7 @@ class Util_PageUrls {
 			}
 
 			$full_urls  = array_merge( $full_urls,
-				self::get_older_pages( $home_path, $limit_post_pages ) );
+				self::get_older_pages( $home_path, $limit_post_pages, 'post' ) );
 			$frontpage_urls[$limit_post_pages] = $full_urls;
 		}
 		return $frontpage_urls[$limit_post_pages];
@@ -42,6 +42,7 @@ class Util_PageUrls {
 		if ( !isset( $postpage_urls[$limit_post_pages] ) ) {
 			$posts_page_uri = '';
 			$full_urls = array();
+
 			$posts_page_id = get_option( 'page_for_posts' );
 			if ( $posts_page_id ) {
 				$posts_page_uri = get_page_uri( $posts_page_id );
@@ -49,10 +50,41 @@ class Util_PageUrls {
 				$full_urls[] = $page_link;
 			}
 			if ( $posts_page_uri )
-				$full_urls = array_merge( $full_urls, self::get_older_pages( $posts_page_uri, $limit_post_pages ) );
+				$full_urls = array_merge( $full_urls, self::get_older_pages( $posts_page_uri, $limit_post_pages, 'post' ) );
 			$postpage_urls[$limit_post_pages] = $full_urls;
 		}
+
 		return $postpage_urls[$limit_post_pages];
+	}
+
+	/**
+	 * Returns all urls related to a custom post type post
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param unknown $post_id
+	 * @param int     $limit_post_pages default is 10
+	 * @return array
+	 */
+	static public function get_cpt_archive_urls( $post_id, $limit_post_pages = 10 ) {
+		static $cpt_archive_urls = array();
+		$post = get_post( $post_id );
+
+		if( $post && Util_Environment::is_custom_post_type( $post ) && !isset( $cpt_archive_urls[$limit_post_pages] ) ) {
+			$full_urls = array();
+			$post_type = $post->post_type;
+			$archive_link = get_post_type_archive_link($post_type);
+			$posts_page_uri = str_replace( home_url(), '', $archive_link );
+
+			if ( $posts_page_uri ) {
+				$full_urls[] = $archive_link;
+				$full_urls = array_merge( $full_urls, self::get_older_pages( $posts_page_uri, $limit_post_pages, $post_type ) );
+			}
+
+			$cpt_archive_urls[$limit_post_pages] = $full_urls;
+		}
+
+		return $cpt_archive_urls[$limit_post_pages];
 	}
 
 	/**
@@ -60,11 +92,12 @@ class Util_PageUrls {
 	 *
 	 * @param unknown $posts_page_uri
 	 * @param int     $limit_post_pages default is 10
+	 * @param string  $post_type default is post
 	 * @return array
 	 */
-	static private function get_older_pages( $posts_page_uri, $limit_post_pages = 10 ) {
+	static private function get_older_pages( $posts_page_uri, $limit_post_pages = 10, $post_type = 'post' ) {
 		$full_urls = array();
-		$count_posts = wp_count_posts();
+		$count_posts = wp_count_posts($post_type);
 		$posts_number = $count_posts->publish;
 		$posts_per_page = get_option( 'posts_per_page' );
 		$posts_pages_number = @ceil( $posts_number / $posts_per_page );
@@ -109,6 +142,7 @@ class Util_PageUrls {
 					$full_urls[] = $post_pagenum_link;
 				}
 			}
+
 			$post_urls[$post_id] = $full_urls;
 		}
 		return $post_urls[$post_id];
@@ -431,9 +465,10 @@ class Util_PageUrls {
 		$key = md5( implode( ',', $pages ) );
 		if ( !isset( $pages_urls[$key] ) ) {
 			$full_urls = array();
-			foreach ( $pages as $page_slug ) {
-				if ( $page_slug ) {
-					$page_link = get_home_url() . '/' . trim( $page_slug, '/' ) . '/';
+			foreach ( $pages as $uri ) {
+				if ( $uri ) {
+					$page_link = get_home_url() . '/' . trim( $uri, '/' ) .
+						( strpos( $uri, '?' ) !== FALSE ? '': '/' );
 					$full_urls[] = $page_link;
 				}
 			}
@@ -449,8 +484,8 @@ class Util_PageUrls {
 	 * @param int     $pagenum
 	 * @return string
 	 */
-	static public function get_pagenum_link( $url, $pagenum = 1 ) {
-		$request_uri = $_SERVER['REQUEST_URI'];
+	public static function get_pagenum_link( $url, $pagenum = 1 ) {
+		$request_uri            = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		$_SERVER['REQUEST_URI'] = $url;
 
 		if ( is_admin() ) {
@@ -500,7 +535,9 @@ class Util_PageUrls {
 
 		$base = trailingslashit( get_bloginfo( 'url' ) );
 
-		if ( $wp_rewrite->using_index_permalinks() && ( $pagenum > 1 || '' != $request ) )
+		if ( !is_null( $wp_rewrite ) &&
+			$wp_rewrite->using_index_permalinks() &&
+			( $pagenum > 1 || '' != $request ) )
 			$base .= 'index.php/';
 
 		if ( $pagenum > 1 ) {
@@ -508,7 +545,7 @@ class Util_PageUrls {
 		}
 
 		$result = $base . $request . $query_string;
-		$result = apply_filters( 'get_pagenum_link', $result );
+		$result = apply_filters( 'get_pagenum_link', $result, $pagenum );
 		return $result;
 	}
 
@@ -540,14 +577,17 @@ class Util_PageUrls {
 	}
 
 	/**
-	 * Returns number of posts in the archive
+	 * Returns number of posts in the archive.
 	 *
-	 * @param int     $year
-	 * @param int     $month
-	 * @param int     $day
+	 * @global $wpdb
+	 *
+	 * @param  int    $year      Year.
+	 * @param  int    $month     Month.
+	 * @param  int    $day       Day number.
+	 * @param  string $post_type Post type.
 	 * @return int
 	 */
-	static public function get_archive_posts_count( $year = 0, $month = 0, $day = 0, $post_type/* = 'post'*/ ) {
+	public static function get_archive_posts_count( $year = 0, $month = 0, $day = 0, $post_type = 'post' ) {
 		global $wpdb;
 
 		$filters = array(
@@ -728,6 +768,52 @@ class Util_PageUrls {
 		}
 
 		return $link;
+	}
+
+	static public function get_rest_posts_urls() {
+		static $posts_urls = array();
+
+		if ( empty( $posts_urls ) ) {
+			$types = get_post_types( array( 'show_in_rest' => true ), 'objects' );
+			$wp_json_base = self::wp_json_base();
+
+			foreach ( $types as $post_type ) {
+				$rest_base = ( !empty( $post_type->rest_base ) ?
+					$post_type->rest_base : $post_type->name );
+
+				$posts_urls[] = $wp_json_base . $rest_base;
+			}
+		}
+
+		return $posts_urls;
+	}
+
+	static public function get_rest_post_urls( $post_id ) {
+		static $post_urls = array();
+
+		if ( !isset( $post_urls[$post_id] ) ) {
+			$post = get_post( $post_id );
+			$urls = array();
+			$wp_json_base = self::wp_json_base();
+
+			if ( $post ) {
+				$post_type = get_post_type_object( $post->post_type );
+				$rest_base = ( !empty( $post_type->rest_base ) ?
+					$post_type->rest_base : $post_type->name );
+
+				$urls[] = $wp_json_base . $rest_base . '/' . $post->ID;
+			}
+
+			$post_urls[$post_id] = $urls;
+		}
+
+		return $post_urls[$post_id];
+	}
+
+	static private function wp_json_base() {
+		$wp_json_base = rtrim( get_home_url(), '/' ) . W3TC_WP_JSON_URI;
+		$wp_json_base = apply_filters( 'w3tc_pageurls_wp_json_base', $wp_json_base );
+		return $wp_json_base;
 	}
 
 	static public function complement_with_mirror_urls( $queued_urls ) {

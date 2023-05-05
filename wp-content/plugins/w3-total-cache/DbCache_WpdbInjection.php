@@ -58,6 +58,22 @@ class DbCache_WpdbInjection {
 	 * Placeholder for apropriate wp_db method replacement.
 	 * By default calls wp_db implementation
 	 */
+	function _escape( $data ) {
+		return $this->wpdb_mixin->default__escape( $data );
+	}
+
+	/**
+	 * Placeholder for apropriate wp_db method replacement.
+	 * By default calls wp_db implementation
+	 */
+	function prepare( $query, $args ) {
+		return $this->wpdb_mixin->default_prepare( $query, $args );
+	}
+
+	/**
+	 * Placeholder for apropriate wp_db method replacement.
+	 * By default calls wp_db implementation
+	 */
 	function replace( $table, $data, $format = null ) {
 		return $this->wpdb_mixin->default_replace( $table, $data, $format );
 	}
@@ -92,6 +108,14 @@ class DbCache_WpdbInjection {
 	 */
 	function set_charset( $dbh, $charset = null, $collate = null ) {
 		return $this->wpdb_mixin->default_set_charset( $dbh, $charset, $collate );
+	}
+
+	/**
+	 * Placeholder for apropriate wp_db method replacement.
+	 * By default calls wp_db implementation
+	 */
+	function set_sql_mode( $modes = array() ) {
+		return $this->wpdb_mixin->default_set_sql_mode( $modes );
 	}
 
 	/**
@@ -141,7 +165,7 @@ class DbCache_WpdbInjection {
 	public function w3tc_usage_statistics_of_request( $storage ) {
 	}
 
-	public function flush_cache() {
+	public function flush_cache( $extras = array() ) {
 		return true;
 	}
 }

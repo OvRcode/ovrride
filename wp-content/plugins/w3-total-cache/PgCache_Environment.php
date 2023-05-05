@@ -27,8 +27,7 @@ class PgCache_Environment {
 		$this->fix_folders( $config, $exs );
 
 		if ( $config->get_boolean( 'config.check' ) || $force_all_checks ) {
-			if ( $config->get_boolean( 'pgcache.enabled' ) &&
-				$config->get_string( 'pgcache.engine' ) == 'file_generic' ) {
+			if ( $this->is_rules_required( $config ) ) {
 				$this->rules_core_add( $config, $exs );
 				$this->rules_cache_add( $config, $exs );
 			} else {
@@ -126,15 +125,30 @@ class PgCache_Environment {
 	}
 
 	/**
+	 * Are rewrite rules required?.
+	 *
+	 * @since 0.9.7.3
+	 *
+	 * @param  Config $c Configuration.
+	 * @return bool
+	 */
+	private function is_rules_required( $c ) {
+		$e = $c->get_string( 'pgcache.engine' );
+
+		return $c->get_boolean( 'pgcache.enabled' ) &&
+			( 'file_generic' === $e || 'nginx_memcached' === $e );
+	}
+
+	/**
 	 * Returns required rules for module
 	 *
 	 * @param Config  $config
 	 * @return array
 	 */
 	public function get_required_rules( $config ) {
-		if ( !$config->get_boolean( 'pgcache.enabled' ) ||
-			$config->get_string( 'pgcache.engine' ) != 'file_generic' )
+		if ( !$this->is_rules_required( $config ) ) {
 			return null;
+		}
 
 		$rewrite_rules = array();
 		$pgcache_rules_core_path = Util_Rule::get_pgcache_rules_core_path();
@@ -175,7 +189,7 @@ class PgCache_Environment {
 
 			try{
 			if ( file_exists( $dir ) && !is_writeable( $dir ) )
-				Util_WpFile::delete_folder( $dir, '', $_SERVER['REQUEST_URI'] );
+				Util_WpFile::delete_folder( $dir, '', isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' );
 		} catch ( Util_WpFile_FilesystemRmdirException $ex ) {
 			$exs->push( $ex );
 		}
@@ -392,102 +406,23 @@ class PgCache_Environment {
 	 * returns true if modifications has been made
 	 */
 	private function rules_core_add( $config, $exs ) {
-		$path = Util_Rule::get_pgcache_rules_core_path();
-		if ( $path === false )
-			return;
-
-		$original_data = @file_get_contents( $path );
-		if ( $original_data === false )
-			$original_data = '';
-
-		$data = $original_data;
-
-		if ( $has_wpsc = Util_Rule::has_rules( $data, W3TC_MARKER_BEGIN_PGCACHE_WPSC, W3TC_MARKER_END_PGCACHE_WPSC ) )
-			$data = Util_Rule::erase_rules( $data, W3TC_MARKER_BEGIN_PGCACHE_WPSC, W3TC_MARKER_END_PGCACHE_WPSC );
-
-		$rules = $this->rules_core_generate( $config );
-		$rules_missing = ( strstr( Util_Rule::clean_rules( $data ), Util_Rule::clean_rules( $rules ) ) === false );
-
-
-		if ( !$has_wpsc && !$rules_missing )
-			return;   // modification of file not required
-
-
-		$replace_start = strpos( $data, W3TC_MARKER_BEGIN_PGCACHE_CORE );
-		$replace_end = strpos( $data, W3TC_MARKER_END_PGCACHE_CORE );
-
-		if ( $replace_start !== false && $replace_end !== false && $replace_start < $replace_end ) {
-			$replace_length = $replace_end - $replace_start +
-				strlen( W3TC_MARKER_END_PGCACHE_CORE ) + 1;
-		} else {
-			$replace_start = false;
-			$replace_length = 0;
-
-			$search = array(
-				W3TC_MARKER_BEGIN_BROWSERCACHE_NO404WP => 0,
+		Util_Rule::add_rules( $exs, Util_Rule::get_pgcache_rules_core_path(),
+			$this->rules_core_generate( $config ),
+			W3TC_MARKER_BEGIN_PGCACHE_CORE,
+			W3TC_MARKER_END_PGCACHE_CORE,
+			array(
 				W3TC_MARKER_BEGIN_WORDPRESS => 0,
 				W3TC_MARKER_END_MINIFY_CORE =>
-				strlen( W3TC_MARKER_END_MINIFY_CORE ) + 1,
+					strlen( W3TC_MARKER_END_MINIFY_CORE ) + 1,
 				W3TC_MARKER_END_BROWSERCACHE_CACHE =>
-				strlen( W3TC_MARKER_END_BROWSERCACHE_CACHE ) + 1,
+					strlen( W3TC_MARKER_END_BROWSERCACHE_CACHE ) + 1,
 				W3TC_MARKER_END_PGCACHE_CACHE =>
-				strlen( W3TC_MARKER_END_PGCACHE_CACHE ) + 1,
+					strlen( W3TC_MARKER_END_PGCACHE_CACHE ) + 1,
 				W3TC_MARKER_END_MINIFY_CACHE =>
-				strlen( W3TC_MARKER_END_MINIFY_CACHE ) + 1
-			);
-
-			foreach ( $search as $string => $length ) {
-				$replace_start = strpos( $data, $string );
-
-				if ( $replace_start !== false ) {
-					$replace_start += $length;
-					break;
-				}
-			}
-		}
-
-		if ( $replace_start !== false ) {
-			$data = Util_Rule::trim_rules( substr_replace( $data, $rules,
-					$replace_start, $replace_length ) );
-		} else {
-			$data = Util_Rule::trim_rules( $data . $rules );
-		}
-
-		try {
-			Util_WpFile::write_to_file( $path, $data );
-		} catch ( Util_WpFile_FilesystemOperationException $ex ) {
-			if ( $has_wpsc )
-				$exs->push( new Util_WpFile_FilesystemModifyException(
-						$ex->getMessage(), $ex->credentials_form(),
-						sprintf( __( 'Edit file <strong>%s</strong> and remove all lines between and including
-								<strong>%s</strong> and <strong>%s</strong> markers.', 'w3-total-cache' )
-							, $path
-							, W3TC_MARKER_BEGIN_PGCACHE_WPSC
-							, W3TC_MARKER_END_PGCACHE_WPSC
-						), $path ) );
-
-			if ( $rules_missing ) {
-				if ( strpos( $data, W3TC_MARKER_BEGIN_PGCACHE_CORE ) !== false )
-					$exs->push( new Util_WpFile_FilesystemModifyException(
-							$ex->getMessage(), $ex->credentials_form(),
-							sprintf( __( 'Edit file <strong>%s</strong> and replace all lines between and including
-									<strong>%s</strong> and <strong>%s</strong> markers with:', 'w3-total-cache' )
-								, $path
-								, W3TC_MARKER_BEGIN_PGCACHE_CORE
-								, W3TC_MARKER_END_PGCACHE_CORE
-							), $path, $rules ) );
-				else
-					$exs->push( new Util_WpFile_FilesystemModifyException(
-							$ex->getMessage(), $ex->credentials_form(),
-							sprintf( __( 'Edit file <strong>%s</strong> and add the following rules above the WordPress
-									directives:' )
-								, $path
-							), $path, $rules ) );
-			}
-			return;
-		}
-
-		Util_Rule::after_rules_modified();
+					strlen( W3TC_MARKER_END_MINIFY_CACHE ) + 1
+			),
+			true
+		);
 	}
 
 	/**
@@ -543,9 +478,7 @@ class PgCache_Environment {
 			'wp-postpass'
 		);
 
-		if ( $config->get_string( 'pgcache.engine' ) == 'file_generic' ) {
-			$reject_cookies[] = 'w3tc_logged_out';
-		}
+		$reject_cookies[] = 'w3tc_logged_out';
 
 		/**
 		 * Reject cache for logged in users
@@ -582,6 +515,7 @@ class PgCache_Environment {
 		 */
 		$env_W3TC_UA = '';
 		$env_W3TC_REF = '';
+		$env_W3TC_COOKIE = '';
 		$env_W3TC_SSL = '';
 		$env_W3TC_ENC = '';
 
@@ -594,6 +528,43 @@ class PgCache_Environment {
 
 		if ( $config->get_boolean( 'pgcache.debug' ) ) {
 			$rules .= "    RewriteRule ^(.*\\/)?w3tc_rewrite_test([0-9]+)/?$ $1?w3tc_rewrite_test=1 [L]\n";
+		}
+
+
+		/**
+		 * Set accept query strings
+		 */
+		$w3tc_query_strings = apply_filters(
+			'w3tc_pagecache_rules_apache_accept_qs',
+			$config->get_array( 'pgcache.accept.qs' ) );
+		Util_Rule::array_trim( $w3tc_query_strings );
+
+		if ( !empty( $w3tc_query_strings ) ) {
+			$w3tc_query_strings = str_replace( ' ', '+', $w3tc_query_strings );
+			$w3tc_query_strings = array_map( array( '\W3TC\Util_Environment', 'preg_quote' ), $w3tc_query_strings );
+
+			$rules .= "    RewriteRule ^ - [E=W3TC_QUERY_STRING:%{QUERY_STRING}]\n";
+
+			foreach ( $w3tc_query_strings as $query ) {
+				$query_rules = array();
+				if  ( strpos( $query, '=' ) === false ) {
+					$query_rules[] = 'RewriteCond %{ENV:W3TC_QUERY_STRING} ^(.*?&|)' .
+						$query . '(=[^&]*)?(&.*|)$ [NC]';
+					$query_rules[] = 'RewriteRule ^ - [E=W3TC_QUERY_STRING:%1%3]';
+				} else {
+					$query_rules[] = 'RewriteCond %{ENV:W3TC_QUERY_STRING} ^(.*?&|)' .
+						$query . '(&.*|)$ [NC]';
+					$query_rules[] = 'RewriteRule ^ - [E=W3TC_QUERY_STRING:%1%2]';
+				}
+
+				$query_rules = apply_filters(
+					'w3tc_pagecache_rules_apache_accept_qs_rules',
+					$query_rules, $query );
+				$rules .= '    ' . implode( "\n    ", $query_rules ) . "\n";
+			}
+
+			$rules .= "    RewriteCond %{ENV:W3TC_QUERY_STRING} ^&+$\n";
+			$rules .= "    RewriteRule ^ - [E=W3TC_QUERY_STRING]\n";
 		}
 
 		/**
@@ -671,12 +642,44 @@ class PgCache_Environment {
 		}
 
 		/**
+		 * Set cookie group
+		 */
+		if ( $config->get_boolean( 'pgcache.cookiegroups.enabled' ) ) {
+			$cookie_groups = $config->get_array( 'pgcache.cookiegroups.groups' );
+
+			foreach ( $cookie_groups as $group_name => $g ) {
+				if ( isset( $g['enabled'] ) && $g['enabled'] ) {
+					$cookies = array();
+					foreach ($g['cookies'] as $cookie ) {
+						$cookie = trim( $cookie );
+						if ( !empty( $cookie ) ) {
+							$cookie = str_replace( '+', ' ', $cookie );
+							$cookie = Util_Environment::preg_quote( $cookie );
+							if ( strpos( $cookie, '=') === false )
+								$cookie .= '=.*';
+							$cookies[] = $cookie;
+						}
+					}
+
+					if ( count( $cookies ) > 0 ) {
+						$cookies_regexp = '^(.*;\s*)?(' . implode( '|', $cookies ) . ')(\s*;.*)?$';
+						$rules .= "    RewriteCond %{HTTP_COOKIE} $cookies_regexp [NC]\n";
+						$rules .= "    RewriteRule .* - [E=W3TC_COOKIE:_" . $group_name . "]\n";
+						$env_W3TC_COOKIE = '%{ENV:W3TC_COOKIE}';
+					}
+				}
+			}
+		}
+
+		/**
 		 * Set HTTPS
 		 */
 		if ( $config->get_boolean( 'pgcache.cache.ssl' ) ) {
 			$rules .= "    RewriteCond %{HTTPS} =on\n";
 			$rules .= "    RewriteRule .* - [E=W3TC_SSL:_ssl]\n";
 			$rules .= "    RewriteCond %{SERVER_PORT} =443\n";
+			$rules .= "    RewriteRule .* - [E=W3TC_SSL:_ssl]\n";
+			$rules .= "    RewriteCond %{HTTP:X-Forwarded-Proto} =https [NC]\n";
 			$rules .= "    RewriteRule .* - [E=W3TC_SSL:_ssl]\n";
 			$env_W3TC_SSL = '%{ENV:W3TC_SSL}';
 		}
@@ -686,7 +689,11 @@ class PgCache_Environment {
 		/**
 		 * Set Accept-Encoding
 		 */
-		if ( $config->get_boolean( 'browsercache.enabled' ) && $config->get_boolean( 'browsercache.html.compression' ) ) {
+		if ( $config->get_boolean( 'browsercache.enabled' ) && $config->get_boolean( 'browsercache.html.brotli' ) ) {
+			$rules .= "    RewriteCond %{HTTP:Accept-Encoding} br\n";
+			$rules .= "    RewriteRule .* - [E=W3TC_ENC:_br]\n";
+			$env_W3TC_ENC = '%{ENV:W3TC_ENC}';
+		} else if ( $config->get_boolean( 'browsercache.enabled' ) && $config->get_boolean( 'browsercache.html.compression' ) ) {
 			$rules .= "    RewriteCond %{HTTP:Accept-Encoding} gzip\n";
 			$rules .= "    RewriteRule .* - [E=W3TC_ENC:_gzip]\n";
 			$env_W3TC_ENC = '%{ENV:W3TC_ENC}';
@@ -694,6 +701,10 @@ class PgCache_Environment {
 		$rules .= "    RewriteCond %{HTTP_COOKIE} w3tc_preview [NC]\n";
 		$rules .= "    RewriteRule .* - [E=W3TC_PREVIEW:_preview]\n";
 		$env_W3TC_PREVIEW = '%{ENV:W3TC_PREVIEW}';
+
+		$rules .= "    RewriteCond %{REQUEST_URI} \\/$\n";
+		$rules .= "    RewriteRule .* - [E=W3TC_SLASH:_slash]\n";
+		$env_W3TC_SLASH = '%{ENV:W3TC_SLASH}';
 
 		$use_cache_rules = '';
 		/**
@@ -704,14 +715,9 @@ class PgCache_Environment {
 		/**
 		 * Query string should be empty
 		 */
-		$use_cache_rules .= "    RewriteCond %{QUERY_STRING} =\"\"\n";
-
-		/**
-		 * Check permalink structure trailing slash
-		 */
-		if ( substr( $permalink_structure, -1 ) == '/' ) {
-			$use_cache_rules .= "    RewriteCond %{REQUEST_URI} \\/$\n";
-		}
+		$use_cache_rules .= empty( $w3tc_query_strings ) ?
+			"    RewriteCond %{QUERY_STRING} =\"\"\n" :
+			"    RewriteCond %{ENV:W3TC_QUERY_STRING} =\"\"\n";
 
 		/**
 		 * Check for rejected cookies
@@ -732,18 +738,28 @@ class PgCache_Environment {
 		 * Make final rewrites for specific files
 		 */
 		$uri_prefix =  $cache_path . '/%{HTTP_HOST}/%{REQUEST_URI}/' .
-			'_index' . $env_W3TC_UA . $env_W3TC_REF . $env_W3TC_SSL . $env_W3TC_PREVIEW;
+			'_index' . $env_W3TC_SLASH . $env_W3TC_UA . $env_W3TC_REF . $env_W3TC_COOKIE .
+			$env_W3TC_SSL . $env_W3TC_PREVIEW;
+		$uri_prefix = apply_filters( 'w3tc_pagecache_rules_apache_uri_prefix',
+			$uri_prefix );
+
 		$switch = " -" . ( $config->get_boolean( 'pgcache.file.nfs' ) ? 'F' : 'f' );
 
 		$document_root = Util_Rule::apache_docroot_variable();
 
-		// write rule to rewrite to .html file
-		$ext = '.html';
-		$rules .= $use_cache_rules;
-		$rules .= "    RewriteCond \"" . $document_root . $uri_prefix . $ext .
-			$env_W3TC_ENC . "\"" . $switch . "\n";
-		$rules .= "    RewriteRule .* \"" . $uri_prefix . $ext .
-			$env_W3TC_ENC . "\" [L]\n";
+		// write rule to rewrite to .html/.xml file
+		$exts = array( '.html' );
+		if ($config->get_boolean('pgcache.cache.nginx_handle_xml'))
+			$exts[] = '.xml';
+
+		foreach ( $exts as $ext ) {
+			$rules .= $use_cache_rules;
+
+			$rules .= "    RewriteCond \"" . $document_root . $uri_prefix . $ext .
+				$env_W3TC_ENC . "\"" . $switch . "\n";
+			$rules .= "    RewriteRule .* \"" . $uri_prefix . $ext .
+				$env_W3TC_ENC . "\" [L]\n";
+		}
 
 		$rules .= "</IfModule>\n";
 
@@ -763,6 +779,7 @@ class PgCache_Environment {
 
 		$cache_dir = Util_Environment::normalize_path( W3TC_CACHE_PAGE_ENHANCED_DIR );
 		$permalink_structure = get_option( 'permalink_structure' );
+		$pgcache_engine = $config->get_string( 'pgcache.engine' );
 
 		/**
 		 * Auto reject cookies
@@ -772,7 +789,7 @@ class PgCache_Environment {
 			'wp-postpass'
 		);
 
-		if ( $config->get_string( 'pgcache.engine' ) == 'file_generic' ) {
+		if ( $pgcache_engine == 'file_generic' ) {
 			$reject_cookies[] = 'w3tc_logged_out';
 		}
 
@@ -812,14 +829,60 @@ class PgCache_Environment {
 		 */
 		$env_w3tc_ua = '';
 		$env_w3tc_ref = '';
+		$env_w3tc_cookie = '';
 		$env_w3tc_ssl = '';
 		$env_w3tc_ext = '';
 		$env_w3tc_enc = '';
+		$env_request_uri = '$request_uri';
 
 		$rules = '';
 		$rules .= W3TC_MARKER_BEGIN_PGCACHE_CORE . "\n";
 		if ( $config->get_boolean( 'pgcache.debug' ) ) {
 			$rules .= "rewrite ^(.*\\/)?w3tc_rewrite_test([0-9]+)/?$ $1?w3tc_rewrite_test=1 last;\n";
+		}
+
+		/**
+		 * Set accept query strings
+		 */
+		$w3tc_query_strings = apply_filters(
+			'w3tc_pagecache_rules_nginx_accept_qs',
+			$config->get_array( 'pgcache.accept.qs' ) );
+
+		Util_Rule::array_trim( $w3tc_query_strings );
+
+		if ( !empty( $w3tc_query_strings ) ) {
+		   $w3tc_query_strings = str_replace( ' ', '+', $w3tc_query_strings );
+		   $w3tc_query_strings = array_map( array( '\W3TC\Util_Environment', 'preg_quote' ), $w3tc_query_strings );
+
+			$rules .= "set \$w3tc_query_string \$query_string;\n";
+
+			foreach ( $w3tc_query_strings as $query ) {
+				$query_rules = array();
+				if ( strpos( $query, '=' ) === false ) {
+					$query_rules[] = 'if ($w3tc_query_string ~* "^(.*?&|)' . $query . '(=[^&]*)?(&.*|)$") {';
+					$query_rules[] = '    set $w3tc_query_string $1$3;';
+					$query_rules[] = '}';
+				} else {
+					$query_rules[] = 'if ($w3tc_query_string ~* "^(.*?&|)' . $query . '(&.*|)$") {';
+					$query_rules[] = '    set $w3tc_query_string $1$2;';
+					$query_rules[] = '}';
+				}
+
+				$query_rules = apply_filters(
+					'w3tc_pagecache_rules_nginx_accept_qs_rules',
+					$query_rules, $query );
+				$rules .= implode( "\n", $query_rules ) . "\n";
+			}
+
+			$rules .= "if (\$w3tc_query_string ~ ^[?&]+$) {\n";
+			$rules .= "    set \$w3tc_query_string \"\";\n";
+			$rules .= "}\n";
+
+			$rules .= "set \$w3tc_request_uri \$request_uri;\n";
+			$rules .= "if (\$w3tc_request_uri ~* \"^([^?]+)\?\") {\n";
+			$rules .= "    set \$w3tc_request_uri \$1;\n";
+			$rules .= "}\n";
+			$env_request_uri = '$w3tc_request_uri';
 		}
 
 		/**
@@ -880,18 +943,18 @@ class PgCache_Environment {
 		/**
 		 * Query string should be empty
 		 */
-		$rules .= "if (\$query_string != \"\") {\n";
+		$querystring_variable = ( empty( $w3tc_query_strings ) ?
+			'$query_string' : '$w3tc_query_string' );
+
+		$rules .= "if (" . $querystring_variable . " != \"\") {\n";
 		$rules .= "    set \$w3tc_rewrite 0;\n";
 		$rules .= "}\n";
 
-		/**
-		 * Check permalink structure trailing slash
-		 */
-		if ( substr( $permalink_structure, -1 ) == '/' ) {
-			$rules .= "if (\$request_uri !~ \\/$) {\n";
-			$rules .= "    set \$w3tc_rewrite 0;\n";
-			$rules .= "}\n";
-		}
+		$rules .= "set \$w3tc_slash \"\";\n";
+		$rules .= "if ($env_request_uri ~ \\/$) {\n";
+		$rules .= "    set \$w3tc_slash _slash;\n";
+		$rules .= "}\n";
+		$env_w3tc_slash = "\$w3tc_slash";
 
 		/**
 		 * Check for rejected cookies
@@ -981,14 +1044,66 @@ class PgCache_Environment {
 			}
 		}
 
+		/**
+		 * Set cookie group
+		 */
+		if ( $config->get_boolean( 'pgcache.cookiegroups.enabled' ) ) {
+			$cookie_groups = $config->get_array( 'pgcache.cookiegroups.groups' );
+			$set_cookie_var = true;
+
+			foreach ( $cookie_groups as $group_name => $g ) {
+				if ( isset( $g['enabled'] ) && $g['enabled'] ) {
+					$cookies = array();
+					foreach ($g['cookies'] as $cookie ) {
+						$cookie = trim( $cookie );
+						if ( !empty( $cookie ) ) {
+							$cookie = str_replace( '+', ' ', $cookie );
+							$cookie = Util_Environment::preg_quote( $cookie );
+							if ( strpos( $cookie, '=') === false )
+								$cookie .= '=.*';
+							$cookies[] = $cookie;
+						}
+					}
+
+					if ( count( $cookies ) > 0 ) {
+						$cookies_regexp = '"^(.*;)?(' . implode( '|', $cookies ) . ')(;.*)?$"';
+
+						if ( $set_cookie_var ) {
+							$rules .= "set \$w3tc_cookie \"\";\n";
+							$set_cookie_var = false;
+						}
+						$rules .= "if (\$http_cookie ~* $cookies_regexp) {\n";
+						$rules .= "    set \$w3tc_cookie _" . $group_name . ";\n";
+						$rules .= "}\n";
+
+						$env_w3tc_cookie = "\$w3tc_cookie";
+					}
+				}
+			}
+		}
+
 		if ( $config->get_boolean( 'pgcache.cache.ssl' ) ) {
 			$rules .= "set \$w3tc_ssl \"\";\n";
 
 			$rules .= "if (\$scheme = https) {\n";
 			$rules .= "    set \$w3tc_ssl _ssl;\n";
 			$rules .= "}\n";
+			$rules .= "if (\$http_x_forwarded_proto = 'https') {\n";
+			$rules .= "    set \$w3tc_ssl _ssl;\n";
+			$rules .= "}\n";
 
-			$env_w3tc_ssl = "\$w3tc_ssl";
+			$env_w3tc_ssl = '$w3tc_ssl';
+		}
+
+		if ( $config->get_boolean( 'browsercache.enabled' ) &&
+			 $config->get_boolean( 'browsercache.html.brotli' ) ) {
+			$rules .= "set \$w3tc_enc \"\";\n";
+
+			$rules .= "if (\$http_accept_encoding ~ br) {\n";
+			$rules .= "    set \$w3tc_enc _br;\n";
+			$rules .= "}\n";
+
+			$env_w3tc_enc = '$w3tc_enc';
 		}
 
 		if ( $config->get_boolean( 'browsercache.enabled' ) &&
@@ -999,44 +1114,106 @@ class PgCache_Environment {
 			$rules .= "    set \$w3tc_enc _gzip;\n";
 			$rules .= "}\n";
 
-			$env_w3tc_enc = "\$w3tc_enc";
+			$env_w3tc_enc = '$w3tc_enc';
 		}
 
-		$cache_path = str_replace( Util_Environment::document_root(), '', $cache_dir );
-		$uri_prefix = $cache_path . "/\$http_host/" .
-			"\$request_uri/_index" . $env_w3tc_ua . $env_w3tc_ref .
+		$key_postfix = $env_w3tc_slash . $env_w3tc_ua . $env_w3tc_ref . $env_w3tc_cookie .
 			$env_w3tc_ssl . $env_w3tc_preview;
+
+		if ( $pgcache_engine == 'file_generic' ) {
+			$rules .= $this->for_file_generic( $config, $cache_dir,
+				$env_request_uri, $key_postfix, $env_w3tc_enc );
+		} elseif ( $pgcache_engine == 'nginx_memcached' ) {
+			$rules .= $this->for_nginx_memcached( $config, $cache_dir,
+				$env_request_uri, $key_postfix, $env_w3tc_enc );
+		}
+
+		$rules .= W3TC_MARKER_END_PGCACHE_CORE . "\n";
+
+		return $rules;
+	}
+
+
+
+	private function for_file_generic( $config, $cache_dir, $env_request_uri,
+			$key_postfix, $env_w3tc_enc ) {
+		$rules = '';
+
+		$cache_path = str_replace( Util_Environment::document_root(), '',
+			$cache_dir );
+		$uri_prefix = "$cache_path/\$http_host/$env_request_uri/_index$key_postfix";
+		$uri_prefix = apply_filters( 'w3tc_pagecache_rules_nginx_uri_prefix',
+			$uri_prefix );
 
 		if ( !$config->get_boolean( 'pgcache.cache.nginx_handle_xml' ) ) {
 			$env_w3tc_ext = '.html';
 
-			$rules .= "if (!-f \"\$document_root" . $uri_prefix . ".html" .
-				$env_w3tc_enc . "\") {\n";
-			$rules .= "  set \$w3tc_rewrite 0;\n";
+			$rules .= 'if (!-f "$document_root' . $uri_prefix . '.html' .
+				$env_w3tc_enc . '") {' . "\n";
+			$rules .= '  set $w3tc_rewrite 0;' . "\n";
 			$rules .= "}\n";
 		} else {
-			$env_w3tc_ext = "\$w3tc_ext";
+			$env_w3tc_ext = '$w3tc_ext';
 
-			$rules .= "set \$w3tc_ext \"\";\n";
-			$rules .= "if (-f \"\$document_root" . $uri_prefix . ".html" .
-				$env_w3tc_enc . "\") {\n";
-			$rules .= "    set \$w3tc_ext .html;\n";
+			$rules .= 'set $w3tc_ext "";' . "\n";
+			$rules .= 'if (-f "$document_root' . $uri_prefix . '.html' .
+				$env_w3tc_enc . '") {' . "\n";
+			$rules .= '  set $w3tc_ext .html;' . "\n";
 			$rules .= "}\n";
 
-			$rules .= "if (-f \"\$document_root" . $uri_prefix . ".xml" .
-				$env_w3tc_enc . "\") {\n";
-			$rules .= "    set \$w3tc_ext .xml;\n";
+			$rules .= 'if (-f "$document_root' . $uri_prefix . '.xml' .
+				$env_w3tc_enc . '") {' . "\n";
+			$rules .= '    set $w3tc_ext .xml;' . "\n";
 			$rules .= "}\n";
 
-			$rules .= "if (\$w3tc_ext = \"\") {\n";
-			$rules .= "  set \$w3tc_rewrite 0;\n";
+			$rules .= 'if ($w3tc_ext = "") {' . "\n";
+			$rules .= '  set $w3tc_rewrite 0;' . "\n";
 			$rules .= "}\n";
 		}
 
-		$rules .= "if (\$w3tc_rewrite = 1) {\n";
-		$rules .= "    rewrite .* \"" . $uri_prefix . $env_w3tc_ext . $env_w3tc_enc . "\" last;\n";
+		$rules .= 'if ($w3tc_rewrite = 1) {' . "\n";
+		$rules .= '    rewrite .* "' . $uri_prefix . $env_w3tc_ext . $env_w3tc_enc .
+			'" last;' . "\n";
 		$rules .= "}\n";
-		$rules .= W3TC_MARKER_END_PGCACHE_CORE . "\n";
+
+		return $rules;
+	}
+
+
+
+	private function for_nginx_memcached( $config, $cache_dir, $env_request_uri,
+			$key_postfix, $env_w3tc_enc ) {
+		$rules =  "set \$request_uri_noslash $env_request_uri;\n";
+		$rules .= "if ($env_request_uri ~ \"(.*?)(/+)$\") {\n";
+		$rules .= '    set $request_uri_noslash $1;' . "\n";
+		$rules .= "}\n";
+
+		$cache_path = str_replace( Util_Environment::document_root(), '',
+			$cache_dir );
+
+		$rules .= 'location ~ ".*(?<!php)$" {' . "\n";
+		$rules .= '  set $memcached_key "$http_host$request_uri_noslash/' .
+			$key_postfix . $env_w3tc_enc . '";' . "\n";
+
+		if ( $config->get_boolean( 'browsercache.enabled' ) &&
+			$config->get_boolean( 'browsercache.html.compression' ) ) {
+			$rules .= '  memcached_gzip_flag 65536;' . "\n";
+		   }
+
+		$rules .= '  default_type text/html;' . "\n";
+
+		$memcached_servers = $config->get_array( 'pgcache.memcached.servers' );
+		$memcached_pass = !empty( $memcached_servers ) ? array_values( $memcached_servers )[0] : 'localhost:11211';
+
+		$rules .= '  if ($w3tc_rewrite = 1) {' . "\n";
+		$rules .= '    memcached_pass ' . $memcached_pass . ';' . "\n";
+		$rules .= "  }\n";
+		$rules .= '  error_page     404 502 504 = @fallback;' . "\n";
+		$rules .= "}\n";
+
+		$rules .= 'location @fallback {' . "\n";
+		$rules .= '  try_files $uri $uri/ $uri.html /index.php?$args;' . "\n";
+		$rules .= "}\n";
 
 		return $rules;
 	}
@@ -1064,7 +1241,6 @@ class PgCache_Environment {
 				W3TC_MARKER_BEGIN_BROWSERCACHE_CACHE => 0,
 				W3TC_MARKER_BEGIN_MINIFY_CORE => 0,
 				W3TC_MARKER_BEGIN_PGCACHE_CORE => 0,
-				W3TC_MARKER_BEGIN_BROWSERCACHE_NO404WP => 0,
 				W3TC_MARKER_BEGIN_WORDPRESS => 0,
 				W3TC_MARKER_END_MINIFY_CACHE => strlen( W3TC_MARKER_END_MINIFY_CACHE ) + 1
 			)
@@ -1119,6 +1295,7 @@ class PgCache_Environment {
 		$pingback_url = get_bloginfo( 'pingback_url' );
 
 		$browsercache = $config->get_boolean( 'browsercache.enabled' );
+		$brotli = ( $browsercache && $config->get_boolean( 'browsercache.html.brotli' ) );
 		$compression = ( $browsercache && $config->get_boolean( 'browsercache.html.compression' ) );
 		$expires = ( $browsercache && $config->get_boolean( 'browsercache.html.expires' ) );
 		$lifetime = ( $browsercache ? $config->get_integer( 'browsercache.html.lifetime' ) : 0 );
@@ -1133,8 +1310,15 @@ class PgCache_Environment {
 			$rules .= "Options -MultiViews\n";
 
 			// allow to read files by apache if they are blocked at some level above
-			$rules .= "<Files ~ \"\.(html|html_gzip|xml|xml_gzip)$\">\n";
-			$rules .= "  Allow from all\n";
+			$rules .= "<Files ~ \"\.(html|html_gzip|html_br|xml|xml_gzip|xml_br)$\">\n";
+
+			if ( version_compare( Util_Environment::get_server_version(), '2.4', '>=' ) ) {
+				$rules .= "  Require all granted\n";
+			} else {
+				$rules .= "  Order Allow,Deny\n";
+				$rules .= "  Allow from all\n";
+			}
+
 			$rules .= "</Files>\n";
 
 			if ( !$etag ) {
@@ -1151,6 +1335,19 @@ class PgCache_Environment {
 
 		if ( $etag ) {
 			$rules .= "FileETag MTime Size\n";
+		}
+
+		if ( $brotli ) {
+			$rules .= "<IfModule mod_mime.c>\n";
+			$rules .= "    AddType text/html .html_br\n";
+			$rules .= "    AddEncoding br .html_br\n";
+			$rules .= "    AddType text/xml .xml_br\n";
+			$rules .= "    AddEncoding br .xml_br\n";
+			$rules .= "</IfModule>\n";
+			$rules .= "<IfModule mod_setenvif.c>\n";
+			$rules .= "    SetEnvIfNoCase Request_URI \\.html_br$ no-brotli\n";
+			$rules .= "    SetEnvIfNoCase Request_URI \\.xml_br$ no-brotli\n";
+			$rules .= "</IfModule>\n";
 		}
 
 		if ( $compression ) {
@@ -1258,6 +1455,10 @@ class PgCache_Environment {
 	 * @return string
 	 */
 	private function rules_cache_generate_nginx( $config ) {
+		if ( $config->get_string( 'pgcache.engine') != 'file_generic' ) {
+			return '';
+		}
+
 		$cache_root = Util_Environment::normalize_path( W3TC_CACHE_PAGE_ENHANCED_DIR );
 		$cache_dir = rtrim( str_replace( Util_Environment::document_root(), '', $cache_root ), '/' );
 
@@ -1266,77 +1467,50 @@ class PgCache_Environment {
 		}
 
 		$browsercache = $config->get_boolean( 'browsercache.enabled' );
+		$brotli = ( $browsercache && $config->get_boolean( 'browsercache.html.brotli' ) );
 		$compression = ( $browsercache && $config->get_boolean( 'browsercache.html.compression' ) );
-		$expires = ( $browsercache && $config->get_boolean( 'browsercache.html.expires' ) );
-		$lifetime = ( $browsercache ? $config->get_integer( 'browsercache.html.lifetime' ) : 0 );
-		$cache_control = ( $browsercache && $config->get_boolean( 'browsercache.html.cache.control' ) );
-		$w3tc = ( $browsercache && $config->get_integer( 'browsercache.html.w3tc' ) );
 
+		$common_rules_a = Dispatcher::nginx_rules_for_browsercache_section(
+			$config, 'html', true );
 		$common_rules = '';
-
-		if ( $expires ) {
-			$common_rules .= "    expires modified " . $lifetime . "s;\n";
-		}
-
-		if ( $w3tc ) {
-			$common_rules .= "    add_header X-Powered-By \"" .
-				Util_Environment::w3tc_header() . "\";\n";
-		}
-
-		if ( $expires ) {
-			$common_rules .= "    add_header Vary \"Accept-Encoding, Cookie\";\n";
-		}
-
-		if ( $cache_control ) {
-			$cache_policy = $config->get_string( 'browsercache.html.cache.policy' );
-
-			switch ( $cache_policy ) {
-			case 'cache':
-				$common_rules .= "    add_header Pragma \"public\";\n";
-				$common_rules .= "    add_header Cache-Control \"public\";\n";
-				break;
-
-			case 'cache_public_maxage':
-				$common_rules .= "    add_header Pragma \"public\";\n";
-				$common_rules .= "    add_header Cache-Control \"max-age=" . $lifetime . ", public\";\n";
-				break;
-
-			case 'cache_validation':
-				$common_rules .= "    add_header Pragma \"public\";\n";
-				$common_rules .= "    add_header Cache-Control \"public, must-revalidate, proxy-revalidate\";\n";
-				break;
-
-			case 'cache_noproxy':
-				$common_rules .= "    add_header Pragma \"public\";\n";
-				$common_rules .= "    add_header Cache-Control \"private, must-revalidate\";\n";
-				break;
-
-			case 'cache_maxage':
-				$common_rules .= "    add_header Pragma \"public\";\n";
-				$common_rules .= "    add_header Cache-Control \"max-age=" . $lifetime . ", public, must-revalidate, proxy-revalidate\";\n";
-				break;
-
-			case 'no_cache':
-				$common_rules .= "    add_header Pragma \"no-cache\";\n";
-				$common_rules .= "    add_header Cache-Control \"max-age=0, private, no-store, no-cache, must-revalidate\";\n";
-				break;
-			}
+		if ( !empty( $common_rules_a ) ) {
+			$common_rules = '    ' . implode( "\n    ", $common_rules_a ) . "\n";
 		}
 
 		$rules = '';
 		$rules .= W3TC_MARKER_BEGIN_PGCACHE_CACHE . "\n";
 
-		$rules .= "location ~ " . $cache_dir . ".*html$ {\n";
-		$rules .= $common_rules;
-		$rules .= "}\n";
+		if ( $brotli ) {
+			$maybe_xml = '';
+			if ($config->get_boolean('pgcache.cache.nginx_handle_xml')) {
+				$maybe_xml = "\n" .
+					"        text/xml xml_br;\n" .
+					"    ";
+			}
+
+			$rules .= "location ~ " . $cache_dir . ".*br$ {\n";
+			$rules .= "    brotli off;\n";
+			$rules .= "    types {" . $maybe_xml . "}\n";
+			$rules .= "    default_type text/html;\n";
+			$rules .= "    add_header Content-Encoding br;\n";
+			$rules .= $common_rules;
+			$rules .= "}\n";
+		}
 
 		if ( $compression ) {
+			$maybe_xml = '';
+			if ($config->get_boolean('pgcache.cache.nginx_handle_xml')) {
+				$maybe_xml = "\n" .
+					"        text/xml xml_gzip;\n" .
+					"    ";
+			}
+
 			$rules .= "location ~ " . $cache_dir . ".*gzip$ {\n";
 			$rules .= "    gzip off;\n";
-			$rules .= "    types {}\n";
+			$rules .= "    types {" . $maybe_xml . "}\n";
 			$rules .= "    default_type text/html;\n";
-			$rules .= $common_rules;
 			$rules .= "    add_header Content-Encoding gzip;\n";
+			$rules .= $common_rules;
 			$rules .= "}\n";
 		}
 

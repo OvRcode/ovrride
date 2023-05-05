@@ -151,13 +151,14 @@ class Cache_File extends Cache_Base {
 
 		$path = $this->_cache_dir . DIRECTORY_SEPARATOR .
 			( $group ? $group . DIRECTORY_SEPARATOR : '' ) .
-			$this->_get_path( $storage_key );
+			$this->_get_path( $storage_key, $group );
 		if ( !is_readable( $path ) )
 			return array( null, $has_old_data );
 
 		$fp = @fopen( $path, 'rb' );
-		if ( !$fp )
+		if ( ! $fp || 4 > filesize( $path ) ) {
 			return array( null, $has_old_data );
+		}
 
 		if ( $this->_locking )
 			@flock( $fp, LOCK_SH );
@@ -227,7 +228,7 @@ class Cache_File extends Cache_Base {
 
 		$path = $this->_cache_dir . DIRECTORY_SEPARATOR .
 			( $group ? $group . DIRECTORY_SEPARATOR : '' ) .
-			$this->_get_path( $storage_key );
+			$this->_get_path( $storage_key, $group );
 
 		if ( !file_exists( $path ) )
 			return true;
@@ -259,9 +260,9 @@ class Cache_File extends Cache_Base {
 	 *
 	 * @return bool
 	 */
-	function hard_delete( $key ) {
+	function hard_delete( $key, $group = '' ) {
 		$key = $this->get_item_key( $key );
-		$path = $this->_cache_dir . DIRECTORY_SEPARATOR . $this->_get_path( $key );
+		$path = $this->_cache_dir . DIRECTORY_SEPARATOR . $this->_get_path( $key, $group );
 		return @unlink( $path );
 	}
 
@@ -292,7 +293,7 @@ class Cache_File extends Cache_Base {
 		$path =
 			$this->_cache_dir . DIRECTORY_SEPARATOR .
 			( $group ? $group . DIRECTORY_SEPARATOR : '' ) .
-			$this->_get_path( $key );
+			$this->_get_path( $key, $group );
 
 		if ( file_exists( $path ) ) {
 			return @filemtime( $path );
@@ -307,7 +308,7 @@ class Cache_File extends Cache_Base {
 	 * @param string  $key
 	 * @return string
 	 */
-	function _get_path( $key ) {
+	function _get_path( $key, $group = '' ) {
 		if ( $this->_use_wp_hash && function_exists( 'wp_hash' ) )
 			$hash = wp_hash( $key );
 		else
@@ -438,14 +439,14 @@ class Cache_File extends Cache_Base {
 	private function fopen_write( $key, $group, $mode ) {
 		$storage_key = $this->get_item_key( $key );
 
-		$sub_path = $this->_get_path( $storage_key );
+		$sub_path = $this->_get_path( $storage_key, $group );
 		$path = $this->_cache_dir . DIRECTORY_SEPARATOR .
 			( $group ? $group . DIRECTORY_SEPARATOR : '' ) . $sub_path;
 
 		$dir = dirname( $path );
 
 		if ( !@is_dir( $dir ) ) {
-			if ( !Util_File::mkdir_from( $dir, W3TC_CACHE_DIR ) )
+			if ( !Util_File::mkdir_from( $dir, dirname( W3TC_CACHE_DIR ) ) )
 				return false;
 		}
 
