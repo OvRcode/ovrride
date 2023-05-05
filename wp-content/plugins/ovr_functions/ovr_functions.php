@@ -11,6 +11,10 @@
 
 /* Place custom code below this line. */
 
+// DB site name change method doesnt seem to be working now .... >.<
+//define( 'WP_HOME', 'https://local.ovrride.com' );
+//define( 'WP_SITEURL', 'https://local.ovrride.com' );
+
 // Remove WordPress version meta generator from head
 remove_action('wp_head', 'wp_generator');
 
@@ -23,10 +27,16 @@ remove_action('wp_head', 'wlwmanifest_link');
 ///////////////////
 
 // Unhook (remove) the WooCommerce sidebar from archive pages
-add_action('wp', create_function("", "if (is_archive(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
 
+add_action('wp',  function($product){
+  if (is_archive(array('product'))) {
+    remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
+  }
+});
+//create_function("", "")
+// CREATE_FUNCTION HAS BEEN DEPRECATED AS OF PHP 7.2 and will be removed in 8.0
 //Unhook (remove) the WooCommerce sidebar on individual product pages
-add_action('wp', create_function("", "if (is_singular(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
+//add_action('wp', create_function("", "if (is_singular(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
 
 //Unhook (remove) the WooCommerce sidebar on all pages
 remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);

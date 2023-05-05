@@ -391,7 +391,10 @@ add_filter( 'woocommerce_default_catalog_orderby_options', 'ovr_add_new_postmeta
 add_filter( 'woocommerce_catalog_orderby', 'ovr_add_new_postmeta_orderby' );
 
 // 20 Products per page
-add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 20;' ), 20 );
+//add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 20;' ), 20 );
+add_filter( 'loop_shop_per_page',  function($cols){ return 20; },20 );
+// Create_function deprecated in php 7.2
+
 // Remove sorting drop dropdown-menu
 remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
 

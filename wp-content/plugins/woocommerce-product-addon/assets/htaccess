@@ -1,7 +1,0 @@
-<files "*.*">
-Deny from all
-</files>
-
-<files "download.php">
-Allow from all
-</files>

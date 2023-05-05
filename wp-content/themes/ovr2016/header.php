@@ -27,7 +27,9 @@ if (  is_front_page() || is_archive() || is_home() ) {
 	}
 	$ogDescription = substr($ogDescription, 0, 300);
 }
-
+if (!isset($description)) {
+	$description = "";
+}
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
