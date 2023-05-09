@@ -7,7 +7,7 @@ class WC_Trips_Admin {
     public function __construct() {
         global $post;
 
-        $post_id = $post->ID;
+        #$post_id = $post->ID;
 
         add_filter( 'product_type_options', array( $this, 'product_type_options' ) );
         add_filter( 'product_type_selector' , array( $this, 'product_type_selector' ) );

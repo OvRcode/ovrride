@@ -1,0 +1,30 @@
+{
+  "name": "shortcode-maker",
+  "version": "1.0.0",
+  "description": "Contributors: mithublue,cybercraftit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mithublue/Shortcode-Maker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mithublue/Shortcode-Maker/issues"
+  },
+  "homepage": "https://github.com/mithublue/Shortcode-Maker#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-build": "^0.5.3",
+    "gulp-zip": "^4.1.0",
+    "laravel-elixir": "^6.0.0-17"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-archiver": "^1.0.0",
+    "laravel-elixir": "^6.0.0-17"
+  }
+}

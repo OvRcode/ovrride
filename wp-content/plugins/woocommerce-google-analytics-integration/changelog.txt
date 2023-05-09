@@ -1,0 +1,247 @@
+*** Changelog ***
+
+= 1.8.1 - 2023-05-09 =
+* Fix - Fatal error when running with Elementor.
+* Tweak - WC 7.7 compatibility.
+
+= 1.8.0 - 2023-05-02 =
+* Add - Create WordPress Hook Actions for Google Analytics.
+* Add - Implement tracking with Actions Hooks.
+* Dev - Implement JS Build (ES6) and JS Lint.
+* Dev - Implement Javascript Building.
+
+= 1.7.1 - 2023-04-12 =
+* Fix - Bug with tracking enhanced ecommerce.
+
+= 1.7.0 - 2023-03-28 =
+* Dev - Load scripts via `wp_register_scripts` and `wp_eneuque_js`.
+* Fix - Avoid duplication of Google Tag Manager script.
+* Tweak - WC 7.6 compatibility.
+* Tweak - WP 6.2 compatibility.
+
+= 1.6.2 - 2023-03-07 =
+* Tweak - WC 7.5 compatibility.
+* Tweak - WP 6.2 compatibility.
+
+= 1.6.1 - 2023-02-15 =
+* Tweak - WC 7.4 compatibility.
+
+= 1.6.0 - 2023-01-31 =
+* Add - Common function for event code.
+* Fix - Add PHP unit tests.
+* Fix - Feature/consistency across gtag implementation.
+* Fix - Fix inconsistencies across item data in events.
+* Fix - Fix usage of tracker_var() in load_analytics().
+
+= 1.5.19 - 2023-01-11 =
+* Fix - undefined WC constant.
+* Tweak - WC 7.3 compatibility.
+
+= 1.5.18 - 2022-12-14 =
+* Add - .nvmrc file.
+* Tweak - WC 7.2 compatibility.
+
+= 1.5.17 - 2022-11-09 =
+* Add - New Google Analytics task in WC.
+
+= 1.5.16 - 2022-11-03 =
+* Add - Declare compatibility for High Performance Order Storage.
+* Tweak - WC 7.1 compatibility.
+* Tweak - WP 6.1 compatibility.
+
+= 1.5.15 - 2022-10-04 =
+* Add - Support for a Google Tag ID.
+* Tweak - WC 7.0 compatibility.
+
+= 1.5.14 - 2022-09-02 =
+* Dev - Add branch-labels GH workflow.
+* Dev - GH release config and the new PR template.
+* Tweak - WC 6.9 compatibility.
+
+= 1.5.13 - 2022-08-03 =
+* Fix - Custom Order table compatibility.
+
+= 1.5.12 - 2022-07-27 =
+* Tweak - WC 6.8 compatibility.
+
+= 1.5.11 - 2022-07-06 =
+* Tweak - WC 6.7 compatibility.
+
+= 1.5.10 - 2022-06-07 =
+* Tweak - WC 6.6 compatibility.
+
+= 1.5.9 - 2022-05-10 =
+* Tweak - WC 6.5 compatibility.
+* Tweak - WordPress 6.0 compatibility.
+
+= 1.5.8 - 2022-02-02 =
+* Add - Support for Google Analytics cross domain tracking features.
+
+= 1.5.7 - 2022-01-13 =
+* Fix - Activation error when WC was disabled.
+* Tweak - WC 6.1 compatibility.
+
+= 1.5.6 - 2021-12-29 =
+* Fix - Confirm order key before displaying transaction tracking code.
+
+= 1.5.5 - 2021-12-09 =
+* Tweak - WC 6.0 compatibility.
+* Tweak - WP 5.9 compatibility.
+
+= 1.5.4 - 2021-11-10 =
+* Fix - Remove the slow order counting query from admin init.
+* Tweak - WC 5.9 compatibility.
+
+= 1.5.3 - 2021-09-15 =
+* Tweak - Avoid unnecessary completed orders queries.
+* Tweak - WC 5.7 compatibility.
+* Tweak - WP 5.8 compatibility.
+
+= 1.5.2 - 2021-07-30 =
+* Fix - Change utm_source and utm_medium in upsell notice link.
+* Fix - add product links to readme.
+
+= 1.5.1 - 2021-02-03 =
+* Tweak - WC 5.0 compatibility.
+
+= 1.5.0 - 2020-12-17 =
+* Add - Option to use Global Site Tag and the gtag.js library (for Universal Analytics or Google Analytics 4).
+* Add - Several new values added to the Tracker data.
+* Add - Developer ID for gtag.js and analytics.js.
+* Tweak - Bump minimum-supported WooCommerce version to 3.2.
+* Tweak - Remove deprecated jQuery .click().
+* Fix - Settings link in plugins table row points directly to plugin settings.
+* Fix - Issue with multiple consecutive "Remove from Cart" events sent from the mini cart.
+
+= 1.4.25 - 2020-11-25 =
+* Tweak - WC 4.7 compatibility.
+* Tweak - WordPress 5.6 compatibility.
+
+= 1.4.24 - 2020-10-12 =
+* Tweak - WC 4.5 compatibility.
+
+= 1.4.23 - 2020-08-19 =
+* Fix - Prevent transaction from being tracked a second time when page is reloaded locally or from cache.
+* Tweak - WordPress 5.5 compatibility.
+
+= 1.4.22 - 2020-06-05 =
+* Tweak - WC 4.2 compatibility.
+
+= 1.4.21 - 2020-05-04 =
+* Tweak - WC 4.1 compatibility.
+
+= 1.4.20 - 2020-03-29 =
+* Fix - Change wc_goole_analytics_send_pageview fiter name to wc_google_analytics_send_pageview.
+
+= 1.4.19 - 2020-03-09 =
+* Tweak - WordPress 5.4 compatibility.
+
+= 1.4.18 - 2020-03-04 =
+* Tweak - Use code sniff version.
+* Tweak - WC 4.0 compatibility.
+
+= 1.4.17 - 2020-01-13 =
+* Tweak - Update constant VERSION in plugin file
+
+= 1.4.16 - 2020-01-13 =
+* Tweak - WC 3.9 compatibility.
+
+= 1.4.15 - 2019-11-04 =
+* Tweak - WC 3.8 compatibility.
+
+= 1.4.14 - 2019-09-04 =
+* Fix - Google Analytics JS URL missing quotes.
+
+= 1.4.13 - 2019-09-03 =
+* Tweak - Make Google Analytics JS script URL filterable.
+
+= 1.4.12 - 2019-08-13 =
+* Tweak - WC 3.7 compatibility.
+
+= 1.4.11 - 2019-08-02 =
+* Add - Filter to bypass "send pageview" for users whom want to use separate standard GA. `wc_goole_analytics_send_pageview`.
+* Fix - Revert last release due to it causing ecommerce tracking to be disabled when standard tracking is disabled.
+
+= 1.4.10 - 2019-07-10 =
+* Fix - Ensure universal analytics pageview doesn’t occur if standard tracking is disabled.
+
+= 1.4.9 - 2019-04-16 =
+* Tweak - WC 3.6 compatibility.
+
+= 1.4.8 - 2019-03-04 =
+* Fix - Event for deleting from cart not sent after a cart update.
+
+= 1.4.7 - 11/19/2018 =
+* Tweak - WP 5.0 compatibility.
+
+= 1.4.6 - 11/06/2018 =
+* Fix - Check for active WooCommerce plugin.
+
+= 1.4.5 - 10/16/2018 =
+* Tweak - Mention Google Analytics Pro in certain cases.
+* Tweak - WC 3.5 compatibility.
+
+= 1.4.4 - 03/20/2018 =
+* Fix   - WC30 compatibility error when using deprecated get_product_from_item method.
+* Fix   - Check object before using methods to prevent errors.
+* Fix   - Variations not reporting category in cart tracking.
+* Add   - Filter woocommerce_ga_disable_tracking added to disable tracking.
+* Tweak - Rebuilt languages pot file.
+
+= 1.4.3 - 06/15/2018 =
+* Fix   - WC 3.x notice by using proper variation data.
+* Add   - Option to track 404 (Not found) errors.
+
+= 1.4.2 - 09/05/2017 =
+* Fix - Missing Google Analytics ID.
+
+= 1.4.1 - 01/05/2017 =
+
+* Add - Filters for GA snippet (woocommerce_ga_snippet_head, woocommerce_ga_snippet_create, woocommerce_ga_snippet_require, woocommerce_ga_snippet_output)
+* Add - Option to toggle on/off Enhanced Link Attribution
+* Fix - JavaScript break by wrapping it in quotes
+* Fix - Use ID and SKU data in a consistent way so that all products are correctly tracked.
+* Fix - Updates for WooCommerce 3.0 compatibility.
+* Add - Settings link to the plugin in the Plugins screen
+* Fix - Fatal error on shortcode usage for empty product
+
+= 1.4.0 - 20/11/2015 =
+
+* Feature - Support for enhanced eCommerce (tracking full store process from view to order)
+* Tweak - Setting up the plugin is now clearer with some helpful links and clearer language
+* Tweak - New filter on the ga global variable
+* Refactor - JavaScript generation functions have been moved to their own class
+
+= 1.3.0 - 12/11/2014 =
+
+* Feature  - Added the transaction currency in the tracking code
+* Feature  - Add data privacy option that are mandatory in some countries
+* Tweak    - Moved the tracking code to the head of the page
+* Tweak    - Remove the "SKU" prefix to the sku for addItem
+* Refactor - Integration class reformulated
+
+= 1.2.2 - 15/10/2014 =
+
+* Feature - Adding option to anonymize IP addresses
+* Feature - Adding gaOptOut function to be called from any page for OptOut
+
+= 1.2.1 - 17/09/2014 =
+
+* Tweak   - Adding utmnooverride to return url for Google Adwords
+
+= 1.2.0 - 28/07/2014 =
+
+* Feature - Adding display advertising parameter to Universal Analytics
+* Fix     - Using get_total_shipping() instead of get_shipping
+* Fix     - Using wc_enqueue_js() instead of $woocommerce->add_inline_js(
+* Tweak   - Updating plugin FAQ
+* Tweak   - Adding parenthesis for clarity
+
+= 1.1 - 29/05/2014 =
+
+* Added option to enable Display Advertising
+* Added compatibility support for WooCommerce 2.1 beta releases
+
+= 1.0 - 22/11/2013 =
+
+* Initial release

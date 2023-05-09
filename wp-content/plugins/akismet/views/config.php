@@ -1,3 +1,9 @@
+<?php
+
+//phpcs:disable VariableAnalysis
+// There are "undefined" variables here because they're defined in the code that includes this file as a template.
+
+?>
 <div id="akismet-plugin-container">
 	<div class="akismet-masthead">
 		<div class="akismet-masthead__inside-container">
@@ -15,21 +21,23 @@
 				<?php Akismet::view( 'notice', $notice ); ?>
 			<?php } ?>
 		<?php } ?>
-		<?php if ( $stat_totals && isset( $stat_totals['all'] ) && (int) $stat_totals['all']->spam > 0 ) : ?>
-			<div class="akismet-card">
-				<div class="akismet-section-header">
-					<div class="akismet-section-header__label">
-						<span><?php esc_html_e( 'Statistics' , 'akismet'); ?></span>
-					</div>
-					<div class="akismet-section-header__actions">
-						<a href="<?php echo esc_url( Akismet_Admin::get_page_url( 'stats' ) ); ?>">
-							<?php esc_html_e( 'Detailed Stats' , 'akismet');?>
-						</a>
-					</div>
+
+		<div class="akismet-card">
+			<div class="akismet-section-header">
+				<div class="akismet-section-header__label">
+					<span><?php esc_html_e( 'Statistics', 'akismet' ); ?></span>
 				</div>
-				
+
+			<?php if ( $stat_totals && isset( $stat_totals['all'] ) && (int) $stat_totals['all']->spam > 0 ) : ?>
+				<div class="akismet-section-header__actions">
+					<a href="<?php echo esc_url( Akismet_Admin::get_page_url( 'stats' ) ); ?>">
+						<?php esc_html_e( 'Detailed Stats', 'akismet' ); ?>
+					</a>
+				</div>
+			</div> <!-- close akismet-section-header -->
+
 				<div class="akismet-new-snapshot">
-					<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 220px; overflow: hidden;" src="<?php printf( '//akismet.com/web/1.0/snapshot.php?blog=%s&api_key=%s&height=200&locale=%s', urlencode( get_option( 'home' ) ), Akismet::get_api_key(), get_locale() );?>"></iframe>
+					<iframe allowtransparency="true" scrolling="no" frameborder="0" style="width: 100%; height: 220px; overflow: hidden;" src="<?php echo esc_url( sprintf( 'https://tools.akismet.com/1.0/snapshot.php?blog=%s&token=%s&height=200&locale=%s', urlencode( get_option( 'home' ) ), urlencode( Akismet::get_access_token() ), get_locale() ) ); ?>"></iframe>
 					<ul>
 						<li>
 							<h3><?php esc_html_e( 'Past six months' , 'akismet');?></h3>
@@ -49,11 +57,18 @@
 							<?php printf( _n( '%s false positive', '%s false positives', $stat_totals['all']->false_positives, 'akismet' ), number_format( $stat_totals['all']->false_positives ) ); ?>
 						</li>
 					</ul>
-				</div>
-			</div>
-		<?php endif;?>
+				</div> <!-- close akismet-new-snapshot -->
 
-		<?php if ( $akismet_user ):?>
+			<?php else : ?>
+			</div> <!-- close akismet-section-header -->
+			<div class="inside">
+				<p><?php esc_html_e( 'Akismet is active and ready to stop spam. Your site&#8217;s spam statistics will be displayed here.', 'akismet' ); ?></p>
+			</div>
+			<?php endif; ?>
+
+		</div> <!-- close akismet-card -->
+
+		<?php if ( $akismet_user ) : ?>
 			<div class="akismet-card">
 				<div class="akismet-section-header">
 					<div class="akismet-section-header__label">
@@ -67,7 +82,9 @@
 							<tbody>
 								<?php if ( ! Akismet::predefined_api_key() ) { ?>
 								<tr>
-									<th class="akismet-api-key" width="10%" align="left" scope="row"><?php esc_html_e('API Key', 'akismet');?></th>
+									<th class="akismet-api-key" width="10%" align="left" scope="row">
+										<label for="key"><?php esc_html_e( 'API Key', 'akismet' ); ?></label>
+									</th>
 									<td width="5%"/>
 									<td align="left">
 										<span class="api-key"><input id="key" name="key" type="text" size="15" value="<?php echo esc_attr( get_option('wordpress_api_key') ); ?>" class="<?php echo esc_attr( 'regular-text code ' . $akismet_user->status ); ?>"></span>
@@ -151,6 +168,17 @@
 										?>
 									</td>
 								</tr>
+								<tr>
+									<th class="comment-form-privacy-notice" align="left" scope="row"><?php esc_html_e('Privacy', 'akismet'); ?></th>
+									<td></td>
+									<td align="left">
+										<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Akismet privacy notice', 'akismet'); ?></span></legend>
+										<p><label for="akismet_comment_form_privacy_notice_display"><input type="radio" name="akismet_comment_form_privacy_notice" id="akismet_comment_form_privacy_notice_display" value="display" <?php checked('display', get_option('akismet_comment_form_privacy_notice')); ?> /> <?php esc_html_e('Display a privacy notice under your comment forms.', 'akismet'); ?></label></p>
+										<p><label for="akismet_comment_form_privacy_notice_hide"><input type="radio" name="akismet_comment_form_privacy_notice" id="akismet_comment_form_privacy_notice_hide" value="hide" <?php echo in_array( get_option('akismet_comment_form_privacy_notice'), array('display', 'hide') ) ? checked('hide', get_option('akismet_comment_form_privacy_notice'), false) : 'checked="checked"'; ?> /> <?php esc_html_e('Do not display privacy notice.', 'akismet'); ?></label></p>
+										</fieldset>
+										<span class="akismet-note"><?php esc_html_e( 'To help your site with transparency under privacy laws like the GDPR, Akismet can display a notice to your users under your comment forms. This feature is disabled by default, however, you can turn it on above.', 'akismet' );?></span>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 						<div class="akismet-card-actions">
@@ -162,7 +190,7 @@
 							<?php wp_nonce_field(Akismet_Admin::NONCE) ?>
 							<div id="publishing-action">
 								<input type="hidden" name="action" value="enter-key">
-								<input type="submit" name="submit" id="submit" class="akismet-button akismet-is-primary" value="<?php esc_attr_e('Save Changes', 'akismet');?>">
+								<input type="submit" name="submit" id="submit" class="akismet-button akismet-could-be-primary" value="<?php esc_attr_e('Save Changes', 'akismet');?>">
 							</div>
 							<div class="clear"></div>
 						</div>

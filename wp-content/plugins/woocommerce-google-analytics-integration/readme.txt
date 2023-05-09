@@ -1,60 +1,56 @@
 === WooCommerce Google Analytics Integration ===
-Contributors: woothemes, claudiosanches, bor0
+Contributors: woocommerce, automattic, claudiosanches, bor0, royho, laurendavissmith001, c-shultz
 Tags: woocommerce, google analytics
-Requires at least: 3.8
-Tested up to: 4.5.2
-Stable tag: 1.4.3
+Requires at least: 3.9
+Tested up to: 6.2
+Stable tag: 1.8.1
 License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Provides integration between Google Analytics and WooCommerce.
 
 == Description ==
 
-This plugin provides the integration between Google Analytics and the WooCommerce plugin. You can link a referral to a purchase and add transaction information to your Google Analytics data. It also supports the new Universal Analytics, eCommerce, and enhanced eCommerce event tracking.
+This plugin provides the integration between Google Analytics and the WooCommerce plugin. You can link a referral to a purchase and add transaction information to your Google Analytics data. It also supports Global Site Tag, Universal Analytics, eCommerce, and enhanced eCommerce event tracking.
 
-Starting WooCommerce 2.1, this integration will no longer be part of WooCommerce and will only be available by using this plugin.
+Starting from WooCommerce 2.1, this integration is not packaged with WooCommerce and is only available by using this plugin.
 
-Contributions are welcome via the [GitHub repository](https://github.com/woothemes/woocommerce-google-analytics-integration).
+Contributions are welcome via the [GitHub repository](https://github.com/woocommerce/woocommerce-google-analytics-integration).
 
 == Installation ==
 
 1. Download the plugin file to your computer and unzip it
 2. Using an FTP program, or your hosting control panel, upload the unzipped plugin folder to your WordPress installation’s wp-content/plugins/ directory.
 3. Activate the plugin from the Plugins menu within the WordPress admin.
-4. Don't forget to enable e-commerce tracking in your Google Analytics account: https://support.google.com/analytics/answer/1009612?hl=en
+4. Don't forget to enable e-commerce tracking in your Google Analytics account: [https://support.google.com/analytics/answer/1009612?hl=en](https://support.google.com/analytics/answer/1009612?hl=en)
 
-Or use the automatic installation wizard through your admin panel, just search for this plugins name.
+Or use the automatic installation wizard through your admin panel, just search for this plugin's name.
 
 == Frequently Asked Questions ==
 
 = Where can I find the setting for this plugin? =
 
-This plugin will add the settings to the Integration tab, to be found in the WooCommerce > Settings menu.
+This plugin will add the settings to the Integration tab, found in the WooCommerce → Settings menu.
 
 = I don't see the code on my site. Where is it? =
 
-We purposefully don't track admin visits to the site. Log out of the site (or open a Google Chrome Incognito window) and check if the site is there for non-admins.
+We purposefully don't track admin visits to the site. Log out of the site (or open a Google Chrome Incognito window) and check if the code is there for non-admins.
 
-Also please make sure your Google Analytics ID under WooCommerce -> Settings -> Integrations.
+Also please make sure to enter your Google Analytics ID under WooCommerce → Settings → Integrations.
 
 = My code is there. Why is it still not tracking sales?  =
 
-Duplicate Google Analytics code causes a conflict in tracking. Remove any other Google Analytics plugin or code from your site to avoid duplication and conflicts in tracking.
+Duplicate Google Analytics code causes a conflict in tracking. Remove any other Google Analytics plugins or code from your site to avoid duplication and conflicts in tracking.
 
-= Can I install it already? =
+= My settings are not saving! =
 
-Starting the WooCommerce 2.1 release, the Google Analytics integration for WooCommerce is no longer part of the WooCommerce plugin.
-
-Until you've updated to WooCommerce 2.1, this plugin puts itself in some sort of hibernate mode.
-
-You can leave this plugin activated and it will seamlessly take over the integration that once was in the WooCommerce plugin, once you update to the next version.
+Do you have SUHOSIN installed/active on your server? If so, the default index length is 64 and some settings on this plugin requires longer lengths. Try setting your SUHOSIN configuration's "max_array_index_length" to "100" and test again.
 
 = My national data privacy laws require that I offer an opt-out for users, how can I do this? =
 
 Include the following html code snippet within the page where you want to have the opt-out, e.g. the your Imprint our Data Privacy page:
 
-https://gist.github.com/claudiosmweb/b12d15b245be21c92ebc
+https://gist.github.com/claudiosanches/b12d15b245be21c92ebc
 
 Exact wording depends on the national data privacy laws and should be adjusted.
 
@@ -64,65 +60,41 @@ Exact wording depends on the national data privacy laws and should be adjusted.
 
 == Changelog ==
 
-= 1.4.3 - 15/06/2017 =
-* Fix - WC 3.x notice by using proper variation data.
-* Add - Option to track 404 (Not found) errors.
+= 1.8.1 - 2023-05-09 =
+* Fix - Fatal error when running with Elementor.
+* Tweak - WC 7.7 compatibility.
 
-= 1.4.2 - 09/05/2017 =
-* Fix - Missing Google Analytics ID.
+= 1.8.0 - 2023-05-02 =
+* Add - Create WordPress Hook Actions for Google Analytics.
+* Add - Implement tracking with Actions Hooks.
+* Dev - Implement JS Build (ES6) and JS Lint.
+* Dev - Implement Javascript Building.
 
-= 1.4.1 - 01/05/2017 =
+= 1.7.1 - 2023-04-12 =
+* Fix - Bug with tracking enhanced ecommerce.
 
-* Add - Filters for GA snippet (woocommerce_ga_snippet_head, woocommerce_ga_snippet_create, woocommerce_ga_snippet_require, woocommerce_ga_snippet_output)
-* Add - Option to toggle on/off Enhanced Link Attribution
-* Fix - JavaScript break by wrapping it in quotes
-* Fix - Use ID and SKU data in a consistent way so that all products are correctly tracked.
-* Fix - Updates for WooCommerce 3.0 compatibility.
-* Add - Settings link to the plugin in the Plugins screen
-* Fix - Fatal error on shortcode usage for empty product
+= 1.7.0 - 2023-03-28 =
+* Dev - Load scripts via `wp_register_scripts` and `wp_eneuque_js`.
+* Fix - Avoid duplication of Google Tag Manager script.
+* Tweak - WC 7.6 compatibility.
+* Tweak - WP 6.2 compatibility.
 
-= 1.4.0 - 20/11/2015 =
+= 1.6.2 - 2023-03-07 =
+* Tweak - WC 7.5 compatibility.
+* Tweak - WP 6.2 compatibility.
 
-* Feature - Support for enhanced eCommerce (tracking full store process from view to order)
-* Tweak - Setting up the plugin is now clearer with some helpful links and clearer language
-* Tweak - New filter on the ga global variable
-* Refactor - JavaScript generation functions have been moved to their own class
+= 1.6.1 - 2023-02-15 =
+* Tweak - WC 7.4 compatibility.
 
-= 1.3.0 - 12/11/2014 =
+= 1.6.0 - 2023-01-31 =
+* Add - Common function for event code.
+* Fix - Add PHP unit tests.
+* Fix - Feature/consistency across gtag implementation.
+* Fix - Fix inconsistencies across item data in events.
+* Fix - Fix usage of tracker_var() in load_analytics().
 
-* Feature  - Added the transaction currency in the tracking code
-* Feature  - Add data privacy option that are mandatory in some countries
-* Tweak    - Moved the tracking code to the head of the page
-* Tweak    - Remove the "SKU" prefix to the sku for addItem
-* Refactor - Integration class reformulated
+= 1.5.19 - 2023-01-11 =
+* Fix - undefined WC constant.
+* Tweak - WC 7.3 compatibility.
 
-= 1.2.2 - 15/10/2014 =
-
-* Feature - Adding option to anonymize IP addresses
-* Feature - Adding gaOptOut function to be called from any page for OptOut
-
-= 1.2.1 - 17/09/2014 =
-
-* Tweak   - Adding utmnooverride to return url for Google Adwords
-
-= 1.2.0 - 28/07/2014 =
-
-* Feature - Adding display advertising parameter to Universal Analytics
-* Fix     - Using get_total_shipping() instead of get_shipping
-* Fix     - Using wc_enqueue_js() instead of $woocommerce->add_inline_js(
-* Tweak   - Updating plugin FAQ
-* Tweak   - Adding parenthesis for clarity
-
-= 1.1 - 29/05/2014 =
-
-* Added option to enable Display Advertising
-* Added compatibility support for WooCommerce 2.1 beta releases
-
-= 1.0 - 22/11/2013 =
-
-* Initial release
-
-
-== Upgrade Notice ==
-= 1.4.0 =
-Adds support for enhanced eCommerce (tracking full store process from view to order)
+[See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce-google-analytics-integration/trunk/changelog.txt).

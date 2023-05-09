@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: metaslider\n"
-"POT-Creation-Date: 2014-06-11 13:02+0330\n"
-"PO-Revision-Date: 2014-06-11 13:05+0330\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fa_IR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2014-06-11 13:02+0330\n"
+"PO-Revision-Date: 2014-06-11 13:05+0330\n"
+"Language: fa_IR\n"
 "X-Generator: Poedit 1.6.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
 "X-Poedit-Basepath: .\n"
@@ -27,14 +28,14 @@ msgstr "موضوع:"
 msgid "Select Slider:"
 msgstr "انتخاب اسلاید:"
 
-#: ../inc/metaslider.widget.class.php:121 ../ml-slider.php:1508
+#: ../inc/metaslider.widget.class.php:121
+#: ../ml-slider.php:1508
 msgid "No slideshows found"
 msgstr "اسلایدشو پیدا نشد"
 
 #: ../inc/slide/metaslide.image.class.php:23
 msgid "Security check failed. Refresh page and try again."
-msgstr ""
-"در برسی امنیتی مشکلی بوجود آمده است. صفحه را تازه کنید و دوباره امتحان کنید."
+msgstr "در برسی امنیتی مشکلی بوجود آمده است. صفحه را تازه کنید و دوباره امتحان کنید."
 
 #: ../inc/slide/metaslide.image.class.php:36
 msgid "Failed to add slide. Slide already exists in slideshow."
@@ -44,15 +45,18 @@ msgstr "شما در ارسال اسلاید موفق نشدید. اسلاید ش
 msgid "Failed to add slide. Slide is not of type 'image'."
 msgstr "شما در ارسال اسلاید موفق نشدید. اسلاید شما از نوع 'تصویر' نیست."
 
-#: ../inc/slide/metaslide.image.class.php:101 ../ml-slider.php:387
+#: ../inc/slide/metaslide.image.class.php:101
+#: ../ml-slider.php:387
 msgid "Caption"
 msgstr "عنوان"
 
-#: ../inc/slide/metaslide.image.class.php:102 ../ml-slider.php:388
+#: ../inc/slide/metaslide.image.class.php:102
+#: ../ml-slider.php:388
 msgid "New Window"
 msgstr "پنجره جدید"
 
-#: ../inc/slide/metaslide.image.class.php:103 ../ml-slider.php:386
+#: ../inc/slide/metaslide.image.class.php:103
+#: ../ml-slider.php:386
 msgid "URL"
 msgstr "لینک"
 
@@ -89,12 +93,8 @@ msgid "Are you sure?"
 msgstr "آیا مطمئن هستید؟"
 
 #: ../ml-slider.php:394
-msgid ""
-"Caution: This setting is for advanced developers only. If you're unsure, "
-"leave it checked."
-msgstr ""
-"توجه: این تنظیمات فقط برای توسعه دهندگان پیشرفته است. اگر شما مطمئن نیستید، "
-"این تنظیمات را دستکاری نکنید."
+msgid "Caution: This setting is for advanced developers only. If you're unsure, leave it checked."
+msgstr "توجه: این تنظیمات فقط برای توسعه دهندگان پیشرفته است. اگر شما مطمئن نیستید، این تنظیمات را دستکاری نکنید."
 
 #: ../ml-slider.php:443
 msgid "Image"
@@ -144,7 +144,8 @@ msgstr "ایجاد اولین اسلایدشو"
 msgid "Slides"
 msgstr "اسلاید"
 
-#: ../ml-slider.php:973 ../ml-slider.php:974
+#: ../ml-slider.php:973
+#: ../ml-slider.php:974
 msgid "Add Slide"
 msgstr "قرار دادن اسلاید"
 
@@ -176,7 +177,8 @@ msgstr "Nivo Slider"
 msgid "Coin Slider"
 msgstr "Coin Slider"
 
-#: ../ml-slider.php:1023 ../ml-slider.php:1257
+#: ../ml-slider.php:1023
+#: ../ml-slider.php:1257
 msgid "Width"
 msgstr "عرض"
 
@@ -184,11 +186,14 @@ msgstr "عرض"
 msgid "Slideshow width"
 msgstr "عرض اسلایدشو"
 
-#: ../ml-slider.php:1026 ../ml-slider.php:1039 ../ml-slider.php:1184
+#: ../ml-slider.php:1026
+#: ../ml-slider.php:1039
+#: ../ml-slider.php:1184
 msgid "px"
 msgstr "px"
 
-#: ../ml-slider.php:1036 ../ml-slider.php:1270
+#: ../ml-slider.php:1036
+#: ../ml-slider.php:1270
 msgid "Height"
 msgstr "ارتفاع"
 
@@ -204,7 +209,8 @@ msgstr "افکت"
 msgid "Slide transition effect"
 msgstr "انتقال افکت اسلایدر"
 
-#: ../ml-slider.php:1049 ../ml-slider.php:1189
+#: ../ml-slider.php:1049
+#: ../ml-slider.php:1189
 msgid "Random"
 msgstr "تصادفی"
 
@@ -373,9 +379,7 @@ msgid "Smart crop"
 msgstr "چیدن هوشمند"
 
 #: ../ml-slider.php:1164
-msgid ""
-"Smart Crop ensures your responsive slides are cropped to a ratio that "
-"results in a consistent slideshow size"
+msgid "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size"
 msgstr "اصلاح هوشمند اسلایدر به طوریکه پاسخگو خواهد بود"
 
 #: ../ml-slider.php:1169
@@ -384,8 +388,7 @@ msgstr "حالت چرخ و فلک"
 
 #: ../ml-slider.php:1172
 msgid "Display multiple slides at once. Slideshow output will be 100% wide."
-msgstr ""
-"نمایش اسلاید چندگانه در یک نوبت. خروجی تصاویر به صورت خودکار 100% خواهد بود."
+msgstr "نمایش اسلاید چندگانه در یک نوبت. خروجی تصاویر به صورت خودکار 100% خواهد بود."
 
 #: ../ml-slider.php:1180
 msgid "Carousel margin"
@@ -404,9 +407,7 @@ msgid "Hover pause"
 msgstr "متوقف کردن هنگام شناور شدن"
 
 #: ../ml-slider.php:1200
-msgid ""
-"Pause the slideshow when hovering over slider, then resume when no longer "
-"hovering."
+msgid "Pause the slideshow when hovering over slider, then resume when no longer hovering."
 msgstr "متوقف کردن تصویر هنگام بردن موس روی تصویر"
 
 #: ../ml-slider.php:1205
@@ -425,8 +426,11 @@ msgstr "تاخیر اسلایدر"
 msgid "How long to display each slide, in milliseconds"
 msgstr "مدت زمان نمایش هر اسلایدر، در میلی ثانیه"
 
-#: ../ml-slider.php:1221 ../ml-slider.php:1234 ../ml-slider.php:1247
-#: ../ml-slider.php:1323 ../ml-slider.php:1349
+#: ../ml-slider.php:1221
+#: ../ml-slider.php:1234
+#: ../ml-slider.php:1247
+#: ../ml-slider.php:1323
+#: ../ml-slider.php:1349
 msgid "ms"
 msgstr "اسلایدر"
 
@@ -438,11 +442,14 @@ msgstr "سرعت انیمیشن"
 msgid "Set the speed of animations, in milliseconds"
 msgstr "تنظیم سرعت انیمیشن، در میلی ثانیه"
 
-#: ../ml-slider.php:1244 ../ml-slider.php:1246
+#: ../ml-slider.php:1244
+#: ../ml-slider.php:1246
 msgid "Number of slices"
 msgstr "تعداد برش ها"
 
-#: ../ml-slider.php:1257 ../ml-slider.php:1259 ../ml-slider.php:1270
+#: ../ml-slider.php:1257
+#: ../ml-slider.php:1259
+#: ../ml-slider.php:1270
 #: ../ml-slider.php:1272
 msgid "Number of squares"
 msgstr "تعداد مربع ها"
@@ -520,9 +527,7 @@ msgid "CSS classes"
 msgstr "کلاس سی اس اس"
 
 #: ../ml-slider.php:1362
-msgid ""
-"Specify any custom CSS Classes you would like to be added to the slider "
-"wrapper"
+msgid "Specify any custom CSS Classes you would like to be added to the slider wrapper"
 msgstr "اضافه کردن یک کلاس سفارشی سی اس اس در اسلایدر پوسته"
 
 #: ../ml-slider.php:1368
@@ -563,17 +568,11 @@ msgstr "قرار دادن در پوسته"
 
 #: ../ml-slider.php:1409
 msgid "Copy & paste the shortcode directly into any WordPress post or page."
-msgstr ""
-"برای نمایش دادن اسلاید شو در نوشته یا برگه  خود این کد را کپی و در جای مورد "
-"نظر قرار دهید."
+msgstr "برای نمایش دادن اسلاید شو در نوشته یا برگه  خود این کد را کپی و در جای مورد نظر قرار دهید."
 
 #: ../ml-slider.php:1412
-msgid ""
-"Copy & paste this code into a template file to include the slideshow within "
-"your theme."
-msgstr ""
-"برای نمایش دادن اسلاید شو در پوسته خود این کد را کپی و در جای مورد نظر قرار "
-"دهید."
+msgid "Copy & paste this code into a template file to include the slideshow within your theme."
+msgstr "برای نمایش دادن اسلاید شو در پوسته خود این کد را کپی و در جای مورد نظر قرار دهید."
 
 #: ../ml-slider.php:1441
 msgid "Delete Slider"

@@ -353,7 +353,7 @@ class Cdn_Core {
 			$c = $this->_config;
 			$engine = $c->get_string( 'cdn.engine' );
 			$compression = ( $c->get_boolean( 'browsercache.enabled' ) && $c->get_boolean( 'browsercache.html.compression' ) );
-
+			$engine_config=array();
 			switch ( $engine ) {
 			case 'akamai':
 				$engine_config = array(
@@ -600,7 +600,7 @@ class Cdn_Core {
 					break;
 
 			}
-
+			
 			$engine_config = array_merge( $engine_config, array(
 					'debug' => $c->get_boolean( 'cdn.debug' ),
 					'headers' => apply_filters( 'w3tc_cdn_config_headers', array() )

@@ -4,8 +4,8 @@ Donate link: https://mailoptin.io
 Tags: recaptcha, login, comment form, registration form, security, no captcha recaptcha, buddypress, comments, spam, registration, captcha, spammers, bot, registration
 Requires at least: 4.0
 Requires PHP: 5.4
-Tested up to: 4.8.1
-Stable tag: 1.2.1
+Tested up to: 5.4
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,22 @@ Any question? post it in the support forum.
 7. CAPTCHA in action at buddypress registration form
 
 == Changelog ==
+
+= 1.3.4 =
+* Tuned down admin notices.
+
+= 1.3.3 =
+* Improve compatibility with WordPress 5.0
+
+= 1.3.2 =
+* Small bug fix.
+
+= 1.3.1 =
+* Small fix and improvement.
+
+= 1.3 =
+* Fixed deleted comment Email Notifications
+* Move menu to settings as submenu
 
 = 1.2.1 =
 * Fixed bug where logged user couldnt submit comments

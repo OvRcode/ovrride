@@ -14,7 +14,8 @@ class Ncr_Settings_Page {
 
 	public static function register_menu_page() {
 
-		add_menu_page(
+		add_submenu_page(
+		        'options-general.php',
 			'No CAPTCHA reCAPTCHA',
 			'No CAPTCHA reCAPTCHA',
 			'manage_options',
@@ -22,9 +23,7 @@ class Ncr_Settings_Page {
 			array(
 				__CLASS__,
 				'settings_page',
-			),
-			'dashicons-awards',
-			'80.0215'
+			)
 		);
 
 	}

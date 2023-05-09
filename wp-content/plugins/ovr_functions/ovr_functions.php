@@ -3,17 +3,15 @@
  * Plugin Name: OvRride Custom Functions
  * Plugin URI: https://github.com/AJAlabs/aja_functions
  * Description: Custom WordPress functions.php for OvRride.
- * Author: AJ Acevedo, Mike Barnard
+ * Author: AJ Acevedo, Ada Lambrecht
  * Author URI: http://ajacevedo.com
- * Version: 0.6.2
+ * Version: 0.6.3
  * License: MIT License
  */
 
 /* Place custom code below this line. */
 
-// DB site name change method doesnt seem to be working now .... >.<
-//define( 'WP_HOME', 'https://local.ovrride.com' );
-//define( 'WP_SITEURL', 'https://local.ovrride.com' );
+
 
 // Remove WordPress version meta generator from head
 remove_action('wp_head', 'wp_generator');

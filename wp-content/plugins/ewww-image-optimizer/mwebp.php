@@ -14,14 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function ewww_image_optimizer_webp_migrate_preview() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
-?>	<div class="wrap">
+	?>
+	<div class="wrap">
 	<h1><?php esc_html_e( 'Migrate WebP Images', 'ewww-image-optimizer' ); ?></h1>
 	<?php
 	esc_html_e( 'The migration is split into two parts. First, the plugin needs to scan all folders for webp images. Once it has obtained the list of images to rename, it will proceed with the renaming' );
 	$button_text   = esc_attr__( 'Start Migration', 'ewww-image-optimizer' );
 	$loading_image = plugins_url( '/images/wpspin.gif', __FILE__ );
 	// Create the html for the migration form and status divs.
-?>
+	?>
 		<div id="webp-loading">
 		</div>
 		<div id="webp-progressbar"></div>
@@ -29,10 +30,10 @@ function ewww_image_optimizer_webp_migrate_preview() {
 		<div id="webp-status"></div>
 			<div id="bulk-forms">
 			<form id="webp-start" class="webp-form" method="post" action="">
-				<input id="webp-first" type="submit" class="button-secondary action" value="<?php echo $button_text; ?>" />
+				<input id="webp-first" type="submit" class="button-secondary action" value="<?php esc_attr_e( 'Start Migration', 'ewww-image-optimizer' ); ?>" />
 			</form>
 	</div>
-<?php
+	<?php
 }
 
 /**
@@ -80,7 +81,7 @@ function ewww_image_optimizer_webp_scan() {
 function ewww_image_optimizer_webp_script( $hook ) {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 	// Make sure we are being called from the migration page.
-	if ( 'admin_page_ewww-image-optimizer-webp-migrate' != $hook ) {
+	if ( 'admin_page_ewww-image-optimizer-webp-migrate' !== $hook ) {
 		return;
 	}
 	$images = ewww_image_optimizer_webp_scan();
@@ -93,9 +94,11 @@ function ewww_image_optimizer_webp_script( $hook ) {
 	wp_enqueue_script( 'ewwwwebpscript', plugins_url( '/includes/webp.js', __FILE__ ), array( 'jquery' ), EWWW_IMAGE_OPTIMIZER_VERSION );
 	$image_count = count( $images );
 	// Submit a couple variables to the javascript to work with.
-	wp_localize_script( 'ewwwwebpscript', 'ewww_vars', array(
-		'ewww_wpnonce' => wp_create_nonce( 'ewww-image-optimizer-webp' ),
-	) );
+	wp_localize_script(
+		'ewwwwebpscript',
+		'ewww_vars',
+		array( 'ewww_wpnonce' => wp_create_nonce( 'ewww-image-optimizer-webp' ) )
+	);
 }
 
 /**
@@ -104,7 +107,7 @@ function ewww_image_optimizer_webp_script( $hook ) {
 function ewww_image_optimizer_webp_initialize() {
 	// Verify that an authorized user has started the migration.
 	$permissions = apply_filters( 'ewww_image_optimizer_admin_permissions', '' );
-	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-webp' ) || ! current_user_can( $permissions ) ) {
+	if ( empty( $_REQUEST['ewww_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['ewww_wpnonce'] ), 'ewww-image-optimizer-webp' ) || ! current_user_can( $permissions ) ) {
 		ewwwio_ob_clean();
 		die( esc_html__( 'Access denied.', 'ewww-image-optimizer' ) );
 	}
@@ -116,7 +119,7 @@ function ewww_image_optimizer_webp_initialize() {
 	$loading_image = plugins_url( '/images/wpspin.gif', __FILE__ );
 	// Let the user know that we are beginning.
 	ewwwio_ob_clean();
-	die( '<p>' . esc_html__( 'Scanning', 'ewww-image-optimizer' ) . "&nbsp;<img src='$loading_image' /></p>" );
+	die( '<p>' . esc_html__( 'Scanning', 'ewww-image-optimizer' ) . '&nbsp;<img src="' . esc_url( $loading_image ) . '" /></p>' );
 }
 
 /**
@@ -125,7 +128,7 @@ function ewww_image_optimizer_webp_initialize() {
 function ewww_image_optimizer_webp_loop() {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
 	$permissions = apply_filters( 'ewww_image_optimizer_admin_permissions', '' );
-	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-webp' ) || ! current_user_can( $permissions ) ) {
+	if ( empty( $_REQUEST['ewww_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['ewww_wpnonce'] ), 'ewww-image-optimizer-webp' ) || ! current_user_can( $permissions ) ) {
 		ewwwio_ob_clean();
 		die( esc_html__( 'Access token has expired, please reload the page.', 'ewww-image-optimizer' ) );
 	}
@@ -211,7 +214,6 @@ function ewww_image_optimizer_webp_loop() {
 	ewwwio_debug_message( "took $elapsed seconds this time around" );
 	// Store the updated list of images back in the database.
 	update_option( 'ewww_image_optimizer_webp_images', $images );
-	ewww_image_optimizer_debug_log();
 	die();
 }
 
@@ -220,7 +222,7 @@ function ewww_image_optimizer_webp_loop() {
  */
 function ewww_image_optimizer_webp_cleanup() {
 	$permissions = apply_filters( 'ewww_image_optimizer_admin_permissions', '' );
-	if ( ! wp_verify_nonce( $_REQUEST['ewww_wpnonce'], 'ewww-image-optimizer-webp' ) || ! current_user_can( $permissions ) ) {
+	if ( empty( $_REQUEST['ewww_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['ewww_wpnonce'] ), 'ewww-image-optimizer-webp' ) || ! current_user_can( $permissions ) ) {
 		ewwwio_ob_clean();
 		die( esc_html__( 'Access token has expired, please reload the page.', 'ewww-image-optimizer' ) );
 	}
@@ -231,7 +233,7 @@ function ewww_image_optimizer_webp_cleanup() {
 	ewwwio_ob_clean();
 	if ( $skipped ) {
 		echo '<p><b>' . esc_html__( 'Skipped:', 'ewww-image-optimizer' ) . '</b></p>';
-		echo "<p>$skipped</p>";
+		echo wp_kses_post( "<p>$skipped</p>" );
 	}
 	// and let the user know we are done.
 	die( '<p><b>' . esc_html__( 'Finished', 'ewww-image-optimizer' ) . '</b></p>' );
@@ -240,4 +242,3 @@ add_action( 'admin_enqueue_scripts', 'ewww_image_optimizer_webp_script' );
 add_action( 'wp_ajax_webp_init', 'ewww_image_optimizer_webp_initialize' );
 add_action( 'wp_ajax_webp_loop', 'ewww_image_optimizer_webp_loop' );
 add_action( 'wp_ajax_webp_cleanup', 'ewww_image_optimizer_webp_cleanup' );
-?>

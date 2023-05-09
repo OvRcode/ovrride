@@ -30,6 +30,11 @@ body .metaslider .flexslider .flex-direction-nav li {
     z-index: 0;
 }
 
+/* Avoids overflow when slideshow takes the whole window' width - The fullwidth class needs to be added in the slideshow settings. */
+.metaslider.fullwidth {
+	overflow: hidden;
+}
+
 .metaslider .caption {
     padding: 5px 10px;
     word-wrap: break-word;
@@ -59,12 +64,6 @@ body .metaslider .flexslider .flex-direction-nav li {
     outline: none;
 }
 
-.metaslider .theme-default .nivoSlider {
-   -webkit-box-shadow: 0 0 0;
-      -moz-box-shadow: 0 0 0;
-           box-shadow: 0 0 0;
-}
-
 .metaslider.ms-left {
     float: left;
     margin: 0 20px 20px 0;
@@ -87,20 +86,6 @@ body .metaslider .flexslider .flex-direction-nav li {
     width: auto;
 }
 
-.metaslider .slider-wrapper .nivo-directionNav a,
-.metaslider .slider-wrapper .nivo-controlNav a,
-.metaslider .slider-wrapper img {
-    border: 0;
-    box-shadow: none;
-    margin: 0;
-    list-style-type: none;
-    list-style: none;
-    padding: 0;
-    line-height: normal;
-    max-width: none;
-    max-height: none;
-}
-
 .metaslider .slides img {
 	width: 100%;
 	display: block;
@@ -115,48 +100,50 @@ body .metaslider .flexslider .flex-direction-nav li {
     -moz-box-shadow: none;
     -o-box-shadow: none;
     border: 0;
-    margin: 0 0 40px 0;
+    margin: 0 0 40px;
     max-width: none;
     max-height: none;
 }
 
-.flex-control-nav {
-	bottom: -30px;
-	line-height: 11px;
+.metaslider .flex-control-nav {
+    border: 0;
+    margin: auto;
+    list-style-type: none;
+    list-style: none;
+    padding: 0;
+	bottom: -27px;
+    line-height: 11px;
+    z-index: 2;
 }
 
 /** move margin from list items to anchors */
-.flex-control-nav li {
+.metaslider .flex-control-nav li {
 	margin: 0;
 }
 
-.flex-control-nav li a {
+.metaslider .flex-control-nav li a {
 	margin: 0 6px;
 	padding: 0;
 }
 
-.flexslider .slides li {
+.metaslider .flexslider .slides li {
     position: relative;
     height: auto;
 }
 
 /** fix for users with RTL languages */
-.flex-viewport {
+.metaslider .flex-viewport {
     direction: ltr;
 }
 
 /** add transition effects to firefox **/
-.flex-direction-nav a {
+.metaslider .flex-direction-nav a {
     -moz-transition: all .3s ease;
     transition: all .3s ease;
 }
 
-.flexslider .slides p {
+.metaslider .flexslider .slides p {
     margin: 0;
-}
-
-.flex-control-nav {
-	margin: auto;
 }
 
 .metaslider .flexslider.filmstrip {
@@ -201,12 +188,15 @@ body .metaslider .flexslider .flex-direction-nav li {
 .metaslider .flexslider .flex-direction-nav li a {
     width: 30px;
     height: 30px;
+    border: 0;
     margin: -20px 0 0;
     box-shadow: none!important;
     display: block;
-    background-image: url('../sliders/flexslider/bg_direction_nav.png');
+    background-color: transparent;
+    background-image: url('bg_direction_nav.png');
     background-repeat:  no-repeat;
     position: absolute;
+    right: 10px;
     top: 50%;
     z-index: 10;
     cursor: pointer;
@@ -216,36 +206,46 @@ body .metaslider .flexslider .flex-direction-nav li {
        -moz-transition: opacity .25s ease-in-out;
             transition: all .3s ease;
 }
-.flex-direction-nav .flex-next {
+.metaslider .flex-direction-nav .flex-prev {
     background-position: left 0;
+    left: 10px;
 }
-.flex-direction-nav .flex-next {
+.metaslider .flex-direction-nav .flex-next {
     background-position: right 0;
     text-align: left;
     /* Fix for single character text */
     text-indent: 9999px;
 }
+.metaslider .flexslider:focus-within .flex-next,
 .metaslider .flexslider:hover .flex-next {
     opacity: 0.8;
-    right: 5px;
+    
 }
+.metaslider .flexslider:focus-within .flex-prev,
 .metaslider .flexslider:hover .flex-prev {
     opacity: 0.8;
-    left: 5px;
-
     /* Fix for single character text */
     text-indent: -9999px;
 }
+.metaslider .flexslider:focus-within .flex-next:focus,
+.metaslider .flexslider:focus-within .flex-prev:focus,
 .metaslider .flexslider:hover .flex-next:hover,
 .metaslider .flexslider:hover .flex-prev:hover {
     opacity: 1;
+}
+.metaslider .flexslider .flex-next:focus,
+.metaslider .flexslider .flex-prev:focus {
+	outline: -webkit-focus-ring-color auto 5px;
 }
 .metaslider .flexslider .flex-direction-nav .flex-disabled {
     cursor: default;
     pointer-events: none;
 }
 .metaslider .flexslider .flex-control-nav a {
-    box-shadow: none !important;
+	box-shadow: none !important;
+}
+.metaslider .flexslider .flex-control-nav a:focus {
+	outline: -webkit-focus-ring-color auto 5px;
 }
 .metaslider .flexslider .slides > li {
     position: relative;
@@ -256,11 +256,62 @@ body .metaslider .flexslider .flex-direction-nav li {
 .metaslider .rslides_tabs a {
     box-shadow: none !important;
 }
+.metaslider .rslides_tabs {
+    margin: 0 0 40px;
+}
 
 .metaslider .rslides_nav:focus,
 .metaslider .rslides_nav:hover {
     color: #ffffff;
-} 
+}
+
+.metaslider-responsive.no-text .rslides_nav{
+	width: 30px;
+	height: 30px;
+	border: 0;
+	margin: 0 5px;
+	box-shadow: none !important;
+	display: block;
+	background-color: transparent;
+	background-image: url('bg_direction_nav.png');
+	background-repeat: no-repeat;
+	position: absolute;
+	top: 50%;
+	z-index: 10;
+	cursor: pointer;
+	text-indent: -9999px;
+	opacity: 1;
+	-webkit-transition: all .3s ease;
+	-moz-transition: opacity .25s ease-in-out;
+	transition: all .3s ease;
+}
+.metaslider-responsive.no-text .rslides_nav.next {
+	background-position: right 0;
+}
+
+/* Nivo Slider */
+div.metaslider .theme-default .nivoSlider {
+   -webkit-box-shadow: 0 0 0;
+      -moz-box-shadow: 0 0 0;
+           box-shadow: 0 0 0;
+}
+
+.metaslider .slider-wrapper .nivo-directionNav a,
+.metaslider .slider-wrapper .nivo-controlNav a,
+.metaslider .slider-wrapper img {
+    border: 0;
+    box-shadow: none;
+    /* margin: 0; */
+    list-style-type: none;
+    list-style: none;
+    padding: 0;
+    line-height: normal;
+    max-width: none;
+    max-height: none;
+}
+div.metaslider .slider-wrapper .nivo-controlNav a {
+    transition: none;
+}
 
 /* Coin Slider */
 .metaslider .coin-slider {
@@ -271,5 +322,8 @@ body .metaslider .flexslider .flex-direction-nav li {
 }
 .metaslider .coin-slider .cs-buttons a,
 .metaslider .coin-slider > a {
-    box-shadow: none !important;
+	box-shadow: none !important;
+}
+.metaslider .coin-slider a[href="javascript:void(0)"] {
+	cursor: default !important;
 }

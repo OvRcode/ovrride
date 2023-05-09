@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: metaslider\n"
-"POT-Creation-Date: 2013-12-16 17:31-0000\n"
-"PO-Revision-Date: 2014-06-26 08:29+0100\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2013-12-16 17:31-0000\n"
+"PO-Revision-Date: 2014-06-26 08:29+0100\n"
+"Language: \n"
 "X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
 "X-Poedit-Basepath: .\n"
@@ -42,15 +44,18 @@ msgstr "YouTube"
 msgid "Layer Slide"
 msgstr "Réteg slide"
 
-#: ../ml-slider.php:235 ../inc/slide/metaslide.image.class.php:103
+#: ../ml-slider.php:235
+#: ../inc/slide/metaslide.image.class.php:103
 msgid "URL"
 msgstr "URL"
 
-#: ../ml-slider.php:236 ../inc/slide/metaslide.image.class.php:101
+#: ../ml-slider.php:236
+#: ../inc/slide/metaslide.image.class.php:101
 msgid "Caption"
 msgstr "Felirat"
 
-#: ../ml-slider.php:237 ../inc/slide/metaslide.image.class.php:102
+#: ../ml-slider.php:237
+#: ../inc/slide/metaslide.image.class.php:102
 msgid "New Window"
 msgstr "Új ablak"
 
@@ -59,12 +64,8 @@ msgid "Are you sure?"
 msgstr "Biztos vagy benne?"
 
 #: ../ml-slider.php:242
-msgid ""
-"Caution: This setting is for advanced developers only. If you're unsure, "
-"leave it checked."
-msgstr ""
-"Figyelem: ez a beállítás csak fejlesztők részére ajánlott. Amennyiben nem "
-"vagy biztos benne, hagyd így."
+msgid "Caution: This setting is for advanced developers only. If you're unsure, leave it checked."
+msgstr "Figyelem: ez a beállítás csak fejlesztők részére ajánlott. Amennyiben nem vagy biztos benne, hagyd így."
 
 #: ../ml-slider.php:278
 msgid "Upgrade to Pro $39"
@@ -80,8 +81,7 @@ msgstr "Új slide"
 
 #: ../ml-slider.php:692
 msgid "New slideshow created. Click 'Add Slide' to get started!"
-msgstr ""
-"Az új slideshow elkészült. Kattins a 'Slide hozzáadása' gombra a kezdéshez."
+msgstr "Az új slideshow elkészült. Kattins a 'Slide hozzáadása' gombra a kezdéshez."
 
 #: ../ml-slider.php:709
 msgid "or"
@@ -123,7 +123,8 @@ msgstr "Nivo Slider"
 msgid "Coin Slider"
 msgstr "Coin Slider"
 
-#: ../ml-slider.php:773 ../ml-slider.php:995
+#: ../ml-slider.php:773
+#: ../ml-slider.php:995
 msgid "Width"
 msgstr "Szélesség"
 
@@ -131,11 +132,13 @@ msgstr "Szélesség"
 msgid "Slideshow width"
 msgstr "Slideshow szélessége"
 
-#: ../ml-slider.php:776 ../ml-slider.php:789
+#: ../ml-slider.php:776
+#: ../ml-slider.php:789
 msgid "px"
 msgstr "px"
 
-#: ../ml-slider.php:786 ../ml-slider.php:1008
+#: ../ml-slider.php:786
+#: ../ml-slider.php:1008
 msgid "Height"
 msgstr "Magasság"
 
@@ -151,7 +154,8 @@ msgstr "Effektek"
 msgid "Slide transition effect"
 msgstr "Slide átmenet effekt"
 
-#: ../ml-slider.php:799 ../ml-slider.php:927
+#: ../ml-slider.php:799
+#: ../ml-slider.php:927
 msgid "Random"
 msgstr "Váltakozó"
 
@@ -320,12 +324,8 @@ msgid "Smart crop"
 msgstr "Intelligens vágás"
 
 #: ../ml-slider.php:914
-msgid ""
-"Smart Crop ensures your responsive slides are cropped to a ratio that "
-"results in a consistent slideshow size"
-msgstr ""
-"Az intelligens vágás a reszponzív megjelenés során olyan méretre vágja a "
-"képeket, hogy az kövesső a slideshow méretét"
+msgid "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size"
+msgstr "Az intelligens vágás a reszponzív megjelenés során olyan méretre vágja a képeket, hogy az kövesső a slideshow méretét"
 
 #: ../ml-slider.php:919
 msgid "Carousel mode"
@@ -344,12 +344,8 @@ msgid "Hover pause"
 msgstr "Szünet"
 
 #: ../ml-slider.php:938
-msgid ""
-"Pause the slideshow when hovering over slider, then resume when no longer "
-"hovering."
-msgstr ""
-"Megállítja a slideshowt, amikor egy slide fölé visszük a kruzort, majd "
-"folytatja, amint elvittük onnan azt"
+msgid "Pause the slideshow when hovering over slider, then resume when no longer hovering."
+msgstr "Megállítja a slideshowt, amikor egy slide fölé visszük a kruzort, majd folytatja, amint elvittük onnan azt"
 
 #: ../ml-slider.php:943
 msgid "Reverse"
@@ -367,8 +363,11 @@ msgstr "Slide késleltetés"
 msgid "How long to display each slide, in milliseconds"
 msgstr "Az egyes slideok megjelenésének időtartama milliszekundumban"
 
-#: ../ml-slider.php:959 ../ml-slider.php:972 ../ml-slider.php:985
-#: ../ml-slider.php:1061 ../ml-slider.php:1087
+#: ../ml-slider.php:959
+#: ../ml-slider.php:972
+#: ../ml-slider.php:985
+#: ../ml-slider.php:1061
+#: ../ml-slider.php:1087
 msgid "ms"
 msgstr "ms"
 
@@ -380,11 +379,14 @@ msgstr "Animáció sebessége"
 msgid "Set the speed of animations, in milliseconds"
 msgstr "Az animációk sebességének beállítása"
 
-#: ../ml-slider.php:982 ../ml-slider.php:984
+#: ../ml-slider.php:982
+#: ../ml-slider.php:984
 msgid "Number of slices"
 msgstr "Szeletek száma"
 
-#: ../ml-slider.php:995 ../ml-slider.php:997 ../ml-slider.php:1008
+#: ../ml-slider.php:995
+#: ../ml-slider.php:997
+#: ../ml-slider.php:1008
 #: ../ml-slider.php:1010
 msgid "Number of squares"
 msgstr "Négyszögek száma"
@@ -427,8 +429,7 @@ msgstr "Következő szöveg"
 
 #: ../ml-slider.php:1047
 msgid "Set the text for the 'next' direction item"
-msgstr ""
-"Ez a szöveg jelenik meg akkor, ha a 'Következő' irányba akarunk lapozni"
+msgstr "Ez a szöveg jelenik meg akkor, ha a 'Következő' irányba akarunk lapozni"
 
 #: ../ml-slider.php:1058
 msgid "Square delay"
@@ -463,9 +464,7 @@ msgid "CSS classes"
 msgstr "CSS osztályok"
 
 #: ../ml-slider.php:1100
-msgid ""
-"Specify any custom CSS Classes you would like to be added to the slider "
-"wrapper"
+msgid "Specify any custom CSS Classes you would like to be added to the slider wrapper"
 msgstr "Egyedi CSS osztályok megadása"
 
 #: ../ml-slider.php:1106
@@ -506,17 +505,11 @@ msgstr "Sablonba foglalás"
 
 #: ../ml-slider.php:1147
 msgid "Copy & paste the shortcode directly into any WordPress post or page."
-msgstr ""
-"Shortcode másolása és beillesztése közvetlenül bármilyen Wordpress oldalba "
-"vagy bejegyzésbe"
+msgstr "Shortcode másolása és beillesztése közvetlenül bármilyen Wordpress oldalba vagy bejegyzésbe"
 
 #: ../ml-slider.php:1150
-msgid ""
-"Copy & paste this code into a template file to include the slideshow within "
-"your theme."
-msgstr ""
-"Kód másolása és beillesztése a sablon fájlba, hogy beilleszd a slideshowt az "
-"oldal sablonjába."
+msgid "Copy & paste this code into a template file to include the slideshow within your theme."
+msgstr "Kód másolása és beillesztése a sablon fájlba, hogy beilleszd a slideshowt az oldal sablonjába."
 
 #: ../ml-slider.php:1179
 msgid "Delete Slider"
@@ -526,7 +519,8 @@ msgstr "Slider törlése"
 msgid "Slides"
 msgstr "Slideok"
 
-#: ../ml-slider.php:1193 ../ml-slider.php:1194
+#: ../ml-slider.php:1193
+#: ../ml-slider.php:1194
 msgid "Add Slide"
 msgstr "Slide hozzáadása"
 
@@ -546,7 +540,8 @@ msgstr "MetaSlider beillesztése"
 msgid "Choose slideshow"
 msgstr "Válassz slideshowt"
 
-#: ../ml-slider.php:1267 ../inc/metaslider.widget.class.php:124
+#: ../ml-slider.php:1267
+#: ../inc/metaslider.widget.class.php:124
 msgid "No slideshows found"
 msgstr "Nincs találat"
 
@@ -568,8 +563,7 @@ msgstr "Biztonsági ellenőrzés hiba. Frissítsd az oldalt és próbáld meg ú
 
 #: ../inc/slide/metaslide.image.class.php:36
 msgid "Failed to add slide. Slide already exists in slideshow."
-msgstr ""
-"Nem lehet beilleszteni a slideot. Ez a slide már szerepel a slideshowban."
+msgstr "Nem lehet beilleszteni a slideot. Ez a slide már szerepel a slideshowban."
 
 #: ../inc/slide/metaslide.image.class.php:38
 msgid "Failed to add slide. Slide is not of type 'image'."

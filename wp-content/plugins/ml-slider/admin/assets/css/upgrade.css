@@ -1,38 +1,3 @@
-@font-face {
-    font-family: 'Interface';
-    font-style: normal;
-    font-weight: 400;
-    src: url("../fonts/interface/Interface-Regular.woff2") format("woff2"),
-         url("../fonts/interface/Interface-Regular.woff") format("woff");
-}
-
-@font-face {
-    font-family: 'Interface';
-    font-style: italic;
-    font-weight: 400;
-    src: url("../fonts/interface/Interface-RegularItalic.woff2") format("woff2"),
-         url("../fonts/interface/Interface-RegularItalic.woff") format("woff");
-}
-
-@font-face {
-    font-family: 'Interface';
-    font-style: normal;
-    font-weight: 500;
-    src: url("../fonts/interface/Interface-Medium.woff2") format("woff2"),
-         url("../fonts/interface/Interface-Medium.woff") format("woff");
-}
-
-@font-face {
-    font-family: 'Interface';
-    font-style: italic;
-    font-weight: 500;
-    src: url("../fonts/interface/Interface-MediumItalic.woff2") format("woff2"),
-         url("../fonts/interface/Interface-MediumItalic.woff") format("woff");
-}  
-
-.ms-addon-headers {
-    margin: 1em 0 0.5em;
-}
 
 .metaslider_feat_table th {
     font-size: 1.1em;
@@ -54,7 +19,6 @@
 	display: block;
 	float: left;
     margin: 1% 0 1% 1%;
-    font-family: Interface, sans-serif;
 }
 
 .metaslider_col:first-child {
