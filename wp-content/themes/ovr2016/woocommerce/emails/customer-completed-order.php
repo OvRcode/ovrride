@@ -10,11 +10,11 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
- * @author 		WooThemes
- * @package 	WooCommerce/Templates/Emails
- * @version     2.5.0
+ * @see https://docs.woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Emails
+ * @version 3.7.0
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -68,10 +68,11 @@ foreach($order->get_items() as $order_item_id ) {
     }
 }
 
-/**
+/*
  * @hooked WC_Emails::email_header() Output the email header
  */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
+
 <?php if ($has_trip && !$has_beach_bus && !$wework): ?>
 <p><?php echo "Psyched you’ll be joining us for a trip! Your recent order on OvRride has been completed.  No ticket is needed, we’ll have your information on file when you appear at the designated time and location for the trip you’ve reserved. Your order details are shown below for your reference:"; ?></p>
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -120,19 +121,21 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 <?php else: ?>
 <p><?php printf( __( "Hi there. Your recent order on %s has been completed. Your order details are shown below for your reference:", 'woocommerce' ), get_option( 'blogname' ) ); ?></p>
 <?php endif; ?>
+
 <?php
-/**
+
+/*
  * @hooked WC_Emails::order_details() Shows the order details table.
  * @hooked WC_Structured_Data::generate_order_data() Generates structured data.
  * @hooked WC_Structured_Data::output_structured_data() Outputs structured data.
  * @since 2.5.0
  */
 do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email );
-/**
+
+/*
  * @hooked WC_Emails::order_meta() Shows order meta data.
  */
 do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email );
-
 if (! empty($pickups) ) {
     echo "<h2>Pickup Details</h2>";
     foreach($pickups as $id => $values) {
@@ -173,23 +176,29 @@ TOBEACH;
 TOBEACH;
 			}
 	}
-
-/**
+/*
  * @hooked WC_Emails::customer_details() Shows customer details
  * @hooked WC_Emails::email_address() Shows email address
  */
 do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email );
+
 /**
+ * Show user-defined additional content - this is set in each email's settings.
+ */
+if ( $additional_content ) {
+	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
+}
+
+/*
  * @hooked WC_Emails::email_footer() Output the email footer
  */
 do_action( 'woocommerce_email_footer', $email );
-
 if($wework) : ?>
-<style>
-	#wrapper { background-color: #ffffff;  }
-	#template_header { background:#fafafa; }
-	#template_header h1 { color: #111111; }
-	#template_header_image { display: none; }
-</style>
-<?php
-endif;
+	<style>
+		#wrapper { background-color: #ffffff;  }
+		#template_header { background:#fafafa; }
+		#template_header h1 { color: #111111; }
+		#template_header_image { display: none; }
+	</style>
+	<?php
+	endif;
