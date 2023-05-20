@@ -5,146 +5,131 @@
 
 /* 
 **========== Direct access not allowed =========== 
-*/ 
-if( ! defined('ABSPATH') ) die('Not Allowed');
+*/
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Not Allowed' );
+}
 
-$all_forms = PPOM() -> get_product_meta_all();
+$all_forms = PPOM()->get_product_meta_all();
+
+wp_nonce_field( 'ppom_meta_nonce_action', 'ppom_meta_nonce' );
 ?>
 
-<div class="text-center ppom-import-export-block ppom-meta-card-block" style="display: none">
-	
-	<h3><?php _e( 'Import PPOM Meta', 'ppom'); ?></h3>
-	
-	<form method="post" action="admin-post.php" enctype="multipart/form-data">
-		<input type="hidden" name="action" value="ppom_import_meta" />
-		<label for="file-upload" class="btn btn-success">
-			<span><?php _e( 'Choose a file…', 'ppom'); ?></span>
-			<input id="file-upload" type="file" name="ppom_csv" style="display: none;">
-		</label>
-		<input type="submit" class="btn btn-primary" value="<?php _e( 'Import Meta', 'ppom'); ?>">
-	</form>
-
-	<div class="text-right ppom-cancle-import-export-wrap">
-		<button class="btn btn-danger ppom-cancle-import-export-btn"><?php _e( 'Cancel', 'ppom'); ?></button>
-	</div>
-
-	<div class="clear" ></div>
-</div>
-
-<div class="wrapper">
-	<h2 class="ppom-heading-style"><?php _e( 'PPOM Meta List', 'ppom'); ?></h2>
-</div>
-
-
 <div class="ppom-existing-meta-wrapper">
-	
-	<form method="post" action="admin-post.php" enctype="multipart/form-data">
-		<input type="hidden" name="action" value="ppom_export_meta" />
-
-		<div class="ppom-product-table-header">
-			
-			<span class="ppom-product-count-span"><?php _e( 'Select', 'ppom'); ?> "<span id="selected_products_count">0</span>"<?php _e( ' PPOM Meta', 'ppom'); ?></span>
-			<a class="btn btn-danger" id="ppom_delete_selected_products_btn"><?php _e( 'Delete', 'ppom' ) ?></a>
-			<button class="btn btn-yellow" id="export_selected_products_btn"><?php _e( 'Export', 'ppom'); ?></button>
-			<span class="pull-right"><strong><?php echo count($all_forms); ?> <?php _e( 'Items', 'ppom' ); ?></strong></span>
-			<span class="clear"></span>
-		</div>
+	<form id="ppom-groups-export-form" method="post" action="admin-post.php" enctype="multipart/form-data">
+		<input type="hidden" name="action" value="ppom_export_meta"/>
 		<div class="table-responsive">
 			<table id="ppom-meta-table" class="table">
 				<thead>
-					<tr class="bg-info">
-						<th class="ppom-checkboxe-style">
-							<label>
-								<input type="checkbox" name="allselected" id="ppom-all-select-products-head-btn">
-								<span></span>
-							</label>
-						</th>
-						<th><?php _e('Meta ID.', "ppom")?></th>
-						<th><?php _e('Name.', "ppom")?></th>
-						<th><?php _e('Meta.', "ppom")?></th>
-						<th><?php _e('Select Products', "ppom")?></th>
-						<th><?php _e('Delete.', "ppom")?></th>
-					</tr>
+				<tr class="ppom-thead-bg">
+					<th class="ppom-checkboxe-style">
+						<label>
+							<input type="checkbox" name="allselected" id="ppom-all-select-products-head-btn">
+							<span></span>
+						</label>
+					</th>
+					<th><?php _e( 'Meta ID', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Name', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Meta', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Select Products', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Actions', 'woocommerce-product-addon' ); ?></th>
+				</tr>
 				</thead>
 				<tfoot>
-					<tr class="bg-info">
-						<th class="ppom-checkboxe-style">
-							<label>
-								<input type="checkbox" name="allselected" id="ppom-all-select-products-foot-btn">
-								<span></span>
-							</label>
-						</th>
-						<th><?php _e('Meta ID.', "ppom")?></th>
-						<th><?php _e('Name.', "ppom")?></th>
-						<th><?php _e('Meta.', "ppom")?></th>
-						<th><?php _e('Select Products', "ppom")?></th>
-						<th><?php _e('Delete.', "ppom")?></th>
-					</tr>
+				<tr class="ppom-thead-bg">
+					<th class="ppom-checkboxe-style">
+						<label>
+							<input type="checkbox" name="allselected" id="ppom-all-select-products-foot-btn">
+							<span></span>
+						</label>
+					</th>
+					<th><?php _e( 'Meta ID', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Name', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Meta', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Select Products', 'woocommerce-product-addon' ); ?></th>
+					<th><?php _e( 'Actions', 'woocommerce-product-addon' ); ?></th>
+				</tr>
 				</tfoot>
-				
-				<?php 
-				
-				foreach ($all_forms as $productmeta){
-				
-					$url_edit     = add_query_arg(array('productmeta_id'=> $productmeta ->productmeta_id, 'do_meta'=>'edit'));
-					$url_clone    = add_query_arg(array('productmeta_id'=> $productmeta ->productmeta_id, 'do_meta'=>'clone'));
-					$url_products = admin_url( 'edit.php?post_type=product', (is_ssl() ? 'https' : 'http') );
-					$product_link = '<a href="'.esc_url($url_products).'">'.__('Products', 'ppom').'</a>';
+
+				<?php
+
+				foreach ( $all_forms as $productmeta ) {
+
+					$url_edit     = add_query_arg(
+						array(
+							'productmeta_id' => $productmeta->productmeta_id,
+							'do_meta'        => 'edit',
+						)
+					);
+					$url_clone    = add_query_arg(
+						array(
+							'productmeta_id' => $productmeta->productmeta_id,
+							'do_meta'        => 'clone',
+						)
+					);
+					$url_clone    = wp_nonce_url( $url_clone, 'ppom_clone_nonce_action', 'ppom_clone_nonce' );
+					$url_products = admin_url( 'edit.php?post_type=product', ( is_ssl() ? 'https' : 'http' ) );
+					$product_link = '<a href="' . esc_url( $url_products ) . '">' . __( 'Products', 'woocommerce-product-addon' ) . '</a>';
 					?>
 					<tr>
 						<td class="ppom-meta-table-checkbox-mr ppom-checkboxe-style">
-		                	<label>
-								<input class="ppom_product_checkbox" type="checkbox" name="ppom_meta[]" value="<?php echo esc_attr($productmeta ->productmeta_id); ?>">
+							<label>
+								<input class="ppom_product_checkbox" type="checkbox" name="ppom_meta[]"
+									   value="<?php echo esc_attr( $productmeta->productmeta_id ); ?>">
 								<span></span>
 							</label>
-		                </td>
+						</td>
 
-						<td><?php echo $productmeta ->productmeta_id; ?></td>
+						<td><?php echo $productmeta->productmeta_id; ?></td>
 						<td>
-							<a href="<?php echo esc_url($url_edit); ?>">
-								<?php echo stripcslashes($productmeta -> productmeta_name)?>
+							<a href="<?php echo esc_url( $url_edit ); ?>">
+								<?php echo stripcslashes( $productmeta->productmeta_name ); ?>
 							</a>
 						</td>
-						<td><?php echo ppom_admin_simplify_meta($productmeta -> the_meta)?></td>
+						<td><?php echo ppom_admin_simplify_meta( $productmeta->the_meta ); ?></td>
 						<td>
-							<a class="btn btn-primary ppom-products-modal" data-ppom_id="<?php echo esc_attr($productmeta ->productmeta_id); ?>"><?php _e('Attach to Products', "ppom")?></a>
+							<a class="btn btn-sm btn-secondary ppom-products-modal"
+							   data-ppom_id="<?php echo esc_attr( $productmeta->productmeta_id ); ?>"
+							   data-formmodal-id="ppom-product-modal"><?php _e( 'Attach to Products', 'woocommerce-product-addon' ); ?></a>
 						</td>
-						<td>
-							<a id="del-file-<?php echo esc_attr($productmeta -> productmeta_id); ?>" href="#" class="button button-sm ppom-delete-single-product" data-product-id="<?php echo esc_attr($productmeta -> productmeta_id); ?>"><span class="dashicons dashicons-no"></span></a>
-							<a href="<?php echo esc_url($url_edit); ?>" title="<?php _e('Edit', "ppom")?>" class="button"><span class="dashicons dashicons-edit"></span></a>
-							<a href="<?php echo esc_url($url_clone); ?>" title="<?php _e('Clone', "ppom")?>" class="button"><span class="dashicons dashicons-image-rotate-right"></span></a>
+						<td class="ppom-admin-meta-actions-colunm">
+							<a id="del-file-<?php echo esc_attr( $productmeta->productmeta_id ); ?>" href="#"
+							   class="button button-sm ppom-delete-single-product"
+							   data-product-id="<?php echo esc_attr( $productmeta->productmeta_id ); ?>"><span
+										class="dashicons dashicons-no"></span></a>
+							<a href="<?php echo esc_url( $url_edit ); ?>" title="<?php _e( 'Edit', 'woocommerce-product-addon' ); ?>"
+							   class="button"><span class="dashicons dashicons-edit"></span></a>
+							<a href="<?php echo esc_url( $url_clone ); ?>" title="<?php _e( 'Clone', 'woocommerce-product-addon' ); ?>"
+							   class="button"><span class="dashicons dashicons-image-rotate-right"></span></a>
 						</td>
 					</tr>
-				<?php 
+					<?php
 				}
 				?>
 			</table>
+			
 		</div>
 	</form>
 </div>
 
 <!-- Product Modal -->
-<div class="modal fade" id="ppom-product-modal">
-	<div class="modal-dialog modal-lg">
-	    <div class="modal-content">
-	        <form id="ppom-product-form">
-	            <input type="hidden" name="action" value="ppom_attach_ppoms"/>
-	            <input type="hidden" name="ppom_id" id="ppom_id">
-	        <div class="modal-header">
-	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	            <h4 class="modal-title"><?php _e('WooCommerce Products', 'ppom');?></h4>
-	        </div>
+<div id="ppom-product-modal" class="ppom-modal-box" style="display: none;">
+	<form id="ppom-product-form">
+		<input type="hidden" name="action" value="ppom_attach_ppoms"/>
+		<input type="hidden" name="ppom_id" id="ppom_id">
 
-	        <div class="modal-body">
+		<header>
+			<h3><?php _e( 'WooCommerce Products', 'woocommerce-product-addon' ); ?></h3>
+		</header>
 
-	        <!-- Dynamic contents -->
-	        </div>
+		<div class="ppom-modal-body">
 
-	        <div class="modal-footer">
-	            <button type="button" class="btn btn-white" data-dismiss="modal"><?php _e('Cancel', 'ppom');?></button>
-	            <button type="submit" class="btn btn-info"><?php _e('Save', 'ppom'); ?></button>
-	        </div>
-	        </form>
-	    </div>
-	</div>
+		</div>
+
+		<footer>
+			<button type="button"
+					class="btn btn-default close-model ppom-js-modal-close"><?php _e( 'Close', 'woocommerce-product-addon' ); ?></button>
+			<button type="submit" class="btn btn-info"><?php _e( 'Save', 'woocommerce-product-addon' ); ?></button>
+		</footer>
+	</form>
 </div>

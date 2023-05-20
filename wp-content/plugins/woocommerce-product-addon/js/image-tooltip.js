@@ -1,4 +1,4 @@
-﻿(function ($) {
+(function ($) {
     $.fn.imageTooltip = function (options) {
 
         var defaults = {

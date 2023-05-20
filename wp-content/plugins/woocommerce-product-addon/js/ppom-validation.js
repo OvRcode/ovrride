@@ -21,6 +21,9 @@ jQuery(function($){
        $('form.cart').block();
        
        var data = $(this).serialize();
+       data = data+'&action=ppom_ajax_validation';
+       data = data+'&ppom_nonce='+ppom_input_vars.ppom_validate_nonce;
+       
        $.post(ppom_input_vars.ajaxurl, data, function( notices ) {
            
            $('form.cart').unblock();

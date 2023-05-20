@@ -5,171 +5,121 @@
 * Create on: 9 November, 2013
 */
 
-class NM_Radio_wooproduct extends PPOM_Inputs{
-	
+class NM_Radio_wooproduct extends PPOM_Inputs {
+
 	/*
 	 * input control settings
 	 */
 	var $title, $desc, $settings;
-	
+
 	/*
 	 * this var is pouplated with current plugin meta
 	*/
 	var $plugin_meta;
-	
-	function __construct(){
-		
-		$this -> plugin_meta = ppom_get_plugin_meta();
-		
-		$this -> title 		= __ ( 'Radio Input', "ppom" );
-		$this -> desc		= __ ( 'regular radio input', "ppom" );
-		$this -> icon		= __ ( '<i class="fa fa-dot-circle-o" aria-hidden="true"></i>', 'ppom' );
-		$this -> settings	= self::get_settings();
-		
+
+	function __construct() {
+
+		$this->plugin_meta = ppom_get_plugin_meta();
+
+		$this->title    = __( 'Radio Input', 'woocommerce-product-addon' );
+		$this->desc     = __( 'regular radio input', 'woocommerce-product-addon' );
+		$this->icon     = __( '<i class="fa fa-dot-circle-o" aria-hidden="true"></i>', 'woocommerce-product-addon' );
+		$this->settings = self::get_settings();
+
 	}
-	
-	private function get_settings(){
-		
-		return array (
-			'title' => array (
-				'type' => 'text',
-				'title' => __ ( 'Title', "ppom" ),
-				'desc' => __ ( 'It will be shown as field label', "ppom" ) 
+
+	private function get_settings() {
+
+		$input_meta = array(
+			'title'           => array(
+				'type'  => 'text',
+				'title' => __( 'Title', 'woocommerce-product-addon' ),
+				'desc'  => __( 'It will be shown as field label', 'woocommerce-product-addon' ),
 			),
-			'data_name' => array (
-				'type' => 'text',
-				'title' => __ ( 'Data name', "ppom" ),
-				'desc' => __ ( 'REQUIRED: The identification name of this field, that you can insert into body email configuration. Note:Use only lowercase characters and underscores.', "ppom" ) 
+			'data_name'       => array(
+				'type'  => 'text',
+				'title' => __( 'Data name', 'woocommerce-product-addon' ),
+				'desc'  => __( 'REQUIRED: The identification name of this field, that you can insert into body email configuration. Note:Use only lowercase characters and underscores.', 'woocommerce-product-addon' ),
 			),
-			'description' => array (
-				'type' => 'textarea',
-				'title' => __ ( 'Description', "ppom" ),
-				'desc' => __ ( 'Small description, it will be diplay near name title.', "ppom" ) 
+			'description'     => array(
+				'type'  => 'textarea',
+				'title' => __( 'Description', 'woocommerce-product-addon' ),
+				'desc'  => __( 'Small description, it will be diplay near name title.', 'woocommerce-product-addon' ),
 			),
-			'error_message' => array (
-				'type' => 'text',
-				'title' => __ ( 'Error message', "ppom" ),
-				'desc' => __ ( 'Insert the error message for validation.', "ppom" ) 
+			'error_message'   => array(
+				'type'  => 'text',
+				'title' => __( 'Error message', 'woocommerce-product-addon' ),
+				'desc'  => __( 'Insert the error message for validation.', 'woocommerce-product-addon' ),
 			),
-			'options' => array (
-				'type' => 'paired',
-				'title' => __ ( 'Add options', "ppom" ),
-				'desc' => __ ( 'Type option with price (optionally)', "ppom" )
+			'options'         => array(
+				'type'  => 'paired',
+				'title' => __( 'Add options', 'woocommerce-product-addon' ),
+				'desc'  => __( 'Type option with price (optionally)', 'woocommerce-product-addon' ),
 			),
-			
-			/*'show_price' => array (
-						'type' => 'checkbox',
-						'title' => __ ( 'Show price', 'ppom' ),
-						'desc' => __ ( 'Show price on front end with options', 'ppom' ) 
-				),*/
-				
-			'selected' => array (
-				'type' => 'text',
-				'title' => __ ( 'Selected option', "ppom" ),
-				'desc' => __ ( 'Type option name given in (Add Options) tab if you want already selected.', "ppom" ) 
+			'selected'        => array(
+				'type'  => 'text',
+				'title' => __( 'Selected option', 'woocommerce-product-addon' ),
+				'desc'  => __( 'Type option name given in (Add Options) tab if you want already selected.', 'woocommerce-product-addon' ),
 			),
-			'class' => array (
-				'type' => 'text',
-				'title' => __ ( 'Class', "ppom" ),
-				'desc' => __ ( 'Insert an additional class(es) (separateb by comma) for more personalization.', "ppom" ) 
+			'class'           => array(
+				'type'        => 'text',
+				'title'       => __( 'Class', 'woocommerce-product-addon' ),
+				'desc'        => __( 'Insert an additional class(es) (separateb by comma) for more personalization.', 'woocommerce-product-addon' ),
+				'col_classes' => array( 'col-md-3', 'col-sm-12' ),
 			),
-			'width' => array (
-				'type' => 'select',
-				'title' => __ ( 'Width', 'ppom' ),
-				'desc' => __ ( 'Select width column', 'ppom'),
-				'options'	=> ppom_get_input_cols(),
-				'default'	=> 12,
+			'width'           => array(
+				'type'        => 'select',
+				'title'       => __( 'Width', 'woocommerce-product-addon' ),
+				'desc'        => __( 'Select width column', 'woocommerce-product-addon' ),
+				'options'     => ppom_get_input_cols(),
+				'default'     => 12,
+				'col_classes' => array( 'col-md-3', 'col-sm-12' ),
 			),
-			'visibility' => array (
-				'type' => 'select',
-				'title' => __ ( 'Visibility', 'ppom' ),
-				'desc' => __ ( 'Set field visibility based on user.', 'ppom'),
-				'options'	=> ppom_field_visibility_options(),
-				'default'	=> 'everyone',
+			'visibility'      => array(
+				'type'    => 'select',
+				'title'   => __( 'Visibility', 'woocommerce-product-addon' ),
+				'desc'    => __( 'Set field visibility based on user.', 'woocommerce-product-addon' ),
+				'options' => ppom_field_visibility_options(),
+				'default' => 'everyone',
 			),
-			'visibility_role' => array (
-				'type' => 'text',
-				'title' => __ ( 'User Roles', 'ppom' ),
-				'desc' => __ ( 'Role separated by comma.', 'ppom'),
+			'visibility_role' => array(
+				'type'   => 'text',
+				'title'  => __( 'User Roles', 'woocommerce-product-addon' ),
+				'desc'   => __( 'Role separated by comma.', 'woocommerce-product-addon' ),
 				'hidden' => true,
 			),
-			'desc_tooltip' => array (
-				'type' => 'checkbox',
-				'title' => __ ( 'Show tooltip (PRO)', 'ppom' ),
-				'desc' => __ ( 'Show Description in Tooltip with Help Icon', 'ppom' )
+			'desc_tooltip'    => array(
+				'type'        => 'checkbox',
+				'title'       => __( 'Show tooltip (PRO)', 'woocommerce-product-addon' ),
+				'desc'        => __( 'Show Description in Tooltip with Help Icon', 'woocommerce-product-addon' ),
+				'col_classes' => array( 'col-md-3', 'col-sm-12' ),
 			),
-			'required' => array (
-				'type' => 'checkbox',
-				'title' => __ ( 'Required', "ppom" ),
-				'desc' => __ ( 'Select this if it must be required.', "ppom" ) 
+			'onetime'         => array(
+				'type'        => 'checkbox',
+				'title'       => __( 'Fixed Fee', 'woocommerce-product-addon' ),
+				'desc'        => __( 'Add one time fee to cart total.', 'woocommerce-product-addon' ),
+				'col_classes' => array( 'col-md-3', 'col-sm-12' ),
 			),
-			'onetime' => array (
-				'type' => 'checkbox',
-				'title' => __ ( 'Fixed Fee', "ppom" ),
-				'desc' => __ ( 'Add one time fee to cart total.', "ppom" ) 
+			'required'        => array(
+				'type'        => 'checkbox',
+				'title'       => __( 'Required', 'woocommerce-product-addon' ),
+				'desc'        => __( 'Select this if it must be required.', 'woocommerce-product-addon' ),
+				'col_classes' => array( 'col-md-3', 'col-sm-12' ),
 			),
-			'onetime_taxable' => array (
-				'type' => 'checkbox',
-				'title' => __ ( 'Fixed Fee Taxable?', "ppom" ),
-				'desc' => __ ( 'Calculate Tax for Fixed Fee', "ppom" ) 
+			'logic'           => array(
+				'type'  => 'checkbox',
+				'title' => __( 'Enable Conditions', 'woocommerce-product-addon' ),
+				'desc'  => __( 'Tick it to turn conditional logic to work below', 'woocommerce-product-addon' ),
 			),
-			'logic' => array (
-				'type' => 'checkbox',
-				'title' => __ ( 'Enable Conditions', "ppom" ),
-				'desc' => __ ( 'Tick it to turn conditional logic to work below', "ppom" )
-			),
-			'conditions' => array (
-				'type' => 'html-conditions',
-				'title' => __ ( 'Conditions', "ppom" ),
-				'desc' => __ ( 'Tick it to turn conditional logic to work below', "ppom" )
+			'conditions'      => array(
+				'type'  => 'html-conditions',
+				'title' => __( 'Conditions', 'woocommerce-product-addon' ),
+				'desc'  => __( 'Tick it to turn conditional logic to work below', 'woocommerce-product-addon' ),
 			),
 		);
-	}
-	
-	
-	/*
-	 * @params: $options
-	*/
-	function render_input($args, $options="", $default=""){
-		
-		$_html = '';
-		foreach($options as $opt)
-		{
 
-			if($opt['price']){
-				
-				//if in percent
-				if(strpos($opt['price'],'%') !== false){
-					$output	= stripslashes(trim($opt['option'])) .' (+ ' . $opt['price'].')';	
-				}else{
-					$output	= stripslashes(trim($opt['option'])) .' (+ ' . wc_price($opt['price']).')';
-				}
-				
-			}else{
-				$output	= stripslashes(trim($opt['option']));
-			}			
-			
-			$field_id = $args['name'] . '-meta-'.strtolower ( preg_replace ( "![^a-z0-9]+!i", "_", $opt['option'] ) );
-			
-			$_html .= '<label for="'.$field_id.'"> <input id="'.$field_id.'" data-price="'.$opt['price'].'" type="radio" ';
-			
-			foreach ($args as $attr => $value){
-					
-				$_html .= $attr.'="'.stripslashes( $value ).'"';
-			}
-		
-			// data-value for optionprice for fixed price
-			// since 6.4
-			$data_value = $args['field_label'].'-'.$opt['option'];
-			
-			$_html .= ' value="'.$opt['option'].'" ';
-			$_html	.= 'data-value="'.$data_value.'" ';
-			$_html	.= checked($default, $opt['option'], false).'> ';
-			$_html .= $output;
-		
-			$_html .= '</label> ';
-		}
-		
-		echo $_html;
+		$type = 'radio';
+
+		return apply_filters( "poom_{$type}_input_setting", $input_meta, $this );
 	}
 }
