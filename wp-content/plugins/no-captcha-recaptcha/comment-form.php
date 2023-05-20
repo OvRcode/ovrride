@@ -68,6 +68,8 @@ class Ncr_Comment_Captcha extends Ncr_No_Captcha_Recaptcha
 
         if (!isset($_POST['g-recaptcha-response']) || !(self::captcha_verification())) {
             self::$captcha_error = 'failed';
+            add_filter( 'comment_notification_recipients', '__return_empty_array', 999999999 );
+            add_filter( 'comment_moderation_recipients',   '__return_empty_array', 999999999 );
         }
 
         return $commentdata;
