@@ -3,7 +3,7 @@
 /*
 Plugin Name: Simple Tooltips
 Description: Easily add tooltips to your wordpress site. You can define tooltip color settings in <strong>Settings > Simple Tooltips</strong>
-Version: 2.1.3
+Version: 2.1.4
 Author: Justin Saad
 Author URI: http://www.clevelandwebdeveloper.com
 License: GPL2
@@ -576,6 +576,8 @@ class simple_tooltips {
 				$special_class .= " custom_m_bubble";
 			}
 			$html = '';
+			$special_class = esc_attr($special_class);
+			$style = esc_attr($style);
 			$html .= '<span class="tooltips '.$special_class.'" style="'.$style.'" title="'.htmlspecialchars(do_shortcode($content)).'">'.do_shortcode($trigger).'</span>';
 			return $html;
 	}

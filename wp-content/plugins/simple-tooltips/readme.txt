@@ -3,8 +3,8 @@ Contributors: clevelandwebdeveloper
 Donate link: http://www.clevelandwebdeveloper.com/wordpress-plugins/donate.php
 Tags: tooltips, tips
 Requires at least: 2.9
-Tested up to: 4.4
-Stable tag: 2.1.3
+Tested up to: 5.0.3
+Stable tag: 2.1.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Settings > Simple Tooltips.
 1. Simple tooltip in action on a WordPress menu item
 
 == Changelog ==
+
+= 2.1.4 =
+* Security update
 
 = 2.1.3 =
 * Resolved error noticed in debug mode
