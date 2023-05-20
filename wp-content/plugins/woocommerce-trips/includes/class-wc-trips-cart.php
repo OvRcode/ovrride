@@ -375,7 +375,9 @@ class WC_Trips_Cart {
                 } else if ( "wc_trip_pickup_location" == $key ) {
                     if ( WC()->session->__isset( "{$cart_item_key}_cost" ) ) {
                         $pickup_cost = $this->get_pickup_cost($_REQUEST[$key]);
-                        $pickup_cost += WC()->session->get( "{$cart_item_key}_cost" );
+                        #$cart_item_key_cost =  strval($cart_item_key);
+                        #$cart_item_key_cost .= "_cost";
+                        $pickup_cost = floatval( WC()->session->get( "{$cart_item_key}_cost" ) );
                         WC()->session->set( "{$cart_item_key}_cost", $pickup_cost );
                     } else {
                         WC()->session->set( "{$cart_item_key}_cost", $this->get_pickup_cost( $_REQUEST[$key] ) );
