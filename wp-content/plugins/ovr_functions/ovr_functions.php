@@ -3,9 +3,9 @@
  * Plugin Name: OvRride Custom Functions
  * Plugin URI: https://github.com/AJAlabs/aja_functions
  * Description: Custom WordPress functions.php for OvRride.
- * Author: AJ Acevedo, Mike Barnard
+ * Author: AJ Acevedo, Ada Lambrecht
  * Author URI: http://ajacevedo.com
- * Version: 0.6.2
+ * Version: 0.7.0
  * License: MIT License
  */
 
@@ -23,11 +23,15 @@ remove_action('wp_head', 'wlwmanifest_link');
 ///////////////////
 
 // Unhook (remove) the WooCommerce sidebar from archive pages
-add_action('wp', create_function("", "if (is_archive(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
-
+#add_action('wp', create_function("", "if (is_archive(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
+add_action('wp', function(){
+  if (is_archive(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);  
+} );
 //Unhook (remove) the WooCommerce sidebar on individual product pages
-add_action('wp', create_function("", "if (is_singular(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
-
+#add_action('wp', create_function("", "if (is_singular(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);") );
+add_action('wp', function(){
+  if (is_singular(array('product'))) remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);  
+});
 //Unhook (remove) the WooCommerce sidebar on all pages
 remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
 
