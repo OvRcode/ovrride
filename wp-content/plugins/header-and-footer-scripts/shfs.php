@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Header and Footer Scripts
  * Plugin URI: http://digitalliberation.org/plugins/header-and-footer-scripts/?utm_source=wphfs_plugin_uri
- * Description: Allows you to insert code or text in the header or footer of your WordPress site
- * Version: 2.1.1
+ * Description: Essential WordPress plugin for almost every website to insert codes like Javascript and CSS. Inserting script to your wp_head and wp_footer made easy.
+ * Version: 2.2.1
  * Author: Digital Liberation
  * Author URI: http://digitalliberation.org/?utm_source=wphfs_author_uri
  * Text Domain: header-and-footer-scripts
@@ -13,7 +13,7 @@
 
 /*
 Header and Footer Scripts
-Copyright (C) 2013 - 2019, Anand Kumar <anand@anandkumar.net>
+Copyright (C) 2013 - 2020, Anand Kumar <anand@anandkumar.net>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -40,8 +40,8 @@ if ( !class_exists( 'HeaderAndFooterScripts' ) ) {
 			add_action( 'init', array( &$this, 'init' ) );
 			add_action( 'admin_init', array( &$this, 'admin_init' ) );
 			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
-			add_action( 'wp_head', array( &$this, 'wp_head' ) );
-			add_action( 'wp_footer', array( &$this, 'wp_footer' ) );
+			add_action( 'wp_head', array( &$this, 'wp_head' ), \get_option('shfs_insert_header_priority', 10) );
+			add_action( 'wp_footer', array( &$this, 'wp_footer' ), \get_option('shfs_insert_footer_priority', 10) );
 
 		}
 
@@ -55,6 +55,8 @@ if ( !class_exists( 'HeaderAndFooterScripts' ) ) {
 			// register settings for sitewide script
 			register_setting( 'header-and-footer-scripts', 'shfs_insert_header', 'trim' );
 			register_setting( 'header-and-footer-scripts', 'shfs_insert_footer', 'trim' );
+			register_setting( 'header-and-footer-scripts', 'shfs_insert_header_priority', 'intval' );
+			register_setting( 'header-and-footer-scripts', 'shfs_insert_footer_priority', 'intval' );
 
 			// add meta box to all post types
 			foreach ( get_post_types( '', 'names' ) as $type ) {
@@ -66,7 +68,7 @@ if ( !class_exists( 'HeaderAndFooterScripts' ) ) {
 
 		// adds menu item to wordpress admin dashboard
 		function admin_menu() {
-			$page = add_submenu_page( 'options-general.php', __('Header and Footer Scripts', 'header-and-footer-scripts'), __('Header and Footer Scripts', 'header-and-footer-scripts'), 'manage_options', __FILE__, array( &$this, 'shfs_options_panel' ) );
+			$page = add_submenu_page( 'options-general.php', esc_html__('Header and Footer Scripts', 'header-and-footer-scripts'), esc_html__('Header and Footer Scripts', 'header-and-footer-scripts'), 'manage_options', __FILE__, array( &$this, 'shfs_options_panel' ) );
 			}
 
 		function wp_head() {
