@@ -53,12 +53,12 @@
 				.on( 'click', css_class, function( evt ) {
 					evt.preventDefault();
 					if ( ! document.queryCommandSupported( 'copy' ) ) {
-						$( css_class ).parent().find( 'input' ).focus().select();
+						$( css_class ).parent().find( 'input' ).trigger( 'focus' ).trigger( 'select' );
 						$( '#copy-error' ).text( woocommerce_admin_api_keys.clipboard_failed );
 					} else {
 						$( '#copy-error' ).text( '' );
 						wcClearClipboard();
-						wcSetClipboard( $.trim( $( this ).prev( 'input' ).val() ), $( css_class ) );
+						wcSetClipboard( $( this ).prev( 'input' ).val().trim(), $( css_class ) );
 					}
 				} )
 				.on( 'aftercopy', css_class, function() {
@@ -69,10 +69,10 @@
 						'fadeIn':     50,
 						'fadeOut':    50,
 						'delay':      0
-					} ).focus();
+					} ).trigger( 'focus' );
 				} )
 				.on( 'aftercopyerror', css_class, function() {
-					$( css_class ).parent().find( 'input' ).focus().select();
+					$( css_class ).parent().find( 'input' ).trigger( 'focus' ).trigger( 'select' );
 					$( '#copy-error' ).text( woocommerce_admin_api_keys.clipboard_failed );
 				} );
 		},
@@ -121,7 +121,7 @@
 					if ( response.success ) {
 						var data = response.data;
 
-						$( 'h3', self.el ).first().append( '<div class="wc-api-message updated"><p>' + data.message + '</p></div>' );
+						$( 'h2, h3', self.el ).first().append( '<div class="wc-api-message updated"><p>' + data.message + '</p></div>' );
 
 						if ( 0 < data.consumer_key.length && 0 < data.consumer_secret.length ) {
 							$( '#api-keys-options', self.el ).remove();
@@ -142,7 +142,9 @@
 							$( '#key_permissions', self.el ).val( data.permissions );
 						}
 					} else {
-						$( 'h3', self.el ).first().append( '<div class="wc-api-message error"><p>' + response.data.message + '</p></div>' );
+						$( 'h2, h3', self.el )
+							.first()
+							.append( '<div class="wc-api-message error"><p>' + response.data.message + '</p></div>' );
 					}
 
 					self.unblock();

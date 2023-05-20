@@ -47,7 +47,7 @@ abstract class WC_Gateway_Paypal_Response {
 			$order    = wc_get_order( $order_id );
 		}
 
-		if ( ! $order || $order->get_order_key() !== $order_key ) {
+		if ( ! $order || ! hash_equals( $order->get_order_key(), $order_key ) ) {
 			WC_Gateway_Paypal::log( 'Order Keys do not match.', 'error' );
 			return false;
 		}
@@ -63,9 +63,14 @@ abstract class WC_Gateway_Paypal_Response {
 	 * @param  string   $note Payment note.
 	 */
 	protected function payment_complete( $order, $txn_id = '', $note = '' ) {
-		$order->add_order_note( $note );
-		$order->payment_complete( $txn_id );
-		WC()->cart->empty_cart();
+		if ( ! $order->has_status( array( 'processing', 'completed' ) ) ) {
+			$order->add_order_note( $note );
+			$order->payment_complete( $txn_id );
+
+			if ( isset( WC()->cart ) ) {
+				WC()->cart->empty_cart();
+			}
+		}
 	}
 
 	/**
@@ -76,7 +81,9 @@ abstract class WC_Gateway_Paypal_Response {
 	 */
 	protected function payment_on_hold( $order, $reason = '' ) {
 		$order->update_status( 'on-hold', $reason );
-		wc_reduce_stock_levels( $order->get_id() );
-		WC()->cart->empty_cart();
+
+		if ( isset( WC()->cart ) ) {
+			WC()->cart->empty_cart();
+		}
 	}
 }

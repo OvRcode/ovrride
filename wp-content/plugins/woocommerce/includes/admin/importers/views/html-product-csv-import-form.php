@@ -2,7 +2,7 @@
 /**
  * Admin View: Product import form
  *
- * @package WooCommerce/Admin
+ * @package WooCommerce\Admin
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <form class="wc-progress-form-content woocommerce-importer" enctype="multipart/form-data" method="post">
 	<header>
 		<h2><?php esc_html_e( 'Import products from a CSV file', 'woocommerce' ); ?></h2>
-		<p><?php esc_html_e( 'This tool allows you to import (or merge) product data to your store from a CSV file.', 'woocommerce' ); ?></p>
+		<p><?php esc_html_e( 'This tool allows you to import (or merge) product data to your store from a CSV or TXT file.', 'woocommerce' ); ?></p>
 	</header>
 	<section>
 		<table class="form-table woocommerce-importer-options">
@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</small>
 							<?php
 						}
-					?>
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -78,6 +78,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<th><label><?php esc_html_e( 'Use previous column mapping preferences?', 'woocommerce' ); ?></label><br/></th>
 					<td><input type="checkbox" id="woocommerce-importer-map-preferences" name="map_preferences" value="1" /></td>
 				</tr>
+				<tr class="woocommerce-importer-advanced hidden">
+					<th><label><?php esc_html_e( 'Character encoding of the file', 'woocommerce' ); ?></label><br/></th>
+					<td><select id="woocommerce-importer-character-encoding" name="character_encoding">
+							<option value="" selected><?php esc_html_e( 'Autodetect', 'woocommerce' ); ?></option>
+							<?php
+							$encodings = mb_list_encodings();
+							sort( $encodings, SORT_NATURAL );
+							foreach ( $encodings as $encoding ) {
+								echo '<option>' . esc_html( $encoding ) . '</option>';
+							}
+							?>
+						</select>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</section>
@@ -97,7 +111,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		});
 	</script>
 	<div class="wc-actions">
-		<a href="#" class="woocommerce-importer-toggle-advanced-options" data-hidetext="<?php esc_html_e( 'Hide advanced options', 'woocommerce' ); ?>" data-showtext="<?php esc_html_e( 'Hide advanced options', 'woocommerce' ); ?>"><?php esc_html_e( 'Show advanced options', 'woocommerce' ); ?></a>
+		<a href="#" class="woocommerce-importer-toggle-advanced-options" data-hidetext="<?php esc_attr_e( 'Hide advanced options', 'woocommerce' ); ?>" data-showtext="<?php esc_attr_e( 'Show advanced options', 'woocommerce' ); ?>"><?php esc_html_e( 'Show advanced options', 'woocommerce' ); ?></a>
 		<button type="submit" class="button button-primary button-next" value="<?php esc_attr_e( 'Continue', 'woocommerce' ); ?>" name="save_step"><?php esc_html_e( 'Continue', 'woocommerce' ); ?></button>
 		<?php wp_nonce_field( 'woocommerce-csv-importer' ); ?>
 	</div>

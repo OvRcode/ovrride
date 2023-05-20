@@ -17,8 +17,8 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 	 * An email sent to the customer when they create an account.
 	 *
 	 * @class       WC_Email_Customer_New_Account
-	 * @version     2.3.0
-	 * @package     WooCommerce/Classes/Emails
+	 * @version     3.5.0
+	 * @package     WooCommerce\Classes\Emails
 	 * @extends     WC_Email
 	 */
 	class WC_Email_Customer_New_Account extends WC_Email {
@@ -52,6 +52,13 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 		public $password_generated;
 
 		/**
+		 * Magic link to set initial password.
+		 *
+		 * @var string
+		 */
+		public $set_password_url;
+
+		/**
 		 * Constructor.
 		 */
 		public function __construct() {
@@ -73,7 +80,7 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 		 * @return string
 		 */
 		public function get_default_subject() {
-			return __( 'Your account on {site_title}', 'woocommerce' );
+			return __( 'Your {site_title} account has been created!', 'woocommerce' );
 		}
 
 		/**
@@ -104,6 +111,7 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 				$this->user_email         = stripslashes( $this->object->user_email );
 				$this->recipient          = $this->user_email;
 				$this->password_generated = $password_generated;
+				$this->set_password_url   = $this->generate_set_password_url();
 			}
 
 			if ( $this->is_enabled() && $this->get_recipient() ) {
@@ -116,13 +124,14 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 		/**
 		 * Get content html.
 		 *
-		 * @access public
 		 * @return string
 		 */
 		public function get_content_html() {
 			return wc_get_template_html(
-				$this->template_html, array(
+				$this->template_html,
+				array(
 					'email_heading'      => $this->get_heading(),
+					'additional_content' => $this->get_additional_content(),
 					'user_login'         => $this->user_login,
 					'user_pass'          => $this->user_pass,
 					'blogname'           => $this->get_blogname(),
@@ -130,6 +139,7 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 					'sent_to_admin'      => false,
 					'plain_text'         => false,
 					'email'              => $this,
+					'set_password_url'   => $this->set_password_url,
 				)
 			);
 		}
@@ -137,13 +147,14 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 		/**
 		 * Get content plain.
 		 *
-		 * @access public
 		 * @return string
 		 */
 		public function get_content_plain() {
 			return wc_get_template_html(
-				$this->template_plain, array(
+				$this->template_plain,
+				array(
 					'email_heading'      => $this->get_heading(),
+					'additional_content' => $this->get_additional_content(),
 					'user_login'         => $this->user_login,
 					'user_pass'          => $this->user_pass,
 					'blogname'           => $this->get_blogname(),
@@ -151,9 +162,40 @@ if ( ! class_exists( 'WC_Email_Customer_New_Account', false ) ) :
 					'sent_to_admin'      => false,
 					'plain_text'         => true,
 					'email'              => $this,
+					'set_password_url'   => $this->set_password_url,
 				)
 			);
 		}
+
+		/**
+		 * Default content to show below main email content.
+		 *
+		 * @since 3.7.0
+		 * @return string
+		 */
+		public function get_default_additional_content() {
+			return __( 'We look forward to seeing you soon.', 'woocommerce' );
+		}
+
+		/**
+		 * Generate set password URL link for a new user.
+		 * 
+		 * See also Automattic\WooCommerce\Blocks\Domain\Services\Email\CustomerNewAccount and wp_new_user_notification.
+		 * 
+		 * @since 6.0.0
+		 * @return string
+		 */
+		protected function generate_set_password_url() {
+			// Generate a magic link so user can set initial password.
+			$key = get_password_reset_key( $this->object );
+			if ( ! is_wp_error( $key ) ) {
+				$action                 = 'newaccount';
+				return wc_get_account_endpoint_url( 'lost-password' ) . "?action=$action&key=$key&login=" . rawurlencode( $this->object->user_login );
+			} else {
+				// Something went wrong while getting the key for new password URL, send customer to the generic password reset.
+				return wc_get_account_endpoint_url( 'lost-password' );
+			}
+		} 
 	}
 
 endif;

@@ -5,7 +5,7 @@
  * Attributes can be global (taxonomy based) or local to the product itself.
  * Uses ArrayAccess to be BW compatible with previous ways of reading attributes.
  *
- * @package WooCommerce/Classes
+ * @package WooCommerce\Classes
  * @version 3.0.0
  * @since   3.0.0
  */
@@ -124,7 +124,8 @@ class WC_Product_Attribute implements ArrayAccess {
 	 */
 	public function get_data() {
 		return array_merge(
-			$this->data, array(
+			$this->data,
+			array(
 				'is_visible'   => $this->get_visible() ? 1 : 0,
 				'is_variation' => $this->get_variation() ? 1 : 0,
 				'is_taxonomy'  => $this->is_taxonomy() ? 1 : 0,
@@ -151,7 +152,7 @@ class WC_Product_Attribute implements ArrayAccess {
 	/**
 	 * Set name (this is the attribute name or taxonomy).
 	 *
-	 * @param int $value Attribute name.
+	 * @param string $value Attribute name.
 	 */
 	public function set_name( $value ) {
 		$this->data['name'] = $value;
@@ -211,7 +212,7 @@ class WC_Product_Attribute implements ArrayAccess {
 	/**
 	 * Get name.
 	 *
-	 * @return int
+	 * @return string
 	 */
 	public function get_name() {
 		return $this->data['name'];
@@ -265,6 +266,7 @@ class WC_Product_Attribute implements ArrayAccess {
 	 * @param string $offset Offset.
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		switch ( $offset ) {
 			case 'is_variation':
@@ -290,6 +292,7 @@ class WC_Product_Attribute implements ArrayAccess {
 	 * @param string $offset Offset.
 	 * @param mixed  $value  Value.
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
 		switch ( $offset ) {
 			case 'is_variation':
@@ -303,7 +306,7 @@ class WC_Product_Attribute implements ArrayAccess {
 				break;
 			default:
 				if ( is_callable( array( $this, "set_$offset" ) ) ) {
-					return $this->{"set_$offset"}( $value );
+					$this->{"set_$offset"}( $value );
 				}
 				break;
 		}
@@ -314,6 +317,7 @@ class WC_Product_Attribute implements ArrayAccess {
 	 *
 	 * @param string $offset Offset.
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {}
 
 	/**
@@ -322,6 +326,7 @@ class WC_Product_Attribute implements ArrayAccess {
 	 * @param string $offset Offset.
 	 * @return bool
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
 		return in_array( $offset, array_merge( array( 'is_variation', 'is_visible', 'is_taxonomy', 'value' ), array_keys( $this->data ) ), true );
 	}

@@ -3,6 +3,8 @@
  * Admin View: Bulk Edit Products
  */
 
+use Automattic\WooCommerce\Utilities\I18nUtil;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -29,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'3' => __( 'Decrease existing price by (fixed amount or %):', 'woocommerce' ),
 						);
 						foreach ( $options as $key => $value ) {
-							echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+							echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 						}
 						?>
 					</select>
@@ -54,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'4' => __( 'Set to regular price decreased by (fixed amount or %):', 'woocommerce' ),
 						);
 						foreach ( $options as $key => $value ) {
-							echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+							echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 						}
 						?>
 					</select>
@@ -78,7 +80,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'none'     => _x( 'None', 'Tax status', 'woocommerce' ),
 						);
 						foreach ( $options as $key => $value ) {
-							echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+							echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 						}
 						?>
 					</select>
@@ -104,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						}
 
 						foreach ( $options as $key => $value ) {
-							echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+							echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 						}
 						?>
 					</select>
@@ -124,14 +126,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 									'1' => __( 'Change to:', 'woocommerce' ),
 								);
 							foreach ( $options as $key => $value ) {
-								echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+								echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 							}
 							?>
 						</select>
 					</span>
 				</label>
 				<label class="change-input">
-					<input type="text" name="_weight" class="text weight" placeholder="<?php printf( esc_attr__( '%1$s (%2$s)', 'woocommerce' ), wc_format_localized_decimal( 0 ), get_option( 'woocommerce_weight_unit' ) ); ?>" value="">
+					<?php
+					$placeholder = sprintf(
+						/* translators: 1. Weight number; 2. Weight unit; E.g. 2 kg */
+						__( '%1$s (%2$s)', 'woocommerce' ),
+						wc_format_localized_decimal( 0 ),
+						I18nUtil::get_weight_unit_label( get_option( 'woocommerce_weight_unit', 'kg' ) )
+					);
+					?>
+					<input
+						type="text"
+						name="_weight"
+						class="text weight"
+						placeholder="<?php echo esc_attr( $placeholder ); ?>"
+						value=""
+					>
 				</label>
 			</div>
 		<?php endif; ?>
@@ -148,16 +164,40 @@ if ( ! defined( 'ABSPATH' ) ) {
 								'1' => __( 'Change to:', 'woocommerce' ),
 							);
 							foreach ( $options as $key => $value ) {
-								echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+								echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 							}
 							?>
 						</select>
 					</span>
 				</label>
 				<label class="change-input">
-					<input type="text" name="_length" class="text length" placeholder="<?php printf( esc_attr__( 'Length (%s)', 'woocommerce' ), get_option( 'woocommerce_dimension_unit' ) ); ?>" value="">
-					<input type="text" name="_width" class="text width" placeholder="<?php printf( esc_attr__( 'Width (%s)', 'woocommerce' ), get_option( 'woocommerce_dimension_unit' ) ); ?>" value="">
-					<input type="text" name="_height" class="text height" placeholder="<?php printf( esc_attr__( 'Height (%s)', 'woocommerce' ), get_option( 'woocommerce_dimension_unit' ) ); ?>" value="">
+					<?php
+					$dimension_unit_label = I18nUtil::get_dimensions_unit_label( get_option( 'woocommerce_dimension_unit', 'cm' ) );
+					?>
+					<input
+						type="text"
+						name="_length"
+						class="text length"
+						<?php /* translators: %s is dimension unit label */ ?>
+						placeholder="<?php printf( esc_attr__( 'Length (%s)', 'woocommerce' ), esc_html( $dimension_unit_label ) ); ?>"
+						value=""
+					>
+					<input
+						type="text"
+						name="_width"
+						class="text width"
+						<?php /* translators: %s is dimension unit label */ ?>
+						placeholder="<?php printf( esc_attr__( 'Width (%s)', 'woocommerce' ), esc_html( $dimension_unit_label ) ); ?>"
+						value=""
+					>
+					<input
+						type="text"
+						name="_height"
+						class="text height"
+						<?php /* translators: %s is dimension unit label */ ?>
+						placeholder="<?php printf( esc_attr__( 'Height (%s)', 'woocommerce' ), esc_html( $dimension_unit_label ) ); ?>"
+						value=""
+					>
 				</label>
 			</div>
 		<?php endif; ?>
@@ -170,7 +210,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<option value="_no_shipping_class"><?php _e( 'No shipping class', 'woocommerce' ); ?></option>
 					<?php
 					foreach ( $shipping_class as $key => $value ) {
-						echo '<option value="' . esc_attr( $value->slug ) . '">' . $value->name . '</option>';
+						echo '<option value="' . esc_attr( $value->slug ) . '">' . esc_html( $value->name ) . '</option>';
 					}
 					?>
 				</select>
@@ -190,7 +230,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						'hidden'  => __( 'Hidden', 'woocommerce' ),
 					);
 					foreach ( $options as $key => $value ) {
-						echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+						echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 					}
 					?>
 				</select>
@@ -207,7 +247,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						'no'  => __( 'No', 'woocommerce' ),
 					);
 					foreach ( $options as $key => $value ) {
-						echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+						echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 					}
 					?>
 				</select>
@@ -222,7 +262,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					echo '<option value="">' . esc_html__( '— No Change —', 'woocommerce' ) . '</option>';
 
 					foreach ( wc_get_product_stock_status_options() as $key => $value ) {
-						echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+						echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 					}
 					?>
 				</select>
@@ -241,7 +281,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							'no'  => __( 'No', 'woocommerce' ),
 						);
 						foreach ( $options as $key => $value ) {
-							echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+							echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 						}
 						?>
 					</select>
@@ -257,9 +297,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 							$options = array(
 								''  => __( '— No change —', 'woocommerce' ),
 								'1' => __( 'Change to:', 'woocommerce' ),
+								'2' => __( 'Increase existing stock by:', 'woocommerce' ),
+								'3' => __( 'Decrease existing stock by:', 'woocommerce' ),
 							);
 							foreach ( $options as $key => $value ) {
-								echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+								echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 							}
 							?>
 						</select>
@@ -278,7 +320,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						echo '<option value="">' . esc_html__( '— No Change —', 'woocommerce' ) . '</option>';
 
 						foreach ( wc_get_product_backorder_options() as $key => $value ) {
-							echo '<option value="' . esc_attr( $key ) . '">' . $value . '</option>';
+							echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 						}
 						?>
 					</select>

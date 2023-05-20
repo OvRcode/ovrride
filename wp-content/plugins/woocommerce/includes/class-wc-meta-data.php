@@ -45,8 +45,9 @@ class WC_Meta_Data implements JsonSerializable {
 	/**
 	 * When converted to JSON.
 	 *
-	 * @return object
+	 * @return object|array
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize() {
 		return $this->get_data();
 	}
@@ -73,6 +74,8 @@ class WC_Meta_Data implements JsonSerializable {
 	 * by `empty` and `isset`.
 	 *
 	 * @param string $key Key to check if set.
+	 *
+	 * @return bool
 	 */
 	public function __isset( $key ) {
 		return array_key_exists( $key, $this->current_data );

@@ -2,8 +2,10 @@
 /**
  * Abstract_WC_Order_Data_Store_CPT class file.
  *
- * @package WooCommerce/Classes
+ * @package WooCommerce\Classes
  */
+
+use Automattic\Jetpack\Constants;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @version  3.0.0
  */
-abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP implements WC_Object_Data_Store_Interface, WC_Abstract_Order_Data_Store_Interface {
+abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP implements WC_Abstract_Order_Data_Store_Interface, WC_Object_Data_Store_Interface {
 
 	/**
 	 * Internal meta type used to store order data.
@@ -42,6 +44,22 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 		'_payment_tokens',
 	);
 
+	/**
+	 * Custom setters for props. Add key here if it has corresponding set_ and get_ method present.
+	 *
+	 * @var string[]
+	 */
+	protected $internal_data_store_key_getters = array();
+
+	/**
+	 * Return internal key getters name.
+	 *
+	 * @return string[]
+	 */
+	public function get_internal_data_store_key_getters() {
+		return $this->internal_data_store_key_getters;
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| CRUD Methods
@@ -54,9 +72,11 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	 * @param WC_Order $order Order object.
 	 */
 	public function create( &$order ) {
-		$order->set_version( WC_VERSION );
-		$order->set_date_created( current_time( 'timestamp', true ) );
+		$order->set_version( Constants::get_constant( 'WC_VERSION' ) );
 		$order->set_currency( $order->get_currency() ? $order->get_currency() : get_woocommerce_currency() );
+		if ( ! $order->get_date_created( 'edit' ) ) {
+			$order->set_date_created( time() );
+		}
 
 		$id = wp_insert_post(
 			apply_filters(
@@ -65,15 +85,16 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 					'post_date'     => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getOffsetTimestamp() ),
 					'post_date_gmt' => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
 					'post_type'     => $order->get_type( 'edit' ),
-					'post_status'   => 'wc-' . ( $order->get_status( 'edit' ) ? $order->get_status( 'edit' ) : apply_filters( 'woocommerce_default_order_status', 'pending' ) ),
+					'post_status'   => $this->get_post_status( $order ),
 					'ping_status'   => 'closed',
 					'post_author'   => 1,
 					'post_title'    => $this->get_post_title(),
-					'post_password' => uniqid( 'order_' ),
+					'post_password' => $this->get_order_key( $order ),
 					'post_parent'   => $order->get_parent_id( 'edit' ),
 					'post_excerpt'  => $this->get_post_excerpt( $order ),
 				)
-			), true
+			),
+			true
 		);
 
 		if ( $id && ! is_wp_error( $id ) ) {
@@ -88,14 +109,13 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	/**
 	 * Method to read an order from the database.
 	 *
-	 * @param WC_Data $order Order object.
+	 * @param WC_Order $order Order object.
 	 *
 	 * @throws Exception If passed order is invalid.
 	 */
 	public function read( &$order ) {
 		$order->set_defaults();
 		$post_object = get_post( $order->get_id() );
-
 		if ( ! $order->get_id() || ! $post_object || ! in_array( $post_object->post_type, wc_get_order_types(), true ) ) {
 			throw new Exception( __( 'Invalid order.', 'woocommerce' ) );
 		}
@@ -103,8 +123,8 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 		$order->set_props(
 			array(
 				'parent_id'     => $post_object->post_parent,
-				'date_created'  => 0 < $post_object->post_date_gmt ? wc_string_to_timestamp( $post_object->post_date_gmt ) : null,
-				'date_modified' => 0 < $post_object->post_modified_gmt ? wc_string_to_timestamp( $post_object->post_modified_gmt ) : null,
+				'date_created'  => $this->string_to_timestamp( $post_object->post_date_gmt ),
+				'date_modified' => $this->string_to_timestamp( $post_object->post_modified_gmt ),
 				'status'        => $post_object->post_status,
 			)
 		);
@@ -116,10 +136,10 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 		/**
 		 * In older versions, discounts may have been stored differently.
 		 * Update them now so if the object is saved, the correct values are
-		 * stored. @todo When meta is flattened, handle this during migration.
+		 * stored.
 		 */
 		if ( version_compare( $order->get_version( 'edit' ), '2.3.7', '<' ) && $order->get_prices_include_tax( 'edit' ) ) {
-			$order->set_discount_total( (double) get_post_meta( $order->get_id(), '_cart_discount', true ) - (double) get_post_meta( $order->get_id(), '_cart_discount_tax', true ) );
+			$order->set_discount_total( (float) get_post_meta( $order->get_id(), '_cart_discount', true ) - (float) get_post_meta( $order->get_id(), '_cart_discount_tax', true ) );
 		}
 	}
 
@@ -130,10 +150,10 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	 */
 	public function update( &$order ) {
 		$order->save_meta_data();
-		$order->set_version( WC_VERSION );
+		$order->set_version( Constants::get_constant( 'WC_VERSION' ) );
 
 		if ( null === $order->get_date_created( 'edit' ) ) {
-			$order->set_date_created( current_time( 'timestamp', true ) );
+			$order->set_date_created( time() );
 		}
 
 		$changes = $order->get_changes();
@@ -143,7 +163,7 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 			$post_data = array(
 				'post_date'         => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getOffsetTimestamp() ),
 				'post_date_gmt'     => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
-				'post_status'       => 'wc-' . ( $order->get_status( 'edit' ) ? $order->get_status( 'edit' ) : apply_filters( 'woocommerce_default_order_status', 'pending' ) ),
+				'post_status'       => $this->get_post_status( $order ),
 				'post_parent'       => $order->get_parent_id(),
 				'post_excerpt'      => $this->get_post_excerpt( $order ),
 				'post_modified'     => isset( $changes['date_modified'] ) ? gmdate( 'Y-m-d H:i:s', $order->get_date_modified( 'edit' )->getOffsetTimestamp() ) : current_time( 'mysql' ),
@@ -210,6 +230,36 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	*/
 
 	/**
+	 * Get the status to save to the post object.
+	 *
+	 * Plugins extending the order classes can override this to change the stored status/add prefixes etc.
+	 *
+	 * @since 3.6.0
+	 * @param  WC_order $order Order object.
+	 * @return string
+	 */
+	protected function get_post_status( $order ) {
+		$order_status = $order->get_status( 'edit' );
+
+		if ( ! $order_status ) {
+			$order_status = apply_filters( 'woocommerce_default_order_status', 'pending' );
+		}
+
+		$post_status    = $order_status;
+		$valid_statuses = get_post_stati();
+
+		// Add a wc- prefix to the status, but exclude some core statuses which should not be prefixed.
+		// @todo In the future this should only happen based on `wc_is_order_status`, but in order to
+		// preserve back-compatibility this happens to all statuses except a select few. A doing_it_wrong
+		// Notice will be needed here, followed by future removal.
+		if ( ! in_array( $post_status, array( 'auto-draft', 'draft', 'trash' ), true ) && in_array( 'wc-' . $post_status, $valid_statuses, true ) ) {
+			$post_status = 'wc-' . $post_status;
+		}
+
+		return $post_status;
+	}
+
+	/**
 	 * Excerpt for post.
 	 *
 	 * @param  WC_order $order Order object.
@@ -227,8 +277,19 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	protected function get_post_title() {
 		// @codingStandardsIgnoreStart
 		/* translators: %s: Order date */
-		return sprintf( __( 'Order &ndash; %s', 'woocommerce' ), strftime( _x( '%b %d, %Y @ %I:%M %p', 'Order date parsed by strftime', 'woocommerce' ) ) );
+		return sprintf( __( 'Order &ndash; %s', 'woocommerce' ), (new DateTime('now'))->format( _x( 'M d, Y @ h:i A', 'Order date parsed by DateTime::format', 'woocommerce' ) ) );
 		// @codingStandardsIgnoreEnd
+	}
+
+	/**
+	 * Get order key.
+	 *
+	 * @since 4.3.0
+	 * @param WC_order $order Order object.
+	 * @return string
+	 */
+	protected function get_order_key( $order ) {
+		return wc_generate_order_key();
 	}
 
 	/**
@@ -288,12 +349,15 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 
 		foreach ( $props_to_update as $meta_key => $prop ) {
 			$value = $order->{"get_$prop"}( 'edit' );
+			$value = is_string( $value ) ? wp_slash( $value ) : $value;
 
 			if ( 'prices_include_tax' === $prop ) {
 				$value = $value ? 'yes' : 'no';
 			}
 
-			if ( update_post_meta( $order->get_id(), $meta_key, $value ) ) {
+			$updated = $this->update_or_delete_post_meta( $order, $meta_key, $value );
+
+			if ( $updated ) {
 				$updated_props[] = $prop;
 			}
 		}
@@ -350,6 +414,89 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	}
 
 	/**
+	 * Return the order type of a given item which belongs to WC_Order.
+	 *
+	 * @since  3.2.0
+	 * @param  WC_Order $order Order Object.
+	 * @param  int      $order_item_id Order item id.
+	 * @return string Order Item type
+	 */
+	public function get_order_item_type( $order, $order_item_id ) {
+		global $wpdb;
+		return $wpdb->get_var( $wpdb->prepare( "SELECT DISTINCT order_item_type FROM {$wpdb->prefix}woocommerce_order_items WHERE order_id = %d and order_item_id = %d;", $order->get_id(), $order_item_id ) );
+	}
+
+	/**
+	 * Prime following caches:
+	 *  1. item-$order_item_id   For individual items.
+	 *  2. order-items-$order-id For fetching items associated with an order.
+	 *  3. order-item meta.
+	 *
+	 * @param array $order_ids  Order Ids to prime cache for.
+	 * @param array $query_vars Query vars for the query.
+	 */
+	protected function prime_order_item_caches_for_orders( $order_ids, $query_vars ) {
+		global $wpdb;
+		if ( isset( $query_vars['fields'] ) && 'all' !== $query_vars['fields'] ) {
+			$line_items = array(
+				'line_items',
+				'shipping_lines',
+				'fee_lines',
+				'coupon_lines',
+			);
+
+			if ( is_array( $query_vars['fields'] ) && 0 === count( array_intersect( $line_items, $query_vars['fields'] ) ) ) {
+				return;
+			}
+		}
+		$cache_keys     = array_map(
+			function ( $order_id ) {
+				return 'order-items-' . $order_id;
+			},
+			$order_ids
+		);
+		$cache_values   = wc_cache_get_multiple( $cache_keys, 'orders' );
+		$non_cached_ids = array();
+		foreach ( $order_ids as $order_id ) {
+			if ( false === $cache_values[ 'order-items-' . $order_id ] ) {
+				$non_cached_ids[] = $order_id;
+			}
+		}
+		if ( empty( $non_cached_ids ) ) {
+			return;
+		}
+
+		$non_cached_ids        = esc_sql( $non_cached_ids );
+		$non_cached_ids_string = implode( ',', $non_cached_ids );
+		$order_items           = $wpdb->get_results(
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT order_item_type, order_item_id, order_id, order_item_name FROM {$wpdb->prefix}woocommerce_order_items WHERE order_id in ( $non_cached_ids_string ) ORDER BY order_item_id;"
+		);
+		if ( empty( $order_items ) ) {
+			return;
+		}
+
+		$order_items_for_all_orders = array_reduce(
+			$order_items,
+			function ( $order_items_collection, $order_item ) {
+				if ( ! isset( $order_items_collection[ $order_item->order_id ] ) ) {
+					$order_items_collection[ $order_item->order_id ] = array();
+				}
+				$order_items_collection[ $order_item->order_id ][] = $order_item;
+				return $order_items_collection;
+			}
+		);
+		foreach ( $order_items_for_all_orders as $order_id => $items ) {
+			wp_cache_set( 'order-items-' . $order_id, $items, 'orders' );
+		}
+		foreach ( $order_items as $item ) {
+			wp_cache_set( 'item-' . $item->order_item_id, $item, 'order-items' );
+		}
+		$order_item_ids = wp_list_pluck( $order_items, 'order_item_id' );
+		update_meta_cache( 'order_item', $order_item_ids );
+	}
+
+	/**
 	 * Remove all line items (products, coupons, shipping, taxes) from the order.
 	 *
 	 * @param WC_Order $order Order object.
@@ -386,5 +533,108 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 	 */
 	public function update_payment_token_ids( $order, $token_ids ) {
 		update_post_meta( $order->get_id(), '_payment_tokens', $token_ids );
+	}
+
+	/**
+	 * Get the order's title.
+	 *
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return string Order title.
+	 */
+	public function get_title( WC_Order $order ) {
+		return get_the_title( $order->get_id() );
+	}
+
+	/**
+	 * Given an initialized order object, update the post/postmeta records.
+	 *
+	 * @param WC_Abstract_Order $order Order object.
+	 *
+	 * @return bool Whether the order was updated.
+	 */
+	public function update_order_from_object( $order ) {
+		if ( ! $order->get_id() ) {
+			return false;
+		}
+		$this->update_order_meta_from_object( $order );
+
+		// Add hook to update post_modified date so that it's the same as order. Without this hook, WP will set the modified date to current date, and we will think that posts and orders are out of sync again.
+		add_filter( 'wp_insert_post_data', array( $this, 'update_post_modified_data' ), 10, 2 );
+		$post_data = array(
+			'ID'                 => $order->get_id(),
+			'post_date'          => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getOffsetTimestamp() ),
+			'post_date_gmt'      => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
+			'post_status'        => $this->get_post_status( $order ),
+			'post_parent'        => $order->get_parent_id(),
+			'edit_date'          => true,
+			'post_excerpt'       => method_exists( $order, 'get_customer_note' ) ? $order->get_customer_note() : '',
+			'post_type'          => $order->get_type(),
+			'order_modified'     => ! is_null( $order->get_date_modified() ) ? gmdate( 'Y-m-d H:i:s', $order->get_date_modified( 'edit' )->getOffsetTimestamp() ) : '',
+			'order_modified_gmt' => ! is_null( $order->get_date_modified() ) ? gmdate( 'Y-m-d H:i:s', $order->get_date_modified( 'edit' )->getTimestamp() ) : '',
+		);
+		$updated   = wp_update_post( $post_data );
+		remove_filter( 'wp_insert_post_data', array( $this, 'update_post_modified_data' ) );
+		return $updated;
+	}
+
+	/**
+	 * Change the modified date of the post to match the order's modified date if passed.
+	 *
+	 * @hooked wp_insert_post_data See function update_order_from_object.
+	 *
+	 * @param array $data An array of slashed, sanitized, and processed post data.
+	 * @param array $postarr An array of sanitized (and slashed) but otherwise unmodified post data.
+	 *
+	 * @return array Data with updated modified date.
+	 */
+	public function update_post_modified_data( $data, $postarr ) {
+		if ( ! isset( $postarr['order_modified'] ) || ! isset( $postarr['order_modified_gmt'] ) ) {
+			return $data;
+		}
+
+		$data['post_modified']     = $postarr['order_modified'];
+		$data['post_modified_gmt'] = $postarr['order_modified_gmt'];
+		return $data;
+	}
+
+	/**
+	 * Helper method to update order metadata from intialized order object.
+	 *
+	 * @param WC_Abstract_Order $order Order object.
+	 */
+	private function update_order_meta_from_object( $order ) {
+		if ( is_null( $order->get_meta() ) ) {
+			return;
+		}
+
+		$existing_meta_data = get_post_meta( $order->get_id() );
+
+		foreach ( $order->get_meta_data() as $meta_data ) {
+			if ( isset( $existing_meta_data[ $meta_data->key ] ) ) {
+				if ( $existing_meta_data[ $meta_data->key ] === $meta_data->value ) {
+					unset( $existing_meta_data[ $meta_data->key ] );
+					continue;
+				}
+
+				unset( $existing_meta_data[ $meta_data->key ] );
+				delete_post_meta( $order->get_id(), $meta_data->key );
+			}
+			add_post_meta( $order->get_id(), $meta_data->key, $meta_data->value, false );
+		}
+
+		// Find remaining meta that was deleted from the order but still present in the associated post.
+		// Post meta corresponding to order props is excluded (as it shouldn't be deleted).
+		$keys_to_delete = array_diff(
+			array_keys( $existing_meta_data ),
+			$this->internal_meta_keys,
+			array_keys( $this->get_internal_data_store_key_getters() )
+		);
+
+		foreach ( $keys_to_delete as $meta_key ) {
+			delete_post_meta( $order->get_id(), $meta_key );
+		}
+
+		$this->update_post_meta( $order );
 	}
 }

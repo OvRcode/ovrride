@@ -2,7 +2,7 @@
 /**
  * Sales by category report functionality
  *
- * @package WooCommerce/Admin/Reporting
+ * @package WooCommerce\Admin\Reporting
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,9 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WC_Report_Sales_By_Category
  *
- * @author      WooThemes
- * @category    Admin
- * @package     WooCommerce/Admin/Reports
+ * @package     WooCommerce\Admin\Reports
  * @version     2.1.0
  */
 class WC_Report_Sales_By_Category extends WC_Admin_Report {
@@ -171,11 +169,11 @@ class WC_Report_Sales_By_Category extends WC_Admin_Report {
 
 					switch ( $this->chart_groupby ) {
 						case 'day':
-							$time = strtotime( date( 'Ymd', strtotime( $order_item->post_date ) ) ) * 1000;
+							$time = strtotime( gmdate( 'Ymd', strtotime( $order_item->post_date ) ) ) * 1000;
 							break;
 						case 'month':
 						default:
-							$time = strtotime( date( 'Ym', strtotime( $order_item->post_date ) ) . '01' ) * 1000;
+							$time = strtotime( gmdate( 'Ym', strtotime( $order_item->post_date ) ) . '01' ) * 1000;
 							break;
 					}
 
@@ -244,13 +242,13 @@ class WC_Report_Sales_By_Category extends WC_Admin_Report {
 					// Select all/None
 					jQuery( '.chart-widget' ).on( 'click', '.select_all', function() {
 						jQuery(this).closest( 'div' ).find( 'select option' ).attr( 'selected', 'selected' );
-						jQuery(this).closest( 'div' ).find('select').change();
+						jQuery(this).closest( 'div' ).find('select').trigger( 'change' );
 						return false;
 					});
 
 					jQuery( '.chart-widget').on( 'click', '.select_none', function() {
-						jQuery(this).closest( 'div' ).find( 'select option' ).removeAttr( 'selected' );
-						jQuery(this).closest( 'div' ).find('select').change();
+						jQuery(this).closest( 'div' ).find( 'select option' ).prop( 'selected', false );
+						jQuery(this).closest( 'div' ).find('select').trigger( 'change' );
 						return false;
 					});
 				});
@@ -307,11 +305,11 @@ class WC_Report_Sales_By_Category extends WC_Admin_Report {
 
 					switch ( $this->chart_groupby ) {
 						case 'day':
-							$time = strtotime( date( 'Ymd', strtotime( "+{$i} DAY", $this->start_date ) ) ) * 1000;
+							$time = strtotime( gmdate( 'Ymd', strtotime( "+{$i} DAY", $this->start_date ) ) ) * 1000;
 							break;
 						case 'month':
 						default:
-							$time = strtotime( date( 'Ym', strtotime( "+{$i} MONTH", $this->start_date ) ) . '01' ) * 1000;
+							$time = strtotime( gmdate( 'Ym', strtotime( "+{$i} MONTH", $this->start_date ) ) . '01' ) * 1000;
 							break;
 					}
 
@@ -348,12 +346,16 @@ class WC_Report_Sales_By_Category extends WC_Admin_Report {
 									$width  = $this->barwidth / sizeof( $chart_data );
 									$offset = ( $width * $index );
 									$series = $data['data'];
+
 									foreach ( $series as $key => $series_data ) {
 										$series[ $key ][0] = $series_data[0] + $offset;
 									}
+
+									$series = wp_json_encode( $series );
+
 									echo '{
 											label: "' . esc_js( $data['category'] ) . '",
-											data: jQuery.parseJSON( "' . json_encode( $series ) . '" ),
+											data: JSON.parse( decodeURIComponent( "' . rawurlencode( $series ) . '" ) ),
 											color: "' . $color . '",
 											bars: {
 												fillColor: "' . $color . '",
@@ -407,7 +409,7 @@ class WC_Report_Sales_By_Category extends WC_Admin_Report {
 									tickColor: 'transparent',
 									mode: "time",
 									timeformat: "<?php echo ( 'day' === $this->chart_groupby ) ? '%d %b' : '%b'; ?>",
-									monthNames: <?php echo json_encode( array_values( $wp_locale->month_abbrev ) ); ?>,
+									monthNames: JSON.parse( decodeURIComponent( '<?php echo rawurlencode( wp_json_encode( array_values( $wp_locale->month_abbrev ) ) ); ?>' ) ),
 									tickLength: 1,
 									minTickSize: [1, "<?php echo $this->chart_groupby; ?>"],
 									tickSize: [1, "<?php echo $this->chart_groupby; ?>"],
@@ -426,16 +428,16 @@ class WC_Report_Sales_By_Category extends WC_Admin_Report {
 							}
 						);
 
-						jQuery('.chart-placeholder').resize();
+						jQuery('.chart-placeholder').trigger( 'resize' );
 
 					}
 
 					drawGraph();
 
-					jQuery('.highlight_series').hover(
+					jQuery('.highlight_series').on( 'mouseenter',
 						function() {
 							drawGraph( jQuery(this).data('series') );
-						},
+						} ).on( 'mouseleave',
 						function() {
 							drawGraph();
 						}

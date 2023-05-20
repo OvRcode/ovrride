@@ -4,7 +4,7 @@
  *
  * Simple Class for storing rates.
  *
- * @package WooCommerce/Classes/Shipping
+ * @package WooCommerce\Classes\Shipping
  * @since   2.6.0
  */
 
@@ -65,6 +65,9 @@ class WC_Shipping_Rate {
 	 * @return bool
 	 */
 	public function __isset( $key ) {
+		if ( 'meta_data' === $key ) {
+			wc_doing_it_wrong( __FUNCTION__, __( 'Use `array_key_exists` to check for meta_data on WC_Shipping_Rate to get the correct result.', 'woocommerce' ), '6.0' );
+		}
 		return isset( $this->data[ $key ] );
 	}
 
@@ -162,7 +165,7 @@ class WC_Shipping_Rate {
 	}
 
 	/**
-	 * Set ID for the rate. This is usually a combination of the method and instance IDs.
+	 * Get ID for the rate. This is usually a combination of the method and instance IDs.
 	 *
 	 * @since 3.2.0
 	 * @return string
@@ -172,7 +175,7 @@ class WC_Shipping_Rate {
 	}
 
 	/**
-	 * Set shipping method ID the rate belongs to.
+	 * Get shipping method ID the rate belongs to.
 	 *
 	 * @since 3.2.0
 	 * @return string
@@ -182,7 +185,7 @@ class WC_Shipping_Rate {
 	}
 
 	/**
-	 * Set instance ID the rate belongs to.
+	 * Get instance ID the rate belongs to.
 	 *
 	 * @since 3.2.0
 	 * @return int
@@ -192,7 +195,7 @@ class WC_Shipping_Rate {
 	}
 
 	/**
-	 * Set rate label.
+	 * Get rate label.
 	 *
 	 * @return string
 	 */
@@ -201,7 +204,7 @@ class WC_Shipping_Rate {
 	}
 
 	/**
-	 * Set rate cost.
+	 * Get rate cost.
 	 *
 	 * @since 3.2.0
 	 * @return string
@@ -211,7 +214,7 @@ class WC_Shipping_Rate {
 	}
 
 	/**
-	 * Set rate taxes.
+	 * Get rate taxes.
 	 *
 	 * @since 3.2.0
 	 * @return array
@@ -223,10 +226,10 @@ class WC_Shipping_Rate {
 	/**
 	 * Get shipping tax.
 	 *
-	 * @return array
+	 * @return float
 	 */
 	public function get_shipping_tax() {
-		return apply_filters( 'woocommerce_get_shipping_tax', count( $this->taxes ) > 0 && ! WC()->customer->get_is_vat_exempt() ? array_sum( $this->taxes ) : 0, $this );
+		return apply_filters( 'woocommerce_get_shipping_tax', count( $this->taxes ) > 0 && ! WC()->customer->get_is_vat_exempt() ? (float) array_sum( $this->taxes ) : 0.0, $this );
 	}
 
 	/**

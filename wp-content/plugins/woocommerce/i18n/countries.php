@@ -3,16 +3,19 @@
  * Countries
  *
  * Returns an array of countries and codes.
+ * Country codes and names should follow the Unicode CLDR recommendation (https://cldr.unicode.org/translation/displaynames/countryregion-territory-names).
  *
- * @package WooCommerce/i18n
- * @version 2.5.0
+ * See https://github.com/unicode-org/cldr/blob/master/common/subdivisions/en.xml
+ *
+ * @package WooCommerce\i18n
+ * @version 3.8.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
 return array(
 	'AF' => __( 'Afghanistan', 'woocommerce' ),
-	'AX' => __( '&#197;land Islands', 'woocommerce' ),
+	'AX' => __( 'Åland Islands', 'woocommerce' ),
 	'AL' => __( 'Albania', 'woocommerce' ),
 	'DZ' => __( 'Algeria', 'woocommerce' ),
 	'AS' => __( 'American Samoa', 'woocommerce' ),
@@ -45,7 +48,6 @@ return array(
 	'BV' => __( 'Bouvet Island', 'woocommerce' ),
 	'BR' => __( 'Brazil', 'woocommerce' ),
 	'IO' => __( 'British Indian Ocean Territory', 'woocommerce' ),
-	'VG' => __( 'British Virgin Islands', 'woocommerce' ),
 	'BN' => __( 'Brunei', 'woocommerce' ),
 	'BG' => __( 'Bulgaria', 'woocommerce' ),
 	'BF' => __( 'Burkina Faso', 'woocommerce' ),
@@ -140,8 +142,8 @@ return array(
 	'LI' => __( 'Liechtenstein', 'woocommerce' ),
 	'LT' => __( 'Lithuania', 'woocommerce' ),
 	'LU' => __( 'Luxembourg', 'woocommerce' ),
-	'MO' => __( 'Macao S.A.R., China', 'woocommerce' ),
-	'MK' => __( 'Macedonia', 'woocommerce' ),
+	'MO' => __( 'Macao', 'woocommerce' ),
+	'MK' => __( 'North Macedonia', 'woocommerce' ),
 	'MG' => __( 'Madagascar', 'woocommerce' ),
 	'MW' => __( 'Malawi', 'woocommerce' ),
 	'MY' => __( 'Malaysia', 'woocommerce' ),
@@ -223,7 +225,7 @@ return array(
 	'SD' => __( 'Sudan', 'woocommerce' ),
 	'SR' => __( 'Suriname', 'woocommerce' ),
 	'SJ' => __( 'Svalbard and Jan Mayen', 'woocommerce' ),
-	'SZ' => __( 'Swaziland', 'woocommerce' ),
+	'SZ' => __( 'Eswatini', 'woocommerce' ),
 	'SE' => __( 'Sweden', 'woocommerce' ),
 	'CH' => __( 'Switzerland', 'woocommerce' ),
 	'SY' => __( 'Syria', 'woocommerce' ),
@@ -247,13 +249,14 @@ return array(
 	'GB' => __( 'United Kingdom (UK)', 'woocommerce' ),
 	'US' => __( 'United States (US)', 'woocommerce' ),
 	'UM' => __( 'United States (US) Minor Outlying Islands', 'woocommerce' ),
-	'VI' => __( 'United States (US) Virgin Islands', 'woocommerce' ),
 	'UY' => __( 'Uruguay', 'woocommerce' ),
 	'UZ' => __( 'Uzbekistan', 'woocommerce' ),
 	'VU' => __( 'Vanuatu', 'woocommerce' ),
 	'VA' => __( 'Vatican', 'woocommerce' ),
 	'VE' => __( 'Venezuela', 'woocommerce' ),
 	'VN' => __( 'Vietnam', 'woocommerce' ),
+	'VG' => __( 'Virgin Islands (British)', 'woocommerce' ),
+	'VI' => __( 'Virgin Islands (US)', 'woocommerce' ),
 	'WF' => __( 'Wallis and Futuna', 'woocommerce' ),
 	'EH' => __( 'Western Sahara', 'woocommerce' ),
 	'WS' => __( 'Samoa', 'woocommerce' ),

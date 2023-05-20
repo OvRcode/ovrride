@@ -4,7 +4,7 @@
  *
  * Functions for REST specific things.
  *
- * @package WooCommerce/Functions
+ * @package WooCommerce\Functions
  * @version 2.6.0
  */
 
@@ -46,13 +46,15 @@ function wc_rest_prepare_date_response( $date, $utc = true ) {
  */
 function wc_rest_allowed_image_mime_types() {
 	return apply_filters(
-		'woocommerce_rest_allowed_image_mime_types', array(
+		'woocommerce_rest_allowed_image_mime_types',
+		array(
 			'jpg|jpeg|jpe' => 'image/jpeg',
 			'gif'          => 'image/gif',
 			'png'          => 'image/png',
 			'bmp'          => 'image/bmp',
 			'tiff|tif'     => 'image/tiff',
 			'ico'          => 'image/x-icon',
+			'webp'         => 'image/webp',
 		)
 	);
 }
@@ -65,7 +67,6 @@ function wc_rest_allowed_image_mime_types() {
  * @return array|WP_Error Attachment data or error message.
  */
 function wc_rest_upload_image_from_url( $image_url ) {
-	$file_name  = basename( current( explode( '?', $image_url ) ) );
 	$parsed_url = wp_parse_url( $image_url );
 
 	// Check parsed URL.
@@ -77,68 +78,49 @@ function wc_rest_upload_image_from_url( $image_url ) {
 	// Ensure url is valid.
 	$image_url = esc_url_raw( $image_url );
 
-	// Get the file.
-	$response = wp_safe_remote_get(
-		$image_url, array(
-			'timeout' => 10,
-		)
-	);
+	// download_url function is part of wp-admin.
+	if ( ! function_exists( 'download_url' ) ) {
+		include_once ABSPATH . 'wp-admin/includes/file.php';
+	}
 
-	if ( is_wp_error( $response ) ) {
-		return new WP_Error( 'woocommerce_rest_invalid_remote_image_url',
+	$file_array         = array();
+	$file_array['name'] = basename( current( explode( '?', $image_url ) ) );
+
+	// Download file to temp location.
+	$file_array['tmp_name'] = download_url( $image_url );
+
+	// If error storing temporarily, return the error.
+	if ( is_wp_error( $file_array['tmp_name'] ) ) {
+		return new WP_Error(
+			'woocommerce_rest_invalid_remote_image_url',
 			/* translators: %s: image URL */
 			sprintf( __( 'Error getting remote image %s.', 'woocommerce' ), $image_url ) . ' '
 			/* translators: %s: error message */
-			. sprintf( __( 'Error: %s.', 'woocommerce' ), $response->get_error_message() ), array( 'status' => 400 )
+			. sprintf( __( 'Error: %s', 'woocommerce' ), $file_array['tmp_name']->get_error_message() ),
+			array( 'status' => 400 )
 		);
-	} elseif ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-		/* translators: %s: image URL */
-		return new WP_Error( 'woocommerce_rest_invalid_remote_image_url', sprintf( __( 'Error getting remote image %s.', 'woocommerce' ), $image_url ), array( 'status' => 400 ) );
 	}
 
-	// Ensure we have a file name and type.
-	$wp_filetype = wp_check_filetype( $file_name, wc_rest_allowed_image_mime_types() );
+	// Do the validation and storage stuff.
+	$file = wp_handle_sideload(
+		$file_array,
+		array(
+			'test_form' => false,
+			'mimes'     => wc_rest_allowed_image_mime_types(),
+		),
+		current_time( 'Y/m' )
+	);
 
-	if ( ! $wp_filetype['type'] ) {
-		$headers = wp_remote_retrieve_headers( $response );
-		if ( isset( $headers['content-disposition'] ) && strstr( $headers['content-disposition'], 'filename=' ) ) {
-			$content = explode( 'filename=', $headers['content-disposition'] );
-			$disposition = end( $content );
-			$disposition = sanitize_file_name( $disposition );
-			$file_name   = $disposition;
-		} elseif ( isset( $headers['content-type'] ) && strstr( $headers['content-type'], 'image/' ) ) {
-			$file_name = 'image.' . str_replace( 'image/', '', $headers['content-type'] );
-		}
-		unset( $headers );
+	if ( isset( $file['error'] ) ) {
+		@unlink( $file_array['tmp_name'] ); // @codingStandardsIgnoreLine.
 
-		// Recheck filetype.
-		$wp_filetype = wp_check_filetype( $file_name, wc_rest_allowed_image_mime_types() );
-
-		if ( ! $wp_filetype['type'] ) {
-			return new WP_Error( 'woocommerce_rest_invalid_image_type', __( 'Invalid image type.', 'woocommerce' ), array( 'status' => 400 ) );
-		}
+		/* translators: %s: error message */
+		return new WP_Error( 'woocommerce_rest_invalid_image', sprintf( __( 'Invalid image: %s', 'woocommerce' ), $file['error'] ), array( 'status' => 400 ) );
 	}
 
-	// Upload the file.
-	$upload = wp_upload_bits( $file_name, '', wp_remote_retrieve_body( $response ) );
+	do_action( 'woocommerce_rest_api_uploaded_image_from_url', $file, $image_url );
 
-	if ( $upload['error'] ) {
-		return new WP_Error( 'woocommerce_rest_image_upload_error', $upload['error'], array( 'status' => 400 ) );
-	}
-
-	// Get filesize.
-	$filesize = filesize( $upload['file'] );
-
-	if ( ! $filesize ) {
-		@unlink( $upload['file'] ); // @codingStandardsIgnoreLine
-		unset( $upload );
-
-		return new WP_Error( 'woocommerce_rest_image_upload_file_error', __( 'Zero size file downloaded.', 'woocommerce' ), array( 'status' => 400 ) );
-	}
-
-	do_action( 'woocommerce_rest_api_uploaded_image_from_url', $upload, $image_url );
-
-	return $upload;
+	return $file;
 }
 
 /**
@@ -158,7 +140,7 @@ function wc_rest_set_uploaded_image_as_attachment( $upload, $id = 0 ) {
 		include_once ABSPATH . 'wp-admin/includes/image.php';
 	}
 
-	$image_meta = wp_read_image_metadata( $upload['file'] );
+	$image_meta = @wp_read_image_metadata( $upload['file'] );
 	if ( $image_meta ) {
 		if ( trim( $image_meta['title'] ) && ! is_numeric( sanitize_title( $image_meta['title'] ) ) ) {
 			$title = wc_clean( $image_meta['title'] );
@@ -178,7 +160,7 @@ function wc_rest_set_uploaded_image_as_attachment( $upload, $id = 0 ) {
 
 	$attachment_id = wp_insert_attachment( $attachment, $upload['file'], $id );
 	if ( ! is_wp_error( $attachment_id ) ) {
-		wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
+		@wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
 	}
 
 	return $attachment_id;
@@ -188,7 +170,7 @@ function wc_rest_set_uploaded_image_as_attachment( $upload, $id = 0 ) {
  * Validate reports request arguments.
  *
  * @since 2.6.0
- * @param mixed           $value   Value to valdate.
+ * @param mixed           $value   Value to validate.
  * @param WP_REST_Request $request Request instance.
  * @param string          $param   Param to validate.
  * @return WP_Error|boolean
@@ -228,9 +210,9 @@ function wc_rest_validate_reports_request_arg( $value, $request, $param ) {
 function wc_rest_urlencode_rfc3986( $value ) {
 	if ( is_array( $value ) ) {
 		return array_map( 'wc_rest_urlencode_rfc3986', $value );
-	} else {
-		return str_replace( array( '+', '%7E' ), array( ' ', '~' ), rawurlencode( $value ) );
 	}
+
+	return str_replace( array( '+', '%7E' ), array( ' ', '~' ), rawurlencode( $value ) );
 }
 
 /**
@@ -273,13 +255,29 @@ function wc_rest_check_post_permissions( $post_type, $context = 'read', $object_
 function wc_rest_check_user_permissions( $context = 'read', $object_id = 0 ) {
 	$contexts = array(
 		'read'   => 'list_users',
-		'create' => 'edit_users',
+		'create' => 'promote_users', // Check if current user can create users, shop managers are not allowed to create users.
 		'edit'   => 'edit_users',
 		'delete' => 'delete_users',
-		'batch'  => 'edit_users',
+		'batch'  => 'promote_users',
 	);
 
-	$permission = current_user_can( $contexts[ $context ], $object_id );
+	// Check to allow shop_managers to manage only customers.
+	if ( in_array( $context, array( 'edit', 'delete' ), true ) && wc_current_user_has_role( 'shop_manager' ) ) {
+		$permission                  = false;
+		$user_data                   = get_userdata( $object_id );
+		$shop_manager_editable_roles = apply_filters( 'woocommerce_shop_manager_editable_roles', array( 'customer' ) );
+
+		if ( isset( $user_data->roles ) ) {
+			$can_manage_users = array_intersect( $user_data->roles, array_unique( $shop_manager_editable_roles ) );
+
+			// Check if Shop Manager can edit customer or with the is same shop manager.
+			if ( 0 < count( $can_manage_users ) || intval( $object_id ) === intval( get_current_user_id() ) ) {
+				$permission = current_user_can( $contexts[ $context ], $object_id );
+			}
+		}
+	} else {
+		$permission = current_user_can( $contexts[ $context ], $object_id );
+	}
 
 	return apply_filters( 'woocommerce_rest_check_permissions', $permission, $context, $object_id, 'user' );
 }
@@ -331,4 +329,37 @@ function wc_rest_check_manager_permissions( $object, $context = 'read' ) {
 	$permission = current_user_can( $objects[ $object ] );
 
 	return apply_filters( 'woocommerce_rest_check_permissions', $permission, $context, 0, $object );
+}
+
+/**
+ * Check product reviews permissions on REST API.
+ *
+ * @since 3.5.0
+ * @param string $context   Request context.
+ * @param string $object_id Object ID.
+ * @return bool
+ */
+function wc_rest_check_product_reviews_permissions( $context = 'read', $object_id = 0 ) {
+	$permission = false;
+	$contexts   = array(
+		'read'   => 'moderate_comments',
+		'create' => 'edit_products',
+		'edit'   => 'edit_products',
+		'delete' => 'edit_products',
+		'batch'  => 'edit_products',
+	);
+
+	if ( $object_id > 0 ) {
+		$object = get_comment( $object_id );
+
+		if ( ! is_a( $object, 'WP_Comment' ) || get_comment_type( $object ) !== 'review' ) {
+			return false;
+		}
+	}
+
+	if ( isset( $contexts[ $context ] ) ) {
+		$permission = current_user_can( $contexts[ $context ], $object_id );
+	}
+
+	return apply_filters( 'woocommerce_rest_check_permissions', $permission, $context, $object_id, 'product_review' );
 }

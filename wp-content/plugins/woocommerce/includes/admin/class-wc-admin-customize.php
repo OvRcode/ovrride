@@ -2,10 +2,8 @@
 /**
  * Setup customize items.
  *
- * @author   WooCommerce
- * @category Admin
- * @package  WooCommerce/Admin/Customize
- * @version  3.1.0
+ * @package WooCommerce\Admin\Customize
+ * @version 3.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -38,8 +36,8 @@ if ( ! class_exists( 'WC_Admin_Customize', false ) ) :
 		 */
 		public function register_customize_nav_menu_item_types( $item_types ) {
 			$item_types[] = array(
-				'title'      => __( 'WooCommerce endpoints', 'woocommerce' ),
-				'type_label' => __( 'WooCommerce endpoint', 'woocommerce' ),
+				'title'      => __( 'WooCommerce Endpoints', 'woocommerce' ),
+				'type_label' => __( 'WooCommerce Endpoint', 'woocommerce' ),
 				'type'       => 'woocommerce_nav',
 				'object'     => 'woocommerce_endpoint',
 			);

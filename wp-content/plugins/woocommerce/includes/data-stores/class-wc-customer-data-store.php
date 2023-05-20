@@ -5,6 +5,9 @@
  * @package WooCommerce\DataStores
  */
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+use Automattic\WooCommerce\Internal\DataStores\Orders\OrdersTableDataStore;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -59,11 +62,14 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 		'shipping_first_name',
 		'shipping_last_name',
 		'shipping_company',
+		'shipping_phone',
 		'wptests_capabilities',
 		'wptests_user_level',
 		'syntax_highlighting',
 		'_order_count',
 		'_money_spent',
+		'_last_order',
+		'_woocommerce_tracks_anon_id',
 	);
 
 	/**
@@ -117,11 +123,13 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 
 		wp_update_user(
 			apply_filters(
-				'woocommerce_update_customer_args', array(
+				'woocommerce_update_customer_args',
+				array(
 					'ID'           => $customer->get_id(),
 					'role'         => $customer->get_role(),
 					'display_name' => $customer->get_display_name(),
-				), $customer
+				),
+				$customer
 			)
 		);
 		$wp_user = new WP_User( $customer->get_id() );
@@ -129,7 +137,7 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 		$customer->set_date_modified( get_user_meta( $customer->get_id(), 'last_update', true ) );
 		$customer->save_meta_data();
 		$customer->apply_changes();
-		do_action( 'woocommerce_new_customer', $customer->get_id() );
+		do_action( 'woocommerce_new_customer', $customer->get_id(), $customer );
 	}
 
 	/**
@@ -147,17 +155,13 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 			throw new Exception( __( 'Invalid customer.', 'woocommerce' ) );
 		}
 
-		// Only users on this site should be read.
-		if ( is_multisite() && ! is_user_member_of_blog( $customer->get_id() ) ) {
-			throw new Exception( __( 'Invalid customer.', 'woocommerce' ) );
-		}
-
 		$customer_id = $customer->get_id();
 
-		// Load meta but exclude deprecated props.
+		// Load meta but exclude deprecated props and parent keys.
 		$user_meta = array_diff_key(
-			array_map( 'wc_flatten_meta_callback', get_user_meta( $customer_id ) ),
-			array_flip( array( 'country', 'state', 'postcode', 'city', 'address', 'address_2', 'default', 'location' ) )
+			array_change_key_case( array_map( 'wc_flatten_meta_callback', get_user_meta( $customer_id ) ) ),
+			array_flip( array( 'country', 'state', 'postcode', 'city', 'address', 'address_2', 'default', 'location' ) ),
+			array_change_key_case( (array) $user_object->data )
 		);
 
 		$customer->set_props( $user_meta );
@@ -186,11 +190,13 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 	public function update( &$customer ) {
 		wp_update_user(
 			apply_filters(
-				'woocommerce_update_customer_args', array(
+				'woocommerce_update_customer_args',
+				array(
 					'ID'           => $customer->get_id(),
 					'user_email'   => $customer->get_email(),
 					'display_name' => $customer->get_display_name(),
-				), $customer
+				),
+				$customer
 			)
 		);
 
@@ -209,7 +215,7 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 		$customer->set_date_modified( get_user_meta( $customer->get_id(), 'last_update', true ) );
 		$customer->save_meta_data();
 		$customer->apply_changes();
-		do_action( 'woocommerce_update_customer', $customer->get_id() );
+		do_action( 'woocommerce_update_customer', $customer->get_id(), $customer );
 	}
 
 	/**
@@ -225,7 +231,8 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 		}
 
 		$args = wp_parse_args(
-			$args, array(
+			$args,
+			array(
 				'reassign' => 0,
 			)
 		);
@@ -298,6 +305,7 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 			'shipping_state'      => 'shipping_state',
 			'shipping_postcode'   => 'shipping_postcode',
 			'shipping_country'    => 'shipping_country',
+			'shipping_phone'      => 'shipping_phone',
 		);
 
 		foreach ( $shipping_address_props as $meta_key => $prop ) {
@@ -316,6 +324,15 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 	}
 
 	/**
+	 * Check if the usage of the custom orders table is enabled.
+	 *
+	 * @return bool
+	 */
+	private function is_cot_in_use(): bool {
+		return wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
+	}
+
+	/**
 	 * Gets the customers last order.
 	 *
 	 * @since 3.0.0
@@ -323,26 +340,59 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 	 * @return WC_Order|false
 	 */
 	public function get_last_order( &$customer ) {
-		global $wpdb;
-
-		$last_order = $wpdb->get_var(
-			// phpcs:disable WordPress.WP.PreparedSQL.NotPrepared
-			"SELECT posts.ID
-			FROM $wpdb->posts AS posts
-			LEFT JOIN {$wpdb->postmeta} AS meta on posts.ID = meta.post_id
-			WHERE meta.meta_key = '_customer_user'
-			AND   meta.meta_value = '" . esc_sql( $customer->get_id() ) . "'
-			AND   posts.post_type = 'shop_order'
-			AND   posts.post_status IN ( '" . implode( "','", array_map( 'esc_sql', array_keys( wc_get_order_statuses() ) ) ) . "' )
-			ORDER BY posts.ID DESC"
-			// phpcs:enable
+		//phpcs:disable WooCommerce.Commenting.CommentHooks.MissingSinceComment
+		/**
+		 * Filters the id of the last order from a given customer.
+		 *
+		 * @param string @last_order_id The last order id as retrieved from the database.
+		 * @param WC_Customer The customer whose last order id is being retrieved.
+		 * @return string The actual last order id to use.
+		 */
+		$last_order_id = apply_filters(
+			'woocommerce_customer_get_last_order',
+			get_user_meta( $customer->get_id(), '_last_order', true ),
+			$customer
 		);
+		//phpcs:enable WooCommerce.Commenting.CommentHooks.MissingSinceComment
 
-		if ( ! $last_order ) {
+		if ( '' === $last_order_id ) {
+			global $wpdb;
+
+			$order_statuses_sql = "( '" . implode( "','", array_map( 'esc_sql', array_keys( wc_get_order_statuses() ) ) ) . "' )";
+
+			//phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( $this->is_cot_in_use() ) {
+				$sql           = $wpdb->prepare(
+					'SELECT id FROM ' . OrdersTableDataStore::get_orders_table_name() . "
+					WHERE customer_id = %d
+					AND status in $order_statuses_sql
+					ORDER BY id DESC
+					LIMIT 1",
+					$customer->get_id()
+				);
+				$last_order_id = $wpdb->get_var( $sql );
+			} else {
+				$last_order_id = $wpdb->get_var(
+					"SELECT posts.ID
+				FROM $wpdb->posts AS posts
+				LEFT JOIN {$wpdb->postmeta} AS meta on posts.ID = meta.post_id
+				WHERE meta.meta_key = '_customer_user'
+				AND   meta.meta_value = '" . esc_sql( $customer->get_id() ) . "'
+				AND   posts.post_type = 'shop_order'
+				AND   posts.post_status IN $order_statuses_sql
+				ORDER BY posts.ID DESC
+				LIMIT 1"
+				);
+			}
+			//phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			update_user_meta( $customer->get_id(), '_last_order', $last_order_id );
+		}
+
+		if ( ! $last_order_id ) {
 			return false;
 		}
 
-		return wc_get_order( absint( $last_order ) );
+		return wc_get_order( absint( $last_order_id ) );
 	}
 
 	/**
@@ -353,22 +403,39 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 	 * @return integer
 	 */
 	public function get_order_count( &$customer ) {
-		$count = get_user_meta( $customer->get_id(), '_order_count', true );
+		$count = apply_filters(
+			'woocommerce_customer_get_order_count',
+			get_user_meta( $customer->get_id(), '_order_count', true ),
+			$customer
+		);
+
+		$order_statuses_sql = "( '" . implode( "','", array_map( 'esc_sql', array_keys( wc_get_order_statuses() ) ) ) . "' )";
 
 		if ( '' === $count ) {
 			global $wpdb;
 
-			$count = $wpdb->get_var(
-				// phpcs:disable WordPress.WP.PreparedSQL.NotPrepared
-				"SELECT COUNT(*)
+			//phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( $this->is_cot_in_use() ) {
+				$sql   = $wpdb->prepare(
+					'SELECT COUNT(id) FROM ' . OrdersTableDataStore::get_orders_table_name() . "
+					WHERE customer_id = %d
+					AND status in $order_statuses_sql",
+					$customer->get_id()
+				);
+				$count = $wpdb->get_var( $sql );
+			} else {
+				$count = $wpdb->get_var(
+					"SELECT COUNT(*)
 				FROM $wpdb->posts as posts
 				LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
 				WHERE   meta.meta_key = '_customer_user'
 				AND     posts.post_type = 'shop_order'
-				AND     posts.post_status IN ( '" . implode( "','", array_map( 'esc_sql', array_keys( wc_get_order_statuses() ) ) ) . "' )
+				AND     posts.post_status IN $order_statuses_sql
 				AND     meta_value = '" . esc_sql( $customer->get_id() ) . "'"
-				// phpcs:enable
-			);
+				);
+			}
+			//phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
 			update_user_meta( $customer->get_id(), '_order_count', $count );
 		}
 
@@ -392,24 +459,42 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 		if ( '' === $spent ) {
 			global $wpdb;
 
-			$statuses = array_map( 'esc_sql', wc_get_is_paid_statuses() );
-			$spent    = $wpdb->get_var(
-				// phpcs:disable WordPress.WP.PreparedSQL.NotPrepared
-				apply_filters(
-					'woocommerce_customer_get_total_spent_query',
-					"SELECT SUM(meta2.meta_value)
+			$statuses     = array_map( 'esc_sql', wc_get_is_paid_statuses() );
+			$statuses_sql = "( 'wc-" . implode( "','wc-", $statuses ) . "' )";
+
+			//phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( $this->is_cot_in_use() ) {
+				$sql = $wpdb->prepare(
+					'SELECT SUM(total_amount) FROM ' . OrdersTableDataStore::get_orders_table_name() . "
+					WHERE customer_id = %d
+					AND status in $statuses_sql",
+					$customer->get_id()
+				);
+			} else {
+				$sql = "SELECT SUM(meta2.meta_value)
 					FROM $wpdb->posts as posts
 					LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
 					LEFT JOIN {$wpdb->postmeta} AS meta2 ON posts.ID = meta2.post_id
 					WHERE   meta.meta_key       = '_customer_user'
 					AND     meta.meta_value     = '" . esc_sql( $customer->get_id() ) . "'
 					AND     posts.post_type     = 'shop_order'
-					AND     posts.post_status   IN ( 'wc-" . implode( "','wc-", $statuses ) . "' )
-					AND     meta2.meta_key      = '_order_total'",
-					$customer
-				)
-				// phpcs:enable
-			);
+					AND     posts.post_status   IN $statuses_sql
+					AND     meta2.meta_key      = '_order_total'";
+			}
+
+			//phpcs:disable WooCommerce.Commenting.CommentHooks.MissingSinceComment
+			/**
+			 * Filters the SQL query used to get the combined total of all the orders from a given customer.
+			 *
+			 * @param string The SQL query to use.
+			 * @param WC_Customer The customer to get the total spent for.
+			 * @return string The actual SQL query to use.
+			 */
+			$sql = apply_filters( 'woocommerce_customer_get_total_spent_query', $sql, $customer );
+			//phpcs:enable WooCommerce.Commenting.CommentHooks.MissingSinceComment
+
+			$spent = $wpdb->get_var( $sql );
+			//phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			if ( ! $spent ) {
 				$spent = 0;
@@ -437,18 +522,23 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 
 		$query = new WP_User_Query(
 			apply_filters(
-				'woocommerce_customer_search_customers', array(
+				'woocommerce_customer_search_customers',
+				array(
 					'search'         => '*' . esc_attr( $term ) . '*',
 					'search_columns' => array( 'user_login', 'user_url', 'user_email', 'user_nicename', 'display_name' ),
 					'fields'         => 'ID',
 					'number'         => $limit,
-				), $term, $limit, 'main_query'
+				),
+				$term,
+				$limit,
+				'main_query'
 			)
 		);
 
 		$query2 = new WP_User_Query(
 			apply_filters(
-				'woocommerce_customer_search_customers', array(
+				'woocommerce_customer_search_customers',
+				array(
 					'fields'     => 'ID',
 					'number'     => $limit,
 					'meta_query' => array(
@@ -464,7 +554,10 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 							'compare' => 'LIKE',
 						),
 					),
-				), $term, $limit, 'meta_query'
+				),
+				$term,
+				$limit,
+				'meta_query'
 			)
 		);
 
@@ -475,5 +568,29 @@ class WC_Customer_Data_Store extends WC_Data_Store_WP implements WC_Customer_Dat
 		}
 
 		return $results;
+	}
+
+	/**
+	 * Get all user ids who have `billing_email` set to any of the email passed in array.
+	 *
+	 * @param array $emails List of emails to check against.
+	 *
+	 * @return array
+	 */
+	public function get_user_ids_for_billing_email( $emails ) {
+		$emails      = array_unique( array_map( 'strtolower', array_map( 'sanitize_email', $emails ) ) );
+		$users_query = new WP_User_Query(
+			array(
+				'fields'     => 'ID',
+				'meta_query' => array(
+					array(
+						'key'     => 'billing_email',
+						'value'   => $emails,
+						'compare' => 'IN',
+					),
+				),
+			)
+		);
+		return array_unique( $users_query->get_results() );
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * WooCommerce General Settings
  *
- * @package WooCommerce/Admin
+ * @package WooCommerce\Admin
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -27,11 +27,11 @@ class WC_Settings_General extends WC_Settings_Page {
 	}
 
 	/**
-	 * Get settings array.
+	 * Get settings or the default section.
 	 *
 	 * @return array
 	 */
-	public function get_settings() {
+	protected function get_settings_for_default_section() {
 
 		$currency_code_options = get_woocommerce_currencies();
 
@@ -39,19 +39,8 @@ class WC_Settings_General extends WC_Settings_Page {
 			$currency_code_options[ $code ] = $name . ' (' . get_woocommerce_currency_symbol( $code ) . ')';
 		}
 
-		$woocommerce_default_customer_address_options = array(
-			''                 => __( 'No location by default', 'woocommerce' ),
-			'base'             => __( 'Shop base address', 'woocommerce' ),
-			'geolocation'      => __( 'Geolocate', 'woocommerce' ),
-			'geolocation_ajax' => __( 'Geolocate (with page caching support)', 'woocommerce' ),
-		);
-
-		if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
-			unset( $woocommerce_default_customer_address_options['geolocation'], $woocommerce_default_customer_address_options['geolocation_ajax'] );
-		}
-
-		$settings = apply_filters(
-			'woocommerce_general_settings', array(
+		$settings =
+			array(
 
 				array(
 					'title' => __( 'Store Address', 'woocommerce' ),
@@ -91,7 +80,7 @@ class WC_Settings_General extends WC_Settings_Page {
 					'title'    => __( 'Country / State', 'woocommerce' ),
 					'desc'     => __( 'The country and state or province, if any, in which your business is located.', 'woocommerce' ),
 					'id'       => 'woocommerce_default_country',
-					'default'  => 'GB',
+					'default'  => 'US:CA',
 					'type'     => 'single_select_country',
 					'desc_tip' => true,
 				),
@@ -181,10 +170,15 @@ class WC_Settings_General extends WC_Settings_Page {
 					'title'    => __( 'Default customer location', 'woocommerce' ),
 					'id'       => 'woocommerce_default_customer_address',
 					'desc_tip' => __( 'This option determines a customers default location. The MaxMind GeoLite Database will be periodically downloaded to your wp-content directory if using geolocation.', 'woocommerce' ),
-					'default'  => 'geolocation',
+					'default'  => 'base',
 					'type'     => 'select',
 					'class'    => 'wc-enhanced-select',
-					'options'  => $woocommerce_default_customer_address_options,
+					'options'  => array(
+						''                 => __( 'No location by default', 'woocommerce' ),
+						'base'             => __( 'Shop country/region', 'woocommerce' ),
+						'geolocation'      => __( 'Geolocate', 'woocommerce' ),
+						'geolocation_ajax' => __( 'Geolocate (with page caching support)', 'woocommerce' ),
+					),
 				),
 
 				array(
@@ -234,7 +228,7 @@ class WC_Settings_General extends WC_Settings_Page {
 					'title'    => __( 'Currency', 'woocommerce' ),
 					'desc'     => __( 'This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.', 'woocommerce' ),
 					'id'       => 'woocommerce_currency',
-					'default'  => 'GBP',
+					'default'  => 'USD',
 					'type'     => 'select',
 					'class'    => 'wc-enhanced-select',
 					'desc_tip' => true,
@@ -295,11 +289,9 @@ class WC_Settings_General extends WC_Settings_Page {
 					'type' => 'sectionend',
 					'id'   => 'pricing_options',
 				),
+			);
 
-			)
-		);
-
-		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings );
+		return apply_filters( 'woocommerce_general_settings', $settings );
 	}
 
 	/**
@@ -314,68 +306,6 @@ class WC_Settings_General extends WC_Settings_Page {
 		echo '<div class="color_box">' . wc_help_tip( $desc ) . '
 			<input name="' . esc_attr( $id ) . '" id="' . esc_attr( $id ) . '" type="text" value="' . esc_attr( $value ) . '" class="colorpick" /> <div id="colorPickerDiv_' . esc_attr( $id ) . '" class="colorpickdiv"></div>
 		</div>';
-	}
-
-	/**
-	 * Show a notice showing where the store notice setting has moved.
-	 *
-	 * @since 3.3.1
-	 * @todo remove in next major release.
-	 */
-	private function store_notice_setting_moved_notice() {
-		if ( get_user_meta( get_current_user_id(), 'dismissed_store_notice_setting_moved_notice', true ) ) {
-			return;
-		}
-		?>
-		<div id="message" class="updated woocommerce-message inline">
-			<a class="woocommerce-message-close notice-dismiss" style="top:0;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'wc-hide-notice', 'store_notice_setting_moved' ), 'woocommerce_hide_notices_nonce', '_wc_notice_nonce' ) ); ?>"><?php esc_html_e( 'Dismiss', 'woocommerce' ); ?></a>
-
-			<p>
-				<?php
-				echo wp_kses(
-					sprintf(
-						/* translators: %s: URL to customizer. */
-						__( 'Looking for the store notice setting? It can now be found <a href="%s">in the Customizer</a>.', 'woocommerce' ), esc_url(
-							add_query_arg(
-								array(
-									'autofocus' => array(
-										'panel' => 'woocommerce',
-									),
-									'url'       => wc_get_page_permalink( 'shop' ),
-								), admin_url( 'customize.php' )
-							)
-						)
-					), array(
-						'a' => array(
-							'href'  => array(),
-							'title' => array(),
-						),
-					)
-				);
-				?>
-			</p>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Output the settings.
-	 */
-	public function output() {
-		$settings = $this->get_settings();
-
-		$this->store_notice_setting_moved_notice();
-
-		WC_Admin_Settings::output_fields( $settings );
-	}
-
-	/**
-	 * Save settings.
-	 */
-	public function save() {
-		$settings = $this->get_settings();
-
-		WC_Admin_Settings::save_fields( $settings );
 	}
 }
 

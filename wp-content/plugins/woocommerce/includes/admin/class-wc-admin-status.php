@@ -2,9 +2,11 @@
 /**
  * Debug/Status page
  *
- * @package WooCommerce/Admin/System Status
+ * @package WooCommerce\Admin\System Status
  * @version 2.2.0
  */
+
+use Automattic\Jetpack\Constants;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,21 +19,26 @@ class WC_Admin_Status {
 	 * Handles output of the reports page in admin.
 	 */
 	public static function output() {
-		include_once dirname( __FILE__ ) . '/views/html-admin-page-status.php';
+		include_once __DIR__ . '/views/html-admin-page-status.php';
 	}
 
 	/**
 	 * Handles output of report.
 	 */
 	public static function status_report() {
-		include_once dirname( __FILE__ ) . '/views/html-admin-page-status-report.php';
+		include_once __DIR__ . '/views/html-admin-page-status-report.php';
 	}
 
 	/**
 	 * Handles output of tools.
 	 */
 	public static function status_tools() {
-		$tools = self::get_tools();
+		if ( ! class_exists( 'WC_REST_System_Status_Tools_Controller' ) ) {
+			wp_die( 'Cannot load the REST API to access WC_REST_System_Status_Tools_Controller.' );
+		}
+
+		$tools                 = self::get_tools();
+		$tool_requires_refresh = false;
 
 		if ( ! empty( $_GET['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'debug_action' ) ) { // WPCS: input var ok, sanitization ok.
 			$tools_controller = new WC_REST_System_Status_Tools_Controller();
@@ -39,6 +46,24 @@ class WC_Admin_Status {
 
 			if ( array_key_exists( $action, $tools ) ) {
 				$response = $tools_controller->execute_tool( $action );
+
+				$tool                  = $tools[ $action ];
+				$tool_requires_refresh = $tool['requires_refresh'] ?? false;
+				$tool                  = array(
+					'id'          => $action,
+					'name'        => $tool['name'],
+					'action'      => $tool['button'],
+					'description' => $tool['desc'],
+					'disabled'    => $tool['disabled'] ?? false,
+				);
+				$tool                  = array_merge( $tool, $response );
+
+				/**
+				 * Fires after a WooCommerce system status tool has been executed.
+				 *
+				 * @param array  $tool  Details about the tool that has been executed.
+				 */
+				do_action( 'woocommerce_system_status_tool_executed', $tool );
 			} else {
 				$response = array(
 					'success' => false,
@@ -58,7 +83,11 @@ class WC_Admin_Status {
 			echo '<div class="updated inline"><p>' . esc_html__( 'Your changes have been saved.', 'woocommerce' ) . '</p></div>';
 		}
 
-		include_once dirname( __FILE__ ) . '/views/html-admin-page-status-tools.php';
+		if ( $tool_requires_refresh ) {
+			$tools = self::get_tools();
+		}
+
+		include_once __DIR__ . '/views/html-admin-page-status-tools.php';
 	}
 
 	/**
@@ -75,7 +104,9 @@ class WC_Admin_Status {
 	 * Show the logs page.
 	 */
 	public static function status_logs() {
-		if ( defined( 'WC_LOG_HANDLER' ) && 'WC_Log_Handler_DB' === WC_LOG_HANDLER ) {
+		$log_handler = Constants::get_constant( 'WC_LOG_HANDLER' );
+
+		if ( 'WC_Log_Handler_DB' === $log_handler ) {
 			self::status_logs_db();
 		} else {
 			self::status_logs_file();
@@ -100,7 +131,7 @@ class WC_Admin_Status {
 			self::remove_log();
 		}
 
-		include_once 'views/html-admin-page-status-logs.php';
+		include_once __DIR__ . '/views/html-admin-page-status-logs.php';
 	}
 
 	/**
@@ -118,7 +149,7 @@ class WC_Admin_Status {
 		$log_table_list = new WC_Admin_Log_Table_List();
 		$log_table_list->prepare_items();
 
-		include_once 'views/html-admin-page-status-logs-db.php';
+		include_once __DIR__ . '/views/html-admin-page-status-logs-db.php';
 	}
 
 	/**
@@ -162,7 +193,7 @@ class WC_Admin_Status {
 	 * @return string
 	 */
 	public static function get_log_file_handle( $filename ) {
-		return substr( $filename, 0, strlen( $filename ) > 37 ? strlen( $filename ) - 37 : strlen( $filename ) - 4 );
+		return substr( $filename, 0, strlen( $filename ) > 48 ? strlen( $filename ) - 48 : strlen( $filename ) - 4 );
 	}
 
 	/**
@@ -227,7 +258,7 @@ class WC_Admin_Status {
 		$update_theme_version = 0;
 
 		// Check .org for updates.
-		if ( is_object( $api ) && ! is_wp_error( $api ) ) {
+		if ( is_object( $api ) && ! is_wp_error( $api ) && isset( $api->version ) ) {
 			$update_theme_version = $api->version;
 		} elseif ( strstr( $theme->{'Author URI'}, 'woothemes' ) ) { // Check WooThemes Theme Version.
 			$theme_dir          = substr( strtolower( str_replace( ' ', '', $theme->Name ) ), 0, 45 ); // @codingStandardsIgnoreLine.
@@ -312,6 +343,96 @@ class WC_Admin_Status {
 			WC_Log_Handler_DB::delete( $log_ids );
 			wp_safe_redirect( esc_url_raw( admin_url( 'admin.php?page=wc-status&tab=logs' ) ) );
 			exit();
+		}
+	}
+
+	/**
+	 * Prints table info if a base table is not present.
+	 */
+	private static function output_tables_info() {
+		$missing_tables = WC_Install::verify_base_tables( false );
+		if ( 0 === count( $missing_tables ) ) {
+			return;
+		}
+		?>
+
+		<br>
+		<strong style="color:#a00;">
+			<span class="dashicons dashicons-warning"></span>
+			<?php
+				echo esc_html(
+					sprintf(
+					// translators: Comma seperated list of missing tables.
+						__( 'Missing base tables: %s. Some WooCommerce functionality may not work as expected.', 'woocommerce' ),
+						implode( ', ', $missing_tables )
+					)
+				);
+			?>
+		</strong>
+
+		<?php
+	}
+
+	/**
+	 * Prints the information about plugins for the system status report.
+	 * Used for both active and inactive plugins sections.
+	 *
+	 * @param array $plugins List of plugins to display.
+	 * @param array $untested_plugins List of plugins that haven't been tested with the current WooCommerce version.
+	 * @return void
+	 */
+	private static function output_plugins_info( $plugins, $untested_plugins ) {
+		$wc_version = Constants::get_constant( 'WC_VERSION' );
+
+		if ( 'major' === Constants::get_constant( 'WC_SSR_PLUGIN_UPDATE_RELEASE_VERSION_TYPE' ) ) {
+			// Since we're only testing against major, we don't need to show minor and patch version.
+			$wc_version = $wc_version[0] . '.0';
+		}
+
+		foreach ( $plugins as $plugin ) {
+			if ( ! empty( $plugin['name'] ) ) {
+				// Link the plugin name to the plugin url if available.
+				$plugin_name = esc_html( $plugin['name'] );
+				if ( ! empty( $plugin['url'] ) ) {
+					$plugin_name = '<a href="' . esc_url( $plugin['url'] ) . '" aria-label="' . esc_attr__( 'Visit plugin homepage', 'woocommerce' ) . '" target="_blank">' . $plugin_name . '</a>';
+				}
+
+				$has_newer_version = false;
+				$version_string    = $plugin['version'];
+				$network_string    = '';
+				if ( strstr( $plugin['url'], 'woothemes.com' ) || strstr( $plugin['url'], 'woocommerce.com' ) ) {
+					if ( ! empty( $plugin['version_latest'] ) && version_compare( $plugin['version_latest'], $plugin['version'], '>' ) ) {
+						/* translators: 1: current version. 2: latest version */
+						$version_string = sprintf( __( '%1$s (update to version %2$s is available)', 'woocommerce' ), $plugin['version'], $plugin['version_latest'] );
+					}
+
+					if ( false !== $plugin['network_activated'] ) {
+						$network_string = ' &ndash; <strong style="color: black;">' . esc_html__( 'Network enabled', 'woocommerce' ) . '</strong>';
+					}
+				}
+				$untested_string = '';
+				if ( array_key_exists( $plugin['plugin'], $untested_plugins ) ) {
+					$untested_string = ' &ndash; <strong style="color: #a00;">';
+
+					/* translators: %s: version */
+					$untested_string .= esc_html( sprintf( __( 'Installed version not tested with active version of WooCommerce %s', 'woocommerce' ), $wc_version ) );
+
+					$untested_string .= '</strong>';
+				}
+				?>
+				<tr>
+					<td><?php echo wp_kses_post( $plugin_name ); ?></td>
+					<td class="help">&nbsp;</td>
+					<td>
+						<?php
+						/* translators: %s: plugin author */
+						printf( esc_html__( 'by %s', 'woocommerce' ), esc_html( $plugin['author_name'] ) );
+						echo ' &ndash; ' . esc_html( $version_string ) . $untested_string . $network_string; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						?>
+					</td>
+				</tr>
+				<?php
+			}
 		}
 	}
 }
