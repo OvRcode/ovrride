@@ -519,10 +519,6 @@ class DbCache_WpdbBase extends \SQL_Translations {
                 // The TDS library and the ntwdblib.dll can't be speaking two different protocols.
                 putenv("TDSVER=70");
 
-                if (get_magic_quotes_gpc()) {
-                        $dbhost = trim(str_replace("\\\\", "\\", $dbhost));
-                }
-
                 $this->dbh = sqlsrv_connect($dbhost,array("Database"=>$dbname,"UID"=>$dbuser,"PWD"=>$dbpassword));
 
                 if ( !$this->dbh ) {
@@ -923,19 +919,23 @@ class DbCache_WpdbBase extends \SQL_Translations {
 
                 // If there is an error then take note of it
                 if ( is_multisite() ) {
-                        $msg = "WordPress database error: [$str]\n{$this->last_query}\n";
-                        if ( defined( 'ERRORLOGFILE' ) )
-                                error_log( $msg, 3, ERRORLOGFILE );
-                        if ( defined( 'DIEONDBERROR' ) )
-                                wp_die( $msg );
+                    $msg = "WordPress database error: [$str]\n{$this->last_query}\n";
+                    if ( defined( 'ERRORLOGFILE' ) )
+                            error_log( $msg, 3, ERRORLOGFILE );
+                    if ( defined( 'DIEONDBERROR' ) )
+                            wp_die( esc_html( $msg ) );
                 } else {
-                        $str   = htmlspecialchars( $str, ENT_QUOTES );
-                        $query = htmlspecialchars( $this->last_query, ENT_QUOTES );
+                    $str   = htmlspecialchars( $str, ENT_QUOTES );
+                    $query = htmlspecialchars( $this->last_query, ENT_QUOTES );
 
-                        print "<div id='error'>
-                        <p class='wpdberror'><strong>WordPress database error:</strong> [$str]<br />
-                        <code>$query</code></p>
-                        </div>";
+					?>
+                    <div id="error">
+						<p class="<?php echo esc_attr( wpdberror); ?>">
+							<strong>WordPress database error:</strong> [<?php echo esc_html( $str ); ?>]<br />
+                    		<code><?php echo esc_html( $query ); ?></code>
+						</p>
+					</div>
+					<?php
                 }
         }
 
@@ -1589,14 +1589,14 @@ class DbCache_WpdbBase extends \SQL_Translations {
          * @return false|void
          */
         function bail( $message, $error_code = '500' ) {
-                if ( !$this->show_errors ) {
-                        if ( class_exists( '\WP_Error' ) )
-                                $this->error = new \WP_Error($error_code, $message);
-                        else
-                                $this->error = $message;
-                        return false;
-                }
-                wp_die($message);
+            if ( ! $this->show_errors ) {
+                if ( class_exists( '\WP_Error' ) )
+                    $this->error = new \WP_Error($error_code, $message);
+                else
+                    $this->error = $message;
+                return false;
+            }
+            wp_die( esc_html( $message ) );
         }
 
         /**

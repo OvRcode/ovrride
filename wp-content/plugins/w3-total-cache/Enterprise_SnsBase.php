@@ -1,14 +1,14 @@
 <?php
 namespace W3TC;
 
+if ( !defined( 'W3TC_SKIPLIB_AWS' ) ) {
+	require_once W3TC_DIR . '/vendor/autoload.php';
+}
+
 
 
 /**
- * Purge using AmazonSNS object
- */
-
-/**
- * class Sns
+ * Base class for Sns communication
  */
 class Enterprise_SnsBase {
 	/**
@@ -34,16 +34,26 @@ class Enterprise_SnsBase {
 	 */
 	protected function _get_api() {
 		if ( is_null( $this->_api ) ) {
-			if ( $this->_api_key == '' )
-				throw new \Exception( 'API Key is not configured' );
-			if ( $this->_api_secret == '' )
-				throw new \Exception( 'API Secret is not configured' );
+			if ( empty( $this->_api_key ) && empty( $this->_api_secret ) ) {
+				$credentials = \Aws\Credentials\CredentialProvider::defaultProvider();
+			} else {
+				if ( empty( $this->_api_key ) ) {
+					throw new \Exception( 'API Key is not configured' );
+				}
 
-			require_once W3TC_LIB_DIR . '/SNS/sdk.class.php';
-			$this->_api = new \AmazonSNS( $this->_api_key, $this->_api_secret );
-			if ( $this->_region != '' ) {
-				$this->_api->set_region( $this->_region );
+				if ( empty( $this->_api_secret ) ) {
+					throw new \Exception( 'API Secret is not configured' );
+				}
+
+				$credentials = new \Aws\Credentials\Credentials(
+					$this->_api_key, $this->_api_secret );
 			}
+
+			$this->_api = new \Aws\Sns\SnsClient( array(
+				'credentials' => $credentials,
+				'region' => $this->_region,
+				'version' => '2010-03-31'
+			) );
 		}
 
 		return $this->_api;

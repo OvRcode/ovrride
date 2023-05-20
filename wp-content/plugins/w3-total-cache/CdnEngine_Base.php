@@ -23,13 +23,6 @@ class CdnEngine_Base {
 	var $_config = array();
 
 	/**
-	 * Cache config
-	 *
-	 * @var array
-	 */
-	var $cache_config = array();
-
-	/**
 	 * gzip extension
 	 *
 	 * @var string
@@ -52,7 +45,8 @@ class CdnEngine_Base {
 		$this->_config = array_merge( array(
 				'debug' => false,
 				'ssl' => 'auto',
-				'compression' => false
+				'compression' => false,
+				'headers' => array()
 			), $config );
 	}
 
@@ -126,15 +120,9 @@ class CdnEngine_Base {
 
 	/**
 	 * Create bucket / container for some CDN engines
-	 *
-	 * @param string  $container_id
-	 * @param string  $error
-	 * @return boolean
 	 */
-	function create_container( &$container_id, &$error ) {
-		$error = 'Not implemented.';
-
-		return false;
+	function create_container() {
+		throw new \Exception( 'Not implemented.' );
 	}
 
 	/**
@@ -179,7 +167,15 @@ class CdnEngine_Base {
 				break;
 
 			default:
-				if ( $count > 4 ) {
+				if ( !isset( $domains[0] ) ) {
+					$scheme = $this->_get_scheme();
+					if ( 'https' == $scheme && !empty( $domains['https_default'] ) ) {
+						return $domains['https_default'];
+					} else {
+						return isset( $domains['http_default'] ) ? $domains['http_default'] :
+							$domains['https_default'];
+					}
+				} elseif ( $count > 4 ) {
 					$domain = $this->_get_domain( array_slice( $domains, 4 ),
 						$path );
 				} else {
@@ -244,10 +240,7 @@ class CdnEngine_Base {
 	function format_url( $path ) {
 		$url = $this->_format_url( $path );
 
-		if ( $url && $this->_config['compression'] &&
-			isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) &&
-			stristr( $_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip' ) !== false &&
-			$this->_may_gzip( $path ) ) {
+		if ( $url && $this->_config['compression'] && ( isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) ? stristr( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_ENCODING'] ) ), 'gzip' ) !== false : false ) && $this->_may_gzip( $path ) ) {
 			if ( ( $qpos = strpos( $url, '?' ) ) !== false ) {
 				$url = substr_replace( $url, $this->_gzip_extension, $qpos, 0 );
 			} else {
@@ -368,89 +361,38 @@ class CdnEngine_Base {
 	 * Returns headers for file
 	 *
 	 * @param array   $file CDN file array
+	 * @param array   $whitelist which expensive headers to calculate
 	 * @return array
 	 */
-	function _get_headers( $file, $block_expires = false ) {
-
+	function get_headers_for_file( $file, $whitelist = array() ) {
 		$local_path = $file['local_path'];
 		$mime_type = Util_Mime::get_mime_type( $local_path );
-		$last_modified = time();
 
 		$link = $file['original_url'];
 
 		$headers = array(
 			'Content-Type' => $mime_type,
-			'Last-Modified' => Util_Content::http_date( $last_modified ),
+			'Last-Modified' => Util_Content::http_date( time() ),
 			'Access-Control-Allow-Origin' => '*',
 			'Link' => '<' . $link  .'>; rel="canonical"'
 		);
 
-		if ( isset( $this->cache_config[$mime_type] ) ) {
-			if ( $this->cache_config[$mime_type]['etag'] ) {
+		$section = Util_Mime::mime_type_to_section( $mime_type );
+
+		if ( isset( $this->_config['headers'][$section] ) ) {
+			$hc = $this->_config['headers'][$section];
+
+			if ( isset( $whitelist['ETag'] ) && $hc['etag'] ) {
 				$headers['ETag'] = '"' . @md5_file( $local_path ) . '"';
 			}
 
-			if ( $this->cache_config[$mime_type]['w3tc'] ) {
-				$headers['X-Powered-By'] =
-					Util_Environment::w3tc_header();
-			}
-
-
-			$expires_set = false;
-			if ( !$block_expires &&
-				$this->cache_config[$mime_type]['expires'] ) {
+			if ( $hc['expires'] ) {
 				$headers['Expires'] = Util_Content::http_date( time() +
-					$this->cache_config[$mime_type]['lifetime'] );
+					$hc['lifetime'] );
 				$expires_set = true;
 			}
 
-			switch ( $this->cache_config[$mime_type]['cache_control'] ) {
-			case 'cache':
-				$headers = array_merge( $headers, array(
-						'Pragma' => 'public',
-						'Cache-Control' => 'public'
-					) );
-				break;
-
-			case 'cache_public_maxage':
-				$headers = array_merge( $headers, array(
-						'Pragma' => 'public',
-						'Cache-Control' => ( $expires_set ? '' : 'max-age=' .
-							$this->cache_config[$mime_type]['lifetime'] .', ' ) .
-						'public'
-					) );
-				break;
-
-			case 'cache_validation':
-				$headers = array_merge( $headers, array(
-						'Pragma' => 'public',
-						'Cache-Control' => 'public, must-revalidate, proxy-revalidate'
-					) );
-				break;
-
-			case 'cache_noproxy':
-				$headers = array_merge( $headers, array(
-						'Pragma' => 'public',
-						'Cache-Control' => 'private, must-revalidate'
-					) );
-				break;
-
-			case 'cache_maxage':
-				$headers = array_merge( $headers, array(
-						'Pragma' => 'public',
-						'Cache-Control' => ( $expires_set ? '' : 'max-age=' .
-							$this->cache_config[$mime_type]['lifetime'] .', ' ) .
-						'public, must-revalidate, proxy-revalidate'
-					) );
-				break;
-
-			case 'no_cache':
-				$headers = array_merge( $headers, array(
-						'Pragma' => 'no-cache',
-						'Cache-Control' => 'max-age=0, private, no-store, no-cache, must-revalidate'
-					) );
-				break;
-			}
+			$headers = array_merge( $headers, $hc['static'] );
 		}
 
 		return $headers;
@@ -507,10 +449,8 @@ class CdnEngine_Base {
 					$hostname = $_domain;
 				}
 
-				if ( !$hostname ) {
-					$error = 'Empty hostname';
-
-					return false;
+				if ( empty( $hostname ) ) {
+					continue;
 				}
 
 				if ( gethostbyname( $hostname ) === $hostname ) {
@@ -579,6 +519,10 @@ class CdnEngine_Base {
 	 */
 	function _get_domain( $domains, $path ) {
 		$count = count( $domains );
+		if ( isset( $domains['http_default'] ) )
+			$count--;
+		if ( isset( $domains['https_default'] ) )
+			$count--;
 
 		if ( $count ) {
 			/**

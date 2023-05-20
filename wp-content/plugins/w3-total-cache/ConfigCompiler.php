@@ -74,27 +74,6 @@ class ConfigCompiler {
 	 * Reads config from file and returns it's content as array (or null)
 	 * Stored in this class to limit class loading
 	 */
-	static private function util_array_from_file_legacy_v1( $filename ) {
-		if ( file_exists( $filename ) && is_readable( $filename ) ) {
-			// including file directly instead of read+eval causes constant
-			// problems with APC, ZendCache, and WSOD in a case of
-			// broken config file
-			$content = @file_get_contents( $filename );
-			$config = @eval( substr( $content, 5 ) );
-
-			if ( is_array( $config ) )
-				return $config;
-		}
-
-		return null;
-	}
-
-
-
-	/**
-	 * Reads config from file and returns it's content as array (or null)
-	 * Stored in this class to limit class loading
-	 */
 	static private function util_array_from_file_legacy_v2( $filename ) {
 		if ( file_exists( $filename ) && is_readable( $filename ) ) {
 			// including file directly instead of read+eval causes constant
@@ -124,18 +103,20 @@ class ConfigCompiler {
 			$this->_data[$key] = $value['default'];
 
 		$this->_data['version'] = W3TC_VERSION;
+
+		$this->set_dynamic_defaults();
 	}
 
 
 
-	public function load() {
+	public function load( $data = null ) {
 		// apply data from master config
-		$master_filename = Config::util_config_filename( 0, $this->_preview );
-		$data = Config::util_array_from_file( $master_filename );
+		if ( is_null( $data ) ) {
+			$data = Config::util_array_from_storage( 0, $this->_preview );
+		}
 		if ( is_null( $data ) && $this->_preview ) {
 			// try to read production data when preview not available
-			$master_filename = Config::util_config_filename( 0, false );
-			$data = Config::util_array_from_file( $master_filename );
+			$data = Config::util_array_from_storage( 0, false );
 		}
 
 		// try to get legacy v2 data
@@ -143,13 +124,6 @@ class ConfigCompiler {
 			$master_filename = Config::util_config_filename_legacy_v2( 0,
 				$this->_preview );
 			$data = self::util_array_from_file_legacy_v2( $master_filename );
-		}
-
-		// try to get legacy v1 data
-		if ( is_null( $data ) ) {
-			$master_filename = Config::util_config_filename_legacy_v1( 0,
-				$this->_preview );
-			$data = self::util_array_from_file_legacy_v1( $master_filename );
 		}
 
 		if ( is_array( $data ) ) {
@@ -163,14 +137,12 @@ class ConfigCompiler {
 
 
 		// apply child config
-		$child_filename = Config::util_config_filename( $this->_blog_id,
+		$data = Config::util_array_from_storage( $this->_blog_id,
 			$this->_preview );
-		$data = Config::util_array_from_file( $child_filename );
 		if ( is_null( $data ) && $this->_preview ) {
 			// try to read production data when preview not available
-			$child_filename = Config::util_config_filename( $this->_blog_id,
+			$data = Config::util_array_from_storage( $this->_blog_id,
 				false );
-			$data = Config::util_array_from_file( $child_filename );
 		}
 
 		// try to get legacy v2 data
@@ -178,13 +150,6 @@ class ConfigCompiler {
 			$child_filename = Config::util_config_filename_legacy_v2(
 				$this->_blog_id, $this->_preview );
 			$data = self::util_array_from_file_legacy_v2( $child_filename );
-		}
-
-		// try to get legacy v1 data
-		if ( is_null( $data ) ) {
-			$child_filename = Config::util_config_filename_legacy_v1(
-				$this->_blog_id, $this->_preview );
-			$data = self::util_array_from_file_legacy_v1( $child_filename );
 		}
 
 		if ( is_array( $data ) ) {
@@ -231,14 +196,7 @@ class ConfigCompiler {
 			}
 		}
 
-		$filename = Config::util_config_filename( $this->_blog_id,
-			$this->_preview );
-		if ( defined( 'JSON_PRETTY_PRINT' ) )
-			$config = json_encode( $data, JSON_PRETTY_PRINT );
-		else   // for older php versions
-			$config = json_encode( $data );
-
-		Util_File::file_put_contents_atomic( $filename, '<?php exit; ?>' . $config );
+		ConfigUtil::save_item( $this->_blog_id, $this->_preview, $data );
 	}
 
 
@@ -253,12 +211,24 @@ class ConfigCompiler {
 
 
 
+	private function set_dynamic_defaults() {
+		if ( empty( $this->_data['stats.access_log.webserver'] ) ) {
+			if ( Util_Environment::is_nginx() ) {
+				$this->_data['stats.access_log.webserver'] = 'nginx';
+				$this->_data['stats.access_log.format'] = '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+			} else {
+				$this->_data['stats.access_log.webserver'] = 'apache';
+			}
+		}
+
+	}
 	/**
 	 * Apply new default values when version changes
 	 */
 	private function upgrade( $file_data ) {
-		if ( !isset( $file_data['version'] ) )
+		if ( !isset( $file_data['version'] ) ) {
 			$file_data['version'] = '0.0.0';
+		}
 
 		if ( !function_exists( 'bb2_start' ) ) {
 			$file_data['pgcache.bad_behavior_path'] = '';
@@ -274,6 +244,48 @@ class ConfigCompiler {
 			if ( $bb_file ) {
 				$file_data['pgcache.bad_behavior_path'] = $bb_file;
 			}
+		}
+
+		//
+		// changes in 0.15.2
+		//
+		if ( version_compare( $file_data['version'], '0.15.2', '<' ) ) {
+			if ( isset( $file_data['minify.js.combine.header'] ) && $file_data['minify.js.combine.header'] ) {
+				$file_data['minify.js.method'] = 'combine';
+			}
+
+			if ( isset( $file_data['minify.css.combine'] ) && $file_data['minify.css.combine'] ) {
+				$file_data['minify.css.method'] = 'combine';
+			}
+		}
+
+		//
+		// changes in 0.13
+		//
+		if ( version_compare( $file_data['version'], '0.12.0', '<=' ) ) {
+			if ( empty( $file_data['lazyload.exclude'] ) ) {
+				$file_data['lazyload.exclude'] = array();
+			}
+
+			if ( !in_array( 'skip_lazy', $file_data['lazyload.exclude'] ) ) {
+				$file_data['lazyload.exclude'][] = 'skip_lazy';
+			}
+		}
+
+		//
+		// changes in 0.9.7
+		//
+		if ( isset( $file_data['cdnfsd.enabled'] ) &&
+			$file_data['cdnfsd.enabled'] == '1' &&
+			empty( $file_data['cdnfsd.engine'] ) ) {
+			$file_data['cdnfsd.enabled'] = '0';
+		}
+
+		//
+		// changes in 0.9.6
+		//
+		if ( !isset( $file_data['cdn.cors_header'] ) ) {
+			$file_data['cdn.cors_header'] = true;
 		}
 
 		//
@@ -309,8 +321,6 @@ class ConfigCompiler {
 				is_array( $file_data['extensions.active'] ) ) {
 				if ( isset( $file_data['extensions.active']['cloudflare'] ) )
 					$active['cloudflare'] = 'w3-total-cache/Extension_CloudFlare_Plugin.php';
-				if ( isset( $file_data['extensions.active']['feedburner'] ) )
-					$active['feedburner'] = 'w3-total-cache/Extension_FeedBurner_Plugin.php';
 				if ( isset( $file_data['extensions.active']['genesis.theme'] ) )
 					$active['genesis.theme'] = 'w3-total-cache/Extension_Genesis_Plugin.php';
 				if ( isset( $file_data['extensions.active']['wordpress-seo'] ) )
@@ -329,7 +339,6 @@ class ConfigCompiler {
 				'w3-total-cache/Extension_NewRelic_Plugin.php';
 			$file_data['extensions.active']['fragmentcache'] =
 				'w3-total-cache/Extension_FragmentCache_Plugin.php';
-
 		}
 
 		// newrelic settings - migrate to extension
@@ -366,7 +375,6 @@ class ConfigCompiler {
 		// extensions - kept in separate key now
 		$this->_set_if_exists_extension( $file_data, 'cloudflare' );
 		$this->_set_if_exists_extension( $file_data, 'genesis.theme' );
-		$this->_set_if_exists_extension( $file_data, 'feedburner' );
 
 		// fragmentcache to extension
 		if ( isset( $file_data['fragmentcache.enabled'] ) &&
@@ -394,10 +402,14 @@ class ConfigCompiler {
 			'fragmentcache', 'memcached.username' );
 		$this->_set_if_exists( $file_data, 'fragmentcache.memcached.password',
 			'fragmentcache', 'memcached.password' );
+		$this->_set_if_exists( $file_data, 'fragmentcache.memcached.binary_protocol',
+			'fragmentcache', 'memcached.binary_protocol' );
 		$this->_set_if_exists( $file_data, 'fragmentcache.redis.persistent',
 			'fragmentcache', 'redis.persistent' );
 		$this->_set_if_exists( $file_data, 'fragmentcache.redis.servers',
 			'fragmentcache', 'redis.servers' );
+		$this->_set_if_exists( $file_data, 'fragmentcache.redis.verify_tls_certificates',
+			'fragmentcache', 'redis.verify_tls_certificates' );
 		$this->_set_if_exists( $file_data, 'fragmentcache.redis.password',
 			'fragmentcache', 'redis.password' );
 		$this->_set_if_exists( $file_data, 'fragmentcache.redis.dbid',
@@ -417,11 +429,23 @@ class ConfigCompiler {
 		}
 
 		//
-		// changes in 0.9.5.3
+		// changes in 0.9.5.4
 		//
-		if ( version_compare( $file_data['version'], '0.9.5.3', '<' ) ) {
-			if ( !isset( $file_data['extensions.active']['swarmify'] ) ) {
-				$file_data['extensions.active']['swarmify'] = 'w3-total-cache/Extension_Swarmify_Plugin.php';
+		if ( isset( $file_data['cdn.engine'] ) ) {
+			if ( $file_data['cdn.engine'] == 'cloudfront_fsd' ) {
+				$file_data['cdnfsd.engine'] = 'cloudfront';
+				$file_data['cdnfsd.enabled'] = $file_data['cdn.enabled'];
+
+				if ( isset( $file_data['cdn.cloudfront_fsd.access_key'] ) ) {
+					$file_data['cdnfsd.cloudfront.access_key'] =
+						$file_data['cdn.cloudfront_fsd.access_key'];
+					$file_data['cdnfsd.cloudfront.distribution_domain'] =
+						$file_data['cdn.cloudfront_fsd.distribution_domain'];
+					$file_data['cdnfsd.cloudfront.secret_key'] =
+						$file_data['cdn.cloudfront_fsd.secret_key'];
+					$file_data['cdnfsd.cloudfront.distribution_id'] =
+						$file_data['cdn.cloudfront_fsd.distribution_id'];
+				}
 			}
 		}
 

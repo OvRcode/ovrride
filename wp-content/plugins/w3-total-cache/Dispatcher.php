@@ -5,24 +5,34 @@ namespace W3TC;
  * Interplugin communication
  */
 class Dispatcher {
+	static private $instances = array();
+
 	/**
 	 * return component instance
 	 */
 	static public function component( $class ) {
-		static $instances = array();
-
-		if ( !isset( $instances[$class] ) ) {
+		if ( !isset( self::$instances[$class] ) ) {
 			$full_class = '\\W3TC\\' . $class;
-			$instances[$class] = new $full_class();
+			self::$instances[$class] = new $full_class();
 		}
 
-		$v = $instances[$class];   // Don't return reference
+		$v = self::$instances[$class];   // Don't return reference
 		return $v;
 	}
+
+
 
 	static public function config() {
 		return self::component( 'Config' );
 	}
+
+
+
+	static public function reset_config() {
+		unset(self::$instances['Config']);
+	}
+
+
 
 	static public function config_master() {
 		static $config_master = null;
@@ -33,6 +43,8 @@ class Dispatcher {
 
 		return $config_master;
 	}
+
+
 
 	static public function config_state() {
 		if ( Util_Environment::blog_id() <= 0 )
@@ -46,6 +58,8 @@ class Dispatcher {
 		return $config_state;
 	}
 
+
+
 	static public function config_state_master() {
 		static $config_state = null;
 
@@ -54,6 +68,8 @@ class Dispatcher {
 
 		return $config_state;
 	}
+
+
 
 	static public function config_state_note() {
 		static $o = null;
@@ -64,6 +80,8 @@ class Dispatcher {
 
 		return $o;
 	}
+
+
 
 	/**
 	 * Checks if specific local url is uploaded to CDN
@@ -83,6 +101,8 @@ class Dispatcher {
 		// supported only for minify-based urls, futher is not needed now
 		return false;
 	}
+
+
 
 	/**
 	 * Creates file for CDN upload.
@@ -113,6 +133,8 @@ class Dispatcher {
 		}
 	}
 
+
+
 	/**
 	 * Called on successful file upload to CDN
 	 *
@@ -135,25 +157,38 @@ class Dispatcher {
 		}
 	}
 
-	/**
-	 * Generates canonical header code for nginx if browsercache plugin has
-	 * to generate it
-	 *
-	 * @param Config  $config
-	 * @param boolean $cdnftp  if CDN FTP is used
-	 * @param string  $section
-	 * @return string
-	 */
-	static public function on_browsercache_rules_generation_for_section( $config, $cdnftp,
-		$section, $add_header_rules ) {
-		if ( $section != 'other' )
-			return '';
-		if ( self::canonical_generated_by( $config, $cdnftp ) != 'browsercache' )
-			return '';
 
-		return Util_RuleSnippet::canonical_without_location( $cdnftp,
-			$add_header_rules );
+
+	/**
+	 * Returns common rules used by nginx for files belonging to browsercache
+	 * section
+	 * TODO: change to filters, like litespeed does
+	 */
+	static public function nginx_rules_for_browsercache_section( $config, $section,
+			$extra_add_headers_set = false ) {
+		$rules = array(
+			'other' => array(),
+			'add_header' => array()
+		);
+		if ( $config->get_boolean( 'browsercache.enabled' ) ) {
+			$o = new BrowserCache_Environment_Nginx( $config );
+			$rules = $o->section_rules( $section, $extra_add_headers_set );
+		}
+
+		if ( !empty( $rules['add_header'] ) &&
+				$config->get_boolean( 'cdn.enabled' ) ) {
+			$o = new Cdn_Environment_Nginx( $config );
+			$rule = $o->generate_canonical();
+
+			if ( !empty( $rule ) ) {
+				$rules['add_header'][] = $rule;
+			}
+		}
+
+		return array_merge( $rules['other'], $rules['add_header'] );
 	}
+
+
 
 	/**
 	 * Called when minify going to process request of some minified file
@@ -169,91 +204,7 @@ class Dispatcher {
 		return $file;
 	}
 
-	/**
-	 * Checks whether canonical should be generated or not by browsercache plugin
-	 *
-	 * @param Config  $config
-	 * @param boolean $cdnftp
-	 * @return string|null
-	 */
-	static public function canonical_generated_by( $config, $cdnftp = false ) {
-		if ( !self::_should_canonical_be_generated( $config, $cdnftp ) )
-			return null;
 
-		if ( Util_Environment::is_nginx() ) {
-			// in nginx - browsercache generates canonical if its enabled,
-			// since it does not allow multiple location tags
-			if ( $config->get_boolean( 'browsercache.enabled' ) )
-				return 'browsercache';
-		}
-
-		if ( $config->get_boolean( 'cdn.enabled' ) )
-			return 'cdn';
-
-		return null;
-	}
-
-	/**
-	 * Basic check if canonical generation should be done
-	 *
-	 * @param Config  $config
-	 * @param boolean $cdnftp
-	 * @return bool
-	 */
-	static private function _should_canonical_be_generated( $config, $cdnftp ) {
-		if ( !$config->get_boolean( 'cdn.canonical_header' ) )
-			return false;
-
-		$cdncommon = Dispatcher::component( 'Cdn_Core' );
-
-		$cdn = $cdncommon->get_cdn();
-		return ( ( $config->get_string( 'cdn.engine' ) != 'ftp' || $cdnftp ) &&
-			$cdn->headers_support() == W3TC_CDN_HEADER_MIRRORING );
-	}
-
-	/**
-	 * Checks whether canonical should be generated or not by browsercache plugin
-	 *
-	 * @param Config  $config
-	 * @return string|null
-	 */
-	static public function allow_origin_generated_by( $config ) {
-		if ( $config->get_boolean( 'cdn.enabled' ) )
-			return 'cdn';
-
-		return null;
-	}
-
-	/**
-	 * If BrowserCache should generate rules specific for CDN. Used with CDN FTP
-	 *
-	 * @param Config  $config
-	 * @return boolean;
-	 */
-	static public function should_browsercache_generate_rules_for_cdn( $config ) {
-		if ( $config->get_boolean( 'cdn.enabled' ) &&
-			$config->get_string( 'cdn.engine' ) == 'ftp' ) {
-			$cdncommon = Dispatcher::component( 'Cdn_Core' );
-			$cdn = $cdncommon->get_cdn();
-			$domain = $cdn->get_domain();
-
-			if ( $domain )
-				return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Returns the domain used with the cdn.
-	 *
-	 * @param string
-	 * @return string
-	 */
-	static public function get_cdn_domain( $path = '' ) {
-		$cdncommon = Dispatcher::component( 'Cdn_Core' );
-		$cdn = $cdncommon->get_cdn();
-		return $cdn->get_domain( $path );
-	}
 
 	/**
 	 * Usage statistics uses one of other module's cache
@@ -263,20 +214,25 @@ class Dispatcher {
 		static $cache = null;
 		if ( is_null( $cache ) ) {
 			$c = Dispatcher::config();
-			if ( $c->get_boolean( 'objectcache.enabled' ) )
+			$engineConfig = null;
+			if ( $c->get_boolean( 'objectcache.enabled' ) ) {
 				$provider = Dispatcher::component( 'ObjectCache_WpObjectCache_Regular' );
-			else if ( $c->get_boolean( 'dbcache.enabled' ) )
-					$provider = Dispatcher::component( 'DbCache_Core' );
-				else if ( $c->get_boolean( 'pgcache.enabled' ) )
-						$provider = Dispatcher::component( 'PgCache_ContentGrabber' );
-					else if ( $c->get_boolean( 'minify.enabled' ) )
-							$provider = Dispatcher::component( 'Minify_Core' );
-						else
-							return null;
+			} else if ( $c->get_boolean( 'dbcache.enabled' ) ) {
+				$provider = Dispatcher::component( 'DbCache_Core' );
+			} else if ( $c->get_boolean( 'pgcache.enabled' ) ) {
+				$provider = Dispatcher::component( 'PgCache_ContentGrabber' );
+			} else if ( $c->get_boolean( 'minify.enabled' ) ) {
+				$provider = Dispatcher::component( 'Minify_Core' );
+			} else {
+				$engineConfig = array( 'engine' => 'file' );
+			}
 
-						$engineConfig = $provider->get_usage_statistics_cache_config();
-					$engineConfig['module'] = 'stats';
-				$engineConfig['blog_id'] = 0;   // count wpmu-wide stats
+			if ( is_null( $engineConfig ) ) {
+				$engineConfig = $provider->get_usage_statistics_cache_config();
+			}
+
+			$engineConfig['module'] = 'stats';
+			$engineConfig['blog_id'] = 0;   // count wpmu-wide stats
 
 			if ( $engineConfig['engine'] == 'file' ) {
 				$engineConfig['cache_dir'] = Util_Environment::cache_dir( 'stats' );
@@ -289,6 +245,8 @@ class Dispatcher {
 		return $cache;
 	}
 
+
+
 	/**
 	 * In a case request processing has been finished before WP initialized,
 	 * but usage statistics metrics should be counted.
@@ -298,8 +256,9 @@ class Dispatcher {
 	static public function usage_statistics_apply_before_init_and_exit(
 		$metrics_function ) {
 		$c = Dispatcher::config();
-		if ( !$c->get_boolean( 'stats.enabled' ) )
+		if ( !$c->get_boolean( 'stats.enabled' ) ) {
 			exit();
+		}
 
 		$core = Dispatcher::component( 'UsageStatistics_Core' );
 		$core->apply_metrics_before_init_and_exit( $metrics_function );

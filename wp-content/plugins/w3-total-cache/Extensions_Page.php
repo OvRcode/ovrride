@@ -6,10 +6,10 @@ namespace W3TC;
 /* todo - sort by name
 function extensions_sort_cmp_name($a, $b)
 {
-    if ($a['name'] == $b['name']) {
-        return 0;
-    }
-    return ($a['name'] < $b['name']) ? -1 : 1;
+	if ($a['name'] == $b['name']) {
+		return 0;
+	}
+	return ($a['name'] < $b['name']) ? -1 : 1;
 }*/
 
 
@@ -30,19 +30,22 @@ class Extensions_Page extends Base_Page_Settings {
 	 * @return void
 	 */
 	function render_content() {
-		$extension = '';
-		$extension_status = 'all';
-
-		if ( isset( $_GET['extension_status'] ) ) {
-			if ( in_array( $_GET['extension_status'], array( 'all', 'active', 'inactive', 'core' ) ) )
-				$extension_status = $_GET['extension_status'];
+		$extension_status     = 'all';
+		$extension_status_val = Util_Request::get_string( 'extension_status' );
+		if ( ! empty( $extension_status_val ) ) {
+			if ( in_array( $extension_status_val, array( 'all', 'active', 'inactive', 'core' ), true ) ) {
+				$extension_status = $extension_status_val;
+			}
 		}
 
-		if ( isset( $_GET['extension'] ) ) {
-			$extension = $_GET['extension'];
+		$extension     = '';
+		$extension_val = Util_Request::get_string( 'extension' );
+		if ( ! empty( $extension_val ) ) {
+			$extension = esc_attr( $extension_val );
 		}
 
-		$view = ( isset( $_GET['action'] ) && $_GET['action'] == 'view' );
+		$action_val = Util_Request::get_string( 'action' );
+		$view       = ( ! empty( $action_val ) && 'view' === $action_val );
 
 		$extensions_active = Extensions_Util::get_active_extensions( $this->_config );
 
@@ -84,6 +87,7 @@ class Extensions_Page extends Base_Page_Settings {
 			'enabled' => true,
 			'requirements' => array(),
 			'core' => false,
+			'public' => true,
 			'path' => ''
 		);
 		return array_merge( $default, $meta );

@@ -1,44 +1,40 @@
 <?php
 namespace W3TC;
 
-if ( !defined( 'W3TC' ) )
+if ( ! defined( 'W3TC' ) ) {
 	die();
-
+}
 ?>
 <div id="w3tc-upgrade">
-    <div class="w3tc-overlay-logo"></div>
-    <div class="w3tc_overlay_upgrade_header">
-        <div>
-            <div class="w3tc_overlay_upgrade_left_h">
-                W3 Total Cache Pro unlocks more performance options for any website!
-            </div>
-            <div class="w3tc_overlay_upgrade_right_h">
-                only $99 <span class="w3tc_overlay_upgrade_right_text">/year</span>
-            </div>
-        </div>
-        <div class="w3tc_overlay_upgrade_description">
-            <div class="w3tc_overlay_upgrade_content_l">
-                <img src="<?php echo plugins_url( 'pub/img/overlay/w3-meteor.png', W3TC_FILE ) ?>" 
-                    width="238" height="178" />
-            </div>
-            <div class="w3tc_overlay_upgrade_content_r">
-                <ul>
-                    <li>
-                        <strong>Full Site Delivery (FSD)</strong><br>
-                        Provide the best user experience possible by enhancing by hosting HTML pages and RSS feeds with (supported) CDN's high speed global networks.</li>
-                    <li><strong>Fragment Caching Module</strong><br>
-                        Unlocking the fragment caching module delivers enhanced performance for plugins and themes that use the WordPress Transient API. StudioPress' Genesis Framework is up to 60% faster with W3TC Pro.</li>
-                    <li>
-                        <strong>WPML Extension</strong><br>
-                        Improve the performance of your WPML-powered site by unlocking W3TC Pro.</li>
-                </ul>
-            </div>
-        </div>
-        <div style="clear: both"></div>
-    </div>
-    <div class="w3tc_overlay_content"></div>
-    <div class="w3tc_overlay_footer">
-        <input id="w3tc-purchase" type="button" class="btn w3tc-size image btn-default palette-turquoise secure" value="<?php _e( 'Subscribe to Go Faster Now', 'w3-total-cache' ) ?> " />
-    </div>
-    <div style="clear: both"></div>
+
+	<div id="w3tc_upgrade_header">
+
+		<div>
+			<div>
+				<strong>W3 TOTAL CACHE</strong><br />
+				<span style="font-size:16px;"><?php esc_html_e( 'Unlock more performance options', 'w3-total-cache' ); ?></span>
+			</div>
+		</div>
+
+		<div>
+			<?php if ( \W3TC\Util_Environment::is_https() ) : ?>
+				<input id="w3tc-purchase" type="button"
+					class="btn w3tc-size w3tc-palette-tp w3tc-gauge-tp"
+					value="<?php esc_attr_e( 'Go Faster With Pro', 'w3-total-cache' ); ?> " />
+			<?php else : ?>
+				<a id="w3tc-purchase-link"
+					href="<?php echo esc_url( \W3TC\Licensing_Core::purchase_url( $data_src, $renew_key, $client_id ) ); ?>"
+					target="_blank"
+					class="btn w3tc-size w3tc-palette-tp w3tc-gauge-tp">
+					<?php esc_html_e( 'Go Faster With Pro', 'w3-total-cache' ); ?>
+				</a>
+			<?php endif ?>
+		</div>
+
+	</div>
+
+	<div class="w3tc_overlay_upgrade_header">
+		<iframe src="https://www.w3-edge.com/checkout-ad/?data_src=<?php echo esc_attr( $data_src ); ?>&client_id=<?php echo esc_attr( $client_id ); ?>" width="100%" height="410px"></iframe>
+	</div>
+
 </div>

@@ -23,8 +23,14 @@ class ObjectCache_Plugin_Admin {
 		if ( $c->get_string( 'objectcache.engine' ) == 'memcached' ) {
 			$memcached_servers = $c->get_array(
 				'objectcache.memcached.servers' );
+			$memcached_binary_protocol = $c->get_boolean(
+				'objectcache.memcached.binary_protocol' );
+			$memcached_username = $c->get_string(
+				'objectcache.memcached.username' );
+			$memcached_password = $c->get_string(
+				'objectcache.memcached.password' );
 
-			if ( !Util_Installed::is_memcache_available( $memcached_servers ) ) {
+			if ( !Util_Installed::is_memcache_available( $memcached_servers, $memcached_binary_protocol, $memcached_username, $memcached_password ) ) {
 				if ( !isset( $errors['memcache_not_responding.details'] ) )
 					$errors['memcache_not_responding.details'] = array();
 
@@ -64,38 +70,27 @@ class ObjectCache_Plugin_Admin {
 
 
 	public function w3tc_usage_statistics_summary_from_history( $summary, $history ) {
-		// memcached servers
-		$c = Dispatcher::config();
-		if ( $c->get_string( 'objectcache.engine' ) == 'memcached' ) {
-			$summary['memcached_servers']['objectcache'] = array(
-				'servers' => $c->get_array( 'objectcache.memcached.servers' ),
-				'username' => $c->get_string( 'objectcache.memcached.username' ),
-				'password' => $c->get_string( 'objectcache.memcached.password' ),
-				'name' => __( 'Object Cache', 'w3-total-cache' )
-			);
-		} elseif ( $c->get_string( 'objectcache.engine' ) == 'redis' ) {
-			$summary['redis_servers']['objectcache'] = array(
-				'servers' => $c->get_array( 'objectcache.redis.servers' ),
-				'username' => $c->get_boolean( 'objectcache.redis.username' ),
-				'dbid' => $c->get_integer( 'objectcache.redis.dbid' ),
-				'password' => $c->get_string( 'objectcache.redis.password' ),
-				'name' => __( 'Object Cache', 'w3-total-cache' )
-			);
-		}
-
 		// counters
-		$objectcache_calls_total = Util_UsageStatistics::sum( $history,
-			'objectcache_calls_total' );
-		$objectcache_calls_hits = Util_UsageStatistics::sum( $history,
-			'objectcache_calls_hits' );
+		$get_total = Util_UsageStatistics::sum( $history, 'objectcache_get_total' );
+		$get_hits = Util_UsageStatistics::sum( $history, 'objectcache_get_hits' );
+		$sets = Util_UsageStatistics::sum( $history, 'objectcache_sets' );
+
+		$c = Dispatcher::config();
+		$e = $c->get_string( 'objectcache.engine' );
 
 		$summary['objectcache'] = array(
-			'calls_total' => Util_UsageStatistics::integer(
-				$objectcache_calls_total ),
+			'get_total' => Util_UsageStatistics::integer( $get_total ),
+			'get_hits' => Util_UsageStatistics::integer( $get_hits ),
+			'sets' => Util_UsageStatistics::integer( $sets ),
+			'flushes' => Util_UsageStatistics::integer(
+				Util_UsageStatistics::sum( $history, 'objectcache_flushes' ) ),
+			'time_ms' => Util_UsageStatistics::integer(
+				Util_UsageStatistics::sum( $history, 'objectcache_time_ms' ) ),
 			'calls_per_second' => Util_UsageStatistics::value_per_period_seconds(
-				$objectcache_calls_total, $summary ),
+				$get_total + $sets, $summary ),
 			'hit_rate' => Util_UsageStatistics::percent(
-				$objectcache_calls_total, $objectcache_calls_total )
+				$get_hits, $get_total ),
+			'engine_name' => Cache::engine_name( $e )
 		);
 
 		return $summary;

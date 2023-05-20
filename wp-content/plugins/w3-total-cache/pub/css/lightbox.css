@@ -1,3 +1,12 @@
+#w3tc_lightbox_content .metabox-holder {
+	padding-top: 0;
+}
+
+/* make mismatch in popup resizing invisible, border shows them well */
+#w3tc_lightbox_content .postbox {
+	border: none;
+}
+
 #overlay {
     background: #666;
     font-size:12px;
@@ -105,9 +114,8 @@ th.minify-files-add, td.minify-files-add {
 .w3tc-overlay .content {
     padding: 10px 10px 10px 10px;
 }
-.w3tc-overlay p, .w3tc-overlay label, .w3tc-overlay input, .w3tc-overlay option {
+.w3tc-overlay p, .w3tc-overlay label, .w3tc-overlay option {
     font-family:Arial, Verdana,sans-serif;
-    color:#88898a;
 }
 
 .w3tc-overlay p {
@@ -262,9 +270,10 @@ fieldset[disabled] .btn {
 .w3tc-overlay .btn.secure:active,
 .w3tc-overlay .btn.secure.active,
 .w3tc-overlay .btn.secure {
-    background-position: 10px 5px;  /* equivalent to 'top left' */
-    padding:5px 10px 5px 37px;
-    background-image: url(../img/overlay/save-close.png);
+	background-position: 10px 5px;  /* equivalent to 'top left' */
+	padding:5px 10px 5px 37px;
+	background-image: url(../img/overlay/save-close.png);
+	text-decoration: none;
 }
 
 .w3tc-overlay btn.palette-turquoise {
@@ -330,18 +339,6 @@ fieldset[disabled] .btn {
     background-image: url(../img/overlay/ceo.png);
 }
 
-.w3tc-overlay #w3tc-upgrade ul {
-    width: 480px;
-    float: right;
-    margin-right: 20px;
-}
-.w3tc-overlay #w3tc-upgrade li {
-    background: url(../img/overlay/list-check.png) no-repeat 0px 3px;
-    color: #444;
-    list-style-type: none;
-    padding: 0 0 1px 20px;
-}
-
 .w3tc-overlay #w3tc-support-us header h2, header h3 {
     margin:0;padding:0;
 }
@@ -401,13 +398,8 @@ fieldset[disabled] .btn {
 padding: 10px 20px 20px 20px;
 }
 
-.w3tchelp_content h3 {
-    color: #7b7b7b;
-}
-
 .w3tchelp_content li {
     font-family: Arial, Verdana,sans-serif;
-    color: #88898a;
     font-size: 13px;
 }
 
@@ -422,14 +414,10 @@ padding: 10px 20px 20px 20px;
     padding: 10px 10px 10px 10px;
 }
 .w3tc_overlay_upgrade_header {
-    padding: 10px 10px 10px 10px;
     background-color: #f3f3f3;
     color: #cacaca;
-    border-bottom: dashed 1px #c0c0c0;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    -webkit-border-top-left-radius: 6px;
-    -webkit-border-top-right-radius: 6px;
+    height: calc(100% - 80px);
+    box-sizing: border-box;
 }
 
 .w3tc_overlay_upgrade_content_l {
@@ -465,4 +453,98 @@ padding: 10px 20px 20px 20px;
 
 .w3tc_overlay_upgrade_right_text {
     font-weight: normal;
+}
+
+.w3tc_change_label {
+    color:black;
+    font-weight:inherit;
+}
+
+@media only screen and (max-device-width: 480px) {
+    .w3tc_overlay_upgrade_content_l {
+        display: none;
+    }
+    .w3tc_overlay_upgrade_content_r {
+        width: inherit;
+        padding: none;
+        float: none;
+    }
+}
+
+
+/**
+ * Colors.
+ */
+
+/* "tp" is Turquoise Pearl, courtesty of https://hexcolor.co/hex/30bec4. */
+input.w3tc-palette-tp,
+a.w3tc-palette-tp {
+	background-color: #30bec4;
+	color: #fff;
+}
+
+/* A button with an icon gauge to the right. */
+#w3tc_upgrade_header .w3tc-gauge-tp {
+	background-image: url(../img/overlay/gauge-bg-tp.png);
+	background-position: calc(100% - 15px) center;
+	background-repeat: no-repeat;
+	text-decoration: none;
+	padding: 7px 60px 7px 12px;
+}
+
+
+/**
+ * Upgrade modal.
+ */
+ 
+#w3tc-upgrade {
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+/* The close button will be different for the upgrade modal. */
+.w3tc-overlay-upgrade .lightbox-close {
+	border-radius: 50%;
+	padding: 0;
+	background-position: 8px;
+	margin: 0;
+	top: -12px;
+	right: -12px;
+	width: 25px;
+	height: 25px;
+}
+
+#w3tc_upgrade_header {
+	display: flex;
+	background: #000;
+	border-bottom: 5px solid #30bec4;
+	color: #fff;
+	height: 75px;
+	position: relative;
+}
+ 
+#w3tc_upgrade_header > div {
+	flex: 1;
+}
+ 
+#w3tc_upgrade_header > div:first-child div {
+	position: absolute;
+	top: 17px;
+	left: 90px;
+	font-size: 20px;
+	line-height: 20px;
+}
+ 
+/* Go faster now button. It could be an anchor or an input. */
+#w3tc_upgrade_header > div:nth-child(2) > *:first-child {
+	position: absolute;
+	top: 20px;
+	right: 90px;
+}
+
+/* Ensure a consistent background with the iframe and the modal elements. */
+.w3tc-overlay-upgrade,
+.w3tc_overlay_upgrade_header,
+.w3tc-overlay-upgrade .lightbox-close {
+	background-color: #f1f1f1;
 }

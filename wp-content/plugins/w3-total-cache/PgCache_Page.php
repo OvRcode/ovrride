@@ -4,6 +4,14 @@ namespace W3TC;
 
 
 class PgCache_Page extends Base_Page_Settings {
+	static public function admin_print_scripts_w3tc_pgcache() {
+		wp_enqueue_script( 'w3tc-options-validator',
+			plugins_url( 'pub/js/options-validator.js', W3TC_FILE ),
+			array(), W3TC_VERSION );
+	}
+
+
+
 	/**
 	 * Current page
 	 *
@@ -33,9 +41,7 @@ class PgCache_Page extends Base_Page_Settings {
 		$permalink_structure = get_option( 'permalink_structure' );
 
 		$varnish_enabled = $this->_config->get_boolean( 'varnish.enabled' );
-		$cdn_mirror_purge_enabled =
-			Cdn_Util::is_engine_fsd( $this->_config->get_string( 'cdn.engine' ) ) &&
-			$this->_config->get_boolean( 'cdn.enabled' );
+		$cdnfsd_enabled = $this->_config->get_boolean( 'cdnfsd.enabled' );
 		include W3TC_INC_DIR . '/options/pgcache.php';
 	}
 }

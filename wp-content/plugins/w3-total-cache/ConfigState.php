@@ -9,12 +9,15 @@ namespace W3TC;
  *   common.install - time() of plugin installation
  *   common.support_us_invitations - number of invitations to support us shown
  *   common.next_support_us_invitation - time() of next support us invitation
- *   common.edge_invitations
- *   common.next_edge_invitation
  *   common.hide_note_wp_content_permissions
  *   common.hide_note_no_zlib
  *   common.hide_note_zlib_output_compression
  *   common.show_note.nginx_restart_required
+ *   common.hide_note_php_version_56
+ *   license.status
+ *   license.next_check - time of next check
+ *   license.terms - accepted/declined/''
+ *   license.community_terms - accepted/declined/'' (master)
  *   minify.error.file
  *   minify.error.last
  *   minify.error.notification.last
@@ -28,11 +31,11 @@ namespace W3TC;
  *   newrelic.hide_note_pageload_slow
  *   minify.show_note.need_flush
  *   minify.show_note.need_flush.timestamp - when the note was set
- *   cdn.hide_note_maxcdn_whitelist_ip
  *   cdn.hide_note_no_curl
  *   cdn.google_drive.access_token
  *   cdn.rackspace_cf.access_state
  *   cdn.rackspace_cdn.access_state
+ *   cdn.stackpath2.access_token
  *   cdn.show_note_theme_changed
  *   cdn.show_note_wp_upgraded
  *   cdn.show_note_cdn_upload
@@ -47,9 +50,7 @@ namespace W3TC;
  *   objectcache.show_note.flush_needed
  *   objectcache.show_note.flush_needed.timestamp - when the note was set
  *   extension.<extension_id>.hide_note_suggest_activation
- *   track.maxcdn_signup
- *   track.maxcdn_authorize
- *   track.maxcdn_validation
+ *   track.stackpath_signup
  */
 class ConfigState {
 	private $_data;
@@ -187,5 +188,6 @@ class ConfigState {
 
 	private function apply_defaults() {
 		$this->set( 'common.install', time() );
+		$this->set( 'common.install_version', W3TC_VERSION );
 	}
 }

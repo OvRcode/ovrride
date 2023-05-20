@@ -20,10 +20,12 @@ class DbCache_Environment {
 	public function fix_on_wpadmin_request( $config, $force_all_checks ) {
 		$exs = new Util_Environment_Exceptions();
 		try {
-			if ( $config->get_boolean( 'dbcache.enabled' ) )
+			if ( $config->get_boolean( 'dbcache.enabled' ) ||
+					Util_Environment::is_dbcluster() ) {
 				$this->create_addin();
-			else
+			} else {
 				$this->delete_addin();
+			}
 		} catch ( Util_WpFile_FilesystemOperationException $ex ) {
 			$exs->push( $ex );
 		}
@@ -105,22 +107,22 @@ class DbCache_Environment {
 				if ( $script_data == @file_get_contents( $src ) )
 					return;
 			} else if ( get_transient( 'w3tc_remove_add_in_dbcache' ) == 'yes' ) {
-					// user already manually asked to remove another plugin's add in,
-					// we should try to apply ours
-					// (in case of missing permissions deletion could fail)
-				} else if ( !$this->db_check_old_add_in() ) {
-
-
-					if ( isset( $_GET['page'] ) )
-						$url = 'admin.php?page=' . $_GET['page'] . '&amp;';
-					else
-						$url = basename( Util_Environment::remove_query( $_SERVER['REQUEST_URI'] ) ) . '?page=w3tc_dashboard&amp;';
-					$remove_url = Util_Ui::admin_url( $url . 'w3tc_default_remove_add_in=dbcache' );
-					throw new Util_WpFile_FilesystemOperationException(
-						sprintf( __( 'The Database add-in file db.php is not a W3 Total Cache drop-in.
-                    Remove it or disable Database Caching. %s', 'w3-total-cache' ),
-							Util_Ui::button_link( __( 'Remove it for me', 'w3-total-cache' ), wp_nonce_url( $remove_url, 'w3tc' ) ) ) );
+				// user already manually asked to remove another plugin's add in,
+				// we should try to apply ours
+				// (in case of missing permissions deletion could fail)
+			} else if ( !$this->db_check_old_add_in() ) {
+				$page_val = Util_Request::get_string( 'page' );
+				if ( isset( $page_val ) ) {
+					$url = 'admin.php?page=' . $page_val . '&amp;';
+				} else {
+					$url = basename( Util_Environment::remove_query_all( isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' ) ) . '?page=w3tc_dashboard&amp;';
 				}
+				$remove_url = Util_Ui::admin_url( $url . 'w3tc_default_remove_add_in=dbcache' );
+				throw new Util_WpFile_FilesystemOperationException(
+					sprintf( __( 'The Database add-in file db.php is not a W3 Total Cache drop-in.
+                Remove it or disable Database Caching. %s', 'w3-total-cache' ),
+						Util_Ui::button_link( __( 'Remove it for me', 'w3-total-cache' ), wp_nonce_url( $remove_url, 'w3tc' ) ) ) );
+			}
 		}
 
 		Util_WpFile::copy_file( $src, $dst );
@@ -151,6 +153,9 @@ class DbCache_Environment {
 	 * @return boolean
 	 */
 	public function db_check_old_add_in() {
+		if ( !$this->db_installed() )
+			return false;
+
 		return ( ( $script_data = @file_get_contents( W3TC_ADDIN_FILE_DB ) )
 			&& strstr( $script_data, 'w3_instance' ) !== false );
 	}
@@ -161,6 +166,9 @@ class DbCache_Environment {
 	 * @return boolean
 	 */
 	public function is_dbcache_add_in() {
+		if ( !$this->db_installed() )
+			return false;
+
 		return ( ( $script_data = @file_get_contents( W3TC_ADDIN_FILE_DB ) )
 			&& strstr( $script_data, 'DbCache_Wpdb' ) !== false );
 	}

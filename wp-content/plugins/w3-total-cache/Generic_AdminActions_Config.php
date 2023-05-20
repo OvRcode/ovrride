@@ -16,35 +16,33 @@ class Generic_AdminActions_Config {
 	 *
 	 * @return void
 	 */
-	function w3tc_config_import() {
+	public function w3tc_config_import() {
 		$error = '';
 
 		$config = new Config();
 
-		if ( !isset( $_FILES['config_file']['error'] ) ||
-			$_FILES['config_file']['error'] == UPLOAD_ERR_NO_FILE ) {
+		if ( ! isset( $_FILES['config_file']['error'] ) || UPLOAD_ERR_NO_FILE === $_FILES['config_file']['error'] ) {
 			$error = 'config_import_no_file';
-		} elseif ( $_FILES['config_file']['error'] != UPLOAD_ERR_OK ) {
+		} elseif ( UPLOAD_ERR_OK !== $_FILES['config_file']['error'] ) {
 			$error = 'config_import_upload';
 		} else {
-			$imported = $config->import( $_FILES['config_file']['tmp_name'] );
+			$imported = $config->import(
+				isset( $_FILES['config_file']['tmp_name'] ) ?
+					esc_url_raw( wp_unslash( $_FILES['config_file']['tmp_name'] ) ) : ''
+			);
 
-			if ( !$imported ) {
+			if ( ! $imported ) {
 				$error = 'config_import_import';
 			}
 		}
 
 		if ( $error ) {
-			Util_Admin::redirect( array(
-					'w3tc_error' => $error
-				), true );
+			Util_Admin::redirect( array( 'w3tc_error' => $error ), true );
 			return;
 		}
 
 		Util_Admin::config_save( $this->_config, $config );
-		Util_Admin::redirect( array(
-				'w3tc_note' => 'config_import'
-			), true );
+		Util_Admin::redirect( array( 'w3tc_note' => 'config_import' ), true );
 	}
 
 	/**
@@ -55,7 +53,7 @@ class Generic_AdminActions_Config {
 	function w3tc_config_export() {
 		$filename = substr( get_home_url(), strpos( get_home_url(), '//' )+2 );
 		@header( sprintf( __( 'Content-Disposition: attachment; filename=%s.json', 'w3-total-cache' ), $filename ) );
-		echo $this->_config->export();
+		echo $this->_config->export(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		die();
 	}
 
@@ -89,7 +87,7 @@ class Generic_AdminActions_Config {
 	 * @return void
 	 */
 	function w3tc_config_preview_enable() {
-		$this->preview_production_copy( -1 );
+		ConfigUtil::preview_production_copy( Util_Environment::blog_id(), -1 );
 		Util_Environment::set_preview( true );
 
 		Util_Admin::redirect( array(
@@ -104,9 +102,7 @@ class Generic_AdminActions_Config {
 	 */
 	function w3tc_config_preview_disable() {
 		$blog_id = Util_Environment::blog_id();
-		$preview_filename = Config::util_config_filename( $blog_id, true );
-		@unlink( $preview_filename );
-
+		ConfigUtil::remove_item( $blog_id, true );
 		Util_Environment::set_preview( false );
 
 		Util_Admin::redirect( array(
@@ -120,40 +116,12 @@ class Generic_AdminActions_Config {
 	 * @return void
 	 */
 	function w3tc_config_preview_deploy() {
-		$this->preview_production_copy( 1 );
+		ConfigUtil::preview_production_copy( Util_Environment::blog_id(), 1 );
 		Util_Environment::set_preview( false );
 
 		Util_Admin::redirect( array(
 				'w3tc_note' => 'preview_deploy'
 			) );
-	}
-
-
-
-	/**
-	 * Deploys the config file from a preview config file
-	 *
-	 * @param integer $direction     +1: preview->production
-	 *                           -1: production->preview
-	 * @param boolean $remove_source remove source file
-	 */
-	private function preview_production_copy( $direction = 1 ) {
-		$blog_id = Util_Environment::blog_id();
-
-		$preview_filename = Config::util_config_filename( $blog_id, true );
-		$production_filename = Config::util_config_filename( $blog_id, false );
-
-		if ( $direction > 0 ) {
-			$src = $preview_filename;
-			$dest = $production_filename;
-		} else {
-			$src = $production_filename;
-			$dest = $preview_filename;
-		}
-
-		if ( !@copy( $src, $dest ) ) {
-			Util_Activation::throw_on_write_error( $dest );
-		}
 	}
 
 
@@ -167,7 +135,7 @@ class Generic_AdminActions_Config {
 		$params = array( 'page' => 'w3tc_general' );
 
 		if ( !file_put_contents( W3TC_FILE_DB_CLUSTER_CONFIG,
-				stripslashes( $_REQUEST['newcontent'] ) ) ) {
+			Util_Request::get_string( 'newcontent' ) ) ) {
 			try {
 				Util_Activation::throw_on_write_error( W3TC_FILE_DB_CLUSTER_CONFIG );
 			} catch ( \Exception $e ) {
@@ -187,19 +155,20 @@ class Generic_AdminActions_Config {
 	 * @return void
 	 */
 	function w3tc_config_save_support_us() {
-		$support = Util_Request::get_string( 'support' );
 		$tweeted = Util_Request::get_boolean( 'tweeted' );
 		$signmeup = Util_Request::get_boolean( 'signmeup' );
-		$track_usage = Util_Request::get_boolean( 'track_usage' );
-		$this->_config->set( 'common.support', $support );
+		$accept_terms = Util_Request::get_boolean( 'accept_terms' );
 		$this->_config->set( 'common.tweeted', $tweeted );
-		if ( $track_usage )
+
+		$state_master = Dispatcher::config_state_master();
+		if ( $accept_terms ) {
 			$this->_config->set( 'common.track_usage', true );
+			$state_master->set( 'license.community_terms', 'accept' );
+		}
+		$state_master->save();
 
 		if ( $signmeup ) {
-			if ( Util_Environment::is_w3tc_enterprise( $this->_config ) )
-				$license = 'enterprise';
-			elseif ( Util_Environment::is_w3tc_pro( $this->_config ) )
+			if ( Util_Environment::is_w3tc_pro( $this->_config ) )
 				$license = 'pro';
 			else
 				$license = 'community';
@@ -209,8 +178,6 @@ class Generic_AdminActions_Config {
 				) );
 		}
 		$this->_config->save();
-
-		Generic_AdminLinks::link_update( $this->_config );
 
 		Util_Admin::redirect( array(
 				'w3tc_note' => 'config_save'

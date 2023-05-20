@@ -58,6 +58,12 @@ class Enterprise_CacheFlush_MakeSnsEvent extends Enterprise_SnsBase {
 		$this->_prepare_message( array( 'action' => 'browsercache_flush' ) );
 	}
 
+	function cdn_purge_all( $extras = null ) {
+		return $this->_prepare_message( array(
+			'action' => 'cdn_purge_all',
+			'extras' => $extras ) );
+	}
+
 	/**
 	 * Purges Files from Varnish (If enabled) and CDN
 	 *
@@ -83,25 +89,16 @@ class Enterprise_CacheFlush_MakeSnsEvent extends Enterprise_SnsBase {
 	}
 
 	/**
-	 * Reloads/compiles a PHP file.
-	 *
-	 * @param string  $filename
-	 * @return mixed
-	 */
-	function opcache_flush_file( $filename ) {
-		return $this->_prepare_message( array(
-				'action' => 'opcache_flush_file',
-				'filename' => $filename ) );
-	}
-
-	/**
 	 * Purges/Flushes post page
 	 *
 	 * @param unknown $post_id
 	 * @return boolean
 	 */
-	function flush_post( $post_id ) {
-		return $this->_prepare_message( array( 'action' => 'flush_post', 'post_id' => $post_id ) );
+	function flush_post( $post_id, $extras = null ) {
+		return $this->_prepare_message( array(
+			'action' => 'flush_post',
+			'post_id' => $post_id,
+			'extras' => $extras ) );
 	}
 
 	/**
@@ -128,14 +125,26 @@ class Enterprise_CacheFlush_MakeSnsEvent extends Enterprise_SnsBase {
 			) );
 	}
 
+	function flush_group( $group, $extras ) {
+		return $this->_prepare_message( array(
+				'action' => 'flush_group',
+				'group' => $group,
+				'extras' => $extras
+			) );
+	}
+
+
 	/**
 	 * Purges/Flushes url
 	 *
 	 * @param string  $url
 	 * @return boolean
 	 */
-	function flush_url( $url ) {
-		return $this->_prepare_message( array( 'action' => 'flush_url', 'url' => $url ) );
+	function flush_url( $url, $extras ) {
+		return $this->_prepare_message( array(
+			'action' => 'flush_url',
+			'url' => $url,
+			'extras' => $extras ) );
 	}
 
 	/**
@@ -184,7 +193,7 @@ class Enterprise_CacheFlush_MakeSnsEvent extends Enterprise_SnsBase {
 		$message = array();
 		$message['actions'] = $this->messages;
 		$message['blog_id'] = Util_Environment::blog_id();
-		$message['host'] = isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : null;
+		$message['host'] = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : null;
 		$message['hostname'] = @gethostname();
 		$v = json_encode( $message );
 
@@ -197,7 +206,7 @@ class Enterprise_CacheFlush_MakeSnsEvent extends Enterprise_SnsBase {
 			$this->_log( $origin . ' sending message ' . $v );
 			$this->_log( 'Host: ' . $message['host'] );
 			if ( isset( $_SERVER['REQUEST_URI'] ) )
-				$this->_log( 'URL: ' . $_SERVER['REQUEST_URI'] );
+				$this->_log( 'URL: ' . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 			if ( function_exists( 'current_filter' ) )
 				$this->_log( 'Current WP hook: ' . current_filter() );
 
@@ -212,9 +221,12 @@ class Enterprise_CacheFlush_MakeSnsEvent extends Enterprise_SnsBase {
 			}
 			$this->_log( 'Backtrace ', $backtrace_optimized );
 
-			$r = $api->publish( $this->_topic_arn, $v );
-			if ( $r->status != 200 ) {
-				$this->_log( "Error: {$r->body->Error->Message}" );
+			$r = $api->publish( array(
+				'Message' => $v,
+				'TopicArn' => $this->_topic_arn ) );
+			if ( $r['@metadata']['statusCode'] != 200 ) {
+				$this->_log( "Error" );
+				$this->_log( json_encode($r) );
 				return false;
 			}
 		} catch ( \Exception $e ) {

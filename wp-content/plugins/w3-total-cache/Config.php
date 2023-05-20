@@ -7,16 +7,16 @@ namespace W3TC;
  */
 class Config {
 	/*
-     * blog id of loaded config
-     * @var integer
-     */
+	 * blog id of loaded config
+	 * @var integer
+	 */
 	private $_blog_id;
 	private $_is_master;
 
 	/*
-     * Is this preview config
-     * @var boolean
-     */
+	 * Is this preview config
+	 * @var boolean
+	 */
 	private $_preview;
 
 	private $_md5;
@@ -29,7 +29,30 @@ class Config {
 	 * Reads config from file and returns it's content as array (or null)
 	 * Stored in this class to limit class loading
 	 */
-	static public function util_array_from_file( $filename ) {
+	static public function util_array_from_storage( $blog_id, $preview ) {
+		if ( !defined( 'W3TC_CONFIG_CACHE_ENGINE' ) ) {
+			return self::_util_array_from_storage( $blog_id, $preview );
+		}
+
+		// config cache enabled
+		$config = ConfigCache::util_array_from_storage( $blog_id, $preview );
+		if ( !is_null( $config ) ) {
+			return $config;
+		}
+
+		$config = self::_util_array_from_storage( $blog_id, $preview );
+		ConfigCache::save_item( $blog_id, $preview, $config );
+		return $config;
+	}
+
+
+
+	static private function _util_array_from_storage( $blog_id, $preview ) {
+		if ( defined( 'W3TC_CONFIG_DATABASE' ) && W3TC_CONFIG_DATABASE ) {
+			return ConfigDbStorage::util_array_from_storage( $blog_id, $preview );
+		}
+
+		$filename = self::util_config_filename( $blog_id, $preview );
 		if ( file_exists( $filename ) && is_readable( $filename ) ) {
 			// including file directly instead of read+eval causes constant
 			// problems with APC, ZendCache, and WSOD in a case of
@@ -37,8 +60,9 @@ class Config {
 			$content = @file_get_contents( $filename );
 			$config = @json_decode( substr( $content, 14 ), true );
 
-			if ( is_array( $config ) )
+			if ( is_array( $config ) ) {
 				return $config;
+			}
 		}
 
 		return null;
@@ -47,39 +71,34 @@ class Config {
 
 
 	/*
-     * Returns config filename
-     * Stored in this class to limit class loading
-     */
+	 * Returns config filename
+	 * Stored in this class to limit class loading
+	 */
 	static public function util_config_filename( $blog_id, $preview ) {
 		$postfix = ( $preview ? '-preview' : '' ) . '.php';
 
-		if ( $blog_id <= 0 )
-			return W3TC_CONFIG_DIR . '/master' . $postfix;
-		else
-			return W3TC_CONFIG_DIR . '/' . sprintf( '%06d', $blog_id ) . $postfix;
+		if ( $blog_id <= 0 ) {
+			$filename = W3TC_CONFIG_DIR . '/master' . $postfix;
+		} else {
+			$filename = W3TC_CONFIG_DIR . '/' . sprintf( '%06d', $blog_id ) . $postfix;
+		}
+
+		$d = w3tc_apply_filters( 'config_filename', array(
+			'blog_id' => $blog_id,
+			'preview' => $preview,
+			'filename' => $filename
+		) );
+
+		return $d['filename'];
 	}
 
 
 
 	/*
-     * Returns config filename
-     * Stored in this class to limit class loading
-     * v<0.9.5
-     */
-	static public function util_config_filename_legacy_v1( $blog_id, $preview ) {
-		$postfix = ( $preview ? '-preview' : '' ) . '.php';
-
-		if ( $blog_id <= 0 )
-			return W3TC_CONFIG_DIR . '/master' . $postfix;
-		else
-			return W3TC_CONFIG_DIR . '/' . sprintf( '%06d', $blog_id ) . $postfix;
-	}
-
-	/*
-     * Returns config filename
-     * Stored in this class to limit class loading
-     * v = 0.9.5 - 0.9.5.1
-     */
+	 * Returns config filename
+	 * Stored in this class to limit class loading
+	 * v = 0.9.5 - 0.9.5.1
+	 */
 	static public function util_config_filename_legacy_v2( $blog_id, $preview ) {
 		$postfix = ( $preview ? '-preview' : '' ) . '.json';
 
@@ -201,6 +220,52 @@ class Config {
 
 
 	/**
+	 * Returns config value with ability to hook it.
+	 * Should be called only when filters already loaded and
+	 * call doesn't repeat too many times
+	 */
+	public function getf( $key, $default = null ) {
+		$v = $this->get( $key, $default );
+		return apply_filters( 'w3tc_config_item_' . $key, $v );
+	}
+
+	/**
+	 * Returns string value with ability to hook it
+	 */
+	public function getf_string( $key, $default = '', $trim = true ) {
+		$value = (string)$this->getf( $key, $default );
+
+		return $trim ? trim( $value ) : $value;
+	}
+
+	/**
+	 * Returns integer value with ability to hook it
+	 */
+	public function getf_integer( $key, $default = 0 ) {
+		return (integer)$this->getf( $key, $default );
+	}
+
+
+
+	/**
+	 * Returns boolean value ability to hook it
+	 */
+	public function getf_boolean( $key, $default = false ) {
+		return (boolean)$this->getf( $key, $default );
+	}
+
+
+
+	/**
+	 * Returns array value ability to hook it
+	 */
+	public function getf_array( $key, $default = array() ) {
+		return (array)$this->getf( $key, $default );
+	}
+
+
+
+	/**
 	 * Check if an extension is active
 	 */
 	public function is_extension_active( $extension ) {
@@ -220,13 +285,30 @@ class Config {
 	public function set_extension_active_frontend( $extension,
 		$is_active_frontend ) {
 		$a = $this->get_array( 'extensions.active_frontend' );
-		if ( !$is_active_frontend )
+		if ( !$is_active_frontend ) {
 			unset( $a[$extension] );
-		else
+		} else {
 			$a[$extension] = '*';
+		}
 
 		$this->set( 'extensions.active_frontend', $a );
 	}
+
+
+
+	public function set_extension_active_dropin( $extension,
+		$is_active_dropin ) {
+		$a = $this->get_array( 'extensions.active_dropin' );
+		if ( !$is_active_dropin ) {
+			unset( $a[$extension] );
+		} else {
+			$a[$extension] = '*';
+		}
+
+		$this->set( 'extensions.active_dropin', $a );
+	}
+
+
 
 	/**
 	 * Sets config value.
@@ -249,6 +331,8 @@ class Config {
 		return $value;
 	}
 
+
+
 	/**
 	 * Check if we are in preview mode
 	 */
@@ -256,12 +340,16 @@ class Config {
 		return $this->_preview;
 	}
 
+
+
 	/**
 	 * Returns true if we edit master config
 	 */
 	public function is_master() {
 		return $this->_is_master;
 	}
+
+
 
 	public function is_compiled() {
 		return $this->_compiled;
@@ -324,11 +412,20 @@ class Config {
 	 */
 	public function import( $filename ) {
 		if ( file_exists( $filename ) && is_readable( $filename ) ) {
-			$data = file_get_contents( $filename );
-			$config = @json_decode( $data, true );
+			$content = file_get_contents( $filename );
+			if ( substr( $content, 0, 14 ) == '<?php exit; ?>' ) {
+				$content = substr( $content, 14 );
+			}
 
-			if ( is_array( $config ) ) {
-				foreach ( $config as $key => $value )
+			$data = @json_decode( $content, true );
+			if ( is_array( $data ) ) {
+				if ( !isset( $data['version'] ) || $data['version'] != W3TC_VERSION ) {
+					$c = new ConfigCompiler( $this->_blog_id, false );
+					$c->load( $data );
+					$data = $c->get_data();
+				}
+
+				foreach ( $data as $key => $value )
 					$this->set( $key, $value );
 
 				return true;
@@ -355,17 +452,15 @@ class Config {
 	 * correctly
 	 */
 	public function load() {
-		$master_filename = Config::util_config_filename( 0, $this->_preview );
-		$data = Config::util_array_from_file( $master_filename );
+		$data = Config::util_array_from_storage( 0, $this->_preview );
 
 		// config file assumed is not up to date, use slow version
 		if ( !isset( $data['version'] ) || $data['version'] != W3TC_VERSION )
 			return $this->load_full();
 
 		if ( !$this->is_master() ) {
-			$child_filename = Config::util_config_filename( $this->_blog_id,
+			$child_data = Config::util_array_from_storage( $this->_blog_id,
 				$this->_preview );
-			$child_data = Config::util_array_from_file( $child_filename );
 
 			if ( !is_null( $child_data ) ) {
 				if ( !isset( $data['version'] ) || $data['version'] != W3TC_VERSION )
