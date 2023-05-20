@@ -1,4 +1,6 @@
-sudo: false
+os: linux
+
+dist: bionic
 
 language: php
 
@@ -12,41 +14,52 @@ branches:
     - master
 
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
+  - 7.2
+  - 7.4
+  - 8.0
+  - 8.1
+  - 8.2
+
+addons:
+  apt:
+    update: true
+    packages:
+      - libonig-dev
+
+services:
+  - mysql
 
 env:
   - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=4.6 WP_MULTISITE=0
 
-matrix:
+jobs:
   include:
-    - php: 5.3
-      env: WP_VERSION=latest WP_MULTISITE=0
-      dist: precise
-    - php: 5.3
-      env: WP_VERSION=latest WP_MULTISITE=1
-      dist: precise
-    - php: 7.0
-      env: WP_VERSION=latest WP_MULTISITE=1
+    - php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=1 WPSNIFF=1
+    - php: 7.4
+      env: WP_VERSION=latest WP_MULTISITE=1 WPSNIFF=1
+    - php: 7.4
+      env: WP_VERSION=5.9 WP_MULTISITE=0
+
+#before_install:
+#  - sudo apt-get update
+#  - sudo apt-get -y install libonig4
 
 before_script:
-  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
   - phpenv config-rm xdebug.ini
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - composer global require --dev yoast/phpunit-polyfills
   - |
-    if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-      composer global require "phpunit/phpunit=5.7.*"
-    else
-      composer global require "phpunit/phpunit=4.8.*"
+    if [[ "$WPSNIFF" == "1" ]]; then
+      composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+      composer global require phpcompatibility/php-compatibility:"dev-develop as 9.99.99"
+      composer global require wp-coding-standards/wpcs phpcompatibility/phpcompatibility-wp
+      composer global require dealerdirect/phpcodesniffer-composer-installer
+      phpcs -i
     fi
   - |
-    composer global require wp-coding-standards/wpcs
-    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
 
 script:
-  - phpcs --standard=phpcs.ruleset.xml --extensions=php .
+  - if [[ "$WPSNIFF" == "1" ]]; then phpcs --standard=phpcs.ruleset.xml --extensions=php .; fi
   - phpunit

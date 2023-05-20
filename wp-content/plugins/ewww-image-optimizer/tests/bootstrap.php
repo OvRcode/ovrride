@@ -20,6 +20,15 @@ function _manually_load_plugin() {
 	require dirname( dirname( __FILE__ ) ) . '/ewww-image-optimizer.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+if ( ! defined( 'EIO_PHPUNIT' ) ) {
+	define( 'EIO_PHPUNIT', true );
+}
+
+if ( ! empty( $_SERVER['HOME'] ) ) {
+	if ( is_file( $_SERVER['HOME'] . '/Documents/GitHub/PHPUnit-Polyfills/phpunitpolyfills-autoload.php' ) ) {
+		require( $_SERVER['HOME'] . '/Documents/GitHub/PHPUnit-Polyfills/phpunitpolyfills-autoload.php' );
+	}
+}
 
 // Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';
