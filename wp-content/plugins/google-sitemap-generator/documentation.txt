@@ -1,4 +1,4 @@
-﻿Google XML Sitemaps Generator for WordPress
+Google XML Sitemaps Generator for WordPress
 ==============================================================================
 
 This generator will create a sitemaps.org compliant sitemap of your WordPress site.
@@ -310,7 +310,14 @@ Release History:
                       Changed "Tested up to" to 4.0
 2014-11-15     4.0.8  Fixed bug with excluded categories, thanks to Claus Schöffel!
 2017-03-22     4.0.9  Fixed security issue with donation submission.
-
+2018-12-18     4.1.0  Fixed security issues related to forms and external URLs
+2022-04-07     4.1.1  Fixed security issues and added support for WooCommerce based sitemap
+2022-04-07     4.1.2  Fixed security issues and features like support for WooCommerce based sitemap
+2022-05-31     4.1.3  Added backward compatibility settings, Changed Google Tracking ID field to optional, Fixed PHP warnings
+2022-06-06     4.1.4  Fixed the issue of PHP warnings, Fixed links per page issue, Improved WordPress 6.0 compatibility
+2022-06-14     4.1.5  Fixed code regressions moving from git to svn
+2022-11-23     4.1.6  Made the Google TID field non mandatory in order to ping Google
+2022-11-24     4.1.7  Fixed custom taxonomy unit generation issue
 
 
 
@@ -321,7 +328,7 @@ Todo:
 
 License:
 ==============================================================================
-Copyright 2005 - 2017 ARNE BRACHHOLD  (email : himself - arnebrachhold - de)
+Copyright 2005 - 2018 ARNE BRACHHOLD  (email : himself - arnebrachhold - de)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -348,14 +355,14 @@ Adding other pages to the sitemap via other plugins
 This plugin uses the action system of WordPress to allow other plugins
 to add urls to the sitemap. Simply add your function with add_action to
 the list and the plugin will execute yours every time the sitemap is build.
-Use the static method "GetInstance" to get the generator and AddUrl method
+Use the static method "get_instance" to get the generator and add_url method
 to add your content.
 
 Sample:
 
 function your_pages() {
-	$generatorObject = &GoogleSitemapGenerator::GetInstance();
-	if($generatorObject!=null) $generatorObject->AddUrl("http://blog.uri/tags/hello/",time(),"daily",0.5);
+	$generatorObject = &GoogleSitemapGenerator::get_instance();
+	if($generatorObject!=null) $generatorObject->add_url("http://blog.uri/tags/hello/",time(),"daily",0.5);
 }
 add_action("sm_buildmap", "your_pages");
 
