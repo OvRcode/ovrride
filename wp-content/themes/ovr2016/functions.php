@@ -328,10 +328,10 @@ function display_about_element() {
   $about_ovr = get_option('about_ovr');
   echo "<textarea rows='10' cols='100' name='about_ovr' id='about_ovr'>{$about_ovr}</textarea>";
 }
-function display_google_analytics_element() {
+/*function display_google_analytics_element() {
   $analytics_id = get_option("google_analytics_id");
   echo "<input type='text' name='google_analytics_id' id='google_analytics_id' value='{$analytics_id}' />";
-}
+}*/
 
 function display_theme_panel_fields()
 {
@@ -342,7 +342,7 @@ function display_theme_panel_fields()
   add_settings_field("youtube_url", "Youtube Chanel Url", "display_youtube_element", "theme-options", "section");
   add_settings_field("instagram_url", "Instagram Profile Url", "display_instagram_element", "theme-options", "section");
   add_settings_field("google_maps_api", "Google Maps API Key", "display_google_maps_api_element", "theme-options", "section");
-  add_settings_field("google_analytics_id", "Google Analytics ID", "display_google_analytics_element", "theme-options", "section");
+  #add_settings_field("google_analytics_id", "Google Analytics ID", "display_google_analytics_element", "theme-options", "section");
   add_settings_field("about_text", "About OvR Text", "display_about_element", "theme-options", "section");
   register_setting("section", "twitter_url");
   register_setting("section", "facebook_url");
@@ -391,7 +391,10 @@ add_filter( 'woocommerce_default_catalog_orderby_options', 'ovr_add_new_postmeta
 add_filter( 'woocommerce_catalog_orderby', 'ovr_add_new_postmeta_orderby' );
 
 // 20 Products per page
-add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 20;' ), 20 );
+#add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 20;' ), 20 );
+add_filter( 'loop_shop_per_page',  function($cols) {
+  return 20;
+}, 20 );
 // Remove sorting drop dropdown-menu
 remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
 
