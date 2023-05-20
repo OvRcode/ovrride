@@ -2,9 +2,9 @@
 /*
 * Plugin Name: OvRride Site Widgets
 * Description:  Collection of widgets for the ovrride.com site
-* Author: Mike Barnard
-* Author URI: http://github.com/barnardm
-* Version: 1.7.2
+* Author: Ada Lambrecht
+* Author URI: http://github.com/ada-lambrecht
+* Version: 1.7.3
 * License: MIT License
 */
 require('classes/ovr-blog-feature-widget.php');
