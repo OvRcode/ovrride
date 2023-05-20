@@ -1,0 +1,20 @@
+/**
+ * Common wposes-notice styles.
+ */
+.wposes-notice p,
+.wposes-compatibility-notice p {
+  max-width: 800px;
+}
+
+/**
+ * Prevent WP from adding the circular arrow icon to all P tags inside the notice html.
+ */
+.wposes-licence-notice p:not(.wposes-before):before {
+  display: none;
+}
+
+.wposes-notice-warning {
+  border-left-color: #ffba00;
+}
+
+/*# sourceMappingURL=notice.css.map */
