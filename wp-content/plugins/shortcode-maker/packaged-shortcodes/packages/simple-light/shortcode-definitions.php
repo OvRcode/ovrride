@@ -1,10 +1,24 @@
 <?php
-$items = Smps_Simple_Light::settings()['items'];
-foreach ( $items as $item => $label ) {
-    add_shortcode( 'smps_sl_'.$item, array( 'Smps_Simple_Light_Shortcodes', 'render_'.$item ) );
-}
+class SM_Shortcode_Definitions {
 
-class Smps_Simple_Light_Shortcodes {
+    public static function init() {
+        add_shortcode( 'smps_shortcode', array( __CLASS__, 'shortcode_handler' ) );
+    }
+
+    public static function shortcode_handler( $atts, $content, $tag ) {
+        $atts = shortcode_atts( array(
+                'element' => '',
+            'data' => '{}'
+        ), $atts, $tag );
+
+
+        if( !$atts['element'] ) return;
+
+        if( method_exists( __CLASS__, 'render_'.$atts['element'] ) ) {
+            $method = 'render_'.$atts['element'];
+            self::$method( $atts, $content, $tag );
+        }
+    }
 
     public static function render_tabs( $atts, $content, $tag ) {
 
@@ -99,12 +113,11 @@ class Smps_Simple_Light_Shortcodes {
         if( !is_array( $data ) ) {
             $data = json_decode(stripslashes(urldecode($atts['data'])),true);
         }
-
         ?>
         <div class="bs-container">
             <table class="table table-striped">
                 <tbody>
-                <?php foreach ( $data['table_data']/*['tbody']*/ as $key => $tr ) : ?>
+                <?php foreach ( $data['table_data'] as $key => $tr ) : ?>
                     <tr>
                         <?php foreach ( $tr as $k => $td ) : ?>
                             <td><?php echo $td; ?></td>
@@ -128,15 +141,13 @@ class Smps_Simple_Light_Shortcodes {
             $data = json_decode(stripslashes(urldecode($atts['data'])),true);
         }
         ?>
-        <div class="bs-container">
-            <div class="alert alert-<?php echo $data['type']; ?> alert-<?php echo $data['dismissable'] == 'true' ? 'dismissible' : ''; ?> fade show" role="alert">
-                <?php echo $data['content']; ?>
-                <?php if( $data['dismissable'] == 'true' ) : ?>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                <?php endif; ?>
-            </div>
+        <div class="alert alert-<?php echo $data['type']; ?> alert-<?php echo $data['dismissable'] == 'true' ? 'dismissible' : ''; ?> fade show" role="alert">
+            <?php echo $data['content']; ?>
+            <?php if( $data['dismissable'] == 'true' ) : ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            <?php endif; ?>
         </div>
     <?php
     }
@@ -177,7 +188,7 @@ class Smps_Simple_Light_Shortcodes {
         }
         ?>
         <div class="bs-container">
-            <blockquote class="blockquote mb-0 pull-<?php echo $data['alignment'];?>">
+            <blockquote class="blockquote mb-0 float-<?php echo $data['alignment'];?>">
                 <p><?php echo $data['quote']; ?></p>
                 <?php if( $data['author'] ) : ?>
                     <footer class="blockquote-footer"><?php echo $data['author']; ?></footer>
@@ -219,13 +230,6 @@ class Smps_Simple_Light_Shortcodes {
             }
             ?>
             <a href="<?php echo $redirect_to; ?>" <?php echo $data['open_newtab'] == 'true' ? 'target="_blank"' : '' ;?> class="btn btn-<?php echo $data['type']; ?> btn-<?php echo $data['size']; ?> <?php echo $data['shape'] == 'normal' ? 'br0' : ''; ?>">
-                <?php
-                if( $data['icon'] == 'true' ) :
-                    ?>
-                    <i class="glyphicon glyphicon-<?php echo $data['icon']; ?>"></i>
-                    <?php
-                    endif;
-                ?>
                 <?php echo $data['enable_text'] == 'true' ? $data['text'] : ''; ?>
             </a>
         </div>
@@ -444,6 +448,7 @@ class Smps_Simple_Light_Shortcodes {
             'data' => '{}'
         ), $atts, $tag);
 
+
         $data = json_decode( base64_decode( $atts['data'] ),true );
         if( !is_array( $data ) ) {
             $data = json_decode(stripslashes(urldecode($atts['data'])),true);
@@ -489,6 +494,8 @@ class Smps_Simple_Light_Shortcodes {
             $args['nopaging'] = $data['nopaging'];
         }
 
+
+
         $the_query = new WP_Query($args);
 
 
@@ -499,19 +506,23 @@ class Smps_Simple_Light_Shortcodes {
                 <div class="sm_featured_img">
                     <?php the_post_thumbnail();?>
                 </div>
-                <div class="sm_title"><h2><?php the_title(); ?></h2></div>
+                <div class="sm_title">
+                    <h2><?php the_title(); ?></h2>
+                </div>
                 <div class="sm_excerpt">
-                    <?php the_excerpt();?>
+                    <?php do_shortcode(the_excerpt());?>
                 </div>
                 <?php
             endwhile;
             ?>
             </div><!--sm_post_listing-->
             <?php
-            $postContent = ob_get_clean();
-            return $postContent;
+
 
         }
+        $postContent = ob_get_clean();
+        echo $postContent;
+        //return $postContent;
     }
 
 
@@ -568,22 +579,23 @@ class Smps_Simple_Light_Shortcodes {
 
 
         // run the loop based on the query
+        ob_start();
         if ($the_query->have_posts()) { ?>
             <div id="<?php echo $data['Id']; ?>" class="sm_post_listing <?php echo $data['class']; ?>">
                 <?php while ($the_query->have_posts()) : $the_query->the_post(); ?>
                     <div class="sm_title"><h2><?php the_title(); ?></h2></div>
                     <div class="sm_excerpt">
-                        <?php the_excerpt();?>
+                        <?php do_shortcode(the_excerpt());?>
                     </div>
                     <?php
                 endwhile;
                 ?>
             </div><!--sm_post_listing-->
             <?php
-            $postContent = ob_get_clean();
-            return $postContent;
 
         }
+        $postContent = ob_get_clean();
+        echo $postContent;
     }
 
 
@@ -674,7 +686,10 @@ class Smps_Simple_Light_Shortcodes {
             $args['child_of'] = $data['parent_id'];
         }
 
-        if( $data['exclude'] ) {
+        if( count($data['exclude']) == 1 && !$data['exclude'][0] ) {
+            $data['exclude'] = array();
+        }
+        if( !empty($data['exclude']) ) {
             $args['exclude'] = $data['exclude'];
         }
 
@@ -717,3 +732,6 @@ class Smps_Simple_Light_Shortcodes {
     }
 }
 
+if( !sm_is_pro() ) {
+    SM_Shortcode_Definitions::init();
+}

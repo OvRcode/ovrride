@@ -1,5 +1,4 @@
 <?php
-
 class SM_Vote {
 
     public function __construct() {
