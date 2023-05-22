@@ -4,7 +4,19 @@
  *
  * @package _tk
  */
-
+function wpb_modify_jquery() {
+  //check if front-end is being viewed
+  if (!is_admin()) {
+      // Remove default WordPress jQuery
+      wp_deregister_script('jquery');
+      // Register new jQuery script 
+      wp_register_script('jquery', 'https://code.jquery.com/jquery-2.2.4.min.js?ver=2.2.4', false, '2.2.4');
+      // Enqueue the script   
+      wp_enqueue_script('jquery');
+  }
+}
+// Execute the action when WordPress is initialized
+add_action('init', 'wpb_modify_jquery');
  /**
   * Store the theme's directory path and uri in constants
   */
