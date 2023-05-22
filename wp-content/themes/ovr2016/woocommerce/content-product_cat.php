@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-echo "FUCK FUCK FUCK!";
+
 <li <?php wc_product_cat_class( '', $category ); ?>>
 	<?php
 	/**
