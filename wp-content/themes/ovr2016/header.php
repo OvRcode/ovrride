@@ -42,7 +42,7 @@ if (  is_front_page() || is_archive() || is_home() ) {
 	<meta property="og:image:width" content="406">
 	<meta property="og:image:type" content="image/png">
 	<meta property="og:description" content="<?php echo $ogDescription; ?>">
-	<meta name="description" content="<?php echo $description; ?>">
+	<meta name="description" content="<?php if ( isset($description) ) { echo $description; } ?>">
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 
 	<link rel="profile" href="http://gmpg.org/xfn/11">

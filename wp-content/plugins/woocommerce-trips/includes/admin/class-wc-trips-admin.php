@@ -288,7 +288,11 @@ META;
     }
 
     public function save_pickup_meta( $post_id ) {
-        $nonce_check = wp_verify_nonce( $_POST['pickup_location_nonce'], 'pickup_location'.$post_id );
+        if ( isset($_POST['pickup_location_nonce']) ) {
+          $nonce_check = wp_verify_nonce( $_POST['pickup_location_nonce'], 'pickup_location'.$post_id );
+        } else {
+          $nonce_check = false;
+        }
         // Check nonce is valid
         if ( 1 == $nonce_check || 2 == $nonce_check ) {
             // verify if this is an auto save routine. If it is our form has not been submitted, so we dont want to do anything
@@ -330,7 +334,11 @@ META;
     }
 
     public function save_destination_meta( $post_id ) {
-        $nonce_check = wp_verify_nonce( $_POST['destination_attachment_nonce'], plugin_basename(__FILE__));
+        if ( isset( $_POST['destination_attachment_nonce'] ) ) {
+          $nonce_check = wp_verify_nonce( $_POST['destination_attachment_nonce'], plugin_basename(__FILE__));
+        } else {
+          $nonce_check = false;
+        }
         if ( 1 == $nonce_check || 2 == $nonce_check ) {
             // verify if this is an auto save routine. If it is our form has not been submitted, so we dont want to do anything
             if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
