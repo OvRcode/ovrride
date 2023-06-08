@@ -10,7 +10,7 @@ function wpb_modify_jquery() {
       // Remove default WordPress jQuery
       wp_deregister_script('jquery');
       // Register new jQuery script 
-      wp_register_script('jquery', 'https://code.jquery.com/jquery-2.2.4.min.js?ver=2.2.4', false, '2.2.4');
+      wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js', false, '2.2.4');
       // Enqueue the script   
       wp_enqueue_script('jquery');
   }
