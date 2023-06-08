@@ -1,21 +1,23 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: metaslider 3.1.1\n"
-"POT-Creation-Date: 2014-11-15 14:37+0100\n"
-"PO-Revision-Date: 2014-11-15 14:41+0100\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: Ov3rfly <https://profiles.wordpress.org/Ov3rfly>\n"
-"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2014-11-15 14:37+0100\n"
+"PO-Revision-Date: 2014-11-15 14:41+0100\n"
+"Language: de_DE\n"
 "X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../ml-slider.php:283 ../ml-slider.php:284
+#: ../ml-slider.php:283
+#: ../ml-slider.php:284
 msgid "Go Pro!"
 msgstr "Go Pro!"
 
@@ -23,15 +25,18 @@ msgstr "Go Pro!"
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: ../ml-slider.php:465 ../inc/slide/metaslide.image.class.php:142
+#: ../ml-slider.php:465
+#: ../inc/slide/metaslide.image.class.php:142
 msgid "URL"
 msgstr "URL"
 
-#: ../ml-slider.php:466 ../inc/slide/metaslide.image.class.php:141
+#: ../ml-slider.php:466
+#: ../inc/slide/metaslide.image.class.php:141
 msgid "Caption"
 msgstr "Beschriftung"
 
-#: ../ml-slider.php:467 ../inc/slide/metaslide.image.class.php:144
+#: ../ml-slider.php:467
+#: ../inc/slide/metaslide.image.class.php:144
 msgid "New Window"
 msgstr "Neues Fenster"
 
@@ -40,12 +45,8 @@ msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: ../ml-slider.php:473
-msgid ""
-"Caution: This setting is for advanced developers only. If you're unsure, "
-"leave it checked."
-msgstr ""
-"Achtung: Diese Einstellung ist nur für fortgeschrittene Entwickler. Wenn Sie "
-"unsicher sind, lassen Sie es sein."
+msgid "Caution: This setting is for advanced developers only. If you're unsure, leave it checked."
+msgstr "Achtung: Diese Einstellung ist nur für fortgeschrittene Entwickler. Wenn Sie unsicher sind, lassen Sie es sein."
 
 #: ../ml-slider.php:536
 msgid "Image"
@@ -99,7 +100,8 @@ msgstr "Erstellen Sie Ihre erste Diashow"
 msgid "Slides"
 msgstr "Dias"
 
-#: ../ml-slider.php:1132 ../ml-slider.php:1133
+#: ../ml-slider.php:1132
+#: ../ml-slider.php:1133
 msgid "Add Slide"
 msgstr "Dia hinzufügen"
 
@@ -131,7 +133,8 @@ msgstr ""
 msgid "Coin Slider"
 msgstr ""
 
-#: ../ml-slider.php:1185 ../ml-slider.php:1423
+#: ../ml-slider.php:1185
+#: ../ml-slider.php:1423
 msgid "Width"
 msgstr "Breite"
 
@@ -139,11 +142,14 @@ msgstr "Breite"
 msgid "Slideshow width"
 msgstr "Diashow Breite"
 
-#: ../ml-slider.php:1188 ../ml-slider.php:1201 ../ml-slider.php:1350
+#: ../ml-slider.php:1188
+#: ../ml-slider.php:1201
+#: ../ml-slider.php:1350
 msgid "px"
 msgstr "px"
 
-#: ../ml-slider.php:1198 ../ml-slider.php:1436
+#: ../ml-slider.php:1198
+#: ../ml-slider.php:1436
 msgid "Height"
 msgstr "Höhe"
 
@@ -159,7 +165,8 @@ msgstr "Effekt"
 msgid "Slide transition effect"
 msgstr "Diashow Übergangseffekt"
 
-#: ../ml-slider.php:1211 ../ml-slider.php:1355
+#: ../ml-slider.php:1211
+#: ../ml-slider.php:1355
 msgid "Random"
 msgstr "Zufällig"
 
@@ -336,12 +343,8 @@ msgid "Disabled"
 msgstr "Aus"
 
 #: ../ml-slider.php:1330
-msgid ""
-"Smart Crop ensures your responsive slides are cropped to a ratio that "
-"results in a consistent slideshow size"
-msgstr ""
-"Smart Crop sorgt dafür, dass Ihre Dias in einem Verhältnis zugeschnitten "
-"werden, das eine konsistente Größe für die Diashow ergibt"
+msgid "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size"
+msgstr "Smart Crop sorgt dafür, dass Ihre Dias in einem Verhältnis zugeschnitten werden, das eine konsistente Größe für die Diashow ergibt"
 
 #: ../ml-slider.php:1335
 msgid "Carousel mode"
@@ -368,12 +371,8 @@ msgid "Hover pause"
 msgstr "Pause bei 'Hover'"
 
 #: ../ml-slider.php:1366
-msgid ""
-"Pause the slideshow when hovering over slider, then resume when no longer "
-"hovering."
-msgstr ""
-"Diashow bei Bewegen der Maus über das Bild anhalten, sobald die Maus das "
-"Bild verlässt geht die Animation weiter."
+msgid "Pause the slideshow when hovering over slider, then resume when no longer hovering."
+msgstr "Diashow bei Bewegen der Maus über das Bild anhalten, sobald die Maus das Bild verlässt geht die Animation weiter."
 
 #: ../ml-slider.php:1371
 msgid "Reverse"
@@ -391,8 +390,11 @@ msgstr "Anzeigedauer"
 msgid "How long to display each slide, in milliseconds"
 msgstr "Wie lange jedes Dia angezeigt wird, in Millisekunden"
 
-#: ../ml-slider.php:1387 ../ml-slider.php:1400 ../ml-slider.php:1413
-#: ../ml-slider.php:1489 ../ml-slider.php:1515
+#: ../ml-slider.php:1387
+#: ../ml-slider.php:1400
+#: ../ml-slider.php:1413
+#: ../ml-slider.php:1489
+#: ../ml-slider.php:1515
 msgid "ms"
 msgstr "ms"
 
@@ -404,11 +406,14 @@ msgstr "Animationsgeschwindigkeit"
 msgid "Set the speed of animations, in milliseconds"
 msgstr "Stellen Sie die Geschwindigkeit der Animationen ein, in Millisekunden"
 
-#: ../ml-slider.php:1410 ../ml-slider.php:1412
+#: ../ml-slider.php:1410
+#: ../ml-slider.php:1412
 msgid "Number of slices"
 msgstr "Anzahl der Teile"
 
-#: ../ml-slider.php:1423 ../ml-slider.php:1425 ../ml-slider.php:1436
+#: ../ml-slider.php:1423
+#: ../ml-slider.php:1425
+#: ../ml-slider.php:1436
 #: ../ml-slider.php:1438
 msgid "Number of squares"
 msgstr "Anzahl der Quadrate"
@@ -475,8 +480,7 @@ msgstr "Geschwindigkeit der Beschriftung"
 
 #: ../ml-slider.php:1514
 msgid "Set the fade in speed of the caption"
-msgstr ""
-"Stellen Sie die Geschwindigkeit des Einblendens für die Beschriftung ein"
+msgstr "Stellen Sie die Geschwindigkeit des Einblendens für die Beschriftung ein"
 
 #: ../ml-slider.php:1521
 msgid "Developer options"
@@ -487,12 +491,8 @@ msgid "CSS classes"
 msgstr "CSS Klassen"
 
 #: ../ml-slider.php:1528
-msgid ""
-"Specify any custom CSS Classes you would like to be added to the slider "
-"wrapper"
-msgstr ""
-"Geben Sie benutzerdefinierte CSS Klassen an, die zum Diashow-Wrapper "
-"hinzugefügt werden sollen"
+msgid "Specify any custom CSS Classes you would like to be added to the slider wrapper"
+msgstr "Geben Sie benutzerdefinierte CSS Klassen an, die zum Diashow-Wrapper hinzugefügt werden sollen"
 
 #: ../ml-slider.php:1534
 msgid "Print CSS"
@@ -532,16 +532,11 @@ msgstr "In Template einfügen"
 
 #: ../ml-slider.php:1575
 msgid "Copy & paste the shortcode directly into any WordPress post or page."
-msgstr ""
-"Diesen Shortcode in einen beliebigen WordPress Beitrag bzw. Seite einfügen."
+msgstr "Diesen Shortcode in einen beliebigen WordPress Beitrag bzw. Seite einfügen."
 
 #: ../ml-slider.php:1578
-msgid ""
-"Copy & paste this code into a template file to include the slideshow within "
-"your theme."
-msgstr ""
-"Diesen Code in eine Template-Datei kopieren, um die Diashow innerhalb Ihres "
-"Themes anzuzeigen."
+msgid "Copy & paste this code into a template file to include the slideshow within your theme."
+msgstr "Diesen Code in eine Template-Datei kopieren, um die Diashow innerhalb Ihres Themes anzuzeigen."
 
 #: ../ml-slider.php:1612
 msgid "Delete Slider"
@@ -567,7 +562,8 @@ msgstr "Diashow auswählen"
 msgid "Insert slideshow"
 msgstr "Diashow einfügen"
 
-#: ../ml-slider.php:1679 ../inc/metaslider.widget.class.php:121
+#: ../ml-slider.php:1679
+#: ../inc/metaslider.widget.class.php:121
 msgid "No slideshows found"
 msgstr "Keine Diashows gefunden"
 
@@ -593,9 +589,7 @@ msgstr "Diashow wählen:"
 
 #: ../inc/slide/metaslide.image.class.php:23
 msgid "Security check failed. Refresh page and try again."
-msgstr ""
-"Sicherheits-Check fehlgeschlagen. Seite aktualisieren und bitte erneut "
-"versuchen."
+msgstr "Sicherheits-Check fehlgeschlagen. Seite aktualisieren und bitte erneut versuchen."
 
 #: ../inc/slide/metaslide.image.class.php:39
 msgid "Failed to add slide. Slide already exists in slideshow."
@@ -611,8 +605,7 @@ msgstr "Bild"
 
 #: ../inc/slide/metaslide.image.class.php:148
 msgid "Warning: Image data does not exist. Please re-upload the image."
-msgstr ""
-"Warnung: Bild existiert leider nicht mehr. Bitte das Bild erneut hochladen."
+msgstr "Warnung: Bild existiert leider nicht mehr. Bitte das Bild erneut hochladen."
 
 #: ../inc/slide/metaslide.image.class.php:153
 msgid "Image Title Text"
@@ -696,11 +689,13 @@ msgstr "Zuschneiden"
 #~ msgstr "Ändern Sie das Slider Design"
 
 #~ msgid ""
-#~ "Display as carousel - when selected the effect and direction options will "
-#~ "be ignored."
+"\n"
+"as carousel - when selected the effect and direction options will \"\n"
+"ignored.\""
 #~ msgstr ""
-#~ "Zeigen Sie es wie ein Karussell an - wenn gewählt, werden die Wirkungs- "
-#~ "und Richtungsoptionen ignoriert."
+"\n"
+"Sie es wie ein Karussell an - wenn gewählt, werden die Wirkungs- \"\n"
+"Richtungsoptionen ignoriert.\""
 
 #~ msgid "Version"
 #~ msgstr "Version"

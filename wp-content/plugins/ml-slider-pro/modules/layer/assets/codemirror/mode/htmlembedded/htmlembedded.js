@@ -1,13 +1,13 @@
 CodeMirror.defineMode("htmlembedded", function(config, parserConfig) {
   
-  //config settings
+  // config settings
   var scriptStartRegex = parserConfig.scriptStartRegex || /^<%/i,
       scriptEndRegex = parserConfig.scriptEndRegex || /^%>/i;
   
-  //inner modes
+  // inner modes
   var scriptingMode, htmlMixedMode;
   
-  //tokenizer when in html mode
+  // tokenizer when in html mode
   function htmlDispatch(stream, state) {
       if (stream.match(scriptStartRegex, false)) {
           state.token=scriptingDispatch;
@@ -15,9 +15,10 @@ CodeMirror.defineMode("htmlembedded", function(config, parserConfig) {
           }
       else
           return htmlMixedMode.token(stream, state.htmlState);
-    }
+    }//end htmlDispatch()
 
-  //tokenizer when in scripting mode
+
+  // tokenizer when in scripting mode
   function scriptingDispatch(stream, state) {
       if (stream.match(scriptEndRegex, false))  {
           state.token=htmlDispatch;
@@ -25,7 +26,8 @@ CodeMirror.defineMode("htmlembedded", function(config, parserConfig) {
          }
       else
           return scriptingMode.token(stream, state.scriptState);
-         }
+         }//end scriptingDispatch()
+
 
 
   return {

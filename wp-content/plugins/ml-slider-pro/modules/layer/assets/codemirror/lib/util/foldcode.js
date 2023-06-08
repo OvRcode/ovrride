@@ -1,5 +1,5 @@
 // the tagRangeFinder function is
-//   Copyright (C) 2011 by Daniel Glazman <daniel@glazman.org>
+// Copyright (C) 2011 by Daniel Glazman <daniel@glazman.org>
 // released under the MIT license (../../LICENSE) like the rest of CodeMirror
 CodeMirror.tagRangeFinder = function(cm, line, hideEnd) {
   var nameStartChar = "A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
@@ -164,13 +164,15 @@ CodeMirror.newFoldFunction = function(rangeFinder, markText, hideEnd) {
       if (!start) folded.splice(i--, 1);
       else if (start.line == n) return {pos: i, region: folded[i]};
     }
-  }
+  }//end isFolded()
+
 
   function expand(cm, region) {
     cm.clearMarker(region.start);
     for (var i = 0; i < region.hidden.length; ++i)
       cm.showLine(region.hidden[i]);
-  }
+  }//end expand()
+
 
   return function(cm, line) {
     cm.operation(function() {

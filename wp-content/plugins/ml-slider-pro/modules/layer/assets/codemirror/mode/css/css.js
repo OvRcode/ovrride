@@ -185,8 +185,10 @@ CodeMirror.defineMode("css", function(config) {
     "xx-large", "xx-small", "yellow"
   ]);
 
-  function keySet(array) { var keys = {}; for (var i = 0; i < array.length; ++i) keys[array[i]] = true; return keys; }
-  function ret(style, tp) {type = tp; return style;}
+  function keySet(array) { var keys = {}; for (var i = 0; i < array.length; ++i) keys[array[i]] = true; return keys; }//end keySet()
+
+  function ret(style, tp) {type = tp; return style;}//end ret()
+
 
   function tokenBase(stream, state) {
     var ch = stream.next();
@@ -241,7 +243,8 @@ CodeMirror.defineMode("css", function(config) {
       stream.eatWhile(/[\w\\\-]/);
       return ret("property", "variable");
     }
-  }
+  }//end tokenBase()
+
 
   function tokenCComment(stream, state) {
     var maybeEnd = false, ch;
@@ -253,7 +256,8 @@ CodeMirror.defineMode("css", function(config) {
       maybeEnd = (ch == "*");
     }
     return ret("comment", "comment");
-  }
+  }//end tokenCComment()
+
 
   function tokenSGMLComment(stream, state) {
     var dashes = 0, ch;
@@ -265,7 +269,8 @@ CodeMirror.defineMode("css", function(config) {
       dashes = (ch == "-") ? dashes + 1 : 0;
     }
     return ret("comment", "comment");
-  }
+  }//end tokenSGMLComment()
+
 
   function tokenString(quote) {
     return function(stream, state) {
@@ -278,7 +283,8 @@ CodeMirror.defineMode("css", function(config) {
       if (!escaped) state.tokenize = tokenBase;
       return ret("string", "string");
     };
-  }
+  }//end tokenString()
+
 
   return {
     startState: function(base) {
@@ -312,7 +318,7 @@ CodeMirror.defineMode("css", function(config) {
       // term:
       // The basic unit of author-facing CSS, like a single number (5),
       // dimension (5px), string ("foo"), or function. Officially defined
-      //  by the CSS 2.1 grammar (look for the 'term' production)
+      // by the CSS 2.1 grammar (look for the 'term' production)
       // 
       // 
       // simple selector:
@@ -334,7 +340,6 @@ CodeMirror.defineMode("css", function(config) {
       // 
       // sequence of selectors:
       // One or more of the named type of selector chained with commas.
-
       if (stream.eatSpace()) return null;
       var style = state.tokenize(stream, state);
 

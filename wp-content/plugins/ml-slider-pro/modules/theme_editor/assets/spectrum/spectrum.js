@@ -2,7 +2,6 @@
 // https://github.com/bgrins/spectrum
 // Author: Brian Grinstead
 // License: MIT
-
 (function (window, $, undefined) {
     var defaultOpts = {
 
@@ -41,7 +40,8 @@
     rgbaSupport = (function() {
         function contains( str, substr ) {
             return !!~('' + str).indexOf(substr);
-        }
+        }//end contains()
+
 
         var elem = document.createElement('div');
         var style = elem.style;
@@ -57,7 +57,7 @@
     markup = (function () {
 
         // IE does not support gradients with multiple stops, so we need to simulate
-        //  that for the rainbow slider with 8 divs that each have a single gradient
+        // that for the rainbow slider with 8 divs that each have a single gradient
         var gradientFix = "";
         if (IE) {
             for (var i = 1; i <= 6; i++) {
@@ -112,7 +112,8 @@
             html.push('<span title="' + tiny.toRgbString() + '" data-color="' + tiny.toRgbString() + '" class="' + c + '"><span class="sp-thumb-inner" style="' + swatchStyle + ';" /></span>');
         }
         return "<div class='sp-cf " + className + "'>" + html.join('') + "</div>";
-    }
+    }//end paletteTemplate()
+
 
     function hideAll() {
         for (var i = 0; i < spectrums.length; i++) {
@@ -120,7 +121,8 @@
                 spectrums[i].hide();
             }
         }
-    }
+    }//end hideAll()
+
 
     function instanceOptions(o, callbackContext) {
         var opts = $.extend({}, defaultOpts, o);
@@ -133,7 +135,8 @@
         };
 
         return opts;
-    }
+    }//end instanceOptions()
+
 
     function spectrum(element, o) {
 
@@ -204,7 +207,8 @@
             container.addClass(opts.className);
 
             reflow();
-        }
+        }//end applyOptions()
+
 
         function initialize() {
 
@@ -346,12 +350,14 @@
                 }
 
                 return false;
-            }
+            }//end palletElementClick()
+
 
             var paletteEvent = IE ? "mousedown.spectrum" : "click.spectrum touchstart.spectrum";
             paletteContainer.delegate(".sp-thumb-el", paletteEvent, palletElementClick);
             initialColorContainer.delegate(".sp-thumb-el:nth-child(1)", paletteEvent, { ignore: true }, palletElementClick);
-        }
+        }//end initialize()
+
 
         function addColorToSelectionPalette(color) {
             if (showSelectionPalette) {
@@ -370,7 +376,8 @@
                     catch(e) { }
                 }
             }
-        }
+        }//end addColorToSelectionPalette()
+
 
         function getUniqueSelectionPalette() {
             var unique = [];
@@ -398,7 +405,8 @@
             }
 
             return unique.reverse().slice(0, opts.maxSelectionSize);
-        }
+        }//end getUniqueSelectionPalette()
+
 
         function drawPalette() {
 
@@ -413,7 +421,8 @@
             }
 
             paletteContainer.html(html.join(""));
-        }
+        }//end drawPalette()
+
 
         function drawInitial() {
             if (opts.showInitial) {
@@ -421,18 +430,21 @@
                 var current = get();
                 initialColorContainer.html(paletteTemplate([initial, current], current, "sp-palette-row-initial"));
             }
-        }
+        }//end drawInitial()
+
 
         function dragStart() {
             if (dragHeight <= 0 || dragWidth <= 0 || slideHeight <= 0) {
                 reflow();
             }
             container.addClass(draggingClass);
-        }
+        }//end dragStart()
+
 
         function dragStop() {
             container.removeClass(draggingClass);
-        }
+        }//end dragStop()
+
 
         function setFromTextInput() {
             var tiny = tinycolor(textInput.val());
@@ -442,7 +454,8 @@
             else {
                 textInput.addClass("sp-validation-error");
             }
-        }
+        }//end setFromTextInput()
+
 
         function toggle() {
             if (visible) {
@@ -451,7 +464,8 @@
             else {
                 show();
             }
-        }
+        }//end toggle()
+
 
         function show() {
             var event = $.Event('beforeShow.spectrum');
@@ -486,7 +500,8 @@
             drawInitial();
             callbacks.show(colorOnShow);
             boundElement.trigger('show.spectrum', [ colorOnShow ]);
-        }
+        }//end show()
+
 
         function hide(e) {
 
@@ -516,11 +531,13 @@
 
             callbacks.hide(get());
             boundElement.trigger('hide.spectrum', [ get() ]);
-        }
+        }//end hide()
+
 
         function revert() {
             set(colorOnShow, true);
-        }
+        }//end revert()
+
 
         function set(color, ignoreFormatChange) {
             if (tinycolor.equals(color, get())) {
@@ -540,7 +557,8 @@
             if (newColor.ok && !ignoreFormatChange) {
                 currentPreferredFormat = preferredFormat || newColor.format;
             }
-        }
+        }//end set()
+
 
         function get(opts) {
             opts = opts || { };
@@ -550,18 +568,21 @@
                 v: currentValue,
                 a: Math.round(currentAlpha * 100) / 100
             }, { format: opts.format || currentPreferredFormat });
-        }
+        }//end get()
+
 
         function isValid() {
             return !textInput.hasClass("sp-validation-error");
-        }
+        }//end isValid()
+
 
         function move() {
             updateUI();
 
             callbacks.move(get());
             boundElement.trigger('move.spectrum', [ get() ]);
-        }
+        }//end move()
+
 
         function updateUI() {
 
@@ -622,7 +643,8 @@
             }
 
             drawInitial();
-        }
+        }//end updateUI()
+
 
         function updateHelperLocations() {
             var s = currentSaturation;
@@ -654,7 +676,8 @@
             slideHelper.css({
                 "top": slideY - slideHelperHeight
             });
-        }
+        }//end updateHelperLocations()
+
 
         function updateOriginalInput(fireCallback) {
             var color = get();
@@ -672,7 +695,8 @@
                 callbacks.change(color);
                 boundElement.trigger('change.spectrum', [ color ]);
             }
-        }
+        }//end updateOriginalInput()
+
 
         function reflow() {
             dragWidth = dragger.width();
@@ -690,7 +714,8 @@
             }
 
             updateHelperLocations();
-        }
+        }//end reflow()
+
 
         function destroy() {
             boundElement.show();
@@ -698,7 +723,8 @@
             container.remove();
             replacer.remove();
             spectrums[spect.id] = null;
-        }
+        }//end destroy()
+
 
         function option(optionName, optionValue) {
             if (optionName === undefined) {
@@ -710,20 +736,23 @@
 
             opts[optionName] = optionValue;
             applyOptions();
-        }
+        }//end option()
+
 
         function enable() {
             disabled = false;
             boundElement.attr("disabled", false);
             offsetElement.removeClass("sp-disabled");
-        }
+        }//end enable()
+
 
         function disable() {
             hide();
             disabled = true;
             boundElement.attr("disabled", true);
             offsetElement.addClass("sp-disabled");
-        }
+        }//end disable()
+
 
         initialize();
 
@@ -747,12 +776,13 @@
         spect.id = spectrums.push(spect) - 1;
 
         return spect;
-    }
+    }//end spectrum()
+
 
     /**
-    * checkOffset - get the offset below/above and left/right element depending on screen position
-    * Thanks https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.datepicker.js
-    */
+     * checkOffset - get the offset below/above and left/right element depending on screen position
+     * Thanks https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.datepicker.js
+     */
     function getOffset(picker, input) {
         var extraY = 0;
         var dpWidth = picker.outerWidth();
@@ -774,38 +804,42 @@
             Math.abs(dpHeight + inputHeight - extraY) : extraY));
 
         return offset;
-    }
+    }//end getOffset()
+
 
     /**
-    * noop - do nothing
-    */
+     * noop - do nothing
+     */
     function noop() {
 
-    }
+    }//end noop()
+
 
     /**
-    * stopPropagation - makes the code only doing this a little easier to read in line
-    */
+     * stopPropagation - makes the code only doing this a little easier to read in line
+     */
     function stopPropagation(e) {
         e.stopPropagation();
-    }
+    }//end stopPropagation()
+
 
     /**
-    * Create a function bound to a given object
-    * Thanks to underscore.js
-    */
+     * Create a function bound to a given object
+     * Thanks to underscore.js
+     */
     function bind(func, obj) {
         var slice = Array.prototype.slice;
         var args = slice.call(arguments, 2);
         return function () {
             return func.apply(obj, args.concat(slice.call(arguments)));
         };
-    }
+    }//end bind()
+
 
     /**
-    * Lightweight drag helper.  Handles containment within the element, so that
-    * when dragging, the x is within [0,element.width] and y is within [0,element.height]
-    */
+     * Lightweight drag helper.  Handles containment within the element, so that
+     * when dragging, the x is within [0,element.width] and y is within [0,element.height]
+     */
     function draggable(element, onmove, onstart, onstop) {
         onmove = onmove || function () { };
         onstart = onstart || function () { };
@@ -831,7 +865,8 @@
                 e.preventDefault();
             }
             e.returnValue = false;
-        }
+        }//end prevent()
+
 
         function move(e) {
             if (dragging) {
@@ -854,7 +889,8 @@
 
                 onmove.apply(element, [dragX, dragY, e]);
             }
-        }
+        }//end move()
+
         function start(e) {
             var rightclick = (e.which) ? (e.which == 3) : (e.button == 2);
             var touches = e.originalEvent.touches;
@@ -876,7 +912,8 @@
                     prevent(e);
                 }
             }
-        }
+        }//end start()
+
         function stop() {
             if (dragging) {
                 $(doc).unbind(duringDragEvents);
@@ -884,10 +921,12 @@
                 onstop.apply(element, arguments);
             }
             dragging = false;
-        }
+        }//end stop()
+
 
         $(element).bind(hasTouch ? "touchstart" : "mousedown", start);
-    }
+    }//end draggable()
+
 
     function throttle(func, wait, debounce) {
         var timeout;
@@ -900,12 +939,13 @@
             if (debounce) clearTimeout(timeout);
             if (debounce || !timeout) timeout = setTimeout(throttler, wait);
         };
-    }
+    }//end throttle()
+
 
 
     /**
-    * Define a jQuery plugin
-    */
+     * Define a jQuery plugin
+     */
     var dataID = "spectrum.id";
     $.fn.spectrum = function (opts, extra) {
 
@@ -974,7 +1014,6 @@
     // TinyColor v0.9.14
     // https://github.com/bgrins/TinyColor
     // 2013-02-24, Brian Grinstead, MIT License
-
     (function(root) {
 
         var trimLeft = /^[\s,#]+/,
@@ -1106,7 +1145,8 @@
                     return formattedString || this.toHexString();
                 }
             };
-        }
+        }//end tinycolor()
+
 
         // If input is an object, force 1 into "1.0" to handle ratios properly
         // String input requires "1.0" as input, so 1 will be treated as 1
@@ -1132,16 +1172,16 @@
         // Given a string or object, convert that input to RGB
         // Possible string inputs:
         //
-        //     "red"
-        //     "#f00" or "f00"
-        //     "#ff0000" or "ff0000"
-        //     "rgb 255 0 0" or "rgb (255, 0, 0)"
-        //     "rgb 1.0 0 0" or "rgb (1, 0, 0)"
-        //     "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
-        //     "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
-        //     "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
-        //     "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
-        //     "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
+        // "red"
+        // "#f00" or "f00"
+        // "#ff0000" or "ff0000"
+        // "rgb 255 0 0" or "rgb (255, 0, 0)"
+        // "rgb 1.0 0 0" or "rgb (1, 0, 0)"
+        // "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
+        // "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
+        // "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
+        // "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
+        // "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
         //
         function inputToRGB(color) {
 
@@ -1195,16 +1235,15 @@
                 b: mathMin(255, mathMax(rgb.b, 0)),
                 a: a
             };
-        }
+        }//end inputToRGB()
+
 
 
 
         // Conversion Functions
         // --------------------
-
         // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
         // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
-
         // `rgbToRgb`
         // Handle bounds / percentage checking to conform to CSS color spec
         // <http://www.w3.org/TR/css3-color/>
@@ -1216,7 +1255,8 @@
                 g: bound01(g, 255) * 255,
                 b: bound01(b, 255) * 255
             };
-        }
+        }//end rgbToRgb()
+
 
         // `rgbToHsl`
         // Converts an RGB color value to HSL.
@@ -1247,7 +1287,8 @@
             }
 
             return { h: h, s: s, l: l };
-        }
+        }//end rgbToHsl()
+
 
         // `hslToRgb`
         // Converts an HSL color value to RGB.
@@ -1267,7 +1308,8 @@
                 if(t < 1/2) return q;
                 if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
                 return p;
-            }
+            }//end hue2rgb()
+
 
             if(s === 0) {
                 r = g = b = l; // achromatic
@@ -1281,7 +1323,8 @@
             }
 
             return { r: r * 255, g: g * 255, b: b * 255 };
-        }
+        }//end hslToRgb()
+
 
         // `rgbToHsv`
         // Converts an RGB color value to HSV
@@ -1311,7 +1354,8 @@
                 h /= 6;
             }
             return { h: h, s: s, v: v };
-        }
+        }//end rgbToHsv()
+
 
         // `hsvToRgb`
         // Converts an HSV color value to RGB.
@@ -1334,7 +1378,8 @@
                 b = [p, p, t, v, v, q][mod];
 
             return { r: r * 255, g: g * 255, b: b * 255 };
-        }
+        }//end hsvToRgb()
+
 
         // `rgbToHex`
         // Converts an RGB color to hex
@@ -1354,7 +1399,8 @@
             }
 
             return hex.join("");
-        }
+        }//end rgbToHex()
+
 
         // `equals`
         // Can be called with any tinycolor input
@@ -1375,8 +1421,6 @@
         // ----------------------
         // Thanks to less.js for some of the basics here
         // <https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js>
-
-
         tinycolor.desaturate = function (color, amount) {
             var hsl = tinycolor(color).toHsl();
             hsl.s -= ((amount || 10) / 100);
@@ -1415,7 +1459,6 @@
         // ---------------------
         // Thanks to jQuery xColor for some of the ideas behind these
         // <https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js>
-
         tinycolor.triad = function(color) {
             var hsl = tinycolor(color).toHsl();
             var h = hsl.h;
@@ -1476,11 +1519,10 @@
         // Readability Functions
         // ---------------------
         // <http://www.w3.org/TR/AERT#color-contrast>
-
         // `readability`
         // Analyze the 2 colors and returns an object with the following properties:
-        //    `brightness`: difference in brightness between the two colors
-        //    `color`: difference in color/hue between the two colors
+        // `brightness`: difference in brightness between the two colors
+        // `color`: difference in color/hue between the two colors
         tinycolor.readability = function(color1, color2) {
             var a = tinycolor(color1).toRgb();
             var b = tinycolor(color2).toRgb();
@@ -1502,7 +1544,7 @@
         // http://www.w3.org/TR/AERT#color-contrast
         // Ensure that foreground and background color combinations provide sufficient contrast.
         // *Example*
-        //    tinycolor.readable("#000", "#111") => false
+        // tinycolor.readable("#000", "#111") => false
         tinycolor.readable = function(color1, color2) {
             var readability = tinycolor.readability(color1, color2);
             return readability.brightness > 125 && readability.color > 500;
@@ -1512,7 +1554,7 @@
         // Given a base color and a list of possible foreground or background
         // colors for that base, returns the most readable color.
         // *Example*
-        //    tinycolor.mostReadable("#123", ["#fff", "#000"]) => "#000"
+        // tinycolor.mostReadable("#123", ["#fff", "#000"]) => "#000"
         tinycolor.mostReadable = function(baseColor, colorList) {
             var bestColor = null;
             var bestScore = 0;
@@ -1521,7 +1563,6 @@
 
                 // We normalize both around the "acceptable" breaking point,
                 // but rank brightness constrast higher than hue.
-
                 var readability = tinycolor.readability(baseColor, colorList[i]);
                 var readable = readability.brightness > 125 && readability.color > 500;
                 var score = 3 * (readability.brightness / 125) + (readability.color / 500);
@@ -1698,7 +1739,6 @@
 
         // Utilities
         // ---------
-
         // `{ 'name1': 'val1' }` becomes `{ 'val1': 'name1' }`
         function flip(o) {
             var flipped = { };
@@ -1708,7 +1748,8 @@
                 }
             }
             return flipped;
-        }
+        }//end flip()
+
 
         // Take input from [0, n] and return it as [0, 1]
         function bound01(n, max) {
@@ -1729,33 +1770,39 @@
 
             // Convert into [0, 1] range if it isn't already
             return (n % max) / parseFloat(max);
-        }
+        }//end bound01()
+
 
         // Force a number between 0 and 1
         function clamp01(val) {
             return mathMin(1, mathMax(0, val));
-        }
+        }//end clamp01()
+
 
         // Parse an integer into hex
         function parseHex(val) {
             return parseInt(val, 16);
-        }
+        }//end parseHex()
+
 
         // Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
         // <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
         function isOnePointZero(n) {
             return typeof n == "string" && n.indexOf('.') != -1 && parseFloat(n) === 1;
-        }
+        }//end isOnePointZero()
+
 
         // Check to see if string passed in is a percentage
         function isPercentage(n) {
             return typeof n === "string" && n.indexOf('%') != -1;
-        }
+        }//end isPercentage()
+
 
         // Force a hex value to have 2 characters
         function pad2(c) {
             return c.length == 1 ? '0' + c : '' + c;
-        }
+        }//end pad2()
+
 
         // Replace a decimal with it's percentage value
         function convertToPercentage(n) {
@@ -1764,7 +1811,8 @@
             }
 
             return n;
-        }
+        }//end convertToPercentage()
+
 
         var matchers = (function() {
 
@@ -1847,7 +1895,8 @@
             }
 
             return false;
-        }
+        }//end stringInputToObject()
+
 
         root.tinycolor = tinycolor;
 
@@ -1862,7 +1911,8 @@
     });
 
 
-    function log(){window.console&&(log=Function.prototype.bind?Function.prototype.bind.call(console.log,console):function(){Function.prototype.apply.call(console.log,console,arguments)},log.apply(this,arguments))};
+    function log(){window.console&&(log=Function.prototype.bind?Function.prototype.bind.call(console.log,console):function(){Function.prototype.apply.call(console.log,console,arguments)},log.apply(this,arguments))}//end log()
+;
 
 
 })(window, jQuery);

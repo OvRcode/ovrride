@@ -1,10 +1,13 @@
+// @codingStandardsIgnoreStart
 // for debug : trace every event
-/*var originalTrigger = wp.media.view.MediaFrame.Post.prototype.trigger;
-wp.media.view.MediaFrame.Post.prototype.trigger = function(){
+/*
+    var originalTrigger = wp.media.view.MediaFrame.Post.prototype.trigger;
+    wp.media.view.MediaFrame.Post.prototype.trigger = function(){
     console.log('Event Triggered:', arguments);
     originalTrigger.apply(this, Array.prototype.slice.call(arguments));
-}*/
+    }*/
 // custom toolbar : contains the buttons at the bottom
+// @codingStandardsIgnoreEnd
 wp.media.view.Toolbar.Custom = wp.media.view.Toolbar.extend({
     initialize: function () {
         _.defaults(this.options, {
@@ -35,16 +38,24 @@ wp.media.view.Toolbar.Custom = wp.media.view.Toolbar.extend({
         var selection = this.controller.state().get('selection');
 
         selection.map(function (attachment) {
-            attachment = attachment.toJSON();
+			attachment = attachment.toJSON();
+			var APP = window.parent.metaslider.app.MetaSlider;
+			// APP comes from the free version which holds some generic translations
+			APP && APP.notifyInfo('metaslider/creating-slides', APP.sprintf(
+				APP.__('Preparing %s slide...', 'ml-slider'),
+			'1'), true);
 
             var data = {
                 action: 'create_html_overlay_slide',
                 slide_id: attachment.id,
-                slider_id: window.parent.metaslider_slider_id
+                slider_id: window.parent.metaslider_slider_id,
+                nonce: metaslider_custom_slide_type.nonce
             };
 
             jQuery.post(ajaxurl, data, function(response) {
-                window.parent.jQuery(".metaslider .left table").append(response);
+				window.parent.jQuery(".metaslider table#metaslider-slides-list").append(response);
+				var APP = window.parent.metaslider.app.MetaSlider;
+				APP && APP.notifySuccess('metaslider/slides-created', null, true);
                 window.parent.jQuery(".media-modal-close").click();
             });
         });
@@ -104,9 +115,6 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
                 priority: 999,
                 toolbar: 'add-html-overlay-slide',
                 filterable: 'image',
-                library: wp.media.query({
-                    type: 'image'
-                }),
                 multiple: false,
                 editable: true,
                 allowLocalEdits: true,

@@ -3,21 +3,17 @@
   box-shadow: none !important;
   border-bottom: 0px !important;
 }
-.metaslider .left table tr.slide.youtube label input,
-.metaslider .left table tr.slide.vimeo label input {
+.metaslider table#metaslider-slides-list tr.slide.youtube li > label input,
+.metaslider table#metaslider-slides-list tr.slide.vimeo li > label input {
 	margin-right: 5px;
 	margin-bottom: 2px;
 	margin-left: 5px;
 }
-.metaslider .left table tr.slide.youtube ul,
-.metaslider .left table tr.slide.vimeo ul {
-	margin: 5px 0;
-}
-.metaslider .left table tr.slide.youtube ul select {
+.metaslider table#metaslider-slides-list tr.slide.youtube ul select {
 	font-size: 0.9em;
 }
-.metaslider .left table tr.slide.youtube .title,
-.metaslider .left table tr.slide.vimeo .title {
+.metaslider table#metaslider-slides-list tr.slide.youtube .title,
+.metaslider table#metaslider-slides-list tr.slide.vimeo .title {
 	font-weight: bold;
 	font-size: 0.9em;
 	text-transform: uppercase;
@@ -25,7 +21,49 @@
 	border-bottom: 1px solid #cccccc;
 	padding-bottom: 4px;
 }
-.metaslider .left table tr.external td.col-1 .thumb {
+.metaslider table#metaslider-slides-list tr.external td.col-1 .thumb {
 	background-size: contain;
 	background-repeat: no-repeat;
+}
+/* schedule */
+.hide-slide + label {
+	margin-right: 10px;
+	display: inline-block;
+}
+input.hide-slide:checked ~ .hide-if-notchecked,
+input.hide-slide:checked ~ .schedule-slide {
+	opacity: 0.4;
+}
+input.schedule-slide:not(:checked) ~ .hide-if-notchecked {
+	display: none !important;
+}
+.metaslider-ui .metaslider-slides-container .slide.slide-is-hidden td > *:not(.metaslider-ui-controls) {
+	opacity: .2;
+}
+.metaslider .schedule table label {
+	text-indent: 0 !important;
+}
+.metaslider .schedule table th,
+.metaslider .schedule table td {
+	padding: 5px 1px 0;
+	font-size: 1em;
+	vertical-align: middle;
+}
+.metaslider ul.ms-split-li {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 0.5rem;
+}
+.metaslider ul.ms-split-li li {
+	width: 50%;
+	margin-bottom: 0.3rem;
+}
+.metaslider ul.ms-split-li label {
+	display: flex;
+	align-items: flex-start;
+	margin-bottom: 0.2rem;
+	line-height: 1.2;
+}
+.metaslider ul.ms-split-li label input {
+	margin: -1px 0.3rem 0;
 }

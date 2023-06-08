@@ -1,35 +1,39 @@
 // Define search commands. Depends on dialog.js or another
 // implementation of the openDialog method.
-
 // Replace works a little oddly -- it will do the replace on the next
 // Ctrl-G (or whatever is bound to findNext) press. You prevent a
 // replace by making sure the match is no longer selected when hitting
 // Ctrl-G.
-
 (function() {
   function SearchState() {
     this.posFrom = this.posTo = this.query = null;
     this.marked = [];
-  }
+  }//end SearchState()
+
   function getSearchState(cm) {
     return cm._searchState || (cm._searchState = new SearchState());
-  }
+  }//end getSearchState()
+
   function getSearchCursor(cm, query, pos) {
     // Heuristic: if the query string is all lowercase, do a case insensitive search.
     return cm.getSearchCursor(query, pos, typeof query == "string" && query == query.toLowerCase());
-  }
+  }//end getSearchCursor()
+
   function dialog(cm, text, shortText, f) {
     if (cm.openDialog) cm.openDialog(text, f);
     else f(prompt(shortText, ""));
-  }
+  }//end dialog()
+
   function confirmDialog(cm, text, shortText, fs) {
     if (cm.openConfirm) cm.openConfirm(text, fs);
     else if (confirm(shortText)) fs[0]();
-  }
+  }//end confirmDialog()
+
   function parseQuery(query) {
     var isRE = query.match(/^\/(.*)\/([a-z]*)$/);
     return isRE ? new RegExp(isRE[1], isRE[2].indexOf("i") == -1 ? "" : "i") : query;
-  }
+  }//end parseQuery()
+
   var queryDialog =
     'Search: <input type="text" style="width: 10em"/> <span style="color: #888">(Use /re/ syntax for regexp search)</span>';
   function doSearch(cm, rev) {
@@ -47,7 +51,8 @@
         findNext(cm, rev);
       });
     });
-  }
+  }//end doSearch()
+
   function findNext(cm, rev) {cm.operation(function() {
     var state = getSearchState(cm);
     var cursor = getSearchCursor(cm, state.query, rev ? state.posFrom : state.posTo);
@@ -57,14 +62,16 @@
     }
     cm.setSelection(cursor.from(), cursor.to());
     state.posFrom = cursor.from(); state.posTo = cursor.to();
-  });}
+  });}//end findNext()
+
   function clearSearch(cm) {cm.operation(function() {
     var state = getSearchState(cm);
     if (!state.query) return;
     state.query = null;
     for (var i = 0; i < state.marked.length; ++i) state.marked[i].clear();
     state.marked.length = 0;
-  });}
+  });}//end clearSearch()
+
 
   var replaceQueryDialog =
     'Replace: <input type="text" style="width: 10em"/> <span style="color: #888">(Use /re/ syntax for regexp search)</span>';
@@ -97,17 +104,20 @@
             cm.setSelection(cursor.from(), cursor.to());
             confirmDialog(cm, doReplaceConfirm, "Replace?",
                           [function() {doReplace(match);}, advance]);
-          }
+          }//end advance()
+
           function doReplace(match) {
             cursor.replace(typeof query == "string" ? text :
                            text.replace(/\$(\d)/, function(w, i) {return match[i];}));
             advance();
-          }
+          }//end doReplace()
+
           advance();
         }
       });
     });
-  }
+  }//end replace()
+
 
   CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
   CodeMirror.commands.findNext = doSearch;

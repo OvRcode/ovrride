@@ -46,38 +46,47 @@
 // Misc:
 // . TODO
 //
-
 (function() {
   var sdir = "f";
   var buf = "";
   var mark = {};
   var repeatCount = 0;
-  function isLine(cm, line) { return line >= 0 && line < cm.lineCount(); }
-  function emptyBuffer() { buf = ""; }
-  function pushInBuffer(str) { buf += str; }
-  function pushRepeatCountDigit(digit) {return function(cm) {repeatCount = (repeatCount * 10) + digit}; }
+  function isLine(cm, line) { return line >= 0 && line < cm.lineCount(); }//end isLine()
+
+  function emptyBuffer() { buf = ""; }//end emptyBuffer()
+
+  function pushInBuffer(str) { buf += str; }//end pushInBuffer()
+
+  function pushRepeatCountDigit(digit) {return function(cm) {repeatCount = (repeatCount * 10) + digit}; }//end pushRepeatCountDigit()
+
   function getCountOrOne() {
     var i = repeatCount;
     return i || 1;
-  }
+  }//end getCountOrOne()
+
   function clearCount() {
     repeatCount = 0;
-  }
+  }//end clearCount()
+
   function iterTimes(func) {
     for (var i = 0, c = getCountOrOne(); i < c; ++i) func(i, i == c - 1);
     clearCount();
-  }
+  }//end iterTimes()
+
   function countTimes(func) {
     if (typeof func == "string") func = CodeMirror.commands[func];
     return function(cm) { iterTimes(function (i, last) { func(cm, i, last); }); };
-  }
+  }//end countTimes()
+
 
   function iterObj(o, f) {
     for (var prop in o) if (o.hasOwnProperty(prop)) f(prop, o[prop]);
-  }
+  }//end iterObj()
+
   function iterList(l, f) {
     for (var i = 0; i < l.length; ++i) f(l[i]);
-  }
+  }//end iterList()
+
   function toLetter(ch) {
     // T -> t, Shift-T -> T, '*' -> *, "Space" -> " "
     if (ch.slice(0, 6) == "Shift-") {
@@ -87,7 +96,8 @@
       if (ch.length == 3 && ch[0] == "'" && ch[2] == "'") return ch[1];
       return ch.toLowerCase();
     }
-  }
+  }//end toLetter()
+
   var SPECIAL_SYMBOLS = "~`!@#$%^&*()_-+=[{}]\\|/?.,<>:;\"\'1234567890";
   function toCombo(ch) {
     // t -> T, T -> Shift-T, * -> '*', " " -> "Space"
@@ -96,7 +106,8 @@
     if (specialIdx != -1) return "'" + ch + "'";
     if (ch.toLowerCase() == ch) return ch.toUpperCase();
     return "Shift-" + ch.toUpperCase();
-  }
+  }//end toCombo()
+
 
   var word = [/\w/, /[^\w\s]/], bigWord = [/\S/];
   // Finds a word on the given line, and continue searching the next line if it can't find one.
@@ -126,7 +137,8 @@
       line = cm.getLine(lineNum);
       pos = (dir > 0) ? 0 : line.length;
     }
-  }
+  }//end findWord()
+
   /**
    * @param {boolean} cm CodeMirror object.
    * @param {regexp} regexps Regular expressions for word characters.
@@ -204,7 +216,8 @@
       cur.ch++;
     }
     return cur;
-  }
+  }//end moveToWord()
+
   function joinLineNext(cm) {
     var cur = cm.getCursor(), ch = cur.ch, line = cm.getLine(cur.line);
     CodeMirror.commands.goLineEnd(cm);
@@ -213,7 +226,8 @@
       cm.replaceSelection(" ", "end");
       CodeMirror.commands.delCharRight(cm);
     }
-  }
+  }//end joinLineNext()
+
   function delTillMark(cm, cHar) {
     var i = mark[cHar];
     if (i === undefined) {
@@ -226,7 +240,8 @@
       pushInBuffer("\n" + cm.getLine(start));
       cm.removeLine(start);
     }
-  }
+  }//end delTillMark()
+
   function yankTillMark(cm, cHar) {
     var i = mark[cHar];
     if (i === undefined) {
@@ -238,12 +253,14 @@
       pushInBuffer("\n" + cm.getLine(c));
     }
     cm.setCursor(start);
-  }
+  }//end yankTillMark()
+
   function goLineStartText(cm) {
     // Go to the start of the line where the text begins, or the end for whitespace-only lines
     var cur = cm.getCursor(), firstNonWS = cm.getLine(cur.line).search(/\S/);
     cm.setCursor(cur.line, firstNonWS == -1 ? line.length : firstNonWS, true);
-  }
+  }//end goLineStartText()
+
 
   function charIdxInLine(cm, cHar, motion_options) {
     // Search for cHar in line.
@@ -261,13 +278,15 @@
       if (idx != -1 && !mo.inclusive) idx += 1;
     }
     return idx;
-  }
+  }//end charIdxInLine()
+
 
   function moveTillChar(cm, cHar, motion_options) {
     // Move to cHar in line, as found by charIdxInLine.
     var idx = charIdxInLine(cm, cHar, motion_options), cur = cm.getCursor();
     if (idx != -1) cm.setCursor({line: cur.line, ch: idx});
-  }
+  }//end moveTillChar()
+
 
   function delTillChar(cm, cHar, motion_options) {
     // delete text in this line, untill cHar is met,
@@ -282,23 +301,27 @@
         cm.replaceRange("", {line: cur.line, ch: idx}, {line: cur.line, ch: cur.ch});
       }
     }
-  }
+  }//end delTillChar()
+
 
   function enterInsertMode(cm) {
     // enter insert mode: switch mode and cursor
     clearCount();
     cm.setOption("keyMap", "vim-insert");
-  }
+  }//end enterInsertMode()
+
 
   function dialog(cm, text, shortText, f) {
     if (cm.openDialog) cm.openDialog(text, f);
     else f(prompt(shortText, ""));
-  }
+  }//end dialog()
+
   function showAlert(cm, text) {
     var esc = text.replace(/[<&]/, function(ch) { return ch == "<" ? "&lt;" : "&amp;"; });
     if (cm.openDialog) cm.openDialog(esc + " <button type=button>OK</button>");
     else alert(text);
-  }
+  }//end showAlert()
+
 
   // main keymap
   var map = CodeMirror.keyMap.vim = {
@@ -560,7 +583,8 @@
         enterInsertMode(cm);
       };
     });
-  }
+  }//end setupPrefixBindingForKey()
+
   for (var i = 65; i < 65 + 26; i++) { // uppercase alphabet char codes
     var ch = String.fromCharCode(i);
     setupPrefixBindingForKey(toCombo(ch));
@@ -639,7 +663,8 @@
       if (forwards) line++;
       else line--;
     }
-  }
+  }//end findMatchedSymbol()
+
 
   function selectCompanionObject(cm, revSymb, inclusive) {
     var cur = cm.getCursor();
@@ -650,7 +675,8 @@
     end.ch += inclusive ? 0 : 1;
 
     return {start: start, end: end};
-  }
+  }//end selectCompanionObject()
+
 
   // takes in a symbol and a cursor and tries to simulate text objects that have
   // identical opening and closing symbols
@@ -707,11 +733,13 @@
       start: {line: cur.line, ch: start},
       end: {line: cur.line, ch: end}
     };
-  }
+  }//end findBeginningAndEnd()
+
 
   function offsetCursor(cm, line, ch) {
     var cur = cm.getCursor(); return {line: cur.line + line, ch: cur.ch + ch};
-  }
+  }//end offsetCursor()
+
 
   // These are the motion commands we use for navigation and selection with
   // certain other commands. All should return a cursor object.
@@ -810,7 +838,8 @@
     for (var i = 1; i < 10; ++i) {
       keyMap[i] = pushRepeatCountDigit(i);
     }
-  }
+  }//end addCountBindings()
+
   addCountBindings('vim');
   addCountBindings('vim-prefix-d');
   addCountBindings('vim-prefix-y');
@@ -842,7 +871,8 @@
     for (var i = startIndex == null ? string.length : startIndex; i >= 0; --i)
       if (pattern.test(string.charAt(i))) return i;
     return -1;
-  }
+  }//end regexLastIndexOf()
+
 
   // Create our text object functions. They work similar to motions but they
   // return a start cursor as well
@@ -880,7 +910,8 @@
     pushInBuffer(cm.getRange(swap ? end : start, swap ? start : end));
     if (remove) cm.replaceRange("", swap ? end : start, swap ? start : end);
     if (insert) cm.setOption('keyMap', 'vim-insert');
-  }
+  }//end textObjectManipulation()
+
 
   // And finally build the keymaps up from the text objects
   for (var i = 0; i < textObjectList.length; ++i) {

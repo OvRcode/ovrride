@@ -1,18 +1,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: metaslider\n"
-"POT-Creation-Date: 2013-12-16 17:31-0000\n"
-"PO-Revision-Date: 2013-12-18 21:32+0100\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: Roger Haugli <roger@dreamsoft.no>\n"
 "Language-Team: Dreamsoft (www.dreamsoft.no) <support@dreamsoft.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2013-12-16 17:31-0000\n"
+"PO-Revision-Date: 2013-12-18 21:32+0100\n"
+"Language: nb\n"
 "X-Generator: Poedit 1.6.3\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
 "X-Poedit-Basepath: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nb\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
@@ -44,15 +45,18 @@ msgstr "YouTube"
 msgid "Layer Slide"
 msgstr "Layer lysbilde"
 
-#: ../ml-slider.php:235 ../inc/slide/metaslide.image.class.php:103
+#: ../ml-slider.php:235
+#: ../inc/slide/metaslide.image.class.php:103
 msgid "URL"
 msgstr "URL"
 
-#: ../ml-slider.php:236 ../inc/slide/metaslide.image.class.php:101
+#: ../ml-slider.php:236
+#: ../inc/slide/metaslide.image.class.php:101
 msgid "Caption"
 msgstr "Bildetekst"
 
-#: ../ml-slider.php:237 ../inc/slide/metaslide.image.class.php:102
+#: ../ml-slider.php:237
+#: ../inc/slide/metaslide.image.class.php:102
 msgid "New Window"
 msgstr "Nytt Vindu"
 
@@ -61,12 +65,8 @@ msgid "Are you sure?"
 msgstr "Er du sikker?"
 
 #: ../ml-slider.php:242
-msgid ""
-"Caution: This setting is for advanced developers only. If you're unsure, "
-"leave it checked."
-msgstr ""
-"Advarsel: Denne innstillingen er kun for avanserte brukere. Hvis du er "
-"usikker, la det stå avkrysset."
+msgid "Caution: This setting is for advanced developers only. If you're unsure, leave it checked."
+msgstr "Advarsel: Denne innstillingen er kun for avanserte brukere. Hvis du er usikker, la det stå avkrysset."
 
 #: ../ml-slider.php:278
 msgid "Upgrade to Pro $39"
@@ -124,7 +124,8 @@ msgstr "Nivo Slider"
 msgid "Coin Slider"
 msgstr "Mynt Slider"
 
-#: ../ml-slider.php:773 ../ml-slider.php:995
+#: ../ml-slider.php:773
+#: ../ml-slider.php:995
 msgid "Width"
 msgstr "Bredde"
 
@@ -132,11 +133,13 @@ msgstr "Bredde"
 msgid "Slideshow width"
 msgstr "Lysbildeseriebredde"
 
-#: ../ml-slider.php:776 ../ml-slider.php:789
+#: ../ml-slider.php:776
+#: ../ml-slider.php:789
 msgid "px"
 msgstr "pixler"
 
-#: ../ml-slider.php:786 ../ml-slider.php:1008
+#: ../ml-slider.php:786
+#: ../ml-slider.php:1008
 msgid "Height"
 msgstr "Høyde"
 
@@ -152,7 +155,8 @@ msgstr "Effekt"
 msgid "Slide transition effect"
 msgstr "Lysbilde overgangseffekt"
 
-#: ../ml-slider.php:799 ../ml-slider.php:927
+#: ../ml-slider.php:799
+#: ../ml-slider.php:927
 msgid "Random"
 msgstr "Tilfeldig"
 
@@ -321,12 +325,8 @@ msgid "Smart crop"
 msgstr "Smart beskjæring"
 
 #: ../ml-slider.php:914
-msgid ""
-"Smart Crop ensures your responsive slides are cropped to a ratio that "
-"results in a consistent slideshow size"
-msgstr ""
-"Smart beskjæring sikrer at dine responsive lysbilder blir beskåret til et "
-"forhold som resulterer i en konsekvent lysbildeseriestørrelse"
+msgid "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size"
+msgstr "Smart beskjæring sikrer at dine responsive lysbilder blir beskåret til et forhold som resulterer i en konsekvent lysbildeseriestørrelse"
 
 #: ../ml-slider.php:919
 msgid "Carousel mode"
@@ -334,8 +334,7 @@ msgstr "Karusellmodus"
 
 #: ../ml-slider.php:922
 msgid "Display multiple slides at once. Slideshow output will be 100% wide."
-msgstr ""
-"Vis flere lysbilder samtidig. Lysbildeserieeffekt vil være 100% bredde."
+msgstr "Vis flere lysbilder samtidig. Lysbildeserieeffekt vil være 100% bredde."
 
 #: ../ml-slider.php:930
 msgid "Randomise the order of the slides"
@@ -346,12 +345,8 @@ msgid "Hover pause"
 msgstr "Mus-over pause"
 
 #: ../ml-slider.php:938
-msgid ""
-"Pause the slideshow when hovering over slider, then resume when no longer "
-"hovering."
-msgstr ""
-"Pause lysbildefremvisningen når mus er over glideren, deretter gjenoppta når "
-"den ikke lenger er over."
+msgid "Pause the slideshow when hovering over slider, then resume when no longer hovering."
+msgstr "Pause lysbildefremvisningen når mus er over glideren, deretter gjenoppta når den ikke lenger er over."
 
 #: ../ml-slider.php:943
 msgid "Reverse"
@@ -369,8 +364,11 @@ msgstr "Lysbildeforsinkelse"
 msgid "How long to display each slide, in milliseconds"
 msgstr "Visningstid pr lysbilde, i millisekund"
 
-#: ../ml-slider.php:959 ../ml-slider.php:972 ../ml-slider.php:985
-#: ../ml-slider.php:1061 ../ml-slider.php:1087
+#: ../ml-slider.php:959
+#: ../ml-slider.php:972
+#: ../ml-slider.php:985
+#: ../ml-slider.php:1061
+#: ../ml-slider.php:1087
 msgid "ms"
 msgstr "ms"
 
@@ -382,11 +380,14 @@ msgstr "Animasjonshastighet"
 msgid "Set the speed of animations, in milliseconds"
 msgstr "Angi hastigheten på animasjoner, i millisekund"
 
-#: ../ml-slider.php:982 ../ml-slider.php:984
+#: ../ml-slider.php:982
+#: ../ml-slider.php:984
 msgid "Number of slices"
 msgstr "Antall lysbilder"
 
-#: ../ml-slider.php:995 ../ml-slider.php:997 ../ml-slider.php:1008
+#: ../ml-slider.php:995
+#: ../ml-slider.php:997
+#: ../ml-slider.php:1008
 #: ../ml-slider.php:1010
 msgid "Number of squares"
 msgstr "Antall firkanter"
@@ -464,11 +465,8 @@ msgid "CSS classes"
 msgstr "CSS klasser"
 
 #: ../ml-slider.php:1100
-msgid ""
-"Specify any custom CSS Classes you would like to be added to the slider "
-"wrapper"
-msgstr ""
-"Spesifiser hvilken egendefinerte CSS klasse du vil legge til lysbilde wrapper"
+msgid "Specify any custom CSS Classes you would like to be added to the slider wrapper"
+msgstr "Spesifiser hvilken egendefinerte CSS klasse du vil legge til lysbilde wrapper"
 
 #: ../ml-slider.php:1106
 msgid "Print CSS"
@@ -508,17 +506,11 @@ msgstr "Inkluder i mal"
 
 #: ../ml-slider.php:1147
 msgid "Copy & paste the shortcode directly into any WordPress post or page."
-msgstr ""
-"Kopier og lim inn hurtigkoden direkte i hvilken som helst WordPress post "
-"eller side."
+msgstr "Kopier og lim inn hurtigkoden direkte i hvilken som helst WordPress post eller side."
 
 #: ../ml-slider.php:1150
-msgid ""
-"Copy & paste this code into a template file to include the slideshow within "
-"your theme."
-msgstr ""
-"Kopier og lim inn denne koden i en mal-fil for å inkludere lysbildeserien "
-"innenfor temaet ditt"
+msgid "Copy & paste this code into a template file to include the slideshow within your theme."
+msgstr "Kopier og lim inn denne koden i en mal-fil for å inkludere lysbildeserien innenfor temaet ditt"
 
 #: ../ml-slider.php:1179
 msgid "Delete Slider"
@@ -528,7 +520,8 @@ msgstr "Slett lysbilde"
 msgid "Slides"
 msgstr "Lysbilder"
 
-#: ../ml-slider.php:1193 ../ml-slider.php:1194
+#: ../ml-slider.php:1193
+#: ../ml-slider.php:1194
 msgid "Add Slide"
 msgstr "Legg til lysbilde"
 
@@ -548,7 +541,8 @@ msgstr "Sett inn Meta Lysbildeserie"
 msgid "Choose slideshow"
 msgstr "Velg slideshow"
 
-#: ../ml-slider.php:1267 ../inc/metaslider.widget.class.php:124
+#: ../ml-slider.php:1267
+#: ../inc/metaslider.widget.class.php:124
 msgid "No slideshows found"
 msgstr "Ingen slideshow funnet"
 
@@ -570,8 +564,7 @@ msgstr "Sikkerhetssjekk feilet. Last inn siden på nytt og prøv igjen."
 
 #: ../inc/slide/metaslide.image.class.php:36
 msgid "Failed to add slide. Slide already exists in slideshow."
-msgstr ""
-"Kunne ikke legge til lysbilde. Lysbilde eksisterer allerede i slideshow"
+msgstr "Kunne ikke legge til lysbilde. Lysbilde eksisterer allerede i slideshow"
 
 #: ../inc/slide/metaslide.image.class.php:38
 msgid "Failed to add slide. Slide is not of type 'image'."

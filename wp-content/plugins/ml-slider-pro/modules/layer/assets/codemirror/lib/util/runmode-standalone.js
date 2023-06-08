@@ -1,11 +1,14 @@
-/* Just enough of CodeMirror to run runMode under node.js */
+// Just enough of CodeMirror to run runMode under node.js
 
-function splitLines(string){ return string.split(/\r?\n|\r/); };
+
+function splitLines(string){ return string.split(/\r?\n|\r/); }//end splitLines()
+;
 
 function StringStream(string) {
   this.pos = this.start = 0;
   this.string = string;
-}
+}//end StringStream()
+
 StringStream.prototype = {
   eol: function() {return this.pos >= this.string.length;},
   sol: function() {return this.pos == 0;},
@@ -40,7 +43,8 @@ StringStream.prototype = {
   indentation: function() {return 0;},
   match: function(pattern, consume, caseInsensitive) {
     if (typeof pattern == "string") {
-      function cased(str) {return caseInsensitive ? str.toLowerCase() : str;}
+      function cased(str) {return caseInsensitive ? str.toLowerCase() : str;}//end cased()
+
       if (cased(this.string).indexOf(cased(pattern), this.pos) == this.pos) {
         if (consume !== false) this.pos += pattern.length;
         return true;

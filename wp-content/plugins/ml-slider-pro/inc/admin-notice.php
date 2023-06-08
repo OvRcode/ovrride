@@ -5,24 +5,30 @@
  * Usage:
  * new Metaslider_Admin_Notice('notice-error', 'Something went wrong');
  */
-class Metaslider_Admin_Notice {
+class Metaslider_Admin_Notice
+{
     /**
-     * @var string $type The type of notice
      * Should use WP class names
+     *
+     * @var string $type The type of notice
      */
     public $type;
 
     /**
+     * The message to be displayed
+     *
      * @var string $message The message to be displayed
      */
     public $message;
-    
+
     /**
      * Method to add a message to the admin_notices stack
+     *
      * @param string $type The WP css class name to be used
      * @param string $message The message to be displayed
      */
-    public function __construct($type, $message) {
+    public function __construct($type, $message)
+    {
         $this->type = $type;
         $this->message = $message;
         add_action('admin_notices', array($this, 'display'));
@@ -31,7 +37,12 @@ class Metaslider_Admin_Notice {
     /**
      * Public method to be called by WP
      */
-    public function display() {
-        printf('<div class="%s notice"><p>%s</p></div>', $this->type, $this->message);
+    public function display()
+    {
+        printf(
+            '<div style="padding-top:1rem;padding-bottom:1rem" class="metaslider-admin-notice %s notice">%s</div>',
+            esc_attr($this->type),
+            $this->message // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        );
     }
 }

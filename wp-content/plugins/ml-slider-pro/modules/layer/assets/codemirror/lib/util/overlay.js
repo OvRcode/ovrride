@@ -5,7 +5,6 @@
 // text, but when both assign a non-null style to a piece of code, the
 // overlay wins, unless the combine argument was true, in which case
 // the styles are combined.
-
 // overlayParser is the old, deprecated name
 CodeMirror.overlayMode = CodeMirror.overlayParser = function(base, overlay, combine) {
   return {

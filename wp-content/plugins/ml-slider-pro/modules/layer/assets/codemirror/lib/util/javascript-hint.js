@@ -1,7 +1,8 @@
 (function () {
   function forEach(arr, f) {
     for (var i = 0, e = arr.length; i < e; ++i) f(arr[i]);
-  }
+  }//end forEach()
+
   
   function arrayContains(arr, item) {
     if (!Array.prototype.indexOf) {
@@ -14,7 +15,8 @@
       return false;
     }
     return arr.indexOf(item) != -1;
-  }
+  }//end arrayContains()
+
 
   function scriptHint(editor, keywords, getToken) {
     // Find the token at the cursor
@@ -50,7 +52,8 @@
     return {list: getCompletions(token, context, keywords),
             from: {line: cur.line, ch: token.start},
             to: {line: cur.line, ch: token.end}};
-  }
+  }//end scriptHint()
+
 
   CodeMirror.javascriptHint = function(editor) {
     return scriptHint(editor, javascriptKeywords,
@@ -73,7 +76,8 @@
       token.string = token.string.replace(/\./, '');
     }
     return token;
-  }
+  }//end getCoffeeScriptToken()
+
 
   CodeMirror.coffeescriptHint = function(editor) {
     return scriptHint(editor, coffeescriptKeywords, getCoffeeScriptToken);
@@ -93,13 +97,15 @@
     var found = [], start = token.string;
     function maybeAdd(str) {
       if (str.indexOf(start) == 0 && !arrayContains(found, str)) found.push(str);
-    }
+    }//end maybeAdd()
+
     function gatherCompletions(obj) {
       if (typeof obj == "string") forEach(stringProps, maybeAdd);
       else if (obj instanceof Array) forEach(arrayProps, maybeAdd);
       else if (obj instanceof Function) forEach(funcProps, maybeAdd);
       for (var name in obj) maybeAdd(name);
-    }
+    }//end gatherCompletions()
+
 
     if (context) {
       // If this is a property, see if it belongs to some object we can
@@ -130,5 +136,6 @@
       forEach(keywords, maybeAdd);
     }
     return found;
-  }
+  }//end getCompletions()
+
 })();

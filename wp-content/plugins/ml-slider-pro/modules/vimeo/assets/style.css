@@ -1,34 +1,31 @@
 .metaslider .vimeo .spinner {
-	position: absolute;
-	top: 13px;
-	right: 26px;
+    position: absolute;
+    top: 13px;
+    right: 26px;
 }
 
-.metaslider .vimeo input[type=text] {
-	font-family: sans-serif;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	box-sizing: border-box;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #dfdfdf;
-	line-height: 1.2em;
-	font-size: 18px;
-	padding: 12px 14px;
-	width: 100%;
-	min-width: 200px;
-	box-shadow: inset 2px 2px 4px -2px rgba( 0, 0, 0, 0.1 );
-}
 .metaslider .vimeo .vimeo {
-  background: url('icon.png') no-repeat center center;
-  height: 20px;
-  text-indent: -9999px;
-  margin-top: -0.9rem;
-  display: block;
-  width: 65px;
-  background-size: 65px;
-  image-rendering: -webkit-optimize-contrast;
+    background: url('icon.png') no-repeat center center;
+    height: 20px;
+    text-indent: -9999px;
+    margin-top: -3px;
+    display: inline-block;
+    width: 48px;
+    background-size: 48px;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+.metaslider .vimeo input.ms-super-wide {
+    font-family: sans-serif;
+    box-sizing: border-box;
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dfdfdf;
+    line-height: 1.2em;
+    font-size: 18px;
+    padding: 12px 14px;
+    width: 100%;
+    min-width: 200px;
+    box-shadow: inset 2px 2px 4px -2px rgba(0, 0, 0, 0.1);
 }

@@ -16,7 +16,8 @@ CodeMirror.defineMode("htmlmixed", function(config) {
       }
     }
     return style;
-  }
+  }//end html()
+
   function maybeBackup(stream, pat, style) {
     var cur = stream.current();
     var close = cur.search(pat), m;
@@ -26,7 +27,8 @@ CodeMirror.defineMode("htmlmixed", function(config) {
       if (!stream.match(pat, false)) stream.match(cur[0]);
     }
     return style;
-  }
+  }//end maybeBackup()
+
   function javascript(stream, state) {
     if (stream.match(/^<\/\s*script\s*>/i, false)) {
       state.token = html;
@@ -35,7 +37,8 @@ CodeMirror.defineMode("htmlmixed", function(config) {
     }
     return maybeBackup(stream, /<\/\s*script\s*>/,
                        jsMode.token(stream, state.localState));
-  }
+  }//end javascript()
+
   function css(stream, state) {
     if (stream.match(/^<\/\s*style\s*>/i, false)) {
       state.token = html;
@@ -44,7 +47,8 @@ CodeMirror.defineMode("htmlmixed", function(config) {
     }
     return maybeBackup(stream, /<\/\s*style\s*>/,
                        cssMode.token(stream, state.localState));
-  }
+  }//end css()
+
 
   return {
     startState: function() {

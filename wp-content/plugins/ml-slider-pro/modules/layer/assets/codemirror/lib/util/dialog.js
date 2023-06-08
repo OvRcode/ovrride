@@ -7,7 +7,8 @@
     dialog.className = "CodeMirror-dialog";
     dialog.innerHTML = '<div>' + template + '</div>';
     return dialog;
-  }
+  }//end dialogDiv()
+
 
   CodeMirror.defineExtension("openDialog", function(template, callback) {
     var dialog = dialogDiv(this, template);
@@ -16,7 +17,8 @@
       if (closed) return;
       closed = true;
       dialog.parentNode.removeChild(dialog);
-    }
+    }//end close()
+
     var inp = dialog.getElementsByTagName("input")[0], button;
     if (inp) {
       CodeMirror.connect(inp, "keydown", function(e) {
@@ -49,7 +51,8 @@
       closed = true;
       dialog.parentNode.removeChild(dialog);
       me.focus();
-    }
+    }//end close()
+
     buttons[0].focus();
     for (var i = 0; i < buttons.length; ++i) {
       var b = buttons[i];

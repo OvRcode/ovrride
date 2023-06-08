@@ -1,0 +1,1228 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: MetaSlider - Pro Addon Pack v2.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-08-31 16:34-0500\n"
+"Last-Translator: admin <info@1245.ru>\n"
+"Language-Team: Angelo Giammarresi - info@wocmultimedia.com\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:164 ml-slider-pro.php:240
+msgid "Install Required Plugins"
+msgstr "Installare i plugin necessari"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:165 ml-slider-pro.php:241
+msgid "Install Plugins"
+msgstr "Installazione dei plugin"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:166 ml-slider-pro.php:242
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr "Installazione dei plugin: %s"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:167
+msgid "Something went wrong."
+msgstr "Qualcosa è andato storto."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:168
+#, php-format
+msgid "This theme requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] "Per questo tema è necessario il seguente plugin: %1$s."
+msgstr[1] "Per questo tema sono necessari i seguenti plugin: %1$s."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:169 ml-slider-pro.php:245
+#, php-format
+msgid "This theme recommends the following plugin: %1$s."
+msgid_plural "This theme recommends the following plugins: %1$s."
+msgstr[0] "Per questo tema è consigliato il seguente plugin: %1$s."
+msgstr[1] "Per questo tema sono consigliati i seguenti plugin: %1$s."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:170 ml-slider-pro.php:246
+#, php-format
+msgid "Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed."
+msgid_plural "Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed."
+msgstr[0] "Non hai l'autorizzazione corretta per installare il plugin %s. Contatta l'amministratore del sito per un aiuto sull'installazione del plugin."
+msgstr[1] "Non hai le autorizzazioni corrette per installare i plugin %s. Contatta l'amministratore del sito per un aiuto sull'installazione di questi plugin."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:171 ml-slider-pro.php:247
+#, php-format
+msgid "The following required plugin is currently inactive: %1$s."
+msgid_plural "The following required plugins are currently inactive: %1$s."
+msgstr[0] "Il seguente plugin necessario è attualmente inattivo: %1$s."
+msgstr[1] "I seguenti plugin necessari sono attualmente inattivi: %1$s."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:172 ml-slider-pro.php:248
+#, php-format
+msgid "The following recommended plugin is currently inactive: %1$s."
+msgid_plural "The following recommended plugins are currently inactive: %1$s."
+msgstr[0] "Il seguente plugin consigliato è attualmente inattivo: %1$s."
+msgstr[1] "I seguenti plugin consigliati sono attualmente inattivi: %1$s."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:173 ml-slider-pro.php:249
+#, php-format
+msgid "Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated."
+msgid_plural "Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated."
+msgstr[0] "Non hai l'autorizzazione corretta per attivare il plugin %s. Contatta l'amministratore del sito per un aiuto sull'attivazione del plugin."
+msgstr[1] "Non hai le autorizzazioni corrette per attivare i plugin %s. Contatta l'amministratore del sito per un aiuto sull'attivazione di questi plugin."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:174 ml-slider-pro.php:250
+#, php-format
+msgid "The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s."
+msgid_plural "The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s."
+msgstr[0] "Il seguente plugin deve essere aggiornato alla versione più recente per garantirti la massima compatibilità con questo tema: %1$s."
+msgstr[1] "I seguenti plugin devono essere aggiornati alla versione più recente per garantirti la massima compatibilità con questo tema: %1$s."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:175 ml-slider-pro.php:251
+#, php-format
+msgid "Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated."
+msgid_plural "Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated."
+msgstr[0] "Non hai l'autorizzazione corretta per aggiornare il plugin %s. Contatta l'amministratore del sito per un aiuto sull'aggiornamento del plugin."
+msgstr[1] "Non hai le autorizzazioni corrette per aggiornare i plugin %s. Contatta l'amministratore del sito per un aiuto sull'aggiornamento di questi plugin."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:176 ml-slider-pro.php:252
+msgid "Begin installing plugin"
+msgid_plural "Begin installing plugins"
+msgstr[0] "Inizio installazione del plugin"
+msgstr[1] "Inizio installazione dei plugin"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:177 ml-slider-pro.php:253
+msgid "Activate installed plugin"
+msgid_plural "Activate installed plugins"
+msgstr[0] "Attiva il plugin installato"
+msgstr[1] "Attiva i plugin installati"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:178
+#: inc/class-tgm-plugin-activation.php:490 ml-slider-pro.php:254
+msgid "Return to Required Plugins Installer"
+msgstr "Torna all'installatore dei plugin necessari"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:179
+#: inc/class-tgm-plugin-activation.php:1851 ml-slider-pro.php:255
+msgid "Plugin activated successfully."
+msgstr "Plugin attivato correttamente."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:180
+#, php-format
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr "Tutti i plugin sono stati installati e attivati correttamente. %1$s"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:517
+#: inc/class-tgm-plugin-activation.php:2063
+msgid "Return to the Dashboard"
+msgstr "Torna alla bacheca"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:545
+#, php-format
+msgid "The following plugin was activated successfully: %s."
+msgstr "I seguenti plugin sono stati attivati correttamente: %s."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:704
+msgid "Dismiss this notice"
+msgstr "Ignora questo avviso"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1096
+msgid "External Link"
+msgstr "Link esterno"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1101
+msgid "Private Repository"
+msgstr "Repository privato"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1104
+msgid "Pre-Packaged"
+msgstr "Incorporato"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1108
+msgid "WordPress Repository"
+msgstr "Repository di WordPress"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1111
+msgid "Required"
+msgstr "Necessario"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1111
+msgid "Recommended"
+msgstr "Consigliato"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1114
+msgid "Not Installed"
+msgstr "Non installato"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1116
+msgid "Installed But Not Activated"
+msgstr "Installato ma non ativato"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1286
+#, php-format
+msgid "No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the Dashboard\">Return to the Dashboard</a>"
+msgstr "Non ci sono plugin da installare o attivare. <a href=\"%1$s\" title=\"Return to the Dashboard\">Ritorna alla bacheca</a>"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1302
+msgid "Plugin"
+msgstr "Plugin"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1303
+msgid "Source"
+msgstr "Sorgente"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1304
+#: modules/theme_editor/theme_editor.php:1562
+msgid "Type"
+msgstr "Tipo"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1305
+msgid "Status"
+msgstr "Stato"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1323
+msgid "Install"
+msgstr "Installa"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1324
+msgid "Activate"
+msgstr "Attiva"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1549
+msgid "The following plugin was activated successfully:"
+msgid_plural "The following plugins were activated successfully:"
+msgstr[0] "Il seguente plugin è stato attivato correttamente:"
+msgstr[1] "I seguenti plugin sono stati attivati correttamente:"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1834
+msgid "Install package not available."
+msgstr "Il pacchetto d'installazione non è disponibile."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1835
+#, php-format
+msgid "Downloading install package from <span class=\"code\">%s</span>&#8230;"
+msgstr "Scaricando il pacchetto d'installazione da <span class=\"code\">%s</span>&#8230;"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1836
+msgid "Unpacking the package&#8230;"
+msgstr "Scompattando il pacchetto&#8230;"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1837
+msgid "Installing the plugin&#8230;"
+msgstr "Installando il plugin&#8230;"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1838
+msgid "Plugin install failed."
+msgstr "Installazione del plugin fallita."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1839
+msgid "Plugin installed successfully."
+msgstr "Plugin installato correttamente."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1850
+msgid "Plugin activation failed."
+msgstr "L'attivazione del plugin è fallita."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1960
+msgid "The installation and activation process is starting. This process may take a while on some hosts, so please be patient."
+msgstr "Inizio del processo di installazione e attivazione. Questo processo con alcuni host può richiedere un certo tempo, abbi pazienza."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1961
+#, php-format
+msgid "%1$s installed and activated successfully."
+msgstr "%1$s installato e attivato correttamente."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1961
+#: inc/class-tgm-plugin-activation.php:1970
+msgid "Show Details"
+msgstr "Visualizza i dettagli"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1961
+#: inc/class-tgm-plugin-activation.php:1970
+msgid "Hide Details"
+msgstr "Nascondi i dettagli"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1962
+msgid "All installations and activations have been completed."
+msgstr "Tutti le installazioni e attivazioni sono state completate."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1963
+#, php-format
+msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
+msgstr "Installazione e attivazione del plugin %1$s (%2$d/%3$d)"
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1967
+msgid "The installation process is starting. This process may take a while on some hosts, so please be patient."
+msgstr "Inizio del processo di installazione. Questo processo con alcuni host può richiedere un certo tempo, abbi pazienza."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1968
+#, php-format
+msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
+msgstr "Si è verificato un errore durante l'installazione %1$s: <strong>%2$s</strong>."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1969
+#, php-format
+msgid "The installation of %1$s failed."
+msgstr "L'installazione di %1$s è fallita."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1970
+#, php-format
+msgid "%1$s installed successfully."
+msgstr "%1$s installato correttamente."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1971
+msgid "All installations have been completed."
+msgstr "Tutti le installazioni sono state completate."
+
+# @ ml-slider-pro
+#: inc/class-tgm-plugin-activation.php:1972
+#, php-format
+msgid "Installing Plugin %1$s (%2$d/%3$d)"
+msgstr "Installazione plugin %1$s (%2$d/%3$d)"
+
+# @ ml-slider-pro
+#: ml-slider-pro.php:243
+msgid "Something went wrong with the plugin API."
+msgstr "Qualcosa non ha funzionato con l'API del plugin."
+
+# @ ml-slider-pro
+#: ml-slider-pro.php:244
+#, php-format
+msgid "MetaSlider (Pro) requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] "MetaSlider (Pro) necessita del seguente plugin: %1$s."
+msgstr[1] "MetaSlider (Pro) necessita i seguenti plugin: %1$s."
+
+# @ ml-slider-pro
+#: ml-slider-pro.php:256
+#, php-format
+msgid "All plugins installed and activated successfully. %s"
+msgstr "Tutti i plugin sono stati installati e attivati correttamente. %s"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:42
+msgid "Layer Scaling"
+msgstr "Ridimensionamento dei livelli"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:44
+msgid "Select responsiver layer scaling behaviour"
+msgstr "Seleziona il comportamento responsive del ridimensionamento dei livelli"
+
+# @ metaslider
+#: modules/layer/slide.php:46
+msgid "Scale Up & Down"
+msgstr "Scala in alto e in basso"
+
+# @ metaslider
+#: modules/layer/slide.php:47
+msgid "Scale Down Only"
+msgstr "Scala solo in basso"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:62 modules/layer/slide.php:200
+msgid "Layer Slide"
+msgstr "Diapositiva del livello"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:93
+msgid "New Layer"
+msgstr "Nuovo livello"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:94
+msgid "Add Layer"
+msgstr "Aggiungi livello"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:95
+msgid "Duplicate Layer"
+msgstr "Duplica il livello"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:97
+msgid "Save changes?"
+msgstr "Salvare le modifiche?"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:98 modules/layer/slide.php:101
+msgid "Animation"
+msgstr "Animazione"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:99
+msgid "Styling"
+msgstr "Stilizzazione"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:100 modules/theme_editor/theme_editor.php:442
+#: modules/theme_editor/theme_editor.php:516
+#: modules/theme_editor/theme_editor.php:520
+#: modules/theme_editor/theme_editor.php:588
+#: modules/theme_editor/theme_editor.php:624
+#: modules/theme_editor/theme_editor.php:628
+#: modules/theme_editor/theme_editor.php:658
+#: modules/theme_editor/theme_editor.php:662
+#: modules/theme_editor/theme_editor.php:666
+#: modules/theme_editor/theme_editor.php:670
+#: modules/thumbnails/thumbnails.php:217 modules/thumbnails/thumbnails.php:230
+msgid "px"
+msgstr "px"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:102
+msgid "Wait"
+msgstr "Attendi"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:103
+msgid "then wait"
+msgstr "quindi attendi"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:104
+msgid "seconds and"
+msgstr "secondi e"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:105
+msgid "Padding"
+msgstr "Spaziatura interna"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:106
+msgid "Background"
+msgstr "Sfondo"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:107
+msgid "Are you sure?"
+msgstr "Sei sicuro?"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:108
+msgid "Snap to grid"
+msgstr "Aggancia alla griglia"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:109
+msgid "Link to"
+msgstr "Link a"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:193
+msgid "New Window"
+msgstr "Nuova finestra"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:194
+msgid "URL"
+msgstr "URL"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:216
+msgid "Background Image Title Text"
+msgstr "Testo del titolo dell'immagine di sfondo"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:218
+msgid "Background Image Alt Text"
+msgstr "Testo alternativo dell'immagine di sfondo"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:222
+msgid "Background Image Link"
+msgstr "Link dell'immagine di sfondo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:100
+msgid "Post Feed Slide"
+msgstr "Diapositiva feed articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:106
+msgid "Post Types"
+msgstr "Tipi di contenuto"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:107
+msgid "Taxonomies"
+msgstr "Tassonomie"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:108
+msgid "Display Settings"
+msgstr "Impostazioni di visualizzazione"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:119
+msgid "Select the Post types to include in the feed. Posts must have a Featured Image to appear in the feed."
+msgstr "Seleziona i tipi di contenuto da inserire nel feed. Gli articoli devono avere una immagine in evidenza per poter apparire nel feed."
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:120
+msgid "Posts must be tagged to at least one of the selected categories to display in the feed."
+msgstr "Gli articoli devono essere taggati in una delle categorie selezionate per essere visualizzati nel feed."
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:123
+msgid "Slide Link"
+msgstr "Link diapositiva"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:127
+msgid "Order By"
+msgstr "Ordina per"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:131
+msgid "Post Limit"
+msgstr "Limite di articoli"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:429
+msgid "Theme Settings"
+msgstr "Impostazioni del tema"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:436
+msgid "Slideshow"
+msgstr "Presentazione"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:440
+msgid "Outer Border Radius"
+msgstr "Raggio del bordo esterno"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:446
+msgid "CSS3 Shadow"
+msgstr "Ombra CSS3"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:447
+msgid "Note: Not compatible with 'thumbnail' navigation type"
+msgstr "Nota: non è compatibile con il tipo di navigazione a miniatura"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:463
+msgid "Caption"
+msgstr "Caption"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:473
+#: modules/theme_editor/theme_editor.php:609
+msgid "Position"
+msgstr "Posizione"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:476
+#: modules/theme_editor/theme_editor.php:616
+msgid "Bottom Left"
+msgstr "In basso a sinistra"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:477
+#: modules/theme_editor/theme_editor.php:618
+msgid "Bottom Right"
+msgstr "In basso a destra"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:478
+#: modules/theme_editor/theme_editor.php:613
+msgid "Top Left"
+msgstr "In alto a sinistra"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:479
+#: modules/theme_editor/theme_editor.php:615
+msgid "Top Right"
+msgstr "In alto a destra"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:480
+msgid "Underneath"
+msgstr "Sotto"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:485
+msgid "Width"
+msgstr "Larghezza"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:493
+msgid "Text Color"
+msgstr "Colore del testo"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:509
+msgid "Background Color"
+msgstr "Colore dello sfondo"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:515
+#: modules/theme_editor/theme_editor.php:623
+msgid "Vertical Margin"
+msgstr "Margine verticale"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:519
+#: modules/theme_editor/theme_editor.php:627
+msgid "Horizontal Margin"
+msgstr "Margine orizzontale"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:524
+msgid "Arrows"
+msgstr "Frecce"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:583
+msgid "Opacity"
+msgstr "Opacità"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:587
+msgid "Distance from edge"
+msgstr "Distanza dal margine"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:599
+#: modules/thumbnails/thumbnails.php:195
+msgid "Navigation"
+msgstr "Navigazione"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:452
+#: modules/theme_editor/theme_editor.php:612
+msgid "Default"
+msgstr "Predefinito"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:614
+msgid "Top Center"
+msgstr "In alto al centro"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:617
+msgid "Bottom Center"
+msgstr "In basso al centro"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:631
+msgid "Fill Color"
+msgstr "Colore di riempimento"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:638
+msgid "Fill Color (Active)"
+msgstr "Colore di riempimento (attivo)"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:645
+msgid "Border Color"
+msgstr "Colore del bordo"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:651
+msgid "Border Color (Active)"
+msgstr "Colore del bordo (attivo)"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:657
+msgid "Size"
+msgstr "Dimensione"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:661
+msgid "Spacing"
+msgstr "Spaziatura"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:665
+msgid "Border Width"
+msgstr "Spessore del bordo"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:489
+#: modules/theme_editor/theme_editor.php:669
+msgid "Border Radius"
+msgstr "Raggio del bordo"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:198
+msgid "Show the slide navigation bullets"
+msgstr "Mostra gli indicatori di navigazione delle diapositive"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:200
+msgid "Hidden"
+msgstr "Nascosto"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:201
+msgid "Dots"
+msgstr "Punti"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:202
+msgid "Thumbnails"
+msgstr "Miniature"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:203
+msgid "Filmstrip"
+msgstr "Pellicola"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:214
+msgid "Thumb Width"
+msgstr "Larghezza miniatura"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:216
+msgid "Thumb width"
+msgstr "Larghezza miniatura"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:227
+msgid "Thumb Height"
+msgstr "Altezza miniatura"
+
+# @ ml-slider-pro
+#: modules/thumbnails/thumbnails.php:229
+msgid "Thumb height"
+msgstr "Altezza miniatura"
+
+# @ ml-slider-pro
+#: modules/vimeo/slide.php:188
+msgid "Vimeo"
+msgstr "Vimeo"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:205 modules/vimeo/slide.php:194
+#: modules/youtube/slide.php:171
+msgid "General"
+msgstr "Generale"
+
+# @ ml-slider-pro
+#: modules/vimeo/slide.php:199 modules/youtube/slide.php:177
+msgid "Show the title on the video"
+msgstr "Mostra il titolo sul video"
+
+# @ ml-slider-pro
+#: modules/vimeo/slide.php:200
+msgid "Show the user badge on the video"
+msgstr "Mostrare il badge utente sul video"
+
+# @ ml-slider-pro
+#: modules/vimeo/slide.php:201
+msgid "Show the user byline on the video"
+msgstr "Mostrare le informazioni utente sul video"
+
+# @ ml-slider-pro
+#: modules/vimeo/slide.php:202
+msgid "Show the user portrait on the video"
+msgstr "Mostrare la foto utente sul video"
+
+# @ ml-slider-pro
+#: modules/vimeo/slide.php:203
+msgid "Auto play"
+msgstr "Riproduzione automatica"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:165
+msgid "YouTube"
+msgstr "YouTube"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:172 modules/youtube/slide.php:186
+msgid "Theme"
+msgstr "Tema"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:178
+msgid "Enable controls in the player"
+msgstr "Abilitare i controlli nel riproduttore"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:179
+msgid "Show related videos"
+msgstr "Motrare i video correlati"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:180
+msgid "Hide video controls after the video begins"
+msgstr "Nascondi i controlli del video dopo l'inizio del video"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:181
+msgid "Auto Play"
+msgstr "Riproduzione automatica"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:188
+msgid "Dark"
+msgstr "Scuro"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:189
+msgid "Light"
+msgstr "Chiaro"
+
+# @ ml-slider-pro
+#: modules/youtube/slide.php:193
+msgid "Color"
+msgstr "Colore"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1583 modules/youtube/slide.php:195
+msgid "Red"
+msgstr "Rosso"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1584 modules/youtube/slide.php:196
+msgid "White"
+msgstr "Bianco"
+
+# @ default
+#: inc/wp-updates-plugin.php:73
+msgid "An Unexpected HTTP Error occurred during the API request.</p> <p><a href=\"?\" onclick=\"document.location.reload(); return false;\">Try again</a>"
+msgstr "Si è verificato un errore HTTP imprevisto durante la richiesta API. </p> <p><a href=\"?\" onclick=\"document.location.reload(); return false;\">Riprova</a>"
+
+# @ default
+#: inc/wp-updates-plugin.php:77
+msgid "An unknown error occurred"
+msgstr "Si è verificato un errore imprevisto"
+
+# @ ml-slider-pro
+#: modules/extra/loop.php:63
+msgid "Loop"
+msgstr "Ciclico"
+
+# @ ml-slider-pro
+#: modules/extra/loop.php:65
+msgid "Configure loop"
+msgstr "Configurazione del ciclo"
+
+# @ ml-slider-pro
+#: modules/extra/loop.php:68
+msgid "Continuously"
+msgstr "Continuo"
+
+# @ ml-slider-pro
+#: modules/extra/loop.php:69
+msgid "Stop on Last Slide"
+msgstr "Arresta sull'ultima diapositiva"
+
+# @ ml-slider-pro
+#: modules/extra/loop.php:70
+msgid "Stop on First Slide"
+msgstr "Arresta sulla prima diapositiva"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:111
+msgid "Please set a width in the slideshow settings"
+msgstr "Impostare la larghezza nelle impostazioni della presentazione"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:112
+msgid "Please set a height in the slideshow settings"
+msgstr "Impostare l'altezza nelle impostazioni della presentazione"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:206
+msgid "SEO"
+msgstr "SEO"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:207
+msgid "Extra"
+msgstr "Extra"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:208
+msgid "Edit Source"
+msgstr "Modifica la sorgente"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:105
+msgid "Caption Template"
+msgstr "Template della didascalia"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:135
+msgid "Preserve New Lines"
+msgstr "Mantenere le nuove linee"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:209 modules/post_feed/slide.php:274
+msgid "Post Title"
+msgstr "Titolo dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:210 modules/post_feed/slide.php:272
+msgid "Post ID"
+msgstr "ID dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:211
+msgid "Post Link"
+msgstr "Link dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:212
+msgid "Post Excerpt"
+msgstr "Riassunto dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:213
+msgid "Post Date"
+msgstr "Data dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:214
+msgid "Post Content"
+msgstr "Contenuto dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:215
+msgid "Post Content (with formatting)"
+msgstr "Contenuto dell'articolo (con la formattazione)"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:216 modules/post_feed/slide.php:273
+msgid "Author"
+msgstr "Autore"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:217
+msgid "Author Link"
+msgstr "Link dell'autore"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:218
+msgid "Tag List"
+msgstr "Elenco dei tag"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:219
+msgid "Category List"
+msgstr "Elenco delle categorie"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:226
+msgid "WooCommerce - Price (Formatted)"
+msgstr "WooCommerce - Prezzo (formattato)"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:227
+msgid "WooCommerce - Price"
+msgstr "WooCommerce - Prezzo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:228
+msgid "WooCommerce - Sale Price"
+msgstr "WooCommerce - Prezzo di vendita"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:229
+msgid "WooCommerce - Add to Cart URL"
+msgstr "WooCommerce - URL per aggiungi al carrello"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:230
+msgid "WooCommerce - SKU"
+msgstr "WooCommerce - COD"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:242
+msgid "Insert Tag"
+msgstr "Inserisci tag"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:249
+msgid "Custom Fields"
+msgstr "Campi personalizzati"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:369
+msgid "Disabled"
+msgstr "Disabilitato"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:370
+msgid "Post"
+msgstr "Articolo"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:384
+msgid "Theme Saved. To apply the theme to a slideshow, edit the slideshow and select this theme from the theme dropdown menu."
+msgstr "Tema salvato. Per applicare il tema a una presentazione, modificare la presentazione e selezionare questo tema dal menu a discesa dei temi."
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:396
+msgid "Switch Preview Slider"
+msgstr "Commutatore dello slider di anteprima"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:96 modules/theme_editor/theme_editor.php:430
+msgid "Save"
+msgstr "Salva"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:451
+msgid "None"
+msgstr "Nessuno"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:453
+msgid "Bottom"
+msgstr "In basso"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:454
+msgid "Page Curl"
+msgstr "Avvolgimento della pagina"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:455
+msgid "Bottom Curve"
+msgstr "Curvatura in basso"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:456
+msgid "Top and Bottom Curve"
+msgstr "Curvatura in alto e in basso"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:457
+msgid "Sides"
+msgstr "Lati"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:467
+msgid "Enable Custom Caption"
+msgstr "Abilita la didascalia personalizzata"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:499
+msgid "Text Align"
+msgstr "Allineamento testo"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:502
+msgid "Left"
+msgstr "Sinistra"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:503
+msgid "Center"
+msgstr "Centrato"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:504
+msgid "Right"
+msgstr "Destra"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:528
+msgid "Enable Custom Arrows"
+msgstr "Abilita le frecce personalizzate"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:534
+msgid "Built In Styles"
+msgstr "Stili incorporati"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:541
+msgid "Custom Prev Arrow"
+msgstr "Freccia precedente personalizzata"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:548
+#: modules/theme_editor/theme_editor.php:553
+#: modules/theme_editor/theme_editor.php:569
+#: modules/theme_editor/theme_editor.php:574
+msgid "Select"
+msgstr "Seleziona"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:549
+#: modules/theme_editor/theme_editor.php:554
+#: modules/theme_editor/theme_editor.php:570
+#: modules/theme_editor/theme_editor.php:575
+msgid "Remove"
+msgstr "Rimuovi"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:562
+msgid "Custom Next Arrow"
+msgstr "Freccia seguente personalizzata"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:591
+msgid "Always show"
+msgstr "Mostra sempre"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:603
+msgid "Enable Custom Navigation"
+msgstr "Abilita la navigazione personalizzata"
+
+# @ ml-slider-pro
+#: ml-slider-pro.php:188
+msgid "Pro"
+msgstr "Pro"
+
+# @ ml-slider-pro
+#: modules/layer/slide.php:113 modules/post_feed/slide.php:866
+#: modules/vimeo/slide.php:488 modules/youtube/slide.php:459
+msgid "Add to slider"
+msgstr "Aggiungi allo slider"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:271
+msgid "Publish Date"
+msgstr "Data di pubblicazione"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:275
+msgid "Post Slug"
+msgstr "Slug dell'articolo"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:276
+msgid "Modified Date"
+msgstr "Data ultima modifica"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:277
+msgid "Random"
+msgstr "Casuale"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:278
+msgid "Menu Order"
+msgstr "Ordine del menu"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:385
+msgid "DESC"
+msgstr "Disc"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:386
+msgid "ASC"
+msgstr "Asc"
+
+# @ ml-slider-pro
+#: modules/post_feed/slide.php:860
+msgid "Click 'Add to slider' to create a new post feed slide."
+msgstr "Fare clic su \"Aggiungi allo slider\" per creare una nuova diapositiva del feed di articoli."
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:84
+msgid "Theme Editor"
+msgstr "Editor del tema"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:674
+msgid "Delete Theme"
+msgstr "Elimina il tema"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1577
+msgid "Black"
+msgstr "Nero"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1578
+msgid "Blue"
+msgstr "Blu"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1579
+msgid "Green"
+msgstr "Verde"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1580
+msgid "Grey"
+msgstr "Grigio"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1581
+msgid "Navy"
+msgstr "Blu aviazione"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1582
+msgid "Purple"
+msgstr "Violetto"
+
+# @ ml-slider-pro
+#: modules/theme_editor/theme_editor.php:1585
+msgid "Yellow"
+msgstr "Giallo"

@@ -48,7 +48,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
     function chain(parser) {
       state.tokenize = parser;
       return parser(stream, state);
-    }
+    }//end chain()
+
 
     var ch = stream.next();
     if (ch == "<") {
@@ -97,7 +98,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       stream.eatWhile(/[^&<]/);
       return null;
     }
-  }
+  }//end inText()
+
 
   function inTag(stream, state) {
     var ch = stream.next();
@@ -118,7 +120,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       stream.eatWhile(/[^\s\u00a0=<>\"\']/);
       return "word";
     }
-  }
+  }//end inTag()
+
 
   function inAttribute(quote) {
     return function(stream, state) {
@@ -130,7 +133,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       }
       return "string";
     };
-  }
+  }//end inAttribute()
+
 
   function inBlock(style, terminator) {
     return function(stream, state) {
@@ -143,7 +147,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       }
       return style;
     };
-  }
+  }//end inBlock()
+
   function doctype(depth) {
     return function(stream, state) {
       var ch;
@@ -163,16 +168,19 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       }
       return "meta";
     };
-  }
+  }//end doctype()
+
 
   var curState, setStyle;
   function pass() {
     for (var i = arguments.length - 1; i >= 0; i--) curState.cc.push(arguments[i]);
-  }
+  }//end pass()
+
   function cont() {
     pass.apply(null, arguments);
     return true;
-  }
+  }//end cont()
+
 
   function pushContext(tagName, startOfLine) {
     var noIndent = Kludges.doNotIndent.hasOwnProperty(tagName) || (curState.context && curState.context.noIndent);
@@ -183,10 +191,12 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       startOfLine: startOfLine,
       noIndent: noIndent
     };
-  }
+  }//end pushContext()
+
   function popContext() {
     if (curState.context) curState.context = curState.context.prev;
-  }
+  }//end popContext()
+
 
   function element(type) {
     if (type == "openTag") {
@@ -208,7 +218,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       return cont(endclosetag(err));
     }
     return cont();
-  }
+  }//end element()
+
   function endtag(startOfLine) {
     return function(type) {
       if (type == "selfcloseTag" ||
@@ -223,7 +234,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       }
       return cont();
     };
-  }
+  }//end endtag()
+
   function endclosetag(err) {
     return function(type) {
       if (err) setStyle = "error";
@@ -231,7 +243,8 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       setStyle = "error";
       return cont(arguments.callee);
     };
-  }
+  }//end endclosetag()
+
   function maybePopContext(nextTagName) {
     var parentTagName;
     while (true) {
@@ -245,30 +258,35 @@ CodeMirror.defineMode("xml", function(config, parserConfig) {
       }
       popContext();
     }
-  }
+  }//end maybePopContext()
+
 
   function attributes(type) {
     if (type == "word") {setStyle = "attribute"; return cont(attribute, attributes);}
     if (type == "endTag" || type == "selfcloseTag") return pass();
     setStyle = "error";
     return cont(attributes);
-  }
+  }//end attributes()
+
   function attribute(type) {
     if (type == "equals") return cont(attvalue, attributes);
     if (!Kludges.allowMissing) setStyle = "error";
     else if (type == "word") setStyle = "attribute";
     return (type == "endTag" || type == "selfcloseTag") ? pass() : cont();
-  }
+  }//end attribute()
+
   function attvalue(type) {
     if (type == "string") return cont(attvaluemaybe);
     if (type == "word" && Kludges.allowUnquoted) {setStyle = "string"; return cont();}
     setStyle = "error";
     return (type == "endTag" || type == "selfCloseTag") ? pass() : cont();
-  }
+  }//end attvalue()
+
   function attvaluemaybe(type) {
     if (type == "string") return cont(attvaluemaybe);
     else return pass();
-  }
+  }//end attvaluemaybe()
+
 
   return {
     startState: function() {

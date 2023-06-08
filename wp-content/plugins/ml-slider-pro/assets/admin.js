@@ -1,6 +1,9 @@
-jQuery(document).ready(function($) {
+window.jQuery(function($) {
+	window.metaslider.app.EventManager.$on("metaslider/app-loaded", function (e) {
 
-    // Enable the correct options for this slider type
+	var $ = window.jQuery;
+	
+	// Enable the correct options for this slider type
     var checkSlideCompatibility = function(slider) {
         // slides - set red background on incompatible slides
         jQuery("#compatibilityWarning").remove();
@@ -23,46 +26,47 @@ jQuery(document).ready(function($) {
 
     checkSlideCompatibility(jQuery('.metaslider .select-slider:checked').attr('rel'));
 
-    function loadCodeMirror(textarea_id) {
+    function loadCodeMirror(textarea) {
 
-        $('#' + textarea_id).hide().siblings('.CodeMirror').remove();
+		$(textarea).each(function() {
+			$(this).hide().siblings('.CodeMirror').remove();
 
-        var codeMirror = CodeMirror.fromTextArea(document.getElementById(textarea_id), {
-            tabMode: 'indent',
-            mode: 'xml',
-            lineNumbers: true,
-            lineWrapping: true,
-            theme: 'monokai',
-            onChange: function(cm) {
-                cm.save();
-            }
-        });
-    }
-
-    $(".metaslider").on('click', ".slide.layer_slide li[rel='tab-4']", function() {
-        var tabs = $(this).parent().siblings('.tabs-content');
-        var textarea_id = $('.tab-4 textarea', tabs).attr('id');
-        setTimeout(loadCodeMirror(textarea_id), 50);
-    });
-
-    $('.slide.post_feed .wysiwyg').each(function() {
-        var textarea_id = $(this).attr('id');
-        setTimeout(loadCodeMirror(textarea_id), 50);
-    });
-
-    $(".metaslider .left table").live("slideAdded", function(event) {
-        $('.slide.post_feed .wysiwyg').each(function() {
-            var textarea_id = $(this).attr('id');
-            setTimeout(loadCodeMirror(textarea_id), 50);
-        });
-    });
+			CodeMirror.fromTextArea(this, {
+				tabMode: 'indent',
+				mode: 'xml',
+				lineNumbers: true,
+				lineWrapping: true,
+				theme: 'monokai',
+				onChange: function(cm) {
+					cm.save();
+				}
+			});
+		})
+	}
+	
+	loadCodeMirror($('.metaslider-ui .wysiwyg'));
+	window.metaslider.app.EventManager.$on("metaslider/slides-created", function() { loadCodeMirror($('.metaslider-ui .wysiwyg')); });
 
     $(".metaslider").on('change', '.external input.extimgurl', function() {
         var val = $(this).val();
         $(this).parents('.slide').find('.thumb').css('background-image', 'url(' + val + ')');
     });
 
-    $(".metaslider select[name='template_tags']").live('change', function(e) {
+    /**
+     * Hide slide
+     */
+    // Stop propagation
+    $(".metaslider").on('click', 'button.hide-slide input[type=checkbox]', function(e){
+        e.stopPropagation();
+    });
+    // Button click handler
+    $(".metaslider").on('click', 'button.hide-slide', function(e) {
+        e.stopPropagation();
+        $(this).find('input[type=checkbox]').trigger('click');
+        $(this).closest('tr.slide').toggleClass('slide-is-hidden', $(this).find('input[type=checkbox]').is(':checked'));
+    });
+
+    $(".metaslider").on('change', 'select[name="template_tags"]', function(e) {
         e.preventDefault();
 
         var tag = $(this).val();
@@ -78,4 +82,28 @@ jQuery(document).ready(function($) {
         codeMirror.focus();
     });
 
+	var updateDatepicker = function() {
+		$('.metaslider .datepicker').datepicker({
+			dateFormat:'yy-mm-dd',
+		}).on('focus', function(e){
+			if ($(this).datepicker('widget').offset().top > $(this).offset().top) {
+				$(this).datepicker('widget').addClass('bottom');
+				$(this).datepicker('widget').removeClass('top');
+			} else {
+				$(this).datepicker('widget').addClass('top');
+				$(this).datepicker('widget').removeClass('bottom');
+			}
+		});
+	}
+	updateDatepicker();
+	window.metaslider.app.EventManager.$on('metaslider/slides-created', function() { updateDatepicker(); });
+
+    /**
+     * Set Hiden slide class on page load
+     */
+    $(".metaslider button.hide-slide input[type=checkbox]").each(function(i) {
+        $(this).closest('tr.slide').toggleClass('slide-is-hidden', $(this).is(':checked'));
+    });
+
+});
 });

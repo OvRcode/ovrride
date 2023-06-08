@@ -1,0 +1,67 @@
+{
+  "name": "metaslider/metaslider-pro",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "description": "The home of Meta Slider Pro",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/andergmartins/wordpress-ray"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/publishpress/publishpress-phpcs-standards"
+    }
+  ],
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.7",
+    "phpcompatibility/php-compatibility": "9.3.*",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "johnpbloch/wordpress-core": "^5.5",
+    "publishpress/publishpress-phpcs-standards": "dev-main",
+    "automattic/vipwpcs": "^2.3",
+    "spatie/ray": "*",
+    "spatie/wordpress-ray": "dev-master",
+    "permafrost-dev/ray-cli": "^1.12",
+    "overtrue/phplint": "^2.1"
+  },
+  "require": {
+    "php": ">=5.6.20",
+    "davidanderson684/simba-plugin-manager-updater": "1.8.*"
+  },
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "automattic/jetpack-autoloader": true
+    }
+  },
+  "scripts": {
+    "build-dir": [
+      "builder/docker/scripts/build build-dir"
+    ],
+    "build": [
+      "builder/docker/scripts/build build"
+    ],
+    "build-clean": "builder/docker/scripts/build clean",
+    "compile": "docker run -it --rm -v $(PWD):/usr/src/app -w /usr/src/app node:14.19.3 npm run prod",
+    "compile-dev": "docker run -it --rm -v $(PWD):/usr/src/app -w /usr/src/app node:14.19.3 npm run dev",
+    "deploy": [
+      "@compile",
+      "git add .",
+      "git commit -m 'wip:deployed'",
+      "git push"
+    ],
+    "post-install-cmd": [
+      "[ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths \"../../automattic/vipwpcs,../../phpcompatibility/php-compatibility,../../sirbrillig/phpcs-variable-analysis,../../wp-coding-standards/wpcs,../../publishpress/publishpress-phpcs-standards/standards/PublishPressStandards\""
+    ],
+    "post-update-cmd": [
+      "[ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths \"../../automattic/vipwpcs,../../phpcompatibility/php-compatibility,../../sirbrillig/phpcs-variable-analysis,../../wp-coding-standards/wpcs,../../publishpress/publishpress-phpcs-standards/standards/PublishPressStandards\""
+    ]
+  },
+  "extra": {
+    "plugin-name": "metaslider-pro",
+    "plugin-slug": "ml-slider-pro",
+    "plugin-folder": "ml-slider-pro"
+  }
+}

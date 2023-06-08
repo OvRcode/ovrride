@@ -17,18 +17,25 @@
  * Contributed under the same license terms as CodeMirror.
  */
 (function() {
-	/** Option that allows tag closing behavior to be toggled.  Default is true. */
+	/**
+ * Option that allows tag closing behavior to be toggled.  Default is true. 
+*/
 	CodeMirror.defaults['closeTagEnabled'] = true;
 	
-	/** Array of tag names to add indentation after the start tag for.  Default is the list of block-level html tags. */
+	/**
+ * Array of tag names to add indentation after the start tag for.  Default is the list of block-level html tags. 
+*/
 	CodeMirror.defaults['closeTagIndent'] = ['applet', 'blockquote', 'body', 'button', 'div', 'dl', 'fieldset', 'form', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'html', 'iframe', 'layer', 'legend', 'object', 'ol', 'p', 'select', 'table', 'ul'];
 
-	/** Array of tag names where an end tag is forbidden. */
+	/**
+ * Array of tag names where an end tag is forbidden. 
+*/
 	CodeMirror.defaults['closeTagVoid'] = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
 	function innerState(cm, state) {
 		return CodeMirror.innerMode(cm.getMode(), state).state;
-	}
+	}//end innerState()
+
 
 
 	/**
@@ -45,23 +52,23 @@
 		}
 		
 		/*
-		 * Relevant structure of token:
-		 *
-		 * htmlmixed
-		 * 		className
-		 * 		state
-		 * 			htmlState
-		 * 				type
-		 *				tagName
-		 * 				context
-		 * 					tagName
-		 * 			mode
-		 * 
-		 * xml
-		 * 		className
-		 * 		state
-		 * 			tagName
-		 * 			type
+			* Relevant structure of token:
+			*
+			* htmlmixed
+			*      className
+			*      state
+			*          htmlState
+			*              type
+			*              tagName
+			*              context
+			*                  tagName
+			*          mode
+			* 
+			* xml
+			*      className
+			*      state
+			*          tagName
+			*          type
 		 */
 		
 		var pos = cm.getCursor();
@@ -123,7 +130,8 @@
 			cm.replaceSelection('</' + tagName + '>');
 			cm.setCursor(pos);
 		}
-	}
+	}//end insertEndTag()
+
 	
 	function shouldIndent(cm, indent, tagName) {
 		if (typeof indent == 'undefined' || indent == null || indent == true) {
@@ -133,7 +141,8 @@
 			indent = [];
 		}
 		return indexOf(indent, tagName.toLowerCase()) != -1;
-	}
+	}//end shouldIndent()
+
 	
 	function shouldClose(cm, vd, tagName) {
 		if (cm.getOption('mode') == 'xml') {
@@ -146,7 +155,8 @@
 			vd = [];
 		}
 		return indexOf(vd, tagName.toLowerCase()) == -1;
-	}
+	}//end shouldClose()
+
 	
 	// C&P from codemirror.js...would be nice if this were visible to utilities.
 	function indexOf(collection, elt) {
@@ -154,11 +164,13 @@
 		for (var i = 0, e = collection.length; i < e; ++i)
 			if (collection[i] == elt) return i;
 		return -1;
-	}
+	}//end indexOf()
+
 
 	function completeEndTag(cm, pos, tagName) {
 		cm.replaceSelection('/' + tagName + '>');
 		cm.setCursor({line: pos.line, ch: pos.ch + tagName.length + 2 });
-	}
+	}//end completeEndTag()
+
 	
 })();

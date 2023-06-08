@@ -1,19 +1,1120 @@
-# Copyright (C) 2017 ml-slider-pro
-# This file is distributed under the same license as the ml-slider-pro package.
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ml-slider-pro\n"
-"Report-Msgid-Bugs-To: http://example.com\n"
+"Project-Id-Version: MetaSlider Pro\n"
+"POT-Creation-Date: 2023-05-11 12:15-0600\n"
+"PO-Revision-Date: 2023-05-11 12:14-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
-"Last-Translator: John Doe <mail@example.com>\n"
-"Language-Team: Team Updraft <mail@example.com>\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: ml-slider-pro.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
+"X-Poedit-SearchPathExcluded-2: node_modules\n"
 
+#: ml-slider-pro.php:295
+#, php-format
+msgid ""
+"MetaSlider Pro requires the MetaSlider plugin to be installed. You may "
+"download it by clicking <a href='%s'>here</a>."
+msgstr ""
+
+#: ml-slider-pro.php:317
+#, php-format
+msgid ""
+"MetaSlider Pro requires the MetaSlider plugin to be activated. You may "
+"activate it by clicking <a href='%s'>here</a>."
+msgstr ""
+
+#: ml-slider-pro.php:337
+#, php-format
+msgid ""
+"MetaSlider Pro requires the MetaSlider plugin (free version) to be at least "
+"version %s. You may update it by clicking <a href='%s'>here</a>."
+msgstr ""
+
+#: modules/css_manager/loader.php:19
+msgid "Add custom CSS"
+msgstr ""
+
+#: modules/css_manager/loader.php:19
+msgid "press to learn more"
+msgstr ""
+
+#: modules/css_manager/loader.php:24
+msgid "Add CSS"
+msgstr ""
+
+#: modules/css_manager/snippets.js:5
+msgid "Hide on desktop"
+msgstr ""
+
+#: modules/css_manager/snippets.js:6
+msgid "Display the slideshow on mobile only"
+msgstr ""
+
+#: modules/css_manager/snippets.js:15
+msgid "Hide on mobile"
+msgstr ""
+
+#: modules/css_manager/snippets.js:16
+msgid "Display the slideshow on desktop only"
+msgstr ""
+
+#: modules/external/assets/script.js:13 modules/layer/assets/html_overlay.js:45
+#: modules/post_feed/assets/script.js:13 modules/vimeo/assets/script.js:62
+#: modules/youtube/assets/script.js:57
+#, javascript-format
+msgid "Preparing %s slide..."
+msgstr ""
+
+#: modules/external/slide.php:23 modules/external/slide.php:210
+msgid "External URL"
+msgstr ""
+
+#: modules/external/slide.php:66 modules/layer/slide.php:216
+#: modules/post_feed/slide.php:83 modules/vimeo/slide.php:133
+#: modules/vimeo/slide.php:156 modules/youtube/slide.php:133
+#: modules/youtube/slide.php:160
+msgid "Invalid nonce"
+msgstr ""
+
+#: modules/external/slide.php:70 modules/layer/slide.php:220
+#: modules/post_feed/slide.php:87 modules/vimeo/slide.php:137
+#: modules/vimeo/slide.php:160 modules/youtube/slide.php:137
+#: modules/youtube/slide.php:164
+msgid "Bad request"
+msgstr ""
+
+#: modules/external/slide.php:109
+#, php-format
+msgid "Press 'Add to slideshow' to create a new %s slide."
+msgstr ""
+
+#: modules/external/slide.php:118 modules/layer/slide.php:202
+#: modules/post_feed/slide.php:1278 modules/vimeo/slide.php:837
+#: modules/youtube/slide.php:902
+msgid "Add to slideshow"
+msgstr ""
+
+#: modules/external/slide.php:234 modules/layer/slide.php:330
+#: modules/vimeo/slide.php:336 modules/youtube/slide.php:322
+msgid "Please update to MetaSlider to version 3.2 or above."
+msgstr ""
+
+#: modules/external/slide.php:276 modules/layer/slide.php:400
+#: modules/vimeo/slide.php:416 modules/youtube/slide.php:390
+msgid "General"
+msgstr ""
+
+#: modules/external/slide.php:280 modules/layer/slide.php:404
+msgid "SEO"
+msgstr ""
+
+#: modules/external/slide.php:284 modules/external/tabs/caption.php:1
+#: modules/theme_editor/theme_editor.php:556
+msgid "Caption"
+msgstr ""
+
+#: modules/external/tabs/general.php:1
+msgid "External Image URL"
+msgstr ""
+
+#: modules/external/tabs/seo.php:1
+msgid "Image Title Text"
+msgstr ""
+
+#: modules/external/tabs/seo.php:3
+msgid "Image Alt Text"
+msgstr ""
+
+#: modules/extra/loop.php:87
+msgid "Loop"
+msgstr ""
+
+#: modules/extra/loop.php:89
+msgid "Configure loop"
+msgstr ""
+
+#: modules/extra/loop.php:92
+msgid "Continuously"
+msgstr ""
+
+#: modules/extra/loop.php:93
+msgid "Stop on Last Slide"
+msgstr ""
+
+#: modules/extra/loop.php:94
+msgid "Stop on First Slide"
+msgstr ""
+
+#: modules/layer/slide.php:48
+msgid "Layer Scaling"
+msgstr ""
+
+#: modules/layer/slide.php:50
+msgid "Select responsiver layer scaling behaviour"
+msgstr ""
+
+#: modules/layer/slide.php:54
+msgid "Scale Up & Down"
+msgstr ""
+
+#: modules/layer/slide.php:58
+msgid "Scale Down Only"
+msgstr ""
+
+#: modules/layer/slide.php:76 modules/layer/slide.php:300
+msgid "Layer Slide"
+msgstr ""
+
+#: modules/layer/slide.php:178
+msgid "New Layer"
+msgstr ""
+
+#: modules/layer/slide.php:179
+msgid "Add Layer"
+msgstr ""
+
+#: modules/layer/slide.php:180
+msgid "Duplicate Layer"
+msgstr ""
+
+#: modules/layer/slide.php:181 modules/theme_editor/theme_editor.php:502
+msgid "Save"
+msgstr ""
+
+#: modules/layer/slide.php:182
+msgid "Save changes?"
+msgstr ""
+
+#: modules/layer/slide.php:183 modules/layer/slide.php:186
+msgid "Animation"
+msgstr ""
+
+#: modules/layer/slide.php:184
+msgid "Styling"
+msgstr ""
+
+#: modules/layer/slide.php:185 modules/theme_editor/theme_editor.php:517
+#: modules/theme_editor/theme_editor.php:655
+#: modules/theme_editor/theme_editor.php:663
+#: modules/theme_editor/theme_editor.php:773
+#: modules/theme_editor/theme_editor.php:850
+#: modules/theme_editor/theme_editor.php:858
+#: modules/theme_editor/theme_editor.php:908
+#: modules/theme_editor/theme_editor.php:916
+#: modules/theme_editor/theme_editor.php:924
+#: modules/theme_editor/theme_editor.php:932
+#: modules/thumbnails/thumbnails.php:298 modules/thumbnails/thumbnails.php:311
+#: modules/thumbnails/thumbnails.php:335
+msgid "px"
+msgstr ""
+
+#: modules/layer/slide.php:187
+msgid "Wait"
+msgstr ""
+
+#: modules/layer/slide.php:188
+msgid "then wait"
+msgstr ""
+
+#: modules/layer/slide.php:189
+msgid "seconds and"
+msgstr ""
+
+#: modules/layer/slide.php:190
+msgid "Padding"
+msgstr ""
+
+#: modules/layer/slide.php:191
+msgid "Background"
+msgstr ""
+
+#: modules/layer/slide.php:192
+msgid "Are you sure?"
+msgstr ""
+
+#: modules/layer/slide.php:193
+msgid "Snap to grid"
+msgstr ""
+
+#: modules/layer/slide.php:194
+msgid "Insert into layer"
+msgstr ""
+
+#: modules/layer/slide.php:195
+msgid "Insert image from media library"
+msgstr ""
+
+#: modules/layer/slide.php:196
+msgid "Link to"
+msgstr ""
+
+#: modules/layer/slide.php:200
+msgid "Please set a width in the slideshow settings"
+msgstr ""
+
+#: modules/layer/slide.php:201
+msgid "Please set a height in the slideshow settings"
+msgstr ""
+
+#: modules/layer/slide.php:204
+msgid ""
+"Warning: No layer selected. Please click on a layer to select it before "
+"applying changes."
+msgstr ""
+
+#: modules/layer/slide.php:314 modules/layer/slide.php:317
+#: modules/vimeo/slide.php:323 modules/vimeo/slide.php:325
+#: modules/youtube/slide.php:309
+msgid "Update slide image"
+msgstr ""
+
+#: modules/layer/slide.php:367
+msgid "Launch Layer Editor"
+msgstr ""
+
+#: modules/layer/slide.php:370
+msgid "Background Image Title Text"
+msgstr ""
+
+#: modules/layer/slide.php:372
+msgid "Background Image Alt Text"
+msgstr ""
+
+#: modules/layer/slide.php:375
+msgid "Background Image Link"
+msgstr ""
+
+#: modules/layer/slide.php:377 modules/layer/slide.php:386
+#: modules/layer/slide.php:391
+msgid "URL"
+msgstr ""
+
+#: modules/layer/slide.php:381
+msgid "New Window"
+msgstr ""
+
+#: modules/layer/slide.php:384
+msgid "MP4 Source"
+msgstr ""
+
+#: modules/layer/slide.php:389
+msgid "WebM Source"
+msgstr ""
+
+#: modules/layer/slide.php:408
+msgid "Extra"
+msgstr ""
+
+#: modules/layer/slide.php:412
+msgid "Video Background"
+msgstr ""
+
+#: modules/layer/slide.php:416
+msgid "Edit Source"
+msgstr ""
+
+#: modules/layer/slide.php:428
+msgid "Crop Position"
+msgstr ""
+
+#: modules/layer/slide.php:432 modules/theme_editor/theme_editor.php:587
+#: modules/theme_editor/theme_editor.php:815
+msgid "Top Left"
+msgstr ""
+
+#: modules/layer/slide.php:436 modules/theme_editor/theme_editor.php:820
+msgid "Top Center"
+msgstr ""
+
+#: modules/layer/slide.php:440 modules/theme_editor/theme_editor.php:592
+#: modules/theme_editor/theme_editor.php:825
+msgid "Top Right"
+msgstr ""
+
+#: modules/layer/slide.php:444
+msgid "Center Left"
+msgstr ""
+
+#: modules/layer/slide.php:448
+msgid "Center Center"
+msgstr ""
+
+#: modules/layer/slide.php:452
+msgid "Center Right"
+msgstr ""
+
+#: modules/layer/slide.php:456 modules/theme_editor/theme_editor.php:577
+#: modules/theme_editor/theme_editor.php:830
+msgid "Bottom Left"
+msgstr ""
+
+#: modules/layer/slide.php:460 modules/theme_editor/theme_editor.php:835
+msgid "Bottom Center"
+msgstr ""
+
+#: modules/layer/slide.php:464 modules/theme_editor/theme_editor.php:582
+#: modules/theme_editor/theme_editor.php:840
+msgid "Bottom Right"
+msgstr ""
+
+#: modules/layer/slide.php:471
+msgid "Crop"
+msgstr ""
+
+#: modules/post_feed/slide.php:22
+msgid "Post Feed"
+msgstr ""
+
+#: modules/post_feed/slide.php:128
+msgid "Post Feed Slide"
+msgstr ""
+
+#: modules/post_feed/slide.php:150
+msgid "Please update to MetaSlider to version 3.0 or above."
+msgstr ""
+
+#: modules/post_feed/slide.php:180
+msgid ""
+"Select the Post types to include in the feed. Posts must have a Featured "
+"Image to appear in the feed."
+msgstr ""
+
+#: modules/post_feed/slide.php:185
+msgid ""
+"Posts must be tagged to at least one of the selected categories to display "
+"in the feed."
+msgstr ""
+
+#: modules/post_feed/slide.php:190
+msgid "Slide Link"
+msgstr ""
+
+#: modules/post_feed/slide.php:194
+msgid "Order By"
+msgstr ""
+
+#: modules/post_feed/slide.php:198
+msgid "Post Limit"
+msgstr ""
+
+#: modules/post_feed/slide.php:202
+msgid "Preserve New Lines"
+msgstr ""
+
+#: modules/post_feed/slide.php:208
+msgid "Caption Template"
+msgstr ""
+
+#: modules/post_feed/slide.php:212
+msgid "Post Types"
+msgstr ""
+
+#: modules/post_feed/slide.php:216
+msgid "Taxonomies"
+msgstr ""
+
+#: modules/post_feed/slide.php:220
+msgid "Display Settings"
+msgstr ""
+
+#: modules/post_feed/slide.php:301 modules/post_feed/slide.php:396
+msgid "Post Title"
+msgstr ""
+
+#: modules/post_feed/slide.php:302 modules/post_feed/slide.php:394
+msgid "Post ID"
+msgstr ""
+
+#: modules/post_feed/slide.php:303
+msgid "Post Link"
+msgstr ""
+
+#: modules/post_feed/slide.php:304
+msgid "Post Excerpt"
+msgstr ""
+
+#: modules/post_feed/slide.php:305
+msgid "Post Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:306
+msgid "Post Content"
+msgstr ""
+
+#: modules/post_feed/slide.php:307
+msgid "Post Content (with formatting)"
+msgstr ""
+
+#: modules/post_feed/slide.php:308 modules/post_feed/slide.php:395
+msgid "Author"
+msgstr ""
+
+#: modules/post_feed/slide.php:309
+msgid "Author Link"
+msgstr ""
+
+#: modules/post_feed/slide.php:310
+msgid "Tag List"
+msgstr ""
+
+#: modules/post_feed/slide.php:311
+msgid "Category List"
+msgstr ""
+
+#: modules/post_feed/slide.php:317
+msgid "WooCommerce - Price (Formatted)"
+msgstr ""
+
+#: modules/post_feed/slide.php:318
+msgid "WooCommerce - Price"
+msgstr ""
+
+#: modules/post_feed/slide.php:319
+msgid "WooCommerce - Sale Price"
+msgstr ""
+
+#: modules/post_feed/slide.php:320
+msgid "WooCommerce - Add to Cart URL"
+msgstr ""
+
+#: modules/post_feed/slide.php:321
+msgid "WooCommerce - SKU"
+msgstr ""
+
+#: modules/post_feed/slide.php:330
+msgid "Events Calendar - Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:331
+msgid "Events Calendar - Start Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:332
+msgid "Events Calendar - Start Time"
+msgstr ""
+
+#: modules/post_feed/slide.php:333
+msgid "Events Calendar - End Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:334
+msgid "Events Calendar - End Time"
+msgstr ""
+
+#: modules/post_feed/slide.php:335
+msgid "Events Calendar - Address"
+msgstr ""
+
+#: modules/post_feed/slide.php:336
+msgid "Events Calendar - City"
+msgstr ""
+
+#: modules/post_feed/slide.php:337
+msgid "Events Calendar - Country"
+msgstr ""
+
+#: modules/post_feed/slide.php:338
+msgid "Events Calendar - Full Address"
+msgstr ""
+
+#: modules/post_feed/slide.php:339
+msgid "Events Calendar - Phone"
+msgstr ""
+
+#: modules/post_feed/slide.php:340
+msgid "Events Calendar - Province"
+msgstr ""
+
+#: modules/post_feed/slide.php:341
+msgid "Events Calendar - Region"
+msgstr ""
+
+#: modules/post_feed/slide.php:342
+msgid "Events Calendar - State"
+msgstr ""
+
+#: modules/post_feed/slide.php:343
+msgid "Events Calendar - State / Province"
+msgstr ""
+
+#: modules/post_feed/slide.php:344
+msgid "Events Calendar - Venue"
+msgstr ""
+
+#: modules/post_feed/slide.php:345
+msgid "Events Calendar - Venue ID"
+msgstr ""
+
+#: modules/post_feed/slide.php:346
+msgid "Events Calendar - Venue Link"
+msgstr ""
+
+#: modules/post_feed/slide.php:347
+msgid "Events Calendar - Zip"
+msgstr ""
+
+#: modules/post_feed/slide.php:360
+msgid "Insert Tag"
+msgstr ""
+
+#: modules/post_feed/slide.php:371
+msgid "Custom Fields"
+msgstr ""
+
+#: modules/post_feed/slide.php:393
+msgid "Publish Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:397
+msgid "Post Slug"
+msgstr ""
+
+#: modules/post_feed/slide.php:398
+msgid "Modified Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:399
+msgid "Random"
+msgstr ""
+
+#: modules/post_feed/slide.php:400
+msgid "Menu Order"
+msgstr ""
+
+#: modules/post_feed/slide.php:406
+msgid "Event Date"
+msgstr ""
+
+#: modules/post_feed/slide.php:516
+msgid "Disabled"
+msgstr ""
+
+#: modules/post_feed/slide.php:517
+msgid "Post"
+msgstr ""
+
+#: modules/post_feed/slide.php:534
+msgid "DESC"
+msgstr ""
+
+#: modules/post_feed/slide.php:535
+msgid "ASC"
+msgstr ""
+
+#: modules/post_feed/slide.php:1269
+msgid "Click 'Add to slideshow' to create a new post feed slide."
+msgstr ""
+
+#: modules/schedule/schedule.php:51
+msgctxt "As in \"Your slide will display Tuesday at 5pm\""
+msgid "at"
+msgstr ""
+
+#: modules/schedule/schedule.php:82
+msgid ""
+"Plugin <strong>Deactivated</strong>! MetaSlider Schedule Slides is no longer "
+"needed as we have added its functionality to MetaSlider Pro. Activating the "
+"plugin will cause a conflict on your site."
+msgstr ""
+
+#: modules/schedule/schedule.php:261
+msgid "Schedule"
+msgstr ""
+
+#: modules/schedule/schedule.php:421
+msgid "Hide slide"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:22
+msgid "Schedule this slide"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:30
+msgid "Show slide:"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:32
+#: modules/schedule/tabs/schedule-tab.php:81
+#: modules/schedule/tabs/schedule-tab.php:213
+#: modules/schedule/tabs/schedule-tab.php:252
+msgid "Hour"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:35
+#: modules/schedule/tabs/schedule-tab.php:101
+#: modules/schedule/tabs/schedule-tab.php:232
+#: modules/schedule/tabs/schedule-tab.php:271
+msgid "Minute"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:42
+msgctxt "As in \"From January 7th to April 2nd...\""
+msgid "From"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:43
+msgctxt "As in \"From January 7th to April 2nd...\""
+msgid "To"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:62
+msgid "Date"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:76
+msgctxt "As in \"your slide will display Tuesday at 5pm\""
+msgid "at"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:134
+msgid "Show on:"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:175
+msgid "Daily constraint:"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:197
+msgid "If checked, the following time constraints will be ignored"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:200
+#, php-format
+msgid "All day (%s?%s)"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:248
+msgctxt "As in \"1:00 until 2:30...\""
+msgid "until"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:305
+msgid "If unchecked, the slide will be hidden during this time constraint"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:310
+#, php-format
+msgid "Show (%s?%s)"
+msgstr ""
+
+#: modules/schedule/tabs/schedule-tab.php:321
+msgid "Current server time"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:102
+#: modules/theme_editor/theme_editor.php:103
+msgid "Theme Editor"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:449
+msgid ""
+"Theme Saved. To apply the theme to a slideshow, edit the slideshow and "
+"select this theme from the theme dropdown menu."
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:465
+msgid "Switch Preview Slider"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:501
+msgid "Theme Settings"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:508
+msgid "Slideshow"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:512
+msgid "Outer Border Radius"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:521
+msgid "CSS3 Shadow"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:524
+msgid "Note: Not compatible with 'thumbnail' navigation type"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:532
+msgid "None"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:535
+#: modules/theme_editor/theme_editor.php:810
+msgid "Default"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:538
+msgid "Bottom"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:541
+msgid "Page Curl"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:544
+msgid "Bottom Curve"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:547
+msgid "Top and Bottom Curve"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:550
+msgid "Sides"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:560
+msgid "Enable Custom Caption"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:570
+#: modules/theme_editor/theme_editor.php:803
+msgid "Position"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:597
+msgid "Underneath"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:602
+msgid "Width"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:608
+#: modules/theme_editor/theme_editor.php:928
+msgid "Border Radius"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:615
+msgid "Text Color"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:623
+msgid "Text Align"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:628
+msgid "Left"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:633
+msgid "Center"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:638
+msgid "Right"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:643
+msgid "Background Color"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:651
+#: modules/theme_editor/theme_editor.php:846
+msgid "Vertical Margin"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:658
+#: modules/theme_editor/theme_editor.php:854
+msgid "Horizontal Margin"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:667
+msgid "Arrows"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:672
+msgid "Enable Custom Arrows"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:683
+msgid "Built In Styles"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:695
+msgid "Custom Prev Arrow"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:703
+#: modules/theme_editor/theme_editor.php:714
+#: modules/theme_editor/theme_editor.php:736
+#: modules/theme_editor/theme_editor.php:747
+msgid "Select"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:707
+#: modules/theme_editor/theme_editor.php:718
+#: modules/theme_editor/theme_editor.php:740
+#: modules/theme_editor/theme_editor.php:751
+msgid "Remove"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:728
+msgid "Custom Next Arrow"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:762
+msgid "Opacity"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:769
+msgid "Distance from edge"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:777
+msgid "Always show"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:787
+#: modules/thumbnails/thumbnails.php:276
+msgid "Navigation"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:792
+msgid "Enable Custom Navigation"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:862
+msgid "Fill Color"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:874
+msgid "Fill Color (Active)"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:886
+msgid "Border Color"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:895
+msgid "Border Color (Active)"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:904
+msgid "Size"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:912
+msgid "Spacing"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:920
+msgid "Border Width"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:937
+msgid "Delete Theme"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1854
+msgid "Type"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1870
+msgid "Black"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1871
+msgid "Blue"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1872
+msgid "Green"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1873
+msgid "Grey"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1874
+msgid "Navy"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1875
+msgid "Purple"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1876 modules/youtube/slide.php:383
+msgid "Red"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1877 modules/youtube/slide.php:384
+msgid "White"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:1878
+msgid "Yellow"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:279
+msgid "Show the slide navigation bullets"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:281
+msgid "Hidden"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:282
+msgid "Dots"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:283
+msgid "Thumbnails"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:284
+msgid "Filmstrip"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:295
+msgid "Thumb Width"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:297
+msgid "Thumb width"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:308
+msgid "Thumb Height"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:310
+msgid "Thumb height"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:316
+msgid "Responsive Thumbnails"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:322
+msgid "This will use the 'Thumb Width' setting above as the max-width"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:332
+msgid "Thumb Min Width"
+msgstr ""
+
+#: modules/thumbnails/thumbnails.php:334
+msgid "Set the min-width of the thumnbnails"
+msgstr ""
+
+#: modules/vimeo/assets/admin.js:28
+msgid "Updating Vimeo video..."
+msgstr ""
+
+#: modules/vimeo/slide.php:21
+msgid "Vimeo"
+msgstr ""
+
+#: modules/vimeo/slide.php:385 modules/youtube/slide.php:353
+msgid "Mute video"
+msgstr ""
+
+#: modules/vimeo/slide.php:389 modules/youtube/slide.php:357
+msgid "Show controls"
+msgstr ""
+
+#: modules/vimeo/slide.php:393
+msgid "Auto play (may require video to be muted)&lrm;"
+msgstr ""
+
+#: modules/vimeo/slide.php:397
+msgid "Show the title on the video (if available)"
+msgstr ""
+
+#: modules/vimeo/slide.php:401
+msgid "Show the user byline on the video (if available)"
+msgstr ""
+
+#: modules/vimeo/slide.php:405
+msgid "Show the user portrait on the video (if available)"
+msgstr ""
+
+#: modules/vimeo/slide.php:409
+msgid "Loop video"
+msgstr ""
+
+#: modules/youtube/assets/admin.js:21
+msgid "Updating YouTube video..."
+msgstr ""
+
+#: modules/youtube/slide.php:21
+msgid "YouTube"
+msgstr ""
+
+#: modules/youtube/slide.php:311
+msgid "Update Slide Image"
+msgstr ""
+
+#: modules/youtube/slide.php:361
+msgid "Auto play (may require video to be muted)"
+msgstr ""
+
+#: modules/youtube/slide.php:365
+msgid "Lazy load video"
+msgstr ""
+
+#: modules/youtube/slide.php:369
+msgid ""
+"Show related videos (disabling this may instead show only recommended videos "
+"from the channel)"
+msgstr ""
+
+#: modules/youtube/slide.php:374 modules/youtube/slide.php:394
+msgid "Theme"
+msgstr ""
+
+#: modules/youtube/slide.php:376
+msgid "Dark"
+msgstr ""
+
+#: modules/youtube/slide.php:377
+msgid "Light"
+msgstr ""
+
+#: modules/youtube/slide.php:381
+msgid "Color"
+msgstr ""
+
+#: routes/api.php:76
+msgid "You do not have access to this resource."
+msgstr ""
+
+#: routes/api.php:119
+msgid "The request format was not valid."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "MetaSlider Pro"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "https://www.metaslider.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"MetaSlider Pro unlocks the power of video slides, layer slides, post type "
+"slides as well as many other features."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "MetaSlider"
+msgstr ""

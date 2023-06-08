@@ -1,7 +1,8 @@
 CodeMirror.runMode = function(string, modespec, callback, options) {
   function esc(str) {
     return str.replace(/[<&]/g, function(ch) { return ch == "<" ? "&lt;" : "&amp;"; });
-  }
+  }//end esc()
+
 
   var mode = CodeMirror.getMode(CodeMirror.defaults, modespec);
   var isNode = callback.nodeType == 1;

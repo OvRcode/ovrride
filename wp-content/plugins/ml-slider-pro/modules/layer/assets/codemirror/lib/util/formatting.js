@@ -38,7 +38,8 @@
     });
 
     return nonBreakableBlocks;
-  }
+  }//end jsNonBreakableBlocks()
+
 
   CodeMirror.extendMode("javascript", {
     commentStart: "/*",
@@ -99,7 +100,8 @@
 
   function localModeAt(cm, pos) {
     return CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(pos).state).mode;
-  }
+  }//end localModeAt()
+
 
   function enumerateModesBetween(cm, line, start, end) {
     var outer = cm.getMode(), text = cm.getLine(line);
@@ -127,7 +129,8 @@
     }
     if (start < end) found.push({from: start, to: end, mode: mode});
     return found;
-  }
+  }//end enumerateModesBetween()
+
 
   // Comment/uncomment the specified range
   CodeMirror.defineExtension("commentRange", function (isComment, from, to) {

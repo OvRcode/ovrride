@@ -5,9 +5,12 @@
   function addToRing(str) {
     killRing.push(str);
     if (killRing.length > 50) killRing.shift();
-  }
-  function getFromRing() { return killRing[killRing.length - 1] || ""; }
-  function popFromRing() { if (killRing.length > 1) killRing.pop(); return getFromRing(); }
+  }//end addToRing()
+
+  function getFromRing() { return killRing[killRing.length - 1] || ""; }//end getFromRing()
+
+  function popFromRing() { if (killRing.length > 1) killRing.pop(); return getFromRing(); }//end popFromRing()
+
 
   CodeMirror.keyMap.emacs = {
     "Ctrl-X": function(cm) {cm.setOption("keyMap", "emacs-Ctrl-X");},

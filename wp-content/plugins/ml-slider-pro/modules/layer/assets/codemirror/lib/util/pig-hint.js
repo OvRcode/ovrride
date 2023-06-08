@@ -1,7 +1,8 @@
 (function () {
   function forEach(arr, f) {
     for (var i = 0, e = arr.length; i < e; ++i) f(arr[i]);
-  }
+  }//end forEach()
+
   
   function arrayContains(arr, item) {
     if (!Array.prototype.indexOf) {
@@ -14,13 +15,13 @@
       return false;
     }
     return arr.indexOf(item) != -1;
-  }
+  }//end arrayContains()
+
 
   function scriptHint(editor, keywords, getToken) {
     // Find the token at the cursor
     var cur = editor.getCursor(), token = getToken(editor, cur), tprop = token;
     // If it's not a 'word-style' token, ignore the token.
-
     if (!/^[\w$_]*$/.test(token.string)) {
         token = tprop = {start: cur.ch, end: cur.ch, string: "", state: token.state,
                          className: token.string == ":" ? "pig-type" : null};
@@ -31,7 +32,7 @@
     
     var completionList = getCompletions(token, context); 
     completionList = completionList.sort();
-    //prevent autocomplete for last word, instead show dropdown with one word
+    // prevent autocomplete for last word, instead show dropdown with one word
     if(completionList.length == 1) {
       completionList.push(" ");
     }
@@ -39,7 +40,8 @@
     return {list: completionList,
               from: {line: cur.line, ch: token.start},
               to: {line: cur.line, ch: token.end}};
-  }
+  }//end scriptHint()
+
   
   CodeMirror.pigHint = function(editor) {
     return scriptHint(editor, pigKeywordsU, function (e, cur) {return e.getTokenAt(cur);});
@@ -49,7 +51,8 @@
     return str.replace(/(?:^|\s)\w/g, function(match) {
         return match.toUpperCase();
     });
- }
+ }//end toTitleCase()
+
   
   var pigKeywords = "VOID IMPORT RETURNS DEFINE LOAD FILTER FOREACH ORDER CUBE DISTINCT COGROUP "
   + "JOIN CROSS UNION SPLIT INTO IF OTHERWISE ALL AS BY USING INNER OUTER ONSCHEMA PARALLEL "
@@ -87,7 +90,8 @@
     var found = [], start = token.string;
     function maybeAdd(str) {
       if (str.indexOf(start) == 0 && !arrayContains(found, str)) found.push(str);
-    }
+    }//end maybeAdd()
+
     
     function gatherCompletions(obj) {
       if(obj == ":") {
@@ -102,7 +106,8 @@
         forEach(pigKeywordsU, maybeAdd);
         forEach(pigKeywordsL, maybeAdd);
       }
-    }
+    }//end gatherCompletions()
+
 
     if (context) {
       // If this is a property, see if it belongs to some object we can
@@ -119,5 +124,6 @@
       if (base != null) gatherCompletions(base);
     }
     return found;
-  }
+  }//end getCompletions()
+
 })();

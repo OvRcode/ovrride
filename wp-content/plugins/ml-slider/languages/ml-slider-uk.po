@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: metaslider\n"
-"POT-Creation-Date: 2015-04-19 14:07+0200\n"
-"PO-Revision-Date: 2015-04-20 16:55+0200\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: Roman Sulym <sulym.roman@gmail.com>\n"
 "Language-Team: LNU\n"
-"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2015-04-19 14:07+0200\n"
+"PO-Revision-Date: 2015-04-20 16:55+0200\n"
+"Language: uk\n"
 "X-Generator: Poedit 1.7.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
 "X-Poedit-Basepath: .\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
@@ -30,20 +30,19 @@ msgstr "Заголовок:"
 msgid "Select Slider:"
 msgstr "Виберіть слайдер:"
 
-#: ../inc/metaslider.widget.class.php:122 ../ml-slider.php:1793
+#: ../inc/metaslider.widget.class.php:122
+#: ../ml-slider.php:1793
 msgid "No slideshows found"
 msgstr "Слайд-шоу не знайдено"
 
 #: ../inc/slide/metaslide.class.php:76
 #: ../inc/slide/metaslide.image.class.php:32
 msgid "Security check failed. Refresh page and try again."
-msgstr ""
-"Перевірка безпеки зазнала невдачі. Оновіть сторінку і спробуйте знову."
+msgstr "Перевірка безпеки зазнала невдачі. Оновіть сторінку і спробуйте знову."
 
 #: ../inc/slide/metaslide.class.php:121
 msgid "File copy failed. Please check upload directory permissions."
-msgstr ""
-"Не вдалось скопіювати файл. Будь ласка, перевірте права доступу до каталогу."
+msgstr "Не вдалось скопіювати файл. Будь ласка, перевірте права доступу до каталогу."
 
 #: ../inc/slide/metaslide.class.php:286
 msgid "Delete slide"
@@ -65,23 +64,24 @@ msgstr "Не вдалось додати слайд. Цей слайд не є �
 msgid "Image Slide"
 msgstr "Зображення"
 
-#: ../inc/slide/metaslide.image.class.php:155 ../ml-slider.php:471
+#: ../inc/slide/metaslide.image.class.php:155
+#: ../ml-slider.php:471
 msgid "Caption"
 msgstr "Напис"
 
-#: ../inc/slide/metaslide.image.class.php:156 ../ml-slider.php:470
+#: ../inc/slide/metaslide.image.class.php:156
+#: ../ml-slider.php:470
 msgid "URL"
 msgstr "URL"
 
-#: ../inc/slide/metaslide.image.class.php:158 ../ml-slider.php:472
+#: ../inc/slide/metaslide.image.class.php:158
+#: ../ml-slider.php:472
 msgid "New Window"
 msgstr "Нове вікно"
 
 #: ../inc/slide/metaslide.image.class.php:162
 msgid "Warning: Image data does not exist. Please re-upload the image."
-msgstr ""
-"Попередження: файл зображення не існує. Будь ласка, завантажте його "
-"повторно."
+msgstr "Попередження: файл зображення не існує. Будь ласка, завантажте його повторно."
 
 #: ../inc/slide/metaslide.image.class.php:167
 msgid "Image Title Text"
@@ -143,7 +143,8 @@ msgstr "Знизу справа"
 msgid "Crop"
 msgstr "Обтинання"
 
-#: ../ml-slider.php:288 ../ml-slider.php:289
+#: ../ml-slider.php:288
+#: ../ml-slider.php:289
 msgid "Go Pro!"
 msgstr "PRO версія"
 
@@ -160,12 +161,8 @@ msgid "Select replacement image"
 msgstr "Виберіть зображення"
 
 #: ../ml-slider.php:480
-msgid ""
-"Caution: This setting is for advanced developers only. If you're unsure, "
-"leave it checked."
-msgstr ""
-"Увага: це налаштування лише для досвідчених розробників. Якщо ви не "
-"впевнені, залишіть його відзначеним. "
+msgid "Caution: This setting is for advanced developers only. If you're unsure, leave it checked."
+msgstr "Увага: це налаштування лише для досвідчених розробників. Якщо ви не впевнені, залишіть його відзначеним. "
 
 #: ../ml-slider.php:543
 msgid "Image"
@@ -189,9 +186,7 @@ msgstr "Випадний список"
 
 #: ../ml-slider.php:1126
 msgid "New slideshow created. Click 'Add Slide' to get started!"
-msgstr ""
-"Створено нове слайд-шоу. Натисніть кнопку 'Додати слайд', щоб розпочати "
-"роботу!"
+msgstr "Створено нове слайд-шоу. Натисніть кнопку 'Додати слайд', щоб розпочати роботу!"
 
 #: ../ml-slider.php:1130
 msgid "Switch to Tab view"
@@ -221,7 +216,8 @@ msgstr "Створити Ваше перше слайд-шоу"
 msgid "Slides"
 msgstr "Слайди"
 
-#: ../ml-slider.php:1238 ../ml-slider.php:1239
+#: ../ml-slider.php:1238
+#: ../ml-slider.php:1239
 msgid "Add Slide"
 msgstr "Додати слайд"
 
@@ -253,7 +249,8 @@ msgstr "Nivo Slider"
 msgid "Coin Slider"
 msgstr "Coin Slider"
 
-#: ../ml-slider.php:1291 ../ml-slider.php:1530
+#: ../ml-slider.php:1291
+#: ../ml-slider.php:1530
 msgid "Width"
 msgstr "Ширина"
 
@@ -261,11 +258,14 @@ msgstr "Ширина"
 msgid "Slideshow width"
 msgstr "Ширина слайд-шоу"
 
-#: ../ml-slider.php:1294 ../ml-slider.php:1307 ../ml-slider.php:1457
+#: ../ml-slider.php:1294
+#: ../ml-slider.php:1307
+#: ../ml-slider.php:1457
 msgid "px"
 msgstr "пікселів"
 
-#: ../ml-slider.php:1304 ../ml-slider.php:1543
+#: ../ml-slider.php:1304
+#: ../ml-slider.php:1543
 msgid "Height"
 msgstr "Висота"
 
@@ -281,7 +281,8 @@ msgstr "Ефект"
 msgid "Slide transition effect"
 msgstr "Ефект переходу слайдів"
 
-#: ../ml-slider.php:1317 ../ml-slider.php:1462
+#: ../ml-slider.php:1317
+#: ../ml-slider.php:1462
 msgid "Random"
 msgstr "Випадково"
 
@@ -462,12 +463,8 @@ msgid "Disabled (Smart Pad)"
 msgstr "Відключено (Smart Pad)"
 
 #: ../ml-slider.php:1437
-msgid ""
-"Smart Crop ensures your responsive slides are cropped to a ratio that "
-"results in a consistent slideshow size"
-msgstr ""
-"Розумне обтинання гарантує, що обтинання слайдів буде виконано таким чином, "
-"щоб розмір слайд-шоу не змінювався"
+msgid "Smart Crop ensures your responsive slides are cropped to a ratio that results in a consistent slideshow size"
+msgstr "Розумне обтинання гарантує, що обтинання слайдів буде виконано таким чином, щоб розмір слайд-шоу не змінювався"
 
 #: ../ml-slider.php:1442
 msgid "Carousel mode"
@@ -494,12 +491,8 @@ msgid "Hover pause"
 msgstr "Пауза при наведенні курсора"
 
 #: ../ml-slider.php:1473
-msgid ""
-"Pause the slideshow when hovering over slider, then resume when no longer "
-"hovering."
-msgstr ""
-"Зупиняє слайд-шоу при наведенні курсора і відновлює, коли курсор знову "
-"покидає його межі"
+msgid "Pause the slideshow when hovering over slider, then resume when no longer hovering."
+msgstr "Зупиняє слайд-шоу при наведенні курсора і відновлює, коли курсор знову покидає його межі"
 
 #: ../ml-slider.php:1478
 msgid "Reverse"
@@ -517,8 +510,11 @@ msgstr "Затримка показу слайда"
 msgid "How long to display each slide, in milliseconds"
 msgstr "Як довго показувати кожен слайд (в мілісекундах)"
 
-#: ../ml-slider.php:1494 ../ml-slider.php:1507 ../ml-slider.php:1520
-#: ../ml-slider.php:1596 ../ml-slider.php:1622
+#: ../ml-slider.php:1494
+#: ../ml-slider.php:1507
+#: ../ml-slider.php:1520
+#: ../ml-slider.php:1596
+#: ../ml-slider.php:1622
 msgid "ms"
 msgstr "мс"
 
@@ -530,11 +526,14 @@ msgstr "Швидкість анімації"
 msgid "Set the speed of animations, in milliseconds"
 msgstr "Задати швидкість анімації (в мілісекундах)"
 
-#: ../ml-slider.php:1517 ../ml-slider.php:1519
+#: ../ml-slider.php:1517
+#: ../ml-slider.php:1519
 msgid "Number of slices"
 msgstr "Кількість секцій"
 
-#: ../ml-slider.php:1530 ../ml-slider.php:1532 ../ml-slider.php:1543
+#: ../ml-slider.php:1530
+#: ../ml-slider.php:1532
+#: ../ml-slider.php:1543
 #: ../ml-slider.php:1545
 msgid "Number of squares"
 msgstr "Кількість квадратів"
@@ -612,12 +611,8 @@ msgid "CSS classes"
 msgstr "CSS класи"
 
 #: ../ml-slider.php:1635
-msgid ""
-"Specify any custom CSS Classes you would like to be added to the slider "
-"wrapper"
-msgstr ""
-"Вкажіть будь-які користувацькі CSS класи, які Ви хочете додати в контейнер "
-"слайдера"
+msgid "Specify any custom CSS Classes you would like to be added to the slider wrapper"
+msgstr "Вкажіть будь-які користувацькі CSS класи, які Ви хочете додати в контейнер слайдера"
 
 #: ../ml-slider.php:1641
 msgid "Print CSS"
@@ -633,8 +628,7 @@ msgstr "Виводити JS"
 
 #: ../ml-slider.php:1652
 msgid "Uncheck this is you would like to include your own Javascript"
-msgstr ""
-"Зніміть цю галочку, якщо Ви хочете використовувати свій власний Javascript"
+msgstr "Зніміть цю галочку, якщо Ви хочете використовувати свій власний Javascript"
 
 #: ../ml-slider.php:1657
 msgid "No conflict mode"
@@ -658,16 +652,11 @@ msgstr "Включити у шаблон"
 
 #: ../ml-slider.php:1682
 msgid "Copy & paste the shortcode directly into any WordPress post or page."
-msgstr ""
-"Скопіюйте і вставте цей шорткод безпосередньо в будь-яку сторінку чи "
-"публікацію WordPress"
+msgstr "Скопіюйте і вставте цей шорткод безпосередньо в будь-яку сторінку чи публікацію WordPress"
 
 #: ../ml-slider.php:1685
-msgid ""
-"Copy & paste this code into a template file to include the slideshow within "
-"your theme."
-msgstr ""
-"Скопіюйте і вставте цей код у файл шаблону, щоб додати слайд-шоу у Вашу тему"
+msgid "Copy & paste this code into a template file to include the slideshow within your theme."
+msgstr "Скопіюйте і вставте цей код у файл шаблону, щоб додати слайд-шоу у Вашу тему"
 
 #: ../ml-slider.php:1721
 msgid "Delete Slider"

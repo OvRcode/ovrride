@@ -1,0 +1,949 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ml-slider-pro\n"
+"POT-Creation-Date: 2014-05-12 11:51-0000\n"
+"PO-Revision-Date: 2017-10-10 16:11+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-KeywordsList: __;gettext;gettext_noop;_e\n"
+"X-Poedit-Basepath: .\n"
+"Language: tr\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../ml-slider-pro.php:188
+msgid "Pro"
+msgstr "Pro Versiyonu"
+
+#: ../ml-slider-pro.php:240 ../inc/class-tgm-plugin-activation.php:164
+msgid "Install Required Plugins"
+msgstr "Gerekli Eklentileri Yükleyin"
+
+#: ../ml-slider-pro.php:241 ../inc/class-tgm-plugin-activation.php:165
+msgid "Install Plugins"
+msgstr "Eklentileri Yükle"
+
+#: ../ml-slider-pro.php:242 ../inc/class-tgm-plugin-activation.php:166
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr "Eklenti Yükleniyor: %s"
+
+#: ../ml-slider-pro.php:243
+msgid "Something went wrong with the plugin API."
+msgstr "Eklenti API'si ile ilgili bir şey yanlış gitti."
+
+#: ../ml-slider-pro.php:254 ../inc/class-tgm-plugin-activation.php:178
+#: ../inc/class-tgm-plugin-activation.php:490
+msgid "Return to Required Plugins Installer"
+msgstr "Gerekli Eklentiler Yükleyicisine Geri Dön"
+
+#: ../ml-slider-pro.php:255 ../inc/class-tgm-plugin-activation.php:179
+#: ../inc/class-tgm-plugin-activation.php:1851
+msgid "Plugin activated successfully."
+msgstr "Eklenti başarıyla etkinleştirildi."
+
+#: ../ml-slider-pro.php:256
+#, php-format
+msgid "All plugins installed and activated successfully. %s"
+msgstr "Tüm eklentiler yüklendi ve başarıyla etkinleştirildi. %s"
+
+#: ../inc/class-tgm-plugin-activation.php:167
+msgid "Something went wrong."
+msgstr "Bir şeyler yanlış gitti."
+
+#: ../inc/class-tgm-plugin-activation.php:180
+#, php-format
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr "Bütün eklentiler yüklendi ve başarıyla etkinleştirildi. %1$s"
+
+#: ../inc/class-tgm-plugin-activation.php:517
+#: ../inc/class-tgm-plugin-activation.php:2063
+msgid "Return to the Dashboard"
+msgstr "Kontrol Paneline Dön"
+
+#: ../inc/class-tgm-plugin-activation.php:545
+#, php-format
+msgid "The following plugin was activated successfully: %s."
+msgstr "Eklenti başarıyla etkinleştirildi: %s."
+
+#: ../inc/class-tgm-plugin-activation.php:704
+msgid "Dismiss this notice"
+msgstr "Bu bildirimi kapat"
+
+#: ../inc/class-tgm-plugin-activation.php:1096
+msgid "External Link"
+msgstr "Harici Bağlantı"
+
+#: ../inc/class-tgm-plugin-activation.php:1101
+msgid "Private Repository"
+msgstr "Özel Depo"
+
+#: ../inc/class-tgm-plugin-activation.php:1104
+msgid "Pre-Packaged"
+msgstr "Hazır Paket"
+
+#: ../inc/class-tgm-plugin-activation.php:1108
+msgid "WordPress Repository"
+msgstr "WordPress Deposu"
+
+#: ../inc/class-tgm-plugin-activation.php:1111
+msgid "Required"
+msgstr "Gerekli"
+
+#: ../inc/class-tgm-plugin-activation.php:1111
+msgid "Recommended"
+msgstr "Önerilen"
+
+#: ../inc/class-tgm-plugin-activation.php:1114
+msgid "Not Installed"
+msgstr "Yüklü Değil"
+
+#: ../inc/class-tgm-plugin-activation.php:1116
+msgid "Installed But Not Activated"
+msgstr "Yüklü Ancak Etkinleştirilmemiş"
+
+#: ../inc/class-tgm-plugin-activation.php:1286
+#, php-format
+msgid ""
+"No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the "
+"Dashboard\">Return to the Dashboard</a>"
+msgstr ""
+"Yüklemeye veya etkinleştirilmeye uygun eklenti bulunamadı. <a href=\"%1$s\" "
+"title=\"Kontrol Paneline Geri Dön\">Kontrol Paneline Geri Dön</a>"
+
+#: ../inc/class-tgm-plugin-activation.php:1302
+msgid "Plugin"
+msgstr "Eklenti"
+
+#: ../inc/class-tgm-plugin-activation.php:1303
+msgid "Source"
+msgstr "Kaynak"
+
+#: ../inc/class-tgm-plugin-activation.php:1304
+#: ../modules/theme_editor/theme_editor.php:1562
+msgid "Type"
+msgstr "Tip"
+
+#: ../inc/class-tgm-plugin-activation.php:1305
+msgid "Status"
+msgstr "Durum"
+
+#: ../inc/class-tgm-plugin-activation.php:1323
+msgid "Install"
+msgstr "Yükle"
+
+#: ../inc/class-tgm-plugin-activation.php:1324
+msgid "Activate"
+msgstr "Etkinleştir"
+
+#: ../inc/class-tgm-plugin-activation.php:1834
+msgid "Install package not available."
+msgstr "Yükleme paketi mevcut değil."
+
+#: ../inc/class-tgm-plugin-activation.php:1835
+#, php-format
+msgid "Downloading install package from <span class=\"code\">%s</span>&#8230;"
+msgstr ""
+"Yükleme paketi buradan indiriliyor <span class=\"code\">%s</span>&#8230;"
+
+#: ../inc/class-tgm-plugin-activation.php:1836
+msgid "Unpacking the package&#8230;"
+msgstr "Paket açılıyor&#8230;"
+
+#: ../inc/class-tgm-plugin-activation.php:1837
+msgid "Installing the plugin&#8230;"
+msgstr "Eklenti yükleniyor&#8230;"
+
+#: ../inc/class-tgm-plugin-activation.php:1838
+msgid "Plugin install failed."
+msgstr "Eklenti yükleme başarısız."
+
+#: ../inc/class-tgm-plugin-activation.php:1839
+msgid "Plugin installed successfully."
+msgstr "Eklenti başarıyla yüklendi."
+
+#: ../inc/class-tgm-plugin-activation.php:1850
+msgid "Plugin activation failed."
+msgstr "Eklenti etkinleştirilme başarısız."
+
+#: ../inc/class-tgm-plugin-activation.php:1960
+msgid ""
+"The installation and activation process is starting. This process may take a "
+"while on some hosts, so please be patient."
+msgstr ""
+"Yükleme ve etkinleştirme işlemi başlıyor. Bu işlem bazı sunucularda biraz "
+"zaman alabilir, bu yüzden lütfen sabırlı olun."
+
+#: ../inc/class-tgm-plugin-activation.php:1961
+#, php-format
+msgid "%1$s installed and activated successfully."
+msgstr "%1$s yüklendi ve başarıyla etkinleştirildi."
+
+#: ../inc/class-tgm-plugin-activation.php:1961
+#: ../inc/class-tgm-plugin-activation.php:1970
+msgid "Show Details"
+msgstr "Detayları Göster"
+
+#: ../inc/class-tgm-plugin-activation.php:1961
+#: ../inc/class-tgm-plugin-activation.php:1970
+msgid "Hide Details"
+msgstr "Detayları Gizle"
+
+#: ../inc/class-tgm-plugin-activation.php:1962
+msgid "All installations and activations have been completed."
+msgstr "Bütün yüklemeler ve etkinleştirmeler tamamlandı."
+
+#: ../inc/class-tgm-plugin-activation.php:1963
+#, php-format
+msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
+msgstr "Eklenti %1$s (%2$d/%3$d) Yükleniyor ve Etkinleştiriliyor"
+
+#: ../inc/class-tgm-plugin-activation.php:1967
+msgid ""
+"The installation process is starting. This process may take a while on some "
+"hosts, so please be patient."
+msgstr ""
+"Yükleme işlemi başlıyor. Bu işlem bazı sunucularda biraz zaman alabilir, bu "
+"yüzden lütfen sabırlı olun."
+
+#: ../inc/class-tgm-plugin-activation.php:1968
+#, php-format
+msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
+msgstr "Yükleme sırasında bir hata oluştu %1$s: <strong>%2$s</strong>."
+
+#: ../inc/class-tgm-plugin-activation.php:1969
+#, php-format
+msgid "The installation of %1$s failed."
+msgstr "%1$s yüklemesi başarısız."
+
+#: ../inc/class-tgm-plugin-activation.php:1970
+#, php-format
+msgid "%1$s installed successfully."
+msgstr "%1$s başarıyla yüklendi."
+
+#: ../inc/class-tgm-plugin-activation.php:1971
+msgid "All installations have been completed."
+msgstr "Bütün yüklemeler tamamlandı."
+
+#: ../inc/class-tgm-plugin-activation.php:1972
+#, php-format
+msgid "Installing Plugin %1$s (%2$d/%3$d)"
+msgstr "Eklenti %1$s (%2$d/%3$d) Yükleniyor"
+
+#: ../inc/wp-updates-plugin.php:73
+msgid ""
+"An Unexpected HTTP Error occurred during the API request.</p> <p><a href=\"?"
+"\" onclick=\"document.location.reload(); return false;\">Try again</a>"
+msgstr ""
+"API çağrısı sırasında Beklenmeyen Bir HTTP Hatası oluştu.</p> <p><a href=\"?"
+"\" onclick=\"document.location.reload(); return false;\">Yeniden deneyin</a>"
+
+#: ../inc/wp-updates-plugin.php:77
+msgid "An unknown error occurred"
+msgstr "Bilinmeyen bir hata oluştu"
+
+#: ../modules/extra/loop.php:63
+msgid "Loop"
+msgstr "Döngü"
+
+#: ../modules/extra/loop.php:65
+msgid "Configure loop"
+msgstr "Döngüyü konfigüre et"
+
+#: ../modules/extra/loop.php:68
+msgid "Continuously"
+msgstr "Devamlı Olarak"
+
+#: ../modules/extra/loop.php:69
+msgid "Stop on Last Slide"
+msgstr "Son Slaytta Durdur"
+
+#: ../modules/extra/loop.php:70
+msgid "Stop on First Slide"
+msgstr "İlk Slaytta Durdur"
+
+#: ../modules/layer/slide.php:42
+msgid "Layer Scaling"
+msgstr "Katman Ölçekleme"
+
+#: ../modules/layer/slide.php:44
+msgid "Select responsiver layer scaling behaviour"
+msgstr "Daha mobil uyumlu katman ölçekleme davranışı seç"
+
+#: ../modules/layer/slide.php:46
+msgid "Scale Up & Down"
+msgstr "Yukarı & Aşağı Ölçekle"
+
+#: ../modules/layer/slide.php:47
+msgid "Scale Down Only"
+msgstr "Sadece Aşağı Ölçekle"
+
+#: ../modules/layer/slide.php:62 ../modules/layer/slide.php:200
+msgid "Layer Slide"
+msgstr "Katman Slaytı"
+
+#: ../modules/layer/slide.php:93
+msgid "New Layer"
+msgstr "Yeni Katman"
+
+#: ../modules/layer/slide.php:94
+msgid "Add Layer"
+msgstr "Katman Ekle"
+
+#: ../modules/layer/slide.php:95
+msgid "Duplicate Layer"
+msgstr "Katmanı Kopyala"
+
+#: ../modules/layer/slide.php:96 ../modules/theme_editor/theme_editor.php:430
+msgid "Save"
+msgstr "Kaydet"
+
+#: ../modules/layer/slide.php:97
+msgid "Save changes?"
+msgstr "Değişiklikleri kaydet?"
+
+#: ../modules/layer/slide.php:98 ../modules/layer/slide.php:101
+msgid "Animation"
+msgstr "Animasyon"
+
+#: ../modules/layer/slide.php:99
+msgid "Styling"
+msgstr "Stillendirme"
+
+#: ../modules/layer/slide.php:100 ../modules/theme_editor/theme_editor.php:442
+#: ../modules/theme_editor/theme_editor.php:516
+#: ../modules/theme_editor/theme_editor.php:520
+#: ../modules/theme_editor/theme_editor.php:588
+#: ../modules/theme_editor/theme_editor.php:624
+#: ../modules/theme_editor/theme_editor.php:628
+#: ../modules/theme_editor/theme_editor.php:658
+#: ../modules/theme_editor/theme_editor.php:662
+#: ../modules/theme_editor/theme_editor.php:666
+#: ../modules/theme_editor/theme_editor.php:670
+#: ../modules/thumbnails/thumbnails.php:217
+#: ../modules/thumbnails/thumbnails.php:230
+msgid "px"
+msgstr "px"
+
+#: ../modules/layer/slide.php:102
+msgid "Wait"
+msgstr "Bekleme"
+
+#: ../modules/layer/slide.php:103
+msgid "then wait"
+msgstr "o zaman bekle"
+
+#: ../modules/layer/slide.php:104
+msgid "seconds and"
+msgstr "saniye ve"
+
+#: ../modules/layer/slide.php:105
+msgid "Padding"
+msgstr "Dolgu"
+
+#: ../modules/layer/slide.php:106
+msgid "Background"
+msgstr "Arkaplan"
+
+#: ../modules/layer/slide.php:107
+msgid "Are you sure?"
+msgstr "Emin misiniz?"
+
+#: ../modules/layer/slide.php:108
+msgid "Snap to grid"
+msgstr "Izgaraya yapıştır"
+
+#: ../modules/layer/slide.php:109
+msgid "Link to"
+msgstr "Bağlantı"
+
+#: ../modules/layer/slide.php:111
+msgid "Please set a width in the slideshow settings"
+msgstr "Lütfen kaydırıcı ayarlarından bir genişlik seçin"
+
+#: ../modules/layer/slide.php:112
+msgid "Please set a height in the slideshow settings"
+msgstr "Lütfen kaydırıcı ayarlarından bir yükseklik seçin"
+
+#: ../modules/layer/slide.php:113 ../modules/post_feed/slide.php:866
+#: ../modules/vimeo/slide.php:488 ../modules/youtube/slide.php:459
+msgid "Add to slider"
+msgstr "Kaydırıcıya ekle"
+
+#: ../modules/layer/slide.php:193
+msgid "New Window"
+msgstr "Yeni Pencere"
+
+#: ../modules/layer/slide.php:194
+msgid "URL"
+msgstr "Bağlantı"
+
+#: ../modules/layer/slide.php:205 ../modules/vimeo/slide.php:194
+#: ../modules/youtube/slide.php:171
+msgid "General"
+msgstr "Genel"
+
+#: ../modules/layer/slide.php:206
+msgid "SEO"
+msgstr "SEO"
+
+#: ../modules/layer/slide.php:207
+msgid "Extra"
+msgstr "Ekstra"
+
+#: ../modules/layer/slide.php:208
+msgid "Edit Source"
+msgstr "Kaynağı Düzenle"
+
+#: ../modules/layer/slide.php:216
+msgid "Background Image Title Text"
+msgstr "Arkaplan Resmi Başlık Yazısı"
+
+#: ../modules/layer/slide.php:218
+msgid "Background Image Alt Text"
+msgstr "Arkaplan Resmi Alt Yazısı"
+
+#: ../modules/layer/slide.php:222
+msgid "Background Image Link"
+msgstr "Arkaplan Resmi Bağlantısı"
+
+#: ../modules/post_feed/slide.php:100
+msgid "Post Feed Slide"
+msgstr "Yazı Besleme Slaytı"
+
+#: ../modules/post_feed/slide.php:105
+msgid "Caption Template"
+msgstr "Yazı Şablonu"
+
+#: ../modules/post_feed/slide.php:106
+msgid "Post Types"
+msgstr "Yazı Tipleri"
+
+#: ../modules/post_feed/slide.php:107
+msgid "Taxonomies"
+msgstr "Taksonomiler"
+
+#: ../modules/post_feed/slide.php:108
+msgid "Display Settings"
+msgstr "Görüntüleme Ayarları"
+
+#: ../modules/post_feed/slide.php:119
+msgid ""
+"Select the Post types to include in the feed. Posts must have a Featured "
+"Image to appear in the feed."
+msgstr ""
+"Beslemeye dahil etmek için Yazı tipini seçin. Yazıların beslemede "
+"gözükebilmesi için bir Öne Çıkarılan Resme sahip olmaları gerekmektedir."
+
+#: ../modules/post_feed/slide.php:120
+msgid ""
+"Posts must be tagged to at least one of the selected categories to display "
+"in the feed."
+msgstr ""
+"Yazıların beslemede gözükebilmesi için en azından seçilmiş kategorilerden "
+"bir tanesine etiketli olmaları gerekmektedir."
+
+#: ../modules/post_feed/slide.php:123
+msgid "Slide Link"
+msgstr "Slayt Bağlantısı"
+
+#: ../modules/post_feed/slide.php:127
+msgid "Order By"
+msgstr "Sırala"
+
+#: ../modules/post_feed/slide.php:131
+msgid "Post Limit"
+msgstr "Yazı Sınırı"
+
+#: ../modules/post_feed/slide.php:135
+msgid "Preserve New Lines"
+msgstr "Yeni Satırları Koru"
+
+#: ../modules/post_feed/slide.php:209 ../modules/post_feed/slide.php:274
+msgid "Post Title"
+msgstr "Yazı Başlığı"
+
+#: ../modules/post_feed/slide.php:210 ../modules/post_feed/slide.php:272
+msgid "Post ID"
+msgstr "Yazı ID'si"
+
+#: ../modules/post_feed/slide.php:211
+msgid "Post Link"
+msgstr "Yazı Bağlantısı"
+
+#: ../modules/post_feed/slide.php:212
+msgid "Post Excerpt"
+msgstr "Yazı Kırıntısı"
+
+#: ../modules/post_feed/slide.php:213
+msgid "Post Date"
+msgstr "Yazı Tarihi"
+
+#: ../modules/post_feed/slide.php:214
+msgid "Post Content"
+msgstr "Yazı İçeriği"
+
+#: ../modules/post_feed/slide.php:215
+msgid "Post Content (with formatting)"
+msgstr "Yazı İçeriği (biçimlendirme ile)"
+
+#: ../modules/post_feed/slide.php:216 ../modules/post_feed/slide.php:273
+msgid "Author"
+msgstr "Yazar"
+
+#: ../modules/post_feed/slide.php:217
+msgid "Author Link"
+msgstr "Yazar Bağlantısı"
+
+#: ../modules/post_feed/slide.php:218
+msgid "Tag List"
+msgstr "Etiket Listesi"
+
+#: ../modules/post_feed/slide.php:219
+msgid "Category List"
+msgstr "Kategori Listesi"
+
+#: ../modules/post_feed/slide.php:226
+msgid "WooCommerce - Price (Formatted)"
+msgstr "WooCommerce - Fiyat (Biçimlendirilmiş)"
+
+#: ../modules/post_feed/slide.php:227
+msgid "WooCommerce - Price"
+msgstr "WooCommerce - Fiyat"
+
+#: ../modules/post_feed/slide.php:228
+msgid "WooCommerce - Sale Price"
+msgstr "WooCommerce - Satış Fiyatı"
+
+#: ../modules/post_feed/slide.php:229
+msgid "WooCommerce - Add to Cart URL"
+msgstr "WooCommerce - Sepete Ekleme Bağlantısı"
+
+#: ../modules/post_feed/slide.php:230
+msgid "WooCommerce - SKU"
+msgstr "WooCommerce - Stok Kodu (SKU)"
+
+#: ../modules/post_feed/slide.php:242
+msgid "Insert Tag"
+msgstr "Etiket Ekle"
+
+#: ../modules/post_feed/slide.php:249
+msgid "Custom Fields"
+msgstr "Özel Alanlar"
+
+#: ../modules/post_feed/slide.php:271
+msgid "Publish Date"
+msgstr "Yayımlama Tarihi"
+
+#: ../modules/post_feed/slide.php:275
+msgid "Post Slug"
+msgstr "Yazı Slug'ı"
+
+#: ../modules/post_feed/slide.php:276
+msgid "Modified Date"
+msgstr "Değiştirme Tarihi"
+
+#: ../modules/post_feed/slide.php:277
+msgid "Random"
+msgstr "Rastgele"
+
+#: ../modules/post_feed/slide.php:278
+msgid "Menu Order"
+msgstr "Menü Sırası"
+
+#: ../modules/post_feed/slide.php:369
+msgid "Disabled"
+msgstr "Kapatıldı"
+
+#: ../modules/post_feed/slide.php:370
+msgid "Post"
+msgstr "Yazı"
+
+#: ../modules/post_feed/slide.php:385
+msgid "DESC"
+msgstr "Azalan"
+
+#: ../modules/post_feed/slide.php:386
+msgid "ASC"
+msgstr "Artan"
+
+#: ../modules/post_feed/slide.php:860
+msgid "Click 'Add to slider' to create a new post feed slide."
+msgstr "Yeni yazı besleme slaytı oluşturmak için 'Kaydırıcı ekle'ye tıkla."
+
+#: ../modules/theme_editor/theme_editor.php:84
+msgid "Theme Editor"
+msgstr "Tema Düzenleyici"
+
+#: ../modules/theme_editor/theme_editor.php:384
+msgid ""
+"Theme Saved. To apply the theme to a slideshow, edit the slideshow and "
+"select this theme from the theme dropdown menu."
+msgstr ""
+"Tema Kaydedildi. Temayı kaydırıcıya uygulamak için, slayt gösterisini "
+"düzenleyin ve tema açılan menüsünden bu temayı seçin."
+
+#: ../modules/theme_editor/theme_editor.php:396
+msgid "Switch Preview Slider"
+msgstr "Kaydırıcı Önizlemeyi Değiştir"
+
+#: ../modules/theme_editor/theme_editor.php:429
+msgid "Theme Settings"
+msgstr "Tema Ayarları"
+
+#: ../modules/theme_editor/theme_editor.php:436
+msgid "Slideshow"
+msgstr "Kaydırıcı"
+
+#: ../modules/theme_editor/theme_editor.php:440
+msgid "Outer Border Radius"
+msgstr "Dış Kenar Yarıçapı"
+
+#: ../modules/theme_editor/theme_editor.php:446
+msgid "CSS3 Shadow"
+msgstr "CSS3 Gölgesi"
+
+#: ../modules/theme_editor/theme_editor.php:447
+msgid "Note: Not compatible with 'thumbnail' navigation type"
+msgstr "Not: 'Küçük resim' yönlendirme tipi ile uyumlu değil"
+
+#: ../modules/theme_editor/theme_editor.php:451
+msgid "None"
+msgstr "Hiçbiri"
+
+#: ../modules/theme_editor/theme_editor.php:452
+#: ../modules/theme_editor/theme_editor.php:612
+msgid "Default"
+msgstr "Varsayılan"
+
+#: ../modules/theme_editor/theme_editor.php:453
+msgid "Bottom"
+msgstr "Alt"
+
+#: ../modules/theme_editor/theme_editor.php:454
+msgid "Page Curl"
+msgstr "Sayfa Kıvrımı"
+
+#: ../modules/theme_editor/theme_editor.php:455
+msgid "Bottom Curve"
+msgstr "Alt Kıvrım"
+
+#: ../modules/theme_editor/theme_editor.php:456
+msgid "Top and Bottom Curve"
+msgstr "Üst ve Alt Kıvrım"
+
+#: ../modules/theme_editor/theme_editor.php:457
+msgid "Sides"
+msgstr "Yanlar"
+
+#: ../modules/theme_editor/theme_editor.php:463
+msgid "Caption"
+msgstr "Yazı"
+
+#: ../modules/theme_editor/theme_editor.php:467
+msgid "Enable Custom Caption"
+msgstr "Özel Yazıyı Etkinleştir"
+
+#: ../modules/theme_editor/theme_editor.php:473
+#: ../modules/theme_editor/theme_editor.php:609
+msgid "Position"
+msgstr "Pozisyon"
+
+#: ../modules/theme_editor/theme_editor.php:476
+#: ../modules/theme_editor/theme_editor.php:616
+msgid "Bottom Left"
+msgstr "Aşağı Sol"
+
+#: ../modules/theme_editor/theme_editor.php:477
+#: ../modules/theme_editor/theme_editor.php:618
+msgid "Bottom Right"
+msgstr "Aşağı Sağ"
+
+#: ../modules/theme_editor/theme_editor.php:478
+#: ../modules/theme_editor/theme_editor.php:613
+msgid "Top Left"
+msgstr "Yukarı Sol"
+
+#: ../modules/theme_editor/theme_editor.php:479
+#: ../modules/theme_editor/theme_editor.php:615
+msgid "Top Right"
+msgstr "Yukarı Sağ"
+
+#: ../modules/theme_editor/theme_editor.php:480
+msgid "Underneath"
+msgstr "Altında"
+
+#: ../modules/theme_editor/theme_editor.php:485
+msgid "Width"
+msgstr "Genişlik"
+
+#: ../modules/theme_editor/theme_editor.php:489
+#: ../modules/theme_editor/theme_editor.php:669
+msgid "Border Radius"
+msgstr "Kenar Yarıçapı"
+
+#: ../modules/theme_editor/theme_editor.php:493
+msgid "Text Color"
+msgstr "Yazı Rengi"
+
+#: ../modules/theme_editor/theme_editor.php:499
+msgid "Text Align"
+msgstr "Yazı Hizası"
+
+#: ../modules/theme_editor/theme_editor.php:502
+msgid "Left"
+msgstr "Sol"
+
+#: ../modules/theme_editor/theme_editor.php:503
+msgid "Center"
+msgstr "Orta"
+
+#: ../modules/theme_editor/theme_editor.php:504
+msgid "Right"
+msgstr "Sağ"
+
+#: ../modules/theme_editor/theme_editor.php:509
+msgid "Background Color"
+msgstr "Arkaplan Rengi"
+
+#: ../modules/theme_editor/theme_editor.php:515
+#: ../modules/theme_editor/theme_editor.php:623
+msgid "Vertical Margin"
+msgstr "Yatay Boşluk"
+
+#: ../modules/theme_editor/theme_editor.php:519
+#: ../modules/theme_editor/theme_editor.php:627
+msgid "Horizontal Margin"
+msgstr "Dikey Boşluk"
+
+#: ../modules/theme_editor/theme_editor.php:524
+msgid "Arrows"
+msgstr "Oklar"
+
+#: ../modules/theme_editor/theme_editor.php:528
+msgid "Enable Custom Arrows"
+msgstr "Özel Okları Etkinleştir"
+
+#: ../modules/theme_editor/theme_editor.php:534
+msgid "Built In Styles"
+msgstr "Yerleşik stiller"
+
+#: ../modules/theme_editor/theme_editor.php:541
+msgid "Custom Prev Arrow"
+msgstr "Özel Önceki Oku"
+
+#: ../modules/theme_editor/theme_editor.php:548
+#: ../modules/theme_editor/theme_editor.php:553
+#: ../modules/theme_editor/theme_editor.php:569
+#: ../modules/theme_editor/theme_editor.php:574
+msgid "Select"
+msgstr "Seç"
+
+#: ../modules/theme_editor/theme_editor.php:549
+#: ../modules/theme_editor/theme_editor.php:554
+#: ../modules/theme_editor/theme_editor.php:570
+#: ../modules/theme_editor/theme_editor.php:575
+msgid "Remove"
+msgstr "Kaldır"
+
+#: ../modules/theme_editor/theme_editor.php:562
+msgid "Custom Next Arrow"
+msgstr "Özel Sonraki Oku"
+
+#: ../modules/theme_editor/theme_editor.php:583
+msgid "Opacity"
+msgstr "Opaklık"
+
+#: ../modules/theme_editor/theme_editor.php:587
+msgid "Distance from edge"
+msgstr "Köşeye olan uzaklık"
+
+#: ../modules/theme_editor/theme_editor.php:591
+msgid "Always show"
+msgstr "Her zaman göster"
+
+#: ../modules/theme_editor/theme_editor.php:599
+#: ../modules/thumbnails/thumbnails.php:195
+msgid "Navigation"
+msgstr "Yönlendirme"
+
+#: ../modules/theme_editor/theme_editor.php:603
+msgid "Enable Custom Navigation"
+msgstr "Özel Yönlendirmeyi Etkinleştir"
+
+#: ../modules/theme_editor/theme_editor.php:614
+msgid "Top Center"
+msgstr "Yukarı Orta"
+
+#: ../modules/theme_editor/theme_editor.php:617
+msgid "Bottom Center"
+msgstr "Aşağı Orta"
+
+#: ../modules/theme_editor/theme_editor.php:631
+msgid "Fill Color"
+msgstr "Doldurma Rengi"
+
+#: ../modules/theme_editor/theme_editor.php:638
+msgid "Fill Color (Active)"
+msgstr "Doldurma Rengi (Etkin)"
+
+#: ../modules/theme_editor/theme_editor.php:645
+msgid "Border Color"
+msgstr "Kenar Rengi"
+
+#: ../modules/theme_editor/theme_editor.php:651
+msgid "Border Color (Active)"
+msgstr "Kenar Rengi (Etkin)"
+
+#: ../modules/theme_editor/theme_editor.php:657
+msgid "Size"
+msgstr "Boyut"
+
+#: ../modules/theme_editor/theme_editor.php:661
+msgid "Spacing"
+msgstr "Aralık"
+
+#: ../modules/theme_editor/theme_editor.php:665
+msgid "Border Width"
+msgstr "Kenar Genişliği"
+
+#: ../modules/theme_editor/theme_editor.php:674
+msgid "Delete Theme"
+msgstr "Temayı Sil"
+
+#: ../modules/theme_editor/theme_editor.php:1577
+msgid "Black"
+msgstr "Siyah"
+
+#: ../modules/theme_editor/theme_editor.php:1578
+msgid "Blue"
+msgstr "Mavi"
+
+#: ../modules/theme_editor/theme_editor.php:1579
+msgid "Green"
+msgstr "Yeşil"
+
+#: ../modules/theme_editor/theme_editor.php:1580
+msgid "Grey"
+msgstr "Gri"
+
+#: ../modules/theme_editor/theme_editor.php:1581
+msgid "Navy"
+msgstr "Koyu Mavi"
+
+#: ../modules/theme_editor/theme_editor.php:1582
+msgid "Purple"
+msgstr "Mor"
+
+#: ../modules/theme_editor/theme_editor.php:1583
+#: ../modules/youtube/slide.php:195
+msgid "Red"
+msgstr "Kırmızı"
+
+#: ../modules/theme_editor/theme_editor.php:1584
+#: ../modules/youtube/slide.php:196
+msgid "White"
+msgstr "Beyaz"
+
+#: ../modules/theme_editor/theme_editor.php:1585
+msgid "Yellow"
+msgstr "Sarı"
+
+#: ../modules/thumbnails/thumbnails.php:198
+msgid "Show the slide navigation bullets"
+msgstr "Slayt yönlendirme noktalarını göster"
+
+#: ../modules/thumbnails/thumbnails.php:200
+msgid "Hidden"
+msgstr "Gizli"
+
+#: ../modules/thumbnails/thumbnails.php:201
+msgid "Dots"
+msgstr "Noktalar"
+
+#: ../modules/thumbnails/thumbnails.php:202
+msgid "Thumbnails"
+msgstr "Küçük Resimler"
+
+#: ../modules/thumbnails/thumbnails.php:203
+msgid "Filmstrip"
+msgstr "Film Şeridi"
+
+#: ../modules/thumbnails/thumbnails.php:214
+msgid "Thumb Width"
+msgstr "Küçük Resim Genişliği"
+
+#: ../modules/thumbnails/thumbnails.php:216
+msgid "Thumb width"
+msgstr "Küçük resim genişliği"
+
+#: ../modules/thumbnails/thumbnails.php:227
+msgid "Thumb Height"
+msgstr "Küçük Resim Yüksekliği"
+
+#: ../modules/thumbnails/thumbnails.php:229
+msgid "Thumb height"
+msgstr "Küçük resim yüksekliği"
+
+#: ../modules/vimeo/slide.php:188
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: ../modules/vimeo/slide.php:199 ../modules/youtube/slide.php:177
+msgid "Show the title on the video"
+msgstr "Videoda başlığı göster"
+
+#: ../modules/vimeo/slide.php:200
+msgid "Show the user badge on the video"
+msgstr "Videoda kullanıcı rozetini göster"
+
+#: ../modules/vimeo/slide.php:201
+msgid "Show the user byline on the video"
+msgstr "Videoda kullanıcı adı satırını göster"
+
+#: ../modules/vimeo/slide.php:202
+msgid "Show the user portrait on the video"
+msgstr "Videoda kullanıcı portresini göster"
+
+#: ../modules/vimeo/slide.php:203
+msgid "Auto play"
+msgstr "Otomatik Oynatma"
+
+#: ../modules/youtube/slide.php:165
+msgid "YouTube"
+msgstr "YouTube"
+
+#: ../modules/youtube/slide.php:172 ../modules/youtube/slide.php:186
+msgid "Theme"
+msgstr "Tema"
+
+#: ../modules/youtube/slide.php:178
+msgid "Enable controls in the player"
+msgstr "Oynatıcıda kontrolleri etkinleştir"
+
+#: ../modules/youtube/slide.php:179
+msgid "Show related videos"
+msgstr "Alakalı videoları göster"
+
+#: ../modules/youtube/slide.php:180
+msgid "Hide video controls after the video begins"
+msgstr "Video başladıktan sonra video kontrollerini gizle"
+
+#: ../modules/youtube/slide.php:181
+msgid "Auto Play"
+msgstr "Otomatik Oynatma"
+
+#: ../modules/youtube/slide.php:188
+msgid "Dark"
+msgstr "Kapalı"
+
+#: ../modules/youtube/slide.php:189
+msgid "Light"
+msgstr "Açık"
+
+#: ../modules/youtube/slide.php:193
+msgid "Color"
+msgstr "Renk"

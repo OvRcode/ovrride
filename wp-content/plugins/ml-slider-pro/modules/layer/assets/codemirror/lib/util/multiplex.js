@@ -1,4 +1,5 @@
-CodeMirror.multiplexingMode = function(outer /*, others */) {
+CodeMirror.multiplexingMode = function(outer // , others
+) {
   // Others should be {open, close, mode [, delimStyle]} objects
   var others = Array.prototype.slice.call(arguments, 1);
   var n_others = others.length;
@@ -7,7 +8,8 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
     if (typeof pattern == "string") return string.indexOf(pattern, from);
     var m = pattern.exec(from ? string.slice(from) : string);
     return m ? m.index + from : -1;
-  }
+  }//end indexOf()
+
 
   return {
     startState: function() {

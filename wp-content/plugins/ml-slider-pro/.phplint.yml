@@ -1,0 +1,4 @@
+path: ./dist/ml-slider-pro
+jobs: 10
+extensions:
+  - php

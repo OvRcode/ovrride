@@ -71,7 +71,8 @@
           }
         };
     }
-  }
+  }//end SearchCursor()
+
 
   SearchCursor.prototype = {
     findNext: function() {return this.find(false);},
@@ -84,7 +85,8 @@
         self.pos = {from: pos, to: pos};
         self.atOccurrence = false;
         return false;
-      }
+      }//end savePosAndFail()
+
 
       for (;;) {
         if (this.pos = this.matches(reverse, pos)) {

@@ -111,7 +111,7 @@
             },
 
             render: function(image_url, editor_id, width, height) {
-                var layer_color_bg = $("<input type='text' id='layerBgColor' />");
+                var layer_color_bg = $("<input class='px-1' type='text' id='layerBgColor' />");
                 var layer_editor = $("<div class='layer_editor' />");
                 var layer_config = $("<div />");
 
@@ -133,7 +133,7 @@
                                         });
 
                 var container = $("<div />")
-                                    .attr('class', 'container')
+                                    .attr('class', 'ms-layer-container')
                                     .css('position', 'relative')
                                     .css('overflow', 'auto');
 
@@ -162,13 +162,13 @@
 
                 var style_toolbar = $("<div id='style_toolbar'></div>");
 
-                var layer_padding = $("<input id='layer_padding' type='number' step='1' min='0' max='99' value='0' size='3' />" + metasliderpro.px + "&nbsp;")
+                var layer_padding = $("<input class='px-1' id='layer_padding' type='number' step='1' min='0' max='99' value='0' size='3' />" + metasliderpro.px + "&nbsp;")
                                         .on('change', function() {
                                             $('.metaslider-active .content').attr('data-padding', $(this).val());
                                             $('.metaslider-active .content').css('padding', $(this).val() + 'px');
                                         });
 
-                var snap_to_grid = $("<input type='checkbox' />")
+                var snap_to_grid = $("<input class='px-1' type='checkbox' />")
                                         .attr('checked', 'checked')
                                         .change(function() {
                                             if ($(this).is(':checked')) {
@@ -219,13 +219,13 @@
                     'fadeOutRightBig','hinge'
                 ];
 
-                var animation_in_delay = $("<input id='animation_in_delay' type='number' max='99' min='0' step='0.1' size='3' value='0' />")
+                var animation_in_delay = $("<input class='px-1' id='animation_in_delay' type='number' max='99' min='0' step='0.1' size='3' value='0' />")
                                                 .change(function() {
                                                     layerEditor.checkForSelectedLayer();
                                                     layerEditor.updateLayerAnimationDelay();
                                                 });
 
-                var animation_out_delay = $("<input id='animation_out_delay' type='number' max='99' min='0' step='0.1' size='3' value='0' />")
+                var animation_out_delay = $("<input class='px-1' id='animation_out_delay' type='number' max='99' min='0' step='0.1' size='3' value='0' />")
                                                 .change(function() {
                                                     layerEditor.checkForSelectedLayer();
                                                     layerEditor.updateLayerAnimationDelay();
@@ -236,7 +236,7 @@
                                                     layerEditor.checkForSelectedLayer();
                                                     var selected = $('#animation_in :selected').val();
                                                     var animation_in = $(".metaslider-active .animation_in");
-                                                    animation_in.removeClass(animation_in.attr('data-animation'));
+                                                    animation_in.removeClass(animation_in.data('animation'));
                                                     animation_in.addClass(selected);
                                                     animation_in.attr('data-animation', selected);
                                                 });
@@ -246,7 +246,7 @@
                                                     layerEditor.checkForSelectedLayer();
                                                     var selected = $('#animation_out :selected').val();
                                                     var animation_out = $(".metaslider-active .animation_out");
-                                                    animation_out.removeClass(animation_out.attr('data-animation'));
+                                                    animation_out.removeClass(animation_out.data('animation'));
                                                     animation_out.addClass(selected);
                                                     animation_out.attr('data-animation', selected);
                                                 });
@@ -395,44 +395,53 @@
                     .focus(function() {
                         $('.metaslider-active').removeClass('metaslider-active');
                         $(this).parent().parent().parent().parent().addClass('metaslider-active');
-                        $("#animation_out_delay").val($('.animation_out', layer).attr('data-animation-delay'));
-                        $("#animation_in_delay").val($('.animation_in', layer).attr('data-animation-delay'));
-                        $("#animation_out").val($('.animation_out', layer).attr('data-animation'));
-                        $("#animation_in").val($('.animation_in', layer).attr('data-animation'));
-                        $("#layer_padding").val($('.content', layer).attr('data-padding'));
+                        $("#animation_out_delay").val($('.animation_out', layer).data('animation-delay'));
+                        $("#animation_in_delay").val($('.animation_in', layer).data('animation-delay'));
+                        $("#animation_out").val($('.animation_out', layer).data('animation'));
+                        $("#animation_in").val($('.animation_in', layer).data('animation'));
+                        $("#layer_padding").val($('.content', layer).data('padding'));
                         $("#layerBgColor").spectrum("set", $('.content_wrap, .ms_content_wrap', layer).css('background-color'));
                     });
 
                 CKEDITOR.inline($('.content', layer).attr('id'));
             }
         };
-
+        $('.metaslider').on('metaslider/attachment/updated', '.slide', function(event, data) {
+            if(data.img_url) {
+                $(this).find('.openLayerEditor').data('thumb', data.img_url);
+            }
+        });
+		$(".metaslider table#metaslider-slides-list").on('metaslider/size-has-changed', function(event, new_size) {
+            $('.openLayerEditor').data('width', new_size.width).data('height', new_size.height);
+        });
         // launch the layer editor
-        $('.openLayerEditor').live('click', function(e) {
+        $('.metaslider').on('click', '.openLayerEditor', function(e) {
             e.preventDefault();
             $('#colorbox').removeAttr('tabindex');
 
             var button = $(this);
 
-            if (button.attr('data-height') == "") {
+            if (!button.data('height')) {
                 return alert(metasliderpro.setHeight);
             }
 
-            if (button.attr('data-width') == "") {
+            if (!button.data('width')) {
                 return alert(metasliderpro.setWidth);
             }
             
-            var width = parseInt(button.attr('data-width'), 10) < 850 ? 850 : parseInt(button.attr('data-width'), 10);
+            var width = parseInt(button.data('width'), 10) < 850 ? 850 : parseInt(button.data('width'), 10);
+
+            var bg_url = button.closest('.slide').find('.update-image').data('cropped-img-url') || button.data('thumb');
 
             var colorbox = jQuery.colorbox({
-                html: layerEditor.render(button.attr('data-thumb'), button.attr('data-editor_id'), button.attr('data-width'), button.attr('data-height')),
+                html: layerEditor.render(bg_url, button.data('editor_id'), button.data('width'), button.data('height')),
                 transition: "elastic",
-                innerHeight: parseInt(button.attr('data-height'), 10) + 152 + 'px',
+                innerHeight: parseInt(button.data('height'), 10) + 152 + 'px',
                 innerWidth: width + 'px',
                 scrolling: true,
                 className: 'layerEditorCbox',
                 onCleanup: function() {
-                    layerEditor.save_on_close(button.attr('data-editor_id'));
+                    layerEditor.save_on_close(button.data('editor_id'));
                 },
                 onComplete: function() {
                     layerEditor.init();

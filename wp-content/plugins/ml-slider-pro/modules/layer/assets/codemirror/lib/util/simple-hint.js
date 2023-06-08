@@ -23,7 +23,8 @@
       var completions = result.list;
       function insert(str) {
         editor.replaceRange(str, result.from, result.to);
-      }
+      }//end insert()
+
       // When there is only one completion, use it directly.
       if (options.completeSingle && completions.length == 1) {
         insert(completions[0]);
@@ -61,12 +62,14 @@
         if (done) return;
         done = true;
         complete.parentNode.removeChild(complete);
-      }
+      }//end close()
+
       function pick() {
         insert(completions[sel.selectedIndex]);
         close();
         setTimeout(function(){editor.focus();}, 50);
-      }
+      }//end pick()
+
       CodeMirror.connect(sel, "blur", close);
       CodeMirror.connect(sel, "keydown", function(event) {
         var code = event.keyCode;
@@ -90,7 +93,8 @@
       // Opera sometimes ignores focusing a freshly created node
       if (window.opera) setTimeout(function(){if (!done) sel.focus();}, 100);
       return true;
-    }
+    }//end collectHints()
+
     return collectHints();
   };
   CodeMirror.simpleHint.defaults = {
