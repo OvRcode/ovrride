@@ -1,16 +1,16 @@
 === WooCommerce Smart Coupons ===
-Contributors: niravmehta, ratnakar.dubey, Tarun.Parswani, Mansi Shah
+Contributors: storeapps, niravmehta, ratnakar.dubey, Tarun.Parswani, Mansi Shah, Chandan Kumar
 Donate link: https://www.storeapps.org/
 Tags: woocommerce, coupon, credit, store credit, gift, certificate, voucher, discount, gift certificate, gift voucher, customer, self service
-Requires at least: 3.5
-Tested up to: 4.8.2
-Stable tag: 3.3.8
+Requires at least: 4.4
+Tested up to: 6.2.2
+Stable tag: 7.12.0
 
 Powerful, "all in one" solution for gift certificates, store credits, discount coupons and vouchers. Allows customers to buy credits for themselves or gift them to others. Unique "Apply Coupon with One Click" technology during checkout, tight integration with WooCommerce and automatic maintenance.
 
 == Description ==
 
-WooCommerce Smart Coupons is the most powerful, all in one solution for gift certificates, store credits, discount coupons and vouchers. 
+WooCommerce Smart Coupons is the most powerful, all in one solution for gift certificates, store credits, discount coupons and vouchers.
 
 Here's what you can do with this plugin:
 
@@ -37,10 +37,9 @@ Here's what you can do with this plugin:
 * Can even duplicate an existing coupon
 * Same convenient and familiar coupon management interface - no need to learn a new interface to manage Smart Coupons
 
-
 == Installation ==
 
-1. Ensure you have latest version of [WooCommerce](https://www.woothemes.com/woocommerce/) plugin installed
+1. Ensure you have latest version of [WooCommerce](https://wordpress.org/plugins/woocommerce/) plugin installed
 2. Unzip and upload the folder 'woocommerce-smart-coupons' to your `/wp-content/plugins/` directory
 3. Activate 'WooCommerce Smart Coupons' through the 'Plugins' menu in WordPress
 
@@ -50,8 +49,7 @@ CREATING A COUPON
 1. Go to Coupons settings in WooCommerce
 2. Add new coupons as usual - if you want to create credit based coupon - Store Credit or Gift Certificate, use "Store Credit / Gift Certificate" in type
 3. Add other coupon details as usual
-4. Save the coupon! 
-
+4. Save the coupon!
 
 LINKING A COUPON WITH A PRODUCT
 1. Add a new product (or edit an existing one).
@@ -65,4 +63,4 @@ LINKING A COUPON WITH A PRODUCT
 IMPORTING COUPONS IN BULK
 Refer to the "sample.csv" file in the plugin root directory. Create your import file in the same structure and import it via Coupons administration in WooCommerce.
 
-Go to "WooCommerce -> Settings" from Wordpress sidebar menu for additional settings for this plugin.
+Go to "WooCommerce -> Settings -> Smart Coupons" from WordPress sidebar menu for additional settings for this plugin.
