@@ -868,9 +868,9 @@ function ewww_image_optimizer_upgrade() {
 			return;
 		}
 		$ewwwio_upgrading = true;
-		ewww_image_optimizer_enable_background_optimization();
 		ewww_image_optimizer_install_table();
 		ewwwio()->set_defaults();
+		ewww_image_optimizer_enable_background_optimization();
 		// This will get re-enabled if things are too slow.
 		ewww_image_optimizer_set_option( 'exactdn_prevent_db_queries', false );
 		if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_exactdn' ) && ewww_image_optimizer_get_option( 'ewww_image_optimizer_exactdn_verify_method' ) > 0 ) {
@@ -3495,7 +3495,7 @@ function ewww_image_optimizer_jpg_background( $background = null ) {
 		$background = ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_background' );
 	}
 	// Verify that the supplied value is in hex notation.
-	if ( preg_match( '/^\#*([0-9a-fA-F]){6}$/', $background ) ) {
+	if ( is_string( $background ) && preg_match( '/^\#*([0-9a-fA-F]){6}$/', $background ) ) {
 		// We remove a leading # symbol, since we take care of it later.
 		$background = ltrim( $background, '#' );
 		// Send back the verified, cleaned-up background color.
@@ -3508,7 +3508,7 @@ function ewww_image_optimizer_jpg_background( $background = null ) {
 		}
 		// Send back a blank value.
 		ewwwio_memory( __FUNCTION__ );
-		return null;
+		return '';
 	}
 }
 
@@ -3525,7 +3525,7 @@ function ewww_image_optimizer_jpg_quality( $quality = null ) {
 		$quality = ewww_image_optimizer_get_option( 'ewww_image_optimizer_jpg_quality' );
 	}
 	// Verify that the quality level is an integer, 1-100.
-	if ( preg_match( '/^(100|[1-9][0-9]?)$/', $quality ) ) {
+	if ( is_numeric( $quality ) && preg_match( '/^(100|[1-9][0-9]?)$/', $quality ) ) {
 		ewwwio_debug_message( "quality: $quality" );
 		// Send back the valid quality level.
 		ewwwio_memory( __FUNCTION__ );
@@ -3535,8 +3535,7 @@ function ewww_image_optimizer_jpg_quality( $quality = null ) {
 			add_settings_error( 'ewww_image_optimizer_jpg_quality', 'ewwwio-jpg-quality', esc_html__( 'Could not save the JPG quality, please enter an integer between 1 and 100.', 'ewww-image-optimizer' ) );
 		}
 		// Send back nothing.
-		ewwwio_memory( __FUNCTION__ );
-		return null;
+		return '';
 	}
 }
 
@@ -3567,7 +3566,7 @@ function ewww_image_optimizer_webp_quality( $quality = null ) {
 		$quality = ewww_image_optimizer_get_option( 'ewww_image_optimizer_webp_quality' );
 	}
 	// Verify that the quality level is an integer, 1-100.
-	if ( preg_match( '/^(100|[1-9][0-9]?)$/', $quality ) ) {
+	if ( is_numeric( $quality ) && preg_match( '/^(100|[1-9][0-9]?)$/', $quality ) ) {
 		ewwwio_debug_message( "webp quality: $quality" );
 		// Send back the valid quality level.
 		return $quality;
@@ -3576,7 +3575,7 @@ function ewww_image_optimizer_webp_quality( $quality = null ) {
 			add_settings_error( 'ewww_image_optimizer_webp_quality', 'ewwwio-webp-quality', esc_html__( 'Could not save the WebP quality, please enter an integer between 50 and 100.', 'ewww-image-optimizer' ) );
 		}
 		// Send back nothing.
-		return null;
+		return '';
 	}
 }
 
@@ -3607,7 +3606,7 @@ function ewww_image_optimizer_avif_quality( $quality = null ) {
 		$quality = ewww_image_optimizer_get_option( 'ewww_image_optimizer_avif_quality' );
 	}
 	// Verify that the quality level is an integer, 1-100.
-	if ( preg_match( '/^(100|[1-9][0-9]?)$/', $quality ) ) {
+	if ( is_numeric( $quality ) && preg_match( '/^(100|[1-9][0-9]?)$/', $quality ) ) {
 		ewwwio_debug_message( "avif quality: $quality" );
 		// Send back the valid quality level.
 		return $quality;
@@ -3616,7 +3615,7 @@ function ewww_image_optimizer_avif_quality( $quality = null ) {
 			add_settings_error( 'ewww_image_optimizer_avif_quality', 'ewwwio-avif-quality', esc_html__( 'Could not save the AVIF quality, please enter an integer between 50 and 100.', 'ewww-image-optimizer' ) );
 		}
 		// Send back nothing.
-		return null;
+		return '';
 	}
 }
 
@@ -8663,9 +8662,14 @@ function ewww_image_optimizer_detect_wpsf_location_lock() {
  */
 function ewww_image_optimizer_as3cf_attachment_file_paths( $paths, $id ) {
 	ewwwio_debug_message( '<b>' . __FUNCTION__ . '()</b>' );
-	$as3cf_action = 'unknown';
+	$as3cf_action = false;
 	if ( ! empty( $_REQUEST['action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		$as3cf_action = sanitize_text_field( wp_unslash( $_REQUEST['action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+	}
+	global $ewww_new_image;
+	if ( ! empty( $ewww_new_image ) ) {
+		// This is so we can detect new uploads for conversion checking.
+		$as3cf_action = 'media_upload';
 	}
 	foreach ( $paths as $size => $path ) {
 		if ( ! is_string( $path ) ) {
@@ -8674,7 +8678,9 @@ function ewww_image_optimizer_as3cf_attachment_file_paths( $paths, $id ) {
 		if ( false !== strpos( $size, '-webp' ) || str_ends_with( $path, '.webp' ) ) {
 			continue;
 		}
-		ewwwio_debug_message( "checking $path for WebP or converted images in as3cf $as3cf_action queue" );
+		if ( $as3cf_action ) {
+			ewwwio_debug_message( "checking $path for WebP or converted images in as3cf $as3cf_action queue" );
+		}
 		if ( ewwwio_is_file( $path . '.webp' ) ) {
 			$paths[ $size . '-webp' ] = $path . '.webp';
 			ewwwio_debug_message( "added $path.webp to as3cf queue" );
@@ -8694,9 +8700,22 @@ function ewww_image_optimizer_as3cf_attachment_file_paths( $paths, $id ) {
 		if ( ! is_admin() ) {
 			continue;
 		}
+		$conversion_actions = array(
+			'bulk_loop',
+			'copy',
+			'download',
+			'ewww_bulk_update_meta',
+			'ewww_image_optimizer_manual_image_restore',
+			'ewww_image_optimizer_manual_optimize',
+			'ewww_image_optimizer_manual_restore',
+			'media_upload',
+			'wp_ewwwio_image_optimize',
+			'wp_ewwwio_media_optimize',
+			'remove_local',
+		);
 		// If we're not deleting originals, then they should be re-uploaded to S3.
 		// We'd check if conversion options are enabled, but folks can convert via the Media Library without them enabled, so we need to account for that.
-		if ( ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
+		if ( in_array( $as3cf_action, $conversion_actions, true ) && ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_delete_originals' ) ) {
 			$opt_image = ewww_image_optimizer_find_already_optimized( $path );
 			if ( ! empty( $opt_image['path'] ) && ! empty( $opt_image['converted'] ) ) {
 				$orig_path = ewww_image_optimizer_absolutize_path( $opt_image['converted'] );
@@ -9235,6 +9254,10 @@ function ewww_image_optimizer_png_alpha( $filename ) {
 		}
 	} elseif ( ewwwio()->gd_support() ) {
 		$image = imagecreatefrompng( $filename );
+		if ( ! $image ) {
+			ewwwio_debug_message( 'could not load image' );
+			return false;
+		}
 		if ( imagecolortransparent( $image ) >= 0 ) {
 			ewwwio_debug_message( 'transparency found' );
 			return true;
@@ -9252,7 +9275,6 @@ function ewww_image_optimizer_png_alpha( $filename ) {
 		}
 	}
 	ewwwio_debug_message( 'no transparency' );
-	ewwwio_memory( __FUNCTION__ );
 	return false;
 }
 
@@ -10574,7 +10596,7 @@ function ewww_image_optimizer_settings_script( $hook ) {
 	}
 	delete_option( 'ewww_image_optimizer_exactdn_checkin' );
 	global $exactdn;
-	if ( has_action( 'admin_notices', 'ewww_image_optimizer_notice_exactdn_domain_mismatch' ) ) {
+	if ( is_object( $exactdn ) && has_action( 'admin_notices', 'ewww_image_optimizer_notice_exactdn_domain_mismatch' ) ) {
 		delete_option( 'ewww_image_optimizer_exactdn_domain' );
 		delete_option( 'ewww_image_optimizer_exactdn_local_domain' );
 		delete_option( 'ewww_image_optimizer_exactdn_plan_id' );
@@ -11197,7 +11219,7 @@ function ewwwio_debug_info() {
 	if ( PHP_OS !== 'WINNT' && ! ewwwio()->cloud_mode && ewwwio()->local->exec_check() ) {
 		ewwwio()->local->find_nix_binary( 'nice' );
 	}
-	ewwwio_debug_message( ewww_image_optimizer_aux_images_table_count() . ' images have been optimized' );
+	ewwwio_debug_message( ewww_image_optimizer_aux_images_table_count( true ) . ' images have been optimized' );
 	if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_noauto' ) ) {
 		ewwwio_debug_message( 'automatic compression disabled' );
 	} else {
@@ -11594,16 +11616,10 @@ function ewww_image_optimizer_intro_wizard() {
 							<br><br>
 			<?php if ( ! ewww_image_optimizer_easy_site_registered( $easyio_site_url ) ) : ?>
 				<?php if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) : ?>
-							<a class='easyio-cloud-key-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank">
-								<?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?>
-							</a>
+							<a class='easyio-cloud-key-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank"><?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?></a>
 				<?php else : ?>
-							<a class='easyio-cloud-key-ui' style='display:none;' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank">
-								<?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?>
-							</a>
-							<a class='easyio-manual-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank">
-								<?php esc_html_e( 'First, add your Site URL to your account:', 'ewww-image-optimizer' ); ?>
-							</a>
+							<a class='easyio-cloud-key-ui' style='display:none;' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank"><?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?></a>
+							<a class='easyio-manual-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank"><?php esc_html_e( 'First, add your Site URL to your account:', 'ewww-image-optimizer' ); ?></a>
 				<?php endif; ?>
 							<input type='text' id='exactdn_site_url' name='exactdn_site_url' value='<?php echo esc_url( trim( $easyio_site_url ) ); ?>' readonly />
 							<span id='exactdn-site-url-copy'><?php esc_html_e( 'Click to Copy', 'ewww-image-optimizer' ); ?></span>
@@ -12125,20 +12141,6 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 		if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) {
 			$speed_recommendations[] = __( 'Enable Easy IO for automatic resizing.', 'ewww-image-optimizer' ) . ewwwio_get_help_link( 'https://docs.ewww.io/article/44-introduction-to-exactdn', '59bc5ad6042863033a1ce370,5c0042892c7d3a31944e88a4' );
 		}
-		delete_option( 'ewww_image_optimizer_exactdn_domain' );
-		delete_option( 'ewww_image_optimizer_exactdn_plan_id' );
-		delete_option( 'ewww_image_optimizer_exactdn_failures' );
-		delete_option( 'ewww_image_optimizer_exactdn_checkin' );
-		delete_option( 'ewww_image_optimizer_exactdn_verified' );
-		delete_option( 'ewww_image_optimizer_exactdn_validation' );
-		delete_option( 'ewww_image_optimizer_exactdn_suspended' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_domain' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_plan_id' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_failures' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_checkin' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_verified' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_validation' );
-		delete_site_option( 'ewww_image_optimizer_exactdn_suspended' );
 	}
 	$exactdn_network_enabled = 0;
 	if ( $exactdn_enabled && is_multisite() && is_network_admin() && empty( $exactdn_sub_folder ) ) {
@@ -12301,7 +12303,6 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 	<div id='ewww-widgets' class='metabox-holder'>
 		<div class='meta-box-sortables'>
 			<div id='ewww-status' class='postbox'>
-				<!--<h2 class='ewww-hndle'><?php esc_html_e( 'Optimization Status', 'ewww-image-optimizer' ); ?></h2>-->
 				<div class='ewww-hndle' id="ewwwio-banner">
 					<img height="95" width="167" src="<?php echo esc_url( plugins_url( '/images/ewwwio-logo.png', __FILE__ ) ); ?>">
 	<?php if ( ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_hide_newsletter_signup' ) ) : ?>
@@ -12541,6 +12542,11 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 		<li class='ewww-tab ewww-contribute-nav'><span><?php esc_html_e( 'Contribute', 'ewww-image-optimizer' ); ?></span></li>
 	</ul>
 	<?php endif; ?>
+	<?php if ( ! ewww_image_optimizer_easy_site_registered( $easyio_site_url ) ) : ?>
+		<script>var exactdn_registered = false;</script>
+	<?php else : ?>
+		<script>var exactdn_registered = true;</script>
+	<?php endif; ?>
 	<?php if ( false !== strpos( $network, 'network-multisite' ) ) : ?>
 	<form id='ewww-settings-form' method='post' action=''>
 	<?php else : ?>
@@ -12614,7 +12620,7 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 		return;
 	endif;
 	$premium_hide = '';
-	if ( ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) && ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_exactdn' ) ) {
+	if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) || ewww_image_optimizer_easy_active() ) {
 		$premium_hide = ' style="display:none"';
 	}
 	?>
@@ -12622,6 +12628,7 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 				<tr id='ewww_image_optimizer_cloud_key_container'>
 					<th scope='row'>
 						<label for='ewww_image_optimizer_cloud_notkey'><?php esc_html_e( 'Compress API Key', 'ewww-image-optimizer' ); ?></label>
+						<?php ewwwio_help_link( 'https://docs.ewww.io/article/7-basic-configuration', '585373d5c697912ffd6c0bb2,5ad0c8e7042863075092650b,5a9efec62c7d3a7549516550' ); ?>
 					</th>
 					<td>
 						<input type='text' id='ewww_image_optimizer_cloud_notkey' name='ewww_image_optimizer_cloud_notkey' readonly='readonly' value='****************<?php echo esc_attr( substr( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ), 28 ) ); ?>' size='32' />
@@ -12639,25 +12646,28 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 							<span style="color: red; font-weight: bolder"><?php esc_html_e( 'Not Verified', 'ewww-image-optimizer' ); ?></span>
 		<?php endif; ?>
 		<?php if ( false !== strpos( $verify_cloud, 'great' ) ) : ?>
-							<a target="_blank" href="https://history.exactlywww.com/show/?api_key=<?php echo esc_attr( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ); ?>"><?php esc_html_e( 'View Usage', 'ewww-image-optimizer' ); ?></a>
+							<a target="_blank" href="https://ewww.io/manage-keys/"><?php esc_html_e( 'View Usage', 'ewww-image-optimizer' ); ?></a>
 		<?php endif; ?>
 						</p>
 					</td>
 				</tr>
 	<?php else : ?>
 		<?php if ( ! $exactdn_enabled ) : ?>
-				<tr>
-					<th scope='row'>&nbsp;</th>
+				<tr<?php echo wp_kses_post( $premium_hide ); ?>>
+					<th scope='row'>
+						<p><a type='submit' class='button-primary ewww-upgrade' href='https://ewww.io/trial/'><?php esc_attr_e( 'Start Premium Trial', 'ewww-image-optimizer' ); ?></a></p>
+					</th>
 					<td>
-						<input type='radio' id='ewww_image_optimizer_budget_pay' name='ewww_image_optimizer_budget' value='pay' required />
+						<p><?php esc_html_e( 'Get 5x more compression with a premium plan.', 'ewww-image-optimizer' ); ?></p>
+						<!--<input type='radio' id='ewww_image_optimizer_budget_pay' name='ewww_image_optimizer_budget' value='pay' required />
 						<label for='ewww_image_optimizer_budget_pay'><?php esc_html_e( 'Activate Easy IO and/or the Compress API to get 5x more optimization and priority support', 'ewww-image-optimizer' ); ?></label><br>
 						<input type='radio' id='ewww_image_optimizer_budget_free' name='ewww_image_optimizer_budget' value='free' required <?php checked( (bool) $premium_hide ); ?> />
 						<label for='ewww_image_optimizer_budget_free'><?php esc_html_e( 'Stick with free mode for now', 'ewww-image-optimizer' ); ?></label>
-						<p class="ewwwio-premium-setup-disabled-for-now" <?php echo wp_kses_post( $premium_hide ); ?>><strong><a href='https://ewww.io/plans/' target='_blank'>&gt;&gt;<?php esc_html_e( 'Start your free trial', 'ewww-image-optimizer' ); ?></a></strong></p>
+						<p class="ewwwio-premium-setup-disabled-for-now" <?php echo wp_kses_post( $premium_hide ); ?>><strong><a href='https://ewww.io/plans/' target='_blank'>&gt;&gt;<?php esc_html_e( 'Start your free trial', 'ewww-image-optimizer' ); ?></a></strong></p>-->
 					</td>
 				</tr>
 		<?php endif; ?>
-				<tr id='ewww_image_optimizer_cloud_key_container' class='ewwwio-premium-setup' <?php echo wp_kses_post( $premium_hide ); ?>>
+				<tr id='ewww_image_optimizer_cloud_key_container' class='ewwwio-premium-setup'>
 					<th scope='row'>
 						<label for='ewww_image_optimizer_cloud_key'><?php esc_html_e( 'Compress API Key', 'ewww-image-optimizer' ); ?></label>
 						<?php ewwwio_help_link( 'https://docs.ewww.io/article/7-basic-configuration', '585373d5c697912ffd6c0bb2,5ad0c8e7042863075092650b,5a9efec62c7d3a7549516550' ); ?>
@@ -12669,24 +12679,17 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 						<span id='ewwwio-api-activation-processing'><img src='<?php echo esc_url( $loading_image_url ); ?>' alt='loading'/></span>
 						<p class='description'>
 							<?php esc_html_e( 'Premium compression for your local images.', 'ewww-image-optimizer' ); ?>
-							<?php
-							printf(
-								/* translators: 1: the string 'Start your free trial' with a link to the signup page 2: 'enter an existing key' linked to the account/key page */
-								esc_html__( '%1$s or %2$s.', 'ewww-image-optimizer' ),
-								"<a href='https://ewww.io/plans/' target='_blank'>" . esc_html__( 'Start your free trial', 'ewww-image-optimizer' ) . '</a>',
-								"<a href='https://ewww.io/manage-keys/' target='_blank'>" . esc_html__( 'enter an existing key', 'ewww-image-optimizer' ) . '</a>'
-							);
-							?>
+							<a href='https://ewww.io/manage-keys/' target='_blank'><?php esc_html_e( 'Manage your API keys', 'ewww-image-optimizer' ); ?></a>
 						</p>
 					</td>
 				</tr>
 	<?php endif; ?>
 	<?php if ( ! get_option( 'easyio_exactdn' ) ) : ?>
 		<?php ob_start(); ?>
-				<tr id="ewww_image_optimizer_exactdn_container" class="ewwwio-premium-setup" <?php echo wp_kses_post( $premium_hide ); ?>>
+				<tr id="ewww_image_optimizer_exactdn_container" class="ewwwio-premium-setup">
 					<th scope='row'>
 						<span id='ewwwio-exactdn-anchor'></span>
-						<label for='ewww_image_optimizer_exactdn'><?php esc_html_e( 'Easy IO', 'ewww-image-optimizer' ); ?></label>
+						<?php esc_html_e( 'Easy IO', 'ewww-image-optimizer' ); ?>
 						<?php ewwwio_help_link( 'https://docs.ewww.io/article/44-introduction-to-exactdn', '59bc5ad6042863033a1ce370,5c0042892c7d3a31944e88a4' ); ?>
 					</th>
 					<td>
@@ -12714,10 +12717,7 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 							<span style="color: orange; font-weight: bolder"><?php esc_html_e( 'Partially Active', 'ewww-image-optimizer' ); ?></span> - <a href="https://ewww.io/manage-sites/"><?php esc_html_e( 'Manage Sites', 'ewww-image-optimizer' ); ?></a><br>
 							<span><?php esc_html_e( 'Easy IO is not active on some sites. You may activate individual sites via the plugin settings in each site dashboard, or activate all remaining sites below.', 'ewww-image-optimizer' ); ?></span><br>
 				<?php else : ?>
-							<strong><a href="https://ewww.io/plans/" target="_blank">
-								<?php esc_html_e( 'Purchase a subscription for your sites', 'ewww-image-optimizer' ); ?>
-							</a></strong><br>
-							<a href="https://ewww.io/manage-sites/" target="_blank"><?php esc_html_e( 'Then, add your Site URLs to your account', 'ewww-image-optimizer' ); ?></a>
+							<a href="https://ewww.io/manage-sites/" target="_blank"><?php esc_html_e( 'Add your Site URLs to your account', 'ewww-image-optimizer' ); ?></a>
 				<?php endif; ?>
 						</div>
 						<p>
@@ -12753,26 +12753,14 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 						<div class="ewwwio-easy-setup-instructions">
 			<?php if ( ! ewww_image_optimizer_easy_site_registered( $easyio_site_url ) ) : ?>
 				<?php if ( ewww_image_optimizer_get_option( 'ewww_image_optimizer_cloud_key' ) ) : ?>
-							<a class='easyio-cloud-key-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank">
-								<?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?>
-							</a>
+							<a class='easyio-cloud-key-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank"><?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?></a>
 				<?php else : ?>
-							<p class='easyio-manual-ui' style="font-weight: bold;"><a href="https://ewww.io/plans/" target="_blank">
-								<?php esc_html_e( 'Purchase a subscription for your site.', 'ewww-image-optimizer' ); ?>
-							</a></p>
-							<a class='easyio-cloud-key-ui' style='display:none;' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank">
-								<?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?>
-							</a>
-							<a class='easyio-manual-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank">
-								<?php esc_html_e( 'Then, add your Site URL to your account:', 'ewww-image-optimizer' ); ?>
-							</a>
+							<a class='easyio-cloud-key-ui' style='display:none;' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank"><?php esc_html_e( 'Verify that this site is added to your account:', 'ewww-image-optimizer' ); ?></a>
+							<a class='easyio-manual-ui' href="<?php echo esc_url( add_query_arg( 'site_url', trim( $easyio_site_url ), 'https://ewww.io/manage-sites/' ) ); ?>" target="_blank"><?php esc_html_e( 'Add your Site URL to your account:', 'ewww-image-optimizer' ); ?></a>
 				<?php endif; ?>
 							<input type='text' id='exactdn_site_url' name='exactdn_site_url' value='<?php echo esc_url( trim( $easyio_site_url ) ); ?>' readonly />
 							<span id='exactdn-site-url-copy'><?php esc_html_e( 'Click to Copy', 'ewww-image-optimizer' ); ?></span>
 							<span id='exactdn-site-url-copied'><?php esc_html_e( 'Copied', 'ewww-image-optimizer' ); ?></span><br>
-							<script>var exactdn_registered = false;</script>
-			<?php else : ?>
-							<script>var exactdn_registered = true;</script>
 			<?php endif; ?>
 							<a id='ewwwio-easy-activate' href='#' class='button-secondary'><?php esc_html_e( 'Activate', 'ewww-image-optimizer' ); ?></a>
 							<span id='ewwwio-easy-activation-processing'><img src='<?php echo esc_url( $loading_image_url ); ?>' alt='loading'/></span>
@@ -12847,7 +12835,7 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 					</td>
 				</tr>
 	<?php if ( ! function_exists( 'swis' ) ) : ?>
-				<tr id="swis_promo_container" class="ewwwio-premium-setup" <?php echo wp_kses_post( $premium_hide ); ?>>
+				<tr id="swis_promo_container" class="ewwwio-premium-setup">
 					<th scope='row'>
 						SWIS Performance
 					</th>
@@ -12959,22 +12947,11 @@ function ewww_image_optimizer_options( $network = 'singlesite' ) {
 						</p>
 					</td>
 				</tr>
-				<!-- <tr id='ewww_image_optimizer_siip_container' <?php echo ewww_image_optimizer_get_option( 'ewww_image_optimizer_lazy_load' ) ? '' : ' style="display:none"'; ?>>
-					<td>&nbsp;</td>
-					<td>
-						<input type='checkbox' name='ewww_image_optimizer_use_siip' value='true' id='ewww_image_optimizer_use_siip' <?php checked( ewww_image_optimizer_get_option( 'ewww_image_optimizer_use_siip' ) ); ?> />
-						<label for='ewww_image_optimizer_use_siip'><strong><?php esc_html_e( 'SVG Placeholders', 'ewww-image-optimizer' ); ?></strong></label>
-						<?php ewwwio_help_link( 'https://docs.ewww.io/article/75-lazy-load-placeholders', '5c9a7a302c7d3a1544615e47' ); ?>
-						<p class='description'>
-							<?php esc_html_e( 'Inline SVG placeholders use fewer HTTP requests than right-sized PNG placeholders, but may not work with some themes.', 'ewww-image-optimizer' ); ?>
-						</p>
-					</td>
-				</tr> -->
 				<tr id='ewww_image_optimizer_lqip_container' <?php echo ewww_image_optimizer_get_option( 'ewww_image_optimizer_lazy_load' ) ? '' : ' style="display:none"'; ?>>
 					<td>&nbsp;</td>
 					<td>
 						<input type='checkbox' name='ewww_image_optimizer_use_lqip' value='true' id='<?php echo esc_attr( $lqip_id ); ?>' <?php disabled( $lqip_dis ); ?> <?php checked( $lqip_che ); ?> />
-						<label for='ewww_image_optimizer_use_lqip'><strong>LQIP</strong></label>
+						<label for='<?php echo esc_attr( $lqip_id ); ?>'><strong>LQIP</strong></label>
 						<?php ewwwio_help_link( 'https://docs.ewww.io/article/75-lazy-load-placeholders', '5c9a7a302c7d3a1544615e47' ); ?>
 						<p class='description'>
 							<?php esc_html_e( 'Use low-quality versions of your images as placeholders via Easy IO. Can improve user experience, but may be slower than blank placeholders.', 'ewww-image-optimizer' ); ?>
@@ -13625,7 +13602,7 @@ AddType image/webp .webp</pre>
 					</th>
 					<td>
 						<input type='text' id='ewww_image_optimizer_avif_quality' name='ewww_image_optimizer_avif_quality' class='small-text' value='<?php echo esc_attr( ewww_image_optimizer_avif_quality() ); ?>' <?php disabled( ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_exactdn' ) ); ?> />
-						<?php esc_html_e( 'Default is 45, recommended range is 30-60.', 'ewww-image-optimizer' ); ?>
+						<?php esc_html_e( 'Default is 60, recommended range is 45-80.', 'ewww-image-optimizer' ); ?>
 						<p class='description'>
 							<?php esc_html_e( 'AVIF conversion is enabled via the Easy IO CDN.', 'ewww-image-optimizer' ); ?>
 						</p>

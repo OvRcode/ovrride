@@ -5,7 +5,7 @@ Tags: optimize, image, convert, webp, resize, compress, lazy load, optimization,
 Requires at least: 5.8
 Tested up to: 6.2
 Requires PHP: 7.2
-Stable tag: 7.0.0
+Stable tag: 7.0.2
 License: GPLv3
 
 Smaller Images, Faster Sites, Happier Visitors. Comprehensive image optimization that doesn't require a degree in rocket science.
@@ -136,6 +136,17 @@ That's not a question, but since I made it up, I'll answer it. See this resource
 
 * Feature requests can be viewed and submitted on our [feedback portal](https://feedback.ewww.io/b/features)
 * If you would like to help translate this plugin in your language, [join the team](https://translate.wordpress.org/projects/wp-plugins/ewww-image-optimizer/)
+
+= 7.0.2 =
+* fixed: background optimization incorrectly displays as disabled on fresh installs with object caching
+* fixed: Easy IO registration state not detected on multi-site
+* fixed: duplicate queries in wp-admin when used with WP Offload Media
+* fixed: deprecation notices when validating quality settings
+* fixed: error when checking a corrupted PNG for transparency
+
+= 7.0.1 =
+* fixed: Easy IO instructions display incorrect URL when images are on cloud storage (S3, GCS, etc.)
+* fixed: fatal error calling undefined method supports_webp
 
 = 7.0.0 =
 * breaking: namespaced and reorganized several classes, third party integrations should check for compatibility
