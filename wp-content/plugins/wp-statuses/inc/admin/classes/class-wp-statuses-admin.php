@@ -83,6 +83,17 @@ class WP_Statuses_Admin {
 
 		// Press This
 		add_filter( 'press_this_save_post',  array( $this, 'reset_status' ),    10, 1 );
+
+		// Block editor
+		if ( function_exists( 'register_block_type' ) )  {
+			add_action( 'init',                        array( $this, 'register_block_editor_script' ), 1001 );
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_asset' ), 10 );
+			if ( function_exists( 'block_editor_rest_api_preload' ) ) {
+				add_filter( 'block_editor_rest_api_preload_paths', array( $this, 'preload_path' ), 10 );
+			} else {
+				add_filter( 'block_editor_preload_paths', array( $this, 'preload_path' ), 10 );
+			}
+		}
 	}
 
 	/**
@@ -104,6 +115,11 @@ class WP_Statuses_Admin {
 		// Regular Admin screens.
 		if ( 'press-this.php' !== $press_this ) {
 			$current_screen = get_current_screen();
+
+			// Bail if the post type is not supported.
+			if ( isset( $current_screen->post_type ) && ! wp_statuses_is_post_type_supported( $current_screen->post_type ) ) {
+				return;
+			}
 
 			if ( isset( $current_screen->base ) && in_array( $current_screen->base, array( 'page', 'post' ), true ) ) {
 				wp_add_inline_style( 'edit', '
@@ -194,10 +210,28 @@ class WP_Statuses_Admin {
 	 * @param WP_Post $post      The post object.
 	 */
 	public function add_meta_box( $post_type, $post ) {
-		global $publish_callback_args;
+		// Bail if the Post Type is not supported, or if post uses Gutenberg block editor
+		if ( ! wp_statuses_is_post_type_supported( $post_type ) ) {
+			return;
+		}
 
 		// Remove the built-in Publish meta box.
 		remove_meta_box( 'submitdiv', get_current_screen(), 'side' );
+
+		$publish_callback_args = array( '__back_compat_meta_box' => true );
+
+		if ( post_type_supports( $post_type, 'revisions' ) && 'auto-draft' !== $post->post_status ) {
+			$revisions = wp_get_post_revisions( $post->ID, array( 'fields' => 'ids' ) );
+
+			// We should aim to show the revisions meta box only when there are revisions.
+			if ( count( $revisions ) > 1 ) {
+				$publish_callback_args = array(
+					'revisions_count'        => count( $revisions ),
+					'revision_id'            => reset( $revisions ),
+					'__back_compat_meta_box' => true,
+				);
+			}
+		}
 
 		// Use plugin's Publishing box instead.
 		add_meta_box(
@@ -326,7 +360,7 @@ class WP_Statuses_Admin {
 		<div id="minor-publishing-actions">
 			<div id="save-action">
 
-				<?php if ( 'draft' === $status ) : ?>
+				<?php if ( 'draft' === $status && isset( $this->labels['draft'] ) ) : ?>
 
 					<input type="submit" name="save" id="save-post" value="<?php esc_attr_e( 'Save Draft', 'wp-statuses' ); ?>" class="button" />
 
@@ -529,34 +563,49 @@ class WP_Statuses_Admin {
 		/* translators: Publish box date format, see https://secure.php.net/date */
 		$datef = __( 'M j, Y @ H:i', 'wp-statuses' );
 
+		// Default stamps.
+		$stamps = array(
+			/* translators: 1: the scheduled date for the post. */
+			'metabox_save_later' => __( 'Schedule for: <b>%1$s</b>', 'wp-statuses' ),
+			/* translators: 1: the post’s saved date. */
+			'metabox_saved_date' => __( 'Saved on: <b>%1$s</b>', 'wp-statuses' ),
+			'metabox_save_now'   => __( 'Save <b>now</b>', 'wp-statuses' ),
+			/* translators: 1: the date to save the post on. */
+			'metabox_save_date'  => __( 'Save on: <b>%1$s</b>', 'wp-statuses' ),
+		);
+
+		if ( isset( $this->labels[ $status ] ) ) {
+			$stamps = wp_parse_args( $this->labels[ $status ], $stamps );
+		}
+
 		// Post already exists.
 		if ( 0 !== (int) $post->ID ) {
 			// scheduled for publishing at a future date.
 			if ( 'future' === $status || ( 'draft' !== $status && $is_future ) ) {
-				$stamp = $this->labels[ $status ]['metabox_save_later'];
+					$stamp = $stamps['metabox_save_later'];
 
 			// already published.
 			} elseif ( ! in_array( $status, array( 'draft', 'future', 'pending' ), true ) ) {
-				$stamp = $this->labels[ $status ]['metabox_saved_date'];
+				$stamp = $stamps['metabox_saved_date'];
 
 			// draft, 1 or more saves, no date specified.
 			} elseif ( '0000-00-00 00:00:00' === $post->post_date_gmt ) {
-				$stamp = $this->labels[ $status ]['metabox_save_now'];
+				$stamp = $stamps['metabox_save_now'];
 
 			// draft, 1 or more saves, future date specified.
 			} elseif ( $is_future ) {
-				$stamp = $this->labels[ $status ]['metabox_save_later'];
+				$stamp = $stamps['metabox_save_later'];
 
 			// draft, 1 or more saves, date specified.
 			} else {
-				$stamp = $this->labels[ $status ]['metabox_save_date'];
+				$stamp = $stamps['metabox_save_date'];
 			}
 
 			$date = date_i18n( $datef, strtotime( $post->post_date ) );
 
 		// draft (no saves, and thus no date specified).
 		} else {
-			$stamp = $this->labels[ $status ]['metabox_save_now'];
+			$stamp = $stamps['metabox_save_now'];
 			$date = date_i18n( $datef, strtotime( current_time( 'mysql' ) ) );
 		}
 
@@ -615,16 +664,35 @@ class WP_Statuses_Admin {
 			return;
 		}
 
+		// Default is submit box's default value.
+		$text = '';
+
+		if ( isset( $this->labels[ $status ]['metabox_submit'] ) ) {
+			$text = $this->labels[ $status ]['metabox_submit'];
+		}
+
 		// Submit input arguments.
 		$args = array(
-			'text'             => $this->labels[ $status ]['metabox_submit'],
+			'text'             => $text,
 			'type'             => 'primary large',
 			'name'             => 'save',
 			'wrap'             => false,
 			'other_attributes' => array( 'id' => 'publish' ),
 		);
 
-		if ( in_array( $status, array( 'draft', 'pending' ), true ) || 0 === (int) $post->ID ) {
+		$default_labels = reset( $this->labels );
+		$default_status = key( $this->labels );
+
+		// The current post type does not support the Publish status.
+		if ( 'publish' !== $default_status ) {
+			$args['text'] = __( 'Save', 'wp-statuses' );
+
+			if ( isset( $default_labels['metabox_submit'] ) ) {
+				$args['text'] = $default_labels['metabox_submit'];
+			}
+
+		// The current post type supports the Publish status.
+		} elseif ( in_array( $status, array( 'draft', 'pending' ), true ) || 0 === (int) $post->ID ) {
 			$args = array_merge( $args, array(
 				'text' => __( 'Submit for Review', 'wp-statuses' ),
 				'name' => 'publish',
@@ -639,12 +707,8 @@ class WP_Statuses_Admin {
 			}
 		}
 
-		/**
-		 * Fires at the beginning of the publishing actions section of the Publish meta box.
-		 *
-		 * @since WordPress 2.7.0
-		 */
-		do_action( 'post_submitbox_start' ); ?>
+		/** This action is documented in wp-admin/includes/meta-boxes.php */
+		do_action( 'post_submitbox_start', $post ); ?>
 
 		<div id="delete-action">
 			<?php if ( current_user_can( "delete_post", $post->ID ) ) : ?>
@@ -683,6 +747,83 @@ class WP_Statuses_Admin {
 
 		return array_merge( $post_data, array(
 			'post_status' => $status->name,
+		) );
+	}
+
+	/**
+	 * Registers the Block Editor's Sidebar script.
+	 *
+	 * @since 2.0.0
+	 */
+	public function register_block_editor_script() {
+		wp_register_script(
+			'wp-statuses-sidebar',
+			sprintf( '%ssidebar.js', wp_statuses_js_url() ),
+			array(
+				'wp-blocks',
+				'wp-components',
+				'wp-compose',
+				'wp-data',
+				'wp-date',
+				'wp-edit-post',
+				'wp-i18n',
+				'wp-plugins',
+			),
+			wp_statuses_version()
+		);
+
+		$test = wp_set_script_translations( 'wp-statuses-sidebar', 'wp-statuses', trailingslashit( wp_statuses()->dir ) . 'languages' );
+	}
+
+	/**
+	 * Loads the needed CSS/Script for the Block Editor's Sidebar script.
+	 *
+	 * @since 2.0.0
+	 */
+	public function enqueue_block_editor_asset() {
+		$post_type = get_post_type();
+		if ( ! in_array( $post_type, wp_statuses_get_customs_post_types(), true ) ) {
+			return;
+		}
+
+		$future_control  = '';
+		$required_status = wp_statuses_get( 'publish' );
+
+		if ( ! in_array( $post_type, $required_status->post_type, true ) ) {
+			$future_control = ', .edit-post-post-schedule';
+		}
+
+		wp_enqueue_script( 'wp-statuses-sidebar' );
+		wp_add_inline_style( 'wp-edit-post', "
+			.edit-post-post-visibility{$future_control} { display: none }
+			.editor-post-switch-to-draft { display: none }
+			.components-panel__row.wp-statuses-info { display: block }
+			.components-panel__row.wp-statuses-info .components-base-control__label,
+			.components-panel__row.wp-statuses-info .components-select-control__input,
+			.components-panel__row.wp-statuses-info .components-text-control__input {
+				display: inline-block;
+				max-width: 100%;
+				width: 100%;
+			}
+			.components-base-control.wp-statuses-password { margin-top: 20px }
+		" );
+	}
+
+	/**
+	 * Adds a REST route to preload into the Block Editor.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param  array $paths The list of REST routes to preload.
+	 * @return array        The list of REST routes to preload.
+	 */
+	public function preload_path( $paths = array() ) {
+		if ( ! in_array( get_post_type(), wp_statuses_get_customs_post_types(), true ) ) {
+			return $paths;
+		}
+
+		return array_merge( $paths, array(
+			'/wp/v2/statuses?context=edit'
 		) );
 	}
 }

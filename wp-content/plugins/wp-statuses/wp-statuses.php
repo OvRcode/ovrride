@@ -3,14 +3,15 @@
 Plugin Name: WP Statuses
 Plugin URI: https://imathi.eu/tag/wp-statuses/
 Description: Suggestions to improve the WordPress Post statuses API.
-Version: 1.2.0
-Requires at least: 4.7
-Tested up to: 4.7
+Version: 2.1.5
+Requires at least: 5.0
+Tested up to: 5.9
 License: GNU/GPL 2
 Author: imath
 Author URI: https://imathi.eu/
 Text Domain: wp-statuses
 Domain Path: /languages/
+GitHub Plugin URI: https://github.com/imath/wp-statuses/
 */
 
 // Exit if accessed directly.
@@ -68,7 +69,7 @@ final class WP_Statuses {
 	 */
 	private function setup_globals() {
 		// Version
-		$this->version = '1.2.0';
+		$this->version = '2.1.5';
 
 		// Domain
 		$this->domain = 'wp-statuses';
@@ -92,7 +93,7 @@ final class WP_Statuses {
 	private function inc() {
 		spl_autoload_register( array( $this, 'autoload' ) );
 
-		require( $this->inc_dir . 'core/functions.php' );
+		require $this->inc_dir . 'core/functions.php';
 
 		/**
 		 * Filter here to have a preview about how custom statuses
@@ -104,8 +105,8 @@ final class WP_Statuses {
 		 * @param  bool $value True to have a demo of the custom status.
 		 *                     False otherwise.
 		 */
-		if ( apply_filters( 'wp_statuses_use_custom_status', false ) ) {
-			require( $this->inc_dir . 'core/custom.php' );
+		if ( apply_filters( 'wp_statuses_use_custom_status', WP_DEBUG ) ) {
+			require $this->inc_dir . 'core/custom.php';
 		}
 	}
 

@@ -1,15 +1,21 @@
 # WP Statuses
 
-As described in [#12706](https://core.trac.wordpress.org/ticket/12706), the WordPress Publish Metabox does not support custom statuses so far. The Core Trac ticket also introduces some questions about the way this Metabox is designed, in particular the visibility's section of it. This plugin is first suggesting a new Publishing Metabox as shown below.
+Whether you are using the Classic editor or the **Block Editor** of WordPress, WP Statuses brings an API to control the post types your custom Post Status will be applied to. It also adapts the various WordPress Administration UIs to let you manage all the available statuses for you post (including the custom ones of course!).
 
-![Built in statuses in the Publishing Metabox](https://cldup.com/7_IigUCAPn.png)
+Below are screenshots of how it looks into WordPress editors.
+
+| ![Built in statuses in the Publishing Metabox](https://cldup.com/7_IigUCAPn.png) | ![Block Editor](https://cldup.com/dzk-bZsmVT.png ) |
+| :---: | :---: |
+| Classic Editor | Block Editor |
+
+This is a safely way to wait until the WordPress trac ticket [#12706](https://core.trac.wordpress.org/ticket/12706) and the Gutenberg GitHub issue [#3144](https://github.com/WordPress/gutenberg/issues/3144) are fixed.
 
 **PS**: The Password protected visibility option is now included into the statuses dropdowns and labels for Private and Published has been renamed respectively to Privately published and Publicly published.
 
 #### Custom statuses for builtin Post Types
 
 ```php
-add_filter( 'wp_statuses_use_custom_status', '__return_true' )
+add_filter( 'wp_statuses_use_custom_status', '__return_true' );
 ```
 
 Using the above filter will demonstrate how it is possible to add custom statuses for WordPress builtin Post Types.
@@ -19,7 +25,7 @@ Using the above filter will demonstrate how it is possible to add custom statuse
 
 #### Custom statuses for Custom Post Types
 
-In this [gist](https://gist.github.com/imath/2b6d2ce1ead6aba11c8ad12c6beb4770) a new Post Type named "ticket" is registered along with custom statuses. It's a tiny use case showing how you can __with less than 150 lines__ begin to build an Issue reporting system. The ticket's post type has 5 statuses:
+In this [gist](https://gist.github.com/imath/2b6d2ce1ead6aba11c8ad12c6beb4770) a new Post Type named "ticket" is registered along with custom statuses. It's a tiny use case showing how you can __with less than 150 lines__ begin to build an Issue reporting system. The ticket's post type has five statuses:
 
 + The WordPress builtin Draft and Pending statuses,
 + Three custom statuses: `assigned`, `resolved` & `invalid`, as shown below.
@@ -39,7 +45,7 @@ To register a custom status and make it appear into the Post Type's UIs, you wil
 | Array | `post_type` | The list of post type names the status should be applied to |
 | bool | `show_in_metabox_dropdown` | Whether to show the status in the Publishing Metabox |
 | bool | `show_in_inline_dropdown` | Whether to show the status in the Bulk Edit and Quick Edit forms |
-| Array | `labels` | An associative array containing the labels for the two previous contexts. If there are not defined, The value of the `label` argunent of the `register_post_status()` function will be used. Keys are `metabox_dropdown` for the Publishing Metabox and `inline_dropdown` for Bulk/Quick Edit forms |
+| Array | `labels` | An associative array containing the labels for the two previous contexts. If there are not defined, The value of the `label` argument of the `register_post_status()` function will be used. Keys are `metabox_dropdown` for the Publishing Metabox and `inline_dropdown` for Bulk/Quick Edit forms |
 | String | `dashicon` | The dachicon's name |
 
 For example, to add an `archive` custom status to Posts, you can use the WordPress function this way:
@@ -68,7 +74,7 @@ register_post_status( 'archive', array(
 
 ## Configuration needed
 
-+ WordPress 4.7
++ WordPress 5.0
 
 ## Installation
 
