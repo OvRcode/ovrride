@@ -28,6 +28,7 @@ class SM_Packaged_Shortcodes_Admin {
                         <div class="modal-body">
                             <?php
                             foreach ( $shortcode_packages as $name => $package_label ) :
+
                                 $classname = sm_get_package_classname( $name );
                                 $settigs = sm_get_package_settings( $classname );
                                 $s_items = isset( $settigs['items'] ) ? $settigs['items'] : array();
@@ -52,6 +53,7 @@ class SM_Packaged_Shortcodes_Admin {
                             <span aria-controls="<?php echo $name; ?>">
                                 <?php
                                 $classname = sm_get_package_classname( $name );
+                                error_log($classname);
                                 $settigs = sm_get_package_settings( $classname );
                                 echo $settigs['name'];
                                 ob_start();
