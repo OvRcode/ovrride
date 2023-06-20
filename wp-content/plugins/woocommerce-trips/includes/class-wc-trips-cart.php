@@ -78,15 +78,28 @@ class WC_Trips_Cart {
           return $error;
         }
         if ( "trip" === $_product->product_type && "beach_bus" === $_product->get_meta( "_wc_trip_type", true, "view" ) ) {
-          $stock_total[$_product->get_id()]['count'] += 1;
+          if ( !isset( $stock_total[$_product->get_id()]) ){
+            $stock_total[$_product->get_id()] = array('count' => 0, 'secondary' => array());
+          }
+          if (!isset( $stock_total[$_product->get_id()]['secondary']) || count($stock_total[$_product->get_id()]['secondary']) == 0 ) {
+            $stock_total[$_product->get_id()]['secondary'] = [
+              "ToEarly" => ["count" => 0], 
+              "ToLate" => ["count" => 0], 
+              "FromEarly" => ["count" => 0],
+              "FromLate" => ["count" => 0],
+            ];
+
+          }
+          $stock_total[$_product->get_id()]['count'] += 1; 
             if ( WC()->session->__isset( "{$cart_item_key}_to_beach_route" ) ) {
+             
               $toRoute = WC()->session->get( "{$cart_item_key}_to_beach_route" );
-              $stock_total[$_product->get_id()]['secondary'][$toRoute]['count'] += 1;
+              $stock_total[$_product->get_id()]['secondary'][$toRoute]['count'] += 1; 
               $stock_total[$_product->get_id()]['secondary'][$toRoute]['names'][] = WC()->session->get( "{$cart_item_key}_wc_trip_to_beach" );
             }
             if ( WC()->session->__isset($cart_item_key."_from_beach_route") ) {
               $fromRoute = WC()->session->get($cart_item_key."_from_beach_route");
-              $stock_total[$_product->get_id()]['secondary'][$fromRoute]['count'] += 1;
+              $stock_total[$_product->get_id()]['secondary'][$fromRoute]['count'] += 1; 
               $stock_total[$_product->get_id()]['secondary'][$fromRoute]['names'][] = WC()->session->get( "{$cart_item_key}_wc_trip_from_beach" );
             }
 
