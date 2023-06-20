@@ -23,6 +23,7 @@ $pickups 				= array();
 $toBeach 				= array();
 $fromBeach			= array();
 $has_trip 		 	= false;
+$has_flight		= false;
 $has_beach_bus	= false;
 $wework         = false;
 
