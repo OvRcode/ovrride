@@ -598,6 +598,9 @@ BUSOUTPUT;
               $time = date("g:i a", strtotime(get_post_meta( $post_id, '_pickup_location_time', true)));
             } else {
               foreach( $time_array as $index => $id ) {
+                if  ( !isset($time)) {
+                  $time = "";
+                }
                 $time .= date("g:i a", strtotime(get_post_meta( $id, '_pickup_location_time', true))) . ", ";
               }
               $time = rtrim($time, ", ");

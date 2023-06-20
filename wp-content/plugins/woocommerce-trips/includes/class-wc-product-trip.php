@@ -226,8 +226,10 @@ OUTPUT;
                 $dataCost = "data-cost='" . floatval($values['cost']) . "'";
                 $costLabel = " " . substr_replace(floatval($values['cost']), "$", 1, 0);
             }
-
-						if ( "yes" == $values['default'] ) {
+						if ( ! isset( $values['default'])) {
+							$values['default'] = "";
+							$default = "";
+						} else if  ( "yes" == $values['default'] ) {
 							$default = "selected";
 						} else {
 							$default = "";
