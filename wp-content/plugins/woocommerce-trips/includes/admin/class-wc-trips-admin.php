@@ -268,7 +268,6 @@ class WC_Trips_Admin {
         $time       = date("H:i", strtotime(get_post_meta( $post->ID, '_pickup_location_time', true)));
         $address    = get_post_meta( $post->ID, '_pickup_location_address', true);
         $cross_st   = get_post_meta( $post->ID, '_pickup_location_cross_st', true);
-        $cost       = get_post_meta( $post->ID, '_pickup_location_cost', true);
         echo <<<META
         <input type="hidden" name="pickup_location_nonce" id="pickup_location_nonce" value="{$nonce}" />
 
@@ -280,9 +279,6 @@ class WC_Trips_Admin {
 
         <label for="_pickup_location_cross_st">Cross Streets</label>
         <input type="text" name="_pickup_location_cross_st" value="{$cross_st}" />
-        <br /><br />
-        <label for="_pickup_location_cost">Cost ($)</label>
-        <input type="text" name="_pickup_location_cost" value="{$cost}" />
 META;
 
     }
@@ -308,7 +304,6 @@ META;
             update_post_meta( $post_id, '_pickup_location_time', sanitize_text_field( $_POST['_pickup_location_time'] ) );
             update_post_meta( $post_id, '_pickup_location_address', sanitize_text_field( $_POST['_pickup_location_address'] ) );
             update_post_meta( $post_id, '_pickup_location_cross_st', sanitize_text_field( $_POST['_pickup_location_cross_st'] ) );
-            update_post_meta( $post_id, '_pickup_location_cost', sanitize_texT_field($_POST['_pickup_location_cost']) );
         } else {
             return $post_id;
         }
