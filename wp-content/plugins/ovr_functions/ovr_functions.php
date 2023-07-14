@@ -5,7 +5,7 @@
  * Description: Custom WordPress functions.php for OvRride.
  * Author: AJ Acevedo, Ada Lambrecht
  * Author URI: http://ajacevedo.com
- * Version: 0.7.0
+ * Version: 0.8.0
  * License: MIT License
  */
 
@@ -138,29 +138,6 @@ function products_column_header( $defaults ) {
     unset( $defaults['dfcg_desc_col'] );
     return $defaults;
 }
-// Adds Google Analytics to the footer
-add_action('wp_footer', 'add_google_analytics');
-  function add_google_analytics() { ?>
-<!-- Google Analytics: -->
-<script type="text/javascript">
-  // Only load Analytics in production
-  if (document.location.hostname.search("ovrride.com") !== -1) {
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-11964448-1']);
-    _gaq.push(['_setDomainName', 'ovrride.com']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  }
-
-</script>
-
-<?php }
-
 
 // Replace Howdy with Whats up, in the Admin Toolbar
 function replace_howdy( $wp_admin_bar ) {
