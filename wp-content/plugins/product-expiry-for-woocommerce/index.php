@@ -1,0 +1,3 @@
+<?php 
+// Don't be over smart hehehehe ...
+ ?>

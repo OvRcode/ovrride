@@ -1,0 +1,111 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Project-Id-Version: Woo Product Expiry\n"
+"POT-Creation-Date: 2022-04-17 10:24+0500\n"
+"PO-Revision-Date: 2022-05-15 17:32+0500\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: product-expiry-for-woocommerce.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Last-Translator: \n"
+"Language: ru_RU\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: menu/status.php:26 menu/status.php:50
+msgid "Product Name"
+msgstr "Название продукта"
+
+#: menu/status.php:27
+msgid "Expired on"
+msgstr "Срок годности истек"
+
+#: menu/status.php:28 menu/status.php:52 product-expiry-for-woocommerce.php:144
+msgid "Action"
+msgstr "Действие"
+
+#: menu/status.php:51
+msgid "Expiring In"
+msgstr "Годен до"
+
+#: product-expiry-for-woocommerce.php:55 product-expiry-for-woocommerce.php:83
+msgid "Exp Date"
+msgstr "Срок годности"
+
+#: product-expiry-for-woocommerce.php:66
+msgid "No Date Set"
+msgstr "Дата не установлена"
+
+#: product-expiry-for-woocommerce.php:117
+msgid "Product Expiry"
+msgstr "Истечение срока годности продукта"
+
+#: product-expiry-for-woocommerce.php:135
+msgid "Expiry Date"
+msgstr "Срок годности"
+
+#: product-expiry-for-woocommerce.php:137
+#: product-expiry-for-woocommerce.php:138
+msgid "Provide the date of expiry in YYYY-MM-DD format"
+msgstr "Установить дату срока годности в формате ГГГГ-ММ-ДД"
+
+#: product-expiry-for-woocommerce.php:146
+msgid "Nothing"
+msgstr "Ничего не предпринимать"
+
+#: product-expiry-for-woocommerce.php:147
+msgid "Make it Draft"
+msgstr "Установить как черновик"
+
+#: product-expiry-for-woocommerce.php:149
+#: product-expiry-for-woocommerce.php:150
+msgid "What to do when this product expires?"
+msgstr "Действия после истечения срока годности?"
+
+#: product-expiry-for-woocommerce.php:156
+msgid "Display"
+msgstr "Показать"
+
+#: product-expiry-for-woocommerce.php:158
+msgid "Disable"
+msgstr "Отключить"
+
+#: product-expiry-for-woocommerce.php:159
+msgid "Enable"
+msgstr "Включить"
+
+#: product-expiry-for-woocommerce.php:161
+#: product-expiry-for-woocommerce.php:162
+msgid "Enable/Disable on the single product page"
+msgstr "Включить/отключить на странице продукта"
+
+#: product-expiry-for-woocommerce.php:204
+msgid "Expiry Date: "
+msgstr "Срок действия "
+
+#. Plugin Name of the plugin/theme
+msgid "Product Expiry for WooCommerce"
+msgstr "Контроль срока годности для WooCommerce"
+
+#. Plugin URI of the plugin/theme
+msgid "https://webcodingplace.com/product-expiry-for-woocommerce/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Provide expiry date for your products and get notified before expire"
+msgstr "Предоставлять дату срока годности для продуктов и отправлять уведомление перед окончанием срока годности"
+
+#. Author of the plugin/theme
+msgid "WebCodingPlace"
+msgstr "WebCodingPlace"
+
+#. Author URI of the plugin/theme
+msgid "https://webcodingplace.com/"
+msgstr ""
