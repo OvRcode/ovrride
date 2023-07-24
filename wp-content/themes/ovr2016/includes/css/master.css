@@ -1,3 +1,12 @@
+/*@media (max-width: 767px) {
+	.navbar-nav .open .dropdown-menu .dropdown-header, .navbar-nav .open .dropdown-menu>li>a {
+		margin: 5px 5px 5px 5px;
+		white-space: normal !important;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		padding: unset;
+	}
+}*/
 /* This is a small security for too long strings titles */
 body {
 	background-image: url('https://firebasestorage.googleapis.com/v0/b/ovrride-2adb5.appspot.com/o/Background%2Fbkg-snow.jpg?alt=media&token=bcb8179d-9a94-4de1-a03f-210fb9379518');
@@ -294,7 +303,13 @@ nav .form-control {
 	 display: inline-block;
 	 width: 50%;
 	 float: left;
-	 word-break: break-all;
+ }
+ .dropdown-menu > li > a {
+		margin: 5px 0px 5px 0px;
+		white-space: normal !important;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		padding: unset;
  }
  .dropdown-menu > li:nth-of-type(odd) {
 	 text-align: right;
