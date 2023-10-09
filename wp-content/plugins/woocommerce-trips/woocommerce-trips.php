@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.6.19
+Version: 1.6.20
 Author:  Ada Lambrecht
 Author URI: http://github.com/ada-lambrecht
 Text Domain: woocommerce-trips
@@ -25,7 +25,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
 
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '1.6.19' );
+        define( 'WC_TRIPS_VERSION', '1.6.20' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -63,9 +63,24 @@ class WC_Trips {
             'callback'  =>  array($this, 'beach_bus_api'),
           ));
         });
+  /**
+   * Custom surharge
+   */
+  add_action( 'woocommerce_cart_calculate_fees', array($this, 'wc_trips_custom_surcharge') );
 
     }
-
+    function wc_trips_custom_surcharge() {
+      global $woocommerce;
+    
+      if ( is_admin() && ! defined( 'DOING_AJAX' ) )
+        return;
+    
+      $percentage = 0.03;
+      $label = "Service Fee (3%)";
+      $surcharge = ( $woocommerce->cart->cart_contents_total + $woocommerce->cart->shipping_total ) * $percentage;	
+      $woocommerce->cart->add_fee(  $label, $surcharge, true, '' );
+    
+    }  
     public function install() {
         add_action( 'shutdown', array( $this, 'delayed_install' ) );
     }
