@@ -1,0 +1,1371 @@
+.yay-smtp-wrap {
+  padding: 15px 50px 15px 50px;
+  max-width: 1032px;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+.yay-smtp-wrap .error-message-email {
+  color: indianred;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.yay-smtp-header {
+  display: flex;
+}
+.yay-smtp-title {
+  width: 30%;
+}
+.yay-button-wrap {
+  width: 70%;
+  text-align: right;
+}
+.yay-button-wrap .yay-tooltip {
+  margin: 0 0 0 10px;
+}
+.yay-smtp-card {
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s cubic-bezier(0.4, 1, 0.4, 1);
+}
+.yay-smtp-card-header {
+  display: grid;
+  align-items: center;
+  border-top-left-radius: 4px;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.yay-smtp-card-header .yay-smtp-card-title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 400;
+  margin: 0;
+}
+.yay-smtp-card-header .yay-smtp-card-description {
+  color: #646970;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+.yay-smtp-card-body {
+  padding: 24px;
+}
+.yay-smtp-card-body .setting-label {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.yay-smtp-card-body select,
+.yay-smtp-card-body input[type="text"],
+.yay-smtp-card-body input[type="password"] {
+  min-width: 50%;
+}
+.yay-smtp-card-footer {
+  padding: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+.yay-smtp-card-header select {
+  border-radius: 4px;
+}
+.yay-smtp-mailer.smtper-choose-wrap {
+  width: unset;
+  margin: unset;
+  margin-top: 12px;
+}
+
+.yay-settings.smtper-choose {
+  margin-top: 12px;
+  width: 50%;
+  max-width: unset;
+}
+
+@media only screen and (max-width: 768px) {
+  .yay-smtp-card-body select,
+  .yay-smtp-card-body input[type="text"],
+  .yay-smtp-card-body input[type="password"],
+  .yay-settings.smtper-choose {
+    min-width: 70%;
+  }
+}
+@media only screen and (max-width: 590px) {
+  .yay-smtp-card-body select,
+  .yay-smtp-card-body input[type="text"],
+  .yay-smtp-card-body input[type="password"],
+  .yay-settings.smtper-choose {
+    min-width: 100%;
+  }
+}
+.yay-smtp-card-body input[type="number"] {
+  max-width: 90px;
+}
+.yay-smtp-card-body input[type="radio"],
+.yay-smtp-card-body input[type="number"] {
+  min-width: unset;
+}
+.yay-smtp-card-body .setting-from-email,
+.yay-smtp-card-body .setting-el {
+  margin-bottom: 20px;
+}
+.yay-smtp-card-body .setting-description {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  color: #646970;
+}
+
+.yay-smtp-mailer {
+  display: inline-block;
+  width: 140px;
+  margin: 0 15px 15px 0;
+  position: relative;
+}
+.yay-smtp-mailer .yay-smtp-mailer-image {
+  background: #fff;
+  text-align: center;
+  border: 2px solid #e5e5e5;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 76px;
+  position: relative;
+  margin-bottom: 10px;
+  padding: 0px 7px;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.yay-smtp-mailer .yay-smtp-mailer-image img {
+  max-width: 90%;
+  max-height: 40px;
+  display: block;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.yay-smtp-button {
+  white-space: nowrap;
+  background: #007cba;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: none;
+  display: inline-flex;
+  font-size: 13px;
+  margin: 0;
+  border: 0;
+  cursor: pointer;
+  transition: box-shadow 0.1s linear;
+  height: 36px;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 6px 12px;
+  border-radius: 2px;
+}
+.yay-smtp-button:hover:not(:disabled) {
+  background: #006ba1;
+  color: #fff;
+}
+.yay-smtp-button:disabled {
+  color: #828282;
+  background: #eaeaea;
+  border-color: #eaeaea;
+  opacity: 1;
+  box-shadow: none;
+  outline: none;
+}
+
+.yay-smtp-button span.text {
+  margin-left: 6px;
+}
+
+.yay-smtp-button.panel-tab-btn.other {
+  background: white;
+  color: #72777c;
+  border: 1px solid #ccd0d4;
+}
+
+.yay-smtp-button.panel-tab-btn.other:hover {
+  color: #32373c;
+}
+
+.doc-setting .yay-smtp-button {
+  height: 28px;
+  padding: 6px 6px;
+  background: white;
+  color: #72777c;
+  border: 1px solid #ccd0d4;
+}
+
+.doc-setting .yay-smtp-button:hover {
+  color: #32373c;
+  background: white;
+}
+
+.doc-setting .yay-tooltiptext {
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.yay-smtp-button-secondary {
+  color: #0071a1;
+  border-color: #0071a1;
+  background: #f3f5f6;
+  vertical-align: top;
+}
+
+.yay-smtp-button-secondary {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 2.15384615;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 10px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-appearance: none;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.yay-smtp-button-secondary:hover {
+  background: #f1f1f1;
+  border-color: #016087;
+  color: #016087;
+}
+
+/** Tooltip - start */
+/* Tooltip container */
+.yay-tooltip {
+  position: relative;
+  display: inline-block;
+  padding: 5px;
+}
+
+/* Tooltip text */
+.yay-tooltip .yay-tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  width: max-content;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 3px 6px;
+  border-radius: 6px;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.3s;
+  max-width: 250px;
+  box-sizing: border-box;
+}
+
+.yay-tooltip.icon-tootip-wrap {
+  padding: 5px;
+  cursor: help;
+  vertical-align: middle;
+  margin-left: -5px;
+}
+
+.yay-tooltip .icon-inst-tootip {
+  color: #666;
+  display: inline-block;
+  font-size: 1.1em;
+  font-style: normal;
+  height: 16px;
+  line-height: 16px;
+  position: relative;
+  width: 16px;
+}
+.yay-tooltip .icon-inst-tootip::after {
+  font-family: Dashicons;
+  font-weight: 400;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  text-indent: 0px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  content: "";
+  cursor: help;
+  font-variant: normal;
+  margin: 0px;
+  font-size: 1.2em;
+}
+
+.yay-tooltip.icon-tootip-wrap .yay-tooltiptext {
+  padding: 5px 10px;
+}
+
+.yay-tooltip-bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.yay-tooltip-top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Tooltip arrow */
+.yay-tooltip-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #555 transparent;
+}
+
+.yay-tooltip-top::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.yay-tooltip:hover .yay-tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+/** Tooltip - end */
+
+/** Drawer - start */
+.yay-sidenav {
+  height: calc(100vh - 91px);
+  top: 91px;
+  width: 510px;
+  transform: translateX(100%);
+  transition-property: transform box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  position: fixed;
+  right: 0;
+  z-index: 11;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+}
+.yay-sidenav.is-open {
+  transform: none;
+  box-shadow: 0 12px 12px 0 rgba(85, 93, 102, 0.3);
+}
+.yay-sidenav .closebtn {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  font-size: 30px;
+  margin-left: 50px;
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+.yay-sidenav .closebtn:hover {
+  color: #2c2b2b;
+}
+.yay-smtp-activity-panel-header {
+  height: 50px;
+  background: #e2e4e7;
+  padding: 0px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.yay-smtp-activity-panel-content,
+.yay-smtp-debug {
+  padding: 8px 24px 24px 24px;
+  background: #fff;
+  color: #757575;
+  font-size: 13px;
+}
+.yay-smtp-debug {
+  display: none;
+  border-left: 2px solid indianred;
+  margin-left: 24px;
+}
+/** Drawer - end */
+
+.toplevel_page_yay-smtp input[type="email"],
+.toplevel_page_yay-smtp input[type="number"],
+.toplevel_page_yay-smtp input[type="password"],
+.toplevel_page_yay-smtp input[type="text"],
+.toplevel_page_yay-smtp select,
+.toplevel_page_yay-smtp textarea {
+  box-shadow: 0 0 0 transparent;
+  border-radius: 2px;
+  border: 1px solid #757575;
+  background-color: #fff;
+  color: #32373c;
+}
+.toplevel_page_yay-smtp input[type="email"],
+.toplevel_page_yay-smtp input[type="number"],
+.toplevel_page_yay-smtp input[type="password"],
+.toplevel_page_yay-smtp input[type="text"] {
+  padding: 0 8px;
+  min-height: 40px;
+  font-size: 13px;
+  line-height: normal;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  padding: 6px 8px;
+  box-shadow: 0 0 0 transparent;
+  transition: box-shadow 0.1s linear;
+  border-radius: 2px;
+  border: 1px solid #757575;
+}
+.toplevel_page_yay-smtp input[type="email"]:focus,
+.toplevel_page_yay-smtp input[type="number"]:focus,
+.toplevel_page_yay-smtp input[type="password"]:focus,
+.toplevel_page_yay-smtp input[type="text"]:focus,
+.toplevel_page_yay-smtp select:focus,
+.toplevel_page_yay-smtp textarea:focus {
+  border-color: #007cba;
+  box-shadow: 0 0 0 0.5px #007cba;
+  outline: 2px solid transparent;
+}
+.yay-smtp-wrap .panel-tab-btn.is-active {
+  background: #007cba;
+  opacity: 0.5;
+}
+
+/* Style for Test Send Mail - start */
+.yay-smtp-card-body.test-email,
+.yay-smtp-card-body.yay-smtp-mailer-settings {
+  padding: 16px 0;
+}
+.yay-smtp-test-mail-address {
+  width: 100%;
+}
+/* Style for Test Send Mail - end */
+.yay-smtp-mailer.is-active .yay-smtp-mailer-image {
+  border-color: #007cba;
+}
+
+.yay-smtp-wrap input[type="radio"]:checked::before {
+  background-color: #007cba;
+}
+
+.toplevel_page_yay-smtp input:disabled,
+.toplevel_page_yay-smtp select:disabled {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(222, 222, 222, 0.75);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  color: rgba(51, 51, 51, 0.5);
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes growAndShrink {
+  0%,
+  100% {
+    stroke-dashoffset: 200;
+  }
+  50% {
+    stroke-dashoffset: 50;
+    transform: rotate(135deg);
+  }
+  100% {
+    transform: rotate(450deg);
+  }
+}
+
+.yay-smtp-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 12;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yay-smtp-spinner .woocommerce-spinner__circle {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation: growAndShrink 2s ease-in-out infinite;
+  stroke: #1d2327;
+}
+.yay-smtp-spinner .woocommerce-spinner {
+  animation: rotate 2s linear infinite;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  max-height: 40px;
+}
+.yay-smtp-notification {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans,
+    Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+  font-size: 13px;
+  background-color: #32373c;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  padding: 16px 24px;
+  width: fit-content;
+  max-width: 600px;
+  box-sizing: border-box;
+  cursor: pointer;
+  animation: NslideUp 0.5s both linear;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 20;
+}
+
+@keyframes NslideUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes NslideDown {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 50%, 0);
+  }
+}
+
+.yay-smtp-notification .NslideDown {
+  animation: NslideDown 0.5s both linear;
+}
+
+.yay-smtp-wrap .notify-mailer-setting-complete,
+.yay-smtp-wrap .inline-error {
+  color: indianred;
+}
+
+.yay-smtp-wrap label {
+  vertical-align: initial;
+}
+
+.yay-smtp-mailer .yay-smtp-mailer-text {
+  text-align: center;
+}
+
+.yay-smtp-mailer-settings .gmail-connected-as {
+  vertical-align: sub;
+  padding-left: 10px;
+  font-weight: 600;
+}
+
+.yay-smtp-mailer-settings .radio-setting {
+  margin-right: 20px;
+}
+
+.setting-el .yay-zoho-success-authorize {
+  color: green;
+}
+
+.icon-yaysmtp-sent-mail-error {
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+  margin-left: 5px;
+  padding: 0 5px;
+  min-width: 20px;
+  height: 19px;
+  border-radius: 9px;
+  background-color: #ca4a1f;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  z-index: 26;
+  font-weight: 900;
+}
+
+.yay-smtp-card-debug .yay-smtp-card-title {
+  color: indianred;
+}
+.yay-smtp-card-body .yay-smtp-card-debug-text {
+  border-left: 2px solid indianred;
+  padding-left: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+/* The switch - the box around the slider  - start */
+.yay-smtp-card .switch {
+  position: relative;
+  display: inline-block;
+  width: 53px;
+  height: 26px;
+}
+
+/* Hide default HTML checkbox */
+.yay-smtp-card .switch input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.yay-smtp-card .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.yay-smtp-card .slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.yay-smtp-card input[type="checkbox"]:checked + .slider {
+  background-color: #007cba;
+}
+
+.yay-smtp-card input[type="checkbox"]:focus + .slider {
+  box-shadow: 0 0 1px #007cba;
+}
+
+.yay-smtp-card input[type="checkbox"]:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.yay-smtp-card .slider.round {
+  border-radius: 20px;
+}
+
+.yay-smtp-card .slider.round:before {
+  border-radius: 50%;
+}
+.yay-smtp-card .toggle-label {
+  vertical-align: -webkit-baseline-middle;
+  vertical-align: sub;
+  font-size: 16px;
+  color: #646970;
+  margin-left: 10px;
+}
+
+.yay-smtp-card .setting-toggle-checked,
+.yay-smtp-card .setting-toggle-unchecked {
+  display: none;
+}
+
+/* The switch - the box around the slider  -  end */
+
+/* Hide other notice in YaySMTP page */
+.toplevel_page_yaysmtp .notice {
+  display: none;
+}
+
+/** Email Log - start **/
+.yay-smtp-wrap.mail-logs {
+  padding: 30px 50px 15px 50px;
+}
+.yay-smtp-wrap.mail-logs a {
+  text-decoration: none;
+  cursor: pointer;
+}
+.yay-smtp-wrap.mail-logs .yay-smtp-title {
+  width: 25%;
+}
+.yay-smtp-wrap.mail-logs .yay-button-first-header {
+  margin-bottom: 15px;
+  display: flex;
+}
+.yay-smtp-wrap.mail-logs .email-status {
+  flex: 0 1 auto;
+  display: flex;
+  padding: 2px 5px;
+  border-radius: 3px;
+  height: -webkit-min-content;
+  height: min-content;
+  background-color: #f0f0f0;
+  color: #1e1e1e;
+  font-weight: 400;
+  justify-content: center;
+}
+.yay-smtp-wrap.mail-logs .email-status.email-success {
+  background-color: #4ab866;
+  color: #fff;
+}
+/* .yay-smtp-wrap.mail-logs .email-status.email-waiting {
+  background: #c6e1c6;
+  color: #5b841b;
+} */
+.yay-smtp-wrap.mail-logs .email-status.email-fail {
+  background-color: #d94f4f;
+  color: #fff;
+}
+
+/** UI Woo React **/
+.yay-smtp-wrap.mail-logs .yay-smtp-content {
+  box-sizing: border-box;
+  background: rgb(255, 255, 255);
+  border-radius: 3px;
+  border: 1px solid rgb(226, 228, 231);
+}
+.yay-smtp-wrap.mail-logs .yay-smtp-content th.table-header.hiden,
+.yay-smtp-wrap.mail-logs .yay-smtp-content td.table-item.hiden {
+  display: none;
+}
+.yay-smtp-wrap.mail-logs .components-body {
+  position: relative;
+}
+/* .yay-smtp-wrap.mail-logs .wrap-table {
+  overflow-x: hidden;
+  overflow-y: hidden;
+} */
+.yay-smtp-wrap.mail-logs table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.yay-smtp-wrap.mail-logs table tr:hover,
+.yay-smtp-wrap.mail-logs table tr:focus-within {
+  background-color: #e0e0e0;
+}
+
+.yay-smtp-wrap.mail-logs table tr:hover th,
+.yay-smtp-wrap.mail-logs table tr:focus-within th {
+  background-color: #e0e0e0;
+}
+
+@media (min-width: 600px) {
+  .yay-smtp-wrap.mail-logs .checkbox-control-input-container {
+    width: 20px;
+    height: 20px;
+  }
+  .yay-smtp-wrap.mail-logs .checkbox-control-input[type="checkbox"] {
+    height: 20px;
+    width: 20px;
+    font-size: 13px;
+    line-height: normal;
+  }
+}
+
+.yay-smtp-wrap.mail-logs .checkbox-control-input-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+.yay-smtp-wrap.mail-logs .checkbox-control-input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px #007cba;
+  outline: 2px solid transparent;
+}
+
+.yay-smtp-wrap.mail-logs input[type="checkbox"]:checked::before {
+  margin: -0.08rem 0 0 -0.15rem;
+}
+
+.yay-smtp-wrap.mail-logs .table-header,
+.yay-smtp-wrap.mail-logs .table-item {
+  font-size: 13px;
+  font-size: 0.8125rem;
+  text-align: right;
+  border-bottom: 1px solid #e2e4e7;
+  padding: 16px 16px;
+}
+.yay-smtp-wrap.mail-logs .table-item.is-left-aligned {
+  text-align: left;
+}
+.yay-smtp-wrap.mail-logs .table-header.is-left-aligned.is-sortable {
+  padding-left: 9px;
+}
+.yay-smtp-wrap.mail-logs .table-header {
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  font-weight: bold;
+  white-space: nowrap;
+  text-align: right;
+}
+.yay-smtp-wrap.mail-logs
+  .table-header.is-left-aligned.is-sortable
+  .components-button {
+  justify-content: left;
+}
+.yay-smtp-wrap.mail-logs .table-header.is-left-aligned.is-sortable svg {
+  display: inline-flex;
+  order: 1;
+  margin-left: 0;
+}
+
+.yay-smtp-wrap.mail-logs .table-header.is-sortable svg {
+  visibility: hidden;
+  margin-left: 4px;
+}
+
+.yay-smtp-wrap.mail-logs .components-button svg {
+  fill: currentColor;
+  outline: none;
+}
+
+.yay-smtp-wrap.mail-logs .table-header.is-sortable .components-button:focus svg,
+.yay-smtp-wrap.mail-logs
+  .table-header.is-sortable
+  .components-button:hover
+  svg {
+  visibility: visible;
+}
+
+.yay-smtp-wrap.mail-logs .table-header.is-sortable {
+  padding: 0;
+}
+.yay-smtp-wrap.mail-logs .table-empty-item {
+  padding: 16px 16px;
+  text-align: center;
+  font-size: 1.125rem;
+  color: #757575;
+  font-weight: bold;
+}
+
+.yay-smtp-wrap.mail-logs .table-header.is-checkbox-column,
+.yay-smtp-wrap.mail-logs .table-item.is-checkbox-column {
+  width: 33px;
+  max-width: 33px;
+  padding-right: 0;
+  padding-left: 16px;
+}
+
+.yay-smtp-wrap.mail-logs .table-item.status-col {
+  width: 72px;
+}
+
+.yay-smtp-wrap.mail-logs .table-item.datetime-col {
+  width: 136px;
+}
+
+.yay-smtp-wrap.mail-logs .components-button {
+  display: inline-flex;
+  justify-content: flex-end;
+  text-decoration: none;
+  font-size: 13px;
+  margin: 2px;
+  border: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  background: none;
+  transition: box-shadow 0.1s linear;
+  height: 36px;
+  width: 100%;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 6px 12px;
+  border-radius: 2px;
+  color: #1e1e1e;
+}
+
+.yay-smtp-wrap.mail-logs .components-button:hover {
+  color: #007cba;
+}
+
+.yay-smtp-wrap.mail-logs .components-button:focus:not(:disabled) {
+  box-shadow: 0 0 0 1.5px #007cba;
+  outline: 1px solid transparent;
+}
+
+.yay-smtp-wrap.mail-logs .components-footer {
+  padding: 16px 24px;
+  flex-direction: column;
+}
+.yay-smtp-wrap.mail-logs .pagination {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  z-index: 1;
+  background: #fff;
+  position: relative;
+}
+
+.yay-smtp-wrap.mail-logs .pagination-page-arrows {
+  display: flex;
+  flex-direction: row;
+}
+.yay-smtp-wrap.mail-logs .pagination-page-arrows-label {
+  margin-top: 8px;
+  margin-right: 8px;
+}
+.yay-smtp-wrap.mail-logs .pagination-page-arrows-buttons {
+  display: inline-flex;
+  align-items: baseline;
+  border: 1px solid #b5bfc9;
+  border-radius: 4px;
+  background: #f0f2f4;
+}
+
+.yay-smtp-wrap.mail-logs .pagination-page-arrows-buttons button:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: 0;
+  padding-right: 6px;
+  box-shadow: 1px 0 0 0px #b5bfc9;
+}
+.yay-smtp-wrap.mail-logs
+  .pagination-page-arrows-buttons
+  button:first-child
+  .yay-smtp-wrap.mail-logs
+  .pagination-page-arrows-buttons
+  .pagination-link {
+  padding: 4px;
+}
+.yay-smtp-wrap.mail-logs .components-button:disabled,
+.yay-smtp-wrap.mail-logs .components-button[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.3;
+}
+
+.yay-smtp-wrap.mail-logs .pagination-page-arrows-buttons .components-button {
+  color: #24292d;
+  height: 30px;
+  width: 32px;
+  justify-content: center;
+}
+
+/** menu__toggle - start */
+.yay-smtp-wrap.mail-logs .components-button.has-icon {
+  padding: 6px;
+  min-width: 36px;
+  justify-content: center;
+}
+.yay-smtp-wrap.mail-logs .components-button.has-icon .dashicon {
+  display: inline-block;
+  flex: 0 0 auto;
+}
+.yay-smtp-wrap.mail-logs .ellipsis-menu__toggle .dashicon {
+  transform: rotate(90deg);
+}
+
+.yay-smtp-wrap.mail-logs .components-dropdown {
+  position: relative;
+  z-index: 9;
+  margin-left: 7px;
+}
+.yay-smtp-wrap.mail-logs .ellipsis-menu__content {
+  position: relative;
+}
+.yay-smtp-wrap.mail-logs .components-popover.components-dropdown__content {
+  position: absolute;
+  right: 15px;
+  padding: 15px;
+  top: calc(100% + 15px);
+  transform-origin: top right;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 5%);
+  border-radius: 2px;
+  width: 266px;
+  text-align: justify;
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: top right;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+.yay-smtp-wrap.mail-logs
+  .components-popover.components-dropdown__content.is-opened {
+  opacity: 1;
+  transform: none;
+  pointer-events: all;
+}
+.yay-smtp-wrap.mail-logs .ellipsis-menu__content .ellipsis-menu__title {
+  color: #1e1e1e;
+  padding: 7px;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.yay-smtp-wrap.mail-logs
+  .ellipsis-menu__content
+  .components-base-control__field {
+  cursor: pointer;
+  color: #757575;
+  padding: 8px;
+  font-size: 13px;
+  display: flex;
+}
+.yay-smtp-wrap.mail-logs
+  .ellipsis-menu__content
+  .components-base-control__field:focus-within {
+  box-shadow: inset 0 0 0 1px #6c7781, inset 0 0 0 2px #fff;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+/** menu__toggle - end */
+
+.yay-smtp-wrap.mail-logs .pagination-page-arrows-buttons button:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.yay-smtp-wrap.mail-logs .pagination-page-picker,
+.yay-smtp-wrap.mail-logs .pagination-per-page-picker {
+  margin-left: 16px;
+}
+
+.yay-smtp-wrap.mail-logs .pagination-page-picker .pagination-page-picker-input {
+  margin-left: 8px;
+  width: 60px;
+  height: 34px;
+  box-shadow: none;
+}
+.yay-smtp-wrap.mail-logs .pagination input {
+  border-radius: 4px;
+}
+
+.yay-smtp-wrap.mail-logs .pagination-per-page-picker {
+  margin-left: 16px;
+}
+.yay-smtp-wrap.mail-logs .components-select-control-input {
+  height: 34px;
+}
+.yay-smtp-wrap.mail-logs .yay-button-wrap {
+  margin-top: 6px;
+  width: 100%;
+  display: inline-flex;
+}
+.yay-smtp-wrap.mail-logs .yay-button-wrap .search {
+  flex-grow: 1;
+}
+.yay-smtp-wrap.mail-logs .yay-button-wrap .search.select-control {
+  position: relative;
+  width: 60%;
+}
+
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .search.select-control
+  .select-control__control {
+  height: 30px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  padding: 3px 2px 3px 36px;
+  border-radius: 4px;
+  border-color: #757575;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 5%);
+}
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .search.select-control
+  .select-control__control:focus-within {
+  border-color: #007cba;
+  box-shadow: 0 0 0 1px #006088;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .select-control
+  .components-base-control {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #a7aaad;
+  border-radius: 3px;
+  background: #fff;
+  padding: 12px;
+  position: relative;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .search.select-control
+  i.material-icons-outlined {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #ccc;
+  font-size: 20px;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .select-control
+  .components-base-control
+  i {
+  color: #636d75;
+  margin-right: 12px;
+  width: 24px;
+}
+.yay-smtp-wrap.mail-logs .material-icons-outlined {
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .select-control
+  .components-base-control
+  .components-base-control__field {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-bottom: 0;
+  max-width: 100%;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-button-wrap
+  .select-control
+  .components-base-control
+  .select-control__control-input {
+  border: 0;
+  box-shadow: none;
+  color: #2c3338;
+  margin: 12px 0 0 0;
+  padding-left: 0;
+  padding-right: 0;
+  line-height: 24px;
+  text-align: left;
+  letter-spacing: inherit;
+  background: transparent;
+  margin: 0;
+  font-size: 13px;
+  min-height: auto;
+  width: 100%;
+}
+.yay-smtp-wrap.mail-logs .yay-button-wrap .select-control.bulk-action-control {
+  margin-right: 10px;
+}
+.yay-smtp-wrap.mail-logs .wrap-table .action-col {
+  width: 17%;
+}
+.yay-smtp-wrap.mail-logs .yaysmtp-btn {
+  border: 1px solid transparent;
+  box-shadow: 0 2px 0 rgb(0 0 0 / 2%);
+  cursor: pointer;
+  user-select: none;
+  height: 32px;
+  padding: 0 15px;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  border-color: #d9d9d9;
+}
+.yay-smtp-wrap.mail-logs .yaysmtp-btn:hover,
+.yay-smtp-wrap.mail-logs .yaysmtp-btn:focus {
+  border-color: #007cba;
+  box-shadow: 0 0 0 1px #006088;
+}
+
+/** Slider button */
+.yay-smtp-wrap.mail-logs .components-popover__content .switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 18px;
+}
+
+.yay-smtp-wrap.mail-logs
+  .components-popover__content
+  .switch
+  input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.yay-smtp-wrap.mail-logs .components-popover__content .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.yay-smtp-wrap.mail-logs .components-popover__content .slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.yay-smtp-wrap.mail-logs
+  .components-popover__content
+  input[type="checkbox"]:checked
+  + .slider {
+  background-color: #007cba;
+}
+
+.yay-smtp-wrap.mail-logs
+  .components-popover__content
+  input[type="checkbox"]:focus
+  + .slider {
+  box-shadow: 0 0 1px #007cba;
+}
+
+.yay-smtp-wrap.mail-logs
+  .components-popover__content
+  input[type="checkbox"]:checked
+  + .slider:before {
+  -webkit-transform: translateX(18px);
+  -ms-transform: translateX(18px);
+  transform: translateX(18px);
+}
+
+/* Rounded sliders */
+.yay-smtp-wrap.mail-logs .components-popover__content .slider.round {
+  border-radius: 9px;
+}
+
+.yay-smtp-wrap.mail-logs .components-popover__content .slider.round:before {
+  border-radius: 50%;
+}
+.yay-smtp-wrap.mail-logs .components-popover__content .toggle-label {
+  color: #646970;
+  margin-left: 10px;
+}
+.yay-smtp-wrap.mail-logs
+  .components-toggle-control
+  .components-base-control__field:focus {
+  box-shadow: inset 0 0 0 1px #6c7781, inset 0 0 0 2px #fff;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+.yay-smtp-wrap.mail-logs .yay-smtp-activity-panel-content.panel-content table {
+  table-layout: fixed;
+}
+.yay-smtp-wrap.mail-logs .yay-smtp-activity-panel-content.panel-content td,
+.yay-smtp-wrap.mail-logs
+  .yay-smtp-activity-panel-content.panel-content
+  .mail-body-el {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-smtp-activity-panel-content.panel-content
+  .content-el {
+  display: flex;
+  flex-wrap: wrap;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-smtp-activity-panel-content.panel-content
+  .content-el
+  span.title {
+  font-weight: 600;
+  width: 60px;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-smtp-activity-panel-content.panel-content
+  .mail-body-el
+  .content-el
+  span.title {
+  width: auto;
+}
+.yay-smtp-wrap.mail-logs
+  .yay-smtp-activity-panel-content.panel-content
+  .content-el
+  .email-status
+  span.content {
+  width: auto;
+}
+.yay-smtp-wrap.mail-logs .yay-smtp-card-title {
+  font-size: 1.3em;
+  font-weight: 600;
+}
+.yay-smtp-wrap.mail-logs .yay-button-first-header .dashicons-arrow-left-alt {
+  color: #0073aa;
+  cursor: pointer;
+}
+.yay-smtp-wrap.mail-logs .save-setting-el {
+  display: flex;
+}
+.yay-smtp-wrap.mail-logs .save-setting-el .setting-label {
+  margin-right: 20px;
+}
+.yay-smtp-wrap.mail-logs .yay-button-header-child-left {
+  width: 50%;
+}
+.yay-smtp-wrap.mail-logs .yay-button-header-child-right {
+  width: 50%;
+  text-align: right;
+}
+.yay-smtp-wrap.mail-logs .yay-smtp-mail-detail-drawer .status-el .reason_error {
+  margin-left: 10px;
+  margin-top: 5px;
+}
+.yay-smtp-wrap.mail-logs .components-other-action-control {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 8px;
+  margin-top: 12px;
+}
+.yay-smtp-wrap.mail-logs .components-other-action-control .toggle-label {
+  margin-top: 3px;
+}
+@media only screen and (max-width: 1280px) {
+  .yay-smtp-wrap.mail-logs {
+    padding: 15px 30px 15px 15px;
+  }
+}
+/** Email Log - end **/
