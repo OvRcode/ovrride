@@ -2,7 +2,7 @@
 /*
 Plugin Name: WooCommerce Trips
 Description: Setup trip products based on packages
-Version: 1.6.19
+Version: 1.6.20
 Author:  Ada Lambrecht
 Author URI: http://github.com/ada-lambrecht
 Text Domain: woocommerce-trips
@@ -25,7 +25,7 @@ if ( is_woocommerce_active() ) {
 class WC_Trips {
 
     public function __construct() {
-        define( 'WC_TRIPS_VERSION', '1.6.19' );
+        define( 'WC_TRIPS_VERSION', '1.6.20' );
         define( 'WC_TRIPS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
         define( 'WC_TRIPS_MAIN_FILE', __FILE__ );
         define( 'WC_TRIPS_TEMPLATE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/templates/' );
@@ -63,9 +63,59 @@ class WC_Trips {
             'callback'  =>  array($this, 'beach_bus_api'),
           ));
         });
+  /**
+   * Custom surharge
+   */
+  add_action( 'woocommerce_cart_calculate_fees', array($this, 'wc_trips_custom_surcharge') );
 
     }
+    function wc_trips_custom_surcharge() {
+      global $woocommerce;
+    
+      if ( is_admin() && ! defined( 'DOING_AJAX' ) )
+        return;
 
+      $enabled = ( get_option( "wc_trips_surcharge_enable", "no" )  == "yes" ? TRUE : FALSE );
+
+      if ( $enabled ) {
+        $percentage = get_option(  "wc_trips_surcharge_percent", 0 );
+        $label = get_option( "wc_trips_surcharge_label" , "Fee");
+        $show_percentage = (get_option( "wc_trips_surcharge_show_percentage", "no") == "yes" ? TRUE : FALSE );
+        
+        $selected_categories_enabled = (get_option("wc_trips_selected_enabled", "no") == "yes" ? TRUE:FALSE);
+        if ( $selected_categories_enabled ) {
+          $selected_categories = explode(",",get_option("wc_trips_selected_categories",""));
+        
+          /**
+           * Check cart for Product categories with reduced fees
+           */
+          $cart = $woocommerce->cart->get_cart();
+          foreach( $cart as $key => $array ) {
+            $product_cats = array();
+            $product_terms = get_the_terms( $array['product_id'], 'product_cat' );
+            $category_found = FALSE;
+            if ( $product_terms && ! is_wp_error( $product_terms ) ) {
+              foreach ( $product_terms as $term ) {
+                  $product_cats[] = $term->name;
+                  if ( in_array( $term->name, $selected_categories) ) {
+                    $category_found = TRUE;
+                    continue;
+                  }
+                }
+                if ( $category_found ) {
+                  $previous_percent = $percentage;
+                  $percentage = get_option("wc_trips_selected_categories_percent", $previous_percent);
+                }
+              }
+          }
+        }
+        if ( $show_percentage ) {
+          $label .= " ( {$percentage}% )"; 
+        }
+        $surcharge = ( $woocommerce->cart->cart_contents_total + $woocommerce->cart->shipping_total ) * ( $percentage/100 );	
+        $woocommerce->cart->add_fee(  $label, $surcharge, true, '' );
+      } 
+    }  
     public function install() {
         add_action( 'shutdown', array( $this, 'delayed_install' ) );
     }

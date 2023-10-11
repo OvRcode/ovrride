@@ -34,7 +34,93 @@ class WC_Trips_Admin {
         add_action( 'wp_ajax_woocommerce_add_pickup_location', array( $this, 'add_pickup_location' ) );
         add_action( 'wp_ajax_woocommerce_remove_pickup_location', array( $this, 'remove_pickup_location' ) );
         add_action( 'wp_ajax_woocommerce_add_route_pickup_location', array( $this, 'add_route_pickup_location') );
+
+        // Surcharge Settings
+        add_filter( 'woocommerce_settings_tabs_array', array( $this, 'wc_trips_settings_tab' ), 21 );
+        add_action( 'woocommerce_settings_wctrips',  array( $this, 'wc_trips_tab_output' ) );
+        add_action( 'woocommerce_settings_save_wctrips',  array( $this, 'wc_trips_tab_save' ) );
+
     }
+    
+    public function wc_trips_tab_output( ) {
+      WC_Admin_Settings::output_fields(  $this->wc_trips_settings() );
+    }
+
+    public function wc_trips_tab_save() {
+      WC_Admin_Settings::save_fields( $this->wc_trips_settings() );
+    }
+
+    function wc_trips_settings() {
+     
+      if ( "wctrips" !== $_GET['tab']) {
+        return array();
+      }
+
+		$settings = array(
+			array(
+				'name' => 'Trips Plugin Settings',
+				'type' => 'title',
+				'desc' => '',
+			),
+			array(
+				'name'     => 'Enable service charge:',
+				'desc_tip' => 'Add a fee to each transaction',
+				'id'       => 'wc_trips_surcharge_enable',
+				'type'     => 'checkbox',
+			),
+      array(
+        'name' => 'Service charge (%):',
+        'desc_tip' => 'Percentage of sale value added as service fee',
+        'id' => 'wc_trips_surcharge_percent',
+        'type' => 'number'
+      ),
+      array(
+        'name' => 'Service Charge label:',
+        'desc_tip' => 'Text that shows next to fee at checkout',
+        'id' => 'wc_trips_surcharge_label',
+        'type' => 'text'
+      ),
+      array(
+        'name' => 'Show percentage:',
+        'desc_tip' => 'show percentage next to label at checkout',
+        'id' => 'wc_trips_surcharge_show_percentage',
+        'type' => 'checkbox'
+      ),
+      array(
+        'name' => 'Enable lower fee for selected categories:',
+        'desc_tip' => '',
+        'id' => 'wc_trips_selected_enabled',
+        'type' => 'checkbox'
+      ),
+      array(
+        'name' => 'Category names:',
+        'desc_tip' => 'category names comma separated ',
+        'id' => 'wc_trips_selected_categories',
+        'type' => 'text'
+      ),
+      array(
+        'name' => 'Service Charge (%) for selected categories:',
+        'desc_tip' => '',
+        'id' => 'wc_trips_selected_categories_percent',
+        'type' => 'number'
+      ),
+			array(
+				'type' => 'sectionend',
+			)
+		);
+    
+		return $settings;
+    }
+
+    function wc_trips_settings_tab( $tabs ) {
+      
+	    $pos = 8;
+	    $new_tab = array( 'wctrips' => 'Trips' );
+	    $tabs = array_slice( $tabs, 0, $pos, true ) + $new_tab + array_slice( $tabs, $pos, NULL, true );
+
+	    return $tabs;
+    }
+    
 
     public function product_type_options( $options ) {
         $options['virtual']['wrapper_class'] .= ' show_if_trip';
