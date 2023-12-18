@@ -60,7 +60,7 @@
       </div>
       <div class="col-sm-6 col-xs-12">
         <div class="col-xs-3 col-sm-3">
-          <a class="square-link" target="_blank" href="https://visitor.r20.constantcontact.com/d.jsp?llr=oc9qxciab&amp;p=oi&amp;m=1108193339470&amp;sit=acf46lmgb&amp;f=032f36cb-3cd6-4a22-babf-0f7d1699e710">
+          <a class="square-link" target="_blank" href="https://www.getdrip.com/forms/161323993/submissions/new">
     				<div class="footer-square">
     					<div id="newsletter" class="footer-square-inner">
     						<i class="fa fa-envelope icon" aria-hidden="true"></i>
