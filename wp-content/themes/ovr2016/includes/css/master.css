@@ -638,11 +638,14 @@ ins {
 	top: 5px;
 	z-index: 1;
 }
+.ovr_
 #nav-posts {
 	margin-top: 20px;
 }
 .ovr_post_excerpt {
 	margin-bottom: 20px;
+	position:relative;
+	z-index: 1;
 }
 /* Post Archive Styles */
 .ovr_archive{
