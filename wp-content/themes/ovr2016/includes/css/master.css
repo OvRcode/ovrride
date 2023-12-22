@@ -636,6 +636,7 @@ ins {
 .ovr_post_title {
 	position: relative;
 	top: 5px;
+	z-index: 1;
 }
 #nav-posts {
 	margin-top: 20px;
