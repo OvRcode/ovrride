@@ -139,8 +139,8 @@
 	</div>
   <div class="row ovr-sponsors">
     <div class="col-xs-4 col-sm-2 col-xs-offset-1">
-			<a href="https://www.thenorthface.com/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir ."/includes/images/tnf.png"; ?>">
+			<a href="https://www.paragonsports.com/ski-trips" class="ovr_sponsor" target="_blank">
+				<img src="<?php echo $theme_dir ."/includes/images/paragon.png"; ?>">
 			</a>
 		</div>
     <div class="col-xs-4 col-sm-2">
