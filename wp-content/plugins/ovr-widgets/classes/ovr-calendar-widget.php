@@ -238,7 +238,7 @@ CALENDARFORM;
     }
     
     ksort($trips);
-    //error_log(print_r($trips,true));
+    
     // Expand trips to fill month
     $calendar = array();
     if ( array_key_exists("1", $trips) ) {
@@ -249,14 +249,6 @@ CALENDARFORM;
       unset($trips[1]);
     }
     foreach( $trips as $start_of_trip => $trip_info ) {
-      /*if ( "1" == $start_of_trip  && array_key_exists("Date", $trip_info) ) {
-        $real_start = substr( $trip_info['Date'], 0, -2) . "01";
-        $trips[$real_start][] 
-      }*/
-      //error_log("Start of Trip: " . $start_of_trip ."\n");
-      //error_log("trip_info: \n");
-      //error_log(print_r($trip_info,true));
-      
       foreach($trip_info as $index => $trip ) {
         if ( isset($trip["Date"]) ) {
           $stop_date = $trip["Date"];
