@@ -143,7 +143,7 @@ CALENDARFORM;
     AND `wp_postmeta`.`meta_key` = '_wc_trip_start_date'
     AND `wp_postmeta`.`meta_value` LIKE '{$sqlDate}'
     ORDER BY `Date`", ARRAY_A);
-
+    
     $end_trips = $wpdb->get_results("SELECT `wp_posts`.`ID`, `wp_posts`.`post_title`, `wp_posts`.`post_status`, STR_TO_DATE(`wp_postmeta`.`meta_value`, '%M %d, %Y') as `Date`, `wp_posts`.`guid`
     FROM `wp_posts`
     JOIN `wp_postmeta` ON `wp_posts`.`ID` = `wp_postmeta`.`post_id`
@@ -189,6 +189,7 @@ CALENDARFORM;
       $trip_data['Date'] = $year."-".$month."-".$lastDay;
       $trips[$start_date][] = $trip_data;
     }
+    
     // Add custom events
     $custom_events = maybe_unserialize( get_option("ovr_custom_events", array() ) );
     foreach( $custom_events as $index => $event_data ) {
@@ -235,16 +236,21 @@ CALENDARFORM;
 
       }
     }
+    
     ksort($trips);
-
+    
     // Expand trips to fill month
     $calendar = array();
     foreach( $trips as $start_of_trip => $trip_info ) {
+      error_log("Start of Trip: " . $start_of_trip ."\n");
+      error_log("trip_info: \n");
+      error_log(print_r($trip_info,true));
+      
       foreach($trip_info as $index => $trip ) {
         if ( isset($trip["Date"]) ) {
           $stop_date = $trip["Date"];
           unset($trip["Date"]);
-          for($i=$start_of_trip++; $i <= $stop_date; $i++ ) {
+          for($i=$start_of_trip; $i <= $stop_date; $i++ ) {
             $calendar[$i][] = $trip;
           }
         } else {
@@ -252,6 +258,7 @@ CALENDARFORM;
         }
       }
     }
+    
     $calendar_check = $year."-".$month."-01";
     $calendar_check_end = $year ."-".$month."-".$lastDay;
     for($i=$calendar_check;$i<=$calendar_check_end;$i++) {
