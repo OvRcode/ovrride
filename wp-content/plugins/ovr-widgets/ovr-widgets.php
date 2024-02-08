@@ -4,7 +4,7 @@
 * Description:  Collection of widgets for the ovrride.com site
 * Author: Ada Lambrecht
 * Author URI:  https://github.com/ada-lambrecht
-* Version: 1.7.4
+* Version: 1.7.5
 * License: MIT License
 */
 require('classes/ovr-blog-feature-widget.php');
