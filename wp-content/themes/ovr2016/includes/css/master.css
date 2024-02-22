@@ -624,6 +624,8 @@ ins {
 .ovr_post_thumb {
 	max-height: 250px;
 	max-width: 250px;
+	position: relative;
+	z-index: 2;
 }
 .ovr_post_date {
 	margin-top: 20px;
@@ -636,7 +638,7 @@ ins {
 .ovr_post_title {
 	position: relative;
 	top: 5px;
-	z-index: 1;
+	z-index: 2;
 }
 .ovr_
 #nav-posts {
