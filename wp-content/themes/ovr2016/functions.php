@@ -111,13 +111,14 @@ add_action( 'widgets_init', '_tk_widgets_init' );
 function _tk_scripts() {
 
 	// Import the necessary TK Bootstrap WP CSS additions
-	wp_enqueue_style( '_tk-bootstrap-wp', THEME_DIR_URI . '/includes/css/bootstrap-wp.css' );
+	#wp_enqueue_style( '_tk-bootstrap-wp', THEME_DIR_URI . '/includes/css/bootstrap-wp.css' );
 
 	// load bootstrap css
-	wp_enqueue_style( '_tk-bootstrap', THEME_DIR_URI . '/includes/resources/bootstrap/css/bootstrap.min.css' );
+	#wp_enqueue_style( '_tk-bootstrap', THEME_DIR_URI . '/includes/resources/bootstrap/css/bootstrap.min.css' );
 
 	// load Font Awesome css
-	wp_enqueue_style( '_tk-font-awesome', THEME_DIR_URI . '/includes/css/font-awesome.min.css', false, '4.7.0' );
+	#wp_enqueue_style( '_tk-font-awesome', THEME_DIR_URI . '/includes/css/font-awesome.min.css', false, '4.7.0' );
+  #combined all commented out styles into master.min.css with cli tools.
 
 	// load _tk styles
 	wp_enqueue_style( '_tk-style', get_stylesheet_uri() );
@@ -140,7 +141,7 @@ function _tk_scripts() {
 		wp_enqueue_script( '_tk-keyboard-image-navigation', THEME_DIR_URI . '/includes/js/keyboard-image-navigation.js', array( 'jquery' ), '20120202', true );
 	}
 
-  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), "1.6.13");
+  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array(), "1.6.24");
 }
 add_action( 'wp_enqueue_scripts', '_tk_scripts' );
 
