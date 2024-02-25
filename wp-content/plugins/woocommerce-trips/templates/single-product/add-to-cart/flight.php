@@ -50,6 +50,7 @@ wp_enqueue_style("wc-trips-flight-styles", WC_TRIPS_PLUGIN_URL . "/assets/css/wc
           <label for="wc_trip_gender"><strong>Gender</strong> <span class="required">*</span></label>
           <select id="wc_trip_gender" name="wc_trip_gender" data-required="true">
             <option value="">Select Gender</option>
+            <option value="X">X</option>
             <option value="female">Female</option>
             <option value="male">Male</option>
           </select>
