@@ -11,6 +11,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/publishpress/publishpress-phpcs-standards"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/DavidAnderson684/plugin-update-checker"
     }
   ],
   "require-dev": {
@@ -44,8 +48,8 @@
       "builder/docker/scripts/build build"
     ],
     "build-clean": "builder/docker/scripts/build clean",
-    "compile": "docker run -it --rm -v $(PWD):/usr/src/app -w /usr/src/app node:14.19.3 npm run prod",
-    "compile-dev": "docker run -it --rm -v $(PWD):/usr/src/app -w /usr/src/app node:14.19.3 npm run dev",
+    "compile": "npm run production",
+    "compile-dev": "npm run development",
     "deploy": [
       "@compile",
       "git add .",

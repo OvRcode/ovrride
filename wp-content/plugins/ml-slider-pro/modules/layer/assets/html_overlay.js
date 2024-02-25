@@ -25,6 +25,14 @@ wp.media.view.Toolbar.Custom = wp.media.view.Toolbar.extend({
         });
 
         wp.media.view.Toolbar.prototype.initialize.apply(this, arguments);
+
+        // Enable/disable button if image is selected
+        var button = this.$('.media-button-custom_event');
+        if (this.controller.state().get('selection').length === 0) {
+            button.prop('disabled', true);
+        } else {
+            button.prop('disabled', false);
+        }
     },
 
     // called each time the model changes
@@ -53,10 +61,13 @@ wp.media.view.Toolbar.Custom = wp.media.view.Toolbar.extend({
             };
 
             jQuery.post(ajaxurl, data, function(response) {
-				window.parent.jQuery(".metaslider table#metaslider-slides-list").append(response);
-				var APP = window.parent.metaslider.app.MetaSlider;
-				APP && APP.notifySuccess('metaslider/slides-created', null, true);
-                window.parent.jQuery(".media-modal-close").click();
+                window.parent.metaslider.after_adding_slide_success(response.data);
+            }).fail(function(error) { 
+                console.error(error.status,error.statusText);
+                APP && APP.notifyError('metaslider/slide-create-failed', 
+                    APP && __("This isn't a supported format. Please use JPG, PNG and GIF images.", "ml-slider-pro"),
+                    true
+                );
             });
         });
     }
@@ -119,17 +130,40 @@ wp.media.view.MediaFrame.Post = oldMediaFrame.extend({
                 editable: true,
                 allowLocalEdits: true,
                 displaySettings: true,
-                displayUserSettings: true
+                displayUserSettings: true,
+                library: wp.media.query(_.defaults({
+                    type: 'image' // Override type to only show images
+                }, this.options.library))
             }),
         ]);
 
         this.on('toolbar:create:add-html-overlay-slide', this.createCustomToolbar, this);
         this.on('toolbar:render:add-html-overlay-slide', this.renderCustomToolbar, this);
+
+        // Enable "Add to slideshow" button when image is selected or uploaded
+        this.on('selection:toggle', this.imageSelection, this);
+        this.on('library:selection:add', this.imageSelection, this);
+        this.on('open', this.imageSelection, this);
     },
 
     createCustomToolbar: function (toolbar) {
         toolbar.view = new wp.media.view.Toolbar.Custom({
             controller: this
         });
+    },
+
+    imageSelection: function () {
+        if(typeof this.content.view._state !== 'undefined' 
+            && this.content.view._state === 'insert-html') {
+
+            var selectedImages = this.state().get('selection').length;
+            var button = this.$('.media-button-custom_event');
+
+            if (selectedImages === 1) {
+                button.prop('disabled', false);
+            } else {
+                button.prop('disabled', true);
+            }
+        }
     },
 });

@@ -18,12 +18,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Base {
 
 	/**
+	 * Data that has been sent to the debugger, appended as the plugin operates.
+	 *
+	 * @access public
+	 * @var string $debug_data
+	 */
+	public static $debug_data = '';
+
+	/**
+	 * Temporarily enable debug mode, used to collect system info on specific pages.
+	 *
+	 * @access public
+	 * @var bool $temp_debug
+	 */
+	public static $temp_debug = false;
+
+	/**
 	 * Content directory (URL) for the plugin to use.
 	 *
 	 * @access protected
 	 * @var string $content_url
 	 */
-	protected $content_url = \WP_CONTENT_URL . 'ewww/';
+	protected $content_url = WP_CONTENT_URL . 'ewww/';
 
 	/**
 	 * Content directory (path) for the plugin to use.
@@ -31,7 +47,7 @@ class Base {
 	 * @access protected
 	 * @var string $content_dir
 	 */
-	protected $content_dir = \WP_CONTENT_DIR . '/ewww/';
+	protected $content_dir = WP_CONTENT_DIR . '/ewww/';
 
 	/**
 	 * Site (URL) for the plugin to use.
@@ -214,22 +230,36 @@ class Base {
 	 *
 	 * @param bool $debug Whether or not paths should be sent to the debugger.
 	 */
-	function __construct( $debug = false ) {
+	public function __construct( $debug = false ) {
 		$this->home_url          = \trailingslashit( \get_site_url() );
 		$this->relative_home_url = \preg_replace( '/https?:/', '', $this->home_url );
-		$this->home_domain       = $this->parse_url( $this->home_url, \PHP_URL_HOST );
+		$this->home_domain       = $this->parse_url( $this->home_url, PHP_URL_HOST );
+
 		if ( 'EWWW' === __NAMESPACE__ ) {
 			$this->content_url = \content_url( 'ewww/' );
 			$this->content_dir = $this->set_content_dir( '/ewww/' );
-			$this->version     = \EWWW_IMAGE_OPTIMIZER_VERSION;
+			$this->version     = EWWW_IMAGE_OPTIMIZER_VERSION;
 		} elseif ( 'EasyIO' === __NAMESPACE__ ) {
 			$this->content_url = \content_url( 'easyio/' );
 			$this->content_dir = $this->set_content_dir( '/easyio/' );
-			$this->version     = \EASYIO_VERSION;
+			$this->version     = EASYIO_VERSION;
 			$this->prefix      = 'easyio_';
 		}
+
 		if ( ! $debug ) {
 			return;
+		}
+
+		// Check to see if we're in the wp-admin to enable debugging temporarily.
+		// Done after the above, because this means we are constructing the Plugin() object
+		// which is the very first object initialized.
+		if (
+			! self::$temp_debug &&
+			is_admin() &&
+			! wp_doing_ajax() &&
+			! $this->get_option( $this->prefix . 'debug' )
+		) {
+				self::$temp_debug = true;
 		}
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$this->debug_message( "plugin (resource) content_url: $this->content_url" );
@@ -249,17 +279,17 @@ class Base {
 	 * @param string $sub_folder The sub-folder to use for plugin resources, with slashes on both ends.
 	 * @return string The full path to a writable plugin resource folder.
 	 */
-	function set_content_dir( $sub_folder ) {
+	public function set_content_dir( $sub_folder ) {
 		if (
-			\defined( '\EWWWIO_CONTENT_DIR' ) &&
-			\trailingslashit( \WP_CONTENT_DIR ) . \trailingslashit( 'ewww' ) !== \EWWWIO_CONTENT_DIR
+			\defined( 'EWWWIO_CONTENT_DIR' ) &&
+			\trailingslashit( WP_CONTENT_DIR ) . \trailingslashit( 'ewww' ) !== EWWWIO_CONTENT_DIR
 		) {
-			$content_dir       = \EWWWIO_CONTENT_DIR;
-			$this->content_url = \str_replace( \WP_CONTENT_DIR, \WP_CONTENT_URL, $content_dir );
+			$content_dir       = EWWWIO_CONTENT_DIR;
+			$this->content_url = \str_replace( WP_CONTENT_DIR, WP_CONTENT_URL, $content_dir );
 			return $content_dir;
 		}
-		$content_dir = \WP_CONTENT_DIR . $sub_folder;
-		if ( ! \is_writable( \WP_CONTENT_DIR ) || ! empty( $_ENV['PANTHEON_ENVIRONMENT'] ) ) {
+		$content_dir = WP_CONTENT_DIR . $sub_folder;
+		if ( ! \is_writable( WP_CONTENT_DIR ) || ! empty( $_ENV['PANTHEON_ENVIRONMENT'] ) ) {
 			$upload_dir = \wp_get_upload_dir();
 			if ( false === \strpos( $upload_dir['basedir'], '://' ) && \is_writable( $upload_dir['basedir'] ) ) {
 				$content_dir = $upload_dir['basedir'] . $sub_folder;
@@ -271,23 +301,36 @@ class Base {
 	}
 
 	/**
-	 * Saves the in-memory debug log to a logfile in the plugin folder.
+	 * Get the path to the current debug log, if one exists. Otherwise, generate a new filename.
 	 *
-	 * @global string $eio_debug The in-memory debug log.
+	 * @return string The full path to the debug log.
 	 */
-	function debug_log() {
-		global $eio_debug;
-		global $ewwwio_temp_debug;
-		global $easyio_temp_debug;
-		$debug_log = $this->content_dir . 'debug.log';
-		if ( ! \is_dir( $this->content_dir ) && \is_writable( \WP_CONTENT_DIR ) ) {
+	public function debug_log_path() {
+		if ( is_dir( $this->content_dir ) ) {
+			$potential_logs = \scandir( $this->content_dir );
+			if ( $this->is_iterable( $potential_logs ) ) {
+				foreach ( $potential_logs as $potential_log ) {
+					if ( $this->str_ends_with( $potential_log, '.log' ) && false !== strpos( $potential_log, strtolower( __NAMESPACE__ ) . '-debug-' ) && is_file( $this->content_dir . $potential_log ) ) {
+						return $this->content_dir . $potential_log;
+					}
+				}
+			}
+		}
+		return $this->content_dir . strtolower( __NAMESPACE__ ) . '-debug-' . uniqid() . '.log';
+	}
+
+	/**
+	 * Saves the in-memory debug log to a logfile in the plugin folder.
+	 */
+	public function debug_log() {
+		$debug_log = $this->debug_log_path();
+		if ( ! \is_dir( $this->content_dir ) && \is_writable( WP_CONTENT_DIR ) ) {
 			\wp_mkdir_p( $this->content_dir );
 		}
-		$debug_enabled = $this->get_option( $this->prefix . 'debug' );
 		if (
-			! empty( $eio_debug ) &&
-			empty( $easyio_temp_debug ) &&
-			$debug_enabled &&
+			! empty( self::$debug_data ) &&
+			empty( self::$temp_debug ) &&
+			$this->get_option( $this->prefix . 'debug' ) &&
 			\is_dir( $this->content_dir ) &&
 			\is_writable( $this->content_dir )
 		) {
@@ -299,31 +342,29 @@ class Base {
 			} else {
 				if ( \filesize( $debug_log ) + 4000000 + \memory_get_usage( true ) > $memory_limit ) {
 					\unlink( $debug_log );
+					\clearstatcache();
+					$debug_log = $this->debug_log_path();
 					\touch( $debug_log );
 				}
 			}
-			if ( \filesize( $debug_log ) + \strlen( $eio_debug ) + 4000000 + \memory_get_usage( true ) <= $memory_limit && \is_writable( $debug_log ) ) {
-				$eio_debug = \str_replace( '<br>', "\n", $eio_debug );
-				\file_put_contents( $debug_log, $timestamp . $eio_debug, \FILE_APPEND );
+			if ( \filesize( $debug_log ) + \strlen( self::$debug_data ) + 4000000 + \memory_get_usage( true ) <= $memory_limit && \is_writable( $debug_log ) ) {
+				self::$debug_data = \str_replace( '<br>', "\n", self::$debug_data );
+				\file_put_contents( $debug_log, $timestamp . self::$debug_data, FILE_APPEND );
 			}
 		}
-		$eio_debug = '';
+		self::$debug_data = '';
 	}
 
 	/**
 	 * Adds information to the in-memory debug log.
 	 *
-	 * @global string $eio_debug The in-memory debug log.
-	 * @global bool   $easyio_temp_debug Indicator that we are temporarily debugging on the wp-admin.
-	 * @global bool   $ewwwio_temp_debug Indicator that we are temporarily debugging on the wp-admin.
-	 *
 	 * @param string $message Debug information to add to the log.
 	 */
-	function debug_message( $message ) {
+	public function debug_message( $message ) {
 		if ( ! \is_string( $message ) && ! \is_int( $message ) && ! \is_float( $message ) ) {
 			return;
 		}
-		if ( \defined( '\EIO_PHPUNIT' ) && \EIO_PHPUNIT ) {
+		if ( \defined( 'EIO_PHPUNIT' ) && EIO_PHPUNIT ) {
 			if (
 				! empty( $_SERVER['argv'] ) &&
 				( \in_array( '--debug', $_SERVER['argv'], true ) || \in_array( '--verbose', $_SERVER['argv'], true ) )
@@ -335,25 +376,31 @@ class Base {
 			}
 		}
 		$message = "$message";
-		if ( \defined( '\WP_CLI' ) && \WP_CLI ) {
+		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::debug( $message );
 			return;
 		}
-		global $ewwwio_temp_debug;
-		global $easyio_temp_debug;
-		if ( $easyio_temp_debug || $ewwwio_temp_debug || $this->get_option( $this->prefix . 'debug' ) ) {
+		if ( self::$temp_debug || $this->get_option( $this->prefix . 'debug' ) ) {
 			$memory_limit = $this->memory_limit();
 			if ( \strlen( $message ) + 4000000 + \memory_get_usage( true ) <= $memory_limit ) {
-				global $eio_debug;
-				$message    = \str_replace( "\n\n\n", '<br>', $message );
-				$message    = \str_replace( "\n\n", '<br>', $message );
-				$message    = \str_replace( "\n", '<br>', $message );
-				$eio_debug .= "$message<br>";
+				$message           = \str_replace( "\n\n\n", '<br>', $message );
+				$message           = \str_replace( "\n\n", '<br>', $message );
+				$message           = \str_replace( "\n", '<br>', $message );
+				self::$debug_data .= "$message<br>";
 			} else {
-				global $eio_debug;
-				$eio_debug = "not logging message, memory limit is $memory_limit";
+				self::$debug_data = "not logging message, memory limit is $memory_limit";
 			}
 		}
+	}
+
+	/**
+	 * Clears temp debugging mode and flushes the debug data if needed.
+	 */
+	public function temp_debug_end() {
+		if ( ! $this->get_option( $this->prefix . 'debug' ) ) {
+			self::$debug_data = '';
+		}
+		self::$temp_debug = false;
 	}
 
 	/**
@@ -362,7 +409,7 @@ class Base {
 	 * @param string $path The path to a binary file.
 	 * @return string The path with spaces escaped.
 	 */
-	function escapeshellcmd( $path ) {
+	public function escapeshellcmd( $path ) {
 		return ( \preg_replace( '/ /', '\ ', $path ) );
 	}
 
@@ -372,8 +419,8 @@ class Base {
 	 * @param string $arg A value to sanitize/escape for commmand-line usage.
 	 * @return string The value after being escaped.
 	 */
-	function escapeshellarg( $arg ) {
-		if ( \PHP_OS === 'WINNT' ) {
+	public function escapeshellarg( $arg ) {
+		if ( PHP_OS === 'WINNT' ) {
 			$safe_arg = \str_replace( '%', ' ', $arg );
 			$safe_arg = \str_replace( '!', ' ', $safe_arg );
 			$safe_arg = \str_replace( '"', ' ', $safe_arg );
@@ -386,19 +433,19 @@ class Base {
 	/**
 	 * Checks if a function is disabled or does not exist.
 	 *
-	 * @param string $function The name of a function to test.
+	 * @param string $function_name The name of a function to test.
 	 * @param bool   $debug Whether to output debugging.
 	 * @return bool True if the function is available, False if not.
 	 */
-	function function_exists( $function, $debug = false ) {
+	public function function_exists( $function_name, $debug = false ) {
 		if ( \function_exists( '\ini_get' ) ) {
-			$disabled = @\ini_get( 'disable_functions' );
+			$disabled = @\ini_get( 'disable_functions' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 			if ( $debug ) {
 				$this->debug_message( "disable_functions: $disabled" );
 			}
 		}
 		if ( \extension_loaded( 'suhosin' ) && \function_exists( '\ini_get' ) ) {
-			$suhosin_disabled = @\ini_get( 'suhosin.executor.func.blacklist' );
+			$suhosin_disabled = @\ini_get( 'suhosin.executor.func.blacklist' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 			if ( $debug ) {
 				$this->debug_message( "suhosin_blacklist: $suhosin_disabled" );
 			}
@@ -406,13 +453,13 @@ class Base {
 				$suhosin_disabled = \explode( ',', $suhosin_disabled );
 				$suhosin_disabled = \array_map( 'trim', $suhosin_disabled );
 				$suhosin_disabled = \array_map( 'strtolower', $suhosin_disabled );
-				if ( \function_exists( $function ) && ! \in_array( \trim( $function, '\\' ), $suhosin_disabled, true ) ) {
+				if ( \function_exists( $function_name ) && ! \in_array( \trim( $function_name, '\\' ), $suhosin_disabled, true ) ) {
 					return true;
 				}
 				return false;
 			}
 		}
-		return \function_exists( $function );
+		return \function_exists( $function_name );
 	}
 
 	/**
@@ -420,7 +467,7 @@ class Base {
 	 *
 	 * @return string|bool The version of GD if full support is detected, false otherwise.
 	 */
-	function gd_support() {
+	public function gd_support() {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( ! $this->gd_info && $this->function_exists( '\gd_info' ) ) {
 			$this->gd_info = \gd_info();
@@ -442,7 +489,7 @@ class Base {
 	 *
 	 * @return bool True if full Gmagick support is detected.
 	 */
-	function gmagick_support() {
+	public function gmagick_support() {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( ! $this->gmagick_info && \extension_loaded( 'gmagick' ) && \class_exists( '\Gmagick' ) ) {
 			$gmagick            = new \Gmagick();
@@ -462,7 +509,7 @@ class Base {
 	 *
 	 * @return bool True if full Imagick support is detected.
 	 */
-	function imagick_support() {
+	public function imagick_support() {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( ! $this->imagick_info && \extension_loaded( 'imagick' ) && \class_exists( '\Imagick' ) ) {
 			$imagick            = new \Imagick();
@@ -482,7 +529,7 @@ class Base {
 	 *
 	 * @return bool True if proper WebP support is detected.
 	 */
-	function gd_supports_webp() {
+	public function gd_supports_webp() {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( ! $this->gd_supports_webp ) {
 			$gd_version = $this->gd_support();
@@ -526,7 +573,7 @@ class Base {
 	 *
 	 * @return bool True if WebP support is detected.
 	 */
-	function imagick_supports_webp() {
+	public function imagick_supports_webp() {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( ! $this->imagick_supports_webp ) {
 			if ( $this->imagick_support() ) {
@@ -547,7 +594,7 @@ class Base {
 	 *
 	 * @return bool True if it is fully active and rewriting/offloading media, false otherwise.
 	 */
-	function s3_uploads_enabled() {
+	public function s3_uploads_enabled() {
 		// For version 3.x.
 		if ( \class_exists( '\S3_Uploads\Plugin', false ) && \function_exists( '\S3_Uploads\enabled' ) && \S3_Uploads\enabled() ) {
 			return true;
@@ -560,12 +607,29 @@ class Base {
 	}
 
 	/**
+	 * Checks if Easy IO is active in Perfect Images plugin.
+	 *
+	 * @return bool True if Easy IO is enabled via PI, false otherwise.
+	 */
+	public function perfect_images_easyio_domain() {
+		if ( class_exists( '\Meow_WR2X_Core' ) ) {
+			global $wr2x_core;
+			if ( is_object( $wr2x_core ) && method_exists( $wr2x_core, 'get_option' ) ) {
+				if ( ! empty( $wr2x_core->get_option( 'easyio_domain' ) ) ) {
+					return $wr2x_core->get_option( 'easyio_domain' );
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Sanitize the folders/patterns to exclude from optimization.
 	 *
 	 * @param string $input A list of filesystem paths, from a textarea.
 	 * @return array The sanitized list of paths/patterns to exclude.
 	 */
-	function exclude_paths_sanitize( $input ) {
+	public function exclude_paths_sanitize( $input ) {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( empty( $input ) ) {
 			return '';
@@ -577,9 +641,7 @@ class Base {
 			$paths = \explode( "\n", $input );
 		}
 		if ( $this->is_iterable( $paths ) ) {
-			$i = 0;
 			foreach ( $paths as $path ) {
-				$i++;
 				$this->debug_message( "validating path exclusion: $path" );
 				$path = \trim( \sanitize_text_field( $path ), '*' );
 				if ( ! empty( $path ) ) {
@@ -597,11 +659,11 @@ class Base {
 	 * same-named constant. Overrides are only available for integer and boolean options.
 	 *
 	 * @param string $option_name The name of the option to retrieve.
-	 * @param mixed  $default The default to use if not found/set, defaults to false, but not currently used.
+	 * @param mixed  $default_value The default to use if not found/set, defaults to false, but not currently used.
 	 * @param bool   $single Use single-site setting regardless of multisite activation. Default is off/false.
 	 * @return mixed The value of the option.
 	 */
-	function get_option( $option_name, $default = false, $single = false ) {
+	public function get_option( $option_name, $default_value = false, $single = false ) {
 		$constant_name = \strtoupper( $option_name );
 		if ( \defined( $constant_name ) && ( \is_int( \constant( $constant_name ) ) || \is_bool( \constant( $constant_name ) ) ) ) {
 			return \constant( $constant_name );
@@ -628,6 +690,9 @@ class Base {
 		if ( 'ewww_image_optimizer_ll_all_things' === $option_name && \defined( $constant_name ) ) {
 			return \sanitize_text_field( \constant( $constant_name ) );
 		}
+		if ( 'easyio_ll_all_things' === $option_name && \defined( $constant_name ) ) {
+			return \sanitize_text_field( \constant( $constant_name ) );
+		}
 		if ( 'ewww_image_optimizer_aux_paths' === $option_name && \defined( $constant_name ) ) {
 			return \ewww_image_optimizer_aux_paths_sanitize( \constant( $constant_name ) );
 		}
@@ -650,7 +715,7 @@ class Base {
 		}
 		if ( ! \function_exists( 'is_plugin_active_for_network' ) && \is_multisite() ) {
 			// Need to include the plugin library for the is_plugin_active function.
-			require_once( \ABSPATH . 'wp-admin/includes/plugin.php' );
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		if (
 			! $single &&
@@ -673,7 +738,7 @@ class Base {
 	 * @param array  $data The array to output with the glue.
 	 * @return string The array values, separated by the delimiter.
 	 */
-	function implode( $delimiter, $data = '' ) {
+	public function implode( $delimiter, $data = '' ) {
 		if ( \is_array( $delimiter ) ) {
 			$temp_data = $delimiter;
 			$delimiter = $data;
@@ -700,16 +765,15 @@ class Base {
 	 *
 	 * @return bool True for an AMP endpoint, false otherwise.
 	 */
-	function is_amp() {
+	public function is_amp() {
 		// Just return false if we can't properly check yet.
 		if ( ! \did_action( 'parse_request' ) ) {
 			return false;
 		}
-		if ( ! \did_action( 'wp' ) ) {
+		if ( ! \did_action( 'parse_query' ) ) {
 			return false;
 		}
-		global $wp_query;
-		if ( ! isset( $wp_query ) || ! ( $wp_query instanceof \WP_Query ) ) {
+		if ( ! \did_action( 'wp' ) ) {
 			return false;
 		}
 
@@ -728,11 +792,11 @@ class Base {
 	/**
 	 * Make sure an array/object can be parsed by a foreach().
 	 *
-	 * @param mixed $var A variable to test for iteration ability.
-	 * @return bool True if the variable is iterable.
+	 * @param mixed $value A variable to test for iteration ability.
+	 * @return bool True if the variable is iterable and not empty.
 	 */
-	function is_iterable( $var ) {
-		return ! empty( $var ) && ( \is_array( $var ) || $var instanceof \Traversable );
+	public function is_iterable( $value ) {
+		return ! empty( $value ) && is_iterable( $value );
 	}
 
 	/**
@@ -744,7 +808,7 @@ class Base {
 	 * @param string $buffer The content to check for JSON.
 	 * @return bool True for JSON, false for everything else.
 	 */
-	function is_json( $buffer ) {
+	public function is_json( $buffer ) {
 		if ( '{' === \substr( $buffer, 0, 1 ) && '}' === \substr( $buffer, -1 ) ) {
 			return true;
 		}
@@ -756,11 +820,11 @@ class Base {
 
 	/**
 	 * Make sure this is really and truly a "front-end request", excluding page builders and such.
-	 * Note this is not currently used anywhere, each module has it's own list.
+	 * NOTE: this is not currently used anywhere, each module has it's own list.
 	 *
 	 * @return bool True for front-end requests, false for admin/builder requests.
 	 */
-	function is_frontend() {
+	public function is_frontend() {
 		if ( \is_admin() ) {
 			return false;
 		}
@@ -782,7 +846,7 @@ class Base {
 			\is_feed() ||
 			\is_preview() ||
 			\is_customize_preview() ||
-			( defined( '\REST_REQUEST' ) && \REST_REQUEST )
+			( defined( 'REST_REQUEST' ) && REST_REQUEST )
 		) {
 			return false;
 		}
@@ -795,7 +859,7 @@ class Base {
 	 * @param string $image The image URL (or an image element).
 	 * @return bool True if it matches a known placeholder pattern, false otherwise.
 	 */
-	function is_lazy_placeholder( $image ) {
+	public function is_lazy_placeholder( $image ) {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if (
 			\strpos( $image, 'base64,R0lGOD' ) ||
@@ -817,7 +881,7 @@ class Base {
 	 * @param string $file The path of the file to check.
 	 * @return bool True if the file exists and is local, false otherwise.
 	 */
-	function is_file( $file ) {
+	public function is_file( $file ) {
 		if ( false !== \strpos( $file, '://' ) ) {
 			return false;
 		}
@@ -825,11 +889,11 @@ class Base {
 			return false;
 		}
 		$file       = \realpath( $file );
-		$wp_dir     = \realpath( \ABSPATH );
+		$wp_dir     = \realpath( ABSPATH );
 		$upload_dir = \wp_get_upload_dir();
 		$upload_dir = \realpath( $upload_dir['basedir'] );
 
-		$content_dir = \realpath( \WP_CONTENT_DIR );
+		$content_dir = \realpath( WP_CONTENT_DIR );
 		if ( empty( $content_dir ) ) {
 			$content_dir = $wp_dir;
 		}
@@ -854,7 +918,7 @@ class Base {
 	 * @param string $file The path to check.
 	 * @return bool True if it is, false if it ain't.
 	 */
-	function is_readable( $file ) {
+	public function is_readable( $file ) {
 		$this->get_filesystem();
 		return $this->filesystem->is_readable( $file );
 	}
@@ -865,7 +929,7 @@ class Base {
 	 * @param string $file The name of the file.
 	 * @return int The size of the file or zero.
 	 */
-	function filesize( $file ) {
+	public function filesize( $file ) {
 		$file = \realpath( $file );
 		if ( $this->is_file( $file ) ) {
 			$this->get_filesystem();
@@ -885,16 +949,16 @@ class Base {
 	 * @param string $dir The path of the folder constraint. Optional.
 	 * @return bool True if the file was removed, false otherwise.
 	 */
-	function delete_file( $file, $dir = '' ) {
+	public function delete_file( $file, $dir = '' ) {
 		$file = \realpath( $file );
 		if ( ! empty( $dir ) ) {
 			return \wp_delete_file_from_directory( $file, $dir );
 		}
 
-		$wp_dir      = \realpath( \ABSPATH );
+		$wp_dir      = \realpath( ABSPATH );
 		$upload_dir  = \wp_get_upload_dir();
 		$upload_dir  = \realpath( $upload_dir['basedir'] );
-		$content_dir = \realpath( \WP_CONTENT_DIR );
+		$content_dir = \realpath( WP_CONTENT_DIR );
 
 		if ( false !== \strpos( $file, $upload_dir ) ) {
 			return \wp_delete_file_from_directory( $file, $upload_dir );
@@ -911,14 +975,14 @@ class Base {
 	/**
 	 * Setup the filesystem class.
 	 */
-	function get_filesystem() {
-		require_once( \ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
-		require_once( \ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
-		if ( ! defined( '\FS_CHMOD_DIR' ) ) {
-			\define( '\FS_CHMOD_DIR', ( \fileperms( \ABSPATH ) & 0777 | 0755 ) );
+	public function get_filesystem() {
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+		if ( ! defined( 'FS_CHMOD_DIR' ) ) {
+			\define( 'FS_CHMOD_DIR', ( \fileperms( ABSPATH ) & 0777 | 0755 ) );
 		}
-		if ( ! defined( '\FS_CHMOD_FILE' ) ) {
-			\define( '\FS_CHMOD_FILE', ( \fileperms( \ABSPATH . 'index.php' ) & 0777 | 0644 ) );
+		if ( ! defined( 'FS_CHMOD_FILE' ) ) {
+			\define( 'FS_CHMOD_FILE', ( \fileperms( ABSPATH . 'index.php' ) & 0777 | 0644 ) );
 		}
 		if ( ! \is_object( $this->filesystem ) ) {
 			$this->filesystem = new \WP_Filesystem_Direct( '' );
@@ -929,16 +993,16 @@ class Base {
 	 * Check the mimetype of the given file with magic mime strings/patterns.
 	 *
 	 * @param string $path The absolute path to the file.
-	 * @param string $case The type of file we are checking. Accepts 'i' for
+	 * @param string $category The type of file we are checking. Accepts 'i' for
 	 *                     images/pdfs or 'b' for binary.
 	 * @return bool|string A valid mime-type or false.
 	 */
-	function mimetype( $path, $case ) {
+	public function mimetype( $path, $category ) {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$this->debug_message( "testing mimetype: $path" );
 		$type = false;
 		// For S3 images/files, don't attempt to read the file, just use the quick (filename) mime check.
-		if ( 'i' === $case && $this->stream_wrapped( $path ) ) {
+		if ( 'i' === $category && $this->stream_wrapped( $path ) ) {
 			return $this->quick_mimetype( $path );
 		}
 		$path = \realpath( $path );
@@ -950,7 +1014,7 @@ class Base {
 			$this->debug_message( "$path is not readable" );
 			return $type;
 		}
-		if ( 'i' === $case ) {
+		if ( 'i' === $category ) {
 			$file_handle   = \fopen( $path, 'rb' );
 			$file_contents = \fread( $file_handle, 4096 );
 			if ( $file_contents ) {
@@ -992,7 +1056,7 @@ class Base {
 				$this->debug_message( 'could not open for reading' );
 			}
 		}
-		if ( 'b' === $case ) {
+		if ( 'b' === $category ) {
 			$file_handle   = fopen( $path, 'rb' );
 			$file_contents = fread( $file_handle, 12 );
 			if ( $file_contents ) {
@@ -1031,8 +1095,8 @@ class Base {
 	 * @param string $path The name of the file.
 	 * @return string|bool The mime type based on the extension or false.
 	 */
-	function quick_mimetype( $path ) {
-		$pathextension = \strtolower( \pathinfo( $path, \PATHINFO_EXTENSION ) );
+	public function quick_mimetype( $path ) {
+		$pathextension = \strtolower( \pathinfo( $path, PATHINFO_EXTENSION ) );
 		switch ( $pathextension ) {
 			case 'jpg':
 			case 'jpeg':
@@ -1064,7 +1128,7 @@ class Base {
 	 * @param int $padding Optional. The amount of memory needed to continue. Default 1050000.
 	 * @return True to proceed, false if there is not enough memory.
 	 */
-	function check_memory_available( $padding = 1050000 ) {
+	public function check_memory_available( $padding = 1050000 ) {
 		$memory_limit = $this->memory_limit();
 
 		$current_memory = \memory_get_usage( true ) + $padding;
@@ -1081,20 +1145,20 @@ class Base {
 	 *
 	 * @return int The memory limit in bytes.
 	 */
-	function memory_limit() {
-		if ( \defined( '\EIO_MEMORY_LIMIT' ) && \EIO_MEMORY_LIMIT ) {
-			$memory_limit = \EIO_MEMORY_LIMIT;
+	public function memory_limit() {
+		if ( \defined( 'EIO_MEMORY_LIMIT' ) && EIO_MEMORY_LIMIT ) {
+			$memory_limit = EIO_MEMORY_LIMIT;
 		} elseif ( \function_exists( 'ini_get' ) ) {
 			$memory_limit = \ini_get( 'memory_limit' );
 		} else {
-			if ( ! \defined( '\EIO_MEMORY_LIMIT' ) ) {
+			if ( ! \defined( 'EIO_MEMORY_LIMIT' ) ) {
 				// Conservative default, current usage + 16M.
 				$current_memory = \memory_get_usage( true );
 				$memory_limit   = \round( $current_memory / ( 1024 * 1024 ) ) + 16;
-				define( '\EIO_MEMORY_LIMIT', $memory_limit );
+				define( 'EIO_MEMORY_LIMIT', $memory_limit );
 			}
 		}
-		if ( \defined( 'WP_CLI' ) && \WP_CLI ) {
+		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::debug( "memory limit is set at $memory_limit" );
 		}
 		if ( ! $memory_limit || -1 === \intval( $memory_limit ) ) {
@@ -1112,7 +1176,7 @@ class Base {
 	/**
 	 * Clear output buffers without throwing a fit.
 	 */
-	function ob_clean() {
+	public function ob_clean() {
 		if ( \ob_get_length() ) {
 			\ob_end_clean();
 		}
@@ -1126,7 +1190,7 @@ class Base {
 	 * @param string $needle   The substring to search for in the `$haystack`.
 	 * @return bool True if `$haystack` ends with `$needle`, otherwise false.
 	 */
-	function str_ends_with( $haystack, $needle ) {
+	public function str_ends_with( $haystack, $needle ) {
 		if ( '' === $haystack && '' !== $needle ) {
 			return false;
 		}
@@ -1137,16 +1201,31 @@ class Base {
 	}
 
 	/**
+	 * Trims the given 'needle' from the end of the 'haystack'.
+	 *
+	 * @param string $haystack The string to be modified if it contains needle.
+	 * @param string $needle The string to remove if it is at the end of the haystack.
+	 * @return string The haystack with needle removed from the end.
+	 */
+	public function remove_from_end( $haystack, $needle ) {
+		$needle_length = strlen( $needle );
+		if ( substr( $haystack, -$needle_length ) === $needle ) {
+			return substr( $haystack, 0, -$needle_length );
+		}
+		return $haystack;
+	}
+
+	/**
 	 * Set an option: use 'site' setting if plugin is network activated, otherwise use 'blog' setting.
 	 *
 	 * @param string $option_name The name of the option to save.
 	 * @param mixed  $option_value The value to save for the option.
 	 * @return bool True if the operation was successful.
 	 */
-	function set_option( $option_name, $option_value ) {
+	public function set_option( $option_name, $option_value ) {
 		if ( ! \function_exists( '\is_plugin_active_for_network' ) && \is_multisite() ) {
 			// Need to include the plugin library for the is_plugin_active function.
-			require_once( \ABSPATH . 'wp-admin/includes/plugin.php' );
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		if (
 			\is_multisite() &&
@@ -1161,12 +1240,34 @@ class Base {
 	}
 
 	/**
+	 * Convert a gallery name to the corresponding integer/ID.
+	 *
+	 * Used for the $gallery_type parameter of the ewww_image_optimizer() function.
+	 *
+	 * @param string $gallery_name The gallery identificer, like 'media', 'nextgen', etc.
+	 * @return int The ID for the gallery/type of image.
+	 */
+	public function gallery_name_to_id( $gallery_name ) {
+		switch ( $gallery_name ) {
+			case 'media':
+				return 1;
+			case 'nextgen':
+			case 'nextcell':
+				return 2;
+			case 'flag':
+				return 3;
+			default:
+				return 4;
+		}
+	}
+
+	/**
 	 * Checks the filename for an S3 or GCS stream wrapper.
 	 *
 	 * @param string $filename The filename to be searched.
 	 * @return bool True if a stream wrapper is found, false otherwise.
 	 */
-	function stream_wrapped( $filename ) {
+	public function stream_wrapped( $filename ) {
 		if ( false !== \strpos( $filename, '://' ) ) {
 			if ( \strpos( $filename, 's3' ) === 0 ) {
 				return true;
@@ -1186,7 +1287,7 @@ class Base {
 	 * @param string $url The image URL to mangle.
 	 * @return string The path to a local file correlating to the CDN URL, an empty string otherwise.
 	 */
-	function cdn_to_local( $url ) {
+	public function cdn_to_local( $url ) {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( empty( $this->site_url ) ) {
 			$this->content_url();
@@ -1249,6 +1350,12 @@ class Base {
 				$local_url = \str_replace( $allowed_url, $this->upload_url, $url );
 				$this->debug_message( "found $allowed_url, replaced with $this->upload_url to get $local_url" );
 				$path = $this->url_to_path_exists( $local_url );
+				if ( ! $path ) {
+					// This won't work if the upload dir is outside ABSPATH, but normally it does fix sub-folder multisites.
+					$local_url = \str_replace( $allowed_url, $this->home_url, $url );
+					$this->debug_message( "found $allowed_url, replaced with $this->home_url to get $local_url" );
+					$path = $this->url_to_path_exists( $local_url );
+				}
 				if ( $path ) {
 					return $path;
 				}
@@ -1264,7 +1371,7 @@ class Base {
 	 * @param string $extension An optional extension to append during is_file().
 	 * @return bool|string The path if a local file exists correlating to the URL, false otherwise.
 	 */
-	function url_to_path_exists( $url, $extension = '' ) {
+	public function url_to_path_exists( $url, $extension = '' ) {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		if ( empty( $this->site_url ) ) {
 			$this->content_url();
@@ -1277,14 +1384,14 @@ class Base {
 			$url = '//' . $this->upload_domain . $url;
 			$this->debug_message( "and changed to $url for path checking" );
 		}
-		if ( 0 === \strpos( $url, \WP_CONTENT_URL ) ) {
-			$path = \str_replace( \WP_CONTENT_URL, \WP_CONTENT_DIR, $url );
-			$this->debug_message( "trying $path based on " . \WP_CONTENT_URL );
+		if ( 0 === \strpos( $url, WP_CONTENT_URL ) ) {
+			$path = \str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $url );
+			$this->debug_message( "trying $path based on " . WP_CONTENT_URL );
 		} elseif ( 0 === \strpos( $url, $this->relative_home_url ) ) {
-			$path = \str_replace( $this->relative_home_url, \ABSPATH, $url );
+			$path = \str_replace( $this->relative_home_url, ABSPATH, $url );
 			$this->debug_message( "trying $path based on " . $this->relative_home_url );
 		} elseif ( 0 === \strpos( $url, $this->home_url ) ) {
-			$path = \str_replace( $this->home_url, \ABSPATH, $url );
+			$path = \str_replace( $this->home_url, ABSPATH, $url );
 			$this->debug_message( "trying $path based on " . $this->home_url );
 		} else {
 			$this->debug_message( 'not a valid local image' );
@@ -1318,7 +1425,7 @@ class Base {
 	 * @param string $url The image URL with a potential version string embedded.
 	 * @return string The URL without a version string.
 	 */
-	function maybe_strip_object_version( $url ) {
+	public function maybe_strip_object_version( $url ) {
 		if ( ! empty( $this->s3_object_version ) ) {
 			$possible_version = \wp_basename( \dirname( $url ) );
 			if (
@@ -1350,7 +1457,7 @@ class Base {
 	 * @param integer $component Retrieve specific URL component.
 	 * @return mixed Result of parse_url.
 	 */
-	function parse_url( $url, $component = -1 ) {
+	public function parse_url( $url, $component = -1 ) {
 		if ( 0 === \strpos( $url, '//' ) ) {
 			$url = ( \is_ssl() ? 'https:' : 'http:' ) . $url;
 		}
@@ -1377,7 +1484,7 @@ class Base {
 	 *
 	 * @return string The URL where the content lives.
 	 */
-	function content_url() {
+	public function content_url() {
 		if ( $this->site_url ) {
 			return $this->site_url;
 		}
@@ -1432,8 +1539,8 @@ class Base {
 			if ( ! empty( $s3_uploads_url ) ) {
 				$this->allowed_urls[] = $s3_uploads_url;
 				$this->debug_message( "found S3 URL from S3_Uploads: $s3_uploads_url" );
-				$s3_domain       = $this->parse_url( $s3_uploads_url, \PHP_URL_HOST );
-				$s3_scheme       = $this->parse_url( $s3_uploads_url, \PHP_URL_SCHEME );
+				$s3_domain       = $this->parse_url( $s3_uploads_url, PHP_URL_HOST );
+				$s3_scheme       = $this->parse_url( $s3_uploads_url, PHP_URL_SCHEME );
 				$this->s3_active = $s3_domain;
 			}
 		}
@@ -1446,8 +1553,8 @@ class Base {
 					$sm_host              = $sm->get_gs_host();
 					$this->allowed_urls[] = $sm_host;
 					$this->debug_message( "found cloud storage URL from WP Stateless: $sm_host" );
-					$s3_domain       = $this->parse_url( $sm_host, \PHP_URL_HOST );
-					$s3_scheme       = $this->parse_url( $sm_host, \PHP_URL_SCHEME );
+					$s3_domain       = $this->parse_url( $sm_host, PHP_URL_HOST );
+					$s3_scheme       = $this->parse_url( $sm_host, PHP_URL_SCHEME );
 					$this->s3_active = $s3_domain;
 				}
 			}
@@ -1457,35 +1564,44 @@ class Base {
 		// JS/CSS from a different CDN domain, and that will break with Easy IO!
 		if ( __NAMESPACE__ . '\ExactDN' !== \get_class( $this ) && __NAMESPACE__ . '\Base' !== \get_class( $this ) && \function_exists( '\swis' ) && \is_object( \swis()->settings ) && \swis()->settings->get_option( 'cdn_domain' ) ) {
 			$this->allowed_urls[]    = \swis()->settings->get_option( 'cdn_domain' );
-			$this->allowed_domains[] = $this->parse_url( \swis()->settings->get_option( 'cdn_domain' ), \PHP_URL_HOST );
+			$this->allowed_domains[] = $this->parse_url( \swis()->settings->get_option( 'cdn_domain' ), PHP_URL_HOST );
 		}
 
 		$upload_dir = \wp_get_upload_dir();
 		if ( $this->s3_active ) {
-			$this->site_url = \defined( '\EXACTDN_LOCAL_DOMAIN' ) && \EXACTDN_LOCAL_DOMAIN ? \EXACTDN_LOCAL_DOMAIN : $s3_scheme . '://' . $s3_domain;
+			$this->site_url = \defined( 'EXACTDN_LOCAL_DOMAIN' ) && EXACTDN_LOCAL_DOMAIN ? EXACTDN_LOCAL_DOMAIN : $s3_scheme . '://' . $s3_domain;
 		} else {
 			// Normally, we use this one, as it will be shorter for sub-directory (not multi-site) installs.
 			$home_url    = \get_home_url();
 			$site_url    = \get_site_url();
-			$home_domain = $this->parse_url( $home_url, \PHP_URL_HOST );
-			$site_domain = $this->parse_url( $site_url, \PHP_URL_HOST );
+			$home_domain = $this->parse_url( $home_url, PHP_URL_HOST );
+			$site_domain = $this->parse_url( $site_url, PHP_URL_HOST );
 			// If the home domain does not match the upload url, and the site domain does match...
 			if ( $home_domain && false === \strpos( $upload_dir['baseurl'], $home_domain ) && $site_domain && false !== \strpos( $upload_dir['baseurl'], $site_domain ) ) {
 				$this->debug_message( "using WP URL (via get_site_url) with $site_domain rather than $home_domain" );
 				$home_url = $site_url;
 			}
-			$this->site_url = \defined( '\EXACTDN_LOCAL_DOMAIN' ) && \EXACTDN_LOCAL_DOMAIN ? \EXACTDN_LOCAL_DOMAIN : $home_url;
+			$this->site_url = \defined( 'EXACTDN_LOCAL_DOMAIN' ) && EXACTDN_LOCAL_DOMAIN ? EXACTDN_LOCAL_DOMAIN : $home_url;
 		}
 		// This is used by the WebP parsers, and by the Lazy Load via get_image_dimensions_by_url().
 		$this->upload_url = \trailingslashit( ! empty( $upload_dir['baseurl'] ) ? $upload_dir['baseurl'] : \content_url( 'uploads' ) );
+		if ( \is_multisite() ) {
+			// Check for a site-specific suffix and remove it.
+			$current_blog_id = get_current_blog_id();
+			if ( \str_ends_with( $this->upload_url, 'sites/' . $current_blog_id . '/' ) ) {
+				$this->upload_url = $this->remove_from_end( $this->upload_url, 'sites/' . $current_blog_id . '/' );
+			} elseif ( \str_ends_with( $this->upload_url, '/' . $current_blog_id . '/' ) ) {
+				$this->upload_url = $this->remove_from_end( $this->upload_url, $current_blog_id . '/' );
+			}
+		}
 
 		// But this is used by Easy IO, so it should be derived from the above logic instead, which already matches the site/home URLs against the upload URL.
-		$this->upload_domain     = $this->parse_url( $this->site_url, \PHP_URL_HOST );
+		$this->upload_domain     = $this->parse_url( $this->site_url, PHP_URL_HOST );
 		$this->allowed_domains[] = $this->upload_domain;
 		// For when plugins don't do a very good job of updating URLs for mapped multi-site domains.
-		if ( \is_multisite() && false === \strpos( $upload_dir['baseurl'], $this->upload_domain ) ) {
+		if ( ! $this->s3_active && \is_multisite() && false === \strpos( $upload_dir['baseurl'], $this->upload_domain ) ) {
 			$this->debug_message( 'upload domain does not match the home URL' );
-			$origin_upload_domain = $this->parse_url( $upload_dir['baseurl'], \PHP_URL_HOST );
+			$origin_upload_domain = $this->parse_url( $upload_dir['baseurl'], PHP_URL_HOST );
 			if ( $origin_upload_domain ) {
 				$this->allowed_domains[] = $origin_upload_domain;
 			}
@@ -1503,8 +1619,8 @@ class Base {
 			$wpml_domains = \apply_filters( 'wpml_setting', array(), 'language_domains' );
 			if ( $this->is_iterable( $wpml_domains ) ) {
 				$this->debug_message( 'wpml domains: ' . \implode( ',', $wpml_domains ) );
-				$this->allowed_domains[] = $this->parse_url( \get_option( 'home' ), \PHP_URL_HOST );
-				$wpml_scheme             = $this->parse_url( $this->upload_url, \PHP_URL_SCHEME );
+				$this->allowed_domains[] = $this->parse_url( \get_option( 'home' ), PHP_URL_HOST );
+				$wpml_scheme             = $this->parse_url( $this->upload_url, PHP_URL_SCHEME );
 				foreach ( $wpml_domains as $wpml_domain ) {
 					$this->allowed_domains[] = $wpml_domain;
 					$this->allowed_urls[]    = $wpml_scheme . '://' . $wpml_domain;
@@ -1520,12 +1636,12 @@ class Base {
 	/**
 	 * Takes the list of allowed URLs and parses out the domain names.
 	 */
-	function get_allowed_domains() {
+	public function get_allowed_domains() {
 		if ( ! $this->is_iterable( $this->allowed_urls ) ) {
 			return;
 		}
 		foreach ( $this->allowed_urls as $allowed_url ) {
-			$allowed_domain = $this->parse_url( $allowed_url, \PHP_URL_HOST );
+			$allowed_domain = $this->parse_url( $allowed_url, PHP_URL_HOST );
 			if ( $allowed_domain && ! \in_array( $allowed_domain, $this->allowed_domains, true ) ) {
 				$this->allowed_domains[] = $allowed_domain;
 			}

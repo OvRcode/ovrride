@@ -12,6 +12,7 @@ class MetaYouTubeSlide extends MetaSlide
 
     public $identifier = "youtube"; // should be lowercase, one word (use underscores if needed)
     public $name;
+    private $slide_settings;
 
     /**
      * Register slide type
@@ -144,10 +145,24 @@ class MetaYouTubeSlide extends MetaSlide
         $fields['video_url'] = esc_url($_POST['video_url']);
         $fields['settings']['lazyLoad'] = "on";
         $fields['settings']['showControls'] = "on";
-        $this->create_slide($slider_id, $fields);
+        
+        $new_slide_id = $this->create_slide($slider_id, $fields);
+        
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo $this->get_admin_slide();
-        die(); // this is required to return a proper result
+        $html = $this->get_admin_slide();
+
+        $result = array(
+            'slide_id' => $new_slide_id,
+            'html' => $html
+        );
+
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( array(
+                'message' => $result->get_error_message()
+            ), 409 );
+        }
+        
+        wp_send_json_success ( $result, 200 );
 
     }
 
@@ -160,19 +175,40 @@ class MetaYouTubeSlide extends MetaSlide
             wp_send_json_error(esc_html__('Invalid nonce', 'ml-slider-pro'), 403);
         }
 
-        if (!isset($_POST['video_id']) || !isset($_POST['slide_id']) || !isset($_POST['video_type'])) {
-            wp_send_json_error(esc_html__('Bad request', 'ml-slider-pro'), 400);
+        if ( ! isset( $_POST['video_id'] ) 
+            || ! isset( $_POST['slide_id'] ) 
+            || !isset( $_POST['video_type'] ) || !isset( $_POST['video_url'] ) 
+        ) {
+            wp_send_json_error( esc_html__( 'Bad request', 'ml-slider-pro' ), 400 );
         }
 
-        $slide_id = intval($_POST['slide_id']);
-        $video_id = sanitize_text_field($_POST['video_id']);
-        $video_type = sanitize_text_field($_POST['video_type']);
+        $slide_id       = intval( $_POST['slide_id'] );
+        $video_id       = sanitize_text_field( $_POST['video_id'] );
+        $video_url      = esc_url( $_POST['video_url'] );
+        $video_type     = sanitize_text_field( $_POST['video_type'] );
+        $image_id       = $this->create_slide_thumb( $video_id, 999 );
+        $video_title    = $this->youtube_title( $video_id );
 
-        $media_id = $this->create_slide_thumb($video_id, 999);
+        // Update URL and title
+        $this->add_or_update_or_delete_meta( $slide_id, 'youtube_url', $video_url );
+        $this->add_or_update_or_delete_meta( $slide_id, 'youtube_title',  $video_title );
+
+        /*
+         * Updates database record and thumbnail if selection changed, 
+         * assigns it to the slide, crops the image
+         */
+        update_post_meta( $slide_id, '_thumbnail_id', $image_id );
+
+        // Get cropped images for srcset attribute
+        $thumbnail_url_large    = $this->get_intermediate_image_src( 1024, $image_id );
+        $thumbnail_url_medium   = $this->get_intermediate_image_src( 768, $image_id );
+        $thumbnail_url_small    = $this->get_intermediate_image_src( 240, $image_id );
 
         wp_send_json_success([
             'slide_id' => $slide_id,
-            'thumbnail' => wp_get_attachment_url($media_id),
+            'thumbnail_url_small' => $thumbnail_url_small,
+            'thumbnail_url_medium' => $thumbnail_url_medium,
+            'thumbnail_url_large' => $thumbnail_url_large
         ]);
     }
 
@@ -269,17 +305,6 @@ class MetaYouTubeSlide extends MetaSlide
      */
     protected function get_admin_slide()
     {
-        $thumb = "";
-
-        // only show a thumbnail if we managed to download one when the slide was created
-        if (get_post_thumbnail_id($this->slide->ID)) {// new slide format
-            $thumb = $this->get_thumb();
-        } else {
-            if (strlen(get_attached_file($this->slide->ID))) {
-                $thumb = $this->get_thumb();
-            }
-        }
-
         ob_start();
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo $this->get_delete_button_html();
@@ -306,14 +331,6 @@ class MetaYouTubeSlide extends MetaSlide
             $row .= $edit_buttons;
         }
         $row .= "        </div>";
-        $row .= "        <div class='metaslider-ui-inner metaslider-slide-thumb' data-slide-id='" . esc_attr($this->slide->ID) . "'>";
-        $row .= "           <button class='update-image image-button' data-button-text='" . esc_attr__(
-                "Update slide image",
-                "ml-slider"
-            ) . "' title='" . esc_attr__("Update Slide Image", "ml-slider") . "' data-slide-id='" . esc_attr($this->slide->ID) . "'>";
-        $row .= "           <div class='thumb' style='background-image: url(" . esc_attr($thumb) . ")'></div>";
-        $row .= "           </button>";
-        $row .= "        </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
         $row .= "       <div class='metaslider-ui-inner flex flex-col h-full'>";
@@ -338,54 +355,15 @@ class MetaYouTubeSlide extends MetaSlide
      */
     public function get_admin_tabs()
     {
-        $slide_id = absint($this->slide->ID);
-        $showControls_checked = ! isset($this->slide_settings['showControls']) || $this->slide_settings['showControls'] == 'on' ? 'checked=checked' : '';
-        $show_related_checked = isset($this->slide_settings['showRelated']) && $this->slide_settings['showRelated'] == 'on' ? 'checked=checked' : '';
-        $auto_play_checked = isset($this->slide_settings['autoPlay']) && $this->slide_settings['autoPlay'] == 'on' ? 'checked=checked' : '';
-        $mute_checked = isset($this->slide_settings['mute']) && $this->slide_settings['mute'] == 'on' ? 'checked=checked' : '';
-        $light_theme_selected = isset($this->slide_settings['theme']) && $this->slide_settings['theme'] == 'light' ? 'selected' : '';
-        $white_color_selected = isset($this->slide_settings['color']) && $this->slide_settings['color'] == 'white' ? 'selected' : '';
-        $lazy_load = ! isset($this->slide_settings['lazyLoad']) || $this->slide_settings['lazyLoad'] == 'on' ? 'checked=checked' : '';
-        $video_url = get_post_meta($slide_id, 'ml-slider_youtube_url', true);
+        $path = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'tabs/';
 
-        $general_tab = "<input style='padding:7px 10px;max-width:500px' data-lpignore='true' class='ms-super-wide metaslider-pro-youtube_url' name='attachment[" . esc_attr($slide_id) . "][youtube_url]' value='" . esc_attr($video_url) . "' data-slide-id='" . esc_attr($slide_id) . "'>";
-        $general_tab .= "<ul class='ms-split-li'>
-							<li>
-                                <label><input type='checkbox' name='attachment[" . esc_attr($slide_id) . "][settings][mute]' {$mute_checked}/>
-                                <span>" . esc_html__('Mute video','ml-slider-pro') . "</span></label>
-                            </li>
-							<li>
-                                <label><input type='checkbox' name='attachment[" . esc_attr($slide_id) . "][settings][showControls]' {$showControls_checked}/>
-                                <span>" . esc_html__('Show controls', 'ml-slider-pro') . "</span></label>
-                            </li>
-							<li>
-                                <label><input type='checkbox' name='attachment[" . esc_attr($slide_id) . "][settings][autoPlay]' {$auto_play_checked}/>
-                                <span>" . esc_html__('Auto play (may require video to be muted)', 'ml-slider-pro') . "</span></label>
-                            </li>
-							<li>
-                                <label><input type='checkbox' name='attachment[" . esc_attr($slide_id) . "][settings][lazyLoad]' {$lazy_load}/>
-                                <span>" . esc_html__('Lazy load video', 'ml-slider-pro') ."</span></label>
-                            </li>
-                            <li>
-                                <label><input type='checkbox' name='attachment[" . esc_attr($slide_id) . "][settings][showRelated]' {$show_related_checked}/>
-                                <span>" . esc_html__('Show related videos (disabling this may instead show only recommended videos from the channel)','ml-slider-pro') . "</span></label>
-                            </li>
-                        </ul>";
+        ob_start();
+        include $path . 'general.php';
+        $general_tab = ob_get_clean();
 
-        $theme_tab = "<div class='row'>
-                            <label>" . esc_html__("Theme", 'ml-slider-pro') . "</label>
-                            <select name='attachment[" . esc_attr($slide_id) . "][settings][theme]'>
-                                <option value='dark'>" . esc_html__('Dark', 'ml-slider-pro') . "</option>
-                                <option value='light' {$light_theme_selected}>" . esc_html__('Light', 'ml-slider-pro') . "</option>
-                            </select>
-                        </div>
-                        <div class='row'>
-                            <label>" . esc_html__("Color", 'ml-slider-pro') . "</label>
-                            <select name='attachment[" . esc_attr($slide_id) . "][settings][color]'>
-                                <option value='red'>" . esc_html__('Red', 'ml-slider-pro') . "</option>
-                                <option value='white' {$white_color_selected}>" . esc_html__('White', 'ml-slider-pro') . "</option>
-                            </select>
-                        </div>";
+        ob_start();
+        include $path . 'theme.php';
+        $theme_tab = ob_get_clean();
 
         $tabs = array(
             'general' => array(
@@ -397,6 +375,21 @@ class MetaYouTubeSlide extends MetaSlide
                 'content' => $theme_tab
             )
         );
+
+        $global_settings = $this->get_global_settings();
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            ob_start();
+            include $path . 'mobile.php';
+            $mobile_tab = ob_get_clean();
+
+            $tabs['mobile'] = array(
+                'title' => __("Mobile", "ml-slider"),
+                'content' => $mobile_tab
+            );
+        }
 
         return apply_filters("metaslider_youtube_slide_tabs", $tabs, $this->slide, $this->slider, $this->settings);
     }
@@ -410,7 +403,7 @@ class MetaYouTubeSlide extends MetaSlide
     {
         wp_enqueue_script(
             'metasliderpro-youtube-api',
-            METASLIDERPRO_BASE_URL . 'node_modules/jquery-tubeplayer-plugin/dist/jquery.tubeplayer.js',
+            METASLIDERPRO_BASE_URL . 'modules/youtube/assets/jquery-tubeplayer-plugin/jquery.tubeplayer.min.js',
             array('jquery'),
             METASLIDERPRO_VERSION
         );
@@ -474,7 +467,7 @@ class MetaYouTubeSlide extends MetaSlide
 
         // store the slide details
         $attributes = array(
-            'class' => "slide-{$this->slide->ID} ms-youtube",
+            'class' => "slide-{$this->slide->ID} ms-youtube {$this->get_mobile_css_class($this->slide->ID)}",
             'style' => "display: none; width: 100%;"
         );
 
@@ -692,7 +685,7 @@ class MetaYouTubeSlide extends MetaSlide
      */
     public function get_flex_slider_parameters($options, $slider_id)
     {
-        $autoPlay = "";
+        $autoPlay = $addActiveClass = "";
 
         // This is for slideshow autoplay, not video autoplay
         if ('true' == $this->settings['autoPlay']) {
@@ -706,6 +699,22 @@ class MetaYouTubeSlide extends MetaSlide
             	$('#metaslider_{$slider_id}').data('flexslider').manualPause = false;
             }";
         }
+
+        // Add active slide class when carousel mode is enabled
+        if ( 'true' == $this->settings['carouselMode'] ) {
+            $addActiveClass = "$(slider).find('.slides > li').removeClass('flex-active-slide').eq(slider.currentSlide).addClass('flex-active-slide');";
+        }
+
+        /* For slides with lazyLoad enabled, we need to detect touch devices (aka mobile) 
+         * through isTouch_{$this->identifier} variable to use 'touchstart' event once as trigger 
+         * due 'click' is detected until a second tap
+         * 
+         * @since 2.33 */
+        $touchStarted = "if(eventType === 'touchstart' && !touchStarted) {
+            touchStarted = true;
+        } else if(eventType === 'touchstart' && touchStarted) {
+            return;
+        }";
 
         $options["useCSS"] = "false";
 
@@ -723,17 +732,24 @@ class MetaYouTubeSlide extends MetaSlide
 
         $options['after'] = isset($options['after']) ? $options['after'] : array();
         $options['after'] = array_merge($options['after'], array(
-                "$('#metaslider_{$slider_id} .flex-active-slide .youtube').each(function(index) {
+                "{$addActiveClass}
+                var isTouch_{$this->identifier} = 'ontouchstart' in document.documentElement;
+                var eventType = isTouch_{$this->identifier} ? 'touchstart' : 'click';
+                
+                $('#metaslider_{$slider_id} .flex-active-slide .youtube').each(function(index) {
 				$(this).data('mute') && $(this).tubeplayer('mute');
 				$(this).data('autoPlay') && $(this).tubeplayer('play');
-				if ($(this).data('lazyLoad') && $(this).data('autoPlay')) $(this).trigger('click');
+				if ($(this).data('lazyLoad') && $(this).data('autoPlay')) $(this).trigger(eventType);
 			});"
             )
         );
 
         $options['start'] = isset($options['start']) ? $options['start'] : array();
         $options['start'] = array_merge($options['start'], array(
-                "$('#metaslider_{$slider_id} .youtube').each(function() {
+                "{$addActiveClass}
+                var isTouch_{$this->identifier} = 'ontouchstart' in document.documentElement;
+                
+                $('#metaslider_{$slider_id} .youtube').each(function() {
 				var youtube = $(this);
 				var autoplay = false;
 				if (youtube.data('autoPlay')) {
@@ -741,14 +757,26 @@ class MetaYouTubeSlide extends MetaSlide
 						autoplay = true;
 					}
 				}
-				var eventType = $(this).data('lazyLoad')  ? 'click' : 'metaslider/load-youtube-video';
+				var eventType = $(this).data('lazyLoad')
+				    ? isTouch_{$this->identifier} 
+				        ? 'touchstart' : 'click' 
+				    : 'metaslider/load-youtube-video';
+				var touchStarted = false;
+
 				youtube.on(eventType, function() {
+					{$touchStarted}
+
 					var player = $(this).tubeplayer({{$this->get_tubeplayer_params()}
 						onPlayerLoaded: function() {
 							$(this).data('mute') && $(this).tubeplayer('mute');
 							if ($(this).parents('.flex-active-slide').length) {
-								$(this).data('autoPlay') && $(this).tubeplayer('play');
-								$(this).data('lazyLoad') && $(this).tubeplayer('play');
+                                if ($(this).data('autoPlay') 
+                                    || $(this).data('lazyLoad')
+                                    || (eventType === 'click' || eventType === 'touchstart')
+                                ) {
+                                    eventType === 'touchstart' &&  $(this).tubeplayer('mute');
+                                    $(this).tubeplayer('play');
+                                }
 							}
 							$(this).addClass('video-loaded');
 						},
@@ -760,9 +788,7 @@ class MetaYouTubeSlide extends MetaSlide
 						}{$autoPlay}
 					});
 				});
-				if ($(this).data('lazyLoad')) {
-					autoplay && $(this).trigger('click');
-				}
+				if ($(this).data('lazyLoad') && autoplay) $(this).trigger(eventType);
 				$(this).data('lazyLoad') || $(this).trigger('metaslider/load-youtube-video');
 			});"
             )
@@ -819,6 +845,36 @@ class MetaYouTubeSlide extends MetaSlide
         return $javascript . $html;
     }
 
+
+    /** 
+     * Get the slideshow width or height. 
+     * If doesn't exists, calculate based on the thumbnail image
+     * 
+     * @since 2.32
+     * 
+     * @param string $el 'width' or 'height'
+     * 
+     * @return int
+     */
+    public function set_player_size( $el )
+    {
+        if ( isset( $this->settings[$el] ) && (int) $this->settings[$el] > 0  ) {
+            return $this->settings[$el];
+        }
+
+        $imageHelper = new MetaSliderImageHelper(
+            $this->slide->ID,
+            $this->settings['width'],
+            $this->settings['height'],
+            isset( $this->settings['smartCrop'] ) ? $this->settings['smartCrop'] : 'false'
+        );
+
+        $orig_size = $imageHelper->_original_image_dimensions();
+        $new_size = $imageHelper->_crop_dimensions( $orig_size['width'], $orig_size['height'] );
+
+        return $new_size[$el];
+    }
+
     /**
      * Tubeplayer JavaScript options
      */
@@ -828,15 +884,16 @@ class MetaYouTubeSlide extends MetaSlide
 
         $tubeplayer_params = array(
             'host' => "'https://www.youtube-nocookie.com'",
-            'width' => $this->settings['width'],
-            'height' => $this->settings['height'],
+            'width' => $this->set_player_size( 'width' ),
+            'height' => $this->set_player_size( 'height' ),
             'preferredQuality' => "'hd720'",
             'initialVideo' => "youtube.data('id')",
             'controls' => "youtube.data('showControls')",
             'showRelated' => "youtube.data('showRelated')",
             'theme' => "youtube.data('theme')",
             'color' => "youtube.data('color')",
-            'protocol' => is_ssl() ? "'https'" : "'http'"
+            'protocol' => is_ssl() ? "'https'" : "'http'",
+            'playsinline' => true
         );
 
         $tubeplayer_params = apply_filters(
@@ -947,5 +1004,29 @@ class MetaYouTubeSlide extends MetaSlide
         if (isset($fields['settings'])) {
             $this->add_or_update_or_delete_meta($this->slide->ID, 'settings', $fields['settings']);
         }
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_smartphone',
+            isset($fields['hide_slide_smartphone']) && $fields['hide_slide_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_tablet',
+            isset($fields['hide_slide_tablet']) && $fields['hide_slide_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_laptop',
+            isset($fields['hide_slide_laptop']) && $fields['hide_slide_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_desktop',
+            isset($fields['hide_slide_desktop']) && $fields['hide_slide_desktop'] === 'on'
+        );
     }
 }

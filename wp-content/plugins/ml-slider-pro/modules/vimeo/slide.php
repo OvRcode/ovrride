@@ -12,6 +12,7 @@ class MetaVimeoSlide extends MetaSlide
 
     public $identifier = "vimeo"; // should be lowercase, one word (use underscores if needed)
     public $name;
+    private $slide_settings;
 
     /**
      * Register slide type
@@ -141,10 +142,24 @@ class MetaVimeoSlide extends MetaSlide
         $fields['menu_order'] = 9999;
         $fields['video_id'] = sanitize_text_field($_POST['video_id']);
         $fields['settings']['controls'] = "on";
-        $this->create_slide($slider_id, $fields);
+        
+        $new_slide_id = $this->create_slide($slider_id, $fields);
+        
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo $this->get_admin_slide();
-        die(); // this is required to return a proper result
+        $html = $this->get_admin_slide();
+
+        $result = array(
+            'slide_id' => $new_slide_id,
+            'html' => $html
+        );
+
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( array(
+                'message' => $result->get_error_message()
+            ), 409 );
+        }
+        
+        wp_send_json_success ( $result, 200 );
     }
 
     /**
@@ -160,14 +175,29 @@ class MetaVimeoSlide extends MetaSlide
             wp_send_json_error(esc_html__('Bad request', 'ml-slider-pro'), 400);
         }
 
-        $slide_id = intval($_POST['slide_id']);
-        $video_id = sanitize_text_field($_POST['video_id']);
+        $slide_id = intval( $_POST['slide_id'] );
+        $video_id = sanitize_text_field( $_POST['video_id'] );
+        $image_id = $this->create_slide_thumb( $video_id, 999 );
 
-        $media_id = $this->create_slide_thumb($video_id, 999);
+        // Update Vimeo URL
+        $this->add_or_update_or_delete_meta( $slide_id, 'vimeo_url', "https://www.vimeo.com/{$video_id}" );
+
+        /*
+         * Updates database record and thumbnail if selection changed, 
+         * assigns it to the slide, crops the image
+         */
+        update_post_meta( $slide_id, '_thumbnail_id', $image_id );
+
+        // Get cropped images for srcset attribute
+        $thumbnail_url_large    = $this->get_intermediate_image_src( 1024, $image_id );
+        $thumbnail_url_medium   = $this->get_intermediate_image_src( 768, $image_id );
+        $thumbnail_url_small    = $this->get_intermediate_image_src( 240, $image_id );
 
         wp_send_json_success([
             'slide_id' => $slide_id,
-            'thumbnail' => wp_get_attachment_url($media_id),
+            'thumbnail_url_small' => $thumbnail_url_small,
+            'thumbnail_url_medium' => $thumbnail_url_medium,
+            'thumbnail_url_large' => $thumbnail_url_large
         ]);
     }
 
@@ -320,14 +350,6 @@ class MetaVimeoSlide extends MetaSlide
             $row .= $edit_buttons;
         }
         $row .= "       </div>";
-        $row .= "       <div class='metaslider-ui-inner metaslider-slide-thumb' data-slide-id='" . esc_attr($this->slide->ID) . "'>";
-        $row .= "           <button class='update-image image-button' data-button-text='" . esc_attr__(
-                "Update slide image",
-                "ml-slider"
-            ) . "' title='" . esc_attr__("Update slide image", "ml-slider") . "' data-slide-id='" . esc_attr($this->slide->ID) . "'>";
-        $row .= "           <div class='thumb' style='background-image: url(" . esc_url($thumb) . ")'></div>";
-        $row .= "           </button>";
-        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
         $row .= "       <div class='metaslider-ui-inner flex flex-col h-full'>";
@@ -353,65 +375,11 @@ class MetaVimeoSlide extends MetaSlide
      */
     public function get_admin_tabs()
     {
-        $slide_id = absint($this->slide->ID);
-        $byline_checked = isset($this->slide_settings['byline']) && filter_var(
-            $this->slide_settings['byline'],
-            FILTER_VALIDATE_BOOLEAN
-        ) ? 'checked=checked' : '';
-        $portrait_checked = isset($this->slide_settings['portrait']) && filter_var(
-            $this->slide_settings['portrait'],
-            FILTER_VALIDATE_BOOLEAN
-        ) ? 'checked=checked' : '';
-        $title_checked = isset($this->slide_settings['title']) && filter_var(
-            $this->slide_settings['title'],
-            FILTER_VALIDATE_BOOLEAN
-        ) ? 'checked=checked' : '';
-        $autoPlay_checked = isset($this->slide_settings['autoPlay']) && filter_var(
-            $this->slide_settings['autoPlay'],
-            FILTER_VALIDATE_BOOLEAN
-        ) ? 'checked=checked' : '';
-        $mute_checked = isset($this->slide_settings['mute']) && filter_var(
-            $this->slide_settings['mute'],
-            FILTER_VALIDATE_BOOLEAN
-        ) ? 'checked=checked' : '';
-        $loop_checked = isset($this->slide_settings['loop']) && filter_var(
-            $this->slide_settings['loop'],
-            FILTER_VALIDATE_BOOLEAN
-        ) ? 'checked=checked' : '';
-        $controls_checked = !isset($this->slide_settings['controls']) || $this->slide_settings['controls'] == 'on' ? 'checked=checked' : '';
-        $video_url = get_post_meta($slide_id, 'ml-slider_vimeo_url', true);
-
-        $general_tab = "<input style='padding:7px 10px;max-width:500px' class='ms-super-wide metaslider-pro-vimeo_url' name='attachment[{$slide_id}][vimeo_url]' value='{$video_url}' data-slide-id='{$slide_id}'>";
-        $general_tab .= "<ul class='ms-split-li'>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][mute]' {$mute_checked}/><span>" . __(
-                'Mute video',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][controls]' {$controls_checked}/><span>" . __(
-                'Show controls',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][autoPlay]' {$autoPlay_checked}/><span>" . __(
-                'Auto play (may require video to be muted)&lrm;',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][title]' {$title_checked}/><span>" . __(
-                'Show the title on the video (if available)',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][byline]' {$byline_checked}/><span>" . __(
-                'Show the user byline on the video (if available)',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][portrait]' {$portrait_checked}/><span>" . __(
-                'Show the user portrait on the video (if available)',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                            <li><label><input type='checkbox' name='attachment[{$slide_id}][settings][loop]' {$loop_checked}/><span>" . __(
-                'Loop video',
-                'ml-slider-pro'
-            ) . "</span></label></li>
-                        </ul>"; // vantage backwards compatibility";
+        $path = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'tabs/';
+        
+        ob_start();
+        include $path . 'general.php';
+        $general_tab = ob_get_clean();
 
         $tabs = array(
             'general' => array(
@@ -420,6 +388,21 @@ class MetaVimeoSlide extends MetaSlide
             )
         );
 
+        $global_settings = $this->get_global_settings();
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            ob_start();
+            include $path . 'mobile.php';
+            $mobile_tab = ob_get_clean();
+
+            $tabs['mobile'] = array(
+                'title' => __("Mobile", "ml-slider"),
+                'content' => $mobile_tab
+            );
+        }
+    
         return apply_filters("metaslider_vimeo_slide_tabs", $tabs, $this->slide, $this->slider, $this->settings);
     }
 
@@ -562,7 +545,7 @@ class MetaVimeoSlide extends MetaSlide
 
         // store the slide details
         $attributes = array(
-            'class' => "slide-{$this->slide->ID} ms-vimeo",
+            'class' => "slide-{$this->slide->ID} ms-vimeo {$this->get_mobile_css_class($this->slide->ID)}",
             'style' => "display: none; width: 100%;"
         );
 
@@ -640,7 +623,14 @@ class MetaVimeoSlide extends MetaSlide
      */
     public function get_flex_slider_parameters($options, $slider_id)
     {
+        $addActiveClass = "";
+
         $options['useCSS'] = 'false';
+
+        // Add active slide class when carousel mode is enabled
+        if ( 'true' == $this->settings['carouselMode'] ) {
+            $addActiveClass = "$(slider).find('.slides > li').removeClass('flex-active-slide').eq(slider.currentSlide).addClass('flex-active-slide');";
+        }
 
         // Before a slide transitions
         $options['before'] = isset($options['before']) ? $options['before'] : array();
@@ -654,7 +644,8 @@ class MetaVimeoSlide extends MetaSlide
         // After a slide transitions
         $options['after'] = isset($options['after']) ? $options['after'] : array();
         $options['after'] = array_merge($options['after'], array(
-            "$('#metaslider_{$slider_id} .flex-active-slide iframe.vimeo[data-vimeo-autoplay=1]').each(function(index) {
+            "{$addActiveClass}
+            $('#metaslider_{$slider_id} .flex-active-slide iframe.vimeo[data-vimeo-autoplay=1]').each(function(index) {
 				var player = window['player_{$slider_id}_' + $(this).attr('id')];
 				$(this).data('vimeoAutoplay') && player.play();
 			});"
@@ -663,7 +654,8 @@ class MetaVimeoSlide extends MetaSlide
         // When the slideshow is loaded
         $options['start'] = isset($options['start']) ? $options['start'] : array();
         $options['start'] = array_merge($options['start'], array(
-            "$('#metaslider_{$slider_id} iframe.vimeo').each(function() {
+            "{$addActiveClass}
+            $('#metaslider_{$slider_id} iframe.vimeo').each(function() {
 				var autoplay = false;
 				var player = window['player_{$slider_id}_' + $(this).attr('id')];
 
@@ -872,5 +864,29 @@ class MetaVimeoSlide extends MetaSlide
         if (isset($fields['settings'])) {
             $this->add_or_update_or_delete_meta($this->slide->ID, 'settings', $fields['settings']);
         }
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_smartphone',
+            isset($fields['hide_slide_smartphone']) && $fields['hide_slide_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_tablet',
+            isset($fields['hide_slide_tablet']) && $fields['hide_slide_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_laptop',
+            isset($fields['hide_slide_laptop']) && $fields['hide_slide_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_desktop',
+            isset($fields['hide_slide_desktop']) && $fields['hide_slide_desktop'] === 'on'
+        );
     }
 }

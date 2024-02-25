@@ -1,7 +1,10 @@
 <?php
 
 require_once '../../../wp-load.php';
-include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+global $wp_version;
+if ( (int) $wp_version > 4 ) {
+	include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+}
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 include_once( ABSPATH . 'wp-admin/includes/file.php' );
 include_once( ABSPATH . 'wp-admin/includes/misc.php' );
@@ -49,7 +52,10 @@ if ( isset( $_GET['action'] ) ) {
 		if ( 200 === $body->status ) {
 			add_option( 'sm_show_beta_banner', 'false' );
 			add_option( 'sm_beta_opt_in', true );
-			update_option( 'sm_beta_banner_discarded_count', (int) 2 );
+			update_option( 'sm_beta_banner_discarded_count', (int) 2 );			
+			GoogleSitemapGeneratorLoader::setup_rewrite_hooks();
+			GoogleSitemapGeneratorLoader::activate_rewrite();
+			GoogleSitemapGeneratorLoader::activation_indexnow_setup(); //activtion indexNow
 			echo "<script>
 					window.addEventListener('DOMContentLoaded', (event) => {
 							var url = '" . SM_LEARN_MORE_API_URL . "/?utm_source=wordpress&utm_medium=notification&utm_campaign=beta&utm_id=v4'

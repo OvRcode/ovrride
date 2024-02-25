@@ -2,53 +2,53 @@
     "packages": [
         {
             "name": "davidanderson684/simba-plugin-manager-updater",
-            "version": "v1.8.16",
-            "version_normalized": "1.8.16.0",
+            "version": "v1.8.20",
+            "version_normalized": "1.8.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DavidAnderson684/simba-plugin-manager-updater.git",
-                "reference": "508964096e1df4aecd1bddb1b0efbf332ea0cb6a"
+                "reference": "7d98e43eeb5d7f1cb3ec8479f29276edd0c14566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DavidAnderson684/simba-plugin-manager-updater/zipball/508964096e1df4aecd1bddb1b0efbf332ea0cb6a",
-                "reference": "508964096e1df4aecd1bddb1b0efbf332ea0cb6a",
+                "url": "https://api.github.com/repos/DavidAnderson684/simba-plugin-manager-updater/zipball/7d98e43eeb5d7f1cb3ec8479f29276edd0c14566",
+                "reference": "7d98e43eeb5d7f1cb3ec8479f29276edd0c14566",
                 "shasum": ""
             },
             "require": {
                 "yahnis-elsts/plugin-update-checker": "4.13.*"
             },
-            "time": "2023-03-07T14:06:45+00:00",
+            "time": "2023-08-18T11:41:59+00:00",
             "type": "library",
             "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
             "description": "This class is an updates checker and UI for WordPress plugins that are hosted using the Simba Plugin Manager plugin",
             "support": {
                 "issues": "https://github.com/DavidAnderson684/simba-plugin-manager-updater/issues",
-                "source": "https://github.com/DavidAnderson684/simba-plugin-manager-updater/tree/v1.8.16"
+                "source": "https://github.com/DavidAnderson684/simba-plugin-manager-updater/tree/v1.8.20"
             },
             "install-path": "../davidanderson684/simba-plugin-manager-updater"
         },
         {
             "name": "yahnis-elsts/plugin-update-checker",
-            "version": "v4.13",
-            "version_normalized": "4.13.0.0",
+            "version": "4.13.2",
+            "version_normalized": "4.13.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/YahnisElsts/plugin-update-checker.git",
-                "reference": "6eb27a6911e0e0880d09e5b11f577d3f688f7da7"
+                "url": "https://github.com/DavidAnderson684/plugin-update-checker.git",
+                "reference": "6290e88eebcc367f56180e06d14da5f0a2eb2a1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/6eb27a6911e0e0880d09e5b11f577d3f688f7da7",
-                "reference": "6eb27a6911e0e0880d09e5b11f577d3f688f7da7",
+                "url": "https://api.github.com/repos/DavidAnderson684/plugin-update-checker/zipball/6290e88eebcc367f56180e06d14da5f0a2eb2a1b",
+                "reference": "6290e88eebcc367f56180e06d14da5f0a2eb2a1b",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "php": ">=5.2.0"
             },
-            "time": "2022-07-29T12:36:25+00:00",
+            "time": "2023-09-15T15:39:07+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -56,7 +56,6 @@
                     "load-v4p13.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -77,8 +76,7 @@
                 "wordpress"
             ],
             "support": {
-                "issues": "https://github.com/YahnisElsts/plugin-update-checker/issues",
-                "source": "https://github.com/YahnisElsts/plugin-update-checker/tree/v4.13"
+                "source": "https://github.com/DavidAnderson684/plugin-update-checker/tree/v4.13.2"
             },
             "install-path": "../yahnis-elsts/plugin-update-checker"
         }

@@ -9,8 +9,12 @@ window.jQuery(function($) {
         jQuery("#compatibilityWarning").remove();
 
         if (jQuery('.metaslider .slide:not(.' + slider + ')').length) {
-            var message = ucFirst(slider) + " Slider is only compatible with Image and Post Feed slides.";
-            var warningDiv = jQuery("<div id='compatibilityWarning' class='updated'><p><b>Warning:</b> " + message + "</p></div>");
+            var sup_types = 'Image and Post Feed';
+            if(slider === 'responsive') {
+                sup_types = 'Image, Post Feed, Vimeo, YouTube, External URL and Layer Slide';
+            }
+            var message = ucFirst(slider) + " Slider is only compatible with " + sup_types + " slides.";
+            var warningDiv = jQuery("<div id='compatibilityWarning' class='updated ms-slideshow-warning'><p><b>Warning:</b> " + message + "</p></div>");
             jQuery(".metaslider .left").prepend(warningDiv);
         };
     };
@@ -64,6 +68,7 @@ window.jQuery(function($) {
         e.stopPropagation();
         $(this).find('input[type=checkbox]').trigger('click');
         $(this).closest('tr.slide').toggleClass('slide-is-hidden', $(this).find('input[type=checkbox]').is(':checked'));
+        checkDelayCompatibility();
     });
 
     $(".metaslider").on('change', 'select[name="template_tags"]', function(e) {
@@ -105,5 +110,33 @@ window.jQuery(function($) {
         $(this).closest('tr.slide').toggleClass('slide-is-hidden', $(this).is(':checked'));
     });
 
+    /**
+     * Check if custom delay is enabled in "Advanced" tab
+     * 
+     * @param {obj} el The input checkbox
+     * 
+     * @return void
+     */
+    var checkDelayCompatibility = function () {
+        jQuery("#compatibilityWarningDelay").remove();
+        
+        if (jQuery('.ms-switch-button input[name*="[delay]"]:checked').length > 0
+            && jQuery('tr.slide.post_feed').length > 0
+        ) {
+            var message = "Post Feed slide isn't compatible with custom delay. Disable custom delay through 'Advanced' tab of each slide.";
+            var warningDiv = jQuery("<div id='compatibilityWarningDelay' class='updated ms-slideshow-warning'><p><b>Warning:</b> " + message + "</p></div>");
+            jQuery(".metaslider .left").prepend(warningDiv);
+        };
+    }
+
+    // When custom delay checkboxes changes
+    $(document).on('change', '.ms-switch-button input[name*="[delay]"]', function() {
+        checkDelayCompatibility();
+    });
+
+    // Check all the custom delay checkboxes on load
+    $('.ms-switch-button input[name*="[delay]"]').each( function() {
+        checkDelayCompatibility();
+    });
 });
 });

@@ -1,8 +1,16 @@
 <?php
 
-use PublishPressFuture\Modules\Settings\HooksAbstract as SettingsHooksAbstract;
-use PublishPressFuture\Modules\Expirator\HooksAbstract as ExpiratorHooksAbstract;
-use PublishPressFuture\Core\HooksAbstract as CoreHooksAbstract;
+use PublishPress\Future\Core\DI\Container;
+use PublishPress\Future\Core\DI\ServicesAbstract;
+use PublishPress\Future\Modules\Expirator\Migrations\V30000WPCronToActionsScheduler;
+use PublishPress\Future\Modules\Expirator\Migrations\V30001RestorePostMeta;
+use PublishPress\Future\Modules\Expirator\Schemas\ActionArgsSchema;
+use PublishPress\Future\Modules\Settings\HooksAbstract as SettingsHooksAbstract;
+use PublishPress\Future\Modules\Expirator\HooksAbstract as ExpiratorHooksAbstract;
+use PublishPress\Future\Core\HooksAbstract as CoreHooksAbstract;
+use PublishPress\Future\Modules\Expirator\Models\ActionArgsModel;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 /**
  * The class that is responsible for all the displays.
@@ -16,11 +24,20 @@ class PostExpirator_Display
     private static $instance = null;
 
     /**
+     * @var \PublishPress\Future\Modules\Expirator\Interfaces\CronInterface
+     */
+    private $cron;
+
+    /**
      * Constructor.
      */
     private function __construct()
     {
         $this->hooks();
+
+        $container = Container::getInstance();
+
+        $this->cron = $container->get(ServicesAbstract::CRON);
     }
 
     /**
@@ -28,7 +45,6 @@ class PostExpirator_Display
      */
     private function hooks()
     {
-        add_action('admin_menu', [$this, 'add_menu']);
         add_action('init', [$this, 'init']);
     }
 
@@ -46,22 +62,6 @@ class PostExpirator_Display
 
     public function init()
     {
-    }
-
-    /**
-     * Add plugin page menu.
-     */
-    public function add_menu()
-    {
-        add_menu_page(
-            __('PublishPress Future Options', 'post-expirator'),
-            __('Future', 'post-expirator'),
-            'manage_options',
-            'publishpress-future',
-            array(self::$instance, 'settings_tabs'),
-            'dashicons-clock',
-            74
-        );
     }
 
     /**
@@ -89,16 +89,14 @@ class PostExpirator_Display
             wp_die(esc_html__('You do not have permission to configure PublishPress Future.', 'post-expirator'));
         }
 
-        PostExpirator_Facade::load_assets('settings');
-
-        $allowed_tabs = array('general', 'defaults', 'display', 'editor', 'diagnostics', 'viewdebug', 'advanced');
+        $allowed_tabs = ['defaults', 'general', 'display', 'advanced', 'diagnostics', 'viewdebug', ];
 
         $allowed_tabs = apply_filters(SettingsHooksAbstract::FILTER_ALLOWED_TABS, $allowed_tabs);
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : '';
         if (empty($tab) || ! in_array($tab, $allowed_tabs, true)) {
-            $tab = 'general';
+            $tab = 'defaults';
         }
 
         ob_start();
@@ -110,38 +108,9 @@ class PostExpirator_Display
             unset($allowed_tabs['viewdebug']);
         }
 
-        $this->render_template('tabs', array('tabs' => $allowed_tabs, 'html' => $html, 'tab' => $tab));
+        $this->render_template('tabs', ['tabs' => $allowed_tabs, 'html' => $html, 'tab' => $tab]);
 
         $this->publishpress_footer();
-    }
-
-    /**
-     * Editor menu.
-     */
-    private function menu_editor()
-    {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing
-        if (isset($_POST['expirationdateSaveEditor']) && sanitize_key($_POST['expirationdateSaveEditor'])) {
-            if (! isset($_POST['_postExpiratorMenuEditor_nonce']) || ! wp_verify_nonce(
-                    sanitize_key($_POST['_postExpiratorMenuEditor_nonce']),
-                    'postexpirator_menu_editor'
-                )) {
-                print 'Form Validation Failure: Sorry, your nonce did not verify.';
-                exit;
-            } else {
-                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-                update_option('expirationdateGutenbergSupport', sanitize_text_field($_POST['gutenberg-support']));
-            }
-        }
-
-        $params = [
-            'showSideBar' => apply_filters(
-                SettingsHooksAbstract::FILTER_SHOW_PRO_BANNER,
-                ! defined('PUBLISHPRESS_FUTURE_LOADED_BY_PRO')
-            ),
-        ];
-
-        $this->render_template('menu-editor', $params);
     }
 
     private function menu_defaults()
@@ -170,13 +139,12 @@ class PostExpirator_Display
                 print 'Form Validation Failure: Sorry, your nonce did not verify.';
                 exit;
             } else {
-                // Filter Content
-                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
                 // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-                update_option('expirationdateDisplayFooter', $_POST['expired-display-footer']);
-                update_option('expirationdateFooterContents', $_POST['expired-footer-contents']);
-                update_option('expirationdateFooterStyle', $_POST['expired-footer-style']);
+                update_option('expirationdateDefaultDateFormat', sanitize_text_field($_POST['expired-default-date-format']));
+                update_option('expirationdateDefaultTimeFormat', sanitize_text_field($_POST['expired-default-time-format']));
+                update_option('expirationdateDisplayFooter', (int)$_POST['expired-display-footer']);
+                update_option('expirationdateFooterContents', wp_kses($_POST['expired-footer-contents'], []));
+                update_option('expirationdateFooterStyle', wp_kses($_POST['expired-footer-style'], []));
                 // phpcs:enable
             }
         }
@@ -208,12 +176,12 @@ class PostExpirator_Display
             if (isset($_POST['debugging-disable'])) {
                 update_option('expirationdateDebug', 0);
                 echo "<div id='message' class='updated fade'><p>";
-                _e('Debugging Disabled', 'post-expirator');
+                esc_html_e('Debugging Disabled', 'post-expirator');
                 echo '</p></div>';
             } elseif (isset($_POST['debugging-enable'])) {
                 update_option('expirationdateDebug', 1);
                 echo "<div id='message' class='updated fade'><p>";
-                _e('Debugging Enabled', 'post-expirator');
+                esc_html_e('Debugging Enabled', 'post-expirator');
                 echo '</p></div>';
             } elseif (isset($_POST['purge-debug'])) {
                 require_once POSTEXPIRATOR_LEGACYDIR . '/debug.php';
@@ -221,7 +189,41 @@ class PostExpirator_Display
                 $debug = new PostExpiratorDebug();
                 $debug->purge();
                 echo "<div id='message' class='updated fade'><p>";
-                _e('Debugging Table Emptied', 'post-expirator');
+                esc_html_e('Debugging Table Emptied', 'post-expirator');
+                echo '</p></div>';
+            } elseif (isset($_POST['migrate-legacy-actions'])) {
+                $this->cron->enqueueAsyncAction(V30000WPCronToActionsScheduler::HOOK, [], true);
+
+                echo "<div id='message' class='updated fade'><p>";
+                esc_html_e(
+                    'The legacy future actions migration has been enqueued and will run asynchronously.',
+                    'post-expirator'
+                );
+                echo '</p></div>';
+            } elseif (isset($_POST['restore-post-meta'])) {
+                $this->cron->enqueueAsyncAction(V30001RestorePostMeta::HOOK, [], true);
+
+                echo "<div id='message' class='updated fade'><p>";
+                esc_html_e(
+                    'The legacy actions arguments restoration has been enqueued and will run asynchronously.',
+                    'post-expirator'
+                );
+                echo '</p></div>';
+            } elseif (isset($_POST['fix-db-schema'])) {
+                ActionArgsSchema::fixSchema();
+
+                echo "<div id='message' class='updated fade'><p>";
+                if (ActionArgsSchema::tableExists()) {
+                    esc_html_e(
+                        'The database schema was fixed.',
+                        'post-expirator'
+                    );
+                } else {
+                    esc_html_e(
+                        'The database schema could not be fixed. Please, contact the support team.',
+                        'post-expirator'
+                    );
+                }
                 echo '</p></div>';
             }
         }
@@ -268,12 +270,7 @@ class PostExpirator_Display
                 print 'Form Validation Failure: Sorry, your nonce did not verify.';
                 exit;
             } else {
-                // Filter Content
-                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
                 // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-                update_option('expirationdateDefaultDateFormat', sanitize_text_field($_POST['expired-default-date-format']));
-                update_option('expirationdateDefaultTimeFormat', sanitize_text_field($_POST['expired-default-time-format']));
                 update_option('expirationdateEmailNotification', sanitize_text_field($_POST['expired-email-notification']));
                 update_option('expirationdateEmailNotificationAdmins', sanitize_text_field($_POST['expired-email-notification-admins']));
                 update_option('expirationdateEmailNotificationList', trim(sanitize_text_field($_POST['expired-email-notification-list'])));
@@ -283,7 +280,12 @@ class PostExpirator_Display
                     isset($_POST['expirationdate_category']) ? PostExpirator_Util::sanitize_array_of_integers($_POST['expirationdate_category']) : []
                 );
                 update_option('expirationdateDefaultDate', 'custom');
-                update_option('expirationdateDefaultDateCustom', sanitize_text_field($_POST['expired-custom-expiration-date']));
+
+                $customExpirationDate = sanitize_text_field($_POST['expired-custom-expiration-date']);
+                $customExpirationDate = html_entity_decode($customExpirationDate, ENT_QUOTES);
+                $customExpirationDate = preg_replace('/["\'`]/', '', $customExpirationDate);
+
+                update_option('expirationdateDefaultDateCustom', trim($customExpirationDate));
                 // phpcs:enable
 
                 if (! isset($_POST['allow-user-roles']) || ! is_array($_POST['allow-user-roles'])) {
@@ -338,13 +340,12 @@ class PostExpirator_Display
                 print 'Form Validation Failure: Sorry, your nonce did not verify.';
                 exit;
             } else {
-                // Filter Content
-                $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-                update_option('expirationdateGutenbergSupport', sanitize_text_field($_POST['gutenberg-support']));
                 // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
                 update_option('expirationdatePreserveData', (int)$_POST['expired-preserve-data-deactivating']);
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+                update_option('expirationdateColumnStyle', sanitize_key($_POST['future-action-column-style']));
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+                update_option('expirationdateTimeFormatForDatePicker', sanitize_key($_POST['future-action-time-format']));
 
                 if (! isset($_POST['allow-user-roles']) || ! is_array($_POST['allow-user-roles'])) {
                     $_POST['allow-user-roles'] = array();
@@ -490,7 +491,7 @@ class PostExpirator_Display
                     </li>
                     <li>
                         <a href="https://twitter.com/publishpresscom" target="_blank" rel="noopener noreferrer">
-                            <span class="dashicons dashicons-twitter"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path fill="#777777" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
                         </a>
                     </li>
                     <li>

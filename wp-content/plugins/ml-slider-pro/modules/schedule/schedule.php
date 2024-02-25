@@ -16,6 +16,64 @@ class MetaSliderPro_Schedule_Slides
     {
         add_action('init', array($this, 'schedule_slides'), 20);
         add_action('metaslider_register_admin_scripts', array($this, 'load_scripts'));
+        add_action( 'wp_ajax_schedule_status', array( $this, 'ajax_schedule_status' ) );
+    }
+
+    /**
+     * Check if slide is visible in real time
+     * 
+     * @since 2.30
+     */
+    public function ajax_schedule_status()
+    {
+        if ( ! isset( $_POST['nonce'] ) 
+            || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'metaslider_schedule_status_nonce' ) ) {
+            wp_send_json_error( array(
+                'message' => __( 'The security check failed. Please refresh the page and try again.', 'ml-slider' )
+            ), 401 );
+        }
+
+        $capability = apply_filters( 'metaslider_capability', MetaSliderPlugin::DEFAULT_CAPABILITY_EDIT_SLIDES );
+        if ( ! current_user_can( $capability ) ) {
+            wp_send_json_error(
+                [
+                    'message' => __( 'Access denied', 'ml-slider' )
+                ],
+                403
+            );
+        }
+
+        if ( ! isset( $_POST['slide_id'] ) || ! isset( $_POST['slider_id'] ) ) {
+            wp_send_json_error(
+                [
+                    'message' => __( 'Bad request', 'ml-slider' ),
+                ],
+                400
+            );
+        }
+
+        $post_id    = (int) $_POST['slide_id'];
+
+        // If display is an array, means is not visible and thus we cast result to boolean
+        $display    = (bool) $this->slide_visibility( $post_id );
+        $color      = $display ? '#46b450' : '#b32d2e';
+        $message    = $display 
+                    ? esc_attr__( 'Visible on the frontend' )
+                    : esc_attr__( 'NOT visible on the frontend' );
+
+        $result = array(
+            'display' => $display,
+            'id' => $post_id,
+            'color' => $color,
+            'message' => $message
+        );
+        
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( array(
+                'message' => $result->get_error_message()
+            ), 409 );
+        }
+        wp_send_json_success ( $result, 200 );
     }
 
     /**
@@ -29,6 +87,26 @@ class MetaSliderPro_Schedule_Slides
             array(),
             METASLIDERPRO_VERSION
         );
+
+        wp_enqueue_script(
+            'metasliderpro-schedule-script',
+            plugins_url('assets/schedule.js', __FILE__),
+            array( 'ms-moment-js' ),
+            METASLIDERPRO_VERSION
+        );
+
+        wp_localize_script( 
+            "ms-moment-js", 
+            "metaslider_schedule", 
+            array( 
+                'nonce' => wp_create_nonce( 'metaslider_schedule_status_nonce' ),
+                'save_changes_text' => esc_attr__( 
+                    'Save your schedule changes and then refresh the screen', 
+                    'ml-slider-pro' 
+                )
+            )
+        );
+
         $this->wp_add_inline_script(
             'ms-moment-js',
             sprintf(
@@ -44,7 +122,7 @@ class MetaSliderPro_Schedule_Slides
                     if (!window.moment) {
                         _this.remove()
                     }
-                })
+                });
             })
         })
         ',
@@ -94,7 +172,10 @@ class MetaSliderPro_Schedule_Slides
 
         add_filter('metaslider_slide_tabs', array($this, 'slide_admin_tab'), 10, 4);
 
-        if (! is_admin()) {
+        $page = is_admin() && isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : '';
+        
+        // Hide invisible slides in frotend and theme editor page in admin
+        if ( ! is_admin() || $page === 'metaslider-theme-editor' ) {
             // Alter the main slideshow query and adjust the visibility of each slide
             add_filter('metaslider_get_slides_query', array($this, 'adjust_all_slides_visibility'), 10, 2);
         }
@@ -168,6 +249,23 @@ class MetaSliderPro_Schedule_Slides
     {
         $slide_id = $slide['id'];
 
+        return $this->slide_visibility( $slide_id, $html );
+    }
+
+    /**
+     * Slide is visible?
+     * If returns an empty array, slide is not visible.
+     * Skip $html param to check visibility without involving actual html.
+     * 
+     * @since 2.30 - Moved from adjust_slide_visibility()
+     *
+     * @param array $slide_id The slide id
+     * @param string|array|bool $html The slide html object
+     * 
+     * @return array|string|bool 
+     */
+    public function slide_visibility( $slide_id, $html = true )
+    {
         // If it's hidden, remove slide from list
         $is_hidden = $this->option_is_enabled(get_post_meta($slide_id, '_meta_slider_slide_is_hidden', true));
         if (filter_var($is_hidden, FILTER_VALIDATE_BOOLEAN)) {
@@ -182,11 +280,17 @@ class MetaSliderPro_Schedule_Slides
 
         $now = current_time("timestamp");
 
+        // If this is checked (or not set), date range ("From" & "To" settings) is enabled - @since 2.30
+        $date_range = metadata_exists( 'post', $slide_id, '_meta_slider_slide_scheduled_date_range' ) 
+                    ? (bool) get_post_meta( $slide_id, '_meta_slider_slide_scheduled_date_range', true )
+                    : true;
+
         // If it's scheduled, determine if it's in or out of bounds
         $time_start = get_post_meta($slide_id, '_meta_slider_slide_scheduled_start', true);
         $time_end = get_post_meta($slide_id, '_meta_slider_slide_scheduled_end', true);
 
-        if ($time_start && $time_end) {
+        // $date_range needs to be true - @since 2.30
+        if ( $date_range && $time_start && $time_end ) {
             // If we are not inside the schedule, hide the slide
             if ((strtotime($time_start) <= $now) && ($now <= strtotime($time_end))) {
                 // We are inside the schedule. do nothing
@@ -197,8 +301,15 @@ class MetaSliderPro_Schedule_Slides
 
         // Check if it's available today. 0 = Sunday, etc ('w' gets a 1-6 representation of the day)
         $visible_days = get_post_meta($slide_id, '_meta_slider_slide_scheduled_days', true);
-        // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-        if (! is_array($visible_days) || ! in_array(date('w', $now), $visible_days)) {
+
+        // Check if all weekdays is enabled (overrides $visible_days) - @since 2.30
+        $visible_all_weekdays = (bool) get_post_meta( $slide_id, '_meta_slider_slide_scheduled_all_weekdays', true );
+
+        if ( 
+            ( ! is_array( $visible_days ) 
+                || ! in_array( date('w', $now), $visible_days ) // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+            ) && ! $visible_all_weekdays
+        ) {
             return array();
         }
 
@@ -275,14 +386,69 @@ class MetaSliderPro_Schedule_Slides
         $hide_slide = $this->option_is_enabled(get_post_meta($post->ID, '_meta_slider_slide_is_hidden', true));
         $admin_title = get_post_meta($post->ID, '_meta_slider_slide_admin_title', true);
         $is_scheduled = $this->option_is_enabled(get_post_meta($post->ID, '_meta_slider_slide_is_scheduled', true));
+        
+        /**
+         * Setting to enable date range ("From" & "To" settings)
+         * Added '_meta_slider_slide_scheduled_date_range' post meta record
+         *
+         * @since 2.30
+         */
+        if ( metadata_exists( 'post', $post->ID, '_meta_slider_slide_scheduled_date_range' ) ) {
+            $date_range = $this->option_is_enabled( 
+                get_post_meta( 
+                    $post->ID, 
+                    '_meta_slider_slide_scheduled_date_range', 
+                    true 
+                ) 
+            );
+        } else {
+            // $date_range does not exist
+            $date_range = true;
+        }
+
         $schedule_start = get_post_meta($post->ID, '_meta_slider_slide_scheduled_start', true);
         $schedule_end = get_post_meta($post->ID, '_meta_slider_slide_scheduled_end', true);
+        
         $days_scheduled = get_post_meta($post->ID, '_meta_slider_slide_scheduled_days', true);
+        
+        /**
+         * Setting to enable all weekdays 
+         * Added '_meta_slider_slide_scheduled_all_weekdays' post meta record
+         *
+         * @since 2.30
+         */
+        if ( metadata_exists( 'post', $post->ID, '_meta_slider_slide_scheduled_all_weekdays' ) ) {
+            $all_weekdays = $this->option_is_enabled( 
+                get_post_meta( 
+                    $post->ID, 
+                    '_meta_slider_slide_scheduled_all_weekdays', 
+                    true 
+                ) 
+            );
+        } elseif ( ! metadata_exists( 'post', $post->ID, '_meta_slider_slide_scheduled_days' )
+            || ( isset( $days_scheduled ) 
+                && is_array( $days_scheduled ) 
+                && count( $days_scheduled ) == 7 
+            )
+        ) {
+            /* '_meta_slider_slide_scheduled_all_weekdays' record does NOT exist,
+             * so we set as true if $days_scheduled record does not exist 
+             * or $days_scheduled is 7 length (means 7 weekdays)
+             */
+            $all_weekdays = true;
+        } else {
+            // $days_scheduled does not exist or length < 7
+            $all_weekdays = false;
+        }
 
-        $all_day = $this->option_is_enabled(get_post_meta($post->ID, '_meta_slider_slide_all_day', true));
-        $constraint_time_show = get_post_meta($post->ID, '_meta_slider_slide_constraint_time_show', true);
-        $constraint_time_start = get_post_meta($post->ID, '_meta_slider_slide_constraint_time_start', true);
-        $constraint_time_end = get_post_meta($post->ID, '_meta_slider_slide_constraint_time_end', true);
+        $all_day                = metadata_exists( 'post', $post->ID, '_meta_slider_slide_all_day' ) 
+                                ? $this->option_is_enabled( get_post_meta( $post->ID, '_meta_slider_slide_all_day', true ) )
+                                : true;
+        $constraint_time_show   = metadata_exists( 'post', $post->ID, '_meta_slider_slide_constraint_time_show' ) 
+                                ? get_post_meta($post->ID, '_meta_slider_slide_constraint_time_show', true)
+                                : true;
+        $constraint_time_start  = get_post_meta($post->ID, '_meta_slider_slide_constraint_time_start', true);
+        $constraint_time_end    = get_post_meta($post->ID, '_meta_slider_slide_constraint_time_end', true);
 
         $path = trailingslashit(plugin_dir_path(__FILE__)) . 'tabs/';
         include $path . 'schedule-tab.php';
@@ -371,10 +537,43 @@ class MetaSliderPro_Schedule_Slides
         );
 
         if (isset($fields['schedule'])) {
-            $start_date = $fields['from']['date'] . ' ' . $fields['from']['hh'] . ':' . $fields['from']['mn'] . ':' . $fields['from']['ss'];
-            $end_date = $fields['to']['date'] . ' ' . $fields['to']['hh'] . ':' . $fields['to']['mn'] . ':' . $fields['to']['ss'];
-            update_post_meta($slide_id, '_meta_slider_slide_scheduled_start', sanitize_text_field($start_date));
-            update_post_meta($slide_id, '_meta_slider_slide_scheduled_end', sanitize_text_field($end_date));
+            
+            $dateTimePattern    = '/^\d{4}-\d{2}-\d{2} ([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/';
+            $timePattern        = '/^(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/';
+
+            /**
+             * Setting to enable date range
+             * Added '_meta_slider_slide_scheduled_date_range' post meta record
+             *
+             * @since 2.30
+             */
+            update_post_meta(
+                $slide_id,
+                '_meta_slider_slide_scheduled_date_range',
+                isset($fields['date_range']) && $fields['date_range'] === 'on'
+            );
+
+            $start_date = $fields['from']['date'] . ' ' . $fields['from']['hh'] . ':' . $fields['from']['mn'] . ':00';
+            if ( preg_match( $dateTimePattern, $start_date ) ) {
+                update_post_meta($slide_id, '_meta_slider_slide_scheduled_start', sanitize_text_field($start_date));
+            }
+
+            $end_date = $fields['to']['date'] . ' ' . $fields['to']['hh'] . ':' . $fields['to']['mn'] . ':00';
+            if ( preg_match( $dateTimePattern, $end_date ) ) {
+                update_post_meta($slide_id, '_meta_slider_slide_scheduled_end', sanitize_text_field($end_date));
+            }
+
+            /**
+             * Setting to enable all weekdays 
+             * Added '_meta_slider_slide_scheduled_all_weekdays' post meta record
+             *
+             * @since 2.30
+             */
+            update_post_meta(
+                $slide_id,
+                '_meta_slider_slide_scheduled_all_weekdays',
+                isset($fields['all_weekdays']) && $fields['all_weekdays'] === 'on'
+            );
 
             if (isset($fields['days'])) {
                 update_post_meta($slide_id, '_meta_slider_slide_scheduled_days', array_keys($fields['days']));
@@ -392,17 +591,22 @@ class MetaSliderPro_Schedule_Slides
             );
 
             $constraint_start_time_incoming = $fields['constraint_from']['hh'] . ':' . $fields['constraint_from']['mn'] . ':00';
+            if ( preg_match( $timePattern, $constraint_start_time_incoming ) ) {
+                update_post_meta(
+                    $slide_id,
+                    '_meta_slider_slide_constraint_time_start',
+                    sanitize_text_field($constraint_start_time_incoming)
+                );
+            }
+
             $constraint_end_time_incoming = $fields['constraint_to']['hh'] . ':' . $fields['constraint_to']['mn'] . ':00';
-            update_post_meta(
-                $slide_id,
-                '_meta_slider_slide_constraint_time_start',
-                sanitize_text_field($constraint_start_time_incoming)
-            );
-            update_post_meta(
-                $slide_id,
-                '_meta_slider_slide_constraint_time_end',
-                sanitize_text_field($constraint_end_time_incoming)
-            );
+            if ( preg_match( $timePattern, $constraint_end_time_incoming ) ) {
+                update_post_meta(
+                    $slide_id,
+                    '_meta_slider_slide_constraint_time_end',
+                    sanitize_text_field($constraint_end_time_incoming)
+                );
+            }
         }
     }
 

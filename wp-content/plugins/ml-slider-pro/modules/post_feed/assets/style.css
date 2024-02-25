@@ -1,12 +1,9 @@
 .metaslider .slide.post_feed .thumb.post_feed {
     background-repeat: no-repeat;
-    background-size: auto auto !important;
-    background-image: url('icon.png'), -moz-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
-    background-image: url('icon.png'), -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e2e2e2), color-stop(50%, #dbdbdb), color-stop(51%, #d1d1d1), color-stop(100%, #fefefe));
-    background-image: url('icon.png'), -webkit-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
-    background-image: url('icon.png'), -o-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
-    background-image: url('icon.png'), -ms-linear-gradient(top, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
-    background-image: url('icon.png'), linear-gradient(to bottom, #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%);
+    background-size: 100px auto !important;
+    background-position: center center;
+    background-color: #0073aa;
+    background-image: url('icon.png');
 }
 .metaslider .slide.post_feed .tabs-content .tab-2 li {
     float: left;
@@ -32,7 +29,7 @@
 }
 
 .metaslider .slide.post_feed .tabs-content .tab-2 .scroll ul li {
-    margin-bottom: 3px;
+    margin-bottom: 10px;
     display: list-item;
     float: left;
     width:100%;
@@ -45,7 +42,7 @@
 .metaslider .slide.post_feed .row:not(.schedule) label {
     width: 125px
 }
-.metaslider .slide.post_feed .row .button {
+.metaslider .slide.post_feed .row:not(.schedule) .button {
     padding: 0 5px;
     margin-left: 5px;
     line-height: 19px;

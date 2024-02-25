@@ -3,7 +3,9 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Core;
+namespace PublishPress\Future\Core;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 interface HookableInterface
 {
@@ -51,9 +53,11 @@ interface HookableInterface
      */
     public function doAction($actionName, ...$args);
 
+    public static function registerActivationHook($pluginFile, $callback);
+
     /**
      * @param string $pluginFile
      * @param callable $callback
      */
-    public function registerDeactivationHook($pluginFile, $callback);
+    public static function registerDeactivationHook($pluginFile, $callback);
 }

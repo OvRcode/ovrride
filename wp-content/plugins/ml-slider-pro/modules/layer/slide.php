@@ -47,7 +47,7 @@ class MetaLayerSlide extends MetaSlide
                 'value' => $slider->get_setting('layer_scaling'),
                 'label' => __("Layer Scaling", "ml-slider-pro"),
                 'class' => 'effect flex responsive',
-                'helptext' => __("Select responsiver layer scaling behaviour", "ml-slider-pro"),
+                'helptext' => __("Select responsive layer scaling behaviour for Layer slides", "ml-slider-pro"),
                 'options' => array(
                     'up_and_down' => array(
                         'class' => 'option flex responsive',
@@ -220,8 +220,16 @@ class MetaLayerSlide extends MetaSlide
             wp_send_json_error(esc_html__('Bad request', 'ml-slider-pro'), 400);
         }
 
-        $slide_id = intval($_POST['slide_id']);
+        $slide_id = intval($_POST['slide_id']); // Image id
         $slider_id = intval($_POST['slider_id']);
+
+        // Only allow images
+        if( ! $this->is_media_image( $slide_id ) ) {
+            wp_send_json_error( 
+                esc_html__( 'Not supported media format', 'ml-slider-pro' ),
+                422
+            );
+        }
 
         $this->set_slider($slider_id);
 
@@ -268,11 +276,37 @@ class MetaLayerSlide extends MetaSlide
         // tag the new slide to the slider
         $this->tag_slide_to_slider();
 
-        // finally, return the admin table row HTML
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo $this->get_admin_slide();
+        $html = $this->get_admin_slide();
 
-        wp_die();
+        $result = array(
+            'slide_id' => $new_slide_id,
+            'html' => $html
+        );
+
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( array(
+                'message' => $result->get_error_message()
+            ), 409 );
+        }
+        
+        wp_send_json_success ( $result, 200 );
+    }
+
+    /**
+     * Check if media is image
+     * 
+     * @param integer $media_id Image ID from Media library
+     * 
+     * @return boolean
+     */
+    protected function is_media_image( $media_id )
+    {
+        if ( strpos( get_post_mime_type( $media_id ),'image/' ) === false) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -311,17 +345,6 @@ class MetaLayerSlide extends MetaSlide
             $row .= $edit_buttons;
         }
         $row .= "       </div>";
-        $row .= "       <div class='metaslider-ui-inner'>";
-        $row .= "           <button class='update-image image-button' data-button-text='" . esc_attr__(
-                "Update slide image",
-                "ml-slider"
-            ) . "' title='" . esc_attr__(
-                "Update slide image",
-                "ml-slider"
-            ) . "' data-slide-id='" . esc_attr($this->slide->ID) . "' data-attachment-id='" . esc_attr($attachment_id) . "'>";
-        $row .= "               <div class='thumb' style='background-image: url(" . esc_attr($thumb) . "'></div>";
-        $row .= "           </button>";
-        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
         $row .= "       <div class='metaslider-ui-inner flex flex-col h-full'>";
@@ -347,55 +370,23 @@ class MetaLayerSlide extends MetaSlide
      */
     public function get_admin_tabs()
     {
-        $slide_id = absint($this->slide->ID);
+        $path = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'tabs/';
 
-        $html = get_post_meta($this->slide->ID, 'ml-slider_html', true);
-        $url = esc_attr(get_post_meta($this->slide->ID, 'ml-slider_url', true));
-        $webm = esc_attr(get_post_meta($this->slide->ID, 'ml-slider_webm', true));
-        $mp4 = esc_attr(get_post_meta($this->slide->ID, 'ml-slider_mp4', true));
-        $title = esc_attr(get_post_meta($this->slide->ID, 'ml-slider_title', true));
-        $alt = esc_attr(get_post_meta($this->slide->ID, '_wp_attachment_image_alt', true));
-        $target = get_post_meta($this->slide->ID, 'ml-slider_new_window', true) == 'true' ? 'checked=checked' : '';
+        ob_start();
+        include $path . 'general.php';
+        $general_tab = ob_get_clean();
 
-        $imageHelper = new MetaSliderImageHelper(
-            $this->slide->ID,
-            $this->settings['width'],
-            $this->settings['height'],
-            isset($this->settings['smartCrop']) ? $this->settings['smartCrop'] : 'false'
-        );
+        ob_start();
+        include $path . 'seo.php';
+        $seo_tab = ob_get_clean();
+        
+        ob_start();
+        include $path . 'video.php';
+        $video_tab = ob_get_clean();
 
-        $background_url = $imageHelper->get_image_url();
-
-        $general_tab = "<button class='openLayerEditor button button-primary' data-thumb='" . esc_attr($background_url) . "' data-width='" . esc_attr($this->settings['width']) . "' data-height='" . esc_attr($this->settings['height']) . "' data-editor_id='editor" . esc_attr($slide_id) . "' type='button'>" . esc_html__('Launch Layer Editor', 'ml-slider-pro') . "</button>
-                        <div class='rawEdit'></div>"; // vantage backwards compatibility";
-
-        $seo_tab = "<div class='row'><label>" . esc_html__("Background Image Title Text", "ml-slider-pro") . "</label></div>
-                    <div class='row'><input type='text' size='50' name='attachment[" . esc_attr($slide_id) . "][title]' value='" . esc_attr($title) . "' /></div>
-                    <div class='row'><label>" . esc_html__("Background Image Alt Text", "ml-slider-pro") . "</label></div>
-                    <div class='row'><input type='text' size='50' name='attachment[" . esc_attr($slide_id) . "][alt]' value='" . esc_attr($alt) . "' /></div>";
-
-        $extra_tab = "<div class='row'><label>" . esc_html__("Background Image Link", "ml-slider-pro") . "</label></div>
-                        <input class='url' type='text' name='attachment[" . esc_attr($slide_id) . "][url]' placeholder='" . esc_attr__(
-                "URL",
-                'ml-slider-pro'
-            ) . "' value='" . esc_attr($url) . "' />
-                        <div class='new_window'>
-                                <label>" . esc_html__("New Window", 'ml-slider-pro') . "<input type='checkbox' name='attachment[" . esc_attr($slide_id) . "][new_window]' {$target} /></label>
-                        </div>";
-
-        $video_tab = "<div class='row'><label>" . esc_html__("MP4 Source", "ml-slider-pro") . "</label></div>
-                        <input class='url' type='text' name='attachment[" . esc_attr($slide_id) . "][mp4]' placeholder='" . esc_attr__(
-                "URL",
-                'ml-slider-pro'
-            ) . "' value='" . esc_attr($mp4) . "' />
-                        <div class='row'><label>" . esc_html__("WebM Source", "ml-slider-pro") . "</label></div>
-                        <input class='url' type='text' name='attachment[" . esc_attr($slide_id) . "][webm]' placeholder='" . esc_attr__(
-                "URL",
-                'ml-slider-pro'
-            ) . "' value='" . esc_attr($webm) . "' />";
-
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        $source_tab = "<textarea class='h-full' id='editor" . esc_attr($slide_id) . "' name='attachment[" . esc_attr($slide_id) . "][html]'>{$html}</textarea>";
+        ob_start();
+        include $path . 'source.php';
+        $source_tab = ob_get_clean();
 
         $tabs = array(
             'general' => array(
@@ -406,10 +397,6 @@ class MetaLayerSlide extends MetaSlide
                 'title' => esc_html__("SEO", "ml-slider-pro"),
                 'content' => $seo_tab
             ),
-            'extra' => array(
-                'title' => esc_html__("Extra", "ml-slider-pro"),
-                'content' => $extra_tab
-            ),
             'video' => array(
                 'title' => esc_html__("Video Background", "ml-slider-pro"),
                 'content' => $video_tab
@@ -417,64 +404,35 @@ class MetaLayerSlide extends MetaSlide
             'source' => array(
                 'title' => esc_html__("Edit Source", "ml-slider-pro"),
                 'content' => $source_tab
-            ),
+            )
         );
 
+        $global_settings = $this->get_global_settings();
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            ob_start();
+            include $path . 'mobile.php';
+            $mobile_tab = ob_get_clean();
+
+            $tabs['mobile'] = array(
+                'title' => __("Mobile", "ml-slider"),
+                'content' => $mobile_tab
+            );
+        }
+
         if (version_compare(get_bloginfo('version'), 3.9, '>=')) {
-            $crop_position = get_post_meta($slide_id, 'ml-slider_crop_position', true);
-
-            if (! $crop_position) {
-                $crop_position = 'center-center';
-            }
-
-            $crop_tab = "<div class='row'><label>" . esc_html__("Crop Position", "ml-slider") . "</label></div>
-                <div class='row'>
-                    <select class='crop_position' name='attachment[" . esc_attr($slide_id) . "][crop_position]'>
-                        <option value='left-top' " . selected($crop_position, 'left-top', false) . ">" . esc_html__(
-                    "Top Left",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='center-top' " . selected($crop_position, 'center-top', false) . ">" . esc_html__(
-                    "Top Center",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='right-top' " . selected($crop_position, 'right-top', false) . ">" . esc_html__(
-                    "Top Right",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='left-center' " . selected($crop_position, 'left-center', false) . ">" . esc_html__(
-                    "Center Left",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='center-center' " . selected($crop_position, 'center-center', false) . ">" . esc_html__(
-                    "Center Center",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='right-center' " . selected($crop_position, 'right-center', false) . ">" . esc_html__(
-                    "Center Right",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='left-bottom' " . selected($crop_position, 'left-bottom', false) . ">" . esc_html__(
-                    "Bottom Left",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='center-bottom' " . selected($crop_position, 'center-bottom', false) . ">" . esc_html__(
-                    "Bottom Center",
-                    "ml-slider"
-                ) . "</option>
-                        <option value='right-bottom' " . selected($crop_position, 'right-bottom', false) . ">" . esc_html__(
-                    "Bottom Right",
-                    "ml-slider"
-                ) . "</option>
-                    </select>
-                </div>";
-
+            ob_start();
+            include $path . 'crop.php';
+            $crop_tab = ob_get_clean();
+    
             $tabs['crop'] = array(
                 'title' => esc_html__("Crop", "ml-slider"),
                 'content' => $crop_tab
             );
         }
-
+    
         return apply_filters("metaslider_layer_slide_tabs", $tabs, $this->slide, $this->slider, $this->settings);
     }
 
@@ -664,7 +622,7 @@ class MetaLayerSlide extends MetaSlide
         $html .= $this->html_overlay();
 
         $attributes = array(
-            'class' => "slide-{$this->slide->ID} ms-layer",
+            'class' => "slide-{$this->slide->ID} ms-layer {$this->get_mobile_css_class($this->slide->ID)}",
             'style' => "display: none; width: 100%;"
         );
 
@@ -845,5 +803,29 @@ class MetaLayerSlide extends MetaSlide
         $this->add_or_update_or_delete_meta($this->slide->ID, 'new_window', $new_window);
 
         $this->add_or_update_or_delete_meta($this->slide->ID, 'html', $fields['html']);
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_smartphone',
+            isset($fields['hide_slide_smartphone']) && $fields['hide_slide_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_tablet',
+            isset($fields['hide_slide_tablet']) && $fields['hide_slide_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_laptop',
+            isset($fields['hide_slide_laptop']) && $fields['hide_slide_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_desktop',
+            isset($fields['hide_slide_desktop']) && $fields['hide_slide_desktop'] === 'on'
+        );
     }
 }

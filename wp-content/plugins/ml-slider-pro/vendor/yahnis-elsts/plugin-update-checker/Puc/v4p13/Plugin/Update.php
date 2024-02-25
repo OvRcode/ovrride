@@ -8,6 +8,7 @@ if ( !class_exists('Puc_v4p13_Plugin_Update', false) ):
 	 * @copyright 2016
 	 * @access public
 	 */
+	#[AllowDynamicProperties]
 	class Puc_v4p13_Plugin_Update extends Puc_v4p13_Update {
 		public $id = 0;
 		public $homepage;

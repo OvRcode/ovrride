@@ -33,15 +33,26 @@ class PageSpeed_Instructions {
 					'instructions' =>
 						'<p>' . wp_kses(
 							sprintf(
-								// translators: 1 W3TC plugin name, 2 HTML a tag to W3TC minify JS admin page
-								// translators: 3 HTML a tag to W3TC minify CSS admin page.
+								// translators: 1 W3TC plugin name, 2 HTML a tag to W3TC Minify JS admin page
+								// translators: 3 HTML a tag to W3TC general settings user experience section
+								// translators: 4 HTML a tag to W3TC user expereince advanced settings page
+								// translators: 5 HTML a tag to W3TC Minify CSS admin page, 6 HTML line break tag.
 								esc_html__(
-									'%1$s can eliminate render blocking resources. Once Minified, you can defer JS in the %2$s. Render blocking CSS can be eliminated in %3$s using the "Eliminate Render blocking CSS by moving it to HTTP body" (PRO FEATURE).',
+									'%1$s can eliminate render blocking resources.%6$sOnce Minified, you can defer JS in the
+										%2$s.%6$sThe Defer Scripts (PRO FEATURE) can also be used with or without Minify to defer
+										the loading of JS files containing the "src" attribute. Scripts matched using this
+										feature will be excluded from the Minify process. To enable this feature navigate
+										to %3$s and check the "Defer JavaScript" checkbox. Once enabled the settings can be found
+										at %4$s.%6$sRender blocking CSS can be eliminated in %5$s using the "Eliminate Render
+										blocking CSS by moving it to HTTP body" (PRO FEATURE).',
 									'w3-total-cache'
 								),
 								'W3 Total Cache',
 								'<a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_minify#js' ) ) . '" alt="' . esc_attr__( 'Minify JS', 'w3-total-cache' ) . '">' . esc_html__( 'Performance &raquo; Minify &raquo; JS', 'w3-total-cache' ) . '</a> ',
-								'<a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_minify#css' ) ) . '" alt="' . esc_attr__( 'Minify CSS', 'w3-total-cache' ) . '">' . esc_html__( 'Performance &raquo; Minify &raquo; CSS', 'w3-total-cache' ) . '</a>'
+								'<a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#userexperience' ) ) . '" alt="' . esc_attr__( 'Defer Scripts', 'w3-total-cache' ) . '">' . esc_html__( 'Performance &raquo; General Settings &raquo; User Experience', 'w3-total-cache' ) . '</a>',
+								'<a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_userexperience#application' ) ) . '" alt="' . esc_attr__( 'Defer Scripts Settings', 'w3-total-cache' ) . '">' . esc_html__( 'Performance &raquo; User Experience', 'w3-total-cache' ) . '</a>',
+								'<a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_minify#css' ) ) . '" alt="' . esc_attr__( 'Minify CSS', 'w3-total-cache' ) . '">' . esc_html__( 'Performance &raquo; Minify &raquo; CSS', 'w3-total-cache' ) . '</a>',
+								'<br/><br/>'
 							),
 							$allowed_tags
 						) . '</p>',
@@ -126,7 +137,7 @@ class PageSpeed_Instructions {
 						'<p>' . sprintf(
 							// translators: 1 W3TC plugin name, opening HTML a tag to Image Service extension, 3 closing HTML a tag.
 							esc_html__(
-								'Use %1$s %2$sImage Service%3$s to convert media library images to WebP.',
+								'Use %1$s %2$sWebP Converter%3$s to convert media library images to WebP.',
 								'w3-total-cache'
 							),
 							'W3 Total Cache',
@@ -139,7 +150,7 @@ class PageSpeed_Instructions {
 						'<p>' . sprintf(
 							// translators: 1 W3TC plugin name, opening HTML a tag to Image Service extension, 3 closing HTML a tag.
 							esc_html__(
-								'Use %1$s %2$sImage Service%3$s to convert media library images to WebP.',
+								'Use %1$s %2$sWebP Converter%3$s to convert media library images to WebP.',
 								'w3-total-cache'
 							),
 							'W3 Total Cache',
@@ -217,7 +228,7 @@ class PageSpeed_Instructions {
 						'<p>' . sprintf(
 							// translators: 1 W3TC plugin name, opening HTML a tag to Image Service extension, 3 closing HTML a tag.
 							esc_html__(
-								'Use %1$s %2$sImage Service%3$s to convert media library images to WebP.',
+								'Use %1$s %2$sWebP Converter%3$s to convert media library images to WebP.',
 								'w3-total-cache'
 							),
 							'W3 Total Cache',
@@ -260,9 +271,6 @@ class PageSpeed_Instructions {
 							$allowed_tags
 						) . '</p>',
 				),
-				'preload-lcp-image'            => array(
-					'instructions' => '<p>' . esc_html__( 'Enable lazy load for images.', 'w3-total-cache' ) . '</p>',
-				),
 				'total-byte-weight'            => array(
 					'instructions' =>
 						'<p>' . sprintf(
@@ -279,7 +287,7 @@ class PageSpeed_Instructions {
 							// translators: 1 W3TC plugin name, 2 opening HTML a tag to CSS Minify settings, 3 closing HTML a tag,
 							// translators: 4 opening html a tagl to JS Minify settings, 5 closing HTML a tag.
 							esc_html__(
-								'Compress your HTML, CSS, and JavaScript files and minify your CSS and JavaScript to ensure your text-based resources are as small as they can be. Use the %1$s Minify %2$sJS%3$s and %4$sCSS%5$s features to accomplish this.',
+								'Compress your HTML, CSS, and JavaScript files and Minify your CSS and JavaScript to ensure your text-based resources are as small as they can be. Use the %1$s Minify %2$sJS%3$s and %4$sCSS%5$s features to accomplish this.',
 								'w3-total-cache'
 							),
 							'W3 Total Cache',
@@ -291,7 +299,7 @@ class PageSpeed_Instructions {
 						<p>' . sprintf(
 							// translators: 1 W3TC plugin name, 2 opening HTML a tag to W3TC extensions, 3 closing HTML a tag.
 							esc_html__(
-								'Optimize your image delivery by sizing them properly and compressing them for smaller sizes. Use Webp conversion via the %1$s %2$sImage Service%3$s extension.',
+								'Optimize your image delivery by sizing them properly and compressing them for smaller sizes. Use Webp conversion via the %1$s %2$sWebP Converter%3$s extension.',
 								'w3-total-cache'
 							),
 							'W3 Total Cache',
@@ -496,16 +504,6 @@ class PageSpeed_Instructions {
 						<br/>
 						<p>' . esc_html__( 'Use font-display atribute: The font-display attribute determines how the font is displayed during your page load, based on whether it has been downloaded and is ready for use.', 'w3-total-cache' ) . '</p>',
 				),
-				'first-contentful-paint-3g'        => array(
-					'instructions' =>
-						'<p>' . esc_html__( 'Enable Page Cache using the fastest engine.', 'w3-total-cache' ) . '</p>
-						<p>' . esc_html__( 'What it represents: How much is visible at a time during load.', 'w3-total-cache' ) . '</p>
-						<p>' . esc_html__( 'Lighthouse Performance score weighting: 10%', 'w3-total-cache' ) . '</p>
-						<p>' . esc_html__( 'What it measures: The Speed Index is the average time at which visible parts of the page are displayed.', 'w3-total-cache' ) . '</p>
-						<p>' . esc_html__( 'How it\'s measured: Lighthouse\'s Speed Index measurement comes from a node module called Speedline.', 'w3-total-cache' ) . '</p>
-						<p>' . esc_html__( 'In order for content to be displayed to the user, the browser must first download, parse, and process all external stylesheets it encounters before it can display or render any content to a user\'s screen.', 'w3-total-cache' ) . '</p>
-						<p>' . esc_html__( 'The fastest way to bypass the delay of external resources is to use in-line styles for above-the-fold content.', 'w3-total-cache' ) . '</p>',
-				),
 				'uses-long-cache-ttl'              => array(
 					'instructions' =>
 						'<p>' . sprintf(
@@ -522,16 +520,6 @@ class PageSpeed_Instructions {
 				),
 				'critical-request-chains'          => array(
 					'instructions' => '<p>' . esc_html__( 'Eliminate Render Blocking CSS and apply asynchronous loading where applicable. Additionally, image optimization by way of resizing, lazy loaidng, and webp conversion can impact this metric as well.', 'w3-total-cache' ) . '</p>',
-				),
-				'resource-summary'                 => array(
-					'instructions' =>
-						'<p>Actions that can help:</p>
-						<ul>
-							<li>' . esc_html__( 'Avoid multiple page redirects.', 'w3-total-cache' ) . '</li>
-							<li>' . esc_html__( 'Combine images using CSS sprites.', 'w3-total-cache' ) . '</li>
-							<li>' . esc_html__( 'Remove unnecessary third-party scripts.', 'w3-total-cache' ) . '</li>
-							<li>' . esc_html__( 'Compress your text resources.', 'w3-total-cache' ) . '</li>
-						</ul>',
 				),
 				'largest-contentful-paint-element' => array(
 					'instructions' =>
@@ -560,6 +548,7 @@ class PageSpeed_Instructions {
 						<ul>
 							<li>' . esc_html__( 'Optimize and compress images.', 'w3-total-cache' ) . '</li>
 							<li>' . esc_html__( 'Preload important resources.', 'w3-total-cache' ) . '</li>
+							<li>' . esc_html__( 'Disable "lazy loading" for assets immediately visible on page load.', 'w3-total-cache' ) . '</li>
 							<li>' . esc_html__( 'Compress text files.', 'w3-total-cache' ) . '</li>
 							<li>' . esc_html__( 'Deliver different assets based on the network connection (adaptive serving).', 'w3-total-cache' ) . '</li>
 							<li>' . esc_html__( 'Cache assets using a service worker.', 'w3-total-cache' ) . '</li>
@@ -577,6 +566,7 @@ class PageSpeed_Instructions {
 							<li><a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#page_cache' ) ) . '" alt="' . esc_attr__( 'Page Cache', 'w3-total-cache' ) . '">' . esc_html__( 'Page Cache', 'w3-total-cache' ) . '</a></li>
 							<li><a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#browser_cache' ) ) . '" alt="' . esc_attr__( 'Browser Cache', 'w3-total-cache' ) . '">' . esc_html__( 'Browser Cache', 'w3-total-cache' ) . '</a></li>
 							<li><a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#cdn' ) ) . '" alt="' . esc_attr__( 'CDN', 'w3-total-cache' ) . '">' . esc_html__( 'CDN', 'w3-total-cache' ) . '</a></li>
+							<li><a target="_blank" href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#userexperience' ) ) . '" alt="' . esc_attr__( 'Preload Requests', 'w3-total-cache' ) . '">' . esc_html__( 'Preload Requests', 'w3-total-cache' ) . '</a></li>
 						</ul>',
 				),
 				'layout-shift-elements'            => array(

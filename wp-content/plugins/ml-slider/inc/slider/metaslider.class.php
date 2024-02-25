@@ -114,12 +114,15 @@ class MetaSlider
             'theme' => 'default',
             'direction' => 'horizontal',
             'reverse' => false,
+            'keyboard' => false,
+            'touch' => true,
             'animationSpeed' => 600,
             'prevText' => __('Previous', 'ml-slider'),
             'nextText' => __('Next', 'ml-slider'),
             'slices' => 15,
             'center' => false,
             'smartCrop' => true,
+            'smoothHeight' => false,
             'carouselMode' => false,
             'carouselMargin' => 5,
             'firstSlideFadeIn' => false,
@@ -240,12 +243,33 @@ class MetaSlider
      */
     public function render_public_slides()
     {
-        $html[] = '<div id="metaslider-id-' . esc_attr($this->id) . '" style="' . esc_attr($this->get_container_style()) . '" class="' . esc_attr($this->get_container_class()) . '">';
+        $slideshow = new MetaSlider_Slideshows;
+        $slideshowDetails = $slideshow->get_single($this->id);
+        if ($slideshowDetails[0]['title']) {
+            $slideshow_title = $slideshowDetails[0]['title'];
+        } else {
+            $slideshow_title = 'Slideshow';
+        }
+
+        $html[] = '<div id="metaslider-id-' . esc_attr($this->id) . '" style="' . esc_attr($this->get_container_style()) . '" class="' . esc_attr($this->get_container_class()) . '" role="region" aria-roledescription="Slideshow" aria-label="' . esc_attr($slideshow_title) . '">';
         $html[] = '    <div id="' . esc_attr($this->get_container_id()) . '">';
         $html[] = '        ' . $this->get_html();
         $html[] = '        ' . $this->get_html_after();
         $html[] = '    </div>';
         $html[] = '</div>';
+
+        $capability = apply_filters('metaslider_capability', MetaSliderPlugin::DEFAULT_CAPABILITY_EDIT_SLIDES);
+
+        $global_settings = get_option( 'metaslider_global_settings' );
+
+        if (current_user_can($capability) && ! is_admin()) {
+            if (isset( $global_settings['editLink'])) {
+                if (!empty($global_settings['editLink'])) {
+                    $editUrl = admin_url("admin.php?page=metaslider&id={$this->id}");
+                    $html[] = '<div><a href="' . esc_url($editUrl) . '" target="_blank" class="ms-edit-frontend">' . esc_html__('Edit Slideshow', 'ml-slider') . ' <span class="dashicons dashicons-external"></span></a></div>';
+                }
+            }
+        }
 
         $slideshow = implode("\n", $html);
 
@@ -330,11 +354,14 @@ class MetaSlider
      * @return string javascript
      */
     private function get_inline_javascript()
-    {
+    {   
         $custom_js_before = $this->get_custom_javascript_before();
         $custom_js_after = $this->get_custom_javascript_after();
 
         $identifier = $this->get_identifier();
+
+        $type = $this->get_setting('type');
+        $keyboard = $this->get_setting('keyboard');
 
         $script = "var " . $identifier . " = function($) {";
         $script .= $custom_js_before;
@@ -345,6 +372,35 @@ class MetaSlider
         $script .= "\n            $(document).trigger('metaslider/initialized', '#$identifier');";
         $script .= "\n        };";
 
+        if($keyboard == "on") {
+            $script .= "\n jQuery(document).ready(function($) {";
+            $script .= "\n $('.metaslider').attr('tabindex', '1');";
+            $script .= "\n $('a').attr('tabindex' , '-1');";
+            $script .= "\n     $(document).on('keyup.slider', function(e) {";
+            if($type == "responsive") {          
+                $script .= "\n      if (e.keyCode == 37) {";
+                $script .= "\n          $('.prev').trigger('click');";
+                $script .= "\n      } else if (e.keyCode == 39) {";
+                $script .= "\n          $('.next').trigger('click');";
+                $script .= "\n      }";
+            } elseif ($type == "nivo") {
+                $script .= "\n      if (e.keyCode == 37) {";
+                $script .= "\n          $('a.nivo-prevNav').click();";
+                $script .= "\n      } else if (e.keyCode == 39) {";
+                $script .= "\n          $('a.nivo-nextNav').click();";
+                $script .= "\n      }";
+            } elseif ($type == "coin") {
+                $script .= "\n      if (e.keyCode == 37) {";
+                $script .= "\n          $('a.cs-prev').trigger('click');";
+                $script .= "\n      } else if (e.keyCode == 39) {";
+                $script .= "\n          $('a.cs-next').trigger('click');";
+                $script .= "\n      }";
+            }
+            $script .= "\n  });"; 
+            $script .= "\n });";
+        }
+
+        
         $timer = "\n        var timer_" . $identifier . " = function() {";
         // this would be the sensible way to do it, but WordPress sometimes converts && to &#038;&
         // window.jQuery && jQuery.isReady ? {$identifier}(window.jQuery) : window.setTimeout(timer_{$identifier}, 1);";
@@ -353,7 +409,7 @@ class MetaSlider
         $timer .= "\n        timer_" . $identifier . "();";
 
         $init = apply_filters("metaslider_timer", $timer, $this->identifier);
-
+        
         return $script . $init;
     }
 
@@ -446,6 +502,12 @@ class MetaSlider
         return implode(",\n                ", $pairs);
     }
 
+
+    public function _get_javascript_parameters()
+    {
+        return $this->get_javascript_parameters();
+    }
+
     /**
      * Polyfill to handle the wp_add_inline_script() function.
      *
@@ -473,6 +535,135 @@ class MetaSlider
         return $wp_scripts->add_data($handle, 'data', $script);
     }
 
+    public function get_breakpoints()
+    {
+        $slideshow_defaults = '';
+        $smartphone = '480';
+        $tablet = '768';
+        $laptop = '1024';
+        $desktop = '1440';
+
+        if (is_multisite() && $settings = get_site_option('metaslider_default_settings')) {
+            $slideshow_defaults = $settings;
+        }
+        if ($settings = get_option('metaslider_default_settings')) {
+            $slideshow_defaults = $settings;
+        }
+
+        if (! empty( $slideshow_defaults )) {
+            if(isset($slideshow_defaults['smartphone'])) {
+                $smartphone = $slideshow_defaults['smartphone'];
+            }
+            if(isset($slideshow_defaults['tablet'])) {
+                $tablet = $slideshow_defaults['tablet'];
+            }
+            if(isset($slideshow_defaults['laptop'])) {
+                $laptop = $slideshow_defaults['laptop'];
+            }
+            if(isset($slideshow_defaults['desktop'])) {
+                $desktop = $slideshow_defaults['desktop'];
+            }
+        }
+
+        $breakpoints = array($smartphone, $tablet, $laptop, $desktop);
+
+        return $breakpoints;
+    }
+
+    public function build_mobile_css($device)
+    {
+        $get_slides = $this->get_slides();
+        $slides = $get_slides->posts;
+        $class = '';
+        foreach ($slides as $slide) {
+            $hidden_caption = get_post_meta( $slide->ID , 'ml-slider_hide_caption_' . $device );
+            if($hidden_caption != false) {
+                $class .= '.slide-' . $slide->ID . ' .caption-wrap,';
+            }
+        };
+
+        if(!empty($class)) {
+            $class = rtrim($class, ',');
+            $class .= '{ display: none; }';
+        }
+
+        return $class;
+    }
+
+    public function get_mobile_css()
+    {
+        $css = '';
+        $ms_slider = new MetaSliderPlugin();
+        $global_settings = $ms_slider->get_global_settings();
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            $breakpoints = $this->get_breakpoints();
+            $smartphone = $breakpoints[0];
+            $tablet = $breakpoints[1];
+            $laptop = $breakpoints[2];
+            $desktop = $breakpoints[3];
+
+            $css .= '@media only screen and (max-width: ' . ($tablet - 1) . 'px) {'; 
+            $css .= 'body:after { display: none; content: "smartphone"; }';
+            $css .= $this->build_mobile_css('smartphone');
+            $css .= '}';
+
+            $css .= '@media only screen and (min-width : ' . $tablet . 'px) and (max-width: ' .( $laptop - 1) . 'px) {';
+            $css .= 'body:after { display: none; content: "tablet"; }';
+            $css .= $this->build_mobile_css('tablet');
+            $css .= '}';
+
+            $css .= '@media only screen and (min-width : ' . $laptop . 'px) and (max-width: ' . ($desktop - 1) . 'px) {';
+            $css .= 'body:after { display: none; content: "laptop"; }';
+            $css .= $this->build_mobile_css('laptop');
+            $css .= '}';
+
+            $css .= '@media only screen and (min-width : ' . $desktop . 'px) {';
+            $css .= 'body:after { display: none; content: "desktop"; }';
+            $css .= $this->build_mobile_css('desktop');
+            $css .= '}';
+        }
+
+        return $css;
+    }
+
+    public function get_mobile_slide($device)
+    {
+        $get_slides = $this->get_slides();
+        $slides = $get_slides->posts;
+        $slide_list = array();
+        foreach ($slides as $key => $slide) {
+            $hidden_slide = get_post_meta( $slide->ID , 'ml-slider_hide_slide_' . $device, true );
+            if(!empty($hidden_slide)) {
+                array_push($slide_list, $key);
+            }
+        }; 
+        return $slide_list;
+    }
+
+    /**
+     * Check if there are mobile settings for slideshows
+     */
+    public function check_mobile_settings()
+    {
+        $screens = array('smartphone', 'tablet', 'laptop', 'desktop');
+        $with_setting = false;
+        foreach ($screens as $screen) {
+            $get_slides = $this->get_slides();
+            $slides = $get_slides->posts;
+            $slide_list = array();
+            foreach ($slides as $slide) {
+                $hide_slide = get_post_meta( $slide->ID , 'ml-slider_hide_slide_' . $screen, true );
+                if(!empty($hide_slide)) {
+                    $with_setting = true;
+                }
+            };
+        }
+        return $with_setting;
+    }
+
     /**
      * Include slider assets, JS and CSS paths are specified by child classes.
      */
@@ -489,8 +680,12 @@ class MetaSlider
             wp_enqueue_style('metaslider-public', METASLIDER_ASSETS_URL . 'metaslider/public.css', false, METASLIDER_ASSETS_VERSION);
 
             $extra_css = apply_filters("metaslider_css", "", $this->settings, $this->id);
+            $extra_css .= $this->get_mobile_css();
             wp_add_inline_style('metaslider-public', $extra_css);
         }
+
+        wp_enqueue_script('metaslider-script', METASLIDER_ASSETS_URL . 'metaslider/script.min.js', array('jquery'), METASLIDER_ASSETS_VERSION);
+
         do_action('metaslider_register_public_styles');
     }
 }

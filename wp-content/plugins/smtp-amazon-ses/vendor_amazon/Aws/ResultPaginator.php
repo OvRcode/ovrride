@@ -84,15 +84,19 @@ class ResultPaginator implements \Iterator {
   /**
    * @return Result
    */
+  #[\ReturnTypeWillChange]
   public function current() {
     return $this->valid() ? $this->result : false;
   }
+  #[\ReturnTypeWillChange]
   public function key() {
     return $this->valid() ? $this->requestCount - 1 : null;
   }
+  #[\ReturnTypeWillChange]
   public function next() {
     $this->result = null;
   }
+  #[\ReturnTypeWillChange]
   public function valid() {
     if ($this->result) {
       return true;
@@ -105,6 +109,7 @@ class ResultPaginator implements \Iterator {
     }
     return false;
   }
+  #[\ReturnTypeWillChange]
   public function rewind() {
     $this->requestCount = 0;
     $this->nextToken = null;

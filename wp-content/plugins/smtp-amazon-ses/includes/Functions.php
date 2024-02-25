@@ -212,6 +212,7 @@ class Functions {
 				$results = $wpdb->get_results( $sqlRepare );
 
 				$emailLogsList = array();
+				$dateTimeFormat = get_option( 'date_format' ) . " \\a\\t " . get_option( 'time_format' );
 				foreach ( $results as $result ) {
 					$emailTo         = maybe_unserialize( $result->email_to );
 					$emailEl         = array(
@@ -220,7 +221,7 @@ class Functions {
 						'email_from' => $result->email_from,
 						'email_to'   => $emailTo,
 						'mailer'     => $result->mailer,
-						'date_time'  => $result->date_time,
+						'date_time'  => get_date_from_gmt( $result->date_time, "$dateTimeFormat" ),
 						'status'     => $result->status,
 					);
 					$emailLogsList[] = $emailEl;
@@ -343,6 +344,7 @@ class Functions {
 				}
 
 				if ( ! empty( $resultQuery ) ) {
+					$dateTimeFormat = get_option( 'date_format' ) . " \\a\\t " . get_option( 'time_format' );
 					$emailTo   = maybe_unserialize( $resultQuery->email_to );
 					$resultArr = array(
 						'id'         => $resultQuery->id,
@@ -350,7 +352,7 @@ class Functions {
 						'email_from' => $resultQuery->email_from,
 						'email_to'   => $emailTo,
 						'mailer'     => $resultQuery->mailer,
-						'date_time'  => $resultQuery->date_time,
+						'date_time'  => get_date_from_gmt( $resultQuery->date_time, "$dateTimeFormat" ),
 						'status'     => $resultQuery->status,
 					);
 

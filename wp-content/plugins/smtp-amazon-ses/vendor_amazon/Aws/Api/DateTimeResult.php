@@ -33,6 +33,7 @@ class DateTimeResult extends \DateTime implements \JsonSerializable
      *
      * @return mixed|string
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return (string) $this;

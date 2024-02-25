@@ -22,12 +22,29 @@ class MetaExternalSlide extends MetaSlide
     {
         $this->name = __("External URL", 'ml-slider-pro');
 
+        if ( is_admin() ) {
+            add_action( "metaslider_register_admin_styles", array( $this, 'register_admin_styles' ), 10, 1 );
+        }
+
         // Add Slide Tabs
         add_filter('media_upload_tabs', array($this, 'custom_media_upload_tab_name'), 999, 1);
         add_filter("metaslider_get_{$this->identifier}_slide", array($this, 'get_slide'), 10, 2);
         add_action("metaslider_save_{$this->identifier}_slide", array($this, 'save_slide'), 5, 3);
         add_action("media_upload_{$this->identifier}", array($this, 'get_iframe'));
         add_action("wp_ajax_create_{$this->identifier}_slide", array($this, 'ajax_create_slide'));
+    }
+
+    /**
+     * Custom CSS Styling for vimeo slides
+     */
+    public function register_admin_styles()
+    {
+        wp_enqueue_style(
+            "metasliderpro-{$this->identifier}-style",
+            plugins_url( 'assets/style.css', __FILE__ ),
+            false,
+            METASLIDERPRO_VERSION
+        );
     }
 
     /**
@@ -71,10 +88,23 @@ class MetaExternalSlide extends MetaSlide
         }
 
         $slider_id = intval($_POST['slider_id']);
-        $this->create_slide($slider_id);
+        $new_slide_id = $this->create_slide($slider_id);
+        
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo $this->get_admin_slide();
-        die(); // this is required to return a proper result
+        $html = $this->get_admin_slide();
+
+        $result = array(
+            'slide_id' => $new_slide_id,
+            'html' => $html
+        );
+
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( array(
+                'message' => $result->get_error_message()
+            ), 409 );
+        }
+        
+        wp_send_json_success ( $result, 200 );
     }
 
     /**
@@ -180,6 +210,54 @@ class MetaExternalSlide extends MetaSlide
         $new_window = isset($fields['new_window']) && $fields['new_window'] == 'on' ? 'true' : 'false';
 
         $this->add_or_update_or_delete_meta($this->slide->ID, 'new_window', $new_window);
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_smartphone',
+            isset($fields['hide_slide_smartphone']) && $fields['hide_slide_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_tablet',
+            isset($fields['hide_slide_tablet']) && $fields['hide_slide_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_laptop',
+            isset($fields['hide_slide_laptop']) && $fields['hide_slide_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_desktop',
+            isset($fields['hide_slide_desktop']) && $fields['hide_slide_desktop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_smartphone',
+            isset($fields['hide_caption_smartphone']) && $fields['hide_caption_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_tablet',
+            isset($fields['hide_caption_tablet']) && $fields['hide_caption_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_laptop',
+            isset($fields['hide_caption_laptop']) && $fields['hide_caption_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_desktop',
+            isset($fields['hide_caption_desktop']) && $fields['hide_caption_desktop'] === 'on'
+        );
     }
 
     /**
@@ -222,9 +300,6 @@ class MetaExternalSlide extends MetaSlide
             $row .= $edit_buttons;
         }
         $row .= "       </div>";
-        $row .= "       <div class='metaslider-ui-inner'>";
-        $row .= "           <div class='thumb' style='background-image: url(" . esc_url($extimgurl) . ")'></div>";
-        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
         $row .= "       <div class='metaslider-ui-inner flex flex-col h-full'>";
@@ -252,13 +327,6 @@ class MetaExternalSlide extends MetaSlide
      */
     public function get_admin_tabs()
     {
-        $caption = htmlentities($this->slide->post_excerpt, ENT_QUOTES, 'UTF-8');
-        $url = get_post_meta($this->slide->ID, 'ml-slider_url', true);
-        $extimgurl = get_post_meta($this->slide->ID, 'ml-slider_extimgurl', true);
-        $title = get_post_meta($this->slide->ID, 'ml-slider_title', true);
-        $alt = get_post_meta($this->slide->ID, 'ml-slider_alt', true);
-        $target = get_post_meta($this->slide->ID, 'ml-slider_new_window', true) ? 'checked=checked' : '';
-
         $path = trailingslashit(plugin_dir_path(__FILE__)) . 'tabs/';
 
         ob_start();
@@ -287,6 +355,22 @@ class MetaExternalSlide extends MetaSlide
                 'content' => $caption_tab
             )
         );
+
+        $global_settings = $this->get_global_settings();
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            ob_start();
+            include $path . 'mobile.php';
+            $mobile_tab = ob_get_clean();
+
+            $tabs['mobile'] = array(
+                'title' => __("Mobile", "ml-slider"),
+                'content' => $mobile_tab
+            );
+        }
+
         return apply_filters(
             "metaslider_" . $this->identifier . "_slide_tabs",
             $tabs,
@@ -317,7 +401,7 @@ class MetaExternalSlide extends MetaSlide
             'alt' => get_post_meta($this->slide->ID, 'ml-slider_alt', true),
             'caption' => html_entity_decode($this->slide->post_excerpt, ENT_NOQUOTES, 'UTF-8'),
             'caption_raw' => $this->slide->post_excerpt,
-            'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID}",
+            'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID}  {$this->get_mobile_css_class($this->slide->ID)}",
             'rel' => "",
             'data-thumb' => ""
         );
@@ -398,7 +482,7 @@ class MetaExternalSlide extends MetaSlide
 
         // store the slide details
         $attributes = array(
-            'class' => "slide-{$this->slide->ID} ms-external",
+            'class' => "slide-{$this->slide->ID} ms-external {$this->get_mobile_css_class($this->slide->ID)}",
             'style' => "display: none; width: 100%;"
         );
 

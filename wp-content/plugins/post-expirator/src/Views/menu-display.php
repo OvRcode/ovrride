@@ -1,7 +1,8 @@
 <?php
 defined('ABSPATH') or die('Direct access not allowed.');
 
-use PublishPressFuture\Modules\Settings\HooksAbstract;
+use PublishPress\Future\Modules\Expirator\HooksAbstract as ExpiratorHooksAbstract;
+use PublishPress\Future\Modules\Settings\HooksAbstract;
 ?>
 
 <?php
@@ -30,10 +31,124 @@ $expirationdateDefaultTimeFormat = get_option('expirationdateDefaultTimeFormat',
             <?php
             wp_nonce_field('postexpirator_menu_display', '_postExpiratorMenuDisplay_nonce'); ?>
 
+            <h3><?php esc_html_e('Default Formats', 'post-expirator'); ?></h3>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row"><label for="expired-default-date-format"><?php
+                            esc_html_e('Date Format', 'post-expirator'); ?></label></th>
+                    <td>
+                        <input type="text" name="expired-default-date-format" id="expired-default-date-format" value="<?php
+                        echo esc_attr($expirationdateDefaultDateFormat); ?>" size="25"/> <span class="description">(<?php
+                            echo esc_html(PostExpirator_Util::get_wp_date($expirationdateDefaultDateFormat, time())); ?>)</span>
+                        <p class="description"><?php
+                            echo sprintf(
+                                esc_html__(
+                                    'The default format to use when displaying the action date within a post using the shortcode or within the footer.  For information on valid formatting options, see: %s.',
+                                    'post-expirator'
+                                ),
+                                '<a href="https://www.php.net/manual/en/function.date.php" target="_blank">' . esc_html__('PHP Date Function', 'post-expirator') . '</a>'
+                            ); ?></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row"><label for="expired-default-time-format"><?php
+                            esc_html_e('Time Format', 'post-expirator'); ?></label></th>
+                    <td>
+                        <input type="text" name="expired-default-time-format" id="expired-default-time-format" value="<?php
+                        echo esc_attr($expirationdateDefaultTimeFormat); ?>" size="25"/> <span class="description">(<?php
+                            echo esc_html(PostExpirator_Util::get_wp_date($expirationdateDefaultTimeFormat, time())); ?>)</span>
+                        <p class="description"><?php
+                        echo sprintf(
+                            esc_html__(
+                                'The default format to use when displaying the action time within a post using the shortcode or within the footer.  For information on valid formatting options, see: %s.',
+                                'post-expirator'
+                            ),
+                            '<a href="https://www.php.net/manual/en/function.date.php" target="_blank">'. esc_html__('PHP Date Function', 'post-expirator') . '</a>'
+
+                        ); ?></td>
+                </tr>
+            </table>
+
+            <hr/>
+
+            <h3><?php
+                esc_html_e('Post Footer Display', 'post-expirator'); ?></h3>
+            <p class="description"><?php
+                esc_html_e(
+                    'Enabling this below will display the action date automatically at the end of any post which is set to run an action.',
+                    'post-expirator'
+                ); ?></p>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row"><?php
+                        esc_html_e('Show in Post Footer?', 'post-expirator'); ?></th>
+                    <td>
+                        <div class="pp-settings-field-row">
+                            <input type="radio" name="expired-display-footer" id="expired-display-footer-true" value="1" <?php
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo $expireddisplayfooterenabled; ?>/> <label for="expired-display-footer-true"><?php
+                                esc_html_e('Enabled', 'post-expirator'); ?></label>
+                        </div>
+                        <div class="pp-settings-field-row">
+                            <input type="radio" name="expired-display-footer" id="expired-display-footer-false" value="0" <?php
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo $expireddisplayfooterdisabled; ?>/> <label for="expired-display-footer-false"><?php
+                                esc_html_e('Disabled', 'post-expirator'); ?></label>
+                        </div>
+                        <p class="description"><?php
+                            esc_html_e(
+                                'This will enable or disable displaying the future action date in the post footer.',
+                                'post-expirator'
+                            ); ?></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row"><label for="expired-footer-contents"><?php
+                            esc_html_e('Footer Contents', 'post-expirator'); ?></label></th>
+                    <td>
+                        <textarea id="expired-footer-contents" name="expired-footer-contents" rows="3" cols="50"><?php
+                            echo esc_textarea($expirationdateFooterContents); ?></textarea>
+                        <p class="description"><?php
+                            esc_html_e(
+                                'Enter the text you would like to appear at the bottom of every post which has an action scheduled.  The following placeholders will be replaced with the future action date in the following format:',
+                                'post-expirator'
+                            ); ?></p>
+                        <ul class="pe-list">
+                            <li><p class="description">ACTIONFULL -> <?php
+                                    echo esc_html(date_i18n(
+                                        "$expirationdateDefaultDateFormat $expirationdateDefaultTimeFormat"
+                                    )); ?></p></li>
+                            <li><p class="description">ACTIONDATE -> <?php
+                                    echo esc_html(date_i18n("$expirationdateDefaultDateFormat")); ?></p></li>
+                            <li><p class="description">ACTIONTIME -> <?php
+                                    echo esc_html(date_i18n("$expirationdateDefaultTimeFormat")); ?></p></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row"><label for="expired-footer-style"><?php
+                            esc_html_e('Footer Style', 'post-expirator'); ?></label></th>
+                    <td>
+                        <textarea name="expired-footer-style" id="expired-footer-style" rows="3" cols="50"><?php
+                            echo esc_textarea($expirationdateFooterStyle); ?></textarea>
+                        <p class="description"><?php
+                            esc_html_e('The inline css which will be used to style the footer text.', 'post-expirator'); ?></p>
+                        <br>
+                        <div>
+                            <label><?php echo esc_html__('Example: ', 'post-expirator'); ?></label>
+                            <div style="background: white; padding: 10px; <?php echo esc_attr($expirationdateFooterStyle); ?>"><?php
+                                echo esc_html(apply_filters(ExpiratorHooksAbstract::FILTER_CONTENT_FOOTER, '', true)); ?></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <hr/>
+
             <h3><?php
                 esc_html_e('Shortcode', 'post-expirator'); ?></h3>
             <p><?php
-                echo sprintf(esc_html__('Valid %s attributes:', 'post-expirator'), '<code>[postexpirator]</code>'); ?></p>
+                echo sprintf(esc_html__('Valid %s attributes:', 'post-expirator'), '<code>[futureaction]</code>'); ?></p>
             <ul class="pe-list">
                 <li><p><?php
                         echo sprintf(
@@ -60,75 +175,6 @@ $expirationdateDefaultTimeFormat = get_option('expirationdateDefaultTimeFormat',
                             '<code>timeformat</code>'
                         ); ?></p></li>
             </ul>
-
-            <hr/>
-
-            <h3><?php
-                esc_html_e('Post Footer Display', 'post-expirator'); ?></h3>
-            <p class="description"><?php
-                esc_html_e(
-                    'Enabling this below will display the expiration date automatically at the end of any post which is set to expire.',
-                    'post-expirator'
-                ); ?></p>
-            <table class="form-table">
-                <tr valign="top">
-                    <th scope="row"><?php
-                        esc_html_e('Show in post footer?', 'post-expirator'); ?></th>
-                    <td>
-                        <input type="radio" name="expired-display-footer" id="expired-display-footer-true" value="1" <?php
-                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        echo $expireddisplayfooterenabled; ?>/> <label for="expired-display-footer-true"><?php
-                            esc_html_e('Enabled', 'post-expirator'); ?></label>
-                        &nbsp;&nbsp;
-                        <input type="radio" name="expired-display-footer" id="expired-display-footer-false" value="0" <?php
-                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        echo $expireddisplayfooterdisabled; ?>/> <label for="expired-display-footer-false"><?php
-                            esc_html_e('Disabled', 'post-expirator'); ?></label>
-                        <p class="description"><?php
-                            esc_html_e(
-                                'This will enable or disable displaying the post expiration date in the post footer.',
-                                'post-expirator'
-                            ); ?></p>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row"><label for="expired-footer-contents"><?php
-                            esc_html_e('Footer Contents', 'post-expirator'); ?></label></th>
-                    <td>
-                        <textarea id="expired-footer-contents" name="expired-footer-contents" rows="3" cols="50"><?php
-                            echo esc_textarea($expirationdateFooterContents); ?></textarea>
-                        <p class="description"><?php
-                            esc_html_e(
-                                'Enter the text you would like to appear at the bottom of every post that will expire.  The following placeholders will be replaced with the post expiration date in the following format:',
-                                'post-expirator'
-                            ); ?></p>
-                        <ul class="pe-list">
-                            <li><p class="description">EXPIRATIONFULL -> <?php
-                                    echo esc_html(date_i18n(
-                                        "$expirationdateDefaultDateFormat $expirationdateDefaultTimeFormat"
-                                    )); ?></p></li>
-                            <li><p class="description">EXPIRATIONDATE -> <?php
-                                    echo esc_html(date_i18n("$expirationdateDefaultDateFormat")); ?></p></li>
-                            <li><p class="description">EXPIRATIONTIME -> <?php
-                                    echo esc_html(date_i18n("$expirationdateDefaultTimeFormat")); ?></p></li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row"><label for="expired-footer-style"><?php
-                            esc_html_e('Footer Style', 'post-expirator'); ?></label></th>
-                    <td>
-                        <input type="text" name="expired-footer-style" id="expired-footer-style" value="<?php
-                        echo esc_attr($expirationdateFooterStyle); ?>" size="25"/>
-                        (<span style="<?php
-                        echo esc_attr($expirationdateFooterStyle); ?>"><?php
-                            esc_html_e('This post will expire on', 'post-expirator'); ?><?php
-                            echo esc_html(date_i18n("$expirationdateDefaultDateFormat $expirationdateDefaultTimeFormat")); ?></span>)
-                        <p class="description"><?php
-                            esc_html_e('The inline css which will be used to style the footer text.', 'post-expirator'); ?></p>
-                    </td>
-                </tr>
-            </table>
 
             <p class="submit">
                 <input type="submit" name="expirationdateSaveDisplay" class="button-primary" value="<?php

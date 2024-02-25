@@ -47,7 +47,7 @@ class AmazonSESController {
 			'email_from'   => $this->smtpObj->From,
 			'email_to'     => $emailTo, // require is array
 			'mailer'       => 'AmazonSES',
-			'date_time'    => current_time( 'mysql' ),
+			'date_time'    => current_time( 'mysql', true ),
 			'status'       => 0, // 0: false, 1: true, 2: waiting
 			'content_type' => $this->smtpObj->ContentType,
 			'body_content' => $this->smtpObj->Body,
@@ -71,11 +71,11 @@ class AmazonSESController {
 			if ( $sent ) {
 				LogErrors::clearErr();
 
-				$dataLogsDB['date_time'] = current_time( 'mysql' );
+				$dataLogsDB['date_time'] = current_time( 'mysql', true );
 				$dataLogsDB['status']    = 1;
 				Utils::insertEmailLogs( $dataLogsDB );
 			} else {
-				$dataLogsDB['date_time'] = current_time( 'mysql' );
+				$dataLogsDB['date_time'] = current_time( 'mysql', true );
 				Utils::insertEmailLogs( $dataLogsDB );
 			}
 

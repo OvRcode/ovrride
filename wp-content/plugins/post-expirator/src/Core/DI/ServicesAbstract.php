@@ -3,7 +3,9 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Core\DI;
+namespace PublishPress\Future\Core\DI;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 abstract class ServicesAbstract
 {
@@ -31,6 +33,7 @@ abstract class ServicesAbstract
     const SETTINGS = 'future.free/settings';
     const LOGGER = 'future.free/logger';
     const CRON = 'future.free/cron';
+    const WOO_CRON_ADAPTER = 'future.free/woo-cron-adapter';
     const ERROR = 'future.free/error';
     const DATETIME = 'future.free/datetime';
     const OPTIONS = 'future.free/options';
@@ -53,8 +56,15 @@ abstract class ServicesAbstract
     const CURRENT_USER_MODEL_FACTORY = 'future.free/current-user-model-factory';
     const EXPIRABLE_POST_MODEL_FACTORY = 'future.free/expirable-post-model-factory';
     const EXPIRATION_ACTION_FACTORY = 'future.free/expiration-action-factory';
-    const DEFAULT_DATA_MODEL = 'future.free/default-data-model-factory';
+    const POST_TYPE_DEFAULT_DATA_MODEL_FACTORY = 'future.free/post-type-default-data-model-factory';
     const EXPIRATION_ACTIONS_MODEL = 'future.free/expiration-actions-model';
     const POST_TYPE_SETTINGS_MODEL_FACTORY = 'future.free/post-type-settings-model-factory';
     const TAXONOMIES_MODEL_FACTORY = 'future.free/taxonomies-model-factory';
+    const SCHEDULED_ACTIONS_TABLE_FACTORY = 'future.free/scheduled-actions-table';
+    const ACTION_ARGS_MODEL_FACTORY = 'future.free/actions-args-mode-factory';
+    const ACTION_SCHEDULER_STORE = 'future.free/action-scheduler/store';
+    const ACTION_SCHEDULER_LOGGER = 'future.free/action-scheduler/logger';
+    const ACTION_SCHEDULER_RUNNER = 'future.free/action-scheduler/runner';
+    const MIGRATIONS_FACTORY = 'future.free/migrations';
+    const NOTICES = 'future.free/notices-facade';
 }

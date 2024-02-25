@@ -1,9 +1,9 @@
 ﻿=== MetaSlider Pro ===
 
-Requires at least: 4.6
-Tested up to: 6.2.2
-Stable tag: 2.23.0
-Requires PHP: 5.6
+Requires at least: 5.0
+Tested up to: 6.4.3
+Stable tag: 2.33.0
+Requires PHP: 7.0
 
 Extends MetaSlider, adding features such as video slides, layer slides and include additional CSS.
 
@@ -12,7 +12,107 @@ Extends MetaSlider, adding features such as video slides, layer slides and inclu
 The format is based on [Keep a Changelog recommendations](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+= [2.33.0] - 05 Feb, 2024 =
+
+* FIXED: Don't output track attributes in frontend when no track settings has been defined, #286;
+* FIXED: Local Video missing thumbnail navigation, #328;
+* FIXED: Local Video not on filmstrip navigation, #325;
+* FIXED: YouTube videos requires 2 taps to play in mobile, #277;
+* FIXED: Hidden slides are visible on theme editor preview, #211;
+* FIXED: When carousel mode is enabled, videos don't autoplay, #210;
+* FIXED: Vertical alignment issue in schedule inputs, #335;
+* FIXED: Mobile settings bug-fixes, #329, #340, #344;
+* FIXED: Undefined array key "id" in Local videos, #347;
+* ADDED: Allow to include posts with no featured image in Post Feed slide type, #330;
+* ADDED: Allow users to choose the time each slide shows, #157;
+* CHANGED: New color picker library, #215;
+
+= [2.32.0] - 13 Dec, 2023 =
+
+* FIXED: Theme editor preview when switching on and off custom caption, arrows and navigation, #187;
+* FIXED: Set a default width or height for YouTube slides when slideshow is missing width or height, #275; 
+* FIXED: Can't update YouTube and Vimeo URLs right after adding slide, #316;
+* FIXED: Updating YouTube and Vimeo URLs triggers ajax actions with a bad request as result, #296;
+* FIXED: Some settings rely on others and need to be hidden in slideshow edit screen, #313;
+* FIXED: Undefined variable $id when using a custom theme and Coin slider, #306;
+* FIXED: Scroll to bottom after adding the first slide, #311;
+* FIXED: Font size consistency for Theme editor, #186;
+* FIXED: Tooltips and labels in slideshow edit screen, #305;
+* FIXED: style.css for Local and External video enqueued twice, #303;
+* FIXED: UI issues in mobile for Local and External video, #301;
+* FIXED: "Add CSS" button is missing styled tooltip, #302;
+* FIXED: Consistent font size in URL fields across different slide types, #294;
+* FIXED: Adjust UI to latest changes from MetaSlider Free, #290;
+* ADDED: Allow links in Local and External videos, #307; 
+* ADDED: Change how new added slides are sorted, #310;
+* ADDED: Add shapes support to Theme editor, #185;
+* ADDED: Allow to choose a Local video from the readonly input, #300;
+* ADDED: Mobile settings support (Beta), #321;
+* CHANGED: Update Axios to 1.6, #282;
+* CHANGED: Set $lite_version_minimum as 3.60, #298; 
+* CHANGED: Updated translations for ES, FR, and IT, #287, #319;
+* CHANGED: Move thumbnail image/video to General tab, #289, #291, #293, #308;
+
+= [2.30.0] - 02 Nov, 2023 =
+
+* FIXED: Error in console in main theme editor screen, #249;
+* FIXED: Creating slides trigger an error from Local videos, #241;
+* FIXED: Minimum Free plugin version notice design for consistency, #245;
+* FIXED: Wrong message when selecting a video instead of an image as cover, #192;
+* FIXED: Deprecated: Automatic conversion of false to array is deprecated, #232;
+* FIXED: Creation of dynamic property deprecations, #233;
+* FIXED: Local video javascript warnings "Player is already initialised", #266;
+* FIXED: Local videos duplicated instances when slideshow effect is "slide", #267;
+* FIXED: Local videos with autoplay and mute enabled can't be unmuted through user action, #265;
+* FIXED: Local video update is overridden when clicking save button, #268;
+* FIXED: Local video requires 2 taps to play in mobile, #273;
+* ADDED: External video slide type, #194;
+* ADDED: Scroll to bottom after adding a new slide, #225;
+* ADDED: Captions/subtitles to Local videos, #227;
+* ADDED: Allow to disable date range for schedule, #238;
+* ADDED: 1 week to "To" date by default, #246;
+* ADDED: crossorigin attribute support to Local videos, #260;
+* CHANGED: Schedule UI: #156, #195, #250, #252;
+* CHANGED: Set 5.0 as minimum WP version, #231;
+* CHANGED: Default end time for Daily constraint, #264;
+* CHANGED: Update VideoJS to 8.6.1, #272;
+
+= [2.26.0] - 05 Sep, 2023 =
+
+* FIXED: Remove warning for Thumbnail / Filmstrip in Theme editor, #205;
+* FIXED: Deprecated: Creation of dynamic property in PHP 8.2, #189, #114;
+* FIXED: Improve Theme editor preview display, #197;
+* FIXED: Improve Theme editor's Custom arrows select buttons, #199;
+* FIXED: Don't allow to choose videos when selecting the image in Layer slides, #190;
+* FIXED: "Add to slideshow" button should be disabled when no image has been selected, #152;
+* FIXED: Force background CSS properties for notices, #182;
+* FIXED: wp_enqueue_style was called incorrectly for notice CSS, #218;
+* ADDED: Explanation for dual color boxes in Theme editor, #207;
+* ADDED: GDPR support for Google Fonts in Theme editor, #202;
+* CHANGED: Allow to customize caption font, color, size, etc. in Theme editor, #129;
+* CHANGED: Move Theme editor's "Slideshow" settings to the bottom, #209;
+* CHANGED: Dropdown acts funny with long slideshow names in Theme editor preview, #198;
+
+= [2.25.0] - 19 Jul, 2023 =
+
+* FIXED: Edit Vimeo slide image, #131;
+* FIXED: Spacing between select and code field, #127;
+* ADDED: Javascript translations support, #174;
+* CHANGED: Move jQuery TubePlayer plugin to modules/youtube, #169;
+* CHANGED: Move video.js to modules/local_video, #170;
+* CHANGED: Improve the notice message for people who only have the Pro plugin, #144;
+* CHANGED: Theme editor screens, #155;
+* CHANGED: Updated translations for ES, FR, and IT, #163, #164;
+
+= [2.24.0] - 29 Jun, 2023 =
+
+* FIXED: Consistency across input fields design, #147;
+* FIXED: Design for warning when choosing libraries different to Flexslider, #151;
+* ADDED: Local Video slide type, #97;
+* CHANGED: Updated POT file, #153;
+
 = [2.23.0] - 25 May, 2023 =
+
 * FIXED: PHPCS errors, #134;
 * FIXED: Background image link not working, #93;
 * FIXED: Lazy load and controls not working for YouTube slides created (without saving) in 2.21 and below, #126;

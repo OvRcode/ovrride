@@ -20,10 +20,7 @@
 			};
 
 			jQuery.post(ajaxurl, data, function(response) {
-				window.parent.jQuery(".metaslider table#metaslider-slides-list").append(response);
-				var APP = window.parent.metaslider.app.MetaSlider;
-				APP && APP.notifySuccess('metaslider/slides-created', null, true);
-				window.parent.jQuery(".media-modal-close").click();
+				window.parent.metaslider.after_adding_slide_success(response.data);
 			});
 		});
 	});

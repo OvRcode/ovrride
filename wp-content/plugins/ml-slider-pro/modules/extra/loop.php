@@ -23,6 +23,8 @@ class MetaSliderLoop
     /**
      * Add JavaScript to stop slideshow
      *
+     * @deprecated since 2.30 - Moved to MetaSlider Free 3.50
+     * 
      * @param array $options SLide options
      * @param integer $slider_id Slider ID
      * @param array $settings Slide settings
@@ -48,6 +50,8 @@ class MetaSliderLoop
     /**
      * Add JavaScript to stop slideshow
      *
+     * @deprecated since 2.30 - Moved to MetaSlider Free 3.50
+     * 
      * @param array $options SLide options
      * @param integer $slider_id Slider ID
      * @param array $settings Slide settings

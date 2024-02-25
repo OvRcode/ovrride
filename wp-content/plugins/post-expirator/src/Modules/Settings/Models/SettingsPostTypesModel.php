@@ -3,17 +3,23 @@
  * Copyright (c) 2022-2023. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Modules\Settings\Models;
+namespace PublishPress\Future\Modules\Settings\Models;
 
-use PublishPressFuture\Core\DI\Container;
-use PublishPressFuture\Core\DI\ServicesAbstract;
-use PublishPressFuture\Modules\Settings\HooksAbstract;
+use PublishPress\Future\Core\DI\Container;
+use PublishPress\Future\Core\DI\ServicesAbstract;
+use PublishPress\Future\Modules\Expirator\Models\PostTypesModel;
+use PublishPress\Future\Modules\Settings\HooksAbstract;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 class SettingsPostTypesModel
 {
     public function getPostTypes()
     {
-        return postexpirator_get_post_types();
+        $container = Container::getInstance();
+        $postTypesModel = new PostTypesModel($container);
+
+        return $postTypesModel->getPostTypes();
     }
 
     public function getPostTypesSettings()
@@ -31,22 +37,35 @@ class SettingsPostTypesModel
 
             $defaults = $settingsFacade->getPostTypeDefaults($postType);
 
-            $terms = isset($defaults['terms']) ? explode(',', $defaults['terms']) : [];
+            $terms = isset($defaults['terms']) ? $defaults['terms'] : [];
+            if (is_string($terms)) {
+                $terms = explode(',', $terms);
+            }
             $terms = array_map('intval', $terms);
             $terms = array_filter($terms, function($value) {return (int)$value > 0;});
+            $termsName = array_map(function($termId) {
+                $term = get_term($termId);
+
+                if (! $term instanceof \WP_Term) {
+                    return '';
+                }
+
+                return $term->name;
+            }, $terms);
 
             $settings[$postType] = [
                 'label' => esc_html($postTypeObject->label),
                 'active' => (! isset($defaults['activeMetaBox']) && in_array($postType, array('post', 'page'), true))
-                    || (isset($defaults['activeMetaBox']) && $defaults['activeMetaBox'] !== 'inactive'),
+                    || (isset($defaults['activeMetaBox']) && (! in_array((string)$defaults['activeMetaBox'], ['inactive', '0']))),
                 'howToExpire' => isset($defaults['expireType']) ? $defaults['expireType'] : '',
                 'autoEnabled' => isset($defaults['autoEnable']) && $defaults['autoEnable'] == 1,
                 'taxonomy' => isset($defaults['taxonomy']) ? $defaults['taxonomy'] : false,
                 'terms' => $terms,
+                'termsName' => $termsName,
                 'emailNotification' => isset($defaults['emailnotification']) ? $defaults['emailnotification'] : '',
                 'defaultExpireType' => isset($defaults['default-expire-type']) ? $defaults['default-expire-type'] : '',
                 'defaultExpireOffset' => isset($defaults['default-custom-date']) ? $defaults['default-custom-date'] : '',
-                'globalDefaultExpireOffset' => $placeholder = $settingsFacade->getDefaultDateCustom(),
+                'globalDefaultExpireOffset' => $settingsFacade->getGeneralDateTimeOffset(),
             ];
 
             $settings = apply_filters(

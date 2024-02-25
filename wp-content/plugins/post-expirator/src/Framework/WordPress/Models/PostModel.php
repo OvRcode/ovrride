@@ -3,10 +3,13 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Framework\WordPress\Models;
+namespace PublishPress\Future\Framework\WordPress\Models;
 
-use PublishPressFuture\Framework\WordPress\Exceptions\NonexistentPostException;
+use PublishPress\Future\Framework\WordPress\Exceptions\NonexistentPostException;
 use WP_Post;
+
+defined('ABSPATH') or die('Direct access not allowed.');
+
 
 class PostModel
 {
@@ -46,7 +49,7 @@ class PostModel
      * @param string $newPostStatus
      *
      * @return bool
-     * @throws \PublishPressFuture\Framework\WordPress\Exceptions\NonexistentPostException
+     * @throws \PublishPress\Future\Framework\WordPress\Exceptions\NonexistentPostException
      */
     public function setPostStatus($newPostStatus)
     {
@@ -135,7 +138,7 @@ class PostModel
 
     /**
      * @return bool
-     * @throws \PublishPressFuture\Framework\WordPress\Exceptions\NonexistentPostException
+     * @throws \PublishPress\Future\Framework\WordPress\Exceptions\NonexistentPostException
      */
     public function postExists()
     {
@@ -146,9 +149,9 @@ class PostModel
 
     /**
      * @return WP_Post
-     * @throws \PublishPressFuture\Framework\WordPress\Exceptions\NonexistentPostException
+     * @throws \PublishPress\Future\Framework\WordPress\Exceptions\NonexistentPostException
      */
-    private function getPostInstance()
+    protected function getPostInstance()
     {
         if (empty($this->postInstance)) {
             $this->postInstance = \get_post($this->getPostId());
@@ -171,14 +174,24 @@ class PostModel
         return get_the_title($this->getPostId());
     }
 
+    public function getPostStatus()
+    {
+        return get_post_status($this->getPostId());
+    }
+
     public function getPermalink()
     {
         return get_post_permalink($this->getPostId());
     }
 
-    public function getPostId()
+    public function getPostEditLink()
     {
-        return $this->postId;
+        return get_edit_post_link($this->getPostId());
+    }
+
+    public function getPostId(): int
+    {
+        return (int)$this->postId;
     }
 
     public function getTerms($taxonomy = 'post_tag', $args = [])
@@ -225,9 +238,14 @@ class PostModel
         return wp_set_object_terms($this->getPostId(), $termIDs, $taxonomy, false);
     }
 
-    public function delete()
+    public function delete(bool $force = true): bool
     {
-        return wp_delete_post($this->getPostId()) !== false;
+        return wp_delete_post($this->getPostId(), $force) !== false;
+    }
+
+    public function trash()
+    {
+        return wp_trash_post($this->getPostId());
     }
 
     public function stick()
@@ -242,5 +260,19 @@ class PostModel
         unstick_post($this->getPostId());
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostTypeSingularLabel()
+    {
+        $postTypeObj = get_post_type_object($this->getPostType());
+
+        if (is_object($postTypeObj)) {
+            return $postTypeObj->labels->singular_name;
+        }
+
+        return sprintf('[%s]', $this->getPostType());
     }
 }

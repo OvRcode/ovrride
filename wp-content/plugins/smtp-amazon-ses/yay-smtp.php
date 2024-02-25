@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: SMTP for AmazonSES - YaySMTP
- * Plugin URI: https://yaycommerce.com/amazonses-smtp
+ * Plugin URI: https://yaycommerce.com/yaysmtp-wordpress-mail-smtp
  * Description: This plugin helps you send emails from your WordPress website via your Amazon SES SMTP.
- * Version: 1.5
+ * Version: 1.7
  * Author: YayCommerce
  * Author URI: https://yaycommerce.com
  * Text Domain: yaysmtp_amazonses
@@ -18,7 +18,7 @@ if ( ! defined( 'YAY_SMTP_AMAZONSES_PREFIX' ) ) {
 	define( 'YAY_SMTP_AMAZONSES_PREFIX', 'yay_smtp_amazonses' );
 }
 if ( ! defined( 'YAY_SMTP_AMAZONSES_VERSION' ) ) {
-	define( 'YAY_SMTP_AMAZONSES_VERSION', '1.5' );
+	define( 'YAY_SMTP_AMAZONSES_VERSION', '1.7' );
 }
 
 if ( ! defined( 'YAY_SMTP_AMAZONSES_PLUGIN_URL' ) ) {

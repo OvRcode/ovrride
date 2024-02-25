@@ -2,8 +2,8 @@
 Contributors: facebook, automattic, woothemes
 Tags: facebook, shop, catalog, advertise, pixel, product
 Requires at least: 4.4
-Tested up to: 6.2
-Stable tag: 3.0.24
+Tested up to: 6.4
+Stable tag: 3.1.10
 Requires PHP: 5.6 or greater
 MySQL: 5.6 or greater
 License: GPLv2 or later
@@ -13,7 +13,8 @@ Get the Official Facebook for WooCommerce plugin for two powerful ways to help g
 
 == Description ==
 
-This is the official Facebook for WooCommerce plugin that connects your WooCommerce website to Facebook. With this plugin, you can install the Facebook pixel, upload your online store catalog, and create a shop on your Facebook page, enabling you to easily run dynamic ads.
+This is the official Facebook for WooCommerce plugin that connects your WooCommerce website to Facebook. With this plugin, you can install the Facebook pixel, and upload your online store catalog, enabling you to easily run dynamic ads.
+
 
 Marketing on Facebook helps your business build lasting relationships with people, find new customers, and increase sales for your online store. With this Facebook ad extension, reaching the people who matter most to your business is simple. This extension will track the results of your advertising across devices. It will also help you:
 
@@ -38,6 +39,90 @@ When opening a bug on GitHub, please give us as many details as possible.
 * Current version of Facebook-for-WooCommerce, WooCommerce, Wordpress, PHP
 
 == Changelog ==
+
+= 3.1.10 - 2024-02-14 =
+* Tweak - WC 8.6 compatibility.
+
+= 3.1.9 - 2024-01-09 =
+* Tweak - Changed minimum WC version to 6.4.
+* Tweak - WC 8.5 compatibility.
+
+= 3.1.8 - 2024-01-03 =
+* Fix - Fatal Error on order screens.
+
+= 3.1.7 - 2024-01-03 =
+* Add - Create/Update products sync to facebook with Batch API.
+
+= 3.1.6 - 2023-12-27 =
+* Fix - Facebook Pixel events missing on redirect to cart.
+
+= 3.1.5 - 2023-11-29 =
+* Fix - Remove mentions of shops.
+
+= 3.1.4 - 2023-11-25 =
+* Fix - Remove popup modal blocking product edit when product is using category excluded from sync.
+
+= 3.1.3 - 2023-11-07 =
+* Fix - Doc - Use new Woo.com domain.
+* Tweak - WC 8.3 compatibility.
+* Tweak - WP 6.4 compatibility.
+
+= 3.1.2 - 2023-10-19 =
+* Dev - Add phpcs on changed files only.
+
+= 3.1.1 - 2023-10-12 =
+* Update - Revert "Advandtage+ Shoppings Ads support in Advertise tab".
+
+= 3.0.34 - 2023-10-05 =
+* Add - Filter the size of the Facebook product image.
+* Fix - AddToCart duplication when other plugins clone cart.
+* Tweak - WC 8.2 compatibility.
+
+= 3.0.33 - 2023-09-05 =
+* Dev - Updates PHP unit tests matrix in git workflow and versions of dev dependencies in composer.
+* Fix - Issues with Facebook Sync status display while product filtering in admin.
+* Tweak - WC 8.1 compatibility.
+
+= 3.0.32 - 2023-08-18 =
+* Fix - Changes property access of product id from private to public.
+* Fix - Eliminates dynamic property creation deprecation warnings.
+* Fix - Update WPML compatibility to prevent fatal errors on PHP 8+.
+* Tweak - Bump Marketing API version to v17.0.
+* Tweak - Displays warnings on accessing private/protected properties incorrectly.
+
+= 3.0.31 - 2023-08-09 =
+* Dev - Filters Business Manager ID.
+* Fix - Fatal error when facebook_config option is empty.
+* Fix - WC_Facebookcommerce_Pixel::get_options() throwing a fatal error if facebook_config is invalid.
+* Tweak - Adds backward arrow to Facebook Product Sets backlink.
+* Tweak - Update product data options icon.
+* Tweak - WC 8.0 compatibility.
+* Tweak - WP 6.3 compatibility.
+
+= 3.0.30 - 2023-08-01 =
+* Dev - Add release preparation GH workflow.
+* Fix - Facebook sync for newly published product without Google product category.
+* Fix - Syncs products with All Caps title to Facebook and displays a warning in Facebook meta box.
+
+= 3.0.29 - 2023-07-18 =
+* Fix - Corrects backlink to 'Go to Facebook Product Sets' in success notice on Edit Facebook Product Sets page.
+* Tweak - Removes duplicate code.
+
+= 3.0.28 - 2023-07-13 =
+* Add - Priority to enhanced catalog attributes and display as per priority.
+* Fix - Woo category synced as Google Product category.
+
+= 3.0.27 - 2023-07-05 =
+* Fix - Products are deleted from facebook once changed to draft.
+
+= 3.0.26 - 2023-06-28 =
+* Tweak - WC 7.9 compatibility.
+
+= 3.0.25 - 2023-06-13 =
+* Fix - Fatal error when Facebook.net returns an empty response.
+* Fix - PHP Warning caused by array_filter() call.
+* Fix - Remove assigned Google product category at individual product level.
+* Tweak - WC 7.8 compatibility.
 
 = 3.0.24 - 2023-06-06 =
 * Fix - Product variants weren't deleted correctly from the Facebook catalog in some instances.

@@ -42,12 +42,18 @@
     overflow: hidden;
 }
 .metaslider iframe.vimeo,
-.metaslider .youtube iframe {
+.metaslider .youtube iframe,
+.metaslider .local-video video,
+.metaslider .external-video video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+.metaslider .local-video,
+.metaslider .external-video {
+    width: 100%;
 }
 .effect0 {
     z-index: 1;

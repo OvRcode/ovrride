@@ -73,6 +73,22 @@ class MetaSliderThumbnails
     }
 
     /**
+     * Get mobile CSS on al slide types
+     */
+    public function get_mobile_css_class($slide_id)
+    {
+        $device = array('smartphone', 'tablet', 'laptop', 'desktop');
+        $mobile_class = '';
+        foreach ($device as $value) {
+            $hidden_slide = get_post_meta( $slide_id , 'ml-slider_hide_slide_' . $value, true );
+            if(!empty($hidden_slide)) {
+              $mobile_class .= 'hidden_' . $value . ' ';
+            }
+        }
+        return $mobile_class;
+    }
+
+    /**
      * Output the carousel HTML for the filmstrip
      *
      * @param string $html Filmstrip HTML
@@ -101,6 +117,9 @@ class MetaSliderThumbnails
                 $type = get_post_meta($query->post->ID, 'ml-slider_type', true);
 
                 if ($type == 'post_feed') {
+                    // @TODO - Find a way to not need to access this data either use $posts_with_no_image
+                    $postfeed_settings = get_post_meta( $query->post->ID, 'ml-slider_settings', true );
+
                     $post_feed = new MetaPostFeedSlide();
                     $post_feed->set_slide($query->post->ID);
                     $post_feed->set_slider($slider_id);
@@ -119,6 +138,9 @@ class MetaSliderThumbnails
                             }
                         }
 
+                        $posts_with_no_image = ! isset( $postfeed_settings['posts_with_no_image'] ) || $postfeed_settings['posts_with_no_image'] == 'off' 
+                                                ? false : true;
+                                                        
                         $imageHelper = new MetaSliderImageHelper(
                             $query->post->ID,
                             $settings['thumb_width'],
@@ -129,9 +151,15 @@ class MetaSliderThumbnails
                         );
 
                         $url = $imageHelper->get_image_url();
+                        $style = '';
 
-                        $list_item = "<li class=\"ms-thumb slide-{$query->post->ID} post-{$the_query->post->ID}\" style=\"display: none;\"><img src=\"{$url}\" /></li>";
+                        // Placeholder thumbnail when no image is set for a Post feed slide
+                        if ( $posts_with_no_image && ! strlen( $url ) ) {
+                            $url    = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='; 
+                            $style  = " style=\"width:{$settings['thumb_width']}px;height:{$settings['thumb_height']}px;background:#fff;\"";
+                        }
 
+                        $list_item = "<li class=\"ms-thumb slide-{$query->post->ID} post-{$the_query->post->ID} {$this->get_mobile_css_class($query->post->ID)} \" style=\"display: none;\"><img src=\"{$url}\"{$style}/></li>";
                         $list_item = apply_filters("metaslider_filmstrip_list_item", $list_item, $query->post, $url);
 
                         $html .= "\n                {$list_item}";
@@ -142,7 +170,7 @@ class MetaSliderThumbnails
                     if ($type == 'external') {
                         $url = get_post_meta($query->post->ID, 'ml-slider_extimgurl', true);
 
-                        $list_item = "<li class=\"ms-thumb slide-{$query->post->ID}\" style=\"display: none;\"><img src=\"{$url}\" /></li>";
+                        $list_item = "<li class=\"ms-thumb slide-{$query->post->ID} {$this->get_mobile_css_class($query->post->ID)} \" style=\"display: none;\"><img src=\"{$url}\" /></li>";
 
                         $list_item = apply_filters("metaslider_filmstrip_list_item", $list_item, $query->post, $url);
 
@@ -159,7 +187,21 @@ class MetaSliderThumbnails
                         $url = $imageHelper->get_image_url();
 
                         if (strlen($url)) {
-                            $list_item = "<li class=\"ms-thumb slide-{$query->post->ID}\" style=\"display: none;\"><img src=\"{$url}\" /></li>";
+                            $list_item = "<li class=\"ms-thumb slide-{$query->post->ID} {$this->get_mobile_css_class($query->post->ID)} \" style=\"display: none;\"><img src=\"{$url}\" /></li>";
+
+                            $list_item = apply_filters(
+                                "metaslider_filmstrip_list_item",
+                                $list_item,
+                                $query->post,
+                                $url
+                            );
+
+                            $html .= "\n                {$list_item}";
+                        } else {
+                            /* Placeholder thumbnail when no image is set for a slide. 
+                             * e.g. no cover exists for a Local or External video */
+                            $url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                            $list_item = "<li class=\"ms-thumb slide-{$query->post->ID} {$this->get_mobile_css_class($query->post->ID)} \" style=\"display: none;\"><img src=\"{$url}\" style=\"width:{$settings['thumb_width']}px;height:{$settings['thumb_height']}px;background:#fff;\" /></li>";
 
                             $list_item = apply_filters(
                                 "metaslider_filmstrip_list_item",
@@ -180,6 +222,15 @@ class MetaSliderThumbnails
         return $html;
     }
 
+    private function print_flex_js($device){
+        $js = '';
+        $identifier = $this->get_identifier();
+        $js .= "\n liHTML.forEach((slideHTML, index) => {
+            $('#temp_" . $identifier . " .slides').append(slideHTML);
+        })";
+        return $js;
+    }
+
     /**
      * Output the JavaScript for the filmstrip carousel
      *
@@ -190,6 +241,15 @@ class MetaSliderThumbnails
     public function metaslider_flex_filmstrip($javascript, $slider_id)
     {
         $settings = get_post_meta($slider_id, 'ml-slider_settings', true);
+
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            $javascript .= "\n     var newBreakpoint = window.getComputedStyle(document.body, ':after').getPropertyValue('content');";
+            $javascript .= '         newBreakpoint = newBreakpoint.replace(/"/g, "");';
+            $javascript .= "\n       $('#metaslider_{$slider_id}_filmstrip .slides li.hidden_'+newBreakpoint).remove();";
+        }
 
         if (isset($settings["noConflict"]) && $settings['noConflict'] == 'true' && $settings['navigation'] === 'filmstrip') {
             $javascript .= "\n            $('#metaslider_{$slider_id}_filmstrip').addClass('flexslider');";
@@ -282,7 +342,37 @@ class MetaSliderThumbnails
                     'true' => array('label' => __("Dots", "ml-slider-pro"), 'class' => 'flex nivo responsive coin'),
                     'thumbs' => array('label' => __("Thumbnails", "ml-slider-pro"), 'class' => 'flex nivo'),
                     'filmstrip' => array('label' => __("Filmstrip", "ml-slider-pro"), 'class' => 'flex')
-                )
+                ),
+                'dependencies' => array(
+                    array(
+                        'show' => 'thumb_width', // Show Thumb width
+                        'when' => array( // When Navigation is 'thumbs' or 'filmstrip'
+                            'thumbs', 
+                            'filmstrip'
+                        )
+                    ),
+                    array(
+                        'show' => 'thumb_height', // Show Thumb height
+                        'when' => array( // When Navigation is 'thumbs' or 'filmstrip'
+                            'thumbs', 
+                            'filmstrip'
+                        )
+                    ),
+                    array(
+                        'show' => 'responsive_thumbs', // Show Responsive thumbs
+                        'when' => array( // When Navigation is 'thumbs' or 'filmstrip'
+                            'thumbs', 
+                            'filmstrip'
+                        )
+                    ),
+                    array(
+                        'show' => 'thumb_min_width', // Show Thumb min width
+                        'when' => array( // When Navigation is 'thumbs' or 'filmstrip'
+                            'thumbs', 
+                            'filmstrip'
+                        )
+                    )
+                ),
             ),
             'thumb_width' => array(
                 'priority' => 70,
@@ -314,7 +404,7 @@ class MetaSliderThumbnails
                 'priority' => 85,
                 'type' => 'checkbox',
                 'label' => __("Responsive Thumbnails", "ml-slider"),
-                'class' => 'flex nivo showNextWhenChecked',
+                'class' => 'flex nivo',
                 'checked' => filter_var(
                     $slider->get_setting('responsive_thumbs'),
                     FILTER_VALIDATE_BOOLEAN
@@ -387,6 +477,16 @@ class MetaSliderThumbnails
     {
         if ('thumbs' === $settings['navigation']) {
             $options['controlNav'] = "'thumbnails'";
+            $options['start'] = isset( $options['start'] ) ? $options['start'] : array();
+            $options['start'] = array_merge( $options['start'], array(
+                "slider.find('.flex-control-thumbs > li').each(function(index) {
+                    var img = $(this).find('img');
+                    if (img.attr('src') === undefined || img.attr('src') === '') {
+                        img.attr('src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+                        img.css({'background-color': '#fff', 'width': '{$settings['thumb_width']}px','height': '{$settings['thumb_height']}px'});
+                    }
+                });"
+            ));
         }
 
         if ('filmstrip' === $settings['navigation']) {

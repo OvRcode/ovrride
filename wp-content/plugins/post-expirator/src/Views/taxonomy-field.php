@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die('Direct access not allowed.');
 
 echo '<select name="' . esc_attr($name) . '" id="' . esc_attr($id) . '"' . ($disabled === true ? ' disabled="disabled"' : '') . ' onchange="' . esc_attr($onchange) . '">';
 
@@ -8,6 +9,6 @@ foreach ($taxonomies as $taxonomy) {
 
 echo '</select>';
 echo '<p class="description">' . esc_html__(
-        'Select the hierarchical taxonomy to be used for "category" based expiration.',
+        'Select the taxonomy to be used for actions.',
         'post-expirator'
     ) . '</p>';

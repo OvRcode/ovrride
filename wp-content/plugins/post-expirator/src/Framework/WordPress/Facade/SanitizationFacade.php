@@ -3,8 +3,9 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Framework\WordPress\Facade;
+namespace PublishPress\Future\Framework\WordPress\Facade;
 
+defined('ABSPATH') or die('Direct access not allowed.');
 
 class SanitizationFacade
 {
@@ -15,5 +16,10 @@ class SanitizationFacade
     public function sanitizeKey($key)
     {
         return sanitize_key($key);
+    }
+
+    public function sanitizeTextField($value)
+    {
+        return sanitize_text_field($value);
     }
 }

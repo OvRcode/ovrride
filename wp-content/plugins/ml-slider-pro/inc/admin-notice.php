@@ -32,6 +32,7 @@ class Metaslider_Admin_Notice
         $this->type = $type;
         $this->message = $message;
         add_action('admin_notices', array($this, 'display'));
+        add_action( 'admin_enqueue_scripts', array($this, 'styles') );
     }
 
     /**
@@ -43,6 +44,18 @@ class Metaslider_Admin_Notice
             '<div style="padding-top:1rem;padding-bottom:1rem" class="metaslider-admin-notice %s notice">%s</div>',
             esc_attr($this->type),
             $this->message // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        );
+    }
+
+    public function styles()
+    {
+        wp_enqueue_style(
+            'metasliderpro-notices-styles',
+            plugins_url( '../assets/notices.css', __FILE__ )
+        );
+        wp_add_inline_style(
+            'metasliderpro-notices-styles',
+            '.ms-styled-notice { background-image: url(' . esc_url( plugins_url( '../assets/metaslider_logo.png', __FILE__ ) ) . ') !important; }'
         );
     }
 }

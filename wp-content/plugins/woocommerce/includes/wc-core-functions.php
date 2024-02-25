@@ -631,8 +631,8 @@ function get_woocommerce_currencies() {
 					'USD' => __( 'United States (US) dollar', 'woocommerce' ),
 					'UYU' => __( 'Uruguayan peso', 'woocommerce' ),
 					'UZS' => __( 'Uzbekistani som', 'woocommerce' ),
-					'VEF' => __( 'Venezuelan bol&iacute;var', 'woocommerce' ),
-					'VES' => __( 'Bol&iacute;var soberano', 'woocommerce' ),
+					'VEF' => __( 'Venezuelan bol&iacute;var (2008–2018)', 'woocommerce' ),
+					'VES' => __( 'Venezuelan bol&iacute;var', 'woocommerce' ),
 					'VND' => __( 'Vietnamese &#x111;&#x1ed3;ng', 'woocommerce' ),
 					'VUV' => __( 'Vanuatu vatu', 'woocommerce' ),
 					'WST' => __( 'Samoan t&#x101;l&#x101;', 'woocommerce' ),
@@ -817,7 +817,7 @@ function get_woocommerce_currency_symbols() {
 			'UYU' => '&#36;',
 			'UZS' => 'UZS',
 			'VEF' => 'Bs F',
-			'VES' => 'Bs.S',
+			'VES' => 'Bs.',
 			'VND' => '&#8363;',
 			'VUV' => 'Vt',
 			'WST' => 'T',
@@ -927,7 +927,7 @@ function wc_get_theme_support( $prop = '', $default = null ) {
  */
 function wc_get_image_size( $image_size ) {
 	$cache_key = 'size-' . ( is_array( $image_size ) ? implode( '-', $image_size ) : $image_size );
-	$size      = wp_cache_get( $cache_key, 'woocommerce' );
+	$size      = ! is_customize_preview() ? wp_cache_get( $cache_key, 'woocommerce' ) : false;
 
 	if ( $size ) {
 		return $size;
@@ -983,8 +983,11 @@ function wc_get_image_size( $image_size ) {
 
 	$size = apply_filters( 'woocommerce_get_image_size_' . $image_size, $size );
 
-	wp_cache_set( $cache_key, $size, 'woocommerce' );
-
+	if ( is_customize_preview() ) {
+		wp_cache_delete( $cache_key, 'woocommerce' );
+	} else {
+		wp_cache_set( $cache_key, $size, 'woocommerce' );
+	}
 	return $size;
 }
 
@@ -1091,11 +1094,7 @@ function wc_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = 
 			$value
 		);
 
-		if ( version_compare( PHP_VERSION, '7.3.0', '>=' ) ) {
-			setcookie( $name, $value, $options );
-		} else {
-			setcookie( $name, $value, $options['expires'], $options['path'], $options['domain'], $options['secure'], $options['httponly'] );
-		}
+		setcookie( $name, $value, $options );
 	} elseif ( Constants::is_true( 'WP_DEBUG' ) ) {
 		headers_sent( $file, $line );
 		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE ); // @codingStandardsIgnoreLine
@@ -1123,30 +1122,6 @@ function get_woocommerce_api_url( $path ) {
 	}
 
 	return $url;
-}
-
-/**
- * Get a log file path.
- *
- * @since 2.2
- *
- * @param string $handle name.
- * @return string the log file path.
- */
-function wc_get_log_file_path( $handle ) {
-	return WC_Log_Handler_File::get_log_file_path( $handle );
-}
-
-/**
- * Get a log file name.
- *
- * @since 3.3
- *
- * @param string $handle Name.
- * @return string The log file name.
- */
-function wc_get_log_file_name( $handle ) {
-	return WC_Log_Handler_File::get_log_file_name( $handle );
 }
 
 /**
@@ -1560,12 +1535,12 @@ function wc_get_credit_card_type_label( $type ) {
 	$labels = apply_filters(
 		'woocommerce_credit_card_type_labels',
 		array(
-			'mastercard'       => __( 'MasterCard', 'woocommerce' ),
-			'visa'             => __( 'Visa', 'woocommerce' ),
-			'discover'         => __( 'Discover', 'woocommerce' ),
-			'american express' => __( 'American Express', 'woocommerce' ),
-			'diners'           => __( 'Diners', 'woocommerce' ),
-			'jcb'              => __( 'JCB', 'woocommerce' ),
+			'mastercard'       => _x( 'MasterCard', 'Name of credit card', 'woocommerce' ),
+			'visa'             => _x( 'Visa', 'Name of credit card', 'woocommerce' ),
+			'discover'         => _x( 'Discover', 'Name of credit card', 'woocommerce' ),
+			'american express' => _x( 'American Express', 'Name of credit card', 'woocommerce' ),
+			'diners'           => _x( 'Diners', 'Name of credit card', 'woocommerce' ),
+			'jcb'              => _x( 'JCB', 'Name of credit card', 'woocommerce' ),
 		)
 	);
 
@@ -1610,7 +1585,7 @@ function wc_help_tip( $tip, $allow_html = false ) {
 	 *
 	 * @return string
 	 */
-	return apply_filters( 'wc_help_tip', '<span class="woocommerce-help-tip" data-tip="' . $sanitized_tip . '"></span>', $sanitized_tip, $tip, $allow_html );
+	return apply_filters( 'wc_help_tip', '<span class="woocommerce-help-tip" tabindex="0" aria-label="' . $sanitized_tip . '" data-tip="' . $sanitized_tip . '"></span>', $sanitized_tip, $tip, $allow_html );
 }
 
 /**
@@ -2004,9 +1979,7 @@ function wc_remove_number_precision_deep( $value ) {
  *     - an instance which will be used directly as the logger
  * In either case, the class or instance *must* implement WC_Logger_Interface.
  *
- * @see WC_Logger_Interface
- *
- * @return WC_Logger
+ * @return WC_Logger_Interface
  */
 function wc_get_logger() {
 	static $logger = null;
@@ -2105,25 +2078,6 @@ function wc_print_r( $expression, $return = false ) {
 }
 
 /**
- * Registers the default log handler.
- *
- * @since 3.0
- * @param array $handlers Handlers.
- * @return array
- */
-function wc_register_default_log_handler( $handlers ) {
-	$handler_class = Constants::get_constant( 'WC_LOG_HANDLER' );
-	if ( is_null( $handler_class ) || ! class_exists( $handler_class ) ) {
-		$handler_class = WC_Log_Handler_File::class;
-	}
-
-	array_push( $handlers, new $handler_class() );
-
-	return $handlers;
-}
-add_filter( 'woocommerce_register_log_handlers', 'wc_register_default_log_handler' );
-
-/**
  * Based on wp_list_pluck, this calls a method instead of returning a property.
  *
  * @since 3.0.0
@@ -2211,7 +2165,9 @@ function wc_get_permalink_structure() {
  * @since 3.1.0
  */
 function wc_switch_to_site_locale() {
-	if ( function_exists( 'switch_to_locale' ) ) {
+	global $wp_locale_switcher;
+
+	if ( function_exists( 'switch_to_locale' ) && isset( $wp_locale_switcher ) ) {
 		switch_to_locale( get_locale() );
 
 		// Filter on plugin_locale so load_plugin_textdomain loads the correct locale.
@@ -2228,7 +2184,9 @@ function wc_switch_to_site_locale() {
  * @since 3.1.0
  */
 function wc_restore_locale() {
-	if ( function_exists( 'restore_previous_locale' ) ) {
+	global $wp_locale_switcher;
+
+	if ( function_exists( 'restore_previous_locale' ) && isset( $wp_locale_switcher ) ) {
 		restore_previous_locale();
 
 		// Remove filter.
@@ -2500,15 +2458,7 @@ function wc_decimal_to_fraction( $decimal ) {
  * @return float
  */
 function wc_round_discount( $value, $precision ) {
-	if ( version_compare( PHP_VERSION, '5.3.0', '>=' ) ) {
-		return NumberUtil::round( $value, $precision, WC_DISCOUNT_ROUNDING_MODE ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.round_modeFound
-	}
-
-	if ( PHP_ROUND_HALF_DOWN === WC_DISCOUNT_ROUNDING_MODE ) {
-		return wc_legacy_round_half_down( $value, $precision );
-	}
-
-	return NumberUtil::round( $value, $precision );
+	return NumberUtil::round( $value, $precision, WC_DISCOUNT_ROUNDING_MODE ); // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctionParameters.round_modeFound
 }
 
 /**
@@ -2537,7 +2487,7 @@ function wc_selected( $value, $options ) {
 function wc_get_server_database_version() {
 	global $wpdb;
 
-	if ( empty( $wpdb->is_mysql ) || ! $wpdb->use_mysqli ) {
+	if ( empty( $wpdb->is_mysql ) || empty( $wpdb->use_mysqli ) ) {
 		return array(
 			'string' => '',
 			'number' => '',

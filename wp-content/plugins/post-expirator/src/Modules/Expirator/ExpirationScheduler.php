@@ -3,15 +3,19 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Modules\Expirator;
+namespace PublishPress\Future\Modules\Expirator;
 
-use PublishPressFuture\Core\HookableInterface;
-use PublishPressFuture\Framework\Logger\LoggerInterface;
-use PublishPressFuture\Framework\WordPress\Facade\CronFacade;
-use PublishPressFuture\Framework\WordPress\Facade\DateTimeFacade;
-use PublishPressFuture\Framework\WordPress\Facade\ErrorFacade;
-use PublishPressFuture\Modules\Expirator\Interfaces\SchedulerInterface;
-use WP_Error;
+use PublishPress\Future\Core\HookableInterface;
+use PublishPress\Future\Framework\Logger\LoggerInterface;
+use PublishPress\Future\Framework\WordPress\Facade\DateTimeFacade;
+use PublishPress\Future\Framework\WordPress\Facade\ErrorFacade;
+use PublishPress\Future\Modules\Expirator\Interfaces\CronInterface;
+use PublishPress\Future\Modules\Expirator\Interfaces\SchedulerInterface;
+use PublishPress\Future\Modules\Expirator\Models\ExpirationActionsModel;
+
+use function tad\WPBrowser\vendorDir;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 class ExpirationScheduler implements SchedulerInterface
 {
@@ -21,7 +25,7 @@ class ExpirationScheduler implements SchedulerInterface
     private $hooks;
 
     /**
-     * @var CronFacade
+     * @var CronInterface
      */
     private $cron;
 
@@ -46,112 +50,154 @@ class ExpirationScheduler implements SchedulerInterface
     private $postModelFactory;
 
     /**
+     * @var \Closure
+     */
+    private $actionArgsModelFactory;
+
+    /**
+     * @var ExpirationActionsModel
+     */
+    private $expirationActionsModel;
+
+    /**
      * @param HookableInterface $hooksFacade
-     * @param CronFacade $cronFacade
+     * @param CronInterface $cron
      * @param ErrorFacade $errorFacade
      * @param LoggerInterface $logger
      * @param DateTimeFacade $datetime
      * @param \Closure $postModelFactory
+     * @param $actionArgsModelFactory
+     * @param ExpirationActionsModel $expirationActionsModel
      */
-    public function __construct($hooksFacade, $cronFacade, $errorFacade, $logger, $datetime, $postModelFactory)
-    {
+    public function __construct(
+        $hooksFacade,
+        $cron,
+        $errorFacade,
+        $logger,
+        $datetime,
+        $postModelFactory,
+        $actionArgsModelFactory,
+        $expirationActionsModel
+    ) {
         $this->hooks = $hooksFacade;
-        $this->cron = $cronFacade;
+        $this->cron = $cron;
         $this->error = $errorFacade;
         $this->logger = $logger;
         $this->datetime = $datetime;
         $this->postModelFactory = $postModelFactory;
+        $this->actionArgsModelFactory = $actionArgsModelFactory;
+        $this->expirationActionsModel = $expirationActionsModel;
+    }
+
+    private function convertLocalTimeToUtc($timestamp)
+    {
+        // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+        return get_gmt_from_date(date('Y-m-d H:i:s', $timestamp), 'U');
     }
 
     /**
-     * @param int $postId
-     * @param int $timestamp
-     * @param array $opts
-     * @return void
+     * @inheritDoc
      */
     public function schedule($postId, $timestamp, $opts)
     {
-        $postId = (int)$postId;
+        $timestamp = $this->convertLocalTimeToUtc($timestamp);
 
         $this->hooks->doAction(HooksAbstract::ACTION_LEGACY_SCHEDULE, $postId, $timestamp, $opts);
 
         $this->unscheduleIfScheduled($postId, $timestamp);
 
-        $scheduled = $this->cron->scheduleSingleEvent($timestamp, HooksAbstract::ACTION_EXPIRE_POST, [$postId], true);
+        $actionId = $this->cron->scheduleSingleAction(
+            $timestamp,
+            HooksAbstract::ACTION_RUN_WORKFLOW,
+            [
+                'postId' => $postId,
+                'workflow' => 'expire'
+            ]
+        );
 
-        if (! $scheduled) {
+        if (! $actionId) {
             $this->logger->debug(
                 sprintf(
-                    '%d  -> TRIED TO SCHEDULE CRON EVENT at %s (%s) with options %s %s',
+                    '%d  -> TRIED TO SCHEDULE ACTION using %s at %s (%s) with options %s',
                     $postId,
+                    $this->cron->getIdentifier(),
                     $this->datetime->getWpDate('r', $timestamp),
                     $timestamp,
                     // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-                    print_r($opts, true),
-                    $this->error->isWpError($scheduled) ? $this->error->getWpErrorMessage(
-                        $scheduled
-                    ) : 'no errors found'
+                    print_r($opts, true)
                 )
             );
 
             return;
         }
 
-        $this->storeExpirationDataInPostMeta($postId, $timestamp, $opts);
+        $factory = $this->actionArgsModelFactory;
+
+        $postModelFactory = $this->postModelFactory;
+        $postModel = $postModelFactory($postId);
+
+        unset($opts['enabled']);
+        unset($opts['id']);
+        $opts['date'] = $timestamp;
+        $opts['category'] = isset($opts['category']) ? $opts['category'] : [];
+        $opts['categoryTaxonomy'] = isset($opts['categoryTaxonomy']) ? $opts['categoryTaxonomy'] : '';
+        $opts['actionLabel'] = $this->expirationActionsModel->getLabelForAction($opts['expireType'], $postModel->getPostType());
+        $opts['postTitle'] = $postModel->getTitle();
+        $opts['postType'] = $postModel->getPostType();
+        $opts['postLink'] = $postModel->getPermalink();
+        $opts['postTypeLabel'] = $postModel->getPostTypeSingularLabel();
+
+        $actionArgsModel = $factory();
+        $id = $actionArgsModel->setCronActionId($actionId)
+            ->setPostId($postId)
+            ->setScheduledDateFromUnixTime($timestamp)
+            ->setArgs($opts)
+            ->insert();
 
         $this->logger->debug(
             sprintf(
-                '%d  -> CRON EVENT SCHEDULED at %s (%s) with options %s, no errors found',
+                '%d  -> ACTION SCHEDULED using %s at %s (%s) with options %s, no errors found',
                 $postId,
+                $this->cron->getIdentifier(),
                 $this->datetime->getWpDate('r', $timestamp),
                 $timestamp,
                 // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
                 print_r($opts, true)
             )
         );
+
+        $this->updateLegacyPostMetaUsedBy3rdPartySoftware($postId, $timestamp, $opts);
     }
 
-    private function unscheduleIfScheduled($postId, $timestamp)
-    {
-        if ($this->isScheduled($postId)) {
-            $this->logger->debug($postId . ' -> FOUND SCHEDULED CRON EVENT for the post');
-
-            $result = $this->unschedule($postId);
-        }
-    }
-
-    public function isScheduled($postId)
-    {
-        $scheduledWithNewHook = $this->cron->getNextScheduleForEvent(HooksAbstract::ACTION_EXPIRE_POST, [$postId]);
-
-        if ($scheduledWithNewHook) {
-            return true;
-        }
-
-        return $this->cron->getNextScheduleForEvent(HooksAbstract::ACTION_LEGACY_EXPIRE_POST, [$postId]);
-    }
-
-    /**
-     * @param $postId
-     * @param $timestamp
-     * @param $opts
-     * @return void
-     */
-    private function storeExpirationDataInPostMeta($postId, $timestamp, $opts)
+    private function updateLegacyPostMetaUsedBy3rdPartySoftware(int $postId, int $timestamp, array $opts): void
     {
         $postModelFactory = $this->postModelFactory;
         $postModel = $postModelFactory($postId);
 
-        $postModel->updateMeta(
-            [
-                '_expiration-date' => $timestamp,
-                '_expiration-date-status' => 'saved',
-                '_expiration-date-options' => $opts,
-                '_expiration-date-type' => $opts['expireType'],
-                '_expiration-date-categories' => isset($opts['category']) ? (array)$opts['category'] : [],
-                '_expiration-date-taxonomy' => isset($opts['categoryTaxonomy']) ? $opts['categoryTaxonomy'] : '',
-            ]
-        );
+        $postModel->updateMeta(PostMetaAbstract::EXPIRATION_TYPE, isset($opts['expireType']) ? $opts['expireType'] : '');
+        $postModel->updateMeta(PostMetaAbstract::EXPIRATION_STATUS, 'saved');
+        $postModel->updateMeta(PostMetaAbstract::EXPIRATION_TAXONOMY, isset($opts['categoryTaxonomy']) ? $opts['categoryTaxonomy'] : '');
+        $postModel->updateMeta(PostMetaAbstract::EXPIRATION_TERMS, isset($opts['category']) ? $opts['category'] : '');
+        $postModel->updateMeta(PostMetaAbstract::EXPIRATION_TIMESTAMP, $timestamp);
+        $postModel->updateMeta(PostMetaAbstract::EXPIRATION_DATE_OPTIONS, $opts);
+    }
+
+    private function unscheduleIfScheduled($postId, $timestamp)
+    {
+        if ($this->postIsScheduled($postId)) {
+            $this->logger->debug($postId . ' -> FOUND SCHEDULED ACTION for the post using ' . $this->cron->getIdentifier());
+
+            $this->unschedule($postId);
+        }
+    }
+
+    /**
+     * @param $postId
+     * @return bool
+     */
+    public function postIsScheduled($postId)
+    {
+        return $this->cron->postHasScheduledActions($postId);
     }
 
     /**
@@ -161,47 +207,30 @@ class ExpirationScheduler implements SchedulerInterface
     {
         $this->hooks->doAction(HooksAbstract::ACTION_LEGACY_UNSCHEDULE, $postId);
 
-        if ($this->isScheduled($postId)) {
-            $legacyResult = $this->cron->clearScheduledHook(HooksAbstract::ACTION_LEGACY_EXPIRE_POST, [$postId]);
-            $result = $this->cron->clearScheduledHook(HooksAbstract::ACTION_EXPIRE_POST, [$postId]);
+        if ($this->postIsScheduled($postId)) {
+            $result = $this->cron->clearScheduledAction(HooksAbstract::ACTION_RUN_WORKFLOW, ['postId' => $postId, 'workflow' => 'expire']);
 
             $errorFeedback = null;
-            if ($this->error->isWpError($legacyResult)) {
-                $errorFeedback = 'found error: ' . $this->error->getWpErrorMessage($legacyResult);
-            }
-
             if ($this->error->isWpError($result)) {
-                $errorFeedback  = 'found error: ' . $this->error->getWpErrorMessage($result);
+                $errorFeedback = 'found error: ' . $this->error->getWpErrorMessage($result);
             }
 
             if (empty($errorFeedback)) {
                 $errorFeedback = 'no errors found';
             }
 
-            $message = $postId . ' -> CLEARED SCHEDULED CRON EVENT, ' . $errorFeedback;
+            $message = $postId . ' -> CLEARED SCHEDULED ACTION using ' . $this->cron->getIdentifier() . ', ' . $errorFeedback;
 
             $this->logger->debug($message);
-        }
 
-        $this->removeExpirationDataFromPostMeta($postId);
+            $this->deleteExpirationPostMeta($postId);
+        }
     }
 
-    private function removeExpirationDataFromPostMeta($postId)
+    protected function deleteExpirationPostMeta($postId)
     {
         $postModelFactory = $this->postModelFactory;
         $postModel = $postModelFactory($postId);
-
-        $postModel->deleteMeta(
-            [
-                '_expiration-date',
-                '_expiration-date-status',
-                '_expiration-date-options',
-                '_expiration-date-type',
-                '_expiration-date-categories',
-                '_expiration-date-taxonomy',
-            ]
-        );
-
-        $this->logger->debug($postId . ' -> EXPIRATION DATA REMOVED from the post');
+        $postModel->deleteExpirationPostMeta();
     }
 }

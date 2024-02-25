@@ -3,7 +3,9 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Core;
+namespace PublishPress\Future\Core;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 class Paths
 {
@@ -19,7 +21,7 @@ class Paths
 
     public function getVendorDirPath()
     {
-        return $this->getBaseDirPath() . '/vendor';
+        return PUBLISHPRESS_FUTURE_LIB_VENDOR_PATH;
     }
 
     public function getBaseDirPath()

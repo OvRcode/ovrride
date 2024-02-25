@@ -32,6 +32,11 @@ class HS_Beacon extends Base {
 	 * Check for a new opt-in via the admin notice
 	 */
 	public function check_for_optin() {
+		\check_admin_referer( 'eio_beacon' );
+		$permissions = \apply_filters( 'easyio_admin_permissions', 'manage_options' );
+		if ( ! \current_user_can( $permissions ) ) {
+			\wp_die( \esc_html__( 'Access denied.', 'easy-image-optimizer' ) );
+		}
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		$this->set_option( $this->prefix . 'enable_help', 1 );
 		$this->set_option( $this->prefix . 'enable_help_notice', 1 );
@@ -43,6 +48,11 @@ class HS_Beacon extends Base {
 	 * Check for a new opt-out via the admin notice
 	 */
 	public function check_for_optout() {
+		\check_admin_referer( 'eio_beacon' );
+		$permissions = \apply_filters( 'easyio_admin_permissions', 'manage_options' );
+		if ( ! \current_user_can( $permissions ) ) {
+			\wp_die( \esc_html__( 'Access denied.', 'easy-image-optimizer' ) );
+		}
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		\delete_option( $this->prefix . 'enable_help' );
 		\delete_network_option( null, $this->prefix . 'enable_help' );
@@ -81,7 +91,7 @@ class HS_Beacon extends Base {
 
 		if ( ! \function_exists( 'is_plugin_active_for_network' ) && \is_multisite() ) {
 			// Need to include the plugin library for the is_plugin_active function.
-			require_once( \ABSPATH . 'wp-admin/includes/plugin.php' );
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		if (
 			\is_multisite() &&

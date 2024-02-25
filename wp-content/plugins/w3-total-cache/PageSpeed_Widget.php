@@ -25,8 +25,8 @@ class PageSpeed_Widget {
 	 * @return void
 	 */
 	public function run() {
-		add_action( 'w3tc_widget_setup', array( $this, 'wp_dashboard_setup' ), 3000 );
-		add_action( 'w3tc_network_dashboard_setup', array( $this, 'wp_dashboard_setup' ), 3000 );
+		add_action( 'w3tc_widget_setup', array( $this, 'wp_dashboard_setup' ), 500 );
+		add_action( 'w3tc_network_dashboard_setup', array( $this, 'wp_dashboard_setup' ), 500 );
 		add_action( 'w3tc_ajax_pagespeed_widgetdata', array( $this, 'w3tc_ajax_pagespeed_widgetdata' ) );
 	}
 
@@ -77,7 +77,7 @@ class PageSpeed_Widget {
 			'<div class="w3tc-widget-pagespeed-logo"></div>' .
 				'<div class="w3tc-widget-text">' . esc_html__( 'PageSpeed Report', 'w3-total-cache' ) . '</div>',
 			array( $this, 'widget_pagespeed' ),
-			Util_Ui::admin_url( 'admin.php?page=w3tc_general#google_page_speed' ),
+			Util_Ui::admin_url( 'admin.php?page=w3tc_general#google_pagespeed' ),
 			'normal'
 		);
 	}
@@ -92,6 +92,26 @@ class PageSpeed_Widget {
 	public function widget_pagespeed() {
 		$config       = Dispatcher::config();
 		$access_token = $config->get_string( 'widget.pagespeed.access_token' );
+
+		if ( empty( $access_token ) ) {
+			echo wp_kses(
+				sprintf(
+					// translators: 1 HTML a tag to W3TC settings page Google PageSpeed meta box.
+					__(
+						'Before you can get started using the Google PageSpeed tool, you’ll first need to authorize access. Please click %1$s.',
+						'w3-total-cache'
+					),
+					'<a href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#google_pagespeed' ) ) . '" target="_blank">' . esc_html__( 'here', 'w3-total-cache' ) . '</a>'
+				),
+				array(
+					'a' => array(
+						'href'   => array(),
+						'target' => array(),
+					),
+				)
+			);
+			return;
+		}
 
 		include W3TC_DIR . '/PageSpeed_Widget_View.php';
 	}
@@ -129,7 +149,7 @@ class PageSpeed_Widget {
 								'Before you can get started using the Google PageSpeed tool, you’ll first need to authorize access. Please click %1$s.',
 								'w3-total-cache'
 							),
-							'<a href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#google_page_speed' ) ) . '" target="_blank">' . esc_html__( 'here', 'w3-total-cache' ) . '</a>'
+							'<a href="' . esc_url( Util_Ui::admin_url( 'admin.php?page=w3tc_general#google_pagespeed' ) ) . '" target="_blank">' . esc_html__( 'here', 'w3-total-cache' ) . '</a>'
 						),
 					)
 				);
@@ -174,7 +194,7 @@ class PageSpeed_Widget {
 			} else {
 				$api_response['time']         = time();
 				$api_response['display_time'] = \current_time( 'M jS, Y g:ia', false );
-				update_option( 'w3tc_pagespeed_data_' . $home_url, wp_json_encode( $api_response ), Util_PageSpeed::get_cache_life() );
+				update_option( 'w3tc_pagespeed_data_' . $home_url, wp_json_encode( $api_response ), 'no' );
 			}
 		}
 

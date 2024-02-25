@@ -1,9 +1,9 @@
 === XML Sitemap Generator for Google ===
 Contributors: auctollo
-Tags: sitemap, seo, xml sitemap, indexnow, google sitemaps, google search console, news sitemap, image sitemap, image seo, video sitemap, video seo, woo commerce, robots.txt, site kit, schema, bing, baidu, yandex
-Requires at least: 4.4
-Tested up to: 6.2.1
-Stable tag: 4.1.11
+Tags: sitemap, seo, xml sitemap, indexnow, google sitemaps, google search console, news sitemap, image sitemap, image seo, video sitemap, video seo, woocommerce, robots.txt, site kit, schema, bing, baidu, yandex
+Requires at least: 4.6
+Tested up to: 6.4.3
+Stable tag: 4.1.19
 Requires PHP: 5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,11 +12,11 @@ Generate multiple types of sitemaps to improve SEO and get your website indexed 
 
 == Description ==
 
-Generate XML, HTML, RSS sitemaps for your website with ease using the Google XML Sitemap Generator. This plugin enables you to improve your SEO rankings by creating page, news, video, HTML, and RSS sitemaps. It also supports custom post types and taxonomies, allowing you to ensure that all of your content is being indexed by search engines. With a user-friendly interface, you can easily configure the plugin to suit your needs and generate sitemaps in just a few clicks. Keep your website up-to-date and make sure that search engines are aware of all of your content by using the Google XML Sitemap Generator.
+Generate XML, HTML, RSS sitemaps for your website with ease using the XML Sitemap Generator for Google. This plugin enables you to improve your SEO rankings by creating page, news, video, HTML, and RSS sitemaps. It also supports custom post types and taxonomies, allowing you to ensure that all of your content is being indexed by search engines. With a user-friendly interface, you can easily configure the plugin to suit your needs and generate sitemaps in just a few clicks. Keep your website up-to-date and make sure that search engines are aware of all of your content by using the XML Sitemap Generator for Google.
 
 The plugin supports all kinds of WordPress generated pages as well as custom URLs. Additionally it notifies all major search engines every time you create a post about the new content.
 
-Supported for more than a decade and [rated among the best](https://wordpress.org/plugins/browse/popular/page/2/), it will do exactly what it's supposed to do - providing a complete XML sitemap for search engines!
+Supported for more than a decade and [rated among the best](https://wordpress.org/plugins/browse/popular/page/2/#:~:text=XML%20Sitemap%20Generator%20for%20Google), it will do exactly what it's supposed to do - providing a complete XML sitemap for search engines!
 
 > If you like the plugin, feel free to rate it! :)
 
@@ -38,7 +38,7 @@ Related Links:
 
 To generate a sitemap for your website, follow these steps:
 
-* Install and activate the Google XML Sitemap Generator plugin on your WordPress site.
+* Install and activate the XML Sitemap Generator for Google plugin on your WordPress site.
 * Once activated, the plugin will automatically generate a sitemap.xml file for your website.
 * You can access the sitemap by appending `/sitemap.xml` to your website's URL (e.g., [https://example.com/sitemap.xml](#)).
 * Submit your sitemap to search engines like Google, Bing, Yandex, and Baidu to ensure that your site is indexed and crawled properly.
@@ -56,7 +56,7 @@ It's recommended that you update your sitemap whenever you make significant chan
 
 = What types of sitemaps does the plugin generate? =
 
-The Google XML Sitemap Generator plugin can generate sitemaps in XML, HTML, RSS formats and in various types, including: Pages/Posts, Google News, Video, Image, Mobile, and more! Note: Some formats and types are only available to subscribers.
+The XML Sitemap Generator for Google plugin can generate sitemaps in XML, HTML, RSS formats and in various types, including: Pages/Posts, Google News, Video, Image, Mobile, and more! Note: Some formats and types are only available to subscribers.
 
 = Can I include images and videos in my sitemap? =
 
@@ -64,19 +64,19 @@ Yes, you can include images and videos in your sitemap using the Google XML Site
 
 = How does the plugin work with WooCommerce? =
 
-The Google XML Sitemap Generator plugin is compatible with WooCommerce and can generate sitemaps for your online store's product pages, categories, and tags. This will help search engines to index your products and improve your store's visibility in search results.
+The XML Sitemap Generator for Google plugin is compatible with WooCommerce and can generate sitemaps for your online store's product pages, categories, and tags. This will help search engines to index your products and improve your store's visibility in search results.
 
 = Can I customize the robots.txt file using this plugin? =
 
-Yes, you can customize the robots.txt file using the Google XML Sitemap Generator plugin. This will allow you to control which pages and directories search engines can crawl and index on your site.
+Yes, you can customize the robots.txt file using the Google XML Sitemap Generator for Google plugin. This will allow you to control which pages and directories search engines can crawl and index on your site.
 
 = Does this plugin support the Google Site Kit? =
 
-Yes, the Google XML Sitemap Generator plugin is compatible with the Google Site Kit. This will allow you to track your site's performance in Google Search Console and Google Analytics directly from your WordPress dashboard.
+Yes, the XML Sitemap Generator for Google plugin is compatible with the Google Site Kit. This will allow you to track your site's performance in Google Search Console and Google Analytics directly from your WordPress dashboard.
 
 = Does this plugin support schema markup? =
 
-Yes, the Google XML Sitemap Generator plugin supports schema markup, which can help improve your site's visibility in search results by providing more information about your content to search engines.
+Yes, the XML Sitemap Generator for Google plugin supports schema markup, which can help improve your site's visibility in search results by providing more information about your content to search engines.
 
 = Where can I find the options page of the plugin? =
 
@@ -101,10 +101,60 @@ Please post your question at the [WordPress support forum](https://wordpress.org
 
 == Changelog ==
 
+= 4.1.19 (2024-01-31) =
+* Fixed "Links per page" bug causing sitemaps to not include all posts depending on the setting. Following Search Engine guidance is minimum links per sitemap is 1,000 pages.
+* Fixed Google Search Console errors including "Fetch error" and "noindex" header
+* Fixed the issue with "null" sitemaps
+* Fixed sitemap generation for tags, categories, etc for large sites
+* Improved performance by optimizing queries
+* Improved IndexNow implementation
+* Added WordPress' sitemap to the list of detected sitemaps for deactivation
+
+= 4.1.18 (2024-01-12) =
+* Resolved functionality regressions since v4.1.13
+* Improved IndexNow Protocol implementation
+* Improved WooCommerce support
+* Improved WPML support
+* Fixed sitemap 404 issues (for Single and Multisite modes)
+* Fixed auto update rewrite rule
+* Fixed rewrite issues during plugin upgrade
+* Fixed invalid XML syntax (cause of parsing issues in Google Search Console)
+
+= 4.1.17 (2024-01-05) =
+* Fixed sitemap URL issue in robots.txt etc
+* Improved LastMod syntax for better support for indexation by Google
+* Improved Network mode support
+* Improved localization plugin support
+* Improved custom taxonomy support
+* Added IndexNow Protocol support for Microsoft Bing. Deprecated Sitemap Ping Protocol
+* Added JetPack sitemap generator conflict detection
+
+= 4.1.16 (2023-12-18) =
+* Fixed a syntax error causing fatal errors for some users.
+
+= 4.1.15 (2023-12-14) =
+* Improved security by adding capability check via the current_user_can() calls
+* Changed the text domain from "sitemap" to "google-sitemap-generator"
+
+= 4.1.14 (2023-12-05) =
+* Improved security with authentication and plugin management anchors
+* Fixed an error in sitemap file name conventions
+* Fixed an issue with disabling conflicting sitemap generators
+* Added last modified date to category sitemaps
+* Added min and max option for number of posts per sitemap
+* Added support for local links in sitemap for different languages
+
+= 4.1.13 (2023-08-04) =
+* Fixed warning error displayed when Yoast SEO is not installed/active
+
+= 4.1.12 (2023-08-02) =
+* Improved various UI elements and notifications
+* Fixed browser console errors
+* Fixed null value in set_time_limit
+
 = 4.1.11 (2023-05-19) =
 * Fixed version compatibility thresholds
 * Improved user interface
-
 
 = 4.1.10 (2023-04-24) =
 * Added support for automatic updates
@@ -551,5 +601,5 @@ The plugin comes with various translations, please refer to the [WordPress Codex
 
 == Upgrade Notice ==
 
-= 4.1.9 =
-Thanks for using XML Sitemaps! This release includes an important privacy improvements. Make sure to "Enable auto-updates!"
+= 4.1.18 =
+Thank you for using XML Sitemap Generator! This release resolves critical issues reported in the support forum. Thank you to all who reported issues! Make sure to "Enable auto-updates!" 

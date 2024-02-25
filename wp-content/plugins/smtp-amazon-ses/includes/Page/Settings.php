@@ -57,7 +57,7 @@ class Settings {
 	public function enqueueAdminScripts( $screenId ) {
 		$scriptId = $this->getPageId();
 		wp_enqueue_style( $scriptId, YAY_SMTP_AMAZONSES_PLUGIN_URL . 'assets/css/yay-smtp-admin.css', array(), YAY_SMTP_AMAZONSES_VERSION );
-		if ( $screenId == $this->hook_suffix[ YAY_SMTP_AMAZONSES_PREFIX . '_main_page' ] ) {
+		if ( isset( $this->hook_suffix[ YAY_SMTP_AMAZONSES_PREFIX . '_main_page' ] ) && $screenId == $this->hook_suffix[ YAY_SMTP_AMAZONSES_PREFIX . '_main_page' ] ) {
 			$succ_sent_mail_last = 'yes';
 			$yaysmtpSettings     = Utils::getYaySmtpSetting();
 			if ( ! empty( $yaysmtpSettings ) && isset( $yaysmtpSettings['succ_sent_mail_last'] ) && false === $yaysmtpSettings['succ_sent_mail_last'] ) {

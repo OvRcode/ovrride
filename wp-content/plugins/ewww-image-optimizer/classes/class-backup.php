@@ -64,7 +64,7 @@ class Backup extends Base {
 	/**
 	 * Register (once) actions and filters for Backup and Restore.
 	 */
-	function __construct() {
+	public function __construct() {
 		global $eio_backup;
 		if ( \is_object( $eio_backup ) ) {
 			return $eio_backup;
@@ -86,6 +86,9 @@ class Backup extends Base {
 		// AJAX action hook for manually restoring a single image from cloud/local backups.
 		\add_action( 'wp_ajax_ewww_manual_image_restore_single', array( $this, 'restore_single_image_handler' ) );
 		\add_action( 'ewww_image_optimizer_pre_optimization', array( $this, 'store_local_backup' ) );
+
+		// Makes sure the plugin does not optimize anything in the backups folder.
+		add_filter( 'ewww_image_optimizer_bypass', array( $this, 'ignore_backup_dir' ), 10, 2 );
 
 		$this->exclusions = array(
 			$this->content_dir,
@@ -118,6 +121,20 @@ class Backup extends Base {
 	}
 
 	/**
+	 * Check if a file is within the backup folder and if so, prevent optimization.
+	 *
+	 * @param bool   $skip Whether optimization will be skipped, defaults to false.
+	 * @param string $file The filename to be checked.
+	 * @return bool True to skip optimization, false to let it through.
+	 */
+	public function ignore_backup_dir( $skip, $file ) {
+		if ( $file && $this->backup_dir && false !== \strpos( $file, $this->backup_dir ) ) {
+			return true;
+		}
+		return $skip;
+	}
+
+	/**
 	 * Checks whether a file is in the uploads dir, content dir, or within the ABSPATH/root.
 	 *
 	 * This helps to deal with cases where folks have upload and/or content dirs outside ABSPATH.
@@ -136,12 +153,12 @@ class Backup extends Base {
 			$this->debug_message( 'using ' . $this->backup_uploads_dir );
 			return \str_replace( $upload_dir, $this->backup_uploads_dir, $file );
 		}
-		$content_dir = \trailingslashit( \realpath( \WP_CONTENT_DIR ) );
+		$content_dir = \trailingslashit( \realpath( WP_CONTENT_DIR ) );
 		if ( $content_dir && \strpos( $file, $content_dir ) === 0 ) {
 			$this->debug_message( 'using ' . $this->backup_dir );
 			return \str_replace( $content_dir, $this->backup_dir, $file );
 		}
-		$wp_dir = \trailingslashit( \realpath( \ABSPATH ) );
+		$wp_dir = \trailingslashit( \realpath( ABSPATH ) );
 		if ( $wp_dir && \strpos( $file, $wp_dir ) === 0 ) {
 			$this->debug_message( 'using ' . $this->backup_root_dir );
 			return \str_replace( $wp_dir, $this->backup_root_dir, $file );
@@ -169,7 +186,7 @@ class Backup extends Base {
 			}
 			if ( $record && $this->is_iterable( $record ) && ! empty( $record['backup'] ) && ! empty( $record['updated'] ) ) {
 				$updated_time = \strtotime( $record['updated'] );
-				if ( \DAY_IN_SECONDS * 30 + $updated_time > \time() ) {
+				if ( DAY_IN_SECONDS * 30 + $updated_time > \time() ) {
 					return true;
 				}
 			}
@@ -187,6 +204,7 @@ class Backup extends Base {
 		$this->debug_message( "file: $file " );
 		foreach ( $this->exclusions as $exclusion ) {
 			if ( false !== \strpos( $file, $exclusion ) ) {
+				$this->debug_message( "matched $exclusion, no backup for you!" );
 				return;
 			}
 		}
@@ -209,6 +227,13 @@ class Backup extends Base {
 		}
 		if ( ! $this->is_file( $file ) || ! $this->is_readable( $file ) ) {
 			return;
+		}
+		// Even though these are checked in Backup::backup_file(), this method can be run directly, which bypasses that check.
+		foreach ( $this->exclusions as $exclusion ) {
+			if ( false !== \strpos( $file, $exclusion ) ) {
+				$this->debug_message( "matched $exclusion, no backup for you!" );
+				return;
+			}
 		}
 		if ( apply_filters( 'ewww_image_optimizer_skip_local_backup', false, $file ) ) {
 			return;
@@ -264,7 +289,7 @@ class Backup extends Base {
 		}
 		$this->error_message = '';
 		if ( ! \is_array( $image ) && ! empty( $image ) && \is_numeric( $image ) ) {
-			$image = $ewwwdb->get_row( "SELECT id,path,backup FROM $ewwwdb->ewwwio_images WHERE id = $image", \ARRAY_A );
+			$image = $ewwwdb->get_row( "SELECT id,path,backup FROM $ewwwdb->ewwwio_images WHERE id = $image", ARRAY_A );
 		}
 		if ( ! empty( $image['path'] ) ) {
 			$image['path'] = \ewww_image_optimizer_absolutize_path( $image['path'] );
@@ -395,7 +420,7 @@ class Backup extends Base {
 		} else {
 			$ewwwdb = $wpdb;
 		}
-		$images = $ewwwdb->get_results( "SELECT id,path,resize,backup FROM $ewwwdb->ewwwio_images WHERE attachment_id = $id AND gallery = '$gallery'", \ARRAY_A );
+		$images = $ewwwdb->get_results( "SELECT id,path,resize,backup FROM $ewwwdb->ewwwio_images WHERE attachment_id = $id AND gallery = '$gallery'", ARRAY_A );
 		foreach ( $images as $image ) {
 			if ( ! empty( $image['path'] ) ) {
 				$image['path'] = \ewww_image_optimizer_absolutize_path( $image['path'] );

@@ -3,89 +3,87 @@
  * Copyright (c) 2023. PublishPress, All rights reserved.
  */
 
+use PublishPress\Future\Core\DI\Container;
+use PublishPress\Future\Core\DI\ServicesAbstract;
+use PublishPress\Future\Modules\Expirator\ExpirationActionsAbstract;
+
 defined('ABSPATH') or die('Direct access not allowed.');
+
+$container = Container::getInstance();
+$factory = $container->get(ServicesAbstract::EXPIRABLE_POST_MODEL_FACTORY);
+$postModel = $factory($id);
+
+$actionEnabled = $postModel->isExpirationEnabled();
+$actionDate = $postModel->getExpirationDateString(false);
+$actionDateUnix = $postModel->getExpirationDateAsUnixTime();
+$actionTaxonomy = $postModel->getExpirationTaxonomy();
+$actionType = $postModel->getExpirationType();
+$action = $postModel->getExpirationAction();
+$actionTerms = implode(',', $postModel->getExpirationCategoryIDs());
+
 ?>
-<div class="post-expire-col" data-id="<?php echo esc_attr($id); ?>"
-     data-expire-attributes="<?php echo esc_attr(wp_json_encode($attributes)); ?>">
+<div
+    id="post-expire-column-<?php echo esc_attr($id); ?>"
+    class="post-expire-col"
+    data-id="<?php echo esc_attr($id); ?>"
+    data-action-enabled="<?php echo esc_attr($actionEnabled ? '1': '0'); ?>"
+    data-action-date="<?php echo esc_attr($actionDate); ?>"
+    data-action-date-unix="<?php echo esc_attr($actionDateUnix); ?>"
+    data-action-taxonomy="<?php echo esc_attr($actionTaxonomy); ?>"
+    data-action-type="<?php echo esc_attr($actionType); ?>"
+    data-action-terms="<?php echo esc_attr($actionTerms); ?>"
+    >
     <?php
     $iconClass = '';
     $iconTitle = '';
 
-    $expirationEnabled = PostExpirator_Facade::is_expiration_enabled_for_post($id);
-    $expirationDate = get_post_meta($id, '_expiration-date', true);
-
-    if ($expirationDate && $expirationEnabled) {
+    if ($actionEnabled) {
         $format = get_option('date_format') . ' ' . get_option('time_format');
-        $display = PostExpirator_Util::get_wp_date($format, $expirationDate);
-        if (PostExpirator_CronFacade::post_has_scheduled_task($id)) {
-            $iconClass = 'clock icon-scheduled';
-            $iconTitle = __('Cron event scheduled.', 'post-expirator');
+        $container = Container::getInstance();
+
+        $formatedDate = $container->get(ServicesAbstract::DATETIME)->getWpDate($format, $actionDateUnix);
+
+        if (is_object($action)) {
+            ?><span class="dashicons dashicons-clock icon-scheduled" aria-hidden="true"></span> <?php
+
+            if ($columnStyle === 'simple') {
+                echo esc_html($formatedDate);
+            } else {
+                echo sprintf(
+                    esc_html__('%1$s%2$s%3$s on %5$s%4$s%6$s', 'post-expirator'),
+                    '<span class="future-action-action-name">',
+                    esc_html($action->getDynamicLabel($postModel->getPostType())),
+                    '</span>',
+                    esc_html($formatedDate),
+                    '<span class="future-action-action-date">',
+                    '</span>'
+                );
+
+                $categoryActions = [
+                    ExpirationActionsAbstract::POST_CATEGORY_ADD,
+                    ExpirationActionsAbstract::POST_CATEGORY_SET,
+                    ExpirationActionsAbstract::POST_CATEGORY_REMOVE,
+                ];
+
+                if (in_array($action, $categoryActions)) {
+                    $actionTerms = $postModel->getExpirationCategoryNames();
+                    if (!empty($actionTerms)) {
+                        ?>
+                        <div class="future-action-gray">[<?php echo esc_html(implode(', ', $actionTerms)); ?>]</div>
+                        <?php
+                    }
+                }
+            }
+
         } else {
-            $iconClass = 'warning icon-missed';
-            $iconTitle = __('Cron event not found!', 'post-expirator');
+            ?><span class="dashicons dashicons-warning icon-missed" aria-hidden="true"></span> <?php
+            echo esc_html__('Action was not scheduled due to a configuration issue. Please attempt to schedule it again.', 'post-expirator');
         }
     } else {
-        $display = __('Never', 'post-expirator');
-        $iconClass = 'marker icon-never';
+        ?>
+        <span aria-hidden="true">—</span>
+        <span class="screen-reader-text"><?php echo esc_html__('No future action', 'post-expirator'); ?></span>
+        <?php
     }
-
-    $container = \PublishPressFuture\Core\DI\Container::getInstance();
-    $settingsFacade = $container->get(\PublishPressFuture\Core\DI\ServicesAbstract::SETTINGS);
-
-    $defaultsForPostType = $settingsFacade->getPostTypeDefaults($post_type);
-    $expireType = 'draft';
-    if (isset($defaultsForPostType['expireType'])) {
-        $expireType = $defaultsForPostType['expireType'];
-    }
-
-    // these defaults will be used by quick edit
-    $defaults = PostExpirator_Facade::get_default_expiry($post_type);
-
-    $defaultYear = $defaults['year'];
-    $defaultMonth = $defaults['month'];
-    $defaultDay = $defaults['day'];
-    $defaultHour = $defaults['hour'];
-    $defaultMinute = $defaults['minute'];
-    $enabled = $expirationDate && $expirationEnabled ? 'true' : 'false';
-    $categories = '';
-
-    // Values for Quick Edit
-    if ($expirationDate) {
-        $date = gmdate('Y-m-d H:i:s', $expirationDate);
-        $defaultYear = get_date_from_gmt($date, 'Y');
-        $defaultMonth = get_date_from_gmt($date, 'm');
-        $defaultDay = get_date_from_gmt($date, 'd');
-        $defaultHour = get_date_from_gmt($date, 'H');
-        $defaultMinute = get_date_from_gmt($date, 'i');
-        if (isset($attributes['expireType'])) {
-            $expireType = $attributes['expireType'];
-        }
-        if (
-            isset($attributes['category'])
-            && ! empty($attributes['category']) && in_array($expireType, array(
-                'category',
-                'category-add',
-                'category-remove'
-            ), true)) {
-            $categories = implode(',', $attributes['category']);
-        }
-    }
-
-    if (empty($categories) && isset($defaultsForPostType['terms'])) {
-        $categories = $defaultsForPostType['terms'];
-    }
-
-    // the hidden fields will be used by quick edit
-    ?>
-    <span class="dashicons dashicons-<?php echo esc_attr($iconClass); ?>" title="<?php echo esc_attr($iconTitle); ?>"></span>
-
-    <?php echo esc_html($display); ?>
-    <input type="hidden" id="expirationdate_year-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($defaultYear); ?>" />
-    <input type="hidden" id="expirationdate_month-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($defaultMonth); ?>" />
-    <input type="hidden" id="expirationdate_day-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($defaultDay); ?>" />
-    <input type="hidden" id="expirationdate_hour-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($defaultHour); ?>" />
-    <input type="hidden" id="expirationdate_minute-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($defaultMinute); ?>" />
-    <input type="hidden" id="expirationdate_enabled-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($enabled); ?>" />
-    <input type="hidden" id="expirationdate_expireType-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($expireType); ?>" />
-    <input type="hidden" id="expirationdate_categories-<?php echo esc_attr($id); ?>" value="<?php echo esc_attr($categories); ?>" />
+?>
 </div>

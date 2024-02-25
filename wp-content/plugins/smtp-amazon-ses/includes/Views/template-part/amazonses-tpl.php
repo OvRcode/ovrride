@@ -11,18 +11,24 @@ $mailer          = 'amazonses';
 $regionArr       = array(
 	'us-east-1'      => __( 'US East (N. Virginia)', 'yay-smtp-amazonses' ),
 	'us-east-2'      => __( 'US East (Ohio)', 'yay-smtp-amazonses' ),
+	'us-west-1'      => __( 'US West (N. California)', 'yay-smtp-amazonses' ),
 	'us-west-2'      => __( 'US West (Oregon)', 'yay-smtp-amazonses' ),
-	'af-south-1'     => __( 'Cape Town South Africa', 'yay-smtp' ),
+	'af-south-1'     => __( 'Cape Town South Africa', 'yay-smtp-amazonses' ),
 	'ca-central-1'   => __( 'Canada (Central)', 'yay-smtp-amazonses' ),
 	'eu-west-1'      => __( 'EU (Ireland)', 'yay-smtp-amazonses' ),
 	'eu-west-2'      => __( 'EU (London)', 'yay-smtp-amazonses' ),
+	'eu-west-3'      => __( 'EU (Paris)', 'yay-smtp-amazonses' ),
 	'eu-central-1'   => __( 'EU (Frankfurt)', 'yay-smtp-amazonses' ),
+	'eu-south-1'     => __( 'EU (Milan)', 'yay-smtp-amazonses' ),
+	'eu-north-1'     => __( 'EU (Stockholm)', 'yay-smtp-amazonses' ),
 	'ap-south-1'     => __( 'Asia Pacific (Mumbai)', 'yay-smtp-amazonses' ),
 	'ap-northeast-2' => __( 'Asia Pacific (Seoul)', 'yay-smtp-amazonses' ),
 	'ap-southeast-1' => __( 'Asia Pacific (Singapore)', 'yay-smtp-amazonses' ),
 	'ap-southeast-2' => __( 'Asia Pacific (Sydney)', 'yay-smtp-amazonses' ),
 	'ap-northeast-1' => __( 'Asia Pacific (Tokyo)', 'yay-smtp-amazonses' ),
+	'ap-northeast-3' => __( 'Asia Pacific (Osaka)', 'yay-smtp-amazonses' ),
 	'sa-east-1'      => __( 'South America (São Paulo)', 'yay-smtp-amazonses' ),
+	'me-south-1'     => __( 'Middle East (Bahrain)', 'yay-smtp-amazonses' ),
 );
 
 if ( ! empty( $params ) ) {

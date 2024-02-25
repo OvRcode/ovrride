@@ -70,14 +70,17 @@ class MetaResponsiveSlider extends MetaSlider
         $return_value = "<ul id='" . $this->get_identifier() . "' class='rslides'>";
 
         $first = true;
+        $i = 0;
         foreach ($this->slides as $slide) {
             $style = "";
 
             if (!$first) {
                 $style = " style='display: none;'";
             }
-            $return_value .= "\n            <li{$style}>" . $slide . "</li>";
+
+            $return_value .= "\n            <li{$style} aria-roledescription='slide' aria-labelledby='slide-" . esc_attr($i) . "'>" . $slide . "</li>";
             $first = false;
+            $i++;
         }
 
         $return_value .= "\n        </ul>";

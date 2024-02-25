@@ -3,13 +3,15 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Modules\Debug\Controllers;
+namespace PublishPress\Future\Modules\Debug\Controllers;
 
-use PublishPressFuture\Core\HooksAbstract as CoreAbstractHooks;
-use PublishPressFuture\Framework\InitializableInterface;
-use PublishPressFuture\Framework\Logger\LoggerInterface;
-use PublishPressFuture\Framework\WordPress\Facade\HooksFacade;
-use PublishPressFuture\Modules\Debug\HooksAbstract;
+use PublishPress\Future\Core\HooksAbstract as CoreAbstractHooks;
+use PublishPress\Future\Framework\InitializableInterface;
+use PublishPress\Future\Framework\Logger\LoggerInterface;
+use PublishPress\Future\Framework\WordPress\Facade\HooksFacade;
+use PublishPress\Future\Modules\Debug\HooksAbstract;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 class Controller implements InitializableInterface
 {
@@ -31,20 +33,20 @@ class Controller implements InitializableInterface
 
     public function initialize()
     {
-        $this->hooks->addAction(HooksAbstract::ACTION_DEBUG_LOG, [$this, 'onActionDebugLog']);
+        $this->hooks->addAction(HooksAbstract::ACTION_DEBUG_LOG, [$this, 'onDebugLog']);
 
         $this->hooks->addAction(
             CoreAbstractHooks::ACTION_DEACTIVATE_PLUGIN,
-            [$this, 'onActionDeactivatePlugin']
+            [$this, 'onDeactivatePlugin']
         );
     }
 
-    public function onActionDebugLog($message)
+    public function onDebugLog($message)
     {
         $this->logger->debug($message);
     }
 
-    public function onActionDeactivatePlugin()
+    public function onDeactivatePlugin()
     {
         $preserveData = (bool)get_option('expirationdatePreserveData', 1);
 

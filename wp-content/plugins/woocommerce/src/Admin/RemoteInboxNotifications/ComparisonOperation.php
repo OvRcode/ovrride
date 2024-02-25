@@ -33,9 +33,37 @@ class ComparisonOperation {
 			case '!=':
 				return $left_operand !== $right_operand;
 			case 'contains':
-				return in_array( $right_operand, $left_operand, true );
+				if ( is_array( $left_operand ) && is_string( $right_operand ) ) {
+					return in_array( $right_operand, $left_operand, true );
+				}
+				if ( is_string( $right_operand ) && is_string( $left_operand ) ) {
+					return strpos( $right_operand, $left_operand ) !== false;
+				}
+				break;
 			case '!contains':
-				return ! in_array( $right_operand, $left_operand, true );
+				if ( is_array( $left_operand ) && is_string( $right_operand ) ) {
+					return ! in_array( $right_operand, $left_operand, true );
+				}
+				if ( is_string( $right_operand ) && is_string( $left_operand ) ) {
+					return strpos( $right_operand, $left_operand ) === false;
+				}
+				break;
+			case 'in':
+				if ( is_array( $right_operand ) && is_string( $left_operand ) ) {
+					return in_array( $left_operand, $right_operand, true );
+				}
+				if ( is_string( $left_operand ) && is_string( $right_operand ) ) {
+					return strpos( $left_operand, $right_operand ) !== false;
+				}
+				break;
+			case '!in':
+				if ( is_array( $right_operand ) && is_string( $left_operand ) ) {
+					return ! in_array( $left_operand, $right_operand, true );
+				}
+				if ( is_string( $left_operand ) && is_string( $right_operand ) ) {
+					return strpos( $left_operand, $right_operand ) === false;
+				}
+				break;
 		}
 
 		return false;

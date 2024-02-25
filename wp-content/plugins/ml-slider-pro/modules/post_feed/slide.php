@@ -12,7 +12,7 @@ class MetaPostFeedSlide extends MetaSlide
 
     public $identifier = "post_feed"; // should be lowercase, one word (use underscores if needed)
     public $name;
-
+    private $slide_settings;
 
     /**
      * Register slide type
@@ -53,6 +53,17 @@ class MetaPostFeedSlide extends MetaSlide
 
 
     /**
+     * Add inline styles used by videos
+     * 
+     * @since 2.33
+     */
+    public function add_extra_styles()
+    {
+        $css = '.metaslider .caption-wrap.ms-slide-no-image { padding: 0 35px; position: relative; }';
+        wp_add_inline_style( 'metaslider-public', $css );
+    }
+
+    /**
      * Add extra tabs to the default wordpress Media Manager iframe
      *
      * @param array $tabs existing media manager tabs
@@ -88,11 +99,23 @@ class MetaPostFeedSlide extends MetaSlide
         }
 
         $slider_id = intval($_POST['slider_id']);
-        $this->create_slide($slider_id);
+        $new_slide_id = $this->create_slide($slider_id);
+        
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo $this->get_admin_slide();
-        die(); // this is required to return a proper result
+        $html = $this->get_admin_slide();
 
+        $result = array(
+            'slide_id' => $new_slide_id,
+            'html' => $html
+        );
+
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( array(
+                'message' => $result->get_error_message()
+            ), 409 );
+        }
+
+        wp_send_json_success ( $result, 200 );
     }
 
 
@@ -139,9 +162,6 @@ class MetaPostFeedSlide extends MetaSlide
             $row .= $edit_buttons;
         }
         $row .= "       </div>";
-        $row .= "       <div class='metaslider-ui-inner'>";
-        $row .= "           <div class='thumb post_feed'></div>";
-        $row .= "       </div>";
         $row .= "    </td>";
         $row .= "    <td class='col-2'>";
         $row .= "       <div class='metaslider-ui-inner flex flex-col h-full'>";
@@ -166,44 +186,23 @@ class MetaPostFeedSlide extends MetaSlide
      */
     public function get_admin_tabs()
     {
-        $custom_template = isset($this->slide_settings['custom_template']) && strlen(
-            $this->slide_settings['custom_template']
-        ) ? $this->slide_settings['custom_template'] : $this->backwards_compatible_caption();
-        $nl2br_checked = ! isset($this->slide_settings['nl2br']) || $this->slide_settings['nl2br'] == 'on' ? 'checked=checked' : '';
-        $slide_id = absint($this->slide->ID);
+        $path = trailingslashit( plugin_dir_path( __FILE__ ) ) . 'tabs/';
 
+        ob_start();
+        include $path . 'template.php';
+        $template_tab = ob_get_clean();
 
-        $template_tab = "<div style='position: relative;'>{$this->get_template_tags()}</div>
-                         <div class='row last'>
-                            <textarea class='wysiwyg' id='editor{$slide_id}' name='attachment[{$slide_id}][settings][custom_template]'>{$custom_template}</textarea>
-                         </div>";
+        ob_start();
+        include $path . 'post-types.php';
+        $post_types_tab = ob_get_clean();
 
-        $post_types_tab = "<p>" . __(
-                "Select the Post types to include in the feed. Posts must have a Featured Image to appear in the feed.",
-                "ml-slider-pro"
-            ) . "</p>" . $this->get_post_type_options();
+        ob_start();
+        include $path . 'taxonomies.php';
+        $taxonomies_tab = ob_get_clean();
 
-        $taxonomies_tab = "<p>" . __(
-                "Posts must be tagged to at least one of the selected categories to display in the feed.",
-                "ml-slider-pro"
-            ) . "</p>" . $this->get_tag_options();
-
-        $display_tab = "<div class='row'>
-                           <label>" . __("Slide Link", "ml-slider-pro") . "</label>
-                           {$this->get_link_to_options()}
-                        </div>
-                        <div class='row'>
-                            <label>" . __("Order By", "ml-slider-pro") . "</label>
-                            {$this->get_order_by_options()}{$this->get_order_direction_options()}
-                        </div>
-                        <div class='row'>
-                             <label>" . __("Post Limit", "ml-slider-pro") . "</label>
-                             {$this->get_limit_options()}
-                        </div>
-                        <div class='row'>
-                            <label>" . __("Preserve New Lines", "ml-slider-pro") . "</label>
-                            <input type='checkbox' name='attachment[{$this->slide->ID}][settings][nl2br]' {$nl2br_checked}/>
-                        </div>";
+        ob_start();
+        include $path . 'display.php';
+        $display_tab = ob_get_clean();
 
         $tabs = array(
             'caption_template' => array(
@@ -221,8 +220,23 @@ class MetaPostFeedSlide extends MetaSlide
             'display_settings' => array(
                 'title' => __("Display Settings", "ml-slider-pro"),
                 'content' => $display_tab
-            ),
+            )
         );
+
+        $global_settings = $this->get_global_settings();
+        if (
+            !isset($global_settings['mobileSettings']) ||
+            (isset($global_settings['mobileSettings']) && true == $global_settings['mobileSettings'])
+        ) {
+            ob_start();
+            include $path . 'mobile.php';
+            $mobile_tab = ob_get_clean();
+
+            $tabs['mobile'] = array(
+                'title' => __("Mobile", "ml-slider"),
+                'content' => $mobile_tab
+            );
+        }
 
         return apply_filters("metaslider_post_feed_slide_tabs", $tabs, $this->slide, $this->slider, $this->settings);
     }
@@ -411,7 +425,7 @@ class MetaPostFeedSlide extends MetaSlide
             $options = array_merge($options, $orderby_event);
         }
 
-        $html = "<select name='attachment[{$this->slide->ID}][settings][order_by]'>";
+        $html = "<select name='attachment[{$this->slide->ID}][settings][order_by]' class='w-auto mr-2'>";
 
         foreach ($options as $title => $value) {
             $selected = $value == $selected_option ? "selected='selected'" : "";
@@ -433,7 +447,7 @@ class MetaPostFeedSlide extends MetaSlide
     {
         $number_of_posts = isset($this->slide_settings['number_of_posts']) ? $this->slide_settings['number_of_posts'] : 3;
 
-        $html = "<input value='{$number_of_posts}' type='number' step='1' min='1' max='30' name='attachment[{$this->slide->ID}][settings][number_of_posts]'>";
+        $html = "<input value='{$number_of_posts}' type='number' step='1' min='1' max='30' name='attachment[{$this->slide->ID}][settings][number_of_posts]' style='width:65px'>";
 
         return $html;
     }
@@ -537,7 +551,7 @@ class MetaPostFeedSlide extends MetaSlide
             __('ASC', "ml-slider-pro") => 'ASC'
         );
 
-        $html = "<select name='attachment[{$this->slide->ID}][settings][order]'>";
+        $html = "<select name='attachment[{$this->slide->ID}][settings][order]' class='w-auto'>";
 
         foreach ($options as $title => $value) {
             $selected = $value == $selected_direction ? "selected='selected'" : "";
@@ -566,8 +580,16 @@ class MetaPostFeedSlide extends MetaSlide
 
         foreach ($all_post_types as $post_type) {
             if (! in_array($post_type->name, $exclude)) {
-                $checked = in_array($post_type->name, $selected_post_types) ? "checked='checked'" : "";
-                $options .= "<li><label><input type='checkbox' name='attachment[{$this->slide->ID}][settings][post_types][]' value='{$post_type->name}' {$checked} /> {$post_type->label}</label></li>";
+                $checked    = in_array($post_type->name, $selected_post_types) ? true : false;
+                $checkbox   = $this->switch_button(
+                    'attachment[' . esc_attr( $this->slide->ID ) . '][settings][post_types][]',
+                    (bool) $checked,
+                    array(
+                        'value' => esc_html( $post_type->name )
+                    )
+                );
+
+                $options .= "<li><label>{$checkbox} {$post_type->label}</label></li>";
             }
         }
 
@@ -723,6 +745,8 @@ class MetaPostFeedSlide extends MetaSlide
      */
     protected function get_public_slide()
     {
+        add_action( 'metaslider_register_public_styles', array( $this, 'add_extra_styles' ), 10, 2 );
+
         $slider_settings = get_post_meta($this->slider->ID, 'ml-slider_settings', true);
         $args = $this->get_post_args();
 
@@ -787,9 +811,16 @@ class MetaPostFeedSlide extends MetaSlide
                 );
                 $thumb = $imageHelper->get_image_url();
             }
+            
+            $include_posts_with_no_image = ! isset( $this->slide_settings['posts_with_no_image'] ) || $this->slide_settings['posts_with_no_image'] == 'off' 
+                ? false : true;
 
-            // go on to the next slide if we encounter an error
-            if (is_wp_error($thumb) || ! $thumb) {
+            /* Go on to the next slide if we don't allow posts with no feat. image 
+             * and we encounter an error (aka. post has no image) */
+            if ( ( $slider_settings['type'] !== 'flex' 
+                    || ! $include_posts_with_no_image 
+                ) && ( is_wp_error( $thumb ) || ! $thumb ) 
+            ) {
                 continue;
             }
 
@@ -821,11 +852,9 @@ class MetaPostFeedSlide extends MetaSlide
             $image_id = get_post_thumbnail_id($the_query->post->ID);
 
             $slide = array(
-                'id' => $image_id,
-                'thumb' => $thumb,
                 'width' => $this->settings['width'],
                 'height' => $this->settings['height'],
-                'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID} post-{$the_query->post->ID} ms-postfeed",
+                'class' => "slider-{$this->slider->ID} slide-{$this->slide->ID} post-{$the_query->post->ID} ms-postfeed {$this->get_mobile_css_class($this->slide->ID)}",
                 'url' => $url,
                 'title' => "",
                 'alt' => get_post_meta(get_post_thumbnail_id($the_query->post->ID), "_wp_attachment_image_alt", true),
@@ -835,6 +864,15 @@ class MetaPostFeedSlide extends MetaSlide
                 'excerpt' => get_the_excerpt(),
                 'rel' => ""
             );
+
+            // Assign featured image ID and thumb
+            if ( $image_id ) {
+                $slide['thumb'] = $thumb;
+                $slide['id'] = $image_id;
+            } else {
+                // Assign post ID
+                $slide['id'] = $the_query->post->ID;
+            }
 
             $slide = apply_filters(
                 'metaslider_post_feed_slide_attributes',
@@ -1071,46 +1109,55 @@ class MetaPostFeedSlide extends MetaSlide
      */
     private function get_flex_slider_markup($slide, $post_id)
     {
-        $attributes = apply_filters('metaslider_flex_slider_image_attributes', array(
-            'src' => $slide['thumb'],
-            'height' => $slide['height'],
-            'width' => $slide['width'],
-            'alt' => $slide['alt'],
-            'rel' => $slide['rel'],
-            'title' => $slide['title']
-        ), $slide, $this->slider->ID);
+        $has_image  = isset( $slide['thumb'] ) ? true : false; 
+        $html       = '';
 
-        if ($this->settings['smartCrop'] == 'disabled_pad') {
-            $attributes['style'] = $this->flex_smart_pad($attributes, $slide);
+        if ( $has_image ) {
+            $attributes = apply_filters('metaslider_flex_slider_image_attributes', array(
+                'src' => $slide['thumb'],
+                'height' => $slide['height'],
+                'width' => $slide['width'],
+                'alt' => $slide['alt'],
+                'rel' => $slide['rel'],
+                'title' => $slide['title']
+            ), $slide, $this->slider->ID);
+    
+            if ( $this->settings['smartCrop'] == 'disabled_pad') {
+                $attributes['style'] = $this->flex_smart_pad($attributes, $slide);
+            }
+
+            $html = $this->build_image_tag($attributes);
         }
-
-
-        $html = $this->build_image_tag($attributes);
 
         $anchor_attributes = apply_filters('metaslider_flex_slider_anchor_attributes', array(
             'href' => $slide['url'],
             'target' => $slide['target']
         ), $slide, $this->slider->ID);
 
-        if (strlen($anchor_attributes['href'])) {
+        // Add link only when there is a feature image for the post
+        if ( $has_image && strlen( $anchor_attributes['href'] ) ) {
             $html = $this->build_anchor_tag($anchor_attributes, $html);
         }
 
         // add caption
         if (strlen($slide['caption'])) {
-            $html .= "<div class='caption-wrap'><div class='caption'>" . $slide['caption'] . "</div></div>";
+            $html .= "<div class='caption-wrap" . ( $has_image ? "" : " ms-slide-no-image" ) . "'><div class='caption'>" . $slide['caption'] . "</div></div>";
         }
 
         // store the slide details
         $attributes = array(
-            'class' => "slide-{$this->slide->ID} ms-postfeed post-{$post_id}",
+            'class' => "slide-{$this->slide->ID} ms-postfeed post-{$post_id} {$this->get_mobile_css_class($this->slide->ID)}",
             'style' => "display: none; width: 100%;"
         );
+
+        $thumb_id = $has_image
+                    ? get_post_thumbnail_id( $post_id ) // Important: this is a post id, not the actual slide id. See other instances of apply_filters('metaslider_flex_slider_li_attributes' ... ) to compare
+                    : $post_id;
 
         $attributes = apply_filters(
             'metaslider_flex_slider_li_attributes',
             $attributes,
-            get_post_thumbnail_id($post_id), // Important: this is a post id, not the actual slide id. See other instances of apply_filters('metaslider_flex_slider_li_attributes' ... ) to compare
+            $thumb_id, 
             $this->slider->ID,
             $this->settings
         );
@@ -1354,7 +1401,59 @@ class MetaPostFeedSlide extends MetaSlide
             $fields['settings']['nl2br'] = 'off';
         }
 
+        if ( ! isset( $fields['settings']['posts_with_no_image'] ) ) {
+            $fields['settings']['posts_with_no_image'] = 'off';
+        }
+
         $this->add_or_update_or_delete_meta($this->slide->ID, 'settings', $fields['settings']);
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_smartphone',
+            isset($fields['hide_slide_smartphone']) && $fields['hide_slide_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_tablet',
+            isset($fields['hide_slide_tablet']) && $fields['hide_slide_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_laptop',
+            isset($fields['hide_slide_laptop']) && $fields['hide_slide_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_slide_desktop',
+            isset($fields['hide_slide_desktop']) && $fields['hide_slide_desktop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_smartphone',
+            isset($fields['hide_caption_smartphone']) && $fields['hide_caption_smartphone'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_tablet',
+            isset($fields['hide_caption_tablet']) && $fields['hide_caption_tablet'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_laptop',
+            isset($fields['hide_caption_laptop']) && $fields['hide_caption_laptop'] === 'on'
+        );
+
+        $this->add_or_update_or_delete_meta(
+            $this->slide->ID,
+            'hide_caption_desktop',
+            isset($fields['hide_caption_desktop']) && $fields['hide_caption_desktop'] === 'on'
+        );
     }
 
 }
@@ -1425,11 +1524,11 @@ class Walker_MetaSlider_Checklist extends Walker
         }
 
         $name = "attachment[{$this->slide_id}][settings][tags][$taxonomy]";
-        $output .= "\n<li>" . '<label><input value="' . $category->term_id . '" type="checkbox" name="' . $name . '[]" id="in-' . $taxonomy . '-' . $category->term_id . '"' . checked(
+        $output .= "\n<li>" . '<label><div class="ms-switch-button"><label><input value="' . $category->term_id . '" type="checkbox" name="' . $name . '[]" id="in-' . $taxonomy . '-' . $category->term_id . '"' . checked(
                 in_array($category->term_id, $selected_cats),
                 true,
                 false
-            ) . disabled(empty($args['disabled']), false, false) . ' /> ' . esc_html(
+            ) . disabled(empty($args['disabled']), false, false) . ' /><span></span></label></div> ' . esc_html(
                 apply_filters('the_category', $category->name)
             ) . '</label>';
     }

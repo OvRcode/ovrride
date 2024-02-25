@@ -1,0 +1,28 @@
+.ms-styled-notice {
+	padding-top: 31px !important;
+	padding-bottom: 31px !important;
+	border-left-color: #dd6923 !important;
+	font-size: 1.3em !important;
+	line-height: 1.8em !important;
+	padding-left: 90px !important;
+	background-size: 60px auto !important;
+	background-position: 16px center !important;
+	background-repeat: no-repeat !important;
+	background-color: #fff !important;
+}
+.ms-styled-notice .ms-styled-button {
+	color: #fff !important;
+	background: #dd6923 !important;
+	padding: 8px 15px !important;
+	border-radius: 5px !important;
+	text-decoration: none !important;
+	display: inline-block !important;
+	border: none !important;
+}
+.ms-styled-notice .ms-styled-button:hover,
+.ms-styled-notice .ms-styled-button:focus,
+.ms-styled-notice .ms-styled-button:active {
+	color: #fff !important;
+	background: #29375b !important;
+	border: none !important;
+}

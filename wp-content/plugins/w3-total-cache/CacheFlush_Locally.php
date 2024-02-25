@@ -74,16 +74,13 @@ class CacheFlush_Locally {
 
 		do_action( 'w3tc_flush_minify' );
 		$minifycache = Dispatcher::component( 'Minify_MinifiedFileRequestHandler' );
-		$v = $minifycache->flush();
+		$v = $minifycache->flush( $extras );
 		do_action( 'w3tc_flush_after_minify' );
 
 		return $v;
 	}
 
 	function minifycache_flush_all( $extras = array() ) {
-		if ( isset( $extras['minify'] ) && $extras['minify'] == 'purge_map' )
-			delete_option( 'w3tc_minify' );
-
 		$this->minifycache_flush( $extras );
 	}
 
@@ -188,7 +185,7 @@ class CacheFlush_Locally {
 				add_action( 'w3tc_flush_all',
 					array( $this, 'dbcache_flush' ),
 					100, 2 );
-			if ( $config->get_boolean( 'objectcache.enabled' ) )
+			if ( $config->getf_boolean( 'objectcache.enabled' ) )
 				add_action( 'w3tc_flush_all',
 					array( $this, 'objectcache_flush' ),
 					200, 1 );

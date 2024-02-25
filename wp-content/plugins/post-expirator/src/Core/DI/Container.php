@@ -3,9 +3,11 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Core\DI;
+namespace PublishPress\Future\Core\DI;
 
 use Closure;
+
+defined('ABSPATH') or die('Direct access not allowed.');
 
 /**
  * PHP Dependency Injection Container PSR-11.
@@ -25,10 +27,12 @@ class Container implements ContainerInterface
      * @var ContainerInterface
      */
     private static $instance;
+
     /**
      * @var array
      */
     private $resolvedEntries = [];
+
     /**
      * @var array
      */
@@ -36,7 +40,7 @@ class Container implements ContainerInterface
 
     public function __construct($services = [])
     {
-        if (! empty($services)) {
+        if ( ! empty($services)) {
             $this->registerServices($services);
         }
 
@@ -53,8 +57,6 @@ class Container implements ContainerInterface
 
     /**
      * @return ContainerInterface
-     *
-     * @throws ContainerNotInitializedException
      */
     public static function getInstance()
     {
@@ -72,9 +74,9 @@ class Container implements ContainerInterface
      *
      * @return mixed Entry.
      */
-    public function get($id)
+    public function get(string $id)
     {
-        if (! $this->has($id)) {
+        if ( ! $this->has($id)) {
             throw new ServiceNotFoundException($id);
         }
 
@@ -104,9 +106,9 @@ class Container implements ContainerInterface
      *
      * @return bool
      */
-    public function has($id)
+    public function has(string $id): bool
     {
         return array_key_exists($id, $this->services)
-            || array_key_exists($id, $this->resolvedEntries);
+               || array_key_exists($id, $this->resolvedEntries);
     }
 }

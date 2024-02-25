@@ -3,12 +3,11 @@
  * Copyright (c) 2022. PublishPress, All rights reserved.
  */
 
-namespace PublishPressFuture\Framework\WordPress\Facade;
+namespace PublishPress\Future\Framework\WordPress\Facade;
 
-use PublishPressFuture\Core\HookableInterface;
+use PublishPress\Future\Core\HookableInterface;
 
-use function PublishPressFuture\Framework\WordPress\add_action;
-use function PublishPressFuture\Framework\WordPress\add_filter;
+defined('ABSPATH') or die('Direct access not allowed.');
 
 class HooksFacade implements HookableInterface
 {
@@ -77,11 +76,16 @@ class HooksFacade implements HookableInterface
         return call_user_func_array('do_action', $params);
     }
 
+    public static function registerActivationHook($pluginFile, $callback)
+    {
+        \register_activation_hook($pluginFile, $callback);
+    }
+
     /**
      * @param string $pluginFile
      * @param callable $callback
      */
-    public function registerDeactivationHook($pluginFile, $callback)
+    public static function registerDeactivationHook($pluginFile, $callback)
     {
         \register_deactivation_hook($pluginFile, $callback);
     }

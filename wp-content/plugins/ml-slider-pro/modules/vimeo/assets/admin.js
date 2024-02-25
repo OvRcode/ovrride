@@ -1,3 +1,5 @@
+var { __ } = wp.i18n; // For Pro translations only
+
 jQuery(function ($) {
     window.metaslider.app.EventManager.$on("metaslider/app-loaded", function (e) {
         /**
@@ -19,13 +21,13 @@ jQuery(function ($) {
             return false;
         }
 
-        $('tr.slide.vimeo .metaslider-pro-vimeo_url').on('change', function (e) {
+        $(document).on('change', 'tr.slide.vimeo .metaslider-pro-vimeo_url', function (e) {
             var APP = window.parent.metaslider.app.MetaSlider;
             var $field = $(e.target);
 
             APP.notifyInfo(
                 'metaslider/updating-vimeo-video',
-                APP.__('Updating Vimeo video...', 'ml-slider-pro'),
+                __('Updating Vimeo video...', 'ml-slider-pro'),
                 true
             );
 
@@ -36,14 +38,38 @@ jQuery(function ($) {
                 nonce: metaslider_vimeo.nonce
             };
 
+            // Check if YouTube URL is valid
+            if(!data.video_id) {
+                APP && APP.notifyError('metaslider/slide-create-failed', 
+                    APP.__("Please make sure to enter a valid Vimeo video URL", "ml-slider-pro"),
+                    true
+                );
+                return;
+            }
+
             $.post(ajaxurl, data, function(response) {
                 if (! response.success) {
-                    APP && APP.notifyError('metaslider/vimeo-video-not-updated', null, true);
+                    APP && APP.notifyError('metaslider/vimeo-video-not-updated', 
+                        APP.__("There was an error updating the Vimeo video", "ml-slider-pro"),
+                        true
+                    );
                     return;
                 }
 
-                $('#slide-' + response.data.slide_id + ' .metaslider-slide-thumb .thumb').css('background-image', 'url("' + response.data.thumbnail + '")');
-                APP && APP.notifySuccess('metaslider/vimeo-video-updated', null, true);
+                /**
+                 * Updates the image on success
+                 */
+                var new_image = $('#slide-' + response.data.slide_id + ' .thumb').find('img');
+                new_image.attr(
+                    'srcset',
+                    `${response.data.thumbnail_url_large} 1024w, ${response.data.thumbnail_url_medium} 768w, ${response.data.thumbnail_url_small} 240w`
+                );
+                new_image.attr('src', response.data.thumbnail_url_small);
+
+                APP && APP.notifySuccess('metaslider/vimeo-video-updated', 
+                    APP.__("Vimeo video updated successfully!", "ml-slider-pro"), 
+                    true
+                );
             });
         });
     });

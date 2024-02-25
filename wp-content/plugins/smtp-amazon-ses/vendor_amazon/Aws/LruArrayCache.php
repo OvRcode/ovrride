@@ -57,6 +57,10 @@ class LruArrayCache implements \YaySMTPAmazonSES\Aws3\Aws\CacheInterface, \Count
   public function remove($key) {
     unset($this->items[$key]);
   }
+  /**
+   * @return int
+   */
+  #[\ReturnTypeWillChange]
   public function count() {
     return count($this->items);
   }

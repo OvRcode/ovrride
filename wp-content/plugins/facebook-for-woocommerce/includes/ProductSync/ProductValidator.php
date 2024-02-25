@@ -78,6 +78,13 @@ class ProductValidator {
 	protected $fb_product_parent;
 
 	/**
+	 * The product object to validate.
+	 *
+	 * @var WC_Facebook_Product
+	 */
+	protected $facebook_product;
+
+	/**
 	 * ProductValidator constructor.
 	 *
 	 * @param WC_Facebookcommerce_Integration $integration The FB integration instance.
@@ -98,6 +105,24 @@ class ProductValidator {
 
 		$this->facebook_product = new WC_Facebook_Product( $this->product, $this->fb_product_parent );
 		$this->integration      = $integration;
+	}
+
+	/**
+	 * __get method for backward compatibility.
+	 *
+	 * @param string $key property name
+	 * @return mixed
+	 * @since 3.0.32
+	 */
+	public function __get( $key ) {
+		// Add warning for private properties.
+		if ( 'facebook_product' === $key ) {
+			/* translators: %s property name. */
+			_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'The %s property is protected and should not be accessed outside its class.', 'facebook-for-woocommerce' ), esc_html( $key ) ), '3.0.32' );
+			return $this->$key;
+		}
+
+		return null;
 	}
 
 	/**
@@ -388,12 +413,8 @@ class ProductValidator {
 
 		/*
 		 * Requirements:
-		 * - No all caps title.
 		 * - Max length 150.
 		 */
-		if ( \WC_Facebookcommerce_Utils::is_all_caps( $title ) ) {
-			throw new ProductInvalidException( __( 'Product title is all capital letters. Please change the title to sentence case in order to allow synchronization of your product.', 'facebook-for-woocommerce' ) );
-		}
 		if ( mb_strlen( $title, 'UTF-8' ) > self::MAX_TITLE_LENGTH ) {
 			throw new ProductInvalidException( __( 'Product title is too long. Maximum allowed length is 150 characters.', 'facebook-for-woocommerce' ) );
 		}

@@ -4,10 +4,10 @@
  * Plugin Name: MetaSlider Pro
  * Plugin URI: https://www.metaslider.com
  * Description: MetaSlider Pro unlocks the power of video slides, layer slides, post type slides as well as many other features.
- * Version: 2.23.0
+ * Version: 2.33.0
  * Author: MetaSlider
  * Author URI: https://www.metaslider.com
- * Copyright: 2020- MetaSlider LLC
+ * Copyright: 2020-2023 MetaSlider LLC
  *
  * Text Domain: ml-slider-pro
  * Domain Path: /languages
@@ -29,19 +29,21 @@ if (! class_exists('MetaSliderPro')) :
     class MetaSliderPro
     {
 
+        private $api;
+
         /**
          * Current version of the Pro Pack
          *
          * @var string $version
          */
-        public $version = '2.23.0';
+        public $version = '2.33.0';
 
         /**
          * Minimum required version
          *
          * @var string $lite_version_minimum
          */
-        public $lite_version_minimum = '3.18.0';
+        public $lite_version_minimum = '3.61.0';
 
         /**
          * Init
@@ -108,8 +110,11 @@ if (! class_exists('MetaSliderPro')) :
             new MetaYouTubeSlide();
             new MetaLayerSlide();
             new MetaExternalSlide();
+            new MetaLocalVideoSlide();
+            new MetaExternalVideoSlide();
             new MetaSliderLoop();
             new MetaSliderPro_Schedule_Slides();
+            new MetaSliderAdvancedSettings();
 
             $post_feed = new MetaPostFeedSlide();
             $post_feed->hooks();
@@ -147,10 +152,13 @@ if (! class_exists('MetaSliderPro')) :
                 'metavimeoslide' => METASLIDERPRO_PATH . 'modules/vimeo/slide.php',
                 'metaexternalslide' => METASLIDERPRO_PATH . 'modules/external/slide.php',
                 'metapostfeedslide' => METASLIDERPRO_PATH . 'modules/post_feed/slide.php',
+                'metalocalvideoslide' => METASLIDERPRO_PATH . 'modules/local_video/slide.php',
+                'metaexternalvideoslide' => METASLIDERPRO_PATH . 'modules/external_video/slide.php',
                 'metasliderthumbnails' => METASLIDERPRO_PATH . 'modules/thumbnails/thumbnails.php',
                 'metasliderthemeeditor' => METASLIDERPRO_PATH . 'modules/theme_editor/theme_editor.php',
                 'metasliderloop' => METASLIDERPRO_PATH . 'modules/extra/loop.php',
-                'metasliderpro_schedule_slides' => METASLIDERPRO_PATH . 'modules/schedule/schedule.php'
+                'metasliderpro_schedule_slides' => METASLIDERPRO_PATH . 'modules/schedule/schedule.php',
+                'metaslideradvancedsettings' => METASLIDERPRO_PATH . 'modules/advanced/advanced.php'
             );
         }
 
@@ -216,6 +224,15 @@ if (! class_exists('MetaSliderPro')) :
                 array('jquery', 'metaslider-admin-script'),
                 METASLIDERPRO_VERSION
             );
+
+            // Javascript translations
+            if ( function_exists( 'wp_set_script_translations' ) ) {
+                wp_set_script_translations(
+                    'metaslider-admin-script',
+                    'ml-slider-pro',
+                    METASLIDERPRO_PATH . 'languages'
+                );
+            }
         }
 
         /**
@@ -281,6 +298,7 @@ if (! class_exists('MetaSliderPro')) :
          */
         protected function passes_requirements()
         {
+            // Free is NOT installed
             if (! (bool)($plugin = $this->has_metaslider_installed())) {
                 // If we're currently installing, don't show the error message
                 if (isset($_GET['installing_metaslider'])) {
@@ -288,36 +306,44 @@ if (! class_exists('MetaSliderPro')) :
                 }
 
                 // Creates a link to auto install the lite plugin
+                $nonce = wp_nonce_url(
+                    self_admin_url(
+                        'update.php?action=install-plugin&plugin=ml-slider&installing_metaslider=true'
+                    ),
+                    'install-plugin_ml-slider'
+                );
+
                 return new WP_Error(
-                    'notice-error',
+                    'notice-error ms-styled-notice',
                     sprintf(
                         __(
-                            "MetaSlider Pro requires the MetaSlider plugin to be installed. You may download it by clicking <a href='%s'>here</a>.",
+                            "MetaSlider Pro requires the free MetaSlider plugin. %sClick to install the MetaSlider plugin%s</a>",
                             "ml-slider-pro"
                         ),
-                        wp_nonce_url(
-                            self_admin_url(
-                                'update.php?action=install-plugin&plugin=ml-slider&installing_metaslider=true'
-                            ),
-                            'install-plugin_ml-slider'
-                        )
+                        '<a href="' . $nonce . '" class="ms-styled-button">',
+                        ' &rarr;</a>'
                     )
                 );
             }
+
+            // Free IS installed but NOT activated
             if (! $this->has_metaslider_activated()) {
+                
                 // Creates a direct link to auto activate the lite plugin
                 $nonce = wp_nonce_url(
                     sprintf(self_admin_url('plugins.php?action=activate&plugin=%s'), str_replace('/', '%2F', $plugin)),
                     'activate-plugin_' . $plugin
                 );
+
                 return new WP_Error(
-                    'notice-error',
+                    'notice-error ms-styled-notice',
                     sprintf(
                         __(
-                            "MetaSlider Pro requires the MetaSlider plugin to be activated. You may activate it by clicking <a href='%s'>here</a>.",
+                            "MetaSlider Pro requires the free MetaSlider plugin. %sClick to activate the MetaSlider plugin%s",
                             "ml-slider-pro"
                         ),
-                        $nonce
+                        '<a href="' . $nonce . '" class="ms-styled-button">',
+                        ' &rarr;</a>'
                     )
                 );
             }
@@ -331,14 +357,15 @@ if (! class_exists('MetaSliderPro')) :
                     'upgrade-plugin_' . $plugin
                 );
                 return new WP_Error(
-                    'notice-warning',
+                    'notice-error ms-styled-notice',
                     sprintf(
                         __(
-                            "MetaSlider Pro requires the MetaSlider plugin (free version) to be at least version %s. You may update it by clicking <a href='%s'>here</a>.",
+                            "MetaSlider Pro requires the free MetaSlider plugin to be at least version %s %sClick to update the MetaSlider plugin%s",
                             "ml-slider-pro"
                         ),
                         $this->lite_version_minimum,
-                        $nonce
+                        '<a href="' . $nonce . '" class="ms-styled-button">',
+                        ' &rarr;</a>'
                     )
                 );
             }

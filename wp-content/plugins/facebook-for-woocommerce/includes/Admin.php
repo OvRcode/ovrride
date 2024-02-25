@@ -39,6 +39,8 @@ class Admin {
 	/** @var array screens ids where to include scripts */
 	protected $screen_ids = [];
 
+	/** @var Product_Sets the product set admin handler. */
+	protected $product_sets;
 
 	/**
 	 * Admin constructor.
@@ -71,8 +73,6 @@ class Admin {
 		$this->product_sets       = new Admin\Product_Sets();
 		// add a modal in admin product pages
 		add_action( 'admin_footer', array( $this, 'render_modal_template' ) );
-		// may trigger the modal to open to warn the merchant about a conflict with the current product terms
-		add_action( 'admin_footer', array( $this, 'validate_product_excluded_terms' ) );
 
 		// add admin notice to inform that disabled products may need to be deleted manually
 		add_action( 'admin_notices', array( $this, 'maybe_show_product_disabled_sync_notice' ) );
@@ -106,6 +106,24 @@ class Admin {
 
 		// add custom taxonomy for Product Sets
 		add_filter( 'gettext', array( $this, 'change_custom_taxonomy_tip' ), 20, 2 );
+	}
+
+	/**
+	 * __get method for backward compatibility.
+	 *
+	 * @param string $key property name
+	 * @return mixed
+	 * @since 3.0.32
+	 */
+	public function __get( $key ) {
+		// Add warning for private properties.
+		if ( 'product_sets' === $key ) {
+			/* translators: %s property name. */
+			_doing_it_wrong( __FUNCTION__, sprintf( esc_html__( 'The %s property is protected and should not be accessed outside its class.', 'facebook-for-woocommerce' ), esc_html( $key ) ), '3.0.32' );
+			return $this->$key;
+		}
+
+		return null;
 	}
 
 	/**
@@ -438,8 +456,20 @@ class Admin {
 			return;
 		}
 
-		$product = wc_get_product( $post );
-		if ( $product && Products::product_should_be_synced( $product ) ) {
+		$product        = wc_get_product( $post );
+		$should_sync    = false;
+		$no_sync_reason = '';
+
+		if ( $product instanceof \WC_Product ) {
+			try {
+				facebook_for_woocommerce()->get_product_sync_validator( $product )->validate();
+				$should_sync = true;
+			} catch ( \Exception $e ) {
+				$no_sync_reason = $e->getMessage();
+			}
+		}
+
+		if ( $should_sync ) {
 			if ( Products::is_product_visible( $product ) ) {
 				esc_html_e( 'Sync and show', 'facebook-for-woocommerce' );
 			} else {
@@ -447,6 +477,9 @@ class Admin {
 			}
 		} else {
 			esc_html_e( 'Do not sync', 'facebook-for-woocommerce' );
+			if ( ! empty( $no_sync_reason ) ) {
+				echo wc_help_tip( $no_sync_reason );
+			}
 		}
 	}
 
@@ -1483,58 +1516,4 @@ class Admin {
 	}
 
 
-	/**
-	 * Maybe triggers the modal to open on the product edit screen on page load.
-	 *
-	 * If the product is set to be synced in Facebook, but belongs to a term that is set to be excluded, the modal prompts the merchant for action.
-	 *
-	 * @internal
-	 *
-	 * @since 1.10.0
-	 */
-	public function validate_product_excluded_terms() {
-		global $current_screen, $post;
-		if ( $post && $current_screen && $current_screen->id === 'product' ) :
-			$product = wc_get_product( $post );
-			if ( $product instanceof \WC_Product
-				 && Products::is_sync_enabled_for_product( $product )
-				 && Products::is_sync_excluded_for_product_terms( $product )
-			) :
-				?>
-				<script type="text/javascript">
-					jQuery( document ).ready( function( $ ) {
-
-						var productID   = parseInt( $( 'input#post_ID' ).val(), 10 ),
-							productTag  = $( 'textarea[name=\"tax_input[product_tag]\"]' ).val().split( ',' ),
-							productCat  = [];
-
-						$( '#taxonomy-product_cat input[name=\"tax_input[product_cat][]\"]:checked' ).each( function() {
-							productCat.push( parseInt( $( this ).val(), 10 ) );
-						} );
-
-						$.post( facebook_for_woocommerce_products_admin.ajax_url, {
-							action:      'facebook_for_woocommerce_set_product_sync_prompt',
-							security:     facebook_for_woocommerce_products_admin.set_product_sync_prompt_nonce,
-							sync_enabled: 'enabled',
-							product:      productID,
-							categories:   productCat,
-							tags:         productTag
-						}, function( response ) {
-
-							if ( response && ! response.success ) {
-
-								$( '#wc-backbone-modal-dialog .modal-close' ).trigger( 'click' );
-
-								new $.WCBackboneModal.View( {
-									target: 'facebook-for-woocommerce-modal',
-									string: response.data
-								} );
-							}
-						} );
-					} );
-				</script>
-				<?php
-			endif;
-		endif;
-	}
 }

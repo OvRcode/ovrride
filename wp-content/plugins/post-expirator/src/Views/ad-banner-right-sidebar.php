@@ -1,3 +1,6 @@
+<?php
+defined('ABSPATH') or die('Direct access not allowed.');
+?>
 <div class="pp-column-right">
     <div class="pp-advertisement-right-sidebar">
         <div class="advertisement-box-content postbox pp-advert">
@@ -17,11 +20,9 @@
                 </p>
                 <ul>
                     <li><?php
-                        echo esc_html__('Support for expiry to custom statuses', 'post-expirator'); ?></li>
+                        echo esc_html__('Set the action date based on the post\'s publishing date', 'post-expirator'); ?></li>
                     <li><?php
-                        echo esc_html__('Detailed post expiration log', 'post-expirator'); ?></li>
-                    <li><?php
-                        echo esc_html__('Remove PublishPress ads and branding', 'post-expirator'); ?></li>
+                        echo esc_html__('Move posts to custom statuses', 'post-expirator'); ?></li>
                     <li><?php
                         echo esc_html__('Fast, professional support', 'post-expirator'); ?></li>
                 </ul>
