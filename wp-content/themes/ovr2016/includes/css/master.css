@@ -9,8 +9,9 @@
 }*/
 /* This is a small security for too long strings titles */
 body {
-	background-image: url('../images/bkg-snow.jpg');
 	word-wrap: break-word;
+	background-image: url('../images/snow.jpg');
+	background-repeat: repeat;
 }
 
 /* Alignment */

@@ -66,11 +66,11 @@ function _tk_setup() {
 	/**
 	 * Setup the WordPress core custom background feature.
 	*/
-	add_theme_support( 'custom-background', apply_filters( '_tk_custom_background_args', array(
+	/*add_theme_support( 'custom-background', apply_filters( '_tk_custom_background_args', array(
 		'default-color' => 'ffffff',
 		'default-image' => '',
 		) ) );
-
+*/
 	/**
 	 * Make theme available for translation
 	 * Translations can be filed in the /languages/ directory
@@ -140,7 +140,7 @@ function _tk_scripts() {
 		wp_enqueue_script( '_tk-keyboard-image-navigation', THEME_DIR_URI . '/includes/js/keyboard-image-navigation.js', array( 'jquery' ), '20120202', true );
 	}
 
-  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), "1.6.8");
+  wp_enqueue_style( 'ovr_site_style', THEME_DIR_URI . '/includes/css/master.min.css', array('_tk-bootstrap', '_tk-bootstrap-wp','_tk-font-awesome' ), "1.6.13");
 }
 add_action( 'wp_enqueue_scripts', '_tk_scripts' );
 
