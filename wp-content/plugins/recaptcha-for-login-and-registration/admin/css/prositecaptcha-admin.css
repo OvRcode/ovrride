@@ -1,0 +1,119 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+ 
+ 
+.prositecaptcha form {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.prositecaptcha label {
+  display: flex;
+  cursor: pointer;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.375em;
+}
+.prositecaptcha label input {
+  position: absolute;
+  left: -9999px;
+}
+.prositecaptcha label input:checked + span {
+  background-color: #d6d6e5;
+}
+.prositecaptcha label input:checked + span:before {
+  box-shadow: inset 0 0 0 0.4375em #00005c;
+}
+.prositecaptcha label span {
+  display: flex;
+  align-items: center;
+  padding: 0.375em 0.75em 0.375em 0.375em;
+  border-radius: 99em;
+  transition: 0.25s ease;
+}
+.prositecaptcha label span:hover {
+  background-color: #d6d6e5;
+}
+.prositecaptcha label span:before {
+  display: flex;
+  flex-shrink: 0;
+  content: "";
+  background-color: #fff;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  margin-right: 0.375em;
+  transition: 0.25s ease;
+  box-shadow: inset 0 0 0 0.125em #00005c;
+}
+
+.prositecaptcha {
+  padding: 20px;
+  box-shadow: 0 -5px 5px -5px #333;
+  margin: 20px;
+  border: 1px solid #ccc;
+  padding: 40px;
+  line-height: 1.4em;
+  max-width: 700px;
+  background-color: #fff;
+}
+
+.prositecaptcha .button {
+  background-position: center;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: "Inter", san-serif;
+  font-weight: 500;
+  min-width: 120px;
+  padding: 12px 10px;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  transition: all 0.5s;
+  width: 100%;
+}
+.prositecaptcha .button-primary {
+  background-color: #00005c;
+  color: #FFF;
+  box-shadow: 0px 3px 6px 0px rgba(123, 196, 202, 0.7);
+}
+.prositecaptcha .button-primary:hover {
+  background: #70bfc6 radial-gradient(circle, transparent 1%, #70bfc6 1%) center/15000%;
+}
+.prositecaptcha .button-primary:active {
+  background-color: #8dccd1;
+  background-size: 100%;
+  transition: background 0s;
+}
+.prositecaptcha .btn--secondary {
+  background-color: #E4E4E4;
+  color: #000;
+  box-shadow: 0px 3px 6px 0px rgba(228, 228, 228, 0.7);
+}
+.prositecaptcha .btn--secondary:hover {
+  background: gainsboro radial-gradient(circle, transparent 1%, gainsboro 1%) center/15000%;
+}
+.prositecaptcha .btn--secondary:active {
+  background-color: #f1f1f1;
+  background-size: 100%;
+  transition: background 0s;
+}
+.prositecaptcha .form-table tr {
+    display: block !important;
+}
+.prositecaptcha .form-table th {
+    min-width: 500px;
+    display: block !important;
+    font-size: 1.2em;
+    font-weight: 900;
+    padding: 1px;
+}
+
+
+.prositecaptcha .button {
+    max-width: 200px;
+}

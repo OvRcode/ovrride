@@ -1,0 +1,84 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Recaptcha for Login and registration\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-25 15:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.5.7; wp-5.8.3\n"
+"X-Domain: prositecaptcha"
+
+#: admin/class-prositecaptcha-admin.php:140
+msgid "API reCaptcha key"
+msgstr ""
+
+#: admin/class-prositecaptcha-admin.php:142
+msgid "API reCaptcha Secret Key"
+msgstr ""
+
+#: public/class-prositecaptcha-public.php:97
+#: public/class-prositecaptcha-public.php:106
+#: public/class-prositecaptcha-public.php:117
+#: public/class-prositecaptcha-public.php:136
+msgid "CAPTCHA response was incorrect"
+msgstr ""
+
+#: admin/class-prositecaptcha-admin.php:158
+msgid "Disable ReCaptcha"
+msgstr ""
+
+#: admin/partials/prositecaptcha-admin-display.php:19
+msgid "For more information about how to generate the key, please visit this"
+msgstr ""
+
+#: admin/partials/prositecaptcha-admin-display.php:18
+msgid "Google Recaptcha Main settings"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.prositeweb.ca/"
+msgstr ""
+
+#. URI of the plugin
+msgid ""
+"https://www.prositeweb.ca/en/google-recaptcha-for-wordpress-login-"
+"registration"
+msgstr ""
+
+#: admin/partials/prositecaptcha-admin-display.php:19
+msgid "link"
+msgstr ""
+
+#. Author of the plugin
+msgid "Prositeweb Inc"
+msgstr ""
+
+#. Name of the plugin
+msgid "Recaptcha for Login and registration"
+msgstr ""
+
+#: admin/class-prositecaptcha-admin.php:158
+msgid "reCAPTCHA V2"
+msgstr ""
+
+#: admin/class-prositecaptcha-admin.php:158
+msgid "reCAPTCHA V3"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"This plugin with add google Recaptcha on your registration or Login page. "
+"The purpose is to avoid spam and better improve your website security"
+msgstr ""
+
+#: admin/partials/prositecaptcha-admin-display.php:19
+msgid "You can generate or edit your reCAPTCHA Key with this link"
+msgstr ""
