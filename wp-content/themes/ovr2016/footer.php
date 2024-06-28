@@ -112,54 +112,54 @@
 <footer id="colophon" class="footer" role="contentinfo">
 	<div class="row ovr-sponsors">
 		<div class="col-xs-4 col-sm-2 col-xs-offset-1">
-			<a href="http://www.arcteryx.com" class="ovr_sponsor" target="_blank">
+			<a href="http://www.arcteryx.com" class="ovr_sponsor" title="Arc'teryx" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/arcteryx.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="https://www.dangshades.com/" class="ovr_sponsor" target="_blank">
+			<a href="https://www.dangshades.com/" class="ovr_sponsor" title="Dang Shades" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/DangShades_logo_OvR_footer-80x80.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="http://www.burton.com" class="ovr_sponsor" target="_blank">
+			<a href="http://www.burton.com" class="ovr_sponsor" title="Burton" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/Burton_Site.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="http://www.patagonia.com/home/" class="ovr_sponsor" target="_blank">
+			<a href="http://www.patagonia.com/home/" class="ovr_sponsor" title="Patagonia" target="_blank">
 				<img src="<?php echo $theme_dir . "/includes/images/patagonia.png"; ?>">
 			</a>
 		</div>
 		<div class="col-xs-4 col-sm-2">
-			<a href="https://discoverpacifico.com/" class="ovr_sponsor" target="_blank">
-				<img src="<?php echo $theme_dir . "/includes/images/Pacifico_Site.png"; ?>">
+			<a href="https://www.coronausa.com/" class="ovr_sponsor" title="Corona" target="_blank">
+				<img src="<?php echo $theme_dir . "/includes/images/corona_80.png"; ?>">
 			</a>
 		</div>
 	</div>
   <div class="row ovr-sponsors">
     <div class="col-xs-4 col-sm-2 col-xs-offset-1">
-			<a href="https://www.paragonsports.com/ski-trips" class="ovr_sponsor" target="_blank">
+			<a href="https://www.paragonsports.com/ski-trips" class="ovr_sponsor" title="Paragon Sports" target="_blank">
 				<img src="<?php echo $theme_dir ."/includes/images/paragon.png"; ?>">
 			</a>
 		</div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://www.onepercentfortheplanet.org/" class="ovr_sponsor" target="_blank">
+      <a href="https://www.onepercentfortheplanet.org/" class="ovr_sponsor" title="1% for the planet" target="_blank">
         <img src="<?php echo $theme_dir . "/includes/images/one_percent.png"; ?>">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://www.cutwaterspirits.com/" class="ovr_sponsor" target="_blank">
+      <a href="https://www.cutwaterspirits.com/" class="ovr_sponsor" title="Cutwater Spirits" target="_blank">
         <img src="<?php echo $theme_dir . "/includes/images/Cutwater-Spirits-Logo-80x80.jpg"; ?>">
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://nutrlusa.com/"  class="ovr_sponsor" target="_blank">
+      <a href="https://nutrlusa.com/"  class="ovr_sponsor" title="Nutrl" target="_blank">
         <img src="<?php echo $theme_dir . "/includes/images/Nutrl_logo_OvR_footer-80x80.png"; ?>" >
       </a>
     </div>
     <div class="col-xs-4 col-sm-2">
-      <a href="https://austineastciders.com/" class="ovr_sponsor" target="_blank" >
+      <a href="https://austineastciders.com/" class="ovr_sponsor" title="Austin Eastciders" target="_blank" >
         <img src="<?php echo $theme_dir . "/includes/images/austinEastCiders.png"; ?>" >
       </a>
     </div>
