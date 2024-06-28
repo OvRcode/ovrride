@@ -1,0 +1,12 @@
+node_modules
+nbproject
+nbproject/private/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle
+*.log
+npm-debug.log
+*.DS_Store
+.DS_Store
+Thumbs.db
